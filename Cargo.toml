@@ -1,0 +1,12 @@
+[package]
+name = "hex264"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+byteorder = "1"
+slab = { git = "https://github.com/tokio-rs/slab.git", rev = "f801afe5cb2379b0178173758273a95f64510527" }
+snafu = { version = "0.8", features = ["rust_1_81"] }
+
+[build-dependencies]
+gix = { version = "0.72", default-features = false }
