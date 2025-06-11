@@ -1,4 +1,5 @@
 use std::{error::Error, path::Path};
+
 use byteorder::{BigEndian, ByteOrder, WriteBytesExt as _};
 
 const FLV_AUDIO_SAMPLESIZE_OFFSET: usize = 1;
@@ -76,11 +77,7 @@ impl FlvBuffer {
             Box::new(std::fs::File::create(filename)?)
         };
 
-        Ok(Self {
-            buffer: Vec::new(),
-            writer,
-            total_written: 0,
-        })
+        Ok(Self { buffer: Vec::new(), writer, total_written: 0 })
     }
 
     pub fn append_data(&mut self, data: &[u8]) {
@@ -100,7 +97,7 @@ impl FlvBuffer {
         if position + 3 > self.buffer.len() {
             return Err("Position out of bounds for 24-bit write".into());
         }
-        
+
         BigEndian::write_u24(&mut self.buffer[position..position + 3], value);
         Ok(())
     }
@@ -141,7 +138,7 @@ impl FlvBuffer {
 
     pub fn put_amf_string(&mut self, value: String) -> Result<(), Box<dyn Error>> {
         if value.len() > u16::MAX.into() {
-            return Err("String length too long to store".into())
+            return Err("String length too long to store".into());
         }
 
         self.buffer.write_u16::<BigEndian>(value.len() as u16)?;

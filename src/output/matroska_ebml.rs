@@ -4,6 +4,8 @@ use byteorder::{BigEndian, WriteBytesExt as _};
 use slab::Slab;
 use snafu::{Snafu, ensure};
 
+// TODO: support newer versions of mkv, such as 5-byte elem_id and 8-byte size
+
 #[derive(Debug, Snafu)]
 pub enum MuxerError {
     /// Thrown if an error occurs when trying to read or write files.
@@ -139,18 +141,11 @@ struct MkContext {
 
 impl MkContext {
     fn new(element_id: usize, parent_id: Option<usize>) -> Self {
-        Self {
-            element_id,
-            parent_id,
-            data: Vec::new(),
-        }
+        Self { element_id, parent_id, data: Vec::new() }
     }
 
     fn write_elem_id(&mut self, element_id: u64) -> Result<(), MuxerError> {
-        ensure!(
-            element_id <= u32::MAX.into(),
-            ElementIdTooLargeSnafu { element_id }
-        );
+        ensure!(element_id <= u32::MAX.into(), ElementIdTooLargeSnafu { element_id });
 
         let index = element_id.leading_zeros();
         match index {
@@ -314,17 +309,8 @@ impl MkWriter {
     }
 
     fn write_header(
-        &mut self,
-        writing_app: &str,
-        codec_id: &str,
-        codec_private: &[u8],
-        default_duration: u64,
-        timescale: u64,
-        width: u64,
-        height: u64,
-        d_width: u64,
-        d_height: u64,
-        display_unit: DisplayUnit,
+        &mut self, writing_app: &str, codec_id: &str, codec_private: &[u8], default_duration: u64,
+        timescale: u64, width: u64, height: u64, d_width: u64, d_height: u64, display_unit: DisplayUnit,
         stereo_mode: Option<StereoMode>,
     ) -> Result<(), MuxerError> {
         ensure!(self.wrote_header == false, InvalidStateSnafu);
@@ -411,11 +397,7 @@ impl MkWriter {
         Ok(())
     }
 
-    fn create_context(
-        &mut self,
-        parent_id: Option<usize>,
-        element_id: usize,
-    ) -> Result<usize, MuxerError> {
+    fn create_context(&mut self, parent_id: Option<usize>, element_id: usize) -> Result<usize, MuxerError> {
         let context = MkContext::new(element_id, parent_id);
         let context_id = self.contexts.insert(context);
         Ok(context_id)
@@ -490,12 +472,7 @@ impl MkWriter {
         Ok(())
     }
 
-    fn set_frame_flags(
-        &mut self,
-        timestamp: u64,
-        keyframe: bool,
-        skippable: bool,
-    ) -> Result<(), MuxerError> {
+    fn set_frame_flags(&mut self, timestamp: u64, keyframe: bool, skippable: bool) -> Result<(), MuxerError> {
         if self.in_frame {
             self.frame_time = timestamp;
             self.keyframe = keyframe;
@@ -551,16 +528,11 @@ impl MkWriter {
             // We have to do this weird destructuring due to Rust's borrow checker limitations.
             let (cluster, frame) = match self.frame_id {
                 Some(frame_id) => {
-                    let (cluster, frame) = self
-                        .contexts
-                        .get2_mut(self.cluster_id.unwrap(), frame_id)
-                        .unwrap();
+                    let (cluster, frame) =
+                        self.contexts.get2_mut(self.cluster_id.unwrap(), frame_id).unwrap();
                     (cluster, Some(frame))
                 }
-                None => (
-                    self.contexts.get_mut(self.cluster_id.unwrap()).unwrap(),
-                    None,
-                ),
+                None => (self.contexts.get_mut(self.cluster_id.unwrap()).unwrap(), None),
             };
 
             cluster.write_elem_id(0xA3)?; // SimpleBlock
