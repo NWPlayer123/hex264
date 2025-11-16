@@ -99,7 +99,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -124,7 +124,7 @@ pub mod struct_timespec_h {
         pub tv_sec: __time_t,
         pub tv_nsec: __syscall_slong_t,
     }
-    use super::types_h::{__time_t, __syscall_slong_t};
+    use super::types_h::{__syscall_slong_t, __time_t};
 }
 #[c2rust::header_src = "/usr/include/bits/struct_stat.h:30"]
 pub mod struct_stat_h {
@@ -148,11 +148,11 @@ pub mod struct_stat_h {
         pub st_ctim: timespec,
         pub __glibc_reserved: [__syscall_slong_t; 3],
     }
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t,
-    };
     use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __uid_t,
+    };
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:30"]
 pub mod stdint_intn_h {
@@ -174,7 +174,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:30"]
 pub mod x264_h {
@@ -296,11 +296,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -455,9 +451,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "811:16"]
     pub struct x264_image_properties_t {
         pub quant_offsets: *mut ::core::ffi::c_float,
-        pub quant_offsets_free: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-        >,
+        pub quant_offsets_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub mb_info: *mut uint8_t,
         pub mb_info_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub f_ssim: ::core::ffi::c_double,
@@ -484,9 +478,9 @@ pub mod x264_h {
     }
     #[c2rust::src_loc = "289:9"]
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -525,12 +519,9 @@ pub mod output_h {
                 *mut cli_output_opt_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub set_param: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
-        >,
-        pub write_headers: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
-        >,
+        pub set_param: Option<unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int>,
+        pub write_headers:
+            Option<unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int>,
         pub write_frame: Option<
             unsafe extern "C" fn(
                 hnd_t,
@@ -539,14 +530,12 @@ pub mod output_h {
                 *mut x264_picture_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub close_file: Option<
-            unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
-        >,
+        pub close_file: Option<unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int>,
     }
-    use super::x264cli_h::hnd_t;
-    use super::x264_h::{x264_param_t, x264_nal_t, x264_picture_t};
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    use super::x264_h::{x264_nal_t, x264_param_t, x264_picture_t};
+    use super::x264cli_h::hnd_t;
 }
 #[c2rust::header_src = "/usr/include/lsmash.h:30"]
 pub mod lsmash_h {
@@ -571,11 +560,7 @@ pub mod lsmash_h {
             ) -> ::core::ffi::c_int,
         >,
         pub seek: Option<
-            unsafe extern "C" fn(
-                *mut ::core::ffi::c_void,
-                int64_t,
-                ::core::ffi::c_int,
-            ) -> int64_t,
+            unsafe extern "C" fn(*mut ::core::ffi::c_void, int64_t, ::core::ffi::c_int) -> int64_t,
         >,
         pub major_brand: lsmash_brand_type,
         pub brands: *mut lsmash_brand_type,
@@ -924,11 +909,7 @@ pub mod lsmash_h {
     }
     #[c2rust::src_loc = "260:1"]
     pub type lsmash_adhoc_remux_callback = Option<
-        unsafe extern "C" fn(
-            *mut ::core::ffi::c_void,
-            uint64_t,
-            uint64_t,
-        ) -> ::core::ffi::c_int,
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, uint64_t, uint64_t) -> ::core::ffi::c_int,
     >;
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1030,9 +1011,8 @@ pub mod lsmash_h {
         pub destruct: lsmash_codec_specific_destructor_t,
     }
     #[c2rust::src_loc = "957:1"]
-    pub type lsmash_codec_specific_destructor_t = Option<
-        unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-    >;
+    pub type lsmash_codec_specific_destructor_t =
+        Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "950:9"]
@@ -1052,29 +1032,39 @@ pub mod lsmash_h {
     #[c2rust::src_loc = "910:9"]
     pub type lsmash_codec_specific_data_type = ::core::ffi::c_int;
     #[c2rust::src_loc = "940:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_CODEC_GLOBAL_HEADER: lsmash_codec_specific_data_type = 20;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_CODEC_GLOBAL_HEADER: lsmash_codec_specific_data_type =
+        20;
     #[c2rust::src_loc = "938:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_CHANNEL_LAYOUT: lsmash_codec_specific_data_type = 19;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_CHANNEL_LAYOUT:
+        lsmash_codec_specific_data_type = 19;
     #[c2rust::src_loc = "937:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_GAMMA_LEVEL: lsmash_codec_specific_data_type = 18;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_GAMMA_LEVEL:
+        lsmash_codec_specific_data_type = 18;
     #[c2rust::src_loc = "936:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_SIGNIFICANT_BITS: lsmash_codec_specific_data_type = 17;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_SIGNIFICANT_BITS:
+        lsmash_codec_specific_data_type = 17;
     #[c2rust::src_loc = "935:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_PIXEL_FORMAT: lsmash_codec_specific_data_type = 16;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_PIXEL_FORMAT:
+        lsmash_codec_specific_data_type = 16;
     #[c2rust::src_loc = "934:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_FIELD_INFO: lsmash_codec_specific_data_type = 15;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_FIELD_INFO: lsmash_codec_specific_data_type =
+        15;
     #[c2rust::src_loc = "932:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_DECOMPRESSION_PARAMETERS: lsmash_codec_specific_data_type = 14;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_DECOMPRESSION_PARAMETERS:
+        lsmash_codec_specific_data_type = 14;
     #[c2rust::src_loc = "931:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_FORMAT_SPECIFIC_FLAGS: lsmash_codec_specific_data_type = 13;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_FORMAT_SPECIFIC_FLAGS:
+        lsmash_codec_specific_data_type = 13;
     #[c2rust::src_loc = "930:5"]
     pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_COMMON: lsmash_codec_specific_data_type = 12;
     #[c2rust::src_loc = "929:5"]
     pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_COMMON: lsmash_codec_specific_data_type = 11;
     #[c2rust::src_loc = "927:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264_BITRATE: lsmash_codec_specific_data_type = 10;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264_BITRATE:
+        lsmash_codec_specific_data_type = 10;
     #[c2rust::src_loc = "926:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_SAMPLE_SCALE: lsmash_codec_specific_data_type = 9;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_SAMPLE_SCALE:
+        lsmash_codec_specific_data_type = 9;
     #[c2rust::src_loc = "924:5"]
     pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_ALAC: lsmash_codec_specific_data_type = 8;
     #[c2rust::src_loc = "923:5"]
@@ -1090,7 +1080,8 @@ pub mod lsmash_h {
     #[c2rust::src_loc = "918:5"]
     pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264: lsmash_codec_specific_data_type = 2;
     #[c2rust::src_loc = "916:5"]
-    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_MP4SYS_DECODER_CONFIG: lsmash_codec_specific_data_type = 1;
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_MP4SYS_DECODER_CONFIG:
+        lsmash_codec_specific_data_type = 1;
     #[c2rust::src_loc = "914:5"]
     pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_UNKNOWN: lsmash_codec_specific_data_type = 0;
     #[c2rust::src_loc = "912:5"]
@@ -1144,7 +1135,8 @@ pub mod lsmash_h {
     #[c2rust::src_loc = "1645:5"]
     pub const ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK: lsmash_media_type = 1986618469;
     #[c2rust::src_loc = "1644:5"]
-    pub const ISOM_MEDIA_HANDLER_TYPE_PROPRIETARY_DESCRIPTIVE_METADATA: lsmash_media_type = 1970432288;
+    pub const ISOM_MEDIA_HANDLER_TYPE_PROPRIETARY_DESCRIPTIVE_METADATA: lsmash_media_type =
+        1970432288;
     #[c2rust::src_loc = "1643:5"]
     pub const ISOM_MEDIA_HANDLER_TYPE_TEXT_TRACK: lsmash_media_type = 1952807028;
     #[c2rust::src_loc = "1642:5"]
@@ -1180,7 +1172,8 @@ pub mod lsmash_h {
     #[c2rust::src_loc = "1627:5"]
     pub const ISOM_MEDIA_HANDLER_TYPE_TV_ANYTIME: lsmash_media_type = 1685354081;
     #[c2rust::src_loc = "1626:5"]
-    pub const ISOM_MEDIA_HANDLER_TYPE_DVB_MANDATORY_BASIC_DESCRIPTION: lsmash_media_type = 1684890212;
+    pub const ISOM_MEDIA_HANDLER_TYPE_DVB_MANDATORY_BASIC_DESCRIPTION: lsmash_media_type =
+        1684890212;
     #[c2rust::src_loc = "1625:5"]
     pub const ISOM_MEDIA_HANDLER_TYPE_CLOCK_REFERENCE_STREAM: lsmash_media_type = 1668445037;
     #[c2rust::src_loc = "1624:5"]
@@ -1258,13 +1251,12 @@ pub mod lsmash_h {
     #[c2rust::src_loc = "1343:5"]
     pub const ISOM_MATRIX_INDEX_NO_MATRIX: C2RustUnnamed_6 = 0;
     #[c2rust::src_loc = "2037:9"]
-    pub const ISOM_EDIT_MODE_NORMAL: ::core::ffi::c_int = (1 as ::core::ffi::c_int)
-        << 16 as ::core::ffi::c_int;
+    pub const ISOM_EDIT_MODE_NORMAL: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 16 as ::core::ffi::c_int;
     #[c2rust::src_loc = "2040:9"]
-    pub const ISOM_EDIT_DURATION_UNKNOWN32: ::core::ffi::c_uint = 0xffffffff
-        as ::core::ffi::c_uint;
-    use super::stdint_uintn_h::{uint8_t, uint32_t, uint64_t, uint16_t};
-    use super::stdint_intn_h::{int64_t, int32_t, int16_t};
+    pub const ISOM_EDIT_DURATION_UNKNOWN32: ::core::ffi::c_uint = 0xffffffff as ::core::ffi::c_uint;
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "967:16"]
         pub type lsmash_codec_specific_list_tag;
@@ -1285,9 +1277,7 @@ pub mod lsmash_h {
             param: *mut lsmash_file_parameters_t,
         ) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "302:1"]
-        pub fn lsmash_close_file(
-            param: *mut lsmash_file_parameters_t,
-        ) -> ::core::ffi::c_int;
+        pub fn lsmash_close_file(param: *mut lsmash_file_parameters_t) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "313:1"]
         pub fn lsmash_set_file(
             root: *mut lsmash_root_t,
@@ -1296,9 +1286,7 @@ pub mod lsmash_h {
         #[c2rust::src_loc = "751:25"]
         pub static ISOM_CODEC_TYPE_AVC1_VIDEO: lsmash_codec_type_t;
         #[c2rust::src_loc = "997:1"]
-        pub fn lsmash_create_summary(
-            summary_type: lsmash_summary_type,
-        ) -> *mut lsmash_summary_t;
+        pub fn lsmash_create_summary(summary_type: lsmash_summary_type) -> *mut lsmash_summary_t;
         #[c2rust::src_loc = "1003:1"]
         pub fn lsmash_cleanup_summary(summary: *mut lsmash_summary_t);
         #[c2rust::src_loc = "1012:1"]
@@ -1313,9 +1301,7 @@ pub mod lsmash_h {
             format: lsmash_codec_specific_format,
         ) -> *mut lsmash_codec_specific_t;
         #[c2rust::src_loc = "1053:1"]
-        pub fn lsmash_destroy_codec_specific_data(
-            specific: *mut lsmash_codec_specific_t,
-        );
+        pub fn lsmash_destroy_codec_specific_data(specific: *mut lsmash_codec_specific_t);
         #[c2rust::src_loc = "1062:1"]
         pub fn lsmash_add_codec_specific_data(
             summary: *mut lsmash_summary_t,
@@ -1344,10 +1330,8 @@ pub mod lsmash_h {
             last_sample_delta: uint32_t,
         ) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "1868:1"]
-        pub fn lsmash_get_media_timescale(
-            root: *mut lsmash_root_t,
-            track_ID: uint32_t,
-        ) -> uint32_t;
+        pub fn lsmash_get_media_timescale(root: *mut lsmash_root_t, track_ID: uint32_t)
+            -> uint32_t;
         #[c2rust::src_loc = "2068:1"]
         pub fn lsmash_create_track(
             root: *mut lsmash_root_t,
@@ -1389,9 +1373,7 @@ pub mod lsmash_h {
         #[c2rust::src_loc = "2287:1"]
         pub fn lsmash_get_movie_timescale(root: *mut lsmash_root_t) -> uint32_t;
         #[c2rust::src_loc = "2365:1"]
-        pub fn lsmash_create_fragment_movie(
-            root: *mut lsmash_root_t,
-        ) -> ::core::ffi::c_int;
+        pub fn lsmash_create_fragment_movie(root: *mut lsmash_root_t) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "3129:1"]
         pub fn lsmash_append_h264_parameter_set(
             param: *mut lsmash_h264_specific_parameters_t,
@@ -1421,10 +1403,7 @@ pub mod stat_h {
     use super::struct_stat_h::stat;
     extern "C" {
         #[c2rust::src_loc = "227:1"]
-        pub fn stat(
-            __file: *const ::core::ffi::c_char,
-            __buf: *mut stat,
-        ) -> ::core::ffi::c_int;
+        pub fn stat(__file: *const ::core::ffi::c_char, __buf: *mut stat) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "230:1"]
         pub fn fstat(__fd: ::core::ffi::c_int, __buf: *mut stat) -> ::core::ffi::c_int;
     }
@@ -1460,9 +1439,18 @@ pub mod osdep_h {
             st_size: 0,
             st_blksize: 0,
             st_blocks: 0,
-            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_atim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_mtim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_ctim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
             __glibc_reserved: [0; 3],
         };
         if stat(filename, &mut file_stat) != 0 {
@@ -1473,9 +1461,7 @@ pub mod osdep_h {
     }
     #[inline]
     #[c2rust::src_loc = "270:1"]
-    pub unsafe extern "C" fn x264_is_regular_file(
-        mut filehandle: *mut FILE,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn x264_is_regular_file(mut filehandle: *mut FILE) -> ::core::ffi::c_int {
         let mut file_stat: stat = stat {
             st_dev: 0,
             st_ino: 0,
@@ -1488,9 +1474,18 @@ pub mod osdep_h {
             st_size: 0,
             st_blksize: 0,
             st_blocks: 0,
-            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_atim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_mtim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_ctim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
             __glibc_reserved: [0; 3],
         };
         if fstat(fileno(filehandle), &mut file_stat) != 0 {
@@ -1499,16 +1494,16 @@ pub mod osdep_h {
         return (file_stat.st_mode & __S_IFMT as __mode_t == 0o100000 as __mode_t)
             as ::core::ffi::c_int;
     }
-    use super::struct_stat_h::stat;
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t, __time_t,
-    };
-    use super::struct_timespec_h::timespec;
-    use super::stat_h::{stat, fstat};
     use super::bits_stat_h::__S_IFMT;
-    use super::FILE_h::FILE;
+    use super::stat_h::{fstat, stat};
     use super::stdio_h::fileno;
+    use super::struct_stat_h::stat;
+    use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __time_t, __uid_t,
+    };
+    use super::FILE_h::FILE;
 }
 #[c2rust::header_src = "/usr/include/string.h:30"]
 pub mod string_h {
@@ -1537,164 +1532,143 @@ pub mod bits_stat_h {
     #[c2rust::src_loc = "29:9"]
     pub const __S_IFMT: ::core::ffi::c_int = 0o170000 as ::core::ffi::c_int;
 }
-pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t, __uint64_t,
-    __dev_t, __uid_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t, __off64_t,
-    __time_t, __blksize_t, __blkcnt_t, __syscall_slong_t,
-};
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::struct_timespec_h::timespec;
-pub use self::struct_stat_h::stat;
-pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, x264_hrd_t,
-    x264_sei_payload_t, x264_sei_t, x264_image_t, x264_image_properties_t,
-    x264_picture_t, X264_LOG_ERROR, x264_t,
-};
-pub use self::x264cli_h::{hnd_t, x264_cli_log};
-pub use self::output_h::{cli_output_opt_t, cli_output_t};
+pub use self::internal::__va_list_tag;
 pub use self::lsmash_h::{
-    lsmash_file_parameters_t, lsmash_brand_type, ISOM_BRAND_TYPE_SSSS,
-    ISOM_BRAND_TYPE_SISX, ISOM_BRAND_TYPE_SIMS, ISOM_BRAND_TYPE_SDV,
-    ISOM_BRAND_TYPE_RISX, ISOM_BRAND_TYPE_QT, ISOM_BRAND_TYPE_PNVI, ISOM_BRAND_TYPE_PIFF,
-    ISOM_BRAND_TYPE_PANA, ISOM_BRAND_TYPE_OPX2, ISOM_BRAND_TYPE_OPF2,
-    ISOM_BRAND_TYPE_ODCF, ISOM_BRAND_TYPE_NIKO, ISOM_BRAND_TYPE_MSIX,
-    ISOM_BRAND_TYPE_MSDH, ISOM_BRAND_TYPE_MP71, ISOM_BRAND_TYPE_MP42,
-    ISOM_BRAND_TYPE_MP41, ISOM_BRAND_TYPE_MP21, ISOM_BRAND_TYPE_MJP2,
-    ISOM_BRAND_TYPE_MJ2S, ISOM_BRAND_TYPE_LMSG, ISOM_BRAND_TYPE_JPSI,
-    ISOM_BRAND_TYPE_ISOM, ISOM_BRAND_TYPE_ISO7, ISOM_BRAND_TYPE_ISO6,
-    ISOM_BRAND_TYPE_ISO5, ISOM_BRAND_TYPE_ISO4, ISOM_BRAND_TYPE_ISO3,
-    ISOM_BRAND_TYPE_ISO2, ISOM_BRAND_TYPE_ISC2, ISOM_BRAND_TYPE_IFRM,
-    ISOM_BRAND_TYPE_DVT1, ISOM_BRAND_TYPE_DVR1, ISOM_BRAND_TYPE_DV3B,
-    ISOM_BRAND_TYPE_DV3A, ISOM_BRAND_TYPE_DV2B, ISOM_BRAND_TYPE_DV2A,
-    ISOM_BRAND_TYPE_DV1B, ISOM_BRAND_TYPE_DV1A, ISOM_BRAND_TYPE_DSMS,
-    ISOM_BRAND_TYPE_DMB1, ISOM_BRAND_TYPE_DBY1, ISOM_BRAND_TYPE_DASH,
-    ISOM_BRAND_TYPE_DA3B, ISOM_BRAND_TYPE_DA3A, ISOM_BRAND_TYPE_DA2B,
-    ISOM_BRAND_TYPE_DA2A, ISOM_BRAND_TYPE_DA1B, ISOM_BRAND_TYPE_DA1A,
-    ISOM_BRAND_TYPE_DA0B, ISOM_BRAND_TYPE_DA0A, ISOM_BRAND_TYPE_CCFF,
-    ISOM_BRAND_TYPE_CAQV, ISOM_BRAND_TYPE_BBXM, ISOM_BRAND_TYPE_AVC1,
-    ISOM_BRAND_TYPE_ROSS, ISOM_BRAND_TYPE_MPPI, ISOM_BRAND_TYPE_MFSM,
-    ISOM_BRAND_TYPE_M4V, ISOM_BRAND_TYPE_M4P, ISOM_BRAND_TYPE_M4B, ISOM_BRAND_TYPE_M4A,
-    ISOM_BRAND_TYPE_LCAG, ISOM_BRAND_TYPE_CDES, ISOM_BRAND_TYPE_CAEP,
-    ISOM_BRAND_TYPE_ARRI, ISOM_BRAND_TYPE_3GT9, ISOM_BRAND_TYPE_3GS9,
-    ISOM_BRAND_TYPE_3GS6, ISOM_BRAND_TYPE_3GR9, ISOM_BRAND_TYPE_3GR6,
-    ISOM_BRAND_TYPE_3GP9, ISOM_BRAND_TYPE_3GP8, ISOM_BRAND_TYPE_3GP7,
-    ISOM_BRAND_TYPE_3GP6, ISOM_BRAND_TYPE_3GP5, ISOM_BRAND_TYPE_3GP4,
-    ISOM_BRAND_TYPE_3GM9, ISOM_BRAND_TYPE_3GH9, ISOM_BRAND_TYPE_3GG9,
-    ISOM_BRAND_TYPE_3GG6, ISOM_BRAND_TYPE_3GF9, ISOM_BRAND_TYPE_3GE9,
-    ISOM_BRAND_TYPE_3GE6, ISOM_BRAND_TYPE_3G2A, lsmash_file_mode,
-    LSMASH_FILE_MODE_WRITE_FRAGMENTED, LSMASH_FILE_MODE_SEGMENT, LSMASH_FILE_MODE_INDEX,
-    LSMASH_FILE_MODE_MEDIA, LSMASH_FILE_MODE_INITIALIZATION, LSMASH_FILE_MODE_BOX,
-    LSMASH_FILE_MODE_DUMP, LSMASH_FILE_MODE_FRAGMENTED, LSMASH_FILE_MODE_READ,
-    LSMASH_FILE_MODE_WRITE, lsmash_video_summary_t, C2RustUnnamed_5, lsmash_clap_t,
-    lsmash_rational_s32_t, lsmash_rational_u32_t, lsmash_video_depth,
-    QT_VIDEO_DEPTH_32ARGB, QT_VIDEO_DEPTH_24RGB, QT_VIDEO_DEPTH_555RGB,
-    QT_VIDEO_DEPTH_GRAYSCALE_8, QT_VIDEO_DEPTH_GRAYSCALE_4, QT_VIDEO_DEPTH_GRAYSCALE_2,
-    QT_VIDEO_DEPTH_GRAYSCALE_1, QT_VIDEO_DEPTH_COLOR_32, QT_VIDEO_DEPTH_COLOR_24,
-    QT_VIDEO_DEPTH_COLOR_16, QT_VIDEO_DEPTH_COLOR_8, QT_VIDEO_DEPTH_COLOR_4,
-    QT_VIDEO_DEPTH_COLOR_2, QT_VIDEO_DEPTH_COLOR_1, AVC_DEPTH_WITH_ALPHA,
-    AVC_DEPTH_GRAYSCALE_WITH_NO_ALPHA, AVC_DEPTH_COLOR_WITH_NO_ALPHA,
-    ISOM_DEPTH_TEMPLATE, lsmash_codec_specific_list_t, lsmash_box_type_t,
-    lsmash_codec_type_t, lsmash_extended_box_type_t, lsmash_compact_box_type_t,
-    lsmash_summary_type, LSMASH_SUMMARY_TYPE_AUDIO, LSMASH_SUMMARY_TYPE_VIDEO,
-    LSMASH_SUMMARY_TYPE_UNKNOWN, lsmash_root_t, lsmash_summary_t, lsmash_adhoc_remux_t,
-    lsmash_adhoc_remux_callback, lsmash_edit_t, lsmash_sample_t,
-    lsmash_sample_property_t, lsmash_pre_roll_t, lsmash_post_roll_t,
-    lsmash_random_access_flag, QT_SAMPLE_RANDOM_ACCESS_FLAG_OPEN_RAP,
-    QT_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED_RAP, QT_SAMPLE_RANDOM_ACCESS_FLAG_OPEN,
-    QT_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED, QT_SAMPLE_RANDOM_ACCESS_FLAG_RAP,
-    QT_SAMPLE_RANDOM_ACCESS_FLAG_PARTIAL_SYNC, QT_SAMPLE_RANDOM_ACCESS_FLAG_SYNC,
-    QT_SAMPLE_RANDOM_ACCESS_FLAG_NONE, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_PRE_ROLL_END,
-    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_POST_ROLL_START,
-    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_OPEN_RAP, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED_RAP,
+    lsmash_add_codec_specific_data, lsmash_add_sample_entry, lsmash_adhoc_remux_callback,
+    lsmash_adhoc_remux_t, lsmash_append_h264_parameter_set, lsmash_append_sample,
+    lsmash_box_type_t, lsmash_brand_type, lsmash_clap_t, lsmash_cleanup_summary, lsmash_close_file,
+    lsmash_codec_specific_data_t, lsmash_codec_specific_data_type,
+    lsmash_codec_specific_destructor_t, lsmash_codec_specific_format, lsmash_codec_specific_list_t,
+    lsmash_codec_specific_list_tag, lsmash_codec_specific_t, lsmash_codec_type_t,
+    lsmash_compact_box_type_t, lsmash_create_codec_specific_data,
+    lsmash_create_explicit_timeline_map, lsmash_create_fragment_movie, lsmash_create_root,
+    lsmash_create_sample, lsmash_create_summary, lsmash_create_track,
+    lsmash_destroy_codec_specific_data, lsmash_destroy_root, lsmash_edit_t,
+    lsmash_extended_box_type_t, lsmash_file_mode, lsmash_file_parameters_t, lsmash_file_t,
+    lsmash_file_tag, lsmash_finish_movie, lsmash_flush_pooled_samples, lsmash_get_media_timescale,
+    lsmash_get_movie_timescale, lsmash_h264_parameter_set_type, lsmash_h264_parameter_sets_t,
+    lsmash_h264_parameter_sets_tag, lsmash_h264_specific_parameters_t,
+    lsmash_initialize_media_parameters, lsmash_initialize_movie_parameters,
+    lsmash_initialize_track_parameters, lsmash_media_parameters_t, lsmash_media_type,
+    lsmash_modify_explicit_timeline_map, lsmash_movie_parameters_t, lsmash_open_file,
+    lsmash_post_roll_t, lsmash_pre_roll_t, lsmash_random_access_flag, lsmash_rational_s32_t,
+    lsmash_rational_u32_t, lsmash_root_t, lsmash_root_tag, lsmash_sample_property_t,
+    lsmash_sample_t, lsmash_set_file, lsmash_set_media_parameters, lsmash_set_movie_parameters,
+    lsmash_set_track_parameters, lsmash_summary_t, lsmash_summary_type, lsmash_track_mode,
+    lsmash_track_parameters_t, lsmash_video_depth, lsmash_video_summary_t, C2RustUnnamed_5,
+    C2RustUnnamed_6, AVC_DEPTH_COLOR_WITH_NO_ALPHA, AVC_DEPTH_GRAYSCALE_WITH_NO_ALPHA,
+    AVC_DEPTH_WITH_ALPHA, H264_PARAMETER_SET_TYPE_NUM, H264_PARAMETER_SET_TYPE_PPS,
+    H264_PARAMETER_SET_TYPE_SPS, H264_PARAMETER_SET_TYPE_SPSEXT, ISOM_BRAND_TYPE_3G2A,
+    ISOM_BRAND_TYPE_3GE6, ISOM_BRAND_TYPE_3GE9, ISOM_BRAND_TYPE_3GF9, ISOM_BRAND_TYPE_3GG6,
+    ISOM_BRAND_TYPE_3GG9, ISOM_BRAND_TYPE_3GH9, ISOM_BRAND_TYPE_3GM9, ISOM_BRAND_TYPE_3GP4,
+    ISOM_BRAND_TYPE_3GP5, ISOM_BRAND_TYPE_3GP6, ISOM_BRAND_TYPE_3GP7, ISOM_BRAND_TYPE_3GP8,
+    ISOM_BRAND_TYPE_3GP9, ISOM_BRAND_TYPE_3GR6, ISOM_BRAND_TYPE_3GR9, ISOM_BRAND_TYPE_3GS6,
+    ISOM_BRAND_TYPE_3GS9, ISOM_BRAND_TYPE_3GT9, ISOM_BRAND_TYPE_ARRI, ISOM_BRAND_TYPE_AVC1,
+    ISOM_BRAND_TYPE_BBXM, ISOM_BRAND_TYPE_CAEP, ISOM_BRAND_TYPE_CAQV, ISOM_BRAND_TYPE_CCFF,
+    ISOM_BRAND_TYPE_CDES, ISOM_BRAND_TYPE_DA0A, ISOM_BRAND_TYPE_DA0B, ISOM_BRAND_TYPE_DA1A,
+    ISOM_BRAND_TYPE_DA1B, ISOM_BRAND_TYPE_DA2A, ISOM_BRAND_TYPE_DA2B, ISOM_BRAND_TYPE_DA3A,
+    ISOM_BRAND_TYPE_DA3B, ISOM_BRAND_TYPE_DASH, ISOM_BRAND_TYPE_DBY1, ISOM_BRAND_TYPE_DMB1,
+    ISOM_BRAND_TYPE_DSMS, ISOM_BRAND_TYPE_DV1A, ISOM_BRAND_TYPE_DV1B, ISOM_BRAND_TYPE_DV2A,
+    ISOM_BRAND_TYPE_DV2B, ISOM_BRAND_TYPE_DV3A, ISOM_BRAND_TYPE_DV3B, ISOM_BRAND_TYPE_DVR1,
+    ISOM_BRAND_TYPE_DVT1, ISOM_BRAND_TYPE_IFRM, ISOM_BRAND_TYPE_ISC2, ISOM_BRAND_TYPE_ISO2,
+    ISOM_BRAND_TYPE_ISO3, ISOM_BRAND_TYPE_ISO4, ISOM_BRAND_TYPE_ISO5, ISOM_BRAND_TYPE_ISO6,
+    ISOM_BRAND_TYPE_ISO7, ISOM_BRAND_TYPE_ISOM, ISOM_BRAND_TYPE_JPSI, ISOM_BRAND_TYPE_LCAG,
+    ISOM_BRAND_TYPE_LMSG, ISOM_BRAND_TYPE_M4A, ISOM_BRAND_TYPE_M4B, ISOM_BRAND_TYPE_M4P,
+    ISOM_BRAND_TYPE_M4V, ISOM_BRAND_TYPE_MFSM, ISOM_BRAND_TYPE_MJ2S, ISOM_BRAND_TYPE_MJP2,
+    ISOM_BRAND_TYPE_MP21, ISOM_BRAND_TYPE_MP41, ISOM_BRAND_TYPE_MP42, ISOM_BRAND_TYPE_MP71,
+    ISOM_BRAND_TYPE_MPPI, ISOM_BRAND_TYPE_MSDH, ISOM_BRAND_TYPE_MSIX, ISOM_BRAND_TYPE_NIKO,
+    ISOM_BRAND_TYPE_ODCF, ISOM_BRAND_TYPE_OPF2, ISOM_BRAND_TYPE_OPX2, ISOM_BRAND_TYPE_PANA,
+    ISOM_BRAND_TYPE_PIFF, ISOM_BRAND_TYPE_PNVI, ISOM_BRAND_TYPE_QT, ISOM_BRAND_TYPE_RISX,
+    ISOM_BRAND_TYPE_ROSS, ISOM_BRAND_TYPE_SDV, ISOM_BRAND_TYPE_SIMS, ISOM_BRAND_TYPE_SISX,
+    ISOM_BRAND_TYPE_SSSS, ISOM_CODEC_TYPE_AVC1_VIDEO, ISOM_DEPTH_TEMPLATE,
+    ISOM_EDIT_DURATION_UNKNOWN32, ISOM_EDIT_MODE_NORMAL, ISOM_MATRIX_INDEX_ITU_R470BG,
+    ISOM_MATRIX_INDEX_ITU_R_709_5, ISOM_MATRIX_INDEX_NO_MATRIX, ISOM_MATRIX_INDEX_SMPTE_170M_2004,
+    ISOM_MATRIX_INDEX_SMPTE_240M_1999, ISOM_MATRIX_INDEX_UNSPECIFIED,
+    ISOM_MATRIX_INDEX_USFCCT_47_CFR, ISOM_MATRIX_INDEX_YCGCO,
+    ISOM_MEDIA_HANDLER_TYPE_3GPP_SCENE_DESCRIPTION, ISOM_MEDIA_HANDLER_TYPE_AUDIO_TRACK,
+    ISOM_MEDIA_HANDLER_TYPE_AUXILIARY_VIDEO_TRACK, ISOM_MEDIA_HANDLER_TYPE_BROADBAND_CONTENT_GUIDE,
+    ISOM_MEDIA_HANDLER_TYPE_CLOCK_REFERENCE_STREAM,
+    ISOM_MEDIA_HANDLER_TYPE_CPCM_AUXILIARY_METADATA,
+    ISOM_MEDIA_HANDLER_TYPE_DVB_MANDATORY_BASIC_DESCRIPTION,
+    ISOM_MEDIA_HANDLER_TYPE_FONT_DATA_STREAM, ISOM_MEDIA_HANDLER_TYPE_GENERAL_MPEG4_SYSTEM_STREAM,
+    ISOM_MEDIA_HANDLER_TYPE_HINT_TRACK, ISOM_MEDIA_HANDLER_TYPE_ID3_VERSION2_METADATA,
+    ISOM_MEDIA_HANDLER_TYPE_IPDC_ELECTRONIC_SERVICE_GUIDE, ISOM_MEDIA_HANDLER_TYPE_IPMP_STREAM,
+    ISOM_MEDIA_HANDLER_TYPE_KEY_MANAGEMENT_MESSAGES, ISOM_MEDIA_HANDLER_TYPE_MPEG21_DIGITAL_ITEM,
+    ISOM_MEDIA_HANDLER_TYPE_MPEG7_STREAM, ISOM_MEDIA_HANDLER_TYPE_MPEGJ_STREAM,
+    ISOM_MEDIA_HANDLER_TYPE_OBJECT_CONTENT_INFO_STREAM,
+    ISOM_MEDIA_HANDLER_TYPE_OBJECT_DESCRIPTOR_STREAM,
+    ISOM_MEDIA_HANDLER_TYPE_PROPRIETARY_DESCRIPTIVE_METADATA,
+    ISOM_MEDIA_HANDLER_TYPE_SCENE_DESCRIPTION_STREAM, ISOM_MEDIA_HANDLER_TYPE_TEXT_TRACK,
+    ISOM_MEDIA_HANDLER_TYPE_TIMED_METADATA_TRACK, ISOM_MEDIA_HANDLER_TYPE_TV_ANYTIME,
+    ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED,
+    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED_RAP, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_GDR,
     ISOM_SAMPLE_RANDOM_ACCESS_FLAG_GDR_END, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_GDR_START,
-    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_GDR, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_OPEN,
-    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_RAP,
-    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_SYNC, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE,
-    lsmash_codec_specific_t, lsmash_codec_specific_destructor_t,
-    lsmash_codec_specific_data_t, lsmash_codec_specific_format,
-    LSMASH_CODEC_SPECIFIC_FORMAT_UNSTRUCTURED, LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED,
-    LSMASH_CODEC_SPECIFIC_FORMAT_UNSPECIFIED, lsmash_codec_specific_data_type,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_CODEC_GLOBAL_HEADER,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_CHANNEL_LAYOUT,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_GAMMA_LEVEL,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_SIGNIFICANT_BITS,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_PIXEL_FORMAT,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_FIELD_INFO,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_DECOMPRESSION_PARAMETERS,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_FORMAT_SPECIFIC_FLAGS,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_COMMON,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_COMMON,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264_BITRATE,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_SAMPLE_SCALE,
+    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_OPEN,
+    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_OPEN_RAP, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_POST_ROLL_START,
+    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_PRE_ROLL_END, ISOM_SAMPLE_RANDOM_ACCESS_FLAG_RAP,
+    ISOM_SAMPLE_RANDOM_ACCESS_FLAG_SYNC, ISOM_TRACK_ENABLED, ISOM_TRACK_IN_MOVIE,
+    ISOM_TRACK_IN_PREVIEW, LSMASH_CODEC_SPECIFIC_DATA_TYPE_CODEC_GLOBAL_HEADER,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_AC_3,
     LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_ALAC,
     LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_DTS,
     LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_EC_3,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_AC_3,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_VC_1,
-    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_HEVC,
     LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264_BITRATE,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_HEVC,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_SAMPLE_SCALE,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_VC_1,
     LSMASH_CODEC_SPECIFIC_DATA_TYPE_MP4SYS_DECODER_CONFIG,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_CHANNEL_LAYOUT,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_COMMON,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_DECOMPRESSION_PARAMETERS,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_FORMAT_SPECIFIC_FLAGS,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_COMMON,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_FIELD_INFO,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_GAMMA_LEVEL,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_PIXEL_FORMAT,
+    LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_SIGNIFICANT_BITS,
     LSMASH_CODEC_SPECIFIC_DATA_TYPE_UNKNOWN, LSMASH_CODEC_SPECIFIC_DATA_TYPE_UNSPECIFIED,
-    lsmash_h264_parameter_set_type, H264_PARAMETER_SET_TYPE_NUM,
-    H264_PARAMETER_SET_TYPE_SPSEXT, H264_PARAMETER_SET_TYPE_PPS,
-    H264_PARAMETER_SET_TYPE_SPS, lsmash_h264_specific_parameters_t,
-    lsmash_h264_parameter_sets_t, lsmash_media_parameters_t, lsmash_media_type,
-    ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK,
-    ISOM_MEDIA_HANDLER_TYPE_PROPRIETARY_DESCRIPTIVE_METADATA,
-    ISOM_MEDIA_HANDLER_TYPE_TEXT_TRACK, ISOM_MEDIA_HANDLER_TYPE_AUDIO_TRACK,
-    ISOM_MEDIA_HANDLER_TYPE_KEY_MANAGEMENT_MESSAGES,
-    ISOM_MEDIA_HANDLER_TYPE_SCENE_DESCRIPTION_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_OBJECT_DESCRIPTOR_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_OBJECT_CONTENT_INFO_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_MPEG21_DIGITAL_ITEM, ISOM_MEDIA_HANDLER_TYPE_MPEGJ_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_TIMED_METADATA_TRACK, ISOM_MEDIA_HANDLER_TYPE_MPEG7_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_IPMP_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_IPDC_ELECTRONIC_SERVICE_GUIDE,
-    ISOM_MEDIA_HANDLER_TYPE_HINT_TRACK,
-    ISOM_MEDIA_HANDLER_TYPE_GENERAL_MPEG4_SYSTEM_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_FONT_DATA_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_BROADBAND_CONTENT_GUIDE, ISOM_MEDIA_HANDLER_TYPE_TV_ANYTIME,
-    ISOM_MEDIA_HANDLER_TYPE_DVB_MANDATORY_BASIC_DESCRIPTION,
-    ISOM_MEDIA_HANDLER_TYPE_CLOCK_REFERENCE_STREAM,
-    ISOM_MEDIA_HANDLER_TYPE_CPCM_AUXILIARY_METADATA,
-    ISOM_MEDIA_HANDLER_TYPE_AUXILIARY_VIDEO_TRACK,
-    ISOM_MEDIA_HANDLER_TYPE_ID3_VERSION2_METADATA,
-    ISOM_MEDIA_HANDLER_TYPE_3GPP_SCENE_DESCRIPTION, lsmash_track_parameters_t,
-    lsmash_track_mode, QT_TRACK_IN_POSTER, ISOM_TRACK_IN_PREVIEW, ISOM_TRACK_IN_MOVIE,
-    ISOM_TRACK_ENABLED, ISOM_MATRIX_INDEX_UNSPECIFIED, lsmash_movie_parameters_t,
-    lsmash_file_t, C2RustUnnamed_6, QT_MATRIX_INDEX_SMPTE_240M_1995,
-    QT_MATRIX_INDEX_ITU_R_601_4, QT_MATRIX_INDEX_UNSPECIFIED,
-    QT_MATRIX_INDEX_ITU_R_709_2, ISOM_MATRIX_INDEX_YCGCO,
-    ISOM_MATRIX_INDEX_SMPTE_240M_1999, ISOM_MATRIX_INDEX_SMPTE_170M_2004,
-    ISOM_MATRIX_INDEX_ITU_R470BG, ISOM_MATRIX_INDEX_USFCCT_47_CFR,
-    ISOM_MATRIX_INDEX_ITU_R_709_5, ISOM_MATRIX_INDEX_NO_MATRIX, ISOM_EDIT_MODE_NORMAL,
-    ISOM_EDIT_DURATION_UNKNOWN32, lsmash_codec_specific_list_tag, lsmash_root_tag,
-    lsmash_h264_parameter_sets_tag, lsmash_file_tag, lsmash_create_root,
-    lsmash_destroy_root, lsmash_open_file, lsmash_close_file, lsmash_set_file,
-    ISOM_CODEC_TYPE_AVC1_VIDEO, lsmash_create_summary, lsmash_cleanup_summary,
-    lsmash_add_sample_entry, lsmash_create_codec_specific_data,
-    lsmash_destroy_codec_specific_data, lsmash_add_codec_specific_data,
-    lsmash_create_sample, lsmash_append_sample, lsmash_initialize_media_parameters,
-    lsmash_set_media_parameters, lsmash_flush_pooled_samples, lsmash_get_media_timescale,
-    lsmash_create_track, lsmash_initialize_track_parameters, lsmash_set_track_parameters,
-    lsmash_create_explicit_timeline_map, lsmash_modify_explicit_timeline_map,
-    lsmash_initialize_movie_parameters, lsmash_set_movie_parameters, lsmash_finish_movie,
-    lsmash_get_movie_timescale, lsmash_create_fragment_movie,
-    lsmash_append_h264_parameter_set,
+    LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED, LSMASH_CODEC_SPECIFIC_FORMAT_UNSPECIFIED,
+    LSMASH_CODEC_SPECIFIC_FORMAT_UNSTRUCTURED, LSMASH_FILE_MODE_BOX, LSMASH_FILE_MODE_DUMP,
+    LSMASH_FILE_MODE_FRAGMENTED, LSMASH_FILE_MODE_INDEX, LSMASH_FILE_MODE_INITIALIZATION,
+    LSMASH_FILE_MODE_MEDIA, LSMASH_FILE_MODE_READ, LSMASH_FILE_MODE_SEGMENT,
+    LSMASH_FILE_MODE_WRITE, LSMASH_FILE_MODE_WRITE_FRAGMENTED, LSMASH_SUMMARY_TYPE_AUDIO,
+    LSMASH_SUMMARY_TYPE_UNKNOWN, LSMASH_SUMMARY_TYPE_VIDEO, QT_MATRIX_INDEX_ITU_R_601_4,
+    QT_MATRIX_INDEX_ITU_R_709_2, QT_MATRIX_INDEX_SMPTE_240M_1995, QT_MATRIX_INDEX_UNSPECIFIED,
+    QT_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED, QT_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED_RAP,
+    QT_SAMPLE_RANDOM_ACCESS_FLAG_NONE, QT_SAMPLE_RANDOM_ACCESS_FLAG_OPEN,
+    QT_SAMPLE_RANDOM_ACCESS_FLAG_OPEN_RAP, QT_SAMPLE_RANDOM_ACCESS_FLAG_PARTIAL_SYNC,
+    QT_SAMPLE_RANDOM_ACCESS_FLAG_RAP, QT_SAMPLE_RANDOM_ACCESS_FLAG_SYNC, QT_TRACK_IN_POSTER,
+    QT_VIDEO_DEPTH_24RGB, QT_VIDEO_DEPTH_32ARGB, QT_VIDEO_DEPTH_555RGB, QT_VIDEO_DEPTH_COLOR_1,
+    QT_VIDEO_DEPTH_COLOR_16, QT_VIDEO_DEPTH_COLOR_2, QT_VIDEO_DEPTH_COLOR_24,
+    QT_VIDEO_DEPTH_COLOR_32, QT_VIDEO_DEPTH_COLOR_4, QT_VIDEO_DEPTH_COLOR_8,
+    QT_VIDEO_DEPTH_GRAYSCALE_1, QT_VIDEO_DEPTH_GRAYSCALE_2, QT_VIDEO_DEPTH_GRAYSCALE_4,
+    QT_VIDEO_DEPTH_GRAYSCALE_8,
 };
-use self::stdio_h::{fclose, fopen, fileno};
-use self::stat_h::{stat, fstat};
-use self::stdlib_h::{malloc, calloc, free};
-pub use self::osdep_h::{x264_is_regular_file_path, x264_is_regular_file};
+pub use self::osdep_h::{x264_is_regular_file, x264_is_regular_file_path};
+pub use self::output_h::{cli_output_opt_t, cli_output_t};
+use self::stat_h::{fstat, stat};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+use self::stdio_h::{fclose, fileno, fopen};
+use self::stdlib_h::{calloc, free, malloc};
 use self::string_h::{memcpy, strcmp};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::struct_stat_h::stat;
+pub use self::struct_timespec_h::timespec;
+pub use self::types_h::{
+    __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __int16_t, __int32_t, __int64_t, __mode_t,
+    __nlink_t, __off64_t, __off_t, __syscall_slong_t, __time_t, __uid_t, __uint16_t, __uint32_t,
+    __uint64_t, __uint8_t,
+};
+pub use self::x264_h::{
+    x264_hrd_t, x264_image_properties_t, x264_image_t, x264_nal_t, x264_param_t, x264_picture_t,
+    x264_sei_payload_t, x264_sei_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0,
+    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_LOG_ERROR,
+};
+pub use self::x264cli_h::{hnd_t, x264_cli_log};
+pub use self::FILE_h::FILE;
 pub use self::__stddef_null_h::NULL;
 pub use self::bits_stat_h::__S_IFMT;
 #[derive(Copy, Clone)]
@@ -1748,15 +1722,18 @@ unsafe extern "C" fn close_file(
         return 0 as ::core::ffi::c_int;
     }
     if !(*p_mp4).p_root.is_null() {
-        let mut actual_duration: ::core::ffi::c_double = 0 as ::core::ffi::c_int
-            as ::core::ffi::c_double;
+        let mut actual_duration: ::core::ffi::c_double =
+            0 as ::core::ffi::c_int as ::core::ffi::c_double;
         if (*p_mp4).i_track != 0 {
-            let mut last_delta: uint32_t = (largest_pts - second_largest_pts)
-                as uint32_t;
+            let mut last_delta: uint32_t = (largest_pts - second_largest_pts) as uint32_t;
             if lsmash_flush_pooled_samples(
                 (*p_mp4).p_root,
                 (*p_mp4).i_track,
-                ((if last_delta != 0 { last_delta } else { 1 as uint32_t }) as uint64_t)
+                ((if last_delta != 0 {
+                    last_delta
+                } else {
+                    1 as uint32_t
+                }) as uint64_t)
                     .wrapping_mul((*p_mp4).i_time_inc) as uint32_t,
             ) != 0
             {
@@ -1771,15 +1748,15 @@ unsafe extern "C" fn close_file(
                 && (*p_mp4).i_video_timescale != 0 as uint32_t
             {
                 actual_duration = ((largest_pts + last_delta as int64_t) as uint64_t)
-                    .wrapping_mul((*p_mp4).i_time_inc) as ::core::ffi::c_double
+                    .wrapping_mul((*p_mp4).i_time_inc)
+                    as ::core::ffi::c_double
                     / (*p_mp4).i_video_timescale as ::core::ffi::c_double
                     * (*p_mp4).i_movie_timescale as ::core::ffi::c_double;
             } else {
                 x264_cli_log(
                     b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"timescale is broken.\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"timescale is broken.\n\0" as *const u8 as *const ::core::ffi::c_char,
                 );
             }
             let mut edit: lsmash_edit_t = lsmash_edit_t {
@@ -1791,11 +1768,7 @@ unsafe extern "C" fn close_file(
             edit.start_time = (*p_mp4).i_first_cts as int64_t;
             edit.rate = ISOM_EDIT_MODE_NORMAL as int32_t;
             if (*p_mp4).b_fragments == 0 {
-                if lsmash_create_explicit_timeline_map(
-                    (*p_mp4).p_root,
-                    (*p_mp4).i_track,
-                    edit,
-                ) != 0
+                if lsmash_create_explicit_timeline_map((*p_mp4).p_root, (*p_mp4).i_track, edit) != 0
                 {
                     x264_cli_log(
                         b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
@@ -1843,8 +1816,8 @@ unsafe extern "C" fn open_file(
         psz_filename,
         b"-\0" as *const u8 as *const ::core::ffi::c_char,
     );
-    b_regular = (b_regular != 0 && x264_is_regular_file_path(psz_filename) != 0)
-        as ::core::ffi::c_int;
+    b_regular =
+        (b_regular != 0 && x264_is_regular_file_path(psz_filename) != 0) as ::core::ffi::c_int;
     if b_regular != 0 {
         let mut fh: *mut FILE = fopen(
             psz_filename,
@@ -1854,8 +1827,7 @@ unsafe extern "C" fn open_file(
             x264_cli_log(
                 b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
                 X264_LOG_ERROR,
-                b"cannot open output file `%s'.\n\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"cannot open output file `%s'.\n\0" as *const u8 as *const ::core::ffi::c_char,
                 psz_filename,
             );
             return -(1 as ::core::ffi::c_int);
@@ -1863,10 +1835,8 @@ unsafe extern "C" fn open_file(
         b_regular = x264_is_regular_file(fh);
         fclose(fh);
     }
-    let mut p_mp4: *mut mp4_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<mp4_hnd_t>() as size_t,
-    ) as *mut mp4_hnd_t;
+    let mut p_mp4: *mut mp4_hnd_t =
+        calloc(1 as size_t, ::core::mem::size_of::<mp4_hnd_t>() as size_t) as *mut mp4_hnd_t;
     if p_mp4.is_null() {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
@@ -1893,37 +1863,35 @@ unsafe extern "C" fn open_file(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    if lsmash_open_file(psz_filename, 0 as ::core::ffi::c_int, &mut (*p_mp4).file_param)
-        < 0 as ::core::ffi::c_int
+    if lsmash_open_file(
+        psz_filename,
+        0 as ::core::ffi::c_int,
+        &mut (*p_mp4).file_param,
+    ) < 0 as ::core::ffi::c_int
     {
         remove_mp4_hnd(p_mp4 as hnd_t);
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to open an output file.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"failed to open an output file.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
     if (*p_mp4).b_fragments != 0 {
-        (*p_mp4).file_param.mode = ::core::mem::transmute::<
-            ::core::ffi::c_uint,
-            lsmash_file_mode,
-        >(
+        (*p_mp4).file_param.mode = ::core::mem::transmute::<::core::ffi::c_uint, lsmash_file_mode>(
             (*p_mp4).file_param.mode as ::core::ffi::c_uint
-                | LSMASH_FILE_MODE_FRAGMENTED as ::core::ffi::c_int
-                    as ::core::ffi::c_uint,
+                | LSMASH_FILE_MODE_FRAGMENTED as ::core::ffi::c_int as ::core::ffi::c_uint,
         );
     }
-    (*p_mp4).summary = lsmash_create_summary(LSMASH_SUMMARY_TYPE_VIDEO)
-        as *mut lsmash_video_summary_t;
+    (*p_mp4).summary =
+        lsmash_create_summary(LSMASH_SUMMARY_TYPE_VIDEO) as *mut lsmash_video_summary_t;
     if (*p_mp4).summary.is_null() {
         remove_mp4_hnd(p_mp4 as hnd_t);
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to allocate memory for summary information of video.\n\0"
-                as *const u8 as *const ::core::ffi::c_char,
+            b"failed to allocate memory for summary information of video.\n\0" as *const u8
+                as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
@@ -1947,8 +1915,8 @@ unsafe extern "C" fn set_param(
     } else {
         0 as ::core::ffi::c_int
     };
-    (*p_mp4).i_dts_compress_multiplier = (*p_mp4).b_dts_compress
-        * (*p_mp4).i_delay_frames + 1 as ::core::ffi::c_int;
+    (*p_mp4).i_dts_compress_multiplier =
+        (*p_mp4).b_dts_compress * (*p_mp4).i_delay_frames + 1 as ::core::ffi::c_int;
     i_media_timescale = ((*p_param).i_timebase_den as uint64_t)
         .wrapping_mul((*p_mp4).i_dts_compress_multiplier as uint64_t);
     (*p_mp4).i_time_inc = ((*p_param).i_timebase_num as uint64_t)
@@ -2020,8 +1988,7 @@ unsafe extern "C" fn set_param(
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to set movie parameters.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"failed to set movie parameters.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
@@ -2034,50 +2001,41 @@ unsafe extern "C" fn set_param(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    (*p_mp4).i_track = lsmash_create_track(
-        (*p_mp4).p_root,
-        ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK,
-    );
+    (*p_mp4).i_track = lsmash_create_track((*p_mp4).p_root, ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK);
     if (*p_mp4).i_track == 0 {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to create a video track.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"failed to create a video track.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
     (*(*p_mp4).summary).width = (*p_param).i_width as uint32_t;
     (*(*p_mp4).summary).height = (*p_param).i_height as uint32_t;
-    let mut i_display_width: uint32_t = ((*p_param).i_width << 16 as ::core::ffi::c_int)
-        as uint32_t;
-    let mut i_display_height: uint32_t = ((*p_param).i_height
-        << 16 as ::core::ffi::c_int) as uint32_t;
+    let mut i_display_width: uint32_t =
+        ((*p_param).i_width << 16 as ::core::ffi::c_int) as uint32_t;
+    let mut i_display_height: uint32_t =
+        ((*p_param).i_height << 16 as ::core::ffi::c_int) as uint32_t;
     if (*p_param).vui.i_sar_width != 0 && (*p_param).vui.i_sar_height != 0 {
-        let mut sar: ::core::ffi::c_double = (*p_param).vui.i_sar_width
-            as ::core::ffi::c_double
+        let mut sar: ::core::ffi::c_double = (*p_param).vui.i_sar_width as ::core::ffi::c_double
             / (*p_param).vui.i_sar_height as ::core::ffi::c_double;
         if sar > 1.0f64 {
-            i_display_width = (i_display_width as ::core::ffi::c_double * sar)
-                as uint32_t;
+            i_display_width = (i_display_width as ::core::ffi::c_double * sar) as uint32_t;
         } else {
-            i_display_height = (i_display_height as ::core::ffi::c_double / sar)
-                as uint32_t;
+            i_display_height = (i_display_height as ::core::ffi::c_double / sar) as uint32_t;
         }
         (*(*p_mp4).summary).par_h = (*p_param).vui.i_sar_width as uint32_t;
         (*(*p_mp4).summary).par_v = (*p_param).vui.i_sar_height as uint32_t;
     }
     (*(*p_mp4).summary).color.primaries_index = (*p_param).vui.i_colorprim as uint16_t;
     (*(*p_mp4).summary).color.transfer_index = (*p_param).vui.i_transfer as uint16_t;
-    (*(*p_mp4).summary).color.matrix_index = (if (*p_param).vui.i_colmatrix
-        >= 0 as ::core::ffi::c_int
-    {
-        (*p_param).vui.i_colmatrix
-    } else {
-        ISOM_MATRIX_INDEX_UNSPECIFIED as ::core::ffi::c_int
-    }) as uint16_t;
-    (*(*p_mp4).summary).color.full_range = (if (*p_param).vui.b_fullrange
-        >= 0 as ::core::ffi::c_int
+    (*(*p_mp4).summary).color.matrix_index =
+        (if (*p_param).vui.i_colmatrix >= 0 as ::core::ffi::c_int {
+            (*p_param).vui.i_colmatrix
+        } else {
+            ISOM_MATRIX_INDEX_UNSPECIFIED as ::core::ffi::c_int
+        }) as uint16_t;
+    (*(*p_mp4).summary).color.full_range = (if (*p_param).vui.b_fullrange >= 0 as ::core::ffi::c_int
     {
         (*p_param).vui.b_fullrange
     } else {
@@ -2098,13 +2056,12 @@ unsafe extern "C" fn set_param(
     lsmash_initialize_track_parameters(&mut track_param);
     let mut track_mode: lsmash_track_mode = (ISOM_TRACK_ENABLED as ::core::ffi::c_int
         | ISOM_TRACK_IN_MOVIE as ::core::ffi::c_int
-        | ISOM_TRACK_IN_PREVIEW as ::core::ffi::c_int) as lsmash_track_mode;
+        | ISOM_TRACK_IN_PREVIEW as ::core::ffi::c_int)
+        as lsmash_track_mode;
     track_param.mode = track_mode;
     track_param.display_width = i_display_width;
     track_param.display_height = i_display_height;
-    if lsmash_set_track_parameters((*p_mp4).p_root, (*p_mp4).i_track, &mut track_param)
-        != 0
-    {
+    if lsmash_set_track_parameters((*p_mp4).p_root, (*p_mp4).i_track, &mut track_param) != 0 {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
@@ -2132,14 +2089,13 @@ unsafe extern "C" fn set_param(
     lsmash_initialize_media_parameters(&mut media_param);
     media_param.timescale = i_media_timescale as uint32_t;
     media_param.media_handler_name = b"L-SMASH Video Media Handler\0" as *const u8
-        as *const ::core::ffi::c_char as *mut ::core::ffi::c_char;
+        as *const ::core::ffi::c_char
+        as *mut ::core::ffi::c_char;
     if (*p_mp4).b_use_recovery != 0 {
         media_param.roll_grouping = (*p_param).b_intra_refresh as uint8_t;
         media_param.rap_grouping = (*p_param).b_open_gop as uint8_t;
     }
-    if lsmash_set_media_parameters((*p_mp4).p_root, (*p_mp4).i_track, &mut media_param)
-        != 0
-    {
+    if lsmash_set_media_parameters((*p_mp4).p_root, (*p_mp4).i_track, &mut media_param) != 0 {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
@@ -2148,16 +2104,12 @@ unsafe extern "C" fn set_param(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    (*p_mp4).i_video_timescale = lsmash_get_media_timescale(
-        (*p_mp4).p_root,
-        (*p_mp4).i_track,
-    );
+    (*p_mp4).i_video_timescale = lsmash_get_media_timescale((*p_mp4).p_root, (*p_mp4).i_track);
     if (*p_mp4).i_video_timescale == 0 {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"media timescale for video is broken.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"media timescale for video is broken.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
@@ -2169,28 +2121,26 @@ unsafe extern "C" fn write_headers(
     mut p_nal: *mut x264_nal_t,
 ) -> ::core::ffi::c_int {
     let mut p_mp4: *mut mp4_hnd_t = handle as *mut mp4_hnd_t;
-    let mut sps_size: uint32_t = ((*p_nal.offset(0 as ::core::ffi::c_int as isize))
-        .i_payload - H264_NALU_LENGTH_SIZE) as uint32_t;
-    let mut pps_size: uint32_t = ((*p_nal.offset(1 as ::core::ffi::c_int as isize))
-        .i_payload - H264_NALU_LENGTH_SIZE) as uint32_t;
-    let mut sei_size: uint32_t = (*p_nal.offset(2 as ::core::ffi::c_int as isize))
-        .i_payload as uint32_t;
+    let mut sps_size: uint32_t = ((*p_nal.offset(0 as ::core::ffi::c_int as isize)).i_payload
+        - H264_NALU_LENGTH_SIZE) as uint32_t;
+    let mut pps_size: uint32_t = ((*p_nal.offset(1 as ::core::ffi::c_int as isize)).i_payload
+        - H264_NALU_LENGTH_SIZE) as uint32_t;
+    let mut sei_size: uint32_t =
+        (*p_nal.offset(2 as ::core::ffi::c_int as isize)).i_payload as uint32_t;
     let mut sps: *mut uint8_t = (*p_nal.offset(0 as ::core::ffi::c_int as isize))
         .p_payload
         .offset(H264_NALU_LENGTH_SIZE as isize);
     let mut pps: *mut uint8_t = (*p_nal.offset(1 as ::core::ffi::c_int as isize))
         .p_payload
         .offset(H264_NALU_LENGTH_SIZE as isize);
-    let mut sei: *mut uint8_t = (*p_nal.offset(2 as ::core::ffi::c_int as isize))
-        .p_payload;
+    let mut sei: *mut uint8_t = (*p_nal.offset(2 as ::core::ffi::c_int as isize)).p_payload;
     let mut cs: *mut lsmash_codec_specific_t = lsmash_create_codec_specific_data(
         LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264,
         LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED,
     );
-    let mut param: *mut lsmash_h264_specific_parameters_t = (*cs).data.structured
-        as *mut lsmash_h264_specific_parameters_t;
-    (*param).lengthSizeMinusOne = (H264_NALU_LENGTH_SIZE - 1 as ::core::ffi::c_int)
-        as uint8_t;
+    let mut param: *mut lsmash_h264_specific_parameters_t =
+        (*cs).data.structured as *mut lsmash_h264_specific_parameters_t;
+    (*param).lengthSizeMinusOne = (H264_NALU_LENGTH_SIZE - 1 as ::core::ffi::c_int) as uint8_t;
     if lsmash_append_h264_parameter_set(
         param,
         H264_PARAMETER_SET_TYPE_SPS,
@@ -2219,13 +2169,11 @@ unsafe extern "C" fn write_headers(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    if lsmash_add_codec_specific_data((*p_mp4).summary as *mut lsmash_summary_t, cs) != 0
-    {
+    if lsmash_add_codec_specific_data((*p_mp4).summary as *mut lsmash_summary_t, cs) != 0 {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to add H.264 specific info.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"failed to add H.264 specific info.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
@@ -2247,8 +2195,7 @@ unsafe extern "C" fn write_headers(
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to add sample entry for video.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"failed to add sample entry for video.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
@@ -2281,8 +2228,7 @@ unsafe extern "C" fn write_frame(
     let mut dts: uint64_t = 0;
     let mut cts: uint64_t = 0;
     if (*p_mp4).i_numframe == 0 {
-        (*p_mp4).i_start_offset = (*p_picture).i_dts
-            * -(1 as ::core::ffi::c_int) as int64_t;
+        (*p_mp4).i_start_offset = (*p_picture).i_dts * -(1 as ::core::ffi::c_int) as int64_t;
         (*p_mp4).i_first_cts = if (*p_mp4).b_dts_compress != 0 {
             0 as uint64_t
         } else {
@@ -2297,12 +2243,7 @@ unsafe extern "C" fn write_frame(
             edit.duration = ISOM_EDIT_DURATION_UNKNOWN32 as uint64_t;
             edit.start_time = (*p_mp4).i_first_cts as int64_t;
             edit.rate = ISOM_EDIT_MODE_NORMAL as int32_t;
-            if lsmash_create_explicit_timeline_map(
-                (*p_mp4).p_root,
-                (*p_mp4).i_track,
-                edit,
-            ) != 0
-            {
+            if lsmash_create_explicit_timeline_map((*p_mp4).p_root, (*p_mp4).i_track, edit) != 0 {
                 x264_cli_log(
                     b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
@@ -2312,15 +2253,13 @@ unsafe extern "C" fn write_frame(
             }
         }
     }
-    let mut p_sample: *mut lsmash_sample_t = lsmash_create_sample(
-        (i_size as uint32_t).wrapping_add((*p_mp4).i_sei_size),
-    );
+    let mut p_sample: *mut lsmash_sample_t =
+        lsmash_create_sample((i_size as uint32_t).wrapping_add((*p_mp4).i_sei_size));
     if p_sample.is_null() {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to create a video sample data.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"failed to create a video sample data.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
@@ -2334,24 +2273,22 @@ unsafe extern "C" fn write_frame(
         (*p_mp4).p_sei_buffer = 0 as *mut uint8_t;
     }
     memcpy(
-        (*p_sample).data.offset((*p_mp4).i_sei_size as isize)
-            as *mut ::core::ffi::c_void,
+        (*p_sample).data.offset((*p_mp4).i_sei_size as isize) as *mut ::core::ffi::c_void,
         p_nalu as *const ::core::ffi::c_void,
         i_size as size_t,
     );
     (*p_mp4).i_sei_size = 0 as uint32_t;
     if (*p_mp4).b_dts_compress != 0 {
         if (*p_mp4).i_numframe == 1 as ::core::ffi::c_int {
-            (*p_mp4).i_init_delta = (((*p_picture).i_dts + (*p_mp4).i_start_offset)
-                as uint64_t)
+            (*p_mp4).i_init_delta = (((*p_picture).i_dts + (*p_mp4).i_start_offset) as uint64_t)
                 .wrapping_mul((*p_mp4).i_time_inc) as int64_t;
         }
         dts = if (*p_mp4).i_numframe > (*p_mp4).i_delay_frames {
             ((*p_picture).i_dts as uint64_t).wrapping_mul((*p_mp4).i_time_inc)
         } else {
             ((*p_mp4).i_numframe as int64_t
-                * ((*p_mp4).i_init_delta
-                    / (*p_mp4).i_dts_compress_multiplier as int64_t)) as uint64_t
+                * ((*p_mp4).i_init_delta / (*p_mp4).i_dts_compress_multiplier as int64_t))
+                as uint64_t
         };
         cts = ((*p_picture).i_pts as uint64_t).wrapping_mul((*p_mp4).i_time_inc);
     } else {
@@ -2368,10 +2305,10 @@ unsafe extern "C" fn write_frame(
     } else {
         ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE as ::core::ffi::c_int
     }) as lsmash_random_access_flag;
-    if (*p_mp4).b_fragments != 0 && (*p_mp4).i_numframe != 0
+    if (*p_mp4).b_fragments != 0
+        && (*p_mp4).i_numframe != 0
         && (*p_sample).prop.ra_flags as ::core::ffi::c_uint
-            != ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE as ::core::ffi::c_int
-                as ::core::ffi::c_uint
+            != ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE as ::core::ffi::c_int as ::core::ffi::c_uint
     {
         if lsmash_flush_pooled_samples(
             (*p_mp4).p_root,
@@ -2401,8 +2338,7 @@ unsafe extern "C" fn write_frame(
         x264_cli_log(
             b"mp4\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"failed to append a video frame.\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"failed to append a video frame.\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
@@ -2424,15 +2360,10 @@ pub static mut mp4_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             set_param: Some(
-                set_param
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        *mut x264_param_t,
-                    ) -> ::core::ffi::c_int,
+                set_param as unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
             ),
             write_headers: Some(
-                write_headers
-                    as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
+                write_headers as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
             ),
             write_frame: Some(
                 write_frame
@@ -2444,12 +2375,7 @@ pub static mut mp4_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             close_file: Some(
-                close_file
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        int64_t,
-                        int64_t,
-                    ) -> ::core::ffi::c_int,
+                close_file as unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
             ),
         };
         init

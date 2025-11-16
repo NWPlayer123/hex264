@@ -32,7 +32,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264cli.h:27"]
 pub mod x264cli_h {
@@ -43,15 +43,11 @@ pub mod x264cli_h {
     pub unsafe extern "C" fn get_filename_extension(
         mut filename: *mut ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char {
-        let mut ext: *mut ::core::ffi::c_char = filename
-            .offset(strlen(filename) as isize);
+        let mut ext: *mut ::core::ffi::c_char = filename.offset(strlen(filename) as isize);
         while *ext as ::core::ffi::c_int != '.' as i32 && ext > filename {
             ext = ext.offset(-1);
         }
-        ext = ext
-            .offset(
-                (*ext as ::core::ffi::c_int == '.' as i32) as ::core::ffi::c_int as isize,
-            );
+        ext = ext.offset((*ext as ::core::ffi::c_int == '.' as i32) as ::core::ffi::c_int as isize);
         return ext;
     }
     use super::string_h::strlen;
@@ -145,22 +141,17 @@ pub mod input_h {
             ) -> ::core::ffi::c_int,
         >,
         pub read_frame: Option<
-            unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut cli_pic_t, hnd_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
-        pub release_frame: Option<
-            unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
-        >,
+        pub release_frame:
+            Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int>,
         pub picture_clean: Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()>,
         pub close_file: Option<unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int>,
     }
     #[c2rust::src_loc = "115:9"]
     pub const X264_CSP_OTHER: ::core::ffi::c_int = 0x4000 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::x264cli_h::hnd_t;
     extern "C" {
         #[c2rust::src_loc = "131:1"]
@@ -285,11 +276,11 @@ pub mod packet_h {
     pub const AV_PKT_DATA_NEW_EXTRADATA: AVPacketSideDataType = 1;
     #[c2rust::src_loc = "47:5"]
     pub const AV_PKT_DATA_PALETTE: AVPacketSideDataType = 0;
+    use super::__stddef_size_t_h::size_t;
     use super::buffer_h::AVBufferRef;
+    use super::rational_h::AVRational;
     use super::stdint_intn_h::int64_t;
     use super::stdint_uintn_h::uint8_t;
-    use super::rational_h::AVRational;
-    use super::__stddef_size_t_h::size_t;
     extern "C" {
         #[c2rust::src_loc = "644:1"]
         pub fn av_packet_alloc() -> *mut AVPacket;
@@ -319,8 +310,8 @@ pub mod buffer_h {
         pub data: *mut uint8_t,
         pub size: size_t,
     }
-    use super::stdint_uintn_h::uint8_t;
     use super::__stddef_size_t_h::size_t;
+    use super::stdint_uintn_h::uint8_t;
     extern "C" {
         #[c2rust::src_loc = "74:16"]
         pub type AVBuffer;
@@ -447,23 +438,23 @@ pub mod frame_h {
     #[c2rust::src_loc = "53:5"]
     pub const AV_FRAME_DATA_PANSCAN: AVFrameSideDataType = 0;
     #[c2rust::src_loc = "644:9"]
-    pub const AV_FRAME_FLAG_INTERLACED: ::core::ffi::c_int = (1 as ::core::ffi::c_int)
-        << 3 as ::core::ffi::c_int;
+    pub const AV_FRAME_FLAG_INTERLACED: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 3 as ::core::ffi::c_int;
     #[c2rust::src_loc = "649:9"]
-    pub const AV_FRAME_FLAG_TOP_FIELD_FIRST: ::core::ffi::c_int = (1
-        as ::core::ffi::c_int) << 4 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::uint8_t;
+    pub const AV_FRAME_FLAG_TOP_FIELD_FIRST: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 4 as ::core::ffi::c_int;
+    use super::__stddef_size_t_h::size_t;
     use super::avutil_h::AVPictureType;
+    use super::buffer_h::AVBufferRef;
+    use super::channel_layout_h::AVChannelLayout;
+    use super::dict_h::AVDictionary;
+    use super::pixfmt_h::{
+        AVChromaLocation, AVColorPrimaries, AVColorRange, AVColorSpace,
+        AVColorTransferCharacteristic,
+    };
     use super::rational_h::AVRational;
     use super::stdint_intn_h::int64_t;
-    use super::buffer_h::AVBufferRef;
-    use super::pixfmt_h::{
-        AVColorRange, AVColorPrimaries, AVColorTransferCharacteristic, AVColorSpace,
-        AVChromaLocation,
-    };
-    use super::dict_h::AVDictionary;
-    use super::__stddef_size_t_h::size_t;
-    use super::channel_layout_h::AVChannelLayout;
+    use super::stdint_uintn_h::uint8_t;
     extern "C" {
         #[c2rust::src_loc = "783:1"]
         pub fn av_frame_alloc() -> *mut AVFrame;
@@ -1349,8 +1340,7 @@ pub mod avutil_h {
     #[c2rust::src_loc = "199:5"]
     pub const AVMEDIA_TYPE_UNKNOWN: AVMediaType = -1;
     #[c2rust::src_loc = "247:9"]
-    pub const AV_NOPTS_VALUE: int64_t = 0x8000000000000000 as ::core::ffi::c_ulong
-        as int64_t;
+    pub const AV_NOPTS_VALUE: int64_t = 0x8000000000000000 as ::core::ffi::c_ulong as int64_t;
     use super::stdint_intn_h::int64_t;
 }
 #[c2rust::header_src = "/usr/include/libavcodec/avcodec.h:30"]
@@ -1404,10 +1394,7 @@ pub mod avcodec_h {
             ) -> (),
         >,
         pub get_format: Option<
-            unsafe extern "C" fn(
-                *mut AVCodecContext,
-                *const AVPixelFormat,
-            ) -> AVPixelFormat,
+            unsafe extern "C" fn(*mut AVCodecContext, *const AVPixelFormat) -> AVPixelFormat,
         >,
         pub max_b_frames: ::core::ffi::c_int,
         pub b_quant_factor: ::core::ffi::c_float,
@@ -1585,26 +1572,26 @@ pub mod avcodec_h {
         pub qscale: ::core::ffi::c_int,
         pub quality_factor: ::core::ffi::c_float,
     }
-    use super::log_h::AVClass;
     use super::avutil_h::AVMediaType;
+    use super::buffer_h::AVBufferRef;
+    use super::channel_layout_h::AVChannelLayout;
+    use super::codec_desc_h::AVCodecDescriptor;
     use super::codec_h::AVCodec;
     use super::codec_id_h::AVCodecID;
-    use super::stdint_intn_h::int64_t;
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint64_t};
-    use super::rational_h::AVRational;
-    use super::pixfmt_h::{
-        AVPixelFormat, AVColorPrimaries, AVColorTransferCharacteristic, AVColorSpace,
-        AVColorRange, AVChromaLocation,
-    };
-    use super::defs_h::{AVFieldOrder, AVAudioServiceType, AVDiscard};
-    use super::frame_h::{AVFrame, AVFrameSideData};
-    use super::samplefmt_h::AVSampleFormat;
-    use super::channel_layout_h::AVChannelLayout;
-    use super::buffer_h::AVBufferRef;
-    use super::codec_desc_h::AVCodecDescriptor;
-    use super::packet_h::{AVPacketSideData, AVPacket};
-    use super::dict_h::AVDictionary;
     use super::codec_par_h::AVCodecParameters;
+    use super::defs_h::{AVAudioServiceType, AVDiscard, AVFieldOrder};
+    use super::dict_h::AVDictionary;
+    use super::frame_h::{AVFrame, AVFrameSideData};
+    use super::log_h::AVClass;
+    use super::packet_h::{AVPacket, AVPacketSideData};
+    use super::pixfmt_h::{
+        AVChromaLocation, AVColorPrimaries, AVColorRange, AVColorSpace,
+        AVColorTransferCharacteristic, AVPixelFormat,
+    };
+    use super::rational_h::AVRational;
+    use super::samplefmt_h::AVSampleFormat;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint16_t, uint64_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "466:12"]
         pub type AVCodecInternal;
@@ -1649,9 +1636,9 @@ pub mod codec_desc_h {
         pub mime_types: *const *const ::core::ffi::c_char,
         pub profiles: *const AVProfile,
     }
-    use super::codec_id_h::AVCodecID;
     use super::avutil_h::AVMediaType;
     use super::codec_h::AVProfile;
+    use super::codec_id_h::AVCodecID;
 }
 #[c2rust::header_src = "/usr/include/libavcodec/codec.h:30"]
 pub mod codec_h {
@@ -1682,13 +1669,13 @@ pub mod codec_h {
         pub ch_layouts: *const AVChannelLayout,
     }
     use super::avutil_h::AVMediaType;
-    use super::codec_id_h::{AVCodecID, AV_CODEC_ID_NONE};
-    use super::stdint_uintn_h::uint8_t;
-    use super::rational_h::AVRational;
-    use super::pixfmt_h::AVPixelFormat;
-    use super::samplefmt_h::AVSampleFormat;
-    use super::log_h::AVClass;
     use super::channel_layout_h::AVChannelLayout;
+    use super::codec_id_h::{AVCodecID, AV_CODEC_ID_NONE};
+    use super::log_h::AVClass;
+    use super::pixfmt_h::AVPixelFormat;
+    use super::rational_h::AVRational;
+    use super::samplefmt_h::AVSampleFormat;
+    use super::stdint_uintn_h::uint8_t;
     extern "C" {
         #[c2rust::src_loc = "246:1"]
         pub fn avcodec_find_decoder(id: AVCodecID) -> *const AVCodec;
@@ -2870,17 +2857,14 @@ pub mod log_h {
     #[c2rust::src_loc = "76:16"]
     pub struct AVClass {
         pub class_name: *const ::core::ffi::c_char,
-        pub item_name: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *const ::core::ffi::c_char,
-        >,
+        pub item_name:
+            Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *const ::core::ffi::c_char>,
         pub option: *const AVOption,
         pub version: ::core::ffi::c_int,
         pub log_level_offset_offset: ::core::ffi::c_int,
         pub parent_log_context_offset: ::core::ffi::c_int,
         pub category: AVClassCategory,
-        pub get_category: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> AVClassCategory,
-        >,
+        pub get_category: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> AVClassCategory>,
         pub query_ranges: Option<
             unsafe extern "C" fn(
                 *mut *mut AVOptionRanges,
@@ -2895,9 +2879,8 @@ pub mod log_h {
                 *mut ::core::ffi::c_void,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub child_class_iterate: Option<
-            unsafe extern "C" fn(*mut *mut ::core::ffi::c_void) -> *const AVClass,
-        >,
+        pub child_class_iterate:
+            Option<unsafe extern "C" fn(*mut *mut ::core::ffi::c_void) -> *const AVClass>,
         pub state_flags_offset: ::core::ffi::c_int,
     }
     #[c2rust::src_loc = "28:9"]
@@ -3034,10 +3017,7 @@ pub mod avformat_h {
             ) -> ::core::ffi::c_int,
         >,
         pub io_close2: Option<
-            unsafe extern "C" fn(
-                *mut AVFormatContext,
-                *mut AVIOContext,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut AVFormatContext, *mut AVIOContext) -> ::core::ffi::c_int,
         >,
         pub duration_probesize: int64_t,
     }
@@ -3207,18 +3187,18 @@ pub mod avformat_h {
         pub priv_class: *const AVClass,
         pub mime_type: *const ::core::ffi::c_char,
     }
-    use super::log_h::AVClass;
+    use super::__stddef_size_t_h::size_t;
     use super::avio_h::{AVIOContext, AVIOInterruptCB};
+    use super::codec_h::AVCodec;
+    use super::codec_id_h::AVCodecID;
+    use super::codec_par_h::AVCodecParameters;
+    use super::defs_h::AVDiscard;
+    use super::dict_h::AVDictionary;
+    use super::log_h::AVClass;
+    use super::packet_h::{AVPacket, AVPacketSideData};
+    use super::rational_h::AVRational;
     use super::stdint_intn_h::int64_t;
     use super::stdint_uintn_h::uint8_t;
-    use super::codec_id_h::AVCodecID;
-    use super::dict_h::AVDictionary;
-    use super::codec_h::AVCodec;
-    use super::__stddef_size_t_h::size_t;
-    use super::defs_h::AVDiscard;
-    use super::rational_h::AVRational;
-    use super::codec_par_h::AVCodecParameters;
-    use super::packet_h::{AVPacket, AVPacketSideData};
     extern "C" {
         #[c2rust::src_loc = "1098:8"]
         pub type AVIAMFMixPresentation;
@@ -3227,9 +3207,8 @@ pub mod avformat_h {
         #[c2rust::src_loc = "446:8"]
         pub type AVCodecTag;
         #[c2rust::src_loc = "2105:1"]
-        pub fn av_find_input_format(
-            short_name: *const ::core::ffi::c_char,
-        ) -> *const AVInputFormat;
+        pub fn av_find_input_format(short_name: *const ::core::ffi::c_char)
+            -> *const AVInputFormat;
         #[c2rust::src_loc = "2192:1"]
         pub fn avformat_open_input(
             ps: *mut *mut AVFormatContext,
@@ -3243,10 +3222,7 @@ pub mod avformat_h {
             options: *mut *mut AVDictionary,
         ) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "2293:1"]
-        pub fn av_read_frame(
-            s: *mut AVFormatContext,
-            pkt: *mut AVPacket,
-        ) -> ::core::ffi::c_int;
+        pub fn av_read_frame(s: *mut AVFormatContext, pkt: *mut AVPacket) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "2375:1"]
         pub fn avformat_close_input(s: *mut *mut AVFormatContext);
     }
@@ -3278,11 +3254,7 @@ pub mod avio_h {
             ) -> ::core::ffi::c_int,
         >,
         pub seek: Option<
-            unsafe extern "C" fn(
-                *mut ::core::ffi::c_void,
-                int64_t,
-                ::core::ffi::c_int,
-            ) -> int64_t,
+            unsafe extern "C" fn(*mut ::core::ffi::c_void, int64_t, ::core::ffi::c_int) -> int64_t,
         >,
         pub pos: int64_t,
         pub eof_reached: ::core::ffi::c_int,
@@ -3349,14 +3321,12 @@ pub mod avio_h {
     #[repr(C)]
     #[c2rust::src_loc = "59:16"]
     pub struct AVIOInterruptCB {
-        pub callback: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ::core::ffi::c_int,
-        >,
+        pub callback: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ::core::ffi::c_int>,
         pub opaque: *mut ::core::ffi::c_void,
     }
     use super::log_h::AVClass;
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/usr/include/libavcodec/codec_par.h:27"]
 pub mod codec_par_h {
@@ -3397,17 +3367,17 @@ pub mod codec_par_h {
         pub seek_preroll: ::core::ffi::c_int,
     }
     use super::avutil_h::AVMediaType;
-    use super::codec_id_h::AVCodecID;
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
-    use super::packet_h::AVPacketSideData;
-    use super::stdint_intn_h::int64_t;
-    use super::rational_h::AVRational;
-    use super::defs_h::AVFieldOrder;
-    use super::pixfmt_h::{
-        AVColorRange, AVColorPrimaries, AVColorTransferCharacteristic, AVColorSpace,
-        AVChromaLocation,
-    };
     use super::channel_layout_h::AVChannelLayout;
+    use super::codec_id_h::AVCodecID;
+    use super::defs_h::AVFieldOrder;
+    use super::packet_h::AVPacketSideData;
+    use super::pixfmt_h::{
+        AVChromaLocation, AVColorPrimaries, AVColorRange, AVColorSpace,
+        AVColorTransferCharacteristic,
+    };
+    use super::rational_h::AVRational;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:27"]
 pub mod stdlib_h {
@@ -3480,7 +3450,8 @@ pub mod error_h {
     #[c2rust::src_loc = "57:9"]
     pub const AVERROR_EOF: ::core::ffi::c_int = -((('E' as i32
         | ('O' as i32) << 8 as ::core::ffi::c_int
-        | ('F' as i32) << 16 as ::core::ffi::c_int) as ::core::ffi::c_uint
+        | ('F' as i32) << 16 as ::core::ffi::c_int)
+        as ::core::ffi::c_uint
         | (' ' as i32 as ::core::ffi::c_uint) << 24 as ::core::ffi::c_int)
         as ::core::ffi::c_int);
 }
@@ -3489,389 +3460,348 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __uint16_t, __uint32_t, __int64_t, __uint64_t};
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::x264cli_h::{hnd_t, get_filename_extension, x264_cli_log};
-pub use self::input_h::{
-    cli_input_opt_t, video_info_t, cli_image_t, cli_pic_t, cli_input_t, X264_CSP_OTHER,
-    x264_cli_pic_alloc,
-};
-pub use self::packet_h::{
-    AVPacket, AVPacketSideData, AVPacketSideDataType, AV_PKT_DATA_NB,
-    AV_PKT_DATA_RTCP_SR, AV_PKT_DATA_3D_REFERENCE_DISPLAYS, AV_PKT_DATA_LCEVC,
-    AV_PKT_DATA_FRAME_CROPPING, AV_PKT_DATA_AMBIENT_VIEWING_ENVIRONMENT,
-    AV_PKT_DATA_IAMF_RECON_GAIN_INFO_PARAM, AV_PKT_DATA_IAMF_DEMIXING_INFO_PARAM,
-    AV_PKT_DATA_IAMF_MIX_GAIN_PARAM, AV_PKT_DATA_DYNAMIC_HDR10_PLUS,
-    AV_PKT_DATA_S12M_TIMECODE, AV_PKT_DATA_DOVI_CONF, AV_PKT_DATA_ICC_PROFILE,
-    AV_PKT_DATA_PRFT, AV_PKT_DATA_AFD, AV_PKT_DATA_ENCRYPTION_INFO,
-    AV_PKT_DATA_ENCRYPTION_INIT_INFO, AV_PKT_DATA_A53_CC,
-    AV_PKT_DATA_CONTENT_LIGHT_LEVEL, AV_PKT_DATA_SPHERICAL,
-    AV_PKT_DATA_MASTERING_DISPLAY_METADATA, AV_PKT_DATA_MPEGTS_STREAM_ID,
-    AV_PKT_DATA_METADATA_UPDATE, AV_PKT_DATA_WEBVTT_SETTINGS,
-    AV_PKT_DATA_WEBVTT_IDENTIFIER, AV_PKT_DATA_MATROSKA_BLOCKADDITIONAL,
-    AV_PKT_DATA_SUBTITLE_POSITION, AV_PKT_DATA_STRINGS_METADATA, AV_PKT_DATA_JP_DUALMONO,
-    AV_PKT_DATA_SKIP_SAMPLES, AV_PKT_DATA_CPB_PROPERTIES, AV_PKT_DATA_FALLBACK_TRACK,
-    AV_PKT_DATA_QUALITY_STATS, AV_PKT_DATA_AUDIO_SERVICE_TYPE, AV_PKT_DATA_STEREO3D,
-    AV_PKT_DATA_DISPLAYMATRIX, AV_PKT_DATA_REPLAYGAIN, AV_PKT_DATA_H263_MB_INFO,
-    AV_PKT_DATA_PARAM_CHANGE, AV_PKT_DATA_NEW_EXTRADATA, AV_PKT_DATA_PALETTE,
-    av_packet_alloc, av_packet_free, av_packet_unref,
-};
-pub use self::rational_h::AVRational;
-pub use self::buffer_h::{AVBufferRef, AVBuffer};
-pub use self::frame_h::{
-    AVFrame, AVFrameSideData, AVFrameSideDataType, AV_FRAME_DATA_3D_REFERENCE_DISPLAYS,
-    AV_FRAME_DATA_VIEW_ID, AV_FRAME_DATA_LCEVC, AV_FRAME_DATA_VIDEO_HINT,
-    AV_FRAME_DATA_AMBIENT_VIEWING_ENVIRONMENT, AV_FRAME_DATA_DYNAMIC_HDR_VIVID,
-    AV_FRAME_DATA_DOVI_METADATA, AV_FRAME_DATA_DOVI_RPU_BUFFER,
-    AV_FRAME_DATA_DETECTION_BBOXES, AV_FRAME_DATA_FILM_GRAIN_PARAMS,
-    AV_FRAME_DATA_SEI_UNREGISTERED, AV_FRAME_DATA_VIDEO_ENC_PARAMS,
-    AV_FRAME_DATA_REGIONS_OF_INTEREST, AV_FRAME_DATA_DYNAMIC_HDR_PLUS,
-    AV_FRAME_DATA_S12M_TIMECODE, AV_FRAME_DATA_ICC_PROFILE,
-    AV_FRAME_DATA_CONTENT_LIGHT_LEVEL, AV_FRAME_DATA_SPHERICAL,
-    AV_FRAME_DATA_GOP_TIMECODE, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA,
-    AV_FRAME_DATA_AUDIO_SERVICE_TYPE, AV_FRAME_DATA_SKIP_SAMPLES,
-    AV_FRAME_DATA_MOTION_VECTORS, AV_FRAME_DATA_AFD, AV_FRAME_DATA_DISPLAYMATRIX,
-    AV_FRAME_DATA_REPLAYGAIN, AV_FRAME_DATA_DOWNMIX_INFO, AV_FRAME_DATA_MATRIXENCODING,
-    AV_FRAME_DATA_STEREO3D, AV_FRAME_DATA_A53_CC, AV_FRAME_DATA_PANSCAN,
-    AV_FRAME_FLAG_INTERLACED, AV_FRAME_FLAG_TOP_FIELD_FIRST, av_frame_alloc,
-    av_frame_free,
-};
-pub use self::channel_layout_h::{
-    AVChannelLayout, C2RustUnnamed, AVChannelCustom, AVChannel, AV_CHAN_AMBISONIC_END,
-    AV_CHAN_AMBISONIC_BASE, AV_CHAN_UNKNOWN, AV_CHAN_UNUSED, AV_CHAN_BINAURAL_RIGHT,
-    AV_CHAN_BINAURAL_LEFT, AV_CHAN_TOP_SURROUND_RIGHT, AV_CHAN_TOP_SURROUND_LEFT,
-    AV_CHAN_SIDE_SURROUND_RIGHT, AV_CHAN_SIDE_SURROUND_LEFT, AV_CHAN_BOTTOM_FRONT_RIGHT,
-    AV_CHAN_BOTTOM_FRONT_LEFT, AV_CHAN_BOTTOM_FRONT_CENTER, AV_CHAN_TOP_SIDE_RIGHT,
-    AV_CHAN_TOP_SIDE_LEFT, AV_CHAN_LOW_FREQUENCY_2, AV_CHAN_SURROUND_DIRECT_RIGHT,
-    AV_CHAN_SURROUND_DIRECT_LEFT, AV_CHAN_WIDE_RIGHT, AV_CHAN_WIDE_LEFT,
-    AV_CHAN_STEREO_RIGHT, AV_CHAN_STEREO_LEFT, AV_CHAN_TOP_BACK_RIGHT,
-    AV_CHAN_TOP_BACK_CENTER, AV_CHAN_TOP_BACK_LEFT, AV_CHAN_TOP_FRONT_RIGHT,
-    AV_CHAN_TOP_FRONT_CENTER, AV_CHAN_TOP_FRONT_LEFT, AV_CHAN_TOP_CENTER,
-    AV_CHAN_SIDE_RIGHT, AV_CHAN_SIDE_LEFT, AV_CHAN_BACK_CENTER,
-    AV_CHAN_FRONT_RIGHT_OF_CENTER, AV_CHAN_FRONT_LEFT_OF_CENTER, AV_CHAN_BACK_RIGHT,
-    AV_CHAN_BACK_LEFT, AV_CHAN_LOW_FREQUENCY, AV_CHAN_FRONT_CENTER, AV_CHAN_FRONT_RIGHT,
-    AV_CHAN_FRONT_LEFT, AV_CHAN_NONE, AVChannelOrder, FF_CHANNEL_ORDER_NB,
-    AV_CHANNEL_ORDER_AMBISONIC, AV_CHANNEL_ORDER_CUSTOM, AV_CHANNEL_ORDER_NATIVE,
-    AV_CHANNEL_ORDER_UNSPEC,
-};
-use self::dict_h::{AVDictionary, av_dict_set, av_dict_free};
-pub use self::pixfmt_h::{
-    AVChromaLocation, AVCHROMA_LOC_NB, AVCHROMA_LOC_BOTTOM, AVCHROMA_LOC_BOTTOMLEFT,
-    AVCHROMA_LOC_TOP, AVCHROMA_LOC_TOPLEFT, AVCHROMA_LOC_CENTER, AVCHROMA_LOC_LEFT,
-    AVCHROMA_LOC_UNSPECIFIED, AVColorSpace, AVCOL_SPC_NB, AVCOL_SPC_YCGCO_RO,
-    AVCOL_SPC_YCGCO_RE, AVCOL_SPC_IPT_C2, AVCOL_SPC_ICTCP, AVCOL_SPC_CHROMA_DERIVED_CL,
-    AVCOL_SPC_CHROMA_DERIVED_NCL, AVCOL_SPC_SMPTE2085, AVCOL_SPC_BT2020_CL,
-    AVCOL_SPC_BT2020_NCL, AVCOL_SPC_YCOCG, AVCOL_SPC_YCGCO, AVCOL_SPC_SMPTE240M,
-    AVCOL_SPC_SMPTE170M, AVCOL_SPC_BT470BG, AVCOL_SPC_FCC, AVCOL_SPC_RESERVED,
-    AVCOL_SPC_UNSPECIFIED, AVCOL_SPC_BT709, AVCOL_SPC_RGB, AVColorTransferCharacteristic,
-    AVCOL_TRC_NB, AVCOL_TRC_ARIB_STD_B67, AVCOL_TRC_SMPTEST428_1, AVCOL_TRC_SMPTE428,
-    AVCOL_TRC_SMPTEST2084, AVCOL_TRC_SMPTE2084, AVCOL_TRC_BT2020_12, AVCOL_TRC_BT2020_10,
-    AVCOL_TRC_IEC61966_2_1, AVCOL_TRC_BT1361_ECG, AVCOL_TRC_IEC61966_2_4,
-    AVCOL_TRC_LOG_SQRT, AVCOL_TRC_LOG, AVCOL_TRC_LINEAR, AVCOL_TRC_SMPTE240M,
-    AVCOL_TRC_SMPTE170M, AVCOL_TRC_GAMMA28, AVCOL_TRC_GAMMA22, AVCOL_TRC_RESERVED,
-    AVCOL_TRC_UNSPECIFIED, AVCOL_TRC_BT709, AVCOL_TRC_RESERVED0, AVColorPrimaries,
-    AVCOL_PRI_NB, AVCOL_PRI_JEDEC_P22, AVCOL_PRI_EBU3213, AVCOL_PRI_SMPTE432,
-    AVCOL_PRI_SMPTE431, AVCOL_PRI_SMPTEST428_1, AVCOL_PRI_SMPTE428, AVCOL_PRI_BT2020,
-    AVCOL_PRI_FILM, AVCOL_PRI_SMPTE240M, AVCOL_PRI_SMPTE170M, AVCOL_PRI_BT470BG,
-    AVCOL_PRI_BT470M, AVCOL_PRI_RESERVED, AVCOL_PRI_UNSPECIFIED, AVCOL_PRI_BT709,
-    AVCOL_PRI_RESERVED0, AVColorRange, AVCOL_RANGE_NB, AVCOL_RANGE_JPEG,
-    AVCOL_RANGE_MPEG, AVCOL_RANGE_UNSPECIFIED, AVPixelFormat, AV_PIX_FMT_NB,
-    AV_PIX_FMT_OHCODEC, AV_PIX_FMT_GBRP12MSBLE, AV_PIX_FMT_GBRP12MSBBE,
-    AV_PIX_FMT_GBRP10MSBLE, AV_PIX_FMT_GBRP10MSBBE, AV_PIX_FMT_YUV444P12MSBLE,
-    AV_PIX_FMT_YUV444P12MSBBE, AV_PIX_FMT_YUV444P10MSBLE, AV_PIX_FMT_YUV444P10MSBBE,
-    AV_PIX_FMT_GBRAP32LE, AV_PIX_FMT_GBRAP32BE, AV_PIX_FMT_YAF16LE, AV_PIX_FMT_YAF16BE,
-    AV_PIX_FMT_YAF32LE, AV_PIX_FMT_YAF32BE, AV_PIX_FMT_GRAY32LE, AV_PIX_FMT_GRAY32BE,
-    AV_PIX_FMT_AMF_SURFACE, AV_PIX_FMT_GRAYF16LE, AV_PIX_FMT_GRAYF16BE,
-    AV_PIX_FMT_GBRAPF16LE, AV_PIX_FMT_GBRAPF16BE, AV_PIX_FMT_GBRPF16LE,
-    AV_PIX_FMT_GBRPF16BE, AV_PIX_FMT_XV48LE, AV_PIX_FMT_XV48BE, AV_PIX_FMT_Y216LE,
-    AV_PIX_FMT_Y216BE, AV_PIX_FMT_RGB96LE, AV_PIX_FMT_RGB96BE, AV_PIX_FMT_RGBA128LE,
-    AV_PIX_FMT_RGBA128BE, AV_PIX_FMT_RGBF16LE, AV_PIX_FMT_RGBF16BE, AV_PIX_FMT_V30XLE,
-    AV_PIX_FMT_V30XBE, AV_PIX_FMT_VYU444, AV_PIX_FMT_UYVA, AV_PIX_FMT_AYUV,
-    AV_PIX_FMT_D3D12, AV_PIX_FMT_GBRAP14LE, AV_PIX_FMT_GBRAP14BE, AV_PIX_FMT_P412LE,
-    AV_PIX_FMT_P412BE, AV_PIX_FMT_P212LE, AV_PIX_FMT_P212BE, AV_PIX_FMT_RGBAF32LE,
-    AV_PIX_FMT_RGBAF32BE, AV_PIX_FMT_RGBF32LE, AV_PIX_FMT_RGBF32BE, AV_PIX_FMT_XV36LE,
-    AV_PIX_FMT_XV36BE, AV_PIX_FMT_XV30LE, AV_PIX_FMT_XV30BE, AV_PIX_FMT_Y212LE,
-    AV_PIX_FMT_Y212BE, AV_PIX_FMT_P012BE, AV_PIX_FMT_P012LE, AV_PIX_FMT_VUYX,
-    AV_PIX_FMT_RGBAF16LE, AV_PIX_FMT_RGBAF16BE, AV_PIX_FMT_VUYA, AV_PIX_FMT_P416LE,
-    AV_PIX_FMT_P416BE, AV_PIX_FMT_P216LE, AV_PIX_FMT_P216BE, AV_PIX_FMT_P410LE,
-    AV_PIX_FMT_P410BE, AV_PIX_FMT_P210LE, AV_PIX_FMT_P210BE, AV_PIX_FMT_X2BGR10BE,
-    AV_PIX_FMT_X2BGR10LE, AV_PIX_FMT_X2RGB10BE, AV_PIX_FMT_X2RGB10LE, AV_PIX_FMT_Y210LE,
-    AV_PIX_FMT_Y210BE, AV_PIX_FMT_VULKAN, AV_PIX_FMT_NV42, AV_PIX_FMT_NV24,
-    AV_PIX_FMT_YUVA444P12LE, AV_PIX_FMT_YUVA444P12BE, AV_PIX_FMT_YUVA422P12LE,
-    AV_PIX_FMT_YUVA422P12BE, AV_PIX_FMT_GRAYF32LE, AV_PIX_FMT_GRAYF32BE,
-    AV_PIX_FMT_GRAY14LE, AV_PIX_FMT_GRAY14BE, AV_PIX_FMT_OPENCL, AV_PIX_FMT_DRM_PRIME,
-    AV_PIX_FMT_GBRAPF32LE, AV_PIX_FMT_GBRAPF32BE, AV_PIX_FMT_GBRPF32LE,
-    AV_PIX_FMT_GBRPF32BE, AV_PIX_FMT_GRAY9LE, AV_PIX_FMT_GRAY9BE, AV_PIX_FMT_D3D11,
-    AV_PIX_FMT_P016BE, AV_PIX_FMT_P016LE, AV_PIX_FMT_GRAY10LE, AV_PIX_FMT_GRAY10BE,
-    AV_PIX_FMT_GRAY12LE, AV_PIX_FMT_GRAY12BE, AV_PIX_FMT_MEDIACODEC,
-    AV_PIX_FMT_GBRAP10LE, AV_PIX_FMT_GBRAP10BE, AV_PIX_FMT_GBRAP12LE,
-    AV_PIX_FMT_GBRAP12BE, AV_PIX_FMT_P010BE, AV_PIX_FMT_P010LE, AV_PIX_FMT_VIDEOTOOLBOX,
-    AV_PIX_FMT_AYUV64BE, AV_PIX_FMT_AYUV64LE, AV_PIX_FMT_YUV440P12BE,
-    AV_PIX_FMT_YUV440P12LE, AV_PIX_FMT_YUV440P10BE, AV_PIX_FMT_YUV440P10LE,
-    AV_PIX_FMT_BAYER_GRBG16BE, AV_PIX_FMT_BAYER_GRBG16LE, AV_PIX_FMT_BAYER_GBRG16BE,
-    AV_PIX_FMT_BAYER_GBRG16LE, AV_PIX_FMT_BAYER_RGGB16BE, AV_PIX_FMT_BAYER_RGGB16LE,
-    AV_PIX_FMT_BAYER_BGGR16BE, AV_PIX_FMT_BAYER_BGGR16LE, AV_PIX_FMT_BAYER_GRBG8,
-    AV_PIX_FMT_BAYER_GBRG8, AV_PIX_FMT_BAYER_RGGB8, AV_PIX_FMT_BAYER_BGGR8,
-    AV_PIX_FMT_YUVJ411P, AV_PIX_FMT_GBRP14LE, AV_PIX_FMT_GBRP14BE, AV_PIX_FMT_GBRP12LE,
-    AV_PIX_FMT_GBRP12BE, AV_PIX_FMT_YUV444P14LE, AV_PIX_FMT_YUV444P14BE,
-    AV_PIX_FMT_YUV444P12LE, AV_PIX_FMT_YUV444P12BE, AV_PIX_FMT_YUV422P14LE,
-    AV_PIX_FMT_YUV422P14BE, AV_PIX_FMT_YUV422P12LE, AV_PIX_FMT_YUV422P12BE,
-    AV_PIX_FMT_YUV420P14LE, AV_PIX_FMT_YUV420P14BE, AV_PIX_FMT_YUV420P12LE,
-    AV_PIX_FMT_YUV420P12BE, AV_PIX_FMT_BGR0, AV_PIX_FMT_0BGR, AV_PIX_FMT_RGB0,
-    AV_PIX_FMT_0RGB, AV_PIX_FMT_CUDA, AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_MMAL,
-    AV_PIX_FMT_QSV, AV_PIX_FMT_GBRAP16LE, AV_PIX_FMT_GBRAP16BE, AV_PIX_FMT_GBRAP,
-    AV_PIX_FMT_YA16LE, AV_PIX_FMT_YA16BE, AV_PIX_FMT_YVYU422, AV_PIX_FMT_BGRA64LE,
-    AV_PIX_FMT_BGRA64BE, AV_PIX_FMT_RGBA64LE, AV_PIX_FMT_RGBA64BE, AV_PIX_FMT_NV20BE,
-    AV_PIX_FMT_NV20LE, AV_PIX_FMT_NV16, AV_PIX_FMT_XYZ12BE, AV_PIX_FMT_XYZ12LE,
-    AV_PIX_FMT_VDPAU, AV_PIX_FMT_YUVA444P16LE, AV_PIX_FMT_YUVA444P16BE,
-    AV_PIX_FMT_YUVA422P16LE, AV_PIX_FMT_YUVA422P16BE, AV_PIX_FMT_YUVA420P16LE,
-    AV_PIX_FMT_YUVA420P16BE, AV_PIX_FMT_YUVA444P10LE, AV_PIX_FMT_YUVA444P10BE,
-    AV_PIX_FMT_YUVA422P10LE, AV_PIX_FMT_YUVA422P10BE, AV_PIX_FMT_YUVA420P10LE,
-    AV_PIX_FMT_YUVA420P10BE, AV_PIX_FMT_YUVA444P9LE, AV_PIX_FMT_YUVA444P9BE,
-    AV_PIX_FMT_YUVA422P9LE, AV_PIX_FMT_YUVA422P9BE, AV_PIX_FMT_YUVA420P9LE,
-    AV_PIX_FMT_YUVA420P9BE, AV_PIX_FMT_YUVA444P, AV_PIX_FMT_YUVA422P,
-    AV_PIX_FMT_GBRP16LE, AV_PIX_FMT_GBRP16BE, AV_PIX_FMT_GBRP10LE, AV_PIX_FMT_GBRP10BE,
-    AV_PIX_FMT_GBRP9LE, AV_PIX_FMT_GBRP9BE, AV_PIX_FMT_GBR24P, AV_PIX_FMT_GBRP,
-    AV_PIX_FMT_YUV422P9LE, AV_PIX_FMT_YUV422P9BE, AV_PIX_FMT_YUV444P10LE,
-    AV_PIX_FMT_YUV444P10BE, AV_PIX_FMT_YUV444P9LE, AV_PIX_FMT_YUV444P9BE,
-    AV_PIX_FMT_YUV422P10LE, AV_PIX_FMT_YUV422P10BE, AV_PIX_FMT_YUV420P10LE,
-    AV_PIX_FMT_YUV420P10BE, AV_PIX_FMT_YUV420P9LE, AV_PIX_FMT_YUV420P9BE,
-    AV_PIX_FMT_BGR48LE, AV_PIX_FMT_BGR48BE, AV_PIX_FMT_GRAY8A, AV_PIX_FMT_Y400A,
-    AV_PIX_FMT_YA8, AV_PIX_FMT_BGR444BE, AV_PIX_FMT_BGR444LE, AV_PIX_FMT_RGB444BE,
-    AV_PIX_FMT_RGB444LE, AV_PIX_FMT_DXVA2_VLD, AV_PIX_FMT_YUV444P16BE,
-    AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUV422P16BE, AV_PIX_FMT_YUV422P16LE,
-    AV_PIX_FMT_YUV420P16BE, AV_PIX_FMT_YUV420P16LE, AV_PIX_FMT_VAAPI,
-    AV_PIX_FMT_BGR555LE, AV_PIX_FMT_BGR555BE, AV_PIX_FMT_BGR565LE, AV_PIX_FMT_BGR565BE,
-    AV_PIX_FMT_RGB555LE, AV_PIX_FMT_RGB555BE, AV_PIX_FMT_RGB565LE, AV_PIX_FMT_RGB565BE,
-    AV_PIX_FMT_RGB48LE, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVJ440P,
-    AV_PIX_FMT_YUV440P, AV_PIX_FMT_GRAY16LE, AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_BGRA,
-    AV_PIX_FMT_ABGR, AV_PIX_FMT_RGBA, AV_PIX_FMT_ARGB, AV_PIX_FMT_NV21, AV_PIX_FMT_NV12,
-    AV_PIX_FMT_RGB4_BYTE, AV_PIX_FMT_RGB4, AV_PIX_FMT_RGB8, AV_PIX_FMT_BGR4_BYTE,
-    AV_PIX_FMT_BGR4, AV_PIX_FMT_BGR8, AV_PIX_FMT_UYYVYY411, AV_PIX_FMT_UYVY422,
-    AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ420P, AV_PIX_FMT_PAL8,
-    AV_PIX_FMT_MONOBLACK, AV_PIX_FMT_MONOWHITE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_YUV411P,
-    AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV444P, AV_PIX_FMT_YUV422P, AV_PIX_FMT_BGR24,
-    AV_PIX_FMT_RGB24, AV_PIX_FMT_YUYV422, AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE,
-};
-pub use self::avutil_h::{
-    AVPictureType, AV_PICTURE_TYPE_BI, AV_PICTURE_TYPE_SP, AV_PICTURE_TYPE_SI,
-    AV_PICTURE_TYPE_S, AV_PICTURE_TYPE_B, AV_PICTURE_TYPE_P, AV_PICTURE_TYPE_I,
-    AV_PICTURE_TYPE_NONE, AVMediaType, AVMEDIA_TYPE_NB, AVMEDIA_TYPE_ATTACHMENT,
-    AVMEDIA_TYPE_SUBTITLE, AVMEDIA_TYPE_DATA, AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_VIDEO,
-    AVMEDIA_TYPE_UNKNOWN, AV_NOPTS_VALUE,
-};
 pub use self::avcodec_h::{
-    AVCodecContext, AVHWAccel, RcOverride, AVCodecInternal, avcodec_alloc_context3,
-    avcodec_free_context, avcodec_parameters_to_context, avcodec_open2,
-    avcodec_send_packet, avcodec_receive_frame,
-};
-pub use self::codec_desc_h::AVCodecDescriptor;
-pub use self::codec_h::{AVProfile, AVCodec, avcodec_find_decoder};
-pub use self::codec_id_h::{
-    AVCodecID, AV_CODEC_ID_ANULL, AV_CODEC_ID_VNULL, AV_CODEC_ID_WRAPPED_AVFRAME,
-    AV_CODEC_ID_FFMETADATA, AV_CODEC_ID_MPEG4SYSTEMS, AV_CODEC_ID_MPEG2TS,
-    AV_CODEC_ID_PROBE, AV_CODEC_ID_SMPTE_436M_ANC, AV_CODEC_ID_LCEVC,
-    AV_CODEC_ID_SMPTE_2038, AV_CODEC_ID_BIN_DATA, AV_CODEC_ID_TIMED_ID3,
-    AV_CODEC_ID_DVD_NAV, AV_CODEC_ID_SMPTE_KLV, AV_CODEC_ID_OTF, AV_CODEC_ID_IDF,
-    AV_CODEC_ID_XBIN, AV_CODEC_ID_BINTEXT, AV_CODEC_ID_EPG, AV_CODEC_ID_SCTE_35,
-    AV_CODEC_ID_TTF, AV_CODEC_ID_FIRST_UNKNOWN, AV_CODEC_ID_IVTV_VBI,
-    AV_CODEC_ID_ARIB_CAPTION, AV_CODEC_ID_TTML, AV_CODEC_ID_HDMV_TEXT_SUBTITLE,
-    AV_CODEC_ID_ASS, AV_CODEC_ID_PJS, AV_CODEC_ID_VPLAYER, AV_CODEC_ID_MPL2,
-    AV_CODEC_ID_WEBVTT, AV_CODEC_ID_SUBRIP, AV_CODEC_ID_SUBVIEWER,
-    AV_CODEC_ID_SUBVIEWER1, AV_CODEC_ID_STL, AV_CODEC_ID_REALTEXT, AV_CODEC_ID_SAMI,
-    AV_CODEC_ID_JACOSUB, AV_CODEC_ID_EIA_608, AV_CODEC_ID_MICRODVD, AV_CODEC_ID_SRT,
-    AV_CODEC_ID_DVB_TELETEXT, AV_CODEC_ID_HDMV_PGS_SUBTITLE, AV_CODEC_ID_MOV_TEXT,
-    AV_CODEC_ID_SSA, AV_CODEC_ID_XSUB, AV_CODEC_ID_TEXT, AV_CODEC_ID_DVB_SUBTITLE,
-    AV_CODEC_ID_DVD_SUBTITLE, AV_CODEC_ID_FIRST_SUBTITLE, AV_CODEC_ID_G728,
-    AV_CODEC_ID_LC3, AV_CODEC_ID_QOA, AV_CODEC_ID_OSQ, AV_CODEC_ID_AC4, AV_CODEC_ID_RKA,
-    AV_CODEC_ID_WAVARC, AV_CODEC_ID_FTR, AV_CODEC_ID_APAC, AV_CODEC_ID_MISC4,
-    AV_CODEC_ID_BONK, AV_CODEC_ID_DFPWM, AV_CODEC_ID_MSNSIREN, AV_CODEC_ID_FASTAUDIO,
-    AV_CODEC_ID_HCA, AV_CODEC_ID_SIREN, AV_CODEC_ID_MPEGH_3D_AUDIO,
-    AV_CODEC_ID_ACELP_KELVIN, AV_CODEC_ID_HCOM, AV_CODEC_ID_ATRAC9, AV_CODEC_ID_SBC,
-    AV_CODEC_ID_APTX_HD, AV_CODEC_ID_APTX, AV_CODEC_ID_DOLBY_E, AV_CODEC_ID_ATRAC3PAL,
-    AV_CODEC_ID_ATRAC3AL, AV_CODEC_ID_DST, AV_CODEC_ID_XMA2, AV_CODEC_ID_XMA1,
-    AV_CODEC_ID_INTERPLAY_ACM, AV_CODEC_ID_4GV, AV_CODEC_ID_DSD_MSBF_PLANAR,
-    AV_CODEC_ID_DSD_LSBF_PLANAR, AV_CODEC_ID_DSD_MSBF, AV_CODEC_ID_DSD_LSBF,
-    AV_CODEC_ID_SMV, AV_CODEC_ID_EVRC, AV_CODEC_ID_SONIC_LS, AV_CODEC_ID_SONIC,
-    AV_CODEC_ID_FFWAVESYNTH, AV_CODEC_ID_CODEC2, AV_CODEC_ID_DSS_SP, AV_CODEC_ID_ON2AVC,
-    AV_CODEC_ID_PAF_AUDIO, AV_CODEC_ID_METASOUND, AV_CODEC_ID_TAK,
-    AV_CODEC_ID_COMFORT_NOISE, AV_CODEC_ID_OPUS, AV_CODEC_ID_ILBC, AV_CODEC_ID_IAC,
-    AV_CODEC_ID_RALF, AV_CODEC_ID_BMV_AUDIO, AV_CODEC_ID_8SVX_FIB, AV_CODEC_ID_8SVX_EXP,
-    AV_CODEC_ID_G729, AV_CODEC_ID_G723_1, AV_CODEC_ID_CELT, AV_CODEC_ID_QDMC,
-    AV_CODEC_ID_AAC_LATM, AV_CODEC_ID_BINKAUDIO_DCT, AV_CODEC_ID_BINKAUDIO_RDFT,
-    AV_CODEC_ID_ATRAC1, AV_CODEC_ID_MP4ALS, AV_CODEC_ID_TRUEHD, AV_CODEC_ID_TWINVQ,
-    AV_CODEC_ID_MP1, AV_CODEC_ID_SIPR, AV_CODEC_ID_EAC3, AV_CODEC_ID_ATRAC3P,
-    AV_CODEC_ID_WMALOSSLESS, AV_CODEC_ID_WMAPRO, AV_CODEC_ID_WMAVOICE, AV_CODEC_ID_SPEEX,
-    AV_CODEC_ID_MUSEPACK8, AV_CODEC_ID_NELLYMOSER, AV_CODEC_ID_APE, AV_CODEC_ID_ATRAC3,
-    AV_CODEC_ID_GSM_MS, AV_CODEC_ID_MLP, AV_CODEC_ID_MUSEPACK7, AV_CODEC_ID_IMC,
-    AV_CODEC_ID_DSICINAUDIO, AV_CODEC_ID_WAVPACK, AV_CODEC_ID_QCELP,
-    AV_CODEC_ID_SMACKAUDIO, AV_CODEC_ID_TTA, AV_CODEC_ID_TRUESPEECH, AV_CODEC_ID_COOK,
-    AV_CODEC_ID_QDM2, AV_CODEC_ID_GSM, AV_CODEC_ID_WESTWOOD_SND1, AV_CODEC_ID_ALAC,
-    AV_CODEC_ID_SHORTEN, AV_CODEC_ID_MP3ON4, AV_CODEC_ID_MP3ADU, AV_CODEC_ID_FLAC,
-    AV_CODEC_ID_VMDAUDIO, AV_CODEC_ID_MACE6, AV_CODEC_ID_MACE3, AV_CODEC_ID_WMAV2,
-    AV_CODEC_ID_WMAV1, AV_CODEC_ID_DVAUDIO, AV_CODEC_ID_VORBIS, AV_CODEC_ID_DTS,
-    AV_CODEC_ID_AC3, AV_CODEC_ID_AAC, AV_CODEC_ID_MP3, AV_CODEC_ID_MP2,
-    AV_CODEC_ID_CBD2_DPCM, AV_CODEC_ID_WADY_DPCM, AV_CODEC_ID_DERF_DPCM,
-    AV_CODEC_ID_GREMLIN_DPCM, AV_CODEC_ID_SDX2_DPCM, AV_CODEC_ID_SOL_DPCM,
-    AV_CODEC_ID_XAN_DPCM, AV_CODEC_ID_INTERPLAY_DPCM, AV_CODEC_ID_ROQ_DPCM,
-    AV_CODEC_ID_RA_288, AV_CODEC_ID_RA_144, AV_CODEC_ID_AMR_WB, AV_CODEC_ID_AMR_NB,
-    AV_CODEC_ID_ADPCM_SANYO, AV_CODEC_ID_ADPCM_IMA_XBOX, AV_CODEC_ID_ADPCM_XMD,
-    AV_CODEC_ID_ADPCM_IMA_ACORN, AV_CODEC_ID_ADPCM_IMA_MOFLEX,
-    AV_CODEC_ID_ADPCM_IMA_CUNNING, AV_CODEC_ID_ADPCM_IMA_MTF, AV_CODEC_ID_ADPCM_IMA_ALP,
-    AV_CODEC_ID_ADPCM_IMA_APM, AV_CODEC_ID_ADPCM_ZORK, AV_CODEC_ID_ADPCM_IMA_SSI,
-    AV_CODEC_ID_ADPCM_ARGO, AV_CODEC_ID_ADPCM_AGM, AV_CODEC_ID_ADPCM_MTAF,
-    AV_CODEC_ID_ADPCM_IMA_DAT4, AV_CODEC_ID_ADPCM_AICA, AV_CODEC_ID_ADPCM_PSX,
-    AV_CODEC_ID_ADPCM_THP_LE, AV_CODEC_ID_ADPCM_G726LE, AV_CODEC_ID_ADPCM_IMA_RAD,
-    AV_CODEC_ID_ADPCM_DTK, AV_CODEC_ID_ADPCM_IMA_OKI, AV_CODEC_ID_ADPCM_AFC,
-    AV_CODEC_ID_ADPCM_VIMA, AV_CODEC_ID_ADPCM_IMA_APC, AV_CODEC_ID_ADPCM_G722,
-    AV_CODEC_ID_ADPCM_IMA_ISS, AV_CODEC_ID_ADPCM_EA_MAXIS_XA, AV_CODEC_ID_ADPCM_EA_XAS,
-    AV_CODEC_ID_ADPCM_IMA_EA_EACS, AV_CODEC_ID_ADPCM_IMA_EA_SEAD,
-    AV_CODEC_ID_ADPCM_EA_R2, AV_CODEC_ID_ADPCM_EA_R3, AV_CODEC_ID_ADPCM_EA_R1,
-    AV_CODEC_ID_ADPCM_IMA_AMV, AV_CODEC_ID_ADPCM_THP, AV_CODEC_ID_ADPCM_SBPRO_2,
-    AV_CODEC_ID_ADPCM_SBPRO_3, AV_CODEC_ID_ADPCM_SBPRO_4, AV_CODEC_ID_ADPCM_YAMAHA,
-    AV_CODEC_ID_ADPCM_SWF, AV_CODEC_ID_ADPCM_CT, AV_CODEC_ID_ADPCM_G726,
-    AV_CODEC_ID_ADPCM_EA, AV_CODEC_ID_ADPCM_ADX, AV_CODEC_ID_ADPCM_XA,
-    AV_CODEC_ID_ADPCM_4XM, AV_CODEC_ID_ADPCM_MS, AV_CODEC_ID_ADPCM_IMA_SMJPEG,
-    AV_CODEC_ID_ADPCM_IMA_WS, AV_CODEC_ID_ADPCM_IMA_DK4, AV_CODEC_ID_ADPCM_IMA_DK3,
-    AV_CODEC_ID_ADPCM_IMA_WAV, AV_CODEC_ID_ADPCM_IMA_QT, AV_CODEC_ID_PCM_SGA,
-    AV_CODEC_ID_PCM_VIDC, AV_CODEC_ID_PCM_F24LE, AV_CODEC_ID_PCM_F16LE,
-    AV_CODEC_ID_PCM_S64BE, AV_CODEC_ID_PCM_S64LE, AV_CODEC_ID_PCM_S16BE_PLANAR,
-    AV_CODEC_ID_PCM_S32LE_PLANAR, AV_CODEC_ID_PCM_S24LE_PLANAR,
-    AV_CODEC_ID_PCM_S8_PLANAR, AV_CODEC_ID_S302M, AV_CODEC_ID_PCM_LXF,
-    AV_CODEC_ID_PCM_BLURAY, AV_CODEC_ID_PCM_F64LE, AV_CODEC_ID_PCM_F64BE,
-    AV_CODEC_ID_PCM_F32LE, AV_CODEC_ID_PCM_F32BE, AV_CODEC_ID_PCM_DVD,
-    AV_CODEC_ID_PCM_S16LE_PLANAR, AV_CODEC_ID_PCM_ZORK, AV_CODEC_ID_PCM_S24DAUD,
-    AV_CODEC_ID_PCM_U24BE, AV_CODEC_ID_PCM_U24LE, AV_CODEC_ID_PCM_S24BE,
-    AV_CODEC_ID_PCM_S24LE, AV_CODEC_ID_PCM_U32BE, AV_CODEC_ID_PCM_U32LE,
-    AV_CODEC_ID_PCM_S32BE, AV_CODEC_ID_PCM_S32LE, AV_CODEC_ID_PCM_ALAW,
-    AV_CODEC_ID_PCM_MULAW, AV_CODEC_ID_PCM_U8, AV_CODEC_ID_PCM_S8, AV_CODEC_ID_PCM_U16BE,
-    AV_CODEC_ID_PCM_U16LE, AV_CODEC_ID_PCM_S16BE, AV_CODEC_ID_PCM_S16LE,
-    AV_CODEC_ID_FIRST_AUDIO, AV_CODEC_ID_PRORES_RAW, AV_CODEC_ID_APV,
-    AV_CODEC_ID_JPEGXL_ANIM, AV_CODEC_ID_RV60, AV_CODEC_ID_DNXUC, AV_CODEC_ID_LEAD,
-    AV_CODEC_ID_VMIX, AV_CODEC_ID_RTV1, AV_CODEC_ID_EVC, AV_CODEC_ID_PDV,
-    AV_CODEC_ID_VQC, AV_CODEC_ID_MEDIA100, AV_CODEC_ID_WBMP, AV_CODEC_ID_RADIANCE_HDR,
-    AV_CODEC_ID_PHM, AV_CODEC_ID_QOI, AV_CODEC_ID_JPEGXL, AV_CODEC_ID_VBN,
-    AV_CODEC_ID_GEM, AV_CODEC_ID_SGA_VIDEO, AV_CODEC_ID_SIMBIOSIS_IMX, AV_CODEC_ID_CRI,
-    AV_CODEC_ID_ARGO, AV_CODEC_ID_IPU, AV_CODEC_ID_PHOTOCD, AV_CODEC_ID_MOBICLIP,
-    AV_CODEC_ID_PFM, AV_CODEC_ID_NOTCHLC, AV_CODEC_ID_MV30, AV_CODEC_ID_CDTOONS,
-    AV_CODEC_ID_MVHA, AV_CODEC_ID_MVDV, AV_CODEC_ID_IMM5, AV_CODEC_ID_VP4,
-    AV_CODEC_ID_LSCR, AV_CODEC_ID_AGM, AV_CODEC_ID_ARBC, AV_CODEC_ID_HYMT,
-    AV_CODEC_ID_RASC, AV_CODEC_ID_WCMV, AV_CODEC_ID_MWSC, AV_CODEC_ID_PROSUMER,
-    AV_CODEC_ID_IMM4, AV_CODEC_ID_FITS, AV_CODEC_ID_GDV, AV_CODEC_ID_SVG,
-    AV_CODEC_ID_SRGC, AV_CODEC_ID_MSCC, AV_CODEC_ID_BITPACKED, AV_CODEC_ID_AV1,
-    AV_CODEC_ID_XPM, AV_CODEC_ID_CLEARVIDEO, AV_CODEC_ID_SCPR, AV_CODEC_ID_FMVC,
-    AV_CODEC_ID_SPEEDHQ, AV_CODEC_ID_PIXLET, AV_CODEC_ID_PSD, AV_CODEC_ID_YLC,
-    AV_CODEC_ID_SHEERVIDEO, AV_CODEC_ID_MAGICYUV, AV_CODEC_ID_M101,
-    AV_CODEC_ID_TRUEMOTION2RT, AV_CODEC_ID_CFHD, AV_CODEC_ID_DAALA, AV_CODEC_ID_APNG,
-    AV_CODEC_ID_SMVJPEG, AV_CODEC_ID_SNOW, AV_CODEC_ID_XFACE, AV_CODEC_ID_CPIA,
-    AV_CODEC_ID_AVRN, AV_CODEC_ID_YUV4, AV_CODEC_ID_V408, AV_CODEC_ID_V308,
-    AV_CODEC_ID_TARGA_Y216, AV_CODEC_ID_AVUI, AV_CODEC_ID_012V, AV_CODEC_ID_AVRP,
-    AV_CODEC_ID_Y41P, AV_CODEC_ID_VVC, AV_CODEC_ID_MSP2, AV_CODEC_ID_AVS3,
-    AV_CODEC_ID_PGX, AV_CODEC_ID_AVS2, AV_CODEC_ID_RSCC, AV_CODEC_ID_SCREENPRESSO,
-    AV_CODEC_ID_DXV, AV_CODEC_ID_DDS, AV_CODEC_ID_HAP, AV_CODEC_ID_HQ_HQA,
-    AV_CODEC_ID_TDSC, AV_CODEC_ID_HQX, AV_CODEC_ID_MVC2, AV_CODEC_ID_MVC1,
-    AV_CODEC_ID_SGIRLE, AV_CODEC_ID_SANM, AV_CODEC_ID_VP7, AV_CODEC_ID_EXR,
-    AV_CODEC_ID_PAF_VIDEO, AV_CODEC_ID_BRENDER_PIX, AV_CODEC_ID_ALIAS_PIX,
-    AV_CODEC_ID_FIC, AV_CODEC_ID_HEVC, AV_CODEC_ID_HNM4_VIDEO, AV_CODEC_ID_WEBP,
-    AV_CODEC_ID_G2M, AV_CODEC_ID_ESCAPE130, AV_CODEC_ID_AIC, AV_CODEC_ID_VP9,
-    AV_CODEC_ID_MSS2, AV_CODEC_ID_CLLC, AV_CODEC_ID_MTS2, AV_CODEC_ID_TSCC2,
-    AV_CODEC_ID_MSA1, AV_CODEC_ID_MSS1, AV_CODEC_ID_ZEROCODEC, AV_CODEC_ID_XBM,
-    AV_CODEC_ID_CDXL, AV_CODEC_ID_XWD, AV_CODEC_ID_V410, AV_CODEC_ID_DXTORY,
-    AV_CODEC_ID_VBLE, AV_CODEC_ID_BMV_VIDEO, AV_CODEC_ID_UTVIDEO, AV_CODEC_ID_VC1IMAGE,
-    AV_CODEC_ID_WMV3IMAGE, AV_CODEC_ID_DFA, AV_CODEC_ID_JV, AV_CODEC_ID_PRORES,
-    AV_CODEC_ID_LAGARITH, AV_CODEC_ID_MXPEG, AV_CODEC_ID_R10K, AV_CODEC_ID_A64_MULTI5,
-    AV_CODEC_ID_A64_MULTI, AV_CODEC_ID_ANSI, AV_CODEC_ID_PICTOR, AV_CODEC_ID_VP8,
-    AV_CODEC_ID_YOP, AV_CODEC_ID_KGV1, AV_CODEC_ID_IFF_ILBM, AV_CODEC_ID_BINKVIDEO,
-    AV_CODEC_ID_ANM, AV_CODEC_ID_R210, AV_CODEC_ID_CDGRAPHICS, AV_CODEC_ID_FLASHSV2,
-    AV_CODEC_ID_FRWU, AV_CODEC_ID_MAD, AV_CODEC_ID_DPX, AV_CODEC_ID_V210,
-    AV_CODEC_ID_TMV, AV_CODEC_ID_V210X, AV_CODEC_ID_AURA2, AV_CODEC_ID_AURA,
-    AV_CODEC_ID_TQI, AV_CODEC_ID_TGQ, AV_CODEC_ID_TGV, AV_CODEC_ID_MOTIONPIXELS,
-    AV_CODEC_ID_CMV, AV_CODEC_ID_BFI, AV_CODEC_ID_DIRAC, AV_CODEC_ID_ESCAPE124,
-    AV_CODEC_ID_RL2, AV_CODEC_ID_MIMIC, AV_CODEC_ID_INDEO5, AV_CODEC_ID_INDEO4,
-    AV_CODEC_ID_SUNRAST, AV_CODEC_ID_PCX, AV_CODEC_ID_VB, AV_CODEC_ID_AMV,
-    AV_CODEC_ID_VP6A, AV_CODEC_ID_TXD, AV_CODEC_ID_PTX, AV_CODEC_ID_BETHSOFTVID,
-    AV_CODEC_ID_C93, AV_CODEC_ID_SGI, AV_CODEC_ID_THP, AV_CODEC_ID_DNXHD,
-    AV_CODEC_ID_DXA, AV_CODEC_ID_GIF, AV_CODEC_ID_TIFF, AV_CODEC_ID_TIERTEXSEQVIDEO,
-    AV_CODEC_ID_DSICINVIDEO, AV_CODEC_ID_TARGA, AV_CODEC_ID_VP6F, AV_CODEC_ID_VP6,
-    AV_CODEC_ID_VP5, AV_CODEC_ID_VMNC, AV_CODEC_ID_JPEG2000, AV_CODEC_ID_CAVS,
-    AV_CODEC_ID_FLASHSV, AV_CODEC_ID_KMVC, AV_CODEC_ID_NUV, AV_CODEC_ID_SMACKVIDEO,
-    AV_CODEC_ID_AVS, AV_CODEC_ID_ZMBV, AV_CODEC_ID_MMVIDEO, AV_CODEC_ID_CSCD,
-    AV_CODEC_ID_BMP, AV_CODEC_ID_TRUEMOTION2, AV_CODEC_ID_FRAPS, AV_CODEC_ID_INDEO2,
-    AV_CODEC_ID_AASC, AV_CODEC_ID_WNV1, AV_CODEC_ID_LOCO, AV_CODEC_ID_WMV3,
-    AV_CODEC_ID_VC1, AV_CODEC_ID_RV40, AV_CODEC_ID_RV30, AV_CODEC_ID_FFVHUFF,
-    AV_CODEC_ID_PAM, AV_CODEC_ID_PGMYUV, AV_CODEC_ID_PGM, AV_CODEC_ID_PBM,
-    AV_CODEC_ID_PPM, AV_CODEC_ID_PNG, AV_CODEC_ID_QPEG, AV_CODEC_ID_VIXL,
-    AV_CODEC_ID_QDRAW, AV_CODEC_ID_ULTI, AV_CODEC_ID_TSCC, AV_CODEC_ID_QTRLE,
-    AV_CODEC_ID_ZLIB, AV_CODEC_ID_MSZH, AV_CODEC_ID_VMDVIDEO, AV_CODEC_ID_TRUEMOTION1,
-    AV_CODEC_ID_FLIC, AV_CODEC_ID_SMC, AV_CODEC_ID_8BPS, AV_CODEC_ID_IDCIN,
-    AV_CODEC_ID_MSVIDEO1, AV_CODEC_ID_MSRLE, AV_CODEC_ID_WS_VQA, AV_CODEC_ID_CINEPAK,
-    AV_CODEC_ID_RPZA, AV_CODEC_ID_XAN_WC4, AV_CODEC_ID_XAN_WC3,
-    AV_CODEC_ID_INTERPLAY_VIDEO, AV_CODEC_ID_ROQ, AV_CODEC_ID_MDEC, AV_CODEC_ID_CLJR,
-    AV_CODEC_ID_VCR1, AV_CODEC_ID_4XM, AV_CODEC_ID_FFV1, AV_CODEC_ID_ASV2,
-    AV_CODEC_ID_ASV1, AV_CODEC_ID_THEORA, AV_CODEC_ID_VP3, AV_CODEC_ID_INDEO3,
-    AV_CODEC_ID_H264, AV_CODEC_ID_CYUV, AV_CODEC_ID_HUFFYUV, AV_CODEC_ID_DVVIDEO,
-    AV_CODEC_ID_SVQ3, AV_CODEC_ID_SVQ1, AV_CODEC_ID_FLV1, AV_CODEC_ID_H263I,
-    AV_CODEC_ID_H263P, AV_CODEC_ID_WMV2, AV_CODEC_ID_WMV1, AV_CODEC_ID_MSMPEG4V3,
-    AV_CODEC_ID_MSMPEG4V2, AV_CODEC_ID_MSMPEG4V1, AV_CODEC_ID_RAWVIDEO,
-    AV_CODEC_ID_MPEG4, AV_CODEC_ID_JPEGLS, AV_CODEC_ID_SP5X, AV_CODEC_ID_LJPEG,
-    AV_CODEC_ID_MJPEGB, AV_CODEC_ID_MJPEG, AV_CODEC_ID_RV20, AV_CODEC_ID_RV10,
-    AV_CODEC_ID_H263, AV_CODEC_ID_H261, AV_CODEC_ID_MPEG2VIDEO, AV_CODEC_ID_MPEG1VIDEO,
-    AV_CODEC_ID_NONE,
-};
-pub use self::defs_h::{
-    AVDiscard, AVDISCARD_ALL, AVDISCARD_NONKEY, AVDISCARD_NONINTRA, AVDISCARD_BIDIR,
-    AVDISCARD_NONREF, AVDISCARD_DEFAULT, AVDISCARD_NONE, AVAudioServiceType,
-    AV_AUDIO_SERVICE_TYPE_NB, AV_AUDIO_SERVICE_TYPE_KARAOKE,
-    AV_AUDIO_SERVICE_TYPE_VOICE_OVER, AV_AUDIO_SERVICE_TYPE_EMERGENCY,
-    AV_AUDIO_SERVICE_TYPE_COMMENTARY, AV_AUDIO_SERVICE_TYPE_DIALOGUE,
-    AV_AUDIO_SERVICE_TYPE_HEARING_IMPAIRED, AV_AUDIO_SERVICE_TYPE_VISUALLY_IMPAIRED,
-    AV_AUDIO_SERVICE_TYPE_EFFECTS, AV_AUDIO_SERVICE_TYPE_MAIN, AVFieldOrder, AV_FIELD_BT,
-    AV_FIELD_TB, AV_FIELD_BB, AV_FIELD_TT, AV_FIELD_PROGRESSIVE, AV_FIELD_UNKNOWN,
-};
-pub use self::samplefmt_h::{
-    AVSampleFormat, AV_SAMPLE_FMT_NB, AV_SAMPLE_FMT_S64P, AV_SAMPLE_FMT_S64,
-    AV_SAMPLE_FMT_DBLP, AV_SAMPLE_FMT_FLTP, AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S16P,
-    AV_SAMPLE_FMT_U8P, AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_S32,
-    AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_NONE,
-};
-pub use self::log_h::{
-    AVClass, AVClassCategory, AV_CLASS_CATEGORY_NB, AV_CLASS_CATEGORY_DEVICE_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_OUTPUT, AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT, AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_VIDEO_OUTPUT, AV_CLASS_CATEGORY_HWDEVICE,
-    AV_CLASS_CATEGORY_SWRESAMPLER, AV_CLASS_CATEGORY_SWSCALER,
-    AV_CLASS_CATEGORY_BITSTREAM_FILTER, AV_CLASS_CATEGORY_FILTER,
-    AV_CLASS_CATEGORY_DECODER, AV_CLASS_CATEGORY_ENCODER, AV_CLASS_CATEGORY_DEMUXER,
-    AV_CLASS_CATEGORY_MUXER, AV_CLASS_CATEGORY_OUTPUT, AV_CLASS_CATEGORY_INPUT,
-    AV_CLASS_CATEGORY_NA, AVOptionRanges, AVOption,
+    avcodec_alloc_context3, avcodec_free_context, avcodec_open2, avcodec_parameters_to_context,
+    avcodec_receive_frame, avcodec_send_packet, AVCodecContext, AVCodecInternal, AVHWAccel,
+    RcOverride,
 };
 pub use self::avformat_h::{
-    AVFormatContext, av_format_control_message, AVDurationEstimationMethod,
-    AVFMT_DURATION_FROM_BITRATE, AVFMT_DURATION_FROM_STREAM, AVFMT_DURATION_FROM_PTS,
-    AVProgram, AVChapter, AVStreamGroup, AVStream, C2RustUnnamed_0, AVStreamGroupLCEVC,
-    AVStreamGroupTileGrid, C2RustUnnamed_1, AVStreamGroupParamsType,
-    AV_STREAM_GROUP_PARAMS_LCEVC, AV_STREAM_GROUP_PARAMS_TILE_GRID,
-    AV_STREAM_GROUP_PARAMS_IAMF_MIX_PRESENTATION,
-    AV_STREAM_GROUP_PARAMS_IAMF_AUDIO_ELEMENT, AV_STREAM_GROUP_PARAMS_NONE,
-    AVOutputFormat, AVInputFormat, AVIAMFMixPresentation, AVIAMFAudioElement, AVCodecTag,
-    av_find_input_format, avformat_open_input, avformat_find_stream_info, av_read_frame,
-    avformat_close_input,
+    av_find_input_format, av_format_control_message, av_read_frame, avformat_close_input,
+    avformat_find_stream_info, avformat_open_input, AVChapter, AVCodecTag,
+    AVDurationEstimationMethod, AVFormatContext, AVIAMFAudioElement, AVIAMFMixPresentation,
+    AVInputFormat, AVOutputFormat, AVProgram, AVStream, AVStreamGroup, AVStreamGroupLCEVC,
+    AVStreamGroupParamsType, AVStreamGroupTileGrid, C2RustUnnamed_0, C2RustUnnamed_1,
+    AVFMT_DURATION_FROM_BITRATE, AVFMT_DURATION_FROM_PTS, AVFMT_DURATION_FROM_STREAM,
+    AV_STREAM_GROUP_PARAMS_IAMF_AUDIO_ELEMENT, AV_STREAM_GROUP_PARAMS_IAMF_MIX_PRESENTATION,
+    AV_STREAM_GROUP_PARAMS_LCEVC, AV_STREAM_GROUP_PARAMS_NONE, AV_STREAM_GROUP_PARAMS_TILE_GRID,
 };
 pub use self::avio_h::{
-    AVIOContext, AVIODataMarkerType, AVIO_DATA_MARKER_FLUSH_POINT,
-    AVIO_DATA_MARKER_TRAILER, AVIO_DATA_MARKER_UNKNOWN, AVIO_DATA_MARKER_BOUNDARY_POINT,
-    AVIO_DATA_MARKER_SYNC_POINT, AVIO_DATA_MARKER_HEADER, AVIOInterruptCB,
+    AVIOContext, AVIODataMarkerType, AVIOInterruptCB, AVIO_DATA_MARKER_BOUNDARY_POINT,
+    AVIO_DATA_MARKER_FLUSH_POINT, AVIO_DATA_MARKER_HEADER, AVIO_DATA_MARKER_SYNC_POINT,
+    AVIO_DATA_MARKER_TRAILER, AVIO_DATA_MARKER_UNKNOWN,
+};
+pub use self::avutil_h::{
+    AVMediaType, AVPictureType, AVMEDIA_TYPE_ATTACHMENT, AVMEDIA_TYPE_AUDIO, AVMEDIA_TYPE_DATA,
+    AVMEDIA_TYPE_NB, AVMEDIA_TYPE_SUBTITLE, AVMEDIA_TYPE_UNKNOWN, AVMEDIA_TYPE_VIDEO,
+    AV_NOPTS_VALUE, AV_PICTURE_TYPE_B, AV_PICTURE_TYPE_BI, AV_PICTURE_TYPE_I, AV_PICTURE_TYPE_NONE,
+    AV_PICTURE_TYPE_P, AV_PICTURE_TYPE_S, AV_PICTURE_TYPE_SI, AV_PICTURE_TYPE_SP,
+};
+pub use self::buffer_h::{AVBuffer, AVBufferRef};
+pub use self::channel_layout_h::{
+    AVChannel, AVChannelCustom, AVChannelLayout, AVChannelOrder, C2RustUnnamed,
+    AV_CHANNEL_ORDER_AMBISONIC, AV_CHANNEL_ORDER_CUSTOM, AV_CHANNEL_ORDER_NATIVE,
+    AV_CHANNEL_ORDER_UNSPEC, AV_CHAN_AMBISONIC_BASE, AV_CHAN_AMBISONIC_END, AV_CHAN_BACK_CENTER,
+    AV_CHAN_BACK_LEFT, AV_CHAN_BACK_RIGHT, AV_CHAN_BINAURAL_LEFT, AV_CHAN_BINAURAL_RIGHT,
+    AV_CHAN_BOTTOM_FRONT_CENTER, AV_CHAN_BOTTOM_FRONT_LEFT, AV_CHAN_BOTTOM_FRONT_RIGHT,
+    AV_CHAN_FRONT_CENTER, AV_CHAN_FRONT_LEFT, AV_CHAN_FRONT_LEFT_OF_CENTER, AV_CHAN_FRONT_RIGHT,
+    AV_CHAN_FRONT_RIGHT_OF_CENTER, AV_CHAN_LOW_FREQUENCY, AV_CHAN_LOW_FREQUENCY_2, AV_CHAN_NONE,
+    AV_CHAN_SIDE_LEFT, AV_CHAN_SIDE_RIGHT, AV_CHAN_SIDE_SURROUND_LEFT, AV_CHAN_SIDE_SURROUND_RIGHT,
+    AV_CHAN_STEREO_LEFT, AV_CHAN_STEREO_RIGHT, AV_CHAN_SURROUND_DIRECT_LEFT,
+    AV_CHAN_SURROUND_DIRECT_RIGHT, AV_CHAN_TOP_BACK_CENTER, AV_CHAN_TOP_BACK_LEFT,
+    AV_CHAN_TOP_BACK_RIGHT, AV_CHAN_TOP_CENTER, AV_CHAN_TOP_FRONT_CENTER, AV_CHAN_TOP_FRONT_LEFT,
+    AV_CHAN_TOP_FRONT_RIGHT, AV_CHAN_TOP_SIDE_LEFT, AV_CHAN_TOP_SIDE_RIGHT,
+    AV_CHAN_TOP_SURROUND_LEFT, AV_CHAN_TOP_SURROUND_RIGHT, AV_CHAN_UNKNOWN, AV_CHAN_UNUSED,
+    AV_CHAN_WIDE_LEFT, AV_CHAN_WIDE_RIGHT, FF_CHANNEL_ORDER_NB,
+};
+pub use self::codec_desc_h::AVCodecDescriptor;
+pub use self::codec_h::{avcodec_find_decoder, AVCodec, AVProfile};
+pub use self::codec_id_h::{
+    AVCodecID, AV_CODEC_ID_012V, AV_CODEC_ID_4GV, AV_CODEC_ID_4XM, AV_CODEC_ID_8BPS,
+    AV_CODEC_ID_8SVX_EXP, AV_CODEC_ID_8SVX_FIB, AV_CODEC_ID_A64_MULTI, AV_CODEC_ID_A64_MULTI5,
+    AV_CODEC_ID_AAC, AV_CODEC_ID_AAC_LATM, AV_CODEC_ID_AASC, AV_CODEC_ID_AC3, AV_CODEC_ID_AC4,
+    AV_CODEC_ID_ACELP_KELVIN, AV_CODEC_ID_ADPCM_4XM, AV_CODEC_ID_ADPCM_ADX, AV_CODEC_ID_ADPCM_AFC,
+    AV_CODEC_ID_ADPCM_AGM, AV_CODEC_ID_ADPCM_AICA, AV_CODEC_ID_ADPCM_ARGO, AV_CODEC_ID_ADPCM_CT,
+    AV_CODEC_ID_ADPCM_DTK, AV_CODEC_ID_ADPCM_EA, AV_CODEC_ID_ADPCM_EA_MAXIS_XA,
+    AV_CODEC_ID_ADPCM_EA_R1, AV_CODEC_ID_ADPCM_EA_R2, AV_CODEC_ID_ADPCM_EA_R3,
+    AV_CODEC_ID_ADPCM_EA_XAS, AV_CODEC_ID_ADPCM_G722, AV_CODEC_ID_ADPCM_G726,
+    AV_CODEC_ID_ADPCM_G726LE, AV_CODEC_ID_ADPCM_IMA_ACORN, AV_CODEC_ID_ADPCM_IMA_ALP,
+    AV_CODEC_ID_ADPCM_IMA_AMV, AV_CODEC_ID_ADPCM_IMA_APC, AV_CODEC_ID_ADPCM_IMA_APM,
+    AV_CODEC_ID_ADPCM_IMA_CUNNING, AV_CODEC_ID_ADPCM_IMA_DAT4, AV_CODEC_ID_ADPCM_IMA_DK3,
+    AV_CODEC_ID_ADPCM_IMA_DK4, AV_CODEC_ID_ADPCM_IMA_EA_EACS, AV_CODEC_ID_ADPCM_IMA_EA_SEAD,
+    AV_CODEC_ID_ADPCM_IMA_ISS, AV_CODEC_ID_ADPCM_IMA_MOFLEX, AV_CODEC_ID_ADPCM_IMA_MTF,
+    AV_CODEC_ID_ADPCM_IMA_OKI, AV_CODEC_ID_ADPCM_IMA_QT, AV_CODEC_ID_ADPCM_IMA_RAD,
+    AV_CODEC_ID_ADPCM_IMA_SMJPEG, AV_CODEC_ID_ADPCM_IMA_SSI, AV_CODEC_ID_ADPCM_IMA_WAV,
+    AV_CODEC_ID_ADPCM_IMA_WS, AV_CODEC_ID_ADPCM_IMA_XBOX, AV_CODEC_ID_ADPCM_MS,
+    AV_CODEC_ID_ADPCM_MTAF, AV_CODEC_ID_ADPCM_PSX, AV_CODEC_ID_ADPCM_SANYO,
+    AV_CODEC_ID_ADPCM_SBPRO_2, AV_CODEC_ID_ADPCM_SBPRO_3, AV_CODEC_ID_ADPCM_SBPRO_4,
+    AV_CODEC_ID_ADPCM_SWF, AV_CODEC_ID_ADPCM_THP, AV_CODEC_ID_ADPCM_THP_LE, AV_CODEC_ID_ADPCM_VIMA,
+    AV_CODEC_ID_ADPCM_XA, AV_CODEC_ID_ADPCM_XMD, AV_CODEC_ID_ADPCM_YAMAHA, AV_CODEC_ID_ADPCM_ZORK,
+    AV_CODEC_ID_AGM, AV_CODEC_ID_AIC, AV_CODEC_ID_ALAC, AV_CODEC_ID_ALIAS_PIX, AV_CODEC_ID_AMR_NB,
+    AV_CODEC_ID_AMR_WB, AV_CODEC_ID_AMV, AV_CODEC_ID_ANM, AV_CODEC_ID_ANSI, AV_CODEC_ID_ANULL,
+    AV_CODEC_ID_APAC, AV_CODEC_ID_APE, AV_CODEC_ID_APNG, AV_CODEC_ID_APTX, AV_CODEC_ID_APTX_HD,
+    AV_CODEC_ID_APV, AV_CODEC_ID_ARBC, AV_CODEC_ID_ARGO, AV_CODEC_ID_ARIB_CAPTION, AV_CODEC_ID_ASS,
+    AV_CODEC_ID_ASV1, AV_CODEC_ID_ASV2, AV_CODEC_ID_ATRAC1, AV_CODEC_ID_ATRAC3,
+    AV_CODEC_ID_ATRAC3AL, AV_CODEC_ID_ATRAC3P, AV_CODEC_ID_ATRAC3PAL, AV_CODEC_ID_ATRAC9,
+    AV_CODEC_ID_AURA, AV_CODEC_ID_AURA2, AV_CODEC_ID_AV1, AV_CODEC_ID_AVRN, AV_CODEC_ID_AVRP,
+    AV_CODEC_ID_AVS, AV_CODEC_ID_AVS2, AV_CODEC_ID_AVS3, AV_CODEC_ID_AVUI, AV_CODEC_ID_BETHSOFTVID,
+    AV_CODEC_ID_BFI, AV_CODEC_ID_BINKAUDIO_DCT, AV_CODEC_ID_BINKAUDIO_RDFT, AV_CODEC_ID_BINKVIDEO,
+    AV_CODEC_ID_BINTEXT, AV_CODEC_ID_BIN_DATA, AV_CODEC_ID_BITPACKED, AV_CODEC_ID_BMP,
+    AV_CODEC_ID_BMV_AUDIO, AV_CODEC_ID_BMV_VIDEO, AV_CODEC_ID_BONK, AV_CODEC_ID_BRENDER_PIX,
+    AV_CODEC_ID_C93, AV_CODEC_ID_CAVS, AV_CODEC_ID_CBD2_DPCM, AV_CODEC_ID_CDGRAPHICS,
+    AV_CODEC_ID_CDTOONS, AV_CODEC_ID_CDXL, AV_CODEC_ID_CELT, AV_CODEC_ID_CFHD, AV_CODEC_ID_CINEPAK,
+    AV_CODEC_ID_CLEARVIDEO, AV_CODEC_ID_CLJR, AV_CODEC_ID_CLLC, AV_CODEC_ID_CMV,
+    AV_CODEC_ID_CODEC2, AV_CODEC_ID_COMFORT_NOISE, AV_CODEC_ID_COOK, AV_CODEC_ID_CPIA,
+    AV_CODEC_ID_CRI, AV_CODEC_ID_CSCD, AV_CODEC_ID_CYUV, AV_CODEC_ID_DAALA, AV_CODEC_ID_DDS,
+    AV_CODEC_ID_DERF_DPCM, AV_CODEC_ID_DFA, AV_CODEC_ID_DFPWM, AV_CODEC_ID_DIRAC,
+    AV_CODEC_ID_DNXHD, AV_CODEC_ID_DNXUC, AV_CODEC_ID_DOLBY_E, AV_CODEC_ID_DPX,
+    AV_CODEC_ID_DSD_LSBF, AV_CODEC_ID_DSD_LSBF_PLANAR, AV_CODEC_ID_DSD_MSBF,
+    AV_CODEC_ID_DSD_MSBF_PLANAR, AV_CODEC_ID_DSICINAUDIO, AV_CODEC_ID_DSICINVIDEO,
+    AV_CODEC_ID_DSS_SP, AV_CODEC_ID_DST, AV_CODEC_ID_DTS, AV_CODEC_ID_DVAUDIO,
+    AV_CODEC_ID_DVB_SUBTITLE, AV_CODEC_ID_DVB_TELETEXT, AV_CODEC_ID_DVD_NAV,
+    AV_CODEC_ID_DVD_SUBTITLE, AV_CODEC_ID_DVVIDEO, AV_CODEC_ID_DXA, AV_CODEC_ID_DXTORY,
+    AV_CODEC_ID_DXV, AV_CODEC_ID_EAC3, AV_CODEC_ID_EIA_608, AV_CODEC_ID_EPG, AV_CODEC_ID_ESCAPE124,
+    AV_CODEC_ID_ESCAPE130, AV_CODEC_ID_EVC, AV_CODEC_ID_EVRC, AV_CODEC_ID_EXR,
+    AV_CODEC_ID_FASTAUDIO, AV_CODEC_ID_FFMETADATA, AV_CODEC_ID_FFV1, AV_CODEC_ID_FFVHUFF,
+    AV_CODEC_ID_FFWAVESYNTH, AV_CODEC_ID_FIC, AV_CODEC_ID_FIRST_AUDIO, AV_CODEC_ID_FIRST_SUBTITLE,
+    AV_CODEC_ID_FIRST_UNKNOWN, AV_CODEC_ID_FITS, AV_CODEC_ID_FLAC, AV_CODEC_ID_FLASHSV,
+    AV_CODEC_ID_FLASHSV2, AV_CODEC_ID_FLIC, AV_CODEC_ID_FLV1, AV_CODEC_ID_FMVC, AV_CODEC_ID_FRAPS,
+    AV_CODEC_ID_FRWU, AV_CODEC_ID_FTR, AV_CODEC_ID_G2M, AV_CODEC_ID_G723_1, AV_CODEC_ID_G728,
+    AV_CODEC_ID_G729, AV_CODEC_ID_GDV, AV_CODEC_ID_GEM, AV_CODEC_ID_GIF, AV_CODEC_ID_GREMLIN_DPCM,
+    AV_CODEC_ID_GSM, AV_CODEC_ID_GSM_MS, AV_CODEC_ID_H261, AV_CODEC_ID_H263, AV_CODEC_ID_H263I,
+    AV_CODEC_ID_H263P, AV_CODEC_ID_H264, AV_CODEC_ID_HAP, AV_CODEC_ID_HCA, AV_CODEC_ID_HCOM,
+    AV_CODEC_ID_HDMV_PGS_SUBTITLE, AV_CODEC_ID_HDMV_TEXT_SUBTITLE, AV_CODEC_ID_HEVC,
+    AV_CODEC_ID_HNM4_VIDEO, AV_CODEC_ID_HQX, AV_CODEC_ID_HQ_HQA, AV_CODEC_ID_HUFFYUV,
+    AV_CODEC_ID_HYMT, AV_CODEC_ID_IAC, AV_CODEC_ID_IDCIN, AV_CODEC_ID_IDF, AV_CODEC_ID_IFF_ILBM,
+    AV_CODEC_ID_ILBC, AV_CODEC_ID_IMC, AV_CODEC_ID_IMM4, AV_CODEC_ID_IMM5, AV_CODEC_ID_INDEO2,
+    AV_CODEC_ID_INDEO3, AV_CODEC_ID_INDEO4, AV_CODEC_ID_INDEO5, AV_CODEC_ID_INTERPLAY_ACM,
+    AV_CODEC_ID_INTERPLAY_DPCM, AV_CODEC_ID_INTERPLAY_VIDEO, AV_CODEC_ID_IPU, AV_CODEC_ID_IVTV_VBI,
+    AV_CODEC_ID_JACOSUB, AV_CODEC_ID_JPEG2000, AV_CODEC_ID_JPEGLS, AV_CODEC_ID_JPEGXL,
+    AV_CODEC_ID_JPEGXL_ANIM, AV_CODEC_ID_JV, AV_CODEC_ID_KGV1, AV_CODEC_ID_KMVC,
+    AV_CODEC_ID_LAGARITH, AV_CODEC_ID_LC3, AV_CODEC_ID_LCEVC, AV_CODEC_ID_LEAD, AV_CODEC_ID_LJPEG,
+    AV_CODEC_ID_LOCO, AV_CODEC_ID_LSCR, AV_CODEC_ID_M101, AV_CODEC_ID_MACE3, AV_CODEC_ID_MACE6,
+    AV_CODEC_ID_MAD, AV_CODEC_ID_MAGICYUV, AV_CODEC_ID_MDEC, AV_CODEC_ID_MEDIA100,
+    AV_CODEC_ID_METASOUND, AV_CODEC_ID_MICRODVD, AV_CODEC_ID_MIMIC, AV_CODEC_ID_MISC4,
+    AV_CODEC_ID_MJPEG, AV_CODEC_ID_MJPEGB, AV_CODEC_ID_MLP, AV_CODEC_ID_MMVIDEO,
+    AV_CODEC_ID_MOBICLIP, AV_CODEC_ID_MOTIONPIXELS, AV_CODEC_ID_MOV_TEXT, AV_CODEC_ID_MP1,
+    AV_CODEC_ID_MP2, AV_CODEC_ID_MP3, AV_CODEC_ID_MP3ADU, AV_CODEC_ID_MP3ON4, AV_CODEC_ID_MP4ALS,
+    AV_CODEC_ID_MPEG1VIDEO, AV_CODEC_ID_MPEG2TS, AV_CODEC_ID_MPEG2VIDEO, AV_CODEC_ID_MPEG4,
+    AV_CODEC_ID_MPEG4SYSTEMS, AV_CODEC_ID_MPEGH_3D_AUDIO, AV_CODEC_ID_MPL2, AV_CODEC_ID_MSA1,
+    AV_CODEC_ID_MSCC, AV_CODEC_ID_MSMPEG4V1, AV_CODEC_ID_MSMPEG4V2, AV_CODEC_ID_MSMPEG4V3,
+    AV_CODEC_ID_MSNSIREN, AV_CODEC_ID_MSP2, AV_CODEC_ID_MSRLE, AV_CODEC_ID_MSS1, AV_CODEC_ID_MSS2,
+    AV_CODEC_ID_MSVIDEO1, AV_CODEC_ID_MSZH, AV_CODEC_ID_MTS2, AV_CODEC_ID_MUSEPACK7,
+    AV_CODEC_ID_MUSEPACK8, AV_CODEC_ID_MV30, AV_CODEC_ID_MVC1, AV_CODEC_ID_MVC2, AV_CODEC_ID_MVDV,
+    AV_CODEC_ID_MVHA, AV_CODEC_ID_MWSC, AV_CODEC_ID_MXPEG, AV_CODEC_ID_NELLYMOSER,
+    AV_CODEC_ID_NONE, AV_CODEC_ID_NOTCHLC, AV_CODEC_ID_NUV, AV_CODEC_ID_ON2AVC, AV_CODEC_ID_OPUS,
+    AV_CODEC_ID_OSQ, AV_CODEC_ID_OTF, AV_CODEC_ID_PAF_AUDIO, AV_CODEC_ID_PAF_VIDEO,
+    AV_CODEC_ID_PAM, AV_CODEC_ID_PBM, AV_CODEC_ID_PCM_ALAW, AV_CODEC_ID_PCM_BLURAY,
+    AV_CODEC_ID_PCM_DVD, AV_CODEC_ID_PCM_F16LE, AV_CODEC_ID_PCM_F24LE, AV_CODEC_ID_PCM_F32BE,
+    AV_CODEC_ID_PCM_F32LE, AV_CODEC_ID_PCM_F64BE, AV_CODEC_ID_PCM_F64LE, AV_CODEC_ID_PCM_LXF,
+    AV_CODEC_ID_PCM_MULAW, AV_CODEC_ID_PCM_S16BE, AV_CODEC_ID_PCM_S16BE_PLANAR,
+    AV_CODEC_ID_PCM_S16LE, AV_CODEC_ID_PCM_S16LE_PLANAR, AV_CODEC_ID_PCM_S24BE,
+    AV_CODEC_ID_PCM_S24DAUD, AV_CODEC_ID_PCM_S24LE, AV_CODEC_ID_PCM_S24LE_PLANAR,
+    AV_CODEC_ID_PCM_S32BE, AV_CODEC_ID_PCM_S32LE, AV_CODEC_ID_PCM_S32LE_PLANAR,
+    AV_CODEC_ID_PCM_S64BE, AV_CODEC_ID_PCM_S64LE, AV_CODEC_ID_PCM_S8, AV_CODEC_ID_PCM_S8_PLANAR,
+    AV_CODEC_ID_PCM_SGA, AV_CODEC_ID_PCM_U16BE, AV_CODEC_ID_PCM_U16LE, AV_CODEC_ID_PCM_U24BE,
+    AV_CODEC_ID_PCM_U24LE, AV_CODEC_ID_PCM_U32BE, AV_CODEC_ID_PCM_U32LE, AV_CODEC_ID_PCM_U8,
+    AV_CODEC_ID_PCM_VIDC, AV_CODEC_ID_PCM_ZORK, AV_CODEC_ID_PCX, AV_CODEC_ID_PDV, AV_CODEC_ID_PFM,
+    AV_CODEC_ID_PGM, AV_CODEC_ID_PGMYUV, AV_CODEC_ID_PGX, AV_CODEC_ID_PHM, AV_CODEC_ID_PHOTOCD,
+    AV_CODEC_ID_PICTOR, AV_CODEC_ID_PIXLET, AV_CODEC_ID_PJS, AV_CODEC_ID_PNG, AV_CODEC_ID_PPM,
+    AV_CODEC_ID_PROBE, AV_CODEC_ID_PRORES, AV_CODEC_ID_PRORES_RAW, AV_CODEC_ID_PROSUMER,
+    AV_CODEC_ID_PSD, AV_CODEC_ID_PTX, AV_CODEC_ID_QCELP, AV_CODEC_ID_QDM2, AV_CODEC_ID_QDMC,
+    AV_CODEC_ID_QDRAW, AV_CODEC_ID_QOA, AV_CODEC_ID_QOI, AV_CODEC_ID_QPEG, AV_CODEC_ID_QTRLE,
+    AV_CODEC_ID_R10K, AV_CODEC_ID_R210, AV_CODEC_ID_RADIANCE_HDR, AV_CODEC_ID_RALF,
+    AV_CODEC_ID_RASC, AV_CODEC_ID_RAWVIDEO, AV_CODEC_ID_RA_144, AV_CODEC_ID_RA_288,
+    AV_CODEC_ID_REALTEXT, AV_CODEC_ID_RKA, AV_CODEC_ID_RL2, AV_CODEC_ID_ROQ, AV_CODEC_ID_ROQ_DPCM,
+    AV_CODEC_ID_RPZA, AV_CODEC_ID_RSCC, AV_CODEC_ID_RTV1, AV_CODEC_ID_RV10, AV_CODEC_ID_RV20,
+    AV_CODEC_ID_RV30, AV_CODEC_ID_RV40, AV_CODEC_ID_RV60, AV_CODEC_ID_S302M, AV_CODEC_ID_SAMI,
+    AV_CODEC_ID_SANM, AV_CODEC_ID_SBC, AV_CODEC_ID_SCPR, AV_CODEC_ID_SCREENPRESSO,
+    AV_CODEC_ID_SCTE_35, AV_CODEC_ID_SDX2_DPCM, AV_CODEC_ID_SGA_VIDEO, AV_CODEC_ID_SGI,
+    AV_CODEC_ID_SGIRLE, AV_CODEC_ID_SHEERVIDEO, AV_CODEC_ID_SHORTEN, AV_CODEC_ID_SIMBIOSIS_IMX,
+    AV_CODEC_ID_SIPR, AV_CODEC_ID_SIREN, AV_CODEC_ID_SMACKAUDIO, AV_CODEC_ID_SMACKVIDEO,
+    AV_CODEC_ID_SMC, AV_CODEC_ID_SMPTE_2038, AV_CODEC_ID_SMPTE_436M_ANC, AV_CODEC_ID_SMPTE_KLV,
+    AV_CODEC_ID_SMV, AV_CODEC_ID_SMVJPEG, AV_CODEC_ID_SNOW, AV_CODEC_ID_SOL_DPCM,
+    AV_CODEC_ID_SONIC, AV_CODEC_ID_SONIC_LS, AV_CODEC_ID_SP5X, AV_CODEC_ID_SPEEDHQ,
+    AV_CODEC_ID_SPEEX, AV_CODEC_ID_SRGC, AV_CODEC_ID_SRT, AV_CODEC_ID_SSA, AV_CODEC_ID_STL,
+    AV_CODEC_ID_SUBRIP, AV_CODEC_ID_SUBVIEWER, AV_CODEC_ID_SUBVIEWER1, AV_CODEC_ID_SUNRAST,
+    AV_CODEC_ID_SVG, AV_CODEC_ID_SVQ1, AV_CODEC_ID_SVQ3, AV_CODEC_ID_TAK, AV_CODEC_ID_TARGA,
+    AV_CODEC_ID_TARGA_Y216, AV_CODEC_ID_TDSC, AV_CODEC_ID_TEXT, AV_CODEC_ID_TGQ, AV_CODEC_ID_TGV,
+    AV_CODEC_ID_THEORA, AV_CODEC_ID_THP, AV_CODEC_ID_TIERTEXSEQVIDEO, AV_CODEC_ID_TIFF,
+    AV_CODEC_ID_TIMED_ID3, AV_CODEC_ID_TMV, AV_CODEC_ID_TQI, AV_CODEC_ID_TRUEHD,
+    AV_CODEC_ID_TRUEMOTION1, AV_CODEC_ID_TRUEMOTION2, AV_CODEC_ID_TRUEMOTION2RT,
+    AV_CODEC_ID_TRUESPEECH, AV_CODEC_ID_TSCC, AV_CODEC_ID_TSCC2, AV_CODEC_ID_TTA, AV_CODEC_ID_TTF,
+    AV_CODEC_ID_TTML, AV_CODEC_ID_TWINVQ, AV_CODEC_ID_TXD, AV_CODEC_ID_ULTI, AV_CODEC_ID_UTVIDEO,
+    AV_CODEC_ID_V210, AV_CODEC_ID_V210X, AV_CODEC_ID_V308, AV_CODEC_ID_V408, AV_CODEC_ID_V410,
+    AV_CODEC_ID_VB, AV_CODEC_ID_VBLE, AV_CODEC_ID_VBN, AV_CODEC_ID_VC1, AV_CODEC_ID_VC1IMAGE,
+    AV_CODEC_ID_VCR1, AV_CODEC_ID_VIXL, AV_CODEC_ID_VMDAUDIO, AV_CODEC_ID_VMDVIDEO,
+    AV_CODEC_ID_VMIX, AV_CODEC_ID_VMNC, AV_CODEC_ID_VNULL, AV_CODEC_ID_VORBIS, AV_CODEC_ID_VP3,
+    AV_CODEC_ID_VP4, AV_CODEC_ID_VP5, AV_CODEC_ID_VP6, AV_CODEC_ID_VP6A, AV_CODEC_ID_VP6F,
+    AV_CODEC_ID_VP7, AV_CODEC_ID_VP8, AV_CODEC_ID_VP9, AV_CODEC_ID_VPLAYER, AV_CODEC_ID_VQC,
+    AV_CODEC_ID_VVC, AV_CODEC_ID_WADY_DPCM, AV_CODEC_ID_WAVARC, AV_CODEC_ID_WAVPACK,
+    AV_CODEC_ID_WBMP, AV_CODEC_ID_WCMV, AV_CODEC_ID_WEBP, AV_CODEC_ID_WEBVTT,
+    AV_CODEC_ID_WESTWOOD_SND1, AV_CODEC_ID_WMALOSSLESS, AV_CODEC_ID_WMAPRO, AV_CODEC_ID_WMAV1,
+    AV_CODEC_ID_WMAV2, AV_CODEC_ID_WMAVOICE, AV_CODEC_ID_WMV1, AV_CODEC_ID_WMV2, AV_CODEC_ID_WMV3,
+    AV_CODEC_ID_WMV3IMAGE, AV_CODEC_ID_WNV1, AV_CODEC_ID_WRAPPED_AVFRAME, AV_CODEC_ID_WS_VQA,
+    AV_CODEC_ID_XAN_DPCM, AV_CODEC_ID_XAN_WC3, AV_CODEC_ID_XAN_WC4, AV_CODEC_ID_XBIN,
+    AV_CODEC_ID_XBM, AV_CODEC_ID_XFACE, AV_CODEC_ID_XMA1, AV_CODEC_ID_XMA2, AV_CODEC_ID_XPM,
+    AV_CODEC_ID_XSUB, AV_CODEC_ID_XWD, AV_CODEC_ID_Y41P, AV_CODEC_ID_YLC, AV_CODEC_ID_YOP,
+    AV_CODEC_ID_YUV4, AV_CODEC_ID_ZEROCODEC, AV_CODEC_ID_ZLIB, AV_CODEC_ID_ZMBV,
 };
 pub use self::codec_par_h::AVCodecParameters;
-use self::stdlib_h::{malloc, calloc, free};
-use self::string_h::{memcpy, memset, strcmp, strlen};
-use self::pixdesc_h::av_get_pix_fmt_name;
-pub use self::x264_h::{X264_CSP_NONE, X264_CSP_VFLIP, X264_LOG_ERROR, X264_LOG_WARNING};
-use self::strings_h::strcasecmp;
+pub use self::defs_h::{
+    AVAudioServiceType, AVDiscard, AVFieldOrder, AVDISCARD_ALL, AVDISCARD_BIDIR, AVDISCARD_DEFAULT,
+    AVDISCARD_NONE, AVDISCARD_NONINTRA, AVDISCARD_NONKEY, AVDISCARD_NONREF,
+    AV_AUDIO_SERVICE_TYPE_COMMENTARY, AV_AUDIO_SERVICE_TYPE_DIALOGUE,
+    AV_AUDIO_SERVICE_TYPE_EFFECTS, AV_AUDIO_SERVICE_TYPE_EMERGENCY,
+    AV_AUDIO_SERVICE_TYPE_HEARING_IMPAIRED, AV_AUDIO_SERVICE_TYPE_KARAOKE,
+    AV_AUDIO_SERVICE_TYPE_MAIN, AV_AUDIO_SERVICE_TYPE_NB, AV_AUDIO_SERVICE_TYPE_VISUALLY_IMPAIRED,
+    AV_AUDIO_SERVICE_TYPE_VOICE_OVER, AV_FIELD_BB, AV_FIELD_BT, AV_FIELD_PROGRESSIVE, AV_FIELD_TB,
+    AV_FIELD_TT, AV_FIELD_UNKNOWN,
+};
+use self::dict_h::{av_dict_free, av_dict_set, AVDictionary};
 pub use self::error_h::AVERROR_EOF;
-pub use self::__stddef_null_h::NULL;
+pub use self::frame_h::{
+    av_frame_alloc, av_frame_free, AVFrame, AVFrameSideData, AVFrameSideDataType,
+    AV_FRAME_DATA_3D_REFERENCE_DISPLAYS, AV_FRAME_DATA_A53_CC, AV_FRAME_DATA_AFD,
+    AV_FRAME_DATA_AMBIENT_VIEWING_ENVIRONMENT, AV_FRAME_DATA_AUDIO_SERVICE_TYPE,
+    AV_FRAME_DATA_CONTENT_LIGHT_LEVEL, AV_FRAME_DATA_DETECTION_BBOXES, AV_FRAME_DATA_DISPLAYMATRIX,
+    AV_FRAME_DATA_DOVI_METADATA, AV_FRAME_DATA_DOVI_RPU_BUFFER, AV_FRAME_DATA_DOWNMIX_INFO,
+    AV_FRAME_DATA_DYNAMIC_HDR_PLUS, AV_FRAME_DATA_DYNAMIC_HDR_VIVID,
+    AV_FRAME_DATA_FILM_GRAIN_PARAMS, AV_FRAME_DATA_GOP_TIMECODE, AV_FRAME_DATA_ICC_PROFILE,
+    AV_FRAME_DATA_LCEVC, AV_FRAME_DATA_MASTERING_DISPLAY_METADATA, AV_FRAME_DATA_MATRIXENCODING,
+    AV_FRAME_DATA_MOTION_VECTORS, AV_FRAME_DATA_PANSCAN, AV_FRAME_DATA_REGIONS_OF_INTEREST,
+    AV_FRAME_DATA_REPLAYGAIN, AV_FRAME_DATA_S12M_TIMECODE, AV_FRAME_DATA_SEI_UNREGISTERED,
+    AV_FRAME_DATA_SKIP_SAMPLES, AV_FRAME_DATA_SPHERICAL, AV_FRAME_DATA_STEREO3D,
+    AV_FRAME_DATA_VIDEO_ENC_PARAMS, AV_FRAME_DATA_VIDEO_HINT, AV_FRAME_DATA_VIEW_ID,
+    AV_FRAME_FLAG_INTERLACED, AV_FRAME_FLAG_TOP_FIELD_FIRST,
+};
+pub use self::input_h::{
+    cli_image_t, cli_input_opt_t, cli_input_t, cli_pic_t, video_info_t, x264_cli_pic_alloc,
+    X264_CSP_OTHER,
+};
+pub use self::log_h::{
+    AVClass, AVClassCategory, AVOption, AVOptionRanges, AV_CLASS_CATEGORY_BITSTREAM_FILTER,
+    AV_CLASS_CATEGORY_DECODER, AV_CLASS_CATEGORY_DEMUXER, AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT, AV_CLASS_CATEGORY_DEVICE_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_OUTPUT, AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_VIDEO_OUTPUT, AV_CLASS_CATEGORY_ENCODER, AV_CLASS_CATEGORY_FILTER,
+    AV_CLASS_CATEGORY_HWDEVICE, AV_CLASS_CATEGORY_INPUT, AV_CLASS_CATEGORY_MUXER,
+    AV_CLASS_CATEGORY_NA, AV_CLASS_CATEGORY_NB, AV_CLASS_CATEGORY_OUTPUT,
+    AV_CLASS_CATEGORY_SWRESAMPLER, AV_CLASS_CATEGORY_SWSCALER,
+};
+pub use self::packet_h::{
+    av_packet_alloc, av_packet_free, av_packet_unref, AVPacket, AVPacketSideData,
+    AVPacketSideDataType, AV_PKT_DATA_3D_REFERENCE_DISPLAYS, AV_PKT_DATA_A53_CC, AV_PKT_DATA_AFD,
+    AV_PKT_DATA_AMBIENT_VIEWING_ENVIRONMENT, AV_PKT_DATA_AUDIO_SERVICE_TYPE,
+    AV_PKT_DATA_CONTENT_LIGHT_LEVEL, AV_PKT_DATA_CPB_PROPERTIES, AV_PKT_DATA_DISPLAYMATRIX,
+    AV_PKT_DATA_DOVI_CONF, AV_PKT_DATA_DYNAMIC_HDR10_PLUS, AV_PKT_DATA_ENCRYPTION_INFO,
+    AV_PKT_DATA_ENCRYPTION_INIT_INFO, AV_PKT_DATA_FALLBACK_TRACK, AV_PKT_DATA_FRAME_CROPPING,
+    AV_PKT_DATA_H263_MB_INFO, AV_PKT_DATA_IAMF_DEMIXING_INFO_PARAM,
+    AV_PKT_DATA_IAMF_MIX_GAIN_PARAM, AV_PKT_DATA_IAMF_RECON_GAIN_INFO_PARAM,
+    AV_PKT_DATA_ICC_PROFILE, AV_PKT_DATA_JP_DUALMONO, AV_PKT_DATA_LCEVC,
+    AV_PKT_DATA_MASTERING_DISPLAY_METADATA, AV_PKT_DATA_MATROSKA_BLOCKADDITIONAL,
+    AV_PKT_DATA_METADATA_UPDATE, AV_PKT_DATA_MPEGTS_STREAM_ID, AV_PKT_DATA_NB,
+    AV_PKT_DATA_NEW_EXTRADATA, AV_PKT_DATA_PALETTE, AV_PKT_DATA_PARAM_CHANGE, AV_PKT_DATA_PRFT,
+    AV_PKT_DATA_QUALITY_STATS, AV_PKT_DATA_REPLAYGAIN, AV_PKT_DATA_RTCP_SR,
+    AV_PKT_DATA_S12M_TIMECODE, AV_PKT_DATA_SKIP_SAMPLES, AV_PKT_DATA_SPHERICAL,
+    AV_PKT_DATA_STEREO3D, AV_PKT_DATA_STRINGS_METADATA, AV_PKT_DATA_SUBTITLE_POSITION,
+    AV_PKT_DATA_WEBVTT_IDENTIFIER, AV_PKT_DATA_WEBVTT_SETTINGS,
+};
+use self::pixdesc_h::av_get_pix_fmt_name;
+pub use self::pixfmt_h::{
+    AVChromaLocation, AVColorPrimaries, AVColorRange, AVColorSpace, AVColorTransferCharacteristic,
+    AVPixelFormat, AVCHROMA_LOC_BOTTOM, AVCHROMA_LOC_BOTTOMLEFT, AVCHROMA_LOC_CENTER,
+    AVCHROMA_LOC_LEFT, AVCHROMA_LOC_NB, AVCHROMA_LOC_TOP, AVCHROMA_LOC_TOPLEFT,
+    AVCHROMA_LOC_UNSPECIFIED, AVCOL_PRI_BT2020, AVCOL_PRI_BT470BG, AVCOL_PRI_BT470M,
+    AVCOL_PRI_BT709, AVCOL_PRI_EBU3213, AVCOL_PRI_FILM, AVCOL_PRI_JEDEC_P22, AVCOL_PRI_NB,
+    AVCOL_PRI_RESERVED, AVCOL_PRI_RESERVED0, AVCOL_PRI_SMPTE170M, AVCOL_PRI_SMPTE240M,
+    AVCOL_PRI_SMPTE428, AVCOL_PRI_SMPTE431, AVCOL_PRI_SMPTE432, AVCOL_PRI_SMPTEST428_1,
+    AVCOL_PRI_UNSPECIFIED, AVCOL_RANGE_JPEG, AVCOL_RANGE_MPEG, AVCOL_RANGE_NB,
+    AVCOL_RANGE_UNSPECIFIED, AVCOL_SPC_BT2020_CL, AVCOL_SPC_BT2020_NCL, AVCOL_SPC_BT470BG,
+    AVCOL_SPC_BT709, AVCOL_SPC_CHROMA_DERIVED_CL, AVCOL_SPC_CHROMA_DERIVED_NCL, AVCOL_SPC_FCC,
+    AVCOL_SPC_ICTCP, AVCOL_SPC_IPT_C2, AVCOL_SPC_NB, AVCOL_SPC_RESERVED, AVCOL_SPC_RGB,
+    AVCOL_SPC_SMPTE170M, AVCOL_SPC_SMPTE2085, AVCOL_SPC_SMPTE240M, AVCOL_SPC_UNSPECIFIED,
+    AVCOL_SPC_YCGCO, AVCOL_SPC_YCGCO_RE, AVCOL_SPC_YCGCO_RO, AVCOL_SPC_YCOCG,
+    AVCOL_TRC_ARIB_STD_B67, AVCOL_TRC_BT1361_ECG, AVCOL_TRC_BT2020_10, AVCOL_TRC_BT2020_12,
+    AVCOL_TRC_BT709, AVCOL_TRC_GAMMA22, AVCOL_TRC_GAMMA28, AVCOL_TRC_IEC61966_2_1,
+    AVCOL_TRC_IEC61966_2_4, AVCOL_TRC_LINEAR, AVCOL_TRC_LOG, AVCOL_TRC_LOG_SQRT, AVCOL_TRC_NB,
+    AVCOL_TRC_RESERVED, AVCOL_TRC_RESERVED0, AVCOL_TRC_SMPTE170M, AVCOL_TRC_SMPTE2084,
+    AVCOL_TRC_SMPTE240M, AVCOL_TRC_SMPTE428, AVCOL_TRC_SMPTEST2084, AVCOL_TRC_SMPTEST428_1,
+    AVCOL_TRC_UNSPECIFIED, AV_PIX_FMT_0BGR, AV_PIX_FMT_0RGB, AV_PIX_FMT_ABGR,
+    AV_PIX_FMT_AMF_SURFACE, AV_PIX_FMT_ARGB, AV_PIX_FMT_AYUV, AV_PIX_FMT_AYUV64BE,
+    AV_PIX_FMT_AYUV64LE, AV_PIX_FMT_BAYER_BGGR16BE, AV_PIX_FMT_BAYER_BGGR16LE,
+    AV_PIX_FMT_BAYER_BGGR8, AV_PIX_FMT_BAYER_GBRG16BE, AV_PIX_FMT_BAYER_GBRG16LE,
+    AV_PIX_FMT_BAYER_GBRG8, AV_PIX_FMT_BAYER_GRBG16BE, AV_PIX_FMT_BAYER_GRBG16LE,
+    AV_PIX_FMT_BAYER_GRBG8, AV_PIX_FMT_BAYER_RGGB16BE, AV_PIX_FMT_BAYER_RGGB16LE,
+    AV_PIX_FMT_BAYER_RGGB8, AV_PIX_FMT_BGR0, AV_PIX_FMT_BGR24, AV_PIX_FMT_BGR4,
+    AV_PIX_FMT_BGR444BE, AV_PIX_FMT_BGR444LE, AV_PIX_FMT_BGR48BE, AV_PIX_FMT_BGR48LE,
+    AV_PIX_FMT_BGR4_BYTE, AV_PIX_FMT_BGR555BE, AV_PIX_FMT_BGR555LE, AV_PIX_FMT_BGR565BE,
+    AV_PIX_FMT_BGR565LE, AV_PIX_FMT_BGR8, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGRA64BE,
+    AV_PIX_FMT_BGRA64LE, AV_PIX_FMT_CUDA, AV_PIX_FMT_D3D11, AV_PIX_FMT_D3D11VA_VLD,
+    AV_PIX_FMT_D3D12, AV_PIX_FMT_DRM_PRIME, AV_PIX_FMT_DXVA2_VLD, AV_PIX_FMT_GBR24P,
+    AV_PIX_FMT_GBRAP, AV_PIX_FMT_GBRAP10BE, AV_PIX_FMT_GBRAP10LE, AV_PIX_FMT_GBRAP12BE,
+    AV_PIX_FMT_GBRAP12LE, AV_PIX_FMT_GBRAP14BE, AV_PIX_FMT_GBRAP14LE, AV_PIX_FMT_GBRAP16BE,
+    AV_PIX_FMT_GBRAP16LE, AV_PIX_FMT_GBRAP32BE, AV_PIX_FMT_GBRAP32LE, AV_PIX_FMT_GBRAPF16BE,
+    AV_PIX_FMT_GBRAPF16LE, AV_PIX_FMT_GBRAPF32BE, AV_PIX_FMT_GBRAPF32LE, AV_PIX_FMT_GBRP,
+    AV_PIX_FMT_GBRP10BE, AV_PIX_FMT_GBRP10LE, AV_PIX_FMT_GBRP10MSBBE, AV_PIX_FMT_GBRP10MSBLE,
+    AV_PIX_FMT_GBRP12BE, AV_PIX_FMT_GBRP12LE, AV_PIX_FMT_GBRP12MSBBE, AV_PIX_FMT_GBRP12MSBLE,
+    AV_PIX_FMT_GBRP14BE, AV_PIX_FMT_GBRP14LE, AV_PIX_FMT_GBRP16BE, AV_PIX_FMT_GBRP16LE,
+    AV_PIX_FMT_GBRP9BE, AV_PIX_FMT_GBRP9LE, AV_PIX_FMT_GBRPF16BE, AV_PIX_FMT_GBRPF16LE,
+    AV_PIX_FMT_GBRPF32BE, AV_PIX_FMT_GBRPF32LE, AV_PIX_FMT_GRAY10BE, AV_PIX_FMT_GRAY10LE,
+    AV_PIX_FMT_GRAY12BE, AV_PIX_FMT_GRAY12LE, AV_PIX_FMT_GRAY14BE, AV_PIX_FMT_GRAY14LE,
+    AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_GRAY16LE, AV_PIX_FMT_GRAY32BE, AV_PIX_FMT_GRAY32LE,
+    AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY8A, AV_PIX_FMT_GRAY9BE, AV_PIX_FMT_GRAY9LE,
+    AV_PIX_FMT_GRAYF16BE, AV_PIX_FMT_GRAYF16LE, AV_PIX_FMT_GRAYF32BE, AV_PIX_FMT_GRAYF32LE,
+    AV_PIX_FMT_MEDIACODEC, AV_PIX_FMT_MMAL, AV_PIX_FMT_MONOBLACK, AV_PIX_FMT_MONOWHITE,
+    AV_PIX_FMT_NB, AV_PIX_FMT_NONE, AV_PIX_FMT_NV12, AV_PIX_FMT_NV16, AV_PIX_FMT_NV20BE,
+    AV_PIX_FMT_NV20LE, AV_PIX_FMT_NV21, AV_PIX_FMT_NV24, AV_PIX_FMT_NV42, AV_PIX_FMT_OHCODEC,
+    AV_PIX_FMT_OPENCL, AV_PIX_FMT_P010BE, AV_PIX_FMT_P010LE, AV_PIX_FMT_P012BE, AV_PIX_FMT_P012LE,
+    AV_PIX_FMT_P016BE, AV_PIX_FMT_P016LE, AV_PIX_FMT_P210BE, AV_PIX_FMT_P210LE, AV_PIX_FMT_P212BE,
+    AV_PIX_FMT_P212LE, AV_PIX_FMT_P216BE, AV_PIX_FMT_P216LE, AV_PIX_FMT_P410BE, AV_PIX_FMT_P410LE,
+    AV_PIX_FMT_P412BE, AV_PIX_FMT_P412LE, AV_PIX_FMT_P416BE, AV_PIX_FMT_P416LE, AV_PIX_FMT_PAL8,
+    AV_PIX_FMT_QSV, AV_PIX_FMT_RGB0, AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB4, AV_PIX_FMT_RGB444BE,
+    AV_PIX_FMT_RGB444LE, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_RGB48LE, AV_PIX_FMT_RGB4_BYTE,
+    AV_PIX_FMT_RGB555BE, AV_PIX_FMT_RGB555LE, AV_PIX_FMT_RGB565BE, AV_PIX_FMT_RGB565LE,
+    AV_PIX_FMT_RGB8, AV_PIX_FMT_RGB96BE, AV_PIX_FMT_RGB96LE, AV_PIX_FMT_RGBA, AV_PIX_FMT_RGBA128BE,
+    AV_PIX_FMT_RGBA128LE, AV_PIX_FMT_RGBA64BE, AV_PIX_FMT_RGBA64LE, AV_PIX_FMT_RGBAF16BE,
+    AV_PIX_FMT_RGBAF16LE, AV_PIX_FMT_RGBAF32BE, AV_PIX_FMT_RGBAF32LE, AV_PIX_FMT_RGBF16BE,
+    AV_PIX_FMT_RGBF16LE, AV_PIX_FMT_RGBF32BE, AV_PIX_FMT_RGBF32LE, AV_PIX_FMT_UYVA,
+    AV_PIX_FMT_UYVY422, AV_PIX_FMT_UYYVYY411, AV_PIX_FMT_V30XBE, AV_PIX_FMT_V30XLE,
+    AV_PIX_FMT_VAAPI, AV_PIX_FMT_VDPAU, AV_PIX_FMT_VIDEOTOOLBOX, AV_PIX_FMT_VULKAN,
+    AV_PIX_FMT_VUYA, AV_PIX_FMT_VUYX, AV_PIX_FMT_VYU444, AV_PIX_FMT_X2BGR10BE,
+    AV_PIX_FMT_X2BGR10LE, AV_PIX_FMT_X2RGB10BE, AV_PIX_FMT_X2RGB10LE, AV_PIX_FMT_XV30BE,
+    AV_PIX_FMT_XV30LE, AV_PIX_FMT_XV36BE, AV_PIX_FMT_XV36LE, AV_PIX_FMT_XV48BE, AV_PIX_FMT_XV48LE,
+    AV_PIX_FMT_XYZ12BE, AV_PIX_FMT_XYZ12LE, AV_PIX_FMT_Y210BE, AV_PIX_FMT_Y210LE,
+    AV_PIX_FMT_Y212BE, AV_PIX_FMT_Y212LE, AV_PIX_FMT_Y216BE, AV_PIX_FMT_Y216LE, AV_PIX_FMT_Y400A,
+    AV_PIX_FMT_YA16BE, AV_PIX_FMT_YA16LE, AV_PIX_FMT_YA8, AV_PIX_FMT_YAF16BE, AV_PIX_FMT_YAF16LE,
+    AV_PIX_FMT_YAF32BE, AV_PIX_FMT_YAF32LE, AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P,
+    AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P10BE, AV_PIX_FMT_YUV420P10LE, AV_PIX_FMT_YUV420P12BE,
+    AV_PIX_FMT_YUV420P12LE, AV_PIX_FMT_YUV420P14BE, AV_PIX_FMT_YUV420P14LE, AV_PIX_FMT_YUV420P16BE,
+    AV_PIX_FMT_YUV420P16LE, AV_PIX_FMT_YUV420P9BE, AV_PIX_FMT_YUV420P9LE, AV_PIX_FMT_YUV422P,
+    AV_PIX_FMT_YUV422P10BE, AV_PIX_FMT_YUV422P10LE, AV_PIX_FMT_YUV422P12BE, AV_PIX_FMT_YUV422P12LE,
+    AV_PIX_FMT_YUV422P14BE, AV_PIX_FMT_YUV422P14LE, AV_PIX_FMT_YUV422P16BE, AV_PIX_FMT_YUV422P16LE,
+    AV_PIX_FMT_YUV422P9BE, AV_PIX_FMT_YUV422P9LE, AV_PIX_FMT_YUV440P, AV_PIX_FMT_YUV440P10BE,
+    AV_PIX_FMT_YUV440P10LE, AV_PIX_FMT_YUV440P12BE, AV_PIX_FMT_YUV440P12LE, AV_PIX_FMT_YUV444P,
+    AV_PIX_FMT_YUV444P10BE, AV_PIX_FMT_YUV444P10LE, AV_PIX_FMT_YUV444P10MSBBE,
+    AV_PIX_FMT_YUV444P10MSBLE, AV_PIX_FMT_YUV444P12BE, AV_PIX_FMT_YUV444P12LE,
+    AV_PIX_FMT_YUV444P12MSBBE, AV_PIX_FMT_YUV444P12MSBLE, AV_PIX_FMT_YUV444P14BE,
+    AV_PIX_FMT_YUV444P14LE, AV_PIX_FMT_YUV444P16BE, AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUV444P9BE,
+    AV_PIX_FMT_YUV444P9LE, AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVA420P10BE, AV_PIX_FMT_YUVA420P10LE,
+    AV_PIX_FMT_YUVA420P16BE, AV_PIX_FMT_YUVA420P16LE, AV_PIX_FMT_YUVA420P9BE,
+    AV_PIX_FMT_YUVA420P9LE, AV_PIX_FMT_YUVA422P, AV_PIX_FMT_YUVA422P10BE, AV_PIX_FMT_YUVA422P10LE,
+    AV_PIX_FMT_YUVA422P12BE, AV_PIX_FMT_YUVA422P12LE, AV_PIX_FMT_YUVA422P16BE,
+    AV_PIX_FMT_YUVA422P16LE, AV_PIX_FMT_YUVA422P9BE, AV_PIX_FMT_YUVA422P9LE, AV_PIX_FMT_YUVA444P,
+    AV_PIX_FMT_YUVA444P10BE, AV_PIX_FMT_YUVA444P10LE, AV_PIX_FMT_YUVA444P12BE,
+    AV_PIX_FMT_YUVA444P12LE, AV_PIX_FMT_YUVA444P16BE, AV_PIX_FMT_YUVA444P16LE,
+    AV_PIX_FMT_YUVA444P9BE, AV_PIX_FMT_YUVA444P9LE, AV_PIX_FMT_YUVJ411P, AV_PIX_FMT_YUVJ420P,
+    AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ440P, AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUYV422,
+    AV_PIX_FMT_YVYU422,
+};
+pub use self::rational_h::AVRational;
+pub use self::samplefmt_h::{
+    AVSampleFormat, AV_SAMPLE_FMT_DBL, AV_SAMPLE_FMT_DBLP, AV_SAMPLE_FMT_FLT, AV_SAMPLE_FMT_FLTP,
+    AV_SAMPLE_FMT_NB, AV_SAMPLE_FMT_NONE, AV_SAMPLE_FMT_S16, AV_SAMPLE_FMT_S16P, AV_SAMPLE_FMT_S32,
+    AV_SAMPLE_FMT_S32P, AV_SAMPLE_FMT_S64, AV_SAMPLE_FMT_S64P, AV_SAMPLE_FMT_U8, AV_SAMPLE_FMT_U8P,
+};
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+use self::stdlib_h::{calloc, free, malloc};
+use self::string_h::{memcpy, memset, strcmp, strlen};
+use self::strings_h::strcasecmp;
+pub use self::types_h::{__int64_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t};
+pub use self::x264_h::{X264_CSP_NONE, X264_CSP_VFLIP, X264_LOG_ERROR, X264_LOG_WARNING};
+pub use self::x264cli_h::{get_filename_extension, hnd_t, x264_cli_log};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "40:9"]
@@ -3907,11 +3837,9 @@ unsafe extern "C" fn handle_jpeg(
     };
 }
 #[c2rust::src_loc = "64:1"]
-unsafe extern "C" fn codec_from_stream(
-    mut stream: *mut AVStream,
-) -> *mut AVCodecContext {
-    let mut codec: *mut AVCodec = avcodec_find_decoder((*(*stream).codecpar).codec_id)
-        as *mut AVCodec;
+unsafe extern "C" fn codec_from_stream(mut stream: *mut AVStream) -> *mut AVCodecContext {
+    let mut codec: *mut AVCodec =
+        avcodec_find_decoder((*(*stream).codecpar).codec_id) as *mut AVCodec;
     if codec.is_null() {
         return 0 as *mut AVCodecContext;
     }
@@ -3939,9 +3867,7 @@ unsafe extern "C" fn read_frame_internal(
             (*(*h).first_pic).img = t;
             (*p_pic).pts = (*(*h).first_pic).pts;
         }
-        lavf_input
-            .picture_clean
-            .expect("non-null function pointer")((*h).first_pic, h as hnd_t);
+        lavf_input.picture_clean.expect("non-null function pointer")((*h).first_pic, h as hnd_t);
         free((*h).first_pic as *mut ::core::ffi::c_void);
         (*h).first_pic = 0 as *mut cli_pic_t;
         if i_frame == 0 {
@@ -3971,7 +3897,7 @@ unsafe extern "C" fn read_frame_internal(
                     av_packet_unref(pkt);
                 }
             } else if ret == AVERROR_EOF {
-                return -(1 as ::core::ffi::c_int)
+                return -(1 as ::core::ffi::c_int);
             }
             if ret != 0 {
                 x264_cli_log(
@@ -4005,10 +3931,10 @@ unsafe extern "C" fn read_frame_internal(
     ) | X264_CSP_OTHER;
     if !info.is_null() {
         (*info).fullrange = is_fullrange;
-        (*info).interlaced = ((*(*h).frame).flags & AV_FRAME_FLAG_INTERLACED != 0)
-            as ::core::ffi::c_int;
-        (*info).tff = ((*(*h).frame).flags & AV_FRAME_FLAG_TOP_FIELD_FIRST != 0)
-            as ::core::ffi::c_int;
+        (*info).interlaced =
+            ((*(*h).frame).flags & AV_FRAME_FLAG_INTERLACED != 0) as ::core::ffi::c_int;
+        (*info).tff =
+            ((*(*h).frame).flags & AV_FRAME_FLAG_TOP_FIELD_FIRST != 0) as ::core::ffi::c_int;
     }
     if (*h).vfr_input != 0 {
         (*p_pic).duration = 0 as int64_t;
@@ -4032,16 +3958,18 @@ unsafe extern "C" fn open_file(
     mut info: *mut video_info_t,
     mut opt: *mut cli_input_opt_t,
 ) -> ::core::ffi::c_int {
-    let mut h: *mut lavf_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<lavf_hnd_t>() as size_t,
-    ) as *mut lavf_hnd_t;
+    let mut h: *mut lavf_hnd_t =
+        calloc(1 as size_t, ::core::mem::size_of::<lavf_hnd_t>() as size_t) as *mut lavf_hnd_t;
     if h.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
-    if strcmp(psz_filename, b"-\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
-        psz_filename = b"pipe:\0" as *const u8 as *const ::core::ffi::c_char
-            as *mut ::core::ffi::c_char;
+    if strcmp(
+        psz_filename,
+        b"-\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
+    {
+        psz_filename =
+            b"pipe:\0" as *const u8 as *const ::core::ffi::c_char as *mut ::core::ffi::c_char;
     }
     (*h).frame = av_frame_alloc();
     if (*h).frame.is_null() {
@@ -4078,8 +4006,7 @@ unsafe extern "C" fn open_file(
             x264_cli_log(
                 b"lavf\0" as *const u8 as *const ::core::ffi::c_char,
                 X264_LOG_ERROR,
-                b"unknown file format: %s\n\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"unknown file format: %s\n\0" as *const u8 as *const ::core::ffi::c_char,
                 (*opt).format,
             );
             return -(1 as ::core::ffi::c_int);
@@ -4096,21 +4023,18 @@ unsafe extern "C" fn open_file(
     if !options.is_null() {
         av_dict_free(&mut options);
     }
-    if avformat_find_stream_info((*h).lavf, 0 as *mut *mut AVDictionary)
-        < 0 as ::core::ffi::c_int
-    {
+    if avformat_find_stream_info((*h).lavf, 0 as *mut *mut AVDictionary) < 0 as ::core::ffi::c_int {
         x264_cli_log(
             b"lavf\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"could not find input stream info\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"could not find input stream info\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while (i as ::core::ffi::c_uint) < (*(*h).lavf).nb_streams
-        && (*(**(*(*h).lavf).streams.offset(i as isize)).codecpar).codec_type
-            as ::core::ffi::c_int != AVMEDIA_TYPE_VIDEO as ::core::ffi::c_int
+        && (*(**(*(*h).lavf).streams.offset(i as isize)).codecpar).codec_type as ::core::ffi::c_int
+            != AVMEDIA_TYPE_VIDEO as ::core::ffi::c_int
     {
         i += 1;
     }
@@ -4128,14 +4052,14 @@ unsafe extern "C" fn open_file(
     if (*h).lavc.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
-    (*info).fps_num = (**(*(*h).lavf).streams.offset(i as isize)).avg_frame_rate.num
-        as uint32_t;
-    (*info).fps_den = (**(*(*h).lavf).streams.offset(i as isize)).avg_frame_rate.den
-        as uint32_t;
-    (*info).timebase_num = (**(*(*h).lavf).streams.offset(i as isize)).time_base.num
-        as uint32_t;
-    (*info).timebase_den = (**(*(*h).lavf).streams.offset(i as isize)).time_base.den
-        as uint32_t;
+    (*info).fps_num = (**(*(*h).lavf).streams.offset(i as isize))
+        .avg_frame_rate
+        .num as uint32_t;
+    (*info).fps_den = (**(*(*h).lavf).streams.offset(i as isize))
+        .avg_frame_rate
+        .den as uint32_t;
+    (*info).timebase_num = (**(*(*h).lavf).streams.offset(i as isize)).time_base.num as uint32_t;
+    (*info).timebase_den = (**(*(*h).lavf).streams.offset(i as isize)).time_base.den as uint32_t;
     (*info).thread_safe = 0 as ::core::ffi::c_int;
     (*h).vfr_input = (*info).vfr;
     if avcodec_open2(
@@ -4152,14 +4076,9 @@ unsafe extern "C" fn open_file(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    (*h).first_pic = malloc(::core::mem::size_of::<cli_pic_t>() as size_t)
-        as *mut cli_pic_t;
+    (*h).first_pic = malloc(::core::mem::size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
     if (*h).first_pic.is_null()
-        || lavf_input
-            .picture_alloc
-            .expect(
-                "non-null function pointer",
-            )(
+        || lavf_input.picture_alloc.expect("non-null function pointer")(
             (*h).first_pic,
             h as hnd_t,
             0x4000 as ::core::ffi::c_int,
@@ -4180,22 +4099,19 @@ unsafe extern "C" fn open_file(
     (*info).width = (*(*h).lavc).width;
     (*info).height = (*(*h).lavc).height;
     (*info).csp = (*(*h).first_pic).img.csp;
-    (*info).num_frames = (**(*(*h).lavf).streams.offset(i as isize)).nb_frames
-        as ::core::ffi::c_int;
+    (*info).num_frames =
+        (**(*(*h).lavf).streams.offset(i as isize)).nb_frames as ::core::ffi::c_int;
     (*info).sar_height = (*(*h).lavc).sample_aspect_ratio.den as uint32_t;
     (*info).sar_width = (*(*h).lavc).sample_aspect_ratio.num as uint32_t;
-    (*info).fullrange
-        |= ((*(*h).lavc).color_range as ::core::ffi::c_uint
-            == AVCOL_RANGE_JPEG as ::core::ffi::c_int as ::core::ffi::c_uint)
-            as ::core::ffi::c_int;
+    (*info).fullrange |= ((*(*h).lavc).color_range as ::core::ffi::c_uint
+        == AVCOL_RANGE_JPEG as ::core::ffi::c_int as ::core::ffi::c_uint)
+        as ::core::ffi::c_int;
     if strcasecmp(
         get_filename_extension(psz_filename),
         b"avs\0" as *const u8 as *const ::core::ffi::c_char,
     ) == 0
-        && ((*(*h).lavc).pix_fmt as ::core::ffi::c_int
-            == AV_PIX_FMT_BGRA as ::core::ffi::c_int
-            || (*(*h).lavc).pix_fmt as ::core::ffi::c_int
-                == AV_PIX_FMT_BGR24 as ::core::ffi::c_int)
+        && ((*(*h).lavc).pix_fmt as ::core::ffi::c_int == AV_PIX_FMT_BGRA as ::core::ffi::c_int
+            || (*(*h).lavc).pix_fmt as ::core::ffi::c_int == AV_PIX_FMT_BGR24 as ::core::ffi::c_int)
     {
         (*info).csp |= X264_CSP_VFLIP;
     }
@@ -4281,12 +4197,8 @@ pub static mut lavf_input: cli_input_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             release_frame: None,
-            picture_clean: Some(
-                picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> (),
-            ),
-            close_file: Some(
-                close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int,
-            ),
+            picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
+            close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int),
         };
         init
     }

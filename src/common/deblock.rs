@@ -46,7 +46,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:29"]
 pub mod stdint_uintn_h {
@@ -58,7 +58,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdint.h:29"]
 pub mod stdint_h {
@@ -605,11 +605,11 @@ pub mod common_h {
         pub bs: bs_t,
     }
     #[c2rust::src_loc = "58:9"]
-    pub const QP_BD_OFFSET: ::core::ffi::c_int = 6 as ::core::ffi::c_int
-        * (BIT_DEPTH - 8 as ::core::ffi::c_int);
+    pub const QP_BD_OFFSET: ::core::ffi::c_int =
+        6 as ::core::ffi::c_int * (BIT_DEPTH - 8 as ::core::ffi::c_int);
     #[c2rust::src_loc = "61:9"]
-    pub const PIXEL_MAX: ::core::ffi::c_int = ((1 as ::core::ffi::c_int) << BIT_DEPTH)
-        - 1 as ::core::ffi::c_int;
+    pub const PIXEL_MAX: ::core::ffi::c_int =
+        ((1 as ::core::ffi::c_int) << BIT_DEPTH) - 1 as ::core::ffi::c_int;
     #[inline(always)]
     #[c2rust::src_loc = "145:1"]
     pub unsafe extern "C" fn x264_clip_pixel(mut x: ::core::ffi::c_int) -> pixel {
@@ -621,21 +621,21 @@ pub mod common_h {
     }
     #[c2rust::src_loc = "571:9"]
     pub const FDEC_STRIDE: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
-    use super::x264_h::{x264_param_t, x264_nal_t};
-    use super::threadpool_h::x264_threadpool_t;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int32_t, int16_t, int8_t};
-    use super::set_h::{x264_sps_t, x264_pps_t};
+    use super::bitstream_h::{bs_t, x264_bitstream_function_t};
     use super::cabac_h::x264_cabac_t;
-    use super::frame_h::{x264_frame_t, x264_deblock_function_t, x264_sync_frame_list_t};
-    use super::predict_h::{x264_predict_t, x264_predict8x8_t, x264_predict_8x8_filter_t};
-    use super::pixel_h::x264_pixel_function_t;
-    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
     use super::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
-    use super::quant_h::x264_quant_function_t;
-    use super::bitstream_h::{x264_bitstream_function_t, bs_t};
+    use super::frame_h::{x264_deblock_function_t, x264_frame_t, x264_sync_frame_list_t};
     use super::internal::BIT_DEPTH;
+    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
+    use super::pixel_h::x264_pixel_function_t;
+    use super::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
+    use super::quant_h::x264_quant_function_t;
+    use super::set_h::{x264_pps_t, x264_sps_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::threadpool_h::x264_threadpool_t;
+    use super::x264_h::{x264_nal_t, x264_param_t};
     extern "C" {
         #[c2rust::src_loc = "231:16"]
         pub type x264_ratecontrol_t;
@@ -797,12 +797,7 @@ pub mod frame_h {
     }
     #[c2rust::src_loc = "197:1"]
     pub type x264_deblock_intra_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "196:1"]
     pub type x264_deblock_inter_t = Option<
@@ -814,13 +809,13 @@ pub mod frame_h {
             *mut int8_t,
         ) -> (),
     >;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int8_t, int16_t};
-    use super::x264_h::{x264_param_t, x264_hrd_t, x264_sei_t};
     use super::common_h::pixel;
     use super::mc_h::x264_weight_t;
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t};
     use super::stdint_h::intptr_t;
+    use super::stdint_intn_h::{int16_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::x264_h::{x264_hrd_t, x264_param_t, x264_sei_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:29"]
 pub mod x264_h {
@@ -943,11 +938,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -1088,12 +1079,12 @@ pub mod x264_h {
         pub i_chroma_loc: ::core::ffi::c_int,
     }
     #[c2rust::src_loc = "853:13"]
-    pub const X264_MBINFO_CONSTANT: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 0 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
-    use super::internal::__va_list_tag;
+    pub const X264_MBINFO_CONSTANT: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 0 as ::core::ffi::c_int;
     use super::common_h::x264_t;
+    use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:29"]
 pub mod mc_h {
@@ -1201,20 +1192,10 @@ pub mod mc_h {
             ) -> (),
         >,
         pub load_deinterleave_chroma_fenc: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub load_deinterleave_chroma_fdec: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub plane_copy: Option<
             unsafe extern "C" fn(
@@ -1347,9 +1328,8 @@ pub mod mc_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub prefetch_ref: Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> (),
-        >,
+        pub prefetch_ref:
+            Option<unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ()>,
         pub memcpy_aligned: Option<
             unsafe extern "C" fn(
                 *mut ::core::ffi::c_void,
@@ -1357,18 +1337,13 @@ pub mod mc_h {
                 size_t,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub memzero_aligned: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> (),
-        >,
-        pub integral_init4h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init8h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init4v: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> (),
-        >,
+        pub memzero_aligned: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> ()>,
+        pub integral_init4h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init8h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init4v:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> ()>,
         pub integral_init8v: Option<unsafe extern "C" fn(*mut uint16_t, intptr_t) -> ()>,
         pub frame_init_lowres_core: Option<
             unsafe extern "C" fn(
@@ -1386,9 +1361,7 @@ pub mod mc_h {
         pub weight: *mut weight_fn_t,
         pub offsetadd: *mut weight_fn_t,
         pub offsetsub: *mut weight_fn_t,
-        pub weight_cache: Option<
-            unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> (),
-        >,
+        pub weight_cache: Option<unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> ()>,
         pub mbtree_propagate_cost: Option<
             unsafe extern "C" fn(
                 *mut int16_t,
@@ -1428,11 +1401,11 @@ pub mod mc_h {
             ) -> (),
         >,
     }
-    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::__stddef_size_t_h::size_t;
     use super::common_h::{pixel, x264_t};
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint32_t, uint16_t};
-    use super::__stddef_size_t_h::size_t;
+    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:29"]
 pub mod bitstream_h {
@@ -1440,13 +1413,8 @@ pub mod bitstream_h {
     #[repr(C)]
     #[c2rust::src_loc = "57:9"]
     pub struct x264_bitstream_function_t {
-        pub nal_escape: Option<
-            unsafe extern "C" fn(
-                *mut uint8_t,
-                *mut uint8_t,
-                *mut uint8_t,
-            ) -> *mut uint8_t,
-        >,
+        pub nal_escape:
+            Option<unsafe extern "C" fn(*mut uint8_t, *mut uint8_t, *mut uint8_t) -> *mut uint8_t>,
         pub cabac_block_residual_internal: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1493,11 +1461,11 @@ pub mod bitstream_h {
         pub i_left: ::core::ffi::c_int,
         pub i_bits_encoded: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::uint8_t;
+    use super::cabac_h::x264_cabac_t;
     use super::common_h::dctcoef;
     use super::stdint_h::{intptr_t, uintptr_t};
-    use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:29"]
 pub mod cabac_h {
@@ -1525,18 +1493,10 @@ pub mod quant_h {
     #[c2rust::src_loc = "30:9"]
     pub struct x264_quant_function_t {
         pub quant_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4x4: Option<
             unsafe extern "C" fn(
@@ -1595,12 +1555,10 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub optimize_chroma_2x2_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
-        pub optimize_chroma_2x4_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
+        pub optimize_chroma_2x2_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
+        pub optimize_chroma_2x4_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
         pub denoise_dct: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1609,42 +1567,19 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub decimate_score15: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score16: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score64: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last: [Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >; 14],
-        pub coeff_last4: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last8: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
+        pub decimate_score15: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score16: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score64: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last: [Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>; 14],
+        pub coeff_last4: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last8: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
         pub coeff_level_run: [Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
         >; 13],
-        pub coeff_level_run4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
-        pub coeff_level_run8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
+        pub coeff_level_run4:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
+        pub coeff_level_run8:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
         pub trellis_cabac_4x4: Option<
             unsafe extern "C" fn(
                 *const ::core::ffi::c_int,
@@ -1745,9 +1680,9 @@ pub mod quant_h {
             ) -> ::core::ffi::c_int,
         >,
     }
-    use super::common_h::{dctcoef, udctcoef};
-    use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
+    use super::common_h::{dctcoef, udctcoef};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:29"]
 pub mod dct_h {
@@ -1758,18 +1693,10 @@ pub mod dct_h {
         pub scan_8x8: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub scan_4x4: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub sub_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4ac: Option<
             unsafe extern "C" fn(
@@ -1779,55 +1706,34 @@ pub mod dct_h {
                 *mut dctcoef,
             ) -> ::core::ffi::c_int,
         >,
-        pub interleave_8x8_cavlc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> (),
-        >,
+        pub interleave_8x8_cavlc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> ()>,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "29:9"]
     pub struct x264_dct_function_t {
-        pub sub4x4_dct: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub4x4_dct: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add4x4_idct: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x8_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub8x8_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub add8x8_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
+        pub sub8x8_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub sub8x8_dct_dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub add8x8_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
         pub add8x8_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x16_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub16x16_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
-        pub add16x16_idct_dc: Option<
-            unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> (),
-        >,
-        pub sub8x8_dct8: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub8x16_dct_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub sub16x16_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
+        pub add16x16_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
+        pub sub8x8_dct8: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add8x8_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub16x16_dct8: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> (),
-        >,
+        pub sub16x16_dct8:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> ()>,
         pub dct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
         pub idct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
-        pub dct2x4dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> (),
-        >,
+        pub dct2x4dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> ()>,
     }
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
@@ -1850,11 +1756,7 @@ pub mod pixel_h {
         pub fpelcmp_x4: [x264_pixel_cmp_x4_t; 7],
         pub sad_aligned: [x264_pixel_cmp_t; 8],
         pub vsad: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub asd8: Option<
             unsafe extern "C" fn(
@@ -1876,9 +1778,7 @@ pub mod pixel_h {
                 *mut ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 4],
-        pub hadamard_ac: [Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t,
-        >; 4],
+        pub hadamard_ac: [Option<unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t>; 4],
         pub ssd_nv12_core: Option<
             unsafe extern "C" fn(
                 *mut pixel,
@@ -1922,80 +1822,50 @@ pub mod pixel_h {
                 ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 7],
-        pub intra_mbcmp_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sa8d_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
+        pub intra_mbcmp_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sa8d_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
         pub intra_mbcmp_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_satd_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_sad_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_mbcmp_x9_8x8: Option<
             unsafe extern "C" fn(
@@ -2050,35 +1920,23 @@ pub mod pixel_h {
     >;
     #[c2rust::src_loc = "33:1"]
     pub type x264_pixel_cmp_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            *mut pixel,
-            intptr_t,
-        ) -> ::core::ffi::c_int,
+        unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t) -> ::core::ffi::c_int,
     >;
     use super::common_h::pixel;
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
+    use super::stdint_uintn_h::{uint16_t, uint64_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:29"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            *mut pixel,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, *mut pixel, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "30:1"]
     pub type x264_predict_t = Option<unsafe extern "C" fn(*mut pixel) -> ()>;
     #[c2rust::src_loc = "31:1"]
-    pub type x264_predict8x8_t = Option<
-        unsafe extern "C" fn(*mut pixel, *mut pixel) -> (),
-    >;
+    pub type x264_predict8x8_t = Option<unsafe extern "C" fn(*mut pixel, *mut pixel) -> ()>;
     use super::common_h::pixel;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:29"]
@@ -2198,7 +2056,7 @@ pub mod set_h {
         pub i_top: ::core::ffi::c_int,
         pub i_bottom: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:29"]
 pub mod threadpool_h {
@@ -2245,8 +2103,8 @@ pub mod base_h {
     #[c2rust::src_loc = "113:5"]
     pub const SLICE_TYPE_P: slice_type_e = 0;
     #[c2rust::src_loc = "155:9"]
-    pub const X264_SCAN8_0: ::core::ffi::c_int = 4 as ::core::ffi::c_int
-        + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int;
+    pub const X264_SCAN8_0: ::core::ffi::c_int =
+        4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int;
     #[inline(always)]
     #[c2rust::src_loc = "206:1"]
     pub unsafe extern "C" fn x264_clip3(
@@ -2254,9 +2112,15 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min { i_min } else if v > i_max { i_max } else { v };
+        return if v < i_min {
+            i_min
+        } else if v > i_max {
+            i_max
+        } else {
+            v
+        };
     }
-    use super::stdint_uintn_h::{uint32_t, uint16_t, uint8_t, uint64_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/macroblock.h:29"]
 pub mod macroblock_h {
@@ -2378,66 +2242,63 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::{__va_list_tag, BIT_DEPTH};
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
-    __uint64_t,
+pub use self::atomic_wide_counter_h::{C2RustUnnamed, __atomic_wide_counter};
+pub use self::base_h::{
+    chroma_format_e, slice_type_e, x264_clip3, x264_union32_t, x264_union64_t, CHROMA_400,
+    CHROMA_420, CHROMA_422, CHROMA_444, SLICE_TYPE_B, SLICE_TYPE_I, SLICE_TYPE_P, X264_SCAN8_0,
 };
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::stdint_h::{intptr_t, uintptr_t};
-pub use self::atomic_wide_counter_h::{__atomic_wide_counter, C2RustUnnamed};
-pub use self::thread_shared_types_h::{
-    __pthread_internal_list, __pthread_list_t, __pthread_cond_s,
-};
-pub use self::struct_mutex_h::__pthread_mutex_s;
-pub use self::pthreadtypes_h::{pthread_t, pthread_mutex_t, pthread_cond_t};
-pub use self::common_h::{
-    x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
-    x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
-    x264_left_table_t, C2RustUnnamed_10, C2RustUnnamed_11, x264_slice_header_t,
-    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, QP_BD_OFFSET,
-    PIXEL_MAX, x264_clip_pixel, FDEC_STRIDE, x264_ratecontrol_t,
-};
-pub use self::frame_h::{
-    x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
-    x264_deblock_intra_t, x264_deblock_inter_t,
-};
-pub use self::x264_h::{
-    x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
-    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, x264_zone_t,
-    C2RustUnnamed_4, C2RustUnnamed_5, X264_MBINFO_CONSTANT,
-};
-pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
-pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
+pub use self::bitstream_h::{bs_s, bs_t, x264_bitstream_function_t, x264_run_level_t};
 pub use self::cabac_h::x264_cabac_t;
-pub use self::quant_h::x264_quant_function_t;
-pub use self::dct_h::{x264_zigzag_function_t, x264_dct_function_t};
-pub use self::pixel_h::{
-    x264_pixel_function_t, x264_pixel_cmp_x4_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_t,
+pub use self::common_h::{
+    dctcoef, pixel, udctcoef, x264_clip_pixel, x264_frame_stat_t, x264_left_table_t,
+    x264_lookahead_t, x264_ratecontrol_t, x264_slice_header_t, x264_t, C2RustUnnamed_10,
+    C2RustUnnamed_11, C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18,
+    C2RustUnnamed_6, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9, FDEC_STRIDE, PIXEL_MAX,
+    QP_BD_OFFSET,
 };
-pub use self::predict_h::{x264_predict_8x8_filter_t, x264_predict_t, x264_predict8x8_t};
+pub use self::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+pub use self::frame_h::{
+    x264_deblock_function_t, x264_deblock_inter_t, x264_deblock_intra_t, x264_frame, x264_frame_t,
+    x264_sync_frame_list_t,
+};
+pub use self::internal::{__va_list_tag, BIT_DEPTH};
+pub use self::macroblock_h::{
+    macroblock_position_e, mb_class_e, mb_partition_e, x264_10_prefetch_fenc, B_8x8, D_16x16,
+    D_16x8, D_8x16, D_8x8, D_BI_4x4, D_BI_4x8, D_BI_8x4, D_BI_8x8, D_DIRECT_8x8, D_L0_4x4,
+    D_L0_4x8, D_L0_8x4, D_L0_8x8, D_L1_4x4, D_L1_4x8, D_L1_8x4, D_L1_8x8, I_16x16, I_4x4, I_8x8,
+    P_8x8, ALL_NEIGHBORS, B_BI_BI, B_BI_L0, B_BI_L1, B_DIRECT, B_L0_BI, B_L0_L0, B_L0_L1, B_L1_BI,
+    B_L1_L0, B_L1_L1, B_SKIP, I_PCM, MB_LEFT, MB_PRIVATE, MB_TOP, MB_TOPLEFT, MB_TOPRIGHT, P_L0,
+    P_SKIP, X264_MBTYPE_MAX, X264_PARTTYPE_MAX,
+};
+pub use self::mc_h::{weight_fn_t, x264_mc_functions_t, x264_weight_t};
+pub use self::pixel_h::{
+    x264_pixel_cmp_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_x4_t, x264_pixel_function_t,
+};
+pub use self::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+pub use self::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
+pub use self::quant_h::x264_quant_function_t;
 pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
-use self::threadpool_h::x264_threadpool_t;
-pub use self::base_h::{
-    x264_union32_t, x264_union64_t, chroma_format_e, CHROMA_444, CHROMA_422, CHROMA_420,
-    CHROMA_400, slice_type_e, SLICE_TYPE_I, SLICE_TYPE_B, SLICE_TYPE_P, X264_SCAN8_0,
-    x264_clip3,
-};
-pub use self::macroblock_h::{
-    I_PCM, I_16x16, I_8x8, I_4x4, D_16x16, MB_TOP, MB_LEFT, macroblock_position_e,
-    ALL_NEIGHBORS, MB_PRIVATE, MB_TOPLEFT, MB_TOPRIGHT, mb_class_e, X264_MBTYPE_MAX,
-    B_SKIP, B_8x8, B_BI_BI, B_BI_L1, B_BI_L0, B_L1_BI, B_L1_L1, B_L1_L0, B_L0_BI,
-    B_L0_L1, B_L0_L0, B_DIRECT, P_SKIP, P_8x8, P_L0, mb_partition_e, X264_PARTTYPE_MAX,
-    D_8x16, D_16x8, D_8x8, D_DIRECT_8x8, D_BI_8x8, D_BI_4x8, D_BI_8x4, D_BI_4x4,
-    D_L1_8x8, D_L1_4x8, D_L1_8x4, D_L1_4x4, D_L0_8x8, D_L0_4x8, D_L0_8x4, D_L0_4x4,
-    x264_10_prefetch_fenc,
-};
+pub use self::stdint_h::{intptr_t, uintptr_t};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use self::stdlib_h::abs;
-pub use self::__stddef_null_h::NULL;
+pub use self::struct_mutex_h::__pthread_mutex_s;
+pub use self::thread_shared_types_h::{
+    __pthread_cond_s, __pthread_internal_list, __pthread_list_t,
+};
+use self::threadpool_h::x264_threadpool_t;
+pub use self::types_h::{
+    __int16_t, __int32_t, __int64_t, __int8_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t,
+};
+pub use self::x264_h::{
+    x264_hrd_t, x264_nal_t, x264_param_t, x264_sei_payload_t, x264_sei_t, x264_zone_t,
+    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
+    C2RustUnnamed_5, X264_MBINFO_CONSTANT,
+};
 #[c2rust::src_loc = "32:22"]
 static mut i_alpha_table: [uint8_t; 88] = [
     0 as ::core::ffi::c_int as uint8_t,
@@ -3169,25 +3030,21 @@ unsafe extern "C" fn deblock_edge_luma_c(
     let mut p0: ::core::ffi::c_int = *pix
         .offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize)
         as ::core::ffi::c_int;
-    let mut q0: ::core::ffi::c_int = *pix.offset((0 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
-    let mut q1: ::core::ffi::c_int = *pix.offset((1 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
-    let mut q2: ::core::ffi::c_int = *pix.offset((2 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
+    let mut q0: ::core::ffi::c_int =
+        *pix.offset((0 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
+    let mut q1: ::core::ffi::c_int =
+        *pix.offset((1 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
+    let mut q2: ::core::ffi::c_int =
+        *pix.offset((2 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
         let mut tc: ::core::ffi::c_int = tc0 as ::core::ffi::c_int;
         let mut delta: ::core::ffi::c_int = 0;
         if abs(p2 - p0) < beta {
             if tc0 != 0 {
-                *pix
-                    .offset(
-                        (-(2 as ::core::ffi::c_int) as intptr_t * xstride) as isize,
-                    ) = (p1
-                    + x264_clip3(
-                        (p2
-                            + (p0 + q0 + 1 as ::core::ffi::c_int
-                                >> 1 as ::core::ffi::c_int) >> 1 as ::core::ffi::c_int)
+                *pix.offset((-(2 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+                    (p1 + x264_clip3(
+                        (p2 + (p0 + q0 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                            >> 1 as ::core::ffi::c_int)
                             - p1,
                         -(tc0 as ::core::ffi::c_int),
                         tc0 as ::core::ffi::c_int,
@@ -3199,9 +3056,8 @@ unsafe extern "C" fn deblock_edge_luma_c(
             if tc0 != 0 {
                 *pix.offset((1 as intptr_t * xstride) as isize) = (q1
                     + x264_clip3(
-                        (q2
-                            + (p0 + q0 + 1 as ::core::ffi::c_int
-                                >> 1 as ::core::ffi::c_int) >> 1 as ::core::ffi::c_int)
+                        (q2 + (p0 + q0 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                            >> 1 as ::core::ffi::c_int)
                             - q1,
                         -(tc0 as ::core::ffi::c_int),
                         tc0 as ::core::ffi::c_int,
@@ -3215,9 +3071,8 @@ unsafe extern "C" fn deblock_edge_luma_c(
             -tc,
             tc,
         );
-        *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) = x264_clip_pixel(
-            p0 + delta,
-        );
+        *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+            x264_clip_pixel(p0 + delta);
         *pix.offset((0 as intptr_t * xstride) as isize) = x264_clip_pixel(q0 - delta);
     }
 }
@@ -3302,10 +3157,10 @@ unsafe extern "C" fn deblock_edge_chroma_c(
     let mut p0: ::core::ffi::c_int = *pix
         .offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize)
         as ::core::ffi::c_int;
-    let mut q0: ::core::ffi::c_int = *pix.offset((0 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
-    let mut q1: ::core::ffi::c_int = *pix.offset((1 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
+    let mut q0: ::core::ffi::c_int =
+        *pix.offset((0 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
+    let mut q1: ::core::ffi::c_int =
+        *pix.offset((1 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
         let mut delta: ::core::ffi::c_int = x264_clip3(
             (q0 - p0) * 4 as ::core::ffi::c_int + (p1 - q1) + 4 as ::core::ffi::c_int
@@ -3313,9 +3168,8 @@ unsafe extern "C" fn deblock_edge_chroma_c(
             -(tc as ::core::ffi::c_int),
             tc as ::core::ffi::c_int,
         );
-        *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) = x264_clip_pixel(
-            p0 + delta,
-        );
+        *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+            x264_clip_pixel(p0 + delta);
         *pix.offset((0 as intptr_t * xstride) as isize) = x264_clip_pixel(q0 - delta);
     }
 }
@@ -3340,13 +3194,7 @@ unsafe extern "C" fn deblock_chroma_c(
             while d < height {
                 let mut e: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while e < 2 as ::core::ffi::c_int {
-                    deblock_edge_chroma_c(
-                        pix,
-                        xstride,
-                        alpha,
-                        beta,
-                        *tc0.offset(i as isize),
-                    );
+                    deblock_edge_chroma_c(pix, xstride, alpha, beta, *tc0.offset(i as isize));
                     e += 1;
                     pix = pix.offset(1);
                 }
@@ -3446,66 +3294,74 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
     let mut p0: ::core::ffi::c_int = *pix
         .offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize)
         as ::core::ffi::c_int;
-    let mut q0: ::core::ffi::c_int = *pix.offset((0 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
-    let mut q1: ::core::ffi::c_int = *pix.offset((1 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
-    let mut q2: ::core::ffi::c_int = *pix.offset((2 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
+    let mut q0: ::core::ffi::c_int =
+        *pix.offset((0 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
+    let mut q1: ::core::ffi::c_int =
+        *pix.offset((1 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
+    let mut q2: ::core::ffi::c_int =
+        *pix.offset((2 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
         if abs(p0 - q0) < (alpha >> 2 as ::core::ffi::c_int) + 2 as ::core::ffi::c_int {
             if abs(p2 - p0) < beta {
                 let p3: ::core::ffi::c_int = *pix
                     .offset((-(4 as ::core::ffi::c_int) as intptr_t * xstride) as isize)
                     as ::core::ffi::c_int;
-                *pix
-                    .offset(
-                        (-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize,
-                    ) = (p2 + 2 as ::core::ffi::c_int * p1 + 2 as ::core::ffi::c_int * p0
-                    + 2 as ::core::ffi::c_int * q0 + q1 + 4 as ::core::ffi::c_int
-                    >> 3 as ::core::ffi::c_int) as pixel;
-                *pix
-                    .offset(
-                        (-(2 as ::core::ffi::c_int) as intptr_t * xstride) as isize,
-                    ) = (p2 + p1 + p0 + q0 + 2 as ::core::ffi::c_int
-                    >> 2 as ::core::ffi::c_int) as pixel;
-                *pix
-                    .offset(
-                        (-(3 as ::core::ffi::c_int) as intptr_t * xstride) as isize,
-                    ) = (2 as ::core::ffi::c_int * p3 + 3 as ::core::ffi::c_int * p2 + p1
-                    + p0 + q0 + 4 as ::core::ffi::c_int >> 3 as ::core::ffi::c_int)
-                    as pixel;
+                *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+                    (p2 + 2 as ::core::ffi::c_int * p1
+                        + 2 as ::core::ffi::c_int * p0
+                        + 2 as ::core::ffi::c_int * q0
+                        + q1
+                        + 4 as ::core::ffi::c_int
+                        >> 3 as ::core::ffi::c_int) as pixel;
+                *pix.offset((-(2 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+                    (p2 + p1 + p0 + q0 + 2 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int)
+                        as pixel;
+                *pix.offset((-(3 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+                    (2 as ::core::ffi::c_int * p3
+                        + 3 as ::core::ffi::c_int * p2
+                        + p1
+                        + p0
+                        + q0
+                        + 4 as ::core::ffi::c_int
+                        >> 3 as ::core::ffi::c_int) as pixel;
             } else {
-                *pix
-                    .offset(
-                        (-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize,
-                    ) = (2 as ::core::ffi::c_int * p1 + p0 + q1 + 2 as ::core::ffi::c_int
-                    >> 2 as ::core::ffi::c_int) as pixel;
+                *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+                    (2 as ::core::ffi::c_int * p1 + p0 + q1 + 2 as ::core::ffi::c_int
+                        >> 2 as ::core::ffi::c_int) as pixel;
             }
             if abs(q2 - q0) < beta {
-                let q3: ::core::ffi::c_int = *pix
-                    .offset((3 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
-                *pix.offset((0 as intptr_t * xstride) as isize) = (p1
-                    + 2 as ::core::ffi::c_int * p0 + 2 as ::core::ffi::c_int * q0
-                    + 2 as ::core::ffi::c_int * q1 + q2 + 4 as ::core::ffi::c_int
-                    >> 3 as ::core::ffi::c_int) as pixel;
-                *pix.offset((1 as intptr_t * xstride) as isize) = (p0 + q0 + q1 + q2
-                    + 2 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as pixel;
-                *pix.offset((2 as intptr_t * xstride) as isize) = (2
-                    as ::core::ffi::c_int * q3 + 3 as ::core::ffi::c_int * q2 + q1 + q0
-                    + p0 + 4 as ::core::ffi::c_int >> 3 as ::core::ffi::c_int) as pixel;
+                let q3: ::core::ffi::c_int =
+                    *pix.offset((3 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
+                *pix.offset((0 as intptr_t * xstride) as isize) =
+                    (p1 + 2 as ::core::ffi::c_int * p0
+                        + 2 as ::core::ffi::c_int * q0
+                        + 2 as ::core::ffi::c_int * q1
+                        + q2
+                        + 4 as ::core::ffi::c_int
+                        >> 3 as ::core::ffi::c_int) as pixel;
+                *pix.offset((1 as intptr_t * xstride) as isize) =
+                    (p0 + q0 + q1 + q2 + 2 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int)
+                        as pixel;
+                *pix.offset((2 as intptr_t * xstride) as isize) = (2 as ::core::ffi::c_int * q3
+                    + 3 as ::core::ffi::c_int * q2
+                    + q1
+                    + q0
+                    + p0
+                    + 4 as ::core::ffi::c_int
+                    >> 3 as ::core::ffi::c_int)
+                    as pixel;
             } else {
-                *pix.offset((0 as intptr_t * xstride) as isize) = (2
-                    as ::core::ffi::c_int * q1 + q0 + p1 + 2 as ::core::ffi::c_int
-                    >> 2 as ::core::ffi::c_int) as pixel;
+                *pix.offset((0 as intptr_t * xstride) as isize) =
+                    (2 as ::core::ffi::c_int * q1 + q0 + p1 + 2 as ::core::ffi::c_int
+                        >> 2 as ::core::ffi::c_int) as pixel;
             }
         } else {
-            *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) = (2
-                as ::core::ffi::c_int * p1 + p0 + q1 + 2 as ::core::ffi::c_int
-                >> 2 as ::core::ffi::c_int) as pixel;
-            *pix.offset((0 as intptr_t * xstride) as isize) = (2 as ::core::ffi::c_int
-                * q1 + q0 + p1 + 2 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int)
-                as pixel;
+            *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+                (2 as ::core::ffi::c_int * p1 + p0 + q1 + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int) as pixel;
+            *pix.offset((0 as intptr_t * xstride) as isize) =
+                (2 as ::core::ffi::c_int * q1 + q0 + p1 + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int) as pixel;
         }
     }
 }
@@ -3571,16 +3427,17 @@ unsafe extern "C" fn deblock_edge_chroma_intra_c(
     let mut p0: ::core::ffi::c_int = *pix
         .offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize)
         as ::core::ffi::c_int;
-    let mut q0: ::core::ffi::c_int = *pix.offset((0 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
-    let mut q1: ::core::ffi::c_int = *pix.offset((1 as intptr_t * xstride) as isize)
-        as ::core::ffi::c_int;
+    let mut q0: ::core::ffi::c_int =
+        *pix.offset((0 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
+    let mut q1: ::core::ffi::c_int =
+        *pix.offset((1 as intptr_t * xstride) as isize) as ::core::ffi::c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
-        *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) = (2
-            as ::core::ffi::c_int * p1 + p0 + q1 + 2 as ::core::ffi::c_int
-            >> 2 as ::core::ffi::c_int) as pixel;
-        *pix.offset((0 as intptr_t * xstride) as isize) = (2 as ::core::ffi::c_int * q1
-            + q0 + p1 + 2 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as pixel;
+        *pix.offset((-(1 as ::core::ffi::c_int) as intptr_t * xstride) as isize) =
+            (2 as ::core::ffi::c_int * p1 + p0 + q1 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as pixel;
+        *pix.offset((0 as intptr_t * xstride) as isize) =
+            (2 as ::core::ffi::c_int * q1 + q0 + p1 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as pixel;
     }
 }
 #[inline(always)]
@@ -3709,61 +3566,39 @@ unsafe extern "C" fn deblock_strength_c(
                     as ::core::ffi::c_int
                     != (*ref_0.offset(0 as ::core::ffi::c_int as isize))[locn as usize]
                         as ::core::ffi::c_int
-                    || abs(
-                        (*mv
-                            .offset(
-                                0 as ::core::ffi::c_int as isize,
-                            ))[loc as usize][0 as ::core::ffi::c_int as usize]
-                            as ::core::ffi::c_int
-                            - (*mv
-                                .offset(
-                                    0 as ::core::ffi::c_int as isize,
-                                ))[locn as usize][0 as ::core::ffi::c_int as usize]
-                                as ::core::ffi::c_int,
-                    ) >= 4 as ::core::ffi::c_int
-                    || abs(
-                        (*mv
-                            .offset(
-                                0 as ::core::ffi::c_int as isize,
-                            ))[loc as usize][1 as ::core::ffi::c_int as usize]
-                            as ::core::ffi::c_int
-                            - (*mv
-                                .offset(
-                                    0 as ::core::ffi::c_int as isize,
-                                ))[locn as usize][1 as ::core::ffi::c_int as usize]
-                                as ::core::ffi::c_int,
-                    ) >= mvy_limit
+                    || abs((*mv.offset(0 as ::core::ffi::c_int as isize))[loc as usize]
+                        [0 as ::core::ffi::c_int as usize]
+                        as ::core::ffi::c_int
+                        - (*mv.offset(0 as ::core::ffi::c_int as isize))[locn as usize]
+                            [0 as ::core::ffi::c_int as usize]
+                            as ::core::ffi::c_int)
+                        >= 4 as ::core::ffi::c_int
+                    || abs((*mv.offset(0 as ::core::ffi::c_int as isize))[loc as usize]
+                        [1 as ::core::ffi::c_int as usize]
+                        as ::core::ffi::c_int
+                        - (*mv.offset(0 as ::core::ffi::c_int as isize))[locn as usize]
+                            [1 as ::core::ffi::c_int as usize]
+                            as ::core::ffi::c_int)
+                        >= mvy_limit
                     || bframe != 0
-                        && ((*ref_0
-                            .offset(1 as ::core::ffi::c_int as isize))[loc as usize]
+                        && ((*ref_0.offset(1 as ::core::ffi::c_int as isize))[loc as usize]
                             as ::core::ffi::c_int
-                            != (*ref_0
-                                .offset(1 as ::core::ffi::c_int as isize))[locn as usize]
+                            != (*ref_0.offset(1 as ::core::ffi::c_int as isize))[locn as usize]
                                 as ::core::ffi::c_int
-                            || abs(
-                                (*mv
-                                    .offset(
-                                        1 as ::core::ffi::c_int as isize,
-                                    ))[loc as usize][0 as ::core::ffi::c_int as usize]
-                                    as ::core::ffi::c_int
-                                    - (*mv
-                                        .offset(
-                                            1 as ::core::ffi::c_int as isize,
-                                        ))[locn as usize][0 as ::core::ffi::c_int as usize]
-                                        as ::core::ffi::c_int,
-                            ) >= 4 as ::core::ffi::c_int
-                            || abs(
-                                (*mv
-                                    .offset(
-                                        1 as ::core::ffi::c_int as isize,
-                                    ))[loc as usize][1 as ::core::ffi::c_int as usize]
-                                    as ::core::ffi::c_int
-                                    - (*mv
-                                        .offset(
-                                            1 as ::core::ffi::c_int as isize,
-                                        ))[locn as usize][1 as ::core::ffi::c_int as usize]
-                                        as ::core::ffi::c_int,
-                            ) >= mvy_limit)
+                            || abs((*mv.offset(1 as ::core::ffi::c_int as isize))[loc as usize]
+                                [0 as ::core::ffi::c_int as usize]
+                                as ::core::ffi::c_int
+                                - (*mv.offset(1 as ::core::ffi::c_int as isize))[locn as usize]
+                                    [0 as ::core::ffi::c_int as usize]
+                                    as ::core::ffi::c_int)
+                                >= 4 as ::core::ffi::c_int
+                            || abs((*mv.offset(1 as ::core::ffi::c_int as isize))[loc as usize]
+                                [1 as ::core::ffi::c_int as usize]
+                                as ::core::ffi::c_int
+                                - (*mv.offset(1 as ::core::ffi::c_int as isize))[locn as usize]
+                                    [1 as ::core::ffi::c_int as usize]
+                                    as ::core::ffi::c_int)
+                                >= mvy_limit)
                 {
                     (*bs.offset(dir as isize))[edge as usize][i as usize] = 1 as uint8_t;
                 } else {
@@ -3792,43 +3627,37 @@ unsafe extern "C" fn deblock_edge(
 ) {
     let mut index_a: ::core::ffi::c_int = i_qp + a;
     let mut index_b: ::core::ffi::c_int = i_qp + b;
-    let mut alpha: ::core::ffi::c_int = (i_alpha_table[(index_a
-        + 24 as ::core::ffi::c_int) as usize] as ::core::ffi::c_int)
+    let mut alpha: ::core::ffi::c_int =
+        (i_alpha_table[(index_a + 24 as ::core::ffi::c_int) as usize] as ::core::ffi::c_int)
+            << BIT_DEPTH - 8 as ::core::ffi::c_int;
+    let mut beta: ::core::ffi::c_int = (i_beta_table[(index_b + 24 as ::core::ffi::c_int) as usize]
+        as ::core::ffi::c_int)
         << BIT_DEPTH - 8 as ::core::ffi::c_int;
-    let mut beta: ::core::ffi::c_int = (i_beta_table[(index_b + 24 as ::core::ffi::c_int)
-        as usize] as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int;
     let mut tc: [int8_t; 4] = [0; 4];
     if (*(bS as *mut x264_union32_t)).i == 0 || alpha == 0 || beta == 0 {
         return;
     }
-    tc[0 as ::core::ffi::c_int as usize] = (i_tc0_table[(index_a
-        + 24 as ::core::ffi::c_int)
-        as usize][*bS.offset(0 as ::core::ffi::c_int as isize) as usize]
-        as ::core::ffi::c_int
-        * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int) + b_chroma)
-        as int8_t;
-    tc[1 as ::core::ffi::c_int as usize] = (i_tc0_table[(index_a
-        + 24 as ::core::ffi::c_int)
-        as usize][*bS.offset(1 as ::core::ffi::c_int as isize) as usize]
-        as ::core::ffi::c_int
-        * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int) + b_chroma)
-        as int8_t;
-    tc[2 as ::core::ffi::c_int as usize] = (i_tc0_table[(index_a
-        + 24 as ::core::ffi::c_int)
-        as usize][*bS.offset(2 as ::core::ffi::c_int as isize) as usize]
-        as ::core::ffi::c_int
-        * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int) + b_chroma)
-        as int8_t;
-    tc[3 as ::core::ffi::c_int as usize] = (i_tc0_table[(index_a
-        + 24 as ::core::ffi::c_int)
-        as usize][*bS.offset(3 as ::core::ffi::c_int as isize) as usize]
-        as ::core::ffi::c_int
-        * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int) + b_chroma)
-        as int8_t;
-    pf_inter
-        .expect(
-            "non-null function pointer",
-        )(pix, i_stride, alpha, beta, tc.as_mut_ptr());
+    tc[0 as ::core::ffi::c_int as usize] =
+        (i_tc0_table[(index_a + 24 as ::core::ffi::c_int) as usize]
+            [*bS.offset(0 as ::core::ffi::c_int as isize) as usize] as ::core::ffi::c_int
+            * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int)
+            + b_chroma) as int8_t;
+    tc[1 as ::core::ffi::c_int as usize] =
+        (i_tc0_table[(index_a + 24 as ::core::ffi::c_int) as usize]
+            [*bS.offset(1 as ::core::ffi::c_int as isize) as usize] as ::core::ffi::c_int
+            * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int)
+            + b_chroma) as int8_t;
+    tc[2 as ::core::ffi::c_int as usize] =
+        (i_tc0_table[(index_a + 24 as ::core::ffi::c_int) as usize]
+            [*bS.offset(2 as ::core::ffi::c_int as isize) as usize] as ::core::ffi::c_int
+            * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int)
+            + b_chroma) as int8_t;
+    tc[3 as ::core::ffi::c_int as usize] =
+        (i_tc0_table[(index_a + 24 as ::core::ffi::c_int) as usize]
+            [*bS.offset(3 as ::core::ffi::c_int as isize) as usize] as ::core::ffi::c_int
+            * ((1 as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int)
+            + b_chroma) as int8_t;
+    pf_inter.expect("non-null function pointer")(pix, i_stride, alpha, beta, tc.as_mut_ptr());
 }
 #[inline(always)]
 #[c2rust::src_loc = "326:1"]
@@ -3845,11 +3674,12 @@ unsafe extern "C" fn deblock_edge_intra(
 ) {
     let mut index_a: ::core::ffi::c_int = i_qp + a;
     let mut index_b: ::core::ffi::c_int = i_qp + b;
-    let mut alpha: ::core::ffi::c_int = (i_alpha_table[(index_a
-        + 24 as ::core::ffi::c_int) as usize] as ::core::ffi::c_int)
+    let mut alpha: ::core::ffi::c_int =
+        (i_alpha_table[(index_a + 24 as ::core::ffi::c_int) as usize] as ::core::ffi::c_int)
+            << BIT_DEPTH - 8 as ::core::ffi::c_int;
+    let mut beta: ::core::ffi::c_int = (i_beta_table[(index_b + 24 as ::core::ffi::c_int) as usize]
+        as ::core::ffi::c_int)
         << BIT_DEPTH - 8 as ::core::ffi::c_int;
-    let mut beta: ::core::ffi::c_int = (i_beta_table[(index_b + 24 as ::core::ffi::c_int)
-        as usize] as ::core::ffi::c_int) << BIT_DEPTH - 8 as ::core::ffi::c_int;
     if alpha == 0 || beta == 0 {
         return;
     }
@@ -3862,10 +3692,8 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
     mut mb_x: ::core::ffi::c_int,
     mut mb_y: ::core::ffi::c_int,
 ) {
-    let mut deblock_on_slice_edges: ::core::ffi::c_int = ((*h)
-        .sh
-        .i_disable_deblocking_filter_idc != 2 as ::core::ffi::c_int)
-        as ::core::ffi::c_int;
+    let mut deblock_on_slice_edges: ::core::ffi::c_int =
+        ((*h).sh.i_disable_deblocking_filter_idc != 2 as ::core::ffi::c_int) as ::core::ffi::c_int;
     (*h).mb.i_neighbour = 0 as ::core::ffi::c_uint;
     (*h).mb.i_mb_xy = mb_y * (*h).mb.i_mb_stride + mb_x;
     (*h).mb.b_interlaced = ((*h).param.b_interlaced != 0
@@ -3873,11 +3701,10 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
         as ::core::ffi::c_int;
     (*h).mb.i_mb_top_y = mb_y - ((1 as ::core::ffi::c_int) << (*h).mb.b_interlaced);
     (*h).mb.i_mb_top_xy = mb_x + (*h).mb.i_mb_stride * (*h).mb.i_mb_top_y;
-    (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] = (*h).mb.i_mb_xy
-        - 1 as ::core::ffi::c_int;
-    (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] = (*h)
-        .mb
-        .i_mb_left_xy[0 as ::core::ffi::c_int as usize];
+    (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] =
+        (*h).mb.i_mb_xy - 1 as ::core::ffi::c_int;
+    (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] =
+        (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize];
     if (*h).sh.b_mbaff != 0 {
         if mb_y & 1 as ::core::ffi::c_int != 0 {
             if mb_x != 0
@@ -3885,10 +3712,10 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
                     .mb
                     .field
                     .offset(((*h).mb.i_mb_xy - 1 as ::core::ffi::c_int) as isize)
-                    as ::core::ffi::c_int != (*h).mb.b_interlaced
+                    as ::core::ffi::c_int
+                    != (*h).mb.b_interlaced
             {
-                (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize]
-                    -= (*h).mb.i_mb_stride;
+                (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] -= (*h).mb.i_mb_stride;
             }
         } else {
             if (*h).mb.i_mb_top_xy >= 0 as ::core::ffi::c_int
@@ -3903,10 +3730,10 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
                     .mb
                     .field
                     .offset(((*h).mb.i_mb_xy - 1 as ::core::ffi::c_int) as isize)
-                    as ::core::ffi::c_int != (*h).mb.b_interlaced
+                    as ::core::ffi::c_int
+                    != (*h).mb.b_interlaced
             {
-                (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize]
-                    += (*h).mb.i_mb_stride;
+                (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] += (*h).mb.i_mb_stride;
             }
         }
     }
@@ -3939,27 +3766,21 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
     let mut b: ::core::ffi::c_int = (*h).sh.i_beta_offset - QP_BD_OFFSET;
     let mut qp_thresh: ::core::ffi::c_int = 15 as ::core::ffi::c_int
         - (if a < b { a } else { b })
-        - (if 0 as ::core::ffi::c_int > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset
-        {
+        - (if 0 as ::core::ffi::c_int > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset {
             0 as ::core::ffi::c_int
         } else {
             (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset
         });
-    let mut stridey: ::core::ffi::c_int = (*(*h).fdec)
-        .i_stride[0 as ::core::ffi::c_int as usize];
-    let mut strideuv: ::core::ffi::c_int = (*(*h).fdec)
-        .i_stride[1 as ::core::ffi::c_int as usize];
-    let mut chroma_format: ::core::ffi::c_int = (*(*h).sps.as_mut_ptr())
-        .i_chroma_format_idc;
+    let mut stridey: ::core::ffi::c_int = (*(*h).fdec).i_stride[0 as ::core::ffi::c_int as usize];
+    let mut strideuv: ::core::ffi::c_int = (*(*h).fdec).i_stride[1 as ::core::ffi::c_int as usize];
+    let mut chroma_format: ::core::ffi::c_int = (*(*h).sps.as_mut_ptr()).i_chroma_format_idc;
     let mut chroma444: ::core::ffi::c_int = ((*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-        == CHROMA_444 as ::core::ffi::c_int) as ::core::ffi::c_int;
-    let mut chroma_height: ::core::ffi::c_int = 16 as ::core::ffi::c_int
-        >> (*h).mb.chroma_v_shift;
+        == CHROMA_444 as ::core::ffi::c_int)
+        as ::core::ffi::c_int;
+    let mut chroma_height: ::core::ffi::c_int = 16 as ::core::ffi::c_int >> (*h).mb.chroma_v_shift;
     let mut uvdiff: intptr_t = if chroma444 != 0 {
-        (*(*h).fdec)
-            .plane[2 as ::core::ffi::c_int as usize]
-            .offset_from((*(*h).fdec).plane[1 as ::core::ffi::c_int as usize])
-            as intptr_t
+        (*(*h).fdec).plane[2 as ::core::ffi::c_int as usize]
+            .offset_from((*(*h).fdec).plane[1 as ::core::ffi::c_int as usize]) as intptr_t
     } else {
         1 as intptr_t
     };
@@ -3968,34 +3789,34 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
         x264_10_prefetch_fenc(h, (*h).fdec, mb_x, mb_y);
         macroblock_cache_load_neighbours_deblock(h, mb_x, mb_y);
         let mut mb_xy: ::core::ffi::c_int = (*h).mb.i_mb_xy;
-        let mut transform_8x8: ::core::ffi::c_int = *(*h)
-            .mb
-            .mb_transform_size
-            .offset(mb_xy as isize) as ::core::ffi::c_int;
-        let mut intra_cur: ::core::ffi::c_int = (*(*h).mb.type_0.offset(mb_xy as isize)
-            as ::core::ffi::c_int == I_4x4 as ::core::ffi::c_int
-            || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
-                == I_8x8 as ::core::ffi::c_int
-            || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
-                == I_16x16 as ::core::ffi::c_int
-            || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
-                == I_PCM as ::core::ffi::c_int) as ::core::ffi::c_int;
+        let mut transform_8x8: ::core::ffi::c_int =
+            *(*h).mb.mb_transform_size.offset(mb_xy as isize) as ::core::ffi::c_int;
+        let mut intra_cur: ::core::ffi::c_int =
+            (*(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
+                == I_4x4 as ::core::ffi::c_int
+                || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
+                    == I_8x8 as ::core::ffi::c_int
+                || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
+                    == I_16x16 as ::core::ffi::c_int
+                || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
+                    == I_PCM as ::core::ffi::c_int) as ::core::ffi::c_int;
         let mut bs: *mut [[uint8_t; 4]; 8] = (*(*(*h)
             .deblock_strength
             .as_mut_ptr()
             .offset((mb_y & 1 as ::core::ffi::c_int) as isize))
-            .offset(
-                (if (*h).param.b_sliced_threads != 0 { mb_xy } else { mb_x }) as isize,
-            ))
-            .as_mut_ptr() as *mut [[uint8_t; 4]; 8];
-        let mut pixy: *mut pixel = (*(*h).fdec)
-            .plane[0 as ::core::ffi::c_int as usize]
+        .offset(
+            (if (*h).param.b_sliced_threads != 0 {
+                mb_xy
+            } else {
+                mb_x
+            }) as isize,
+        ))
+        .as_mut_ptr() as *mut [[uint8_t; 4]; 8];
+        let mut pixy: *mut pixel = (*(*h).fdec).plane[0 as ::core::ffi::c_int as usize]
             .offset((16 as ::core::ffi::c_int * mb_y * stridey) as isize)
             .offset((16 as ::core::ffi::c_int * mb_x) as isize);
-        let mut pixuv: *mut pixel = if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0
-        {
-            (*(*h).fdec)
-                .plane[1 as ::core::ffi::c_int as usize]
+        let mut pixuv: *mut pixel = if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
+            (*(*h).fdec).plane[1 as ::core::ffi::c_int as usize]
                 .offset((chroma_height * mb_y * strideuv) as isize)
                 .offset((16 as ::core::ffi::c_int * mb_x) as isize)
         } else {
@@ -4005,50 +3826,38 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             pixy = pixy.offset(-((15 as ::core::ffi::c_int * stridey) as isize));
             if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
                 pixuv = pixuv
-                    .offset(
-                        -(((chroma_height - 1 as ::core::ffi::c_int) * strideuv)
-                            as isize),
-                    );
+                    .offset(-(((chroma_height - 1 as ::core::ffi::c_int) * strideuv) as isize));
             }
         }
         let mut stride2y: ::core::ffi::c_int = stridey << (*h).mb.b_interlaced;
         let mut stride2uv: ::core::ffi::c_int = strideuv << (*h).mb.b_interlaced;
-        let mut qp: ::core::ffi::c_int = *(*h).mb.qp.offset(mb_xy as isize)
-            as ::core::ffi::c_int;
-        let mut qpc: ::core::ffi::c_int = *(*h).chroma_qp_table.offset(qp as isize)
-            as ::core::ffi::c_int;
-        let mut first_edge_only: ::core::ffi::c_int = (*(*h)
-            .mb
-            .partition
-            .offset(mb_xy as isize) as ::core::ffi::c_int
-            == D_16x16 as ::core::ffi::c_int && *(*h).mb.cbp.offset(mb_xy as isize) == 0
-            && intra_cur == 0 || qp <= qp_thresh) as ::core::ffi::c_int;
-        if (*h).mb.i_neighbour & MB_LEFT as ::core::ffi::c_int as ::core::ffi::c_uint
-            != 0
-        {
+        let mut qp: ::core::ffi::c_int = *(*h).mb.qp.offset(mb_xy as isize) as ::core::ffi::c_int;
+        let mut qpc: ::core::ffi::c_int =
+            *(*h).chroma_qp_table.offset(qp as isize) as ::core::ffi::c_int;
+        let mut first_edge_only: ::core::ffi::c_int =
+            (*(*h).mb.partition.offset(mb_xy as isize) as ::core::ffi::c_int
+                == D_16x16 as ::core::ffi::c_int
+                && *(*h).mb.cbp.offset(mb_xy as isize) == 0
+                && intra_cur == 0
+                || qp <= qp_thresh) as ::core::ffi::c_int;
+        if (*h).mb.i_neighbour & MB_LEFT as ::core::ffi::c_int as ::core::ffi::c_uint != 0 {
             if b_interlaced != 0
                 && *(*h)
                     .mb
                     .field
-                    .offset(
-                        (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize,
-                    ) as ::core::ffi::c_int != (*h).mb.b_interlaced
+                    .offset((*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize)
+                    as ::core::ffi::c_int
+                    != (*h).mb.b_interlaced
             {
                 let mut luma_qp: [::core::ffi::c_int; 2] = [0; 2];
                 let mut chroma_qp: [::core::ffi::c_int; 2] = [0; 2];
                 let mut left_qp: [::core::ffi::c_int; 2] = [0; 2];
-                let mut luma_deblock: x264_deblock_inter_t = (*h)
-                    .loopf
-                    .deblock_luma_mbaff;
-                let mut chroma_deblock: x264_deblock_inter_t = (*h)
-                    .loopf
-                    .deblock_chroma_mbaff;
-                let mut luma_intra_deblock: x264_deblock_intra_t = (*h)
-                    .loopf
-                    .deblock_luma_intra_mbaff;
-                let mut chroma_intra_deblock: x264_deblock_intra_t = (*h)
-                    .loopf
-                    .deblock_chroma_intra_mbaff;
+                let mut luma_deblock: x264_deblock_inter_t = (*h).loopf.deblock_luma_mbaff;
+                let mut chroma_deblock: x264_deblock_inter_t = (*h).loopf.deblock_chroma_mbaff;
+                let mut luma_intra_deblock: x264_deblock_intra_t =
+                    (*h).loopf.deblock_luma_intra_mbaff;
+                let mut chroma_intra_deblock: x264_deblock_intra_t =
+                    (*h).loopf.deblock_chroma_intra_mbaff;
                 let mut c: ::core::ffi::c_int = if chroma444 != 0 {
                     0 as ::core::ffi::c_int
                 } else {
@@ -4057,47 +3866,43 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 left_qp[0 as ::core::ffi::c_int as usize] = *(*h)
                     .mb
                     .qp
-                    .offset(
-                        (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize,
-                    ) as ::core::ffi::c_int;
-                luma_qp[0 as ::core::ffi::c_int as usize] = qp
-                    + left_qp[0 as ::core::ffi::c_int as usize] + 1 as ::core::ffi::c_int
-                    >> 1 as ::core::ffi::c_int;
+                    .offset((*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize)
+                    as ::core::ffi::c_int;
+                luma_qp[0 as ::core::ffi::c_int as usize] =
+                    qp + left_qp[0 as ::core::ffi::c_int as usize] + 1 as ::core::ffi::c_int
+                        >> 1 as ::core::ffi::c_int;
                 chroma_qp[0 as ::core::ffi::c_int as usize] = qpc
                     + *(*h)
                         .chroma_qp_table
                         .offset(left_qp[0 as ::core::ffi::c_int as usize] as isize)
-                        as ::core::ffi::c_int + 1 as ::core::ffi::c_int
+                        as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
                     >> 1 as ::core::ffi::c_int;
                 if intra_cur != 0
                     || (*(*h)
                         .mb
                         .type_0
-                        .offset(
-                            (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize]
-                                as isize,
-                        ) as ::core::ffi::c_int == I_4x4 as ::core::ffi::c_int
+                        .offset((*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize)
+                        as ::core::ffi::c_int
+                        == I_4x4 as ::core::ffi::c_int
                         || *(*h)
                             .mb
                             .type_0
-                            .offset(
-                                (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize]
-                                    as isize,
-                            ) as ::core::ffi::c_int == I_8x8 as ::core::ffi::c_int
+                            .offset((*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize)
+                            as ::core::ffi::c_int
+                            == I_8x8 as ::core::ffi::c_int
                         || *(*h)
                             .mb
                             .type_0
-                            .offset(
-                                (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize]
-                                    as isize,
-                            ) as ::core::ffi::c_int == I_16x16 as ::core::ffi::c_int
+                            .offset((*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize)
+                            as ::core::ffi::c_int
+                            == I_16x16 as ::core::ffi::c_int
                         || *(*h)
                             .mb
                             .type_0
-                            .offset(
-                                (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize]
-                                    as isize,
-                            ) as ::core::ffi::c_int == I_PCM as ::core::ffi::c_int)
+                            .offset((*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize)
+                            as ::core::ffi::c_int
+                            == I_PCM as ::core::ffi::c_int)
                 {
                     deblock_edge_intra(
                         h,
@@ -4106,7 +3911,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(0 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         luma_qp[0 as ::core::ffi::c_int as usize],
                         a,
                         b,
@@ -4121,7 +3926,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             chroma_qp[0 as ::core::ffi::c_int as usize],
                             a,
                             b,
@@ -4136,7 +3941,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 chroma_qp[0 as ::core::ffi::c_int as usize],
                                 a,
                                 b,
@@ -4153,7 +3958,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(0 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         luma_qp[0 as ::core::ffi::c_int as usize],
                         a,
                         b,
@@ -4168,7 +3973,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             chroma_qp[0 as ::core::ffi::c_int as usize],
                             a,
                             b,
@@ -4183,7 +3988,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 chroma_qp[0 as ::core::ffi::c_int as usize],
                                 a,
                                 b,
@@ -4206,47 +4011,43 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 left_qp[1 as ::core::ffi::c_int as usize] = *(*h)
                     .mb
                     .qp
-                    .offset(
-                        (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] as isize,
-                    ) as ::core::ffi::c_int;
-                luma_qp[1 as ::core::ffi::c_int as usize] = qp
-                    + left_qp[1 as ::core::ffi::c_int as usize] + 1 as ::core::ffi::c_int
-                    >> 1 as ::core::ffi::c_int;
+                    .offset((*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] as isize)
+                    as ::core::ffi::c_int;
+                luma_qp[1 as ::core::ffi::c_int as usize] =
+                    qp + left_qp[1 as ::core::ffi::c_int as usize] + 1 as ::core::ffi::c_int
+                        >> 1 as ::core::ffi::c_int;
                 chroma_qp[1 as ::core::ffi::c_int as usize] = qpc
                     + *(*h)
                         .chroma_qp_table
                         .offset(left_qp[1 as ::core::ffi::c_int as usize] as isize)
-                        as ::core::ffi::c_int + 1 as ::core::ffi::c_int
+                        as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
                     >> 1 as ::core::ffi::c_int;
                 if intra_cur != 0
                     || (*(*h)
                         .mb
                         .type_0
-                        .offset(
-                            (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize]
-                                as isize,
-                        ) as ::core::ffi::c_int == I_4x4 as ::core::ffi::c_int
+                        .offset((*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] as isize)
+                        as ::core::ffi::c_int
+                        == I_4x4 as ::core::ffi::c_int
                         || *(*h)
                             .mb
                             .type_0
-                            .offset(
-                                (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize]
-                                    as isize,
-                            ) as ::core::ffi::c_int == I_8x8 as ::core::ffi::c_int
+                            .offset((*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] as isize)
+                            as ::core::ffi::c_int
+                            == I_8x8 as ::core::ffi::c_int
                         || *(*h)
                             .mb
                             .type_0
-                            .offset(
-                                (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize]
-                                    as isize,
-                            ) as ::core::ffi::c_int == I_16x16 as ::core::ffi::c_int
+                            .offset((*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] as isize)
+                            as ::core::ffi::c_int
+                            == I_16x16 as ::core::ffi::c_int
                         || *(*h)
                             .mb
                             .type_0
-                            .offset(
-                                (*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize]
-                                    as isize,
-                            ) as ::core::ffi::c_int == I_PCM as ::core::ffi::c_int)
+                            .offset((*h).mb.i_mb_left_xy[1 as ::core::ffi::c_int as usize] as isize)
+                            as ::core::ffi::c_int
+                            == I_PCM as ::core::ffi::c_int)
                 {
                     deblock_edge_intra(
                         h,
@@ -4255,7 +4056,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(4 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         luma_qp[1 as ::core::ffi::c_int as usize],
                         a,
                         b,
@@ -4270,7 +4071,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(4 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             chroma_qp[1 as ::core::ffi::c_int as usize],
                             a,
                             b,
@@ -4287,7 +4088,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(4 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 chroma_qp[1 as ::core::ffi::c_int as usize],
                                 a,
                                 b,
@@ -4304,7 +4105,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(4 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         luma_qp[1 as ::core::ffi::c_int as usize],
                         a,
                         b,
@@ -4319,7 +4120,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(4 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             chroma_qp[1 as ::core::ffi::c_int as usize],
                             a,
                             b,
@@ -4336,7 +4137,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(4 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 chroma_qp[1 as ::core::ffi::c_int as usize],
                                 a,
                                 b,
@@ -4352,169 +4153,159 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     .qp
                     .offset(((*h).mb.i_mb_xy - 1 as ::core::ffi::c_int) as isize)
                     as ::core::ffi::c_int;
-                let mut qp_left: ::core::ffi::c_int = qp + qpl + 1 as ::core::ffi::c_int
-                    >> 1 as ::core::ffi::c_int;
+                let mut qp_left: ::core::ffi::c_int =
+                    qp + qpl + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int;
                 let mut qpc_left: ::core::ffi::c_int = qpc
                     + *(*h).chroma_qp_table.offset(qpl as isize) as ::core::ffi::c_int
-                    + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int;
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int;
                 let mut intra_left: ::core::ffi::c_int = (*(*h)
                     .mb
                     .type_0
                     .offset(((*h).mb.i_mb_xy - 1 as ::core::ffi::c_int) as isize)
-                    as ::core::ffi::c_int == I_4x4 as ::core::ffi::c_int
+                    as ::core::ffi::c_int
+                    == I_4x4 as ::core::ffi::c_int
                     || *(*h)
                         .mb
                         .type_0
                         .offset(((*h).mb.i_mb_xy - 1 as ::core::ffi::c_int) as isize)
-                        as ::core::ffi::c_int == I_8x8 as ::core::ffi::c_int
+                        as ::core::ffi::c_int
+                        == I_8x8 as ::core::ffi::c_int
                     || *(*h)
                         .mb
                         .type_0
                         .offset(((*h).mb.i_mb_xy - 1 as ::core::ffi::c_int) as isize)
-                        as ::core::ffi::c_int == I_16x16 as ::core::ffi::c_int
+                        as ::core::ffi::c_int
+                        == I_16x16 as ::core::ffi::c_int
                     || *(*h)
                         .mb
                         .type_0
                         .offset(((*h).mb.i_mb_xy - 1 as ::core::ffi::c_int) as isize)
-                        as ::core::ffi::c_int == I_PCM as ::core::ffi::c_int)
+                        as ::core::ffi::c_int
+                        == I_PCM as ::core::ffi::c_int)
                     as ::core::ffi::c_int;
-                let mut intra_deblock: ::core::ffi::c_int = (intra_cur != 0
-                    || intra_left != 0) as ::core::ffi::c_int;
+                let mut intra_deblock: ::core::ffi::c_int =
+                    (intra_cur != 0 || intra_left != 0) as ::core::ffi::c_int;
                 if !(*(*h).fdec).mb_info.is_null()
                     && (*((*(*bs.offset(0 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(0 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr() as *mut x264_union32_t))
-                        .i != 0
+                    .as_mut_ptr() as *mut x264_union32_t))
+                        .i
+                        != 0
                 {
-                    let ref mut fresh0 = *(*(*h).fdec)
-                        .effective_qp
-                        .offset(mb_xy as isize);
+                    let ref mut fresh0 = *(*(*h).fdec).effective_qp.offset(mb_xy as isize);
                     *fresh0 = (*fresh0 as ::core::ffi::c_int
                         | 0xff as ::core::ffi::c_int
-                            * (*(*(*h).fdec).mb_info.offset(mb_xy as isize)
-                                as ::core::ffi::c_uint & X264_MBINFO_CONSTANT != 0)
-                                as ::core::ffi::c_int) as uint8_t;
+                            * (*(*(*h).fdec).mb_info.offset(mb_xy as isize) as ::core::ffi::c_uint
+                                & X264_MBINFO_CONSTANT
+                                != 0) as ::core::ffi::c_int)
+                        as uint8_t;
                     let ref mut fresh1 = *(*(*h).fdec)
                         .effective_qp
-                        .offset(
-                            (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize]
-                                as isize,
-                        );
+                        .offset((*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize);
                     *fresh1 = (*fresh1 as ::core::ffi::c_int
                         | 0xff as ::core::ffi::c_int
-                            * (*(*(*h).fdec)
-                                .mb_info
-                                .offset(
-                                    (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize]
-                                        as isize,
-                                ) as ::core::ffi::c_uint & X264_MBINFO_CONSTANT != 0)
-                                as ::core::ffi::c_int) as uint8_t;
+                            * (*(*(*h).fdec).mb_info.offset(
+                                (*h).mb.i_mb_left_xy[0 as ::core::ffi::c_int as usize] as isize,
+                            ) as ::core::ffi::c_uint
+                                & X264_MBINFO_CONSTANT
+                                != 0) as ::core::ffi::c_int)
+                        as uint8_t;
                 }
                 if intra_deblock != 0 {
-                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                        || transform_8x8 == 0
+                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0
                     {
                         deblock_edge_intra(
                             h,
-                            pixy
-                                .offset(
-                                    (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                        * (if 0 as ::core::ffi::c_int != 0 {
-                                            stride2y
-                                        } else {
-                                            1 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixy.offset(
+                                (4 as ::core::ffi::c_int
+                                    * 0 as ::core::ffi::c_int
+                                    * (if 0 as ::core::ffi::c_int != 0 {
+                                        stride2y
+                                    } else {
+                                        1 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2y as intptr_t,
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qp_left,
                             a,
                             b,
                             0 as ::core::ffi::c_int,
-                            (*h)
-                                .loopf
-                                .deblock_luma_intra[0 as ::core::ffi::c_int as usize],
+                            (*h).loopf.deblock_luma_intra[0 as ::core::ffi::c_int as usize],
                         );
                         if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                             deblock_edge_intra(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 0 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 0 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 0 as ::core::ffi::c_int,
-                                (*h)
-                                    .loopf
-                                    .deblock_luma_intra[0 as ::core::ffi::c_int as usize],
+                                (*h).loopf.deblock_luma_intra[0 as ::core::ffi::c_int as usize],
                             );
                             deblock_edge_intra(
                                 h,
-                                pixuv
-                                    .offset(uvdiff as isize)
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 0 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(uvdiff as isize).offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 0 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 0 as ::core::ffi::c_int,
-                                (*h)
-                                    .loopf
-                                    .deblock_luma_intra[0 as ::core::ffi::c_int as usize],
+                                (*h).loopf.deblock_luma_intra[0 as ::core::ffi::c_int as usize],
                             );
                         } else if chroma_format == CHROMA_420 as ::core::ffi::c_int
                             && 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
                         {
                             deblock_edge_intra(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (0 as ::core::ffi::c_int
-                                            * (if 0 as ::core::ffi::c_int != 0 {
-                                                2 as ::core::ffi::c_int * stride2uv
-                                            } else {
-                                                4 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (0 as ::core::ffi::c_int
+                                        * (if 0 as ::core::ffi::c_int != 0 {
+                                            2 as ::core::ffi::c_int * stride2uv
+                                        } else {
+                                            4 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 1 as ::core::ffi::c_int,
-                                (*h)
-                                    .loopf
-                                    .deblock_chroma_intra[0 as ::core::ffi::c_int as usize],
+                                (*h).loopf.deblock_chroma_intra[0 as ::core::ffi::c_int as usize],
                             );
                         }
                     }
@@ -4524,49 +4315,45 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     {
                         deblock_edge_intra(
                             h,
-                            pixuv
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        * (if 0 as ::core::ffi::c_int != 0 {
-                                            4 as ::core::ffi::c_int * stride2uv
-                                        } else {
-                                            4 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixuv.offset(
+                                (0 as ::core::ffi::c_int
+                                    * (if 0 as ::core::ffi::c_int != 0 {
+                                        4 as ::core::ffi::c_int * stride2uv
+                                    } else {
+                                        4 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2uv as intptr_t,
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qpc_left,
                             a,
                             b,
                             1 as ::core::ffi::c_int,
-                            (*h)
-                                .loopf
-                                .deblock_chroma_intra[0 as ::core::ffi::c_int as usize],
+                            (*h).loopf.deblock_chroma_intra[0 as ::core::ffi::c_int as usize],
                         );
                     }
                 } else {
-                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                        || transform_8x8 == 0
+                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0
                     {
                         deblock_edge(
                             h,
-                            pixy
-                                .offset(
-                                    (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                        * (if 0 as ::core::ffi::c_int != 0 {
-                                            stride2y
-                                        } else {
-                                            1 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixy.offset(
+                                (4 as ::core::ffi::c_int
+                                    * 0 as ::core::ffi::c_int
+                                    * (if 0 as ::core::ffi::c_int != 0 {
+                                        stride2y
+                                    } else {
+                                        1 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2y as intptr_t,
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qp_left,
                             a,
                             b,
@@ -4576,20 +4363,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                             deblock_edge(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 0 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 0 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
@@ -4598,21 +4385,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             );
                             deblock_edge(
                                 h,
-                                pixuv
-                                    .offset(uvdiff as isize)
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 0 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(uvdiff as isize).offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 0 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
@@ -4624,20 +4410,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         {
                             deblock_edge(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (0 as ::core::ffi::c_int
-                                            * (if 0 as ::core::ffi::c_int != 0 {
-                                                2 as ::core::ffi::c_int * stride2uv
-                                            } else {
-                                                4 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (0 as ::core::ffi::c_int
+                                        * (if 0 as ::core::ffi::c_int != 0 {
+                                            2 as ::core::ffi::c_int * stride2uv
+                                        } else {
+                                            4 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
@@ -4652,20 +4437,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     {
                         deblock_edge(
                             h,
-                            pixuv
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        * (if 0 as ::core::ffi::c_int != 0 {
-                                            4 as ::core::ffi::c_int * stride2uv
-                                        } else {
-                                            4 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixuv.offset(
+                                (0 as ::core::ffi::c_int
+                                    * (if 0 as ::core::ffi::c_int != 0 {
+                                        4 as ::core::ffi::c_int * stride2uv
+                                    } else {
+                                        4 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2uv as intptr_t,
                             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qpc_left,
                             a,
                             b,
@@ -4677,25 +4461,23 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             }
         }
         if first_edge_only == 0 {
-            if 1 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                || transform_8x8 == 0
-            {
+            if 1 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy
-                        .offset(
-                            (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                                * (if 0 as ::core::ffi::c_int != 0 {
-                                    stride2y
-                                } else {
-                                    1 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixy.offset(
+                        (4 as ::core::ffi::c_int
+                            * 1 as ::core::ffi::c_int
+                            * (if 0 as ::core::ffi::c_int != 0 {
+                                stride2y
+                            } else {
+                                1 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2y as intptr_t,
                     (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(1 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qp,
                     a,
                     b,
@@ -4705,20 +4487,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (4 as ::core::ffi::c_int
+                                * 1 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(1 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -4727,21 +4509,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     );
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(uvdiff as isize)
-                            .offset(
-                                (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(uvdiff as isize).offset(
+                            (4 as ::core::ffi::c_int
+                                * 1 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(1 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -4753,20 +4534,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (1 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        2 as ::core::ffi::c_int * stride2uv
-                                    } else {
-                                        4 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (1 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    2 as ::core::ffi::c_int * stride2uv
+                                } else {
+                                    4 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(1 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -4781,20 +4561,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             {
                 deblock_edge(
                     h,
-                    pixuv
-                        .offset(
-                            (1 as ::core::ffi::c_int
-                                * (if 0 as ::core::ffi::c_int != 0 {
-                                    4 as ::core::ffi::c_int * stride2uv
-                                } else {
-                                    4 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixuv.offset(
+                        (1 as ::core::ffi::c_int
+                            * (if 0 as ::core::ffi::c_int != 0 {
+                                4 as ::core::ffi::c_int * stride2uv
+                            } else {
+                                4 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2uv as intptr_t,
                     (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(1 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qpc,
                     a,
                     b,
@@ -4802,25 +4581,23 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     (*h).loopf.deblock_chroma[0 as ::core::ffi::c_int as usize],
                 );
             }
-            if 2 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                || transform_8x8 == 0
-            {
+            if 2 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy
-                        .offset(
-                            (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                                * (if 0 as ::core::ffi::c_int != 0 {
-                                    stride2y
-                                } else {
-                                    1 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixy.offset(
+                        (4 as ::core::ffi::c_int
+                            * 2 as ::core::ffi::c_int
+                            * (if 0 as ::core::ffi::c_int != 0 {
+                                stride2y
+                            } else {
+                                1 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2y as intptr_t,
                     (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(2 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qp,
                     a,
                     b,
@@ -4830,20 +4607,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (4 as ::core::ffi::c_int
+                                * 2 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -4852,21 +4629,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     );
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(uvdiff as isize)
-                            .offset(
-                                (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(uvdiff as isize).offset(
+                            (4 as ::core::ffi::c_int
+                                * 2 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -4878,20 +4654,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (2 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        2 as ::core::ffi::c_int * stride2uv
-                                    } else {
-                                        4 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (2 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    2 as ::core::ffi::c_int * stride2uv
+                                } else {
+                                    4 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -4906,20 +4681,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             {
                 deblock_edge(
                     h,
-                    pixuv
-                        .offset(
-                            (2 as ::core::ffi::c_int
-                                * (if 0 as ::core::ffi::c_int != 0 {
-                                    4 as ::core::ffi::c_int * stride2uv
-                                } else {
-                                    4 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixuv.offset(
+                        (2 as ::core::ffi::c_int
+                            * (if 0 as ::core::ffi::c_int != 0 {
+                                4 as ::core::ffi::c_int * stride2uv
+                            } else {
+                                4 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2uv as intptr_t,
                     (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(2 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qpc,
                     a,
                     b,
@@ -4927,25 +4701,23 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     (*h).loopf.deblock_chroma[0 as ::core::ffi::c_int as usize],
                 );
             }
-            if 3 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                || transform_8x8 == 0
-            {
+            if 3 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy
-                        .offset(
-                            (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                                * (if 0 as ::core::ffi::c_int != 0 {
-                                    stride2y
-                                } else {
-                                    1 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixy.offset(
+                        (4 as ::core::ffi::c_int
+                            * 3 as ::core::ffi::c_int
+                            * (if 0 as ::core::ffi::c_int != 0 {
+                                stride2y
+                            } else {
+                                1 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2y as intptr_t,
                     (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(3 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qp,
                     a,
                     b,
@@ -4955,20 +4727,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (4 as ::core::ffi::c_int
+                                * 3 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(3 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -4977,21 +4749,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     );
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(uvdiff as isize)
-                            .offset(
-                                (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(uvdiff as isize).offset(
+                            (4 as ::core::ffi::c_int
+                                * 3 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(3 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5003,20 +4774,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (3 as ::core::ffi::c_int
-                                    * (if 0 as ::core::ffi::c_int != 0 {
-                                        2 as ::core::ffi::c_int * stride2uv
-                                    } else {
-                                        4 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (3 as ::core::ffi::c_int
+                                * (if 0 as ::core::ffi::c_int != 0 {
+                                    2 as ::core::ffi::c_int * stride2uv
+                                } else {
+                                    4 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(3 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5031,20 +4801,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             {
                 deblock_edge(
                     h,
-                    pixuv
-                        .offset(
-                            (3 as ::core::ffi::c_int
-                                * (if 0 as ::core::ffi::c_int != 0 {
-                                    4 as ::core::ffi::c_int * stride2uv
-                                } else {
-                                    4 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixuv.offset(
+                        (3 as ::core::ffi::c_int
+                            * (if 0 as ::core::ffi::c_int != 0 {
+                                4 as ::core::ffi::c_int * stride2uv
+                            } else {
+                                4 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2uv as intptr_t,
                     (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(3 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qpc,
                     a,
                     b,
@@ -5053,41 +4822,39 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 );
             }
         }
-        if (*h).mb.i_neighbour & MB_TOP as ::core::ffi::c_int as ::core::ffi::c_uint != 0
-        {
-            if b_interlaced != 0 && mb_y & 1 as ::core::ffi::c_int == 0
+        if (*h).mb.i_neighbour & MB_TOP as ::core::ffi::c_int as ::core::ffi::c_uint != 0 {
+            if b_interlaced != 0
+                && mb_y & 1 as ::core::ffi::c_int == 0
                 && (*h).mb.b_interlaced == 0
-                && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize)
-                    as ::core::ffi::c_int != 0
+                && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int != 0
             {
-                let mut mbn_xy: ::core::ffi::c_int = mb_xy
-                    - 2 as ::core::ffi::c_int * (*h).mb.i_mb_stride;
+                let mut mbn_xy: ::core::ffi::c_int =
+                    mb_xy - 2 as ::core::ffi::c_int * (*h).mb.i_mb_stride;
                 let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while j < 2 as ::core::ffi::c_int {
-                    let mut qpt: ::core::ffi::c_int = *(*h).mb.qp.offset(mbn_xy as isize)
-                        as ::core::ffi::c_int;
-                    let mut qp_top: ::core::ffi::c_int = qp + qpt
-                        + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int;
+                    let mut qpt: ::core::ffi::c_int =
+                        *(*h).mb.qp.offset(mbn_xy as isize) as ::core::ffi::c_int;
+                    let mut qp_top: ::core::ffi::c_int =
+                        qp + qpt + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int;
                     let mut qpc_top: ::core::ffi::c_int = qpc
-                        + *(*h).chroma_qp_table.offset(qpt as isize)
-                            as ::core::ffi::c_int + 1 as ::core::ffi::c_int
+                        + *(*h).chroma_qp_table.offset(qpt as isize) as ::core::ffi::c_int
+                        + 1 as ::core::ffi::c_int
                         >> 1 as ::core::ffi::c_int;
-                    let mut intra_top: ::core::ffi::c_int = (*(*h)
-                        .mb
-                        .type_0
-                        .offset(mbn_xy as isize) as ::core::ffi::c_int
+                    let mut intra_top: ::core::ffi::c_int = (*(*h).mb.type_0.offset(mbn_xy as isize)
+                        as ::core::ffi::c_int
                         == I_4x4 as ::core::ffi::c_int
                         || *(*h).mb.type_0.offset(mbn_xy as isize) as ::core::ffi::c_int
                             == I_8x8 as ::core::ffi::c_int
                         || *(*h).mb.type_0.offset(mbn_xy as isize) as ::core::ffi::c_int
                             == I_16x16 as ::core::ffi::c_int
                         || *(*h).mb.type_0.offset(mbn_xy as isize) as ::core::ffi::c_int
-                            == I_PCM as ::core::ffi::c_int) as ::core::ffi::c_int;
+                            == I_PCM as ::core::ffi::c_int)
+                        as ::core::ffi::c_int;
                     if intra_cur != 0 || intra_top != 0 {
                         (*((*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset((4 as ::core::ffi::c_int * j) as isize))
-                            .as_mut_ptr() as *mut x264_union32_t))
+                        .as_mut_ptr() as *mut x264_union32_t))
                             .i = 0x3030303 as uint32_t;
                     }
                     deblock_edge(
@@ -5097,7 +4864,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset((4 as ::core::ffi::c_int * j) as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qp_top,
                         a,
                         b,
@@ -5112,7 +4879,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset((4 as ::core::ffi::c_int * j) as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qpc_top,
                             a,
                             b,
@@ -5128,7 +4895,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset((4 as ::core::ffi::c_int * j) as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qpc_top,
                             a,
                             b,
@@ -5143,7 +4910,7 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset((4 as ::core::ffi::c_int * j) as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qpc_top,
                             a,
                             b,
@@ -5155,161 +4922,152 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     mbn_xy += (*h).mb.i_mb_stride;
                 }
             } else {
-                let mut qpt_0: ::core::ffi::c_int = *(*h)
-                    .mb
-                    .qp
-                    .offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int;
-                let mut qp_top_0: ::core::ffi::c_int = qp + qpt_0
-                    + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int;
+                let mut qpt_0: ::core::ffi::c_int =
+                    *(*h).mb.qp.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int;
+                let mut qp_top_0: ::core::ffi::c_int =
+                    qp + qpt_0 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int;
                 let mut qpc_top_0: ::core::ffi::c_int = qpc
                     + *(*h).chroma_qp_table.offset(qpt_0 as isize) as ::core::ffi::c_int
-                    + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int;
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int;
                 let mut intra_top_0: ::core::ffi::c_int = (*(*h)
                     .mb
                     .type_0
-                    .offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int
+                    .offset((*h).mb.i_mb_top_xy as isize)
+                    as ::core::ffi::c_int
                     == I_4x4 as ::core::ffi::c_int
-                    || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
-                        as ::core::ffi::c_int == I_8x8 as ::core::ffi::c_int
-                    || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
-                        as ::core::ffi::c_int == I_16x16 as ::core::ffi::c_int
-                    || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
-                        as ::core::ffi::c_int == I_PCM as ::core::ffi::c_int)
+                    || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int
+                        == I_8x8 as ::core::ffi::c_int
+                    || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int
+                        == I_16x16 as ::core::ffi::c_int
+                    || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int
+                        == I_PCM as ::core::ffi::c_int)
                     as ::core::ffi::c_int;
-                let mut intra_deblock_0: ::core::ffi::c_int = (intra_cur != 0
-                    || intra_top_0 != 0) as ::core::ffi::c_int;
+                let mut intra_deblock_0: ::core::ffi::c_int =
+                    (intra_cur != 0 || intra_top_0 != 0) as ::core::ffi::c_int;
                 if !(*(*h).fdec).mb_info.is_null()
                     && (*((*(*bs.offset(1 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(0 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr() as *mut x264_union32_t))
-                        .i != 0
+                    .as_mut_ptr() as *mut x264_union32_t))
+                        .i
+                        != 0
                 {
-                    let ref mut fresh2 = *(*(*h).fdec)
-                        .effective_qp
-                        .offset(mb_xy as isize);
+                    let ref mut fresh2 = *(*(*h).fdec).effective_qp.offset(mb_xy as isize);
                     *fresh2 = (*fresh2 as ::core::ffi::c_int
                         | 0xff as ::core::ffi::c_int
-                            * (*(*(*h).fdec).mb_info.offset(mb_xy as isize)
-                                as ::core::ffi::c_uint & X264_MBINFO_CONSTANT != 0)
-                                as ::core::ffi::c_int) as uint8_t;
+                            * (*(*(*h).fdec).mb_info.offset(mb_xy as isize) as ::core::ffi::c_uint
+                                & X264_MBINFO_CONSTANT
+                                != 0) as ::core::ffi::c_int)
+                        as uint8_t;
                     let ref mut fresh3 = *(*(*h).fdec)
                         .effective_qp
                         .offset((*h).mb.i_mb_top_xy as isize);
                     *fresh3 = (*fresh3 as ::core::ffi::c_int
                         | 0xff as ::core::ffi::c_int
                             * (*(*(*h).fdec).mb_info.offset((*h).mb.i_mb_top_xy as isize)
-                                as ::core::ffi::c_uint & X264_MBINFO_CONSTANT != 0)
-                                as ::core::ffi::c_int) as uint8_t;
+                                as ::core::ffi::c_uint
+                                & X264_MBINFO_CONSTANT
+                                != 0) as ::core::ffi::c_int)
+                        as uint8_t;
                 }
                 if (b_interlaced == 0
                     || (*h).mb.b_interlaced == 0
                         && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) == 0)
                     && intra_deblock_0 != 0
                 {
-                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                        || transform_8x8 == 0
+                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0
                     {
                         deblock_edge_intra(
                             h,
-                            pixy
-                                .offset(
-                                    (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                        * (if 1 as ::core::ffi::c_int != 0 {
-                                            stride2y
-                                        } else {
-                                            1 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixy.offset(
+                                (4 as ::core::ffi::c_int
+                                    * 0 as ::core::ffi::c_int
+                                    * (if 1 as ::core::ffi::c_int != 0 {
+                                        stride2y
+                                    } else {
+                                        1 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2y as intptr_t,
                             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qp_top_0,
                             a,
                             b,
                             0 as ::core::ffi::c_int,
-                            (*h)
-                                .loopf
-                                .deblock_luma_intra[1 as ::core::ffi::c_int as usize],
+                            (*h).loopf.deblock_luma_intra[1 as ::core::ffi::c_int as usize],
                         );
                         if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                             deblock_edge_intra(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 1 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 1 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 0 as ::core::ffi::c_int,
-                                (*h)
-                                    .loopf
-                                    .deblock_luma_intra[1 as ::core::ffi::c_int as usize],
+                                (*h).loopf.deblock_luma_intra[1 as ::core::ffi::c_int as usize],
                             );
                             deblock_edge_intra(
                                 h,
-                                pixuv
-                                    .offset(uvdiff as isize)
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 1 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(uvdiff as isize).offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 1 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 0 as ::core::ffi::c_int,
-                                (*h)
-                                    .loopf
-                                    .deblock_luma_intra[1 as ::core::ffi::c_int as usize],
+                                (*h).loopf.deblock_luma_intra[1 as ::core::ffi::c_int as usize],
                             );
                         } else if chroma_format == CHROMA_420 as ::core::ffi::c_int
                             && 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
                         {
                             deblock_edge_intra(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (0 as ::core::ffi::c_int
-                                            * (if 1 as ::core::ffi::c_int != 0 {
-                                                2 as ::core::ffi::c_int * stride2uv
-                                            } else {
-                                                4 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (0 as ::core::ffi::c_int
+                                        * (if 1 as ::core::ffi::c_int != 0 {
+                                            2 as ::core::ffi::c_int * stride2uv
+                                        } else {
+                                            4 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 1 as ::core::ffi::c_int,
-                                (*h)
-                                    .loopf
-                                    .deblock_chroma_intra[1 as ::core::ffi::c_int as usize],
+                                (*h).loopf.deblock_chroma_intra[1 as ::core::ffi::c_int as usize],
                             );
                         }
                     }
@@ -5319,27 +5077,24 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     {
                         deblock_edge_intra(
                             h,
-                            pixuv
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        * (if 1 as ::core::ffi::c_int != 0 {
-                                            4 as ::core::ffi::c_int * stride2uv
-                                        } else {
-                                            4 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixuv.offset(
+                                (0 as ::core::ffi::c_int
+                                    * (if 1 as ::core::ffi::c_int != 0 {
+                                        4 as ::core::ffi::c_int * stride2uv
+                                    } else {
+                                        4 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2uv as intptr_t,
                             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qpc_top_0,
                             a,
                             b,
                             1 as ::core::ffi::c_int,
-                            (*h)
-                                .loopf
-                                .deblock_chroma_intra[1 as ::core::ffi::c_int as usize],
+                            (*h).loopf.deblock_chroma_intra[1 as ::core::ffi::c_int as usize],
                         );
                     }
                 } else {
@@ -5347,28 +5102,27 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         (*((*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(0 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr() as *mut x264_union32_t))
+                        .as_mut_ptr() as *mut x264_union32_t))
                             .i = 0x3030303 as uint32_t;
                     }
-                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                        || transform_8x8 == 0
+                    if 0 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0
                     {
                         deblock_edge(
                             h,
-                            pixy
-                                .offset(
-                                    (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                        * (if 1 as ::core::ffi::c_int != 0 {
-                                            stride2y
-                                        } else {
-                                            1 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixy.offset(
+                                (4 as ::core::ffi::c_int
+                                    * 0 as ::core::ffi::c_int
+                                    * (if 1 as ::core::ffi::c_int != 0 {
+                                        stride2y
+                                    } else {
+                                        1 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2y as intptr_t,
                             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qp_top_0,
                             a,
                             b,
@@ -5378,20 +5132,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                             deblock_edge(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 1 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 1 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
@@ -5400,21 +5154,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                             );
                             deblock_edge(
                                 h,
-                                pixuv
-                                    .offset(uvdiff as isize)
-                                    .offset(
-                                        (4 as ::core::ffi::c_int * 0 as ::core::ffi::c_int
-                                            * (if 1 as ::core::ffi::c_int != 0 {
-                                                stride2uv
-                                            } else {
-                                                1 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(uvdiff as isize).offset(
+                                    (4 as ::core::ffi::c_int
+                                        * 0 as ::core::ffi::c_int
+                                        * (if 1 as ::core::ffi::c_int != 0 {
+                                            stride2uv
+                                        } else {
+                                            1 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
@@ -5426,20 +5179,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                         {
                             deblock_edge(
                                 h,
-                                pixuv
-                                    .offset(
-                                        (0 as ::core::ffi::c_int
-                                            * (if 1 as ::core::ffi::c_int != 0 {
-                                                2 as ::core::ffi::c_int * stride2uv
-                                            } else {
-                                                4 as ::core::ffi::c_int
-                                            })) as isize,
-                                    ),
+                                pixuv.offset(
+                                    (0 as ::core::ffi::c_int
+                                        * (if 1 as ::core::ffi::c_int != 0 {
+                                            2 as ::core::ffi::c_int * stride2uv
+                                        } else {
+                                            4 as ::core::ffi::c_int
+                                        })) as isize,
+                                ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                     .as_mut_ptr()
                                     .offset(0 as ::core::ffi::c_int as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
@@ -5454,20 +5206,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     {
                         deblock_edge(
                             h,
-                            pixuv
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        * (if 1 as ::core::ffi::c_int != 0 {
-                                            4 as ::core::ffi::c_int * stride2uv
-                                        } else {
-                                            4 as ::core::ffi::c_int
-                                        })) as isize,
-                                ),
+                            pixuv.offset(
+                                (0 as ::core::ffi::c_int
+                                    * (if 1 as ::core::ffi::c_int != 0 {
+                                        4 as ::core::ffi::c_int * stride2uv
+                                    } else {
+                                        4 as ::core::ffi::c_int
+                                    })) as isize,
+                            ),
                             stride2uv as intptr_t,
                             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                                 .as_mut_ptr()
                                 .offset(0 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             qpc_top_0,
                             a,
                             b,
@@ -5479,25 +5230,23 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             }
         }
         if first_edge_only == 0 {
-            if 1 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                || transform_8x8 == 0
-            {
+            if 1 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy
-                        .offset(
-                            (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                                * (if 1 as ::core::ffi::c_int != 0 {
-                                    stride2y
-                                } else {
-                                    1 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixy.offset(
+                        (4 as ::core::ffi::c_int
+                            * 1 as ::core::ffi::c_int
+                            * (if 1 as ::core::ffi::c_int != 0 {
+                                stride2y
+                            } else {
+                                1 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2y as intptr_t,
                     (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(1 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qp,
                     a,
                     b,
@@ -5507,20 +5256,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (4 as ::core::ffi::c_int
+                                * 1 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(1 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5529,21 +5278,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     );
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(uvdiff as isize)
-                            .offset(
-                                (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(uvdiff as isize).offset(
+                            (4 as ::core::ffi::c_int
+                                * 1 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(1 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5555,20 +5303,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (1 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        2 as ::core::ffi::c_int * stride2uv
-                                    } else {
-                                        4 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (1 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    2 as ::core::ffi::c_int * stride2uv
+                                } else {
+                                    4 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(1 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5583,20 +5330,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             {
                 deblock_edge(
                     h,
-                    pixuv
-                        .offset(
-                            (1 as ::core::ffi::c_int
-                                * (if 1 as ::core::ffi::c_int != 0 {
-                                    4 as ::core::ffi::c_int * stride2uv
-                                } else {
-                                    4 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixuv.offset(
+                        (1 as ::core::ffi::c_int
+                            * (if 1 as ::core::ffi::c_int != 0 {
+                                4 as ::core::ffi::c_int * stride2uv
+                            } else {
+                                4 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2uv as intptr_t,
                     (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(1 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qpc,
                     a,
                     b,
@@ -5604,25 +5350,23 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     (*h).loopf.deblock_chroma[1 as ::core::ffi::c_int as usize],
                 );
             }
-            if 2 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                || transform_8x8 == 0
-            {
+            if 2 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy
-                        .offset(
-                            (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                                * (if 1 as ::core::ffi::c_int != 0 {
-                                    stride2y
-                                } else {
-                                    1 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixy.offset(
+                        (4 as ::core::ffi::c_int
+                            * 2 as ::core::ffi::c_int
+                            * (if 1 as ::core::ffi::c_int != 0 {
+                                stride2y
+                            } else {
+                                1 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2y as intptr_t,
                     (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(2 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qp,
                     a,
                     b,
@@ -5632,20 +5376,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (4 as ::core::ffi::c_int
+                                * 2 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5654,21 +5398,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     );
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(uvdiff as isize)
-                            .offset(
-                                (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(uvdiff as isize).offset(
+                            (4 as ::core::ffi::c_int
+                                * 2 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5680,20 +5423,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (2 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        2 as ::core::ffi::c_int * stride2uv
-                                    } else {
-                                        4 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (2 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    2 as ::core::ffi::c_int * stride2uv
+                                } else {
+                                    4 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5708,20 +5450,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             {
                 deblock_edge(
                     h,
-                    pixuv
-                        .offset(
-                            (2 as ::core::ffi::c_int
-                                * (if 1 as ::core::ffi::c_int != 0 {
-                                    4 as ::core::ffi::c_int * stride2uv
-                                } else {
-                                    4 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixuv.offset(
+                        (2 as ::core::ffi::c_int
+                            * (if 1 as ::core::ffi::c_int != 0 {
+                                4 as ::core::ffi::c_int * stride2uv
+                            } else {
+                                4 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2uv as intptr_t,
                     (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(2 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qpc,
                     a,
                     b,
@@ -5729,25 +5470,23 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     (*h).loopf.deblock_chroma[1 as ::core::ffi::c_int as usize],
                 );
             }
-            if 3 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0
-                || transform_8x8 == 0
-            {
+            if 3 as ::core::ffi::c_int & 1 as ::core::ffi::c_int == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy
-                        .offset(
-                            (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                                * (if 1 as ::core::ffi::c_int != 0 {
-                                    stride2y
-                                } else {
-                                    1 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixy.offset(
+                        (4 as ::core::ffi::c_int
+                            * 3 as ::core::ffi::c_int
+                            * (if 1 as ::core::ffi::c_int != 0 {
+                                stride2y
+                            } else {
+                                1 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2y as intptr_t,
                     (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(3 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qp,
                     a,
                     b,
@@ -5757,20 +5496,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 if chroma_format == CHROMA_444 as ::core::ffi::c_int {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (4 as ::core::ffi::c_int
+                                * 3 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(3 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5779,21 +5518,20 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                     );
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(uvdiff as isize)
-                            .offset(
-                                (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        stride2uv
-                                    } else {
-                                        1 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(uvdiff as isize).offset(
+                            (4 as ::core::ffi::c_int
+                                * 3 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    stride2uv
+                                } else {
+                                    1 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(3 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5805,20 +5543,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
                 {
                     deblock_edge(
                         h,
-                        pixuv
-                            .offset(
-                                (3 as ::core::ffi::c_int
-                                    * (if 1 as ::core::ffi::c_int != 0 {
-                                        2 as ::core::ffi::c_int * stride2uv
-                                    } else {
-                                        4 as ::core::ffi::c_int
-                                    })) as isize,
-                            ),
+                        pixuv.offset(
+                            (3 as ::core::ffi::c_int
+                                * (if 1 as ::core::ffi::c_int != 0 {
+                                    2 as ::core::ffi::c_int * stride2uv
+                                } else {
+                                    4 as ::core::ffi::c_int
+                                })) as isize,
+                        ),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                             .as_mut_ptr()
                             .offset(3 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         qpc,
                         a,
                         b,
@@ -5833,20 +5570,19 @@ pub unsafe extern "C" fn x264_10_frame_deblock_row(
             {
                 deblock_edge(
                     h,
-                    pixuv
-                        .offset(
-                            (3 as ::core::ffi::c_int
-                                * (if 1 as ::core::ffi::c_int != 0 {
-                                    4 as ::core::ffi::c_int * stride2uv
-                                } else {
-                                    4 as ::core::ffi::c_int
-                                })) as isize,
-                        ),
+                    pixuv.offset(
+                        (3 as ::core::ffi::c_int
+                            * (if 1 as ::core::ffi::c_int != 0 {
+                                4 as ::core::ffi::c_int * stride2uv
+                            } else {
+                                4 as ::core::ffi::c_int
+                            })) as isize,
+                    ),
                     stride2uv as intptr_t,
                     (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                         .as_mut_ptr()
                         .offset(3 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     qpc,
                     a,
                     b,
@@ -5866,20 +5602,22 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     let mut b: ::core::ffi::c_int = (*h).sh.i_beta_offset - QP_BD_OFFSET;
     let mut qp_thresh: ::core::ffi::c_int = 15 as ::core::ffi::c_int
         - (if a < b { a } else { b })
-        - (if 0 as ::core::ffi::c_int > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset
-        {
+        - (if 0 as ::core::ffi::c_int > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset {
             0 as ::core::ffi::c_int
         } else {
             (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset
         });
-    let mut intra_cur: ::core::ffi::c_int = ((*h).mb.i_type
-        == I_4x4 as ::core::ffi::c_int || (*h).mb.i_type == I_8x8 as ::core::ffi::c_int
+    let mut intra_cur: ::core::ffi::c_int = ((*h).mb.i_type == I_4x4 as ::core::ffi::c_int
+        || (*h).mb.i_type == I_8x8 as ::core::ffi::c_int
         || (*h).mb.i_type == I_16x16 as ::core::ffi::c_int
-        || (*h).mb.i_type == I_PCM as ::core::ffi::c_int) as ::core::ffi::c_int;
+        || (*h).mb.i_type == I_PCM as ::core::ffi::c_int)
+        as ::core::ffi::c_int;
     let mut qp: ::core::ffi::c_int = (*h).mb.i_qp;
     let mut qpc: ::core::ffi::c_int = (*h).mb.i_chroma_qp;
-    if (*h).mb.i_partition == D_16x16 as ::core::ffi::c_int && (*h).mb.i_cbp_luma == 0
-        && intra_cur == 0 || qp <= qp_thresh
+    if (*h).mb.i_partition == D_16x16 as ::core::ffi::c_int
+        && (*h).mb.i_cbp_luma == 0
+        && intra_cur == 0
+        || qp <= qp_thresh
     {
         return;
     }
@@ -5888,30 +5626,27 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
         (*((*(*bs.offset(0 as ::core::ffi::c_int as isize))
             .as_mut_ptr()
             .offset(1 as ::core::ffi::c_int as isize))
-            .as_mut_ptr() as *mut x264_union32_t))
+        .as_mut_ptr() as *mut x264_union32_t))
             .i = 0x3030303 as uint32_t;
         (*((*(*bs.offset(0 as ::core::ffi::c_int as isize))
             .as_mut_ptr()
             .offset(2 as ::core::ffi::c_int as isize))
-            .as_mut_ptr() as *mut x264_union64_t))
+        .as_mut_ptr() as *mut x264_union64_t))
             .i = 0x303030303030303 as uint64_t;
         (*((*(*bs.offset(1 as ::core::ffi::c_int as isize))
             .as_mut_ptr()
             .offset(1 as ::core::ffi::c_int as isize))
-            .as_mut_ptr() as *mut x264_union32_t))
+        .as_mut_ptr() as *mut x264_union32_t))
             .i = 0x3030303 as uint32_t;
         (*((*(*bs.offset(1 as ::core::ffi::c_int as isize))
             .as_mut_ptr()
             .offset(2 as ::core::ffi::c_int as isize))
-            .as_mut_ptr() as *mut x264_union64_t))
+        .as_mut_ptr() as *mut x264_union64_t))
             .i = 0x303030303030303 as uint64_t;
     } else {
-        (*h)
-            .loopf
+        (*h).loopf
             .deblock_strength
-            .expect(
-                "non-null function pointer",
-            )(
+            .expect("non-null function pointer")(
             (*h).mb.cache.non_zero_count.as_mut_ptr(),
             (*h).mb.cache.ref_0.as_mut_ptr(),
             (*h).mb.cache.mv.as_mut_ptr(),
@@ -5924,51 +5659,43 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[0 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                        * (if 0 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 1 as ::core::ffi::c_int
+                    * (if 0 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(1 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qp,
             a,
             b,
             0 as ::core::ffi::c_int,
             (*h).loopf.deblock_luma[0 as ::core::ffi::c_int as usize],
         );
-        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-            == CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[1 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                            * (if 0 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 1 as ::core::ffi::c_int
+                        * (if 0 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(1 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,
@@ -5977,23 +5704,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
             );
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[2 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                            * (if 0 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 1 as ::core::ffi::c_int
+                        * (if 0 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(1 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,
@@ -6004,23 +5728,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     }
     deblock_edge(
         h,
-        (*h)
-            .mb
-            .pic
-            .p_fdec[0 as ::core::ffi::c_int as usize]
-            .offset(
-                (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                    * (if 0 as ::core::ffi::c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as ::core::ffi::c_int
-                    })) as isize,
-            ),
+        (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize].offset(
+            (4 as ::core::ffi::c_int
+                * 2 as ::core::ffi::c_int
+                * (if 0 as ::core::ffi::c_int != 0 {
+                    FDEC_STRIDE
+                } else {
+                    1 as ::core::ffi::c_int
+                })) as isize,
+        ),
         FDEC_STRIDE as intptr_t,
         (*(*bs.offset(0 as ::core::ffi::c_int as isize))
             .as_mut_ptr()
             .offset(2 as ::core::ffi::c_int as isize))
-            .as_mut_ptr(),
+        .as_mut_ptr(),
         qp,
         a,
         b,
@@ -6030,23 +5751,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[1 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                        * (if 0 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 2 as ::core::ffi::c_int
+                    * (if 0 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(2 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qpc,
             a,
             b,
@@ -6055,23 +5773,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
         );
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[2 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                        * (if 0 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 2 as ::core::ffi::c_int
+                    * (if 0 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(2 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qpc,
             a,
             b,
@@ -6082,51 +5797,43 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[0 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                        * (if 0 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 3 as ::core::ffi::c_int
+                    * (if 0 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(3 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qp,
             a,
             b,
             0 as ::core::ffi::c_int,
             (*h).loopf.deblock_luma[0 as ::core::ffi::c_int as usize],
         );
-        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-            == CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[1 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                            * (if 0 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 3 as ::core::ffi::c_int
+                        * (if 0 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(3 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,
@@ -6135,23 +5842,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
             );
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[2 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                            * (if 0 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 3 as ::core::ffi::c_int
+                        * (if 0 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(3 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,
@@ -6163,51 +5867,43 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[0 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                        * (if 1 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 1 as ::core::ffi::c_int
+                    * (if 1 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(1 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qp,
             a,
             b,
             0 as ::core::ffi::c_int,
             (*h).loopf.deblock_luma[1 as ::core::ffi::c_int as usize],
         );
-        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-            == CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[1 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                            * (if 1 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 1 as ::core::ffi::c_int
+                        * (if 1 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(1 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,
@@ -6216,23 +5912,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
             );
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[2 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 1 as ::core::ffi::c_int
-                            * (if 1 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 1 as ::core::ffi::c_int
+                        * (if 1 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(1 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,
@@ -6243,23 +5936,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     }
     deblock_edge(
         h,
-        (*h)
-            .mb
-            .pic
-            .p_fdec[0 as ::core::ffi::c_int as usize]
-            .offset(
-                (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                    * (if 1 as ::core::ffi::c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as ::core::ffi::c_int
-                    })) as isize,
-            ),
+        (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize].offset(
+            (4 as ::core::ffi::c_int
+                * 2 as ::core::ffi::c_int
+                * (if 1 as ::core::ffi::c_int != 0 {
+                    FDEC_STRIDE
+                } else {
+                    1 as ::core::ffi::c_int
+                })) as isize,
+        ),
         FDEC_STRIDE as intptr_t,
         (*(*bs.offset(1 as ::core::ffi::c_int as isize))
             .as_mut_ptr()
             .offset(2 as ::core::ffi::c_int as isize))
-            .as_mut_ptr(),
+        .as_mut_ptr(),
         qp,
         a,
         b,
@@ -6269,23 +5959,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[1 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                        * (if 1 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 2 as ::core::ffi::c_int
+                    * (if 1 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(2 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qpc,
             a,
             b,
@@ -6294,23 +5981,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
         );
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[2 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 2 as ::core::ffi::c_int
-                        * (if 1 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 2 as ::core::ffi::c_int
+                    * (if 1 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(2 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qpc,
             a,
             b,
@@ -6321,51 +6005,43 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[0 as ::core::ffi::c_int as usize]
-                .offset(
-                    (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                        * (if 1 as ::core::ffi::c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as ::core::ffi::c_int
-                        })) as isize,
-                ),
+            (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize].offset(
+                (4 as ::core::ffi::c_int
+                    * 3 as ::core::ffi::c_int
+                    * (if 1 as ::core::ffi::c_int != 0 {
+                        FDEC_STRIDE
+                    } else {
+                        1 as ::core::ffi::c_int
+                    })) as isize,
+            ),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                 .as_mut_ptr()
                 .offset(3 as ::core::ffi::c_int as isize))
-                .as_mut_ptr(),
+            .as_mut_ptr(),
             qp,
             a,
             b,
             0 as ::core::ffi::c_int,
             (*h).loopf.deblock_luma[1 as ::core::ffi::c_int as usize],
         );
-        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-            == CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[1 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                            * (if 1 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 3 as ::core::ffi::c_int
+                        * (if 1 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(3 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,
@@ -6374,23 +6050,20 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
             );
             deblock_edge(
                 h,
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[2 as ::core::ffi::c_int as usize]
-                    .offset(
-                        (4 as ::core::ffi::c_int * 3 as ::core::ffi::c_int
-                            * (if 1 as ::core::ffi::c_int != 0 {
-                                FDEC_STRIDE
-                            } else {
-                                1 as ::core::ffi::c_int
-                            })) as isize,
-                    ),
+                (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize].offset(
+                    (4 as ::core::ffi::c_int
+                        * 3 as ::core::ffi::c_int
+                        * (if 1 as ::core::ffi::c_int != 0 {
+                            FDEC_STRIDE
+                        } else {
+                            1 as ::core::ffi::c_int
+                        })) as isize,
+                ),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1 as ::core::ffi::c_int as isize))
                     .as_mut_ptr()
                     .offset(3 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 qpc,
                 a,
                 b,

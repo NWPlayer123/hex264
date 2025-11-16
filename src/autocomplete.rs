@@ -59,7 +59,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -83,7 +83,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cpu.h:26"]
 pub mod cpu_h {
@@ -119,9 +119,7 @@ pub mod avformat_h {
         #[c2rust::src_loc = "446:8"]
         pub type AVCodecTag;
         #[c2rust::src_loc = "1959:1"]
-        pub fn av_demuxer_iterate(
-            opaque: *mut *mut ::core::ffi::c_void,
-        ) -> *const AVInputFormat;
+        pub fn av_demuxer_iterate(opaque: *mut *mut ::core::ffi::c_void) -> *const AVInputFormat;
     }
 }
 #[c2rust::header_src = "/usr/include/libavutil/log.h:26"]
@@ -131,17 +129,14 @@ pub mod log_h {
     #[c2rust::src_loc = "76:16"]
     pub struct AVClass {
         pub class_name: *const ::core::ffi::c_char,
-        pub item_name: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *const ::core::ffi::c_char,
-        >,
+        pub item_name:
+            Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *const ::core::ffi::c_char>,
         pub option: *const AVOption,
         pub version: ::core::ffi::c_int,
         pub log_level_offset_offset: ::core::ffi::c_int,
         pub parent_log_context_offset: ::core::ffi::c_int,
         pub category: AVClassCategory,
-        pub get_category: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> AVClassCategory,
-        >,
+        pub get_category: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> AVClassCategory>,
         pub query_ranges: Option<
             unsafe extern "C" fn(
                 *mut *mut AVOptionRanges,
@@ -156,9 +151,8 @@ pub mod log_h {
                 *mut ::core::ffi::c_void,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub child_class_iterate: Option<
-            unsafe extern "C" fn(*mut *mut ::core::ffi::c_void) -> *const AVClass,
-        >,
+        pub child_class_iterate:
+            Option<unsafe extern "C" fn(*mut *mut ::core::ffi::c_void) -> *const AVClass>,
         pub state_flags_offset: ::core::ffi::c_int,
     }
     #[c2rust::src_loc = "28:9"]
@@ -232,12 +226,10 @@ pub mod pixdesc_h {
         pub shift: ::core::ffi::c_int,
         pub depth: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint8_t, uint64_t};
+    use super::stdint_uintn_h::{uint64_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "195:1"]
-        pub fn av_pix_fmt_desc_next(
-            prev: *const AVPixFmtDescriptor,
-        ) -> *const AVPixFmtDescriptor;
+        pub fn av_pix_fmt_desc_next(prev: *const AVPixFmtDescriptor) -> *const AVPixFmtDescriptor;
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/input/input.h:26"]
@@ -503,44 +495,39 @@ pub mod __stddef_null_h {
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __uint32_t, __uint64_t, __off_t, __off64_t};
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t, uint64_t};
-pub use self::cpu_h::{x264_cpu_name_t, x264_cpu_names};
-pub use self::avformat_h::{AVInputFormat, AVCodecTag, av_demuxer_iterate};
-pub use self::log_h::{
-    AVClass, AVClassCategory, AV_CLASS_CATEGORY_NB, AV_CLASS_CATEGORY_DEVICE_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_OUTPUT, AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT, AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_VIDEO_OUTPUT, AV_CLASS_CATEGORY_HWDEVICE,
-    AV_CLASS_CATEGORY_SWRESAMPLER, AV_CLASS_CATEGORY_SWSCALER,
-    AV_CLASS_CATEGORY_BITSTREAM_FILTER, AV_CLASS_CATEGORY_FILTER,
-    AV_CLASS_CATEGORY_DECODER, AV_CLASS_CATEGORY_ENCODER, AV_CLASS_CATEGORY_DEMUXER,
-    AV_CLASS_CATEGORY_MUXER, AV_CLASS_CATEGORY_OUTPUT, AV_CLASS_CATEGORY_INPUT,
-    AV_CLASS_CATEGORY_NA, AVOptionRanges, AVOption,
-};
-pub use self::pixdesc_h::{
-    AVPixFmtDescriptor, AVComponentDescriptor, av_pix_fmt_desc_next,
-};
-pub use self::input_h::{x264_cli_csp_t, X264_CSP_CLI_MAX, x264_cli_csps};
-use self::stdio_h::{stdout, printf, snprintf, putc};
+pub use self::avformat_h::{av_demuxer_iterate, AVCodecTag, AVInputFormat};
 pub use self::bits_stdio_h::putchar;
+pub use self::cpu_h::{x264_cpu_name_t, x264_cpu_names};
+pub use self::input_h::{x264_cli_csp_t, x264_cli_csps, X264_CSP_CLI_MAX};
+pub use self::log_h::{
+    AVClass, AVClassCategory, AVOption, AVOptionRanges, AV_CLASS_CATEGORY_BITSTREAM_FILTER,
+    AV_CLASS_CATEGORY_DECODER, AV_CLASS_CATEGORY_DEMUXER, AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT, AV_CLASS_CATEGORY_DEVICE_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_OUTPUT, AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_VIDEO_OUTPUT, AV_CLASS_CATEGORY_ENCODER, AV_CLASS_CATEGORY_FILTER,
+    AV_CLASS_CATEGORY_HWDEVICE, AV_CLASS_CATEGORY_INPUT, AV_CLASS_CATEGORY_MUXER,
+    AV_CLASS_CATEGORY_NA, AV_CLASS_CATEGORY_NB, AV_CLASS_CATEGORY_OUTPUT,
+    AV_CLASS_CATEGORY_SWRESAMPLER, AV_CLASS_CATEGORY_SWSCALER,
+};
+pub use self::pixdesc_h::{av_pix_fmt_desc_next, AVComponentDescriptor, AVPixFmtDescriptor};
+pub use self::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
+use self::stdio_h::{printf, putc, snprintf, stdout};
+use self::string_h::{strchr, strcmp, strlen, strncmp};
 use self::strings_h::strncasecmp;
-use self::string_h::{strcmp, strncmp, strchr, strlen};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::types_h::{__off64_t, __off_t, __uint32_t, __uint64_t, __uint8_t};
 pub use self::x264_h::{
-    x264_direct_pred_names, x264_motion_est_names, x264_b_pyramid_names,
-    x264_overscan_names, x264_vidformat_names, x264_colorprim_names, x264_transfer_names,
-    x264_colmatrix_names, x264_nal_hrd_names, x264_avcintra_flavor_names, X264_CSP_NONE,
-    X264_CSP_MAX, x264_preset_names, x264_tune_names,
+    x264_avcintra_flavor_names, x264_b_pyramid_names, x264_colmatrix_names, x264_colorprim_names,
+    x264_direct_pred_names, x264_motion_est_names, x264_nal_hrd_names, x264_overscan_names,
+    x264_preset_names, x264_transfer_names, x264_tune_names, x264_vidformat_names, X264_CSP_MAX,
+    X264_CSP_NONE,
 };
 use self::x264cli_h::{
-    x264_avcintra_class_names, x264_cqm_names, x264_log_level_names,
-    x264_partition_names, x264_pulldown_names, x264_range_names, x264_output_csp_names,
-    x264_valid_profile_names, x264_demuxer_names, x264_muxer_names,
+    x264_avcintra_class_names, x264_cqm_names, x264_demuxer_names, x264_log_level_names,
+    x264_muxer_names, x264_output_csp_names, x264_partition_names, x264_pulldown_names,
+    x264_range_names, x264_valid_profile_names,
 };
+pub use self::FILE_h::FILE;
 pub use self::__stddef_null_h::NULL;
 #[c2rust::src_loc = "35:27"]
 static mut level_names: [*const ::core::ffi::c_char; 21] = [
@@ -777,9 +764,7 @@ unsafe extern "C" fn suggest(
     mut cur: *const ::core::ffi::c_char,
     mut cur_len: ::core::ffi::c_int,
 ) {
-    if !s.is_null() && *s as ::core::ffi::c_int != 0
-        && strncmp(s, cur, cur_len as size_t) == 0
-    {
+    if !s.is_null() && *s as ::core::ffi::c_int != 0 && strncmp(s, cur, cur_len as size_t) == 0 {
         printf(b"%s \0" as *const u8 as *const ::core::ffi::c_char, s);
     }
 }
@@ -789,13 +774,11 @@ unsafe extern "C" fn suggest_lower(
     mut cur: *const ::core::ffi::c_char,
     mut cur_len: ::core::ffi::c_int,
 ) {
-    if !s.is_null() && *s as ::core::ffi::c_int != 0
-        && strncasecmp(s, cur, cur_len as size_t) == 0
+    if !s.is_null() && *s as ::core::ffi::c_int != 0 && strncasecmp(s, cur, cur_len as size_t) == 0
     {
         while *s != 0 {
             putchar(
-                if (*s as ::core::ffi::c_int) < 'A' as i32
-                    || *s as ::core::ffi::c_int > 'Z' as i32
+                if (*s as ::core::ffi::c_int) < 'A' as i32 || *s as ::core::ffi::c_int > 'Z' as i32
                 {
                     *s as ::core::ffi::c_int
                 } else {
@@ -841,11 +824,9 @@ unsafe extern "C" fn suggest_token(
             if tok_end.is_null() {
                 break;
             }
-            let mut tok_len: ::core::ffi::c_int = tok_end.offset_from(s)
-                as ::core::ffi::c_long as ::core::ffi::c_int;
-            if tok_len != 0 && tok_len >= cur_len
-                && strncmp(s, cur, cur_len as size_t) == 0
-            {
+            let mut tok_len: ::core::ffi::c_int =
+                tok_end.offset_from(s) as ::core::ffi::c_long as ::core::ffi::c_int;
+            if tok_len != 0 && tok_len >= cur_len && strncmp(s, cur, cur_len as size_t) == 0 {
                 printf(
                     b"%.*s \0" as *const u8 as *const ::core::ffi::c_char,
                     tok_len,
@@ -874,8 +855,10 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             suggest(*s, cur, cur_len);
             s = s.offset(1);
         }
-    } else if strcmp(prev, b"--aq-mode\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--aq-mode\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         suggest_num_range(
             0 as ::core::ffi::c_int,
@@ -894,8 +877,7 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
         b"--avcintra-class\0" as *const u8 as *const ::core::ffi::c_char,
     ) == 0
     {
-        let mut s_0: *const *const ::core::ffi::c_char = x264_avcintra_class_names
-            .as_ptr();
+        let mut s_0: *const *const ::core::ffi::c_char = x264_avcintra_class_names.as_ptr();
         while !(*s_0).is_null() {
             suggest(*s_0, cur, cur_len);
             s_0 = s_0.offset(1);
@@ -905,14 +887,15 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
         b"--avcintra-flavor\0" as *const u8 as *const ::core::ffi::c_char,
     ) == 0
     {
-        let mut s_1: *const *const ::core::ffi::c_char = x264_avcintra_flavor_names
-            .as_ptr();
+        let mut s_1: *const *const ::core::ffi::c_char = x264_avcintra_flavor_names.as_ptr();
         while !(*s_1).is_null() {
             suggest(*s_1, cur, cur_len);
             s_1 = s_1.offset(1);
         }
-    } else if strcmp(prev, b"--b-adapt\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--b-adapt\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         suggest_num_range(
             0 as ::core::ffi::c_int,
@@ -920,24 +903,30 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             cur,
             cur_len,
         );
-    } else if strcmp(prev, b"--b-pyramid\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--b-pyramid\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_2: *const *const ::core::ffi::c_char = x264_b_pyramid_names.as_ptr();
         while !(*s_2).is_null() {
             suggest(*s_2, cur, cur_len);
             s_2 = s_2.offset(1);
         }
-    } else if strcmp(prev, b"--colormatrix\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--colormatrix\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_3: *const *const ::core::ffi::c_char = x264_colmatrix_names.as_ptr();
         while !(*s_3).is_null() {
             suggest(*s_3, cur, cur_len);
             s_3 = s_3.offset(1);
         }
-    } else if strcmp(prev, b"--colorprim\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--colorprim\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_4: *const *const ::core::ffi::c_char = x264_colorprim_names.as_ptr();
         while !(*s_4).is_null() {
@@ -950,15 +939,20 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             suggest(*s_5, cur, cur_len);
             s_5 = s_5.offset(1);
         }
-    } else if strcmp(prev, b"--demuxer\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--demuxer\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_6: *const *const ::core::ffi::c_char = x264_demuxer_names.as_ptr();
         while !(*s_6).is_null() {
             suggest(*s_6, cur, cur_len);
             s_6 = s_6.offset(1);
         }
-    } else if strcmp(prev, b"--direct\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--direct\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_7: *const *const ::core::ffi::c_char = x264_direct_pred_names.as_ptr();
         while !(*s_7).is_null() {
@@ -976,12 +970,18 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             cur,
             cur_len,
         );
-    } else if strcmp(prev, b"--input-csp\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--input-csp\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut i: ::core::ffi::c_int = X264_CSP_NONE + 1 as ::core::ffi::c_int;
         while i < X264_CSP_CLI_MAX {
-            suggest((*x264_cli_csps.as_ptr().offset(i as isize)).name, cur, cur_len);
+            suggest(
+                (*x264_cli_csps.as_ptr().offset(i as isize)).name,
+                cur,
+                cur_len,
+            );
             i += 1;
         }
         let mut d: *const AVPixFmtDescriptor = 0 as *const AVPixFmtDescriptor;
@@ -992,8 +992,10 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             }
             suggest((*d).name, cur, cur_len);
         }
-    } else if strcmp(prev, b"--input-fmt\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--input-fmt\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut i_0: *mut ::core::ffi::c_void = NULL;
         let mut f: *const AVInputFormat = 0 as *const AVInputFormat;
@@ -1004,23 +1006,30 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             }
             suggest_token((*f).name, ',' as i32, cur, cur_len);
         }
-    } else if strcmp(prev, b"--input-range\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--input-range\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_8: *const *const ::core::ffi::c_char = x264_range_names.as_ptr();
         while !(*s_8).is_null() {
             suggest(*s_8, cur, cur_len);
             s_8 = s_8.offset(1);
         }
-    } else if strcmp(prev, b"--level\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--level\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_9: *const *const ::core::ffi::c_char = level_names.as_ptr();
         while !(*s_9).is_null() {
             suggest(*s_9, cur, cur_len);
             s_9 = s_9.offset(1);
         }
-    } else if strcmp(prev, b"--log-level\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--log-level\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_10: *const *const ::core::ffi::c_char = x264_log_level_names.as_ptr();
         while !(*s_10).is_null() {
@@ -1033,23 +1042,30 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             suggest(*s_11, cur, cur_len);
             s_11 = s_11.offset(1);
         }
-    } else if strcmp(prev, b"--muxer\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--muxer\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_12: *const *const ::core::ffi::c_char = x264_muxer_names.as_ptr();
         while !(*s_12).is_null() {
             suggest(*s_12, cur, cur_len);
             s_12 = s_12.offset(1);
         }
-    } else if strcmp(prev, b"--nal-hrd\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--nal-hrd\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_13: *const *const ::core::ffi::c_char = x264_nal_hrd_names.as_ptr();
         while !(*s_13).is_null() {
             suggest(*s_13, cur, cur_len);
             s_13 = s_13.offset(1);
         }
-    } else if strcmp(prev, b"--output-csp\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--output-csp\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_14: *const *const ::core::ffi::c_char = x264_output_csp_names.as_ptr();
         while !(*s_14).is_null() {
@@ -1061,18 +1077,31 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
         b"--output-depth\0" as *const u8 as *const ::core::ffi::c_char,
     ) == 0
     {
-        suggest(b"8\0" as *const u8 as *const ::core::ffi::c_char, cur, cur_len);
-        suggest(b"10\0" as *const u8 as *const ::core::ffi::c_char, cur, cur_len);
-    } else if strcmp(prev, b"--overscan\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+        suggest(
+            b"8\0" as *const u8 as *const ::core::ffi::c_char,
+            cur,
+            cur_len,
+        );
+        suggest(
+            b"10\0" as *const u8 as *const ::core::ffi::c_char,
+            cur,
+            cur_len,
+        );
+    } else if strcmp(
+        prev,
+        b"--overscan\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_15: *const *const ::core::ffi::c_char = x264_overscan_names.as_ptr();
         while !(*s_15).is_null() {
             suggest(*s_15, cur, cur_len);
             s_15 = s_15.offset(1);
         }
-    } else if strcmp(prev, b"--partitions\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0 || strcmp(prev, b"-A\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--partitions\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
+        || strcmp(prev, b"-A\0" as *const u8 as *const ::core::ffi::c_char) == 0
     {
         let mut s_16: *const *const ::core::ffi::c_char = x264_partition_names.as_ptr();
         while !(*s_16).is_null() {
@@ -1088,38 +1117,50 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             cur,
             cur_len,
         );
-    } else if strcmp(prev, b"--preset\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--preset\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_17: *const *const ::core::ffi::c_char = x264_preset_names.as_ptr();
         while !(*s_17).is_null() {
             suggest(*s_17, cur, cur_len);
             s_17 = s_17.offset(1);
         }
-    } else if strcmp(prev, b"--profile\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--profile\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
-        let mut s_18: *const *const ::core::ffi::c_char = x264_valid_profile_names
-            .as_ptr();
+        let mut s_18: *const *const ::core::ffi::c_char = x264_valid_profile_names.as_ptr();
         while !(*s_18).is_null() {
             suggest(*s_18, cur, cur_len);
             s_18 = s_18.offset(1);
         }
-    } else if strcmp(prev, b"--pulldown\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--pulldown\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_19: *const *const ::core::ffi::c_char = x264_pulldown_names.as_ptr();
         while !(*s_19).is_null() {
             suggest(*s_19, cur, cur_len);
             s_19 = s_19.offset(1);
         }
-    } else if strcmp(prev, b"--range\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--range\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_20: *const *const ::core::ffi::c_char = x264_range_names.as_ptr();
         while !(*s_20).is_null() {
             suggest(*s_20, cur, cur_len);
             s_20 = s_20.offset(1);
         }
-    } else if strcmp(prev, b"--subme\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--subme\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
         || strcmp(prev, b"-m\0" as *const u8 as *const ::core::ffi::c_char) == 0
     {
         suggest_num_range(
@@ -1128,16 +1169,21 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             cur,
             cur_len,
         );
-    } else if strcmp(prev, b"--transfer\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--transfer\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_21: *const *const ::core::ffi::c_char = x264_transfer_names.as_ptr();
         while !(*s_21).is_null() {
             suggest(*s_21, cur, cur_len);
             s_21 = s_21.offset(1);
         }
-    } else if strcmp(prev, b"--trellis\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0 || strcmp(prev, b"-t\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    } else if strcmp(
+        prev,
+        b"--trellis\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
+        || strcmp(prev, b"-t\0" as *const u8 as *const ::core::ffi::c_char) == 0
     {
         suggest_num_range(
             0 as ::core::ffi::c_int,
@@ -1151,16 +1197,20 @@ pub unsafe extern "C" fn x264_cli_autocomplete(
             suggest(*s_22, cur, cur_len);
             s_22 = s_22.offset(1);
         }
-    } else if strcmp(prev, b"--videoformat\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--videoformat\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         let mut s_23: *const *const ::core::ffi::c_char = x264_vidformat_names.as_ptr();
         while !(*s_23).is_null() {
             suggest(*s_23, cur, cur_len);
             s_23 = s_23.offset(1);
         }
-    } else if strcmp(prev, b"--weightp\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcmp(
+        prev,
+        b"--weightp\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         suggest_num_range(
             0 as ::core::ffi::c_int,

@@ -44,7 +44,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:29"]
 pub mod stdint_uintn_h {
@@ -56,7 +56,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdint.h:29"]
 pub mod stdint_h {
@@ -603,26 +603,26 @@ pub mod common_h {
         pub bs: bs_t,
     }
     #[c2rust::src_loc = "111:9"]
-    pub const SIZEOF_PIXEL: ::core::ffi::c_int = ::core::mem::size_of::<pixel>()
-        as ::core::ffi::c_int;
+    pub const SIZEOF_PIXEL: ::core::ffi::c_int =
+        ::core::mem::size_of::<pixel>() as ::core::ffi::c_int;
     #[c2rust::src_loc = "570:9"]
     pub const FENC_STRIDE: ::core::ffi::c_int = 16 as ::core::ffi::c_int;
     #[c2rust::src_loc = "571:9"]
     pub const FDEC_STRIDE: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
-    use super::x264_h::{x264_param_t, x264_nal_t};
-    use super::threadpool_h::x264_threadpool_t;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int32_t, int16_t, int8_t};
-    use super::set_h::{x264_sps_t, x264_pps_t};
+    use super::bitstream_h::{bs_t, x264_bitstream_function_t};
     use super::cabac_h::x264_cabac_t;
-    use super::frame_h::{x264_frame_t, x264_deblock_function_t, x264_sync_frame_list_t};
-    use super::predict_h::{x264_predict_t, x264_predict8x8_t, x264_predict_8x8_filter_t};
-    use super::pixel_h::x264_pixel_function_t;
-    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
     use super::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+    use super::frame_h::{x264_deblock_function_t, x264_frame_t, x264_sync_frame_list_t};
+    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
+    use super::pixel_h::x264_pixel_function_t;
+    use super::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
     use super::quant_h::x264_quant_function_t;
-    use super::bitstream_h::{x264_bitstream_function_t, bs_t};
+    use super::set_h::{x264_pps_t, x264_sps_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::threadpool_h::x264_threadpool_t;
+    use super::x264_h::{x264_nal_t, x264_param_t};
     extern "C" {
         #[c2rust::src_loc = "231:16"]
         pub type x264_ratecontrol_t;
@@ -784,12 +784,7 @@ pub mod frame_h {
     }
     #[c2rust::src_loc = "197:1"]
     pub type x264_deblock_intra_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "196:1"]
     pub type x264_deblock_inter_t = Option<
@@ -801,13 +796,13 @@ pub mod frame_h {
             *mut int8_t,
         ) -> (),
     >;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int8_t, int16_t};
-    use super::x264_h::{x264_param_t, x264_hrd_t, x264_sei_t};
     use super::common_h::pixel;
     use super::mc_h::x264_weight_t;
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t};
     use super::stdint_h::intptr_t;
+    use super::stdint_intn_h::{int16_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::x264_h::{x264_hrd_t, x264_param_t, x264_sei_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:29"]
 pub mod x264_h {
@@ -930,11 +925,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -1074,10 +1065,10 @@ pub mod x264_h {
         pub i_colmatrix: ::core::ffi::c_int,
         pub i_chroma_loc: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
-    use super::internal::__va_list_tag;
     use super::common_h::x264_t;
+    use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:29"]
 pub mod mc_h {
@@ -1185,20 +1176,10 @@ pub mod mc_h {
             ) -> (),
         >,
         pub load_deinterleave_chroma_fenc: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub load_deinterleave_chroma_fdec: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub plane_copy: Option<
             unsafe extern "C" fn(
@@ -1331,9 +1312,8 @@ pub mod mc_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub prefetch_ref: Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> (),
-        >,
+        pub prefetch_ref:
+            Option<unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ()>,
         pub memcpy_aligned: Option<
             unsafe extern "C" fn(
                 *mut ::core::ffi::c_void,
@@ -1341,18 +1321,13 @@ pub mod mc_h {
                 size_t,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub memzero_aligned: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> (),
-        >,
-        pub integral_init4h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init8h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init4v: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> (),
-        >,
+        pub memzero_aligned: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> ()>,
+        pub integral_init4h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init8h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init4v:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> ()>,
         pub integral_init8v: Option<unsafe extern "C" fn(*mut uint16_t, intptr_t) -> ()>,
         pub frame_init_lowres_core: Option<
             unsafe extern "C" fn(
@@ -1370,9 +1345,7 @@ pub mod mc_h {
         pub weight: *mut weight_fn_t,
         pub offsetadd: *mut weight_fn_t,
         pub offsetsub: *mut weight_fn_t,
-        pub weight_cache: Option<
-            unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> (),
-        >,
+        pub weight_cache: Option<unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> ()>,
         pub mbtree_propagate_cost: Option<
             unsafe extern "C" fn(
                 *mut int16_t,
@@ -1412,11 +1385,11 @@ pub mod mc_h {
             ) -> (),
         >,
     }
-    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::__stddef_size_t_h::size_t;
     use super::common_h::{pixel, x264_t};
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint32_t, uint16_t};
-    use super::__stddef_size_t_h::size_t;
+    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:29"]
 pub mod bitstream_h {
@@ -1424,13 +1397,8 @@ pub mod bitstream_h {
     #[repr(C)]
     #[c2rust::src_loc = "57:9"]
     pub struct x264_bitstream_function_t {
-        pub nal_escape: Option<
-            unsafe extern "C" fn(
-                *mut uint8_t,
-                *mut uint8_t,
-                *mut uint8_t,
-            ) -> *mut uint8_t,
-        >,
+        pub nal_escape:
+            Option<unsafe extern "C" fn(*mut uint8_t, *mut uint8_t, *mut uint8_t) -> *mut uint8_t>,
         pub cabac_block_residual_internal: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1477,11 +1445,11 @@ pub mod bitstream_h {
         pub i_left: ::core::ffi::c_int,
         pub i_bits_encoded: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::uint8_t;
+    use super::cabac_h::x264_cabac_t;
     use super::common_h::dctcoef;
     use super::stdint_h::{intptr_t, uintptr_t};
-    use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:29"]
 pub mod cabac_h {
@@ -1509,18 +1477,10 @@ pub mod quant_h {
     #[c2rust::src_loc = "30:9"]
     pub struct x264_quant_function_t {
         pub quant_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4x4: Option<
             unsafe extern "C" fn(
@@ -1579,12 +1539,10 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub optimize_chroma_2x2_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
-        pub optimize_chroma_2x4_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
+        pub optimize_chroma_2x2_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
+        pub optimize_chroma_2x4_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
         pub denoise_dct: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1593,42 +1551,19 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub decimate_score15: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score16: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score64: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last: [Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >; 14],
-        pub coeff_last4: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last8: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
+        pub decimate_score15: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score16: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score64: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last: [Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>; 14],
+        pub coeff_last4: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last8: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
         pub coeff_level_run: [Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
         >; 13],
-        pub coeff_level_run4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
-        pub coeff_level_run8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
+        pub coeff_level_run4:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
+        pub coeff_level_run8:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
         pub trellis_cabac_4x4: Option<
             unsafe extern "C" fn(
                 *const ::core::ffi::c_int,
@@ -1729,9 +1664,9 @@ pub mod quant_h {
             ) -> ::core::ffi::c_int,
         >,
     }
-    use super::common_h::{dctcoef, udctcoef};
-    use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
+    use super::common_h::{dctcoef, udctcoef};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:29"]
 pub mod dct_h {
@@ -1742,18 +1677,10 @@ pub mod dct_h {
         pub scan_8x8: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub scan_4x4: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub sub_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4ac: Option<
             unsafe extern "C" fn(
@@ -1763,55 +1690,34 @@ pub mod dct_h {
                 *mut dctcoef,
             ) -> ::core::ffi::c_int,
         >,
-        pub interleave_8x8_cavlc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> (),
-        >,
+        pub interleave_8x8_cavlc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> ()>,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "29:9"]
     pub struct x264_dct_function_t {
-        pub sub4x4_dct: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub4x4_dct: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add4x4_idct: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x8_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub8x8_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub add8x8_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
+        pub sub8x8_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub sub8x8_dct_dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub add8x8_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
         pub add8x8_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x16_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub16x16_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
-        pub add16x16_idct_dc: Option<
-            unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> (),
-        >,
-        pub sub8x8_dct8: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub8x16_dct_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub sub16x16_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
+        pub add16x16_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
+        pub sub8x8_dct8: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add8x8_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub16x16_dct8: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> (),
-        >,
+        pub sub16x16_dct8:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> ()>,
         pub dct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
         pub idct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
-        pub dct2x4dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> (),
-        >,
+        pub dct2x4dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> ()>,
     }
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
@@ -1834,11 +1740,7 @@ pub mod pixel_h {
         pub fpelcmp_x4: [x264_pixel_cmp_x4_t; 7],
         pub sad_aligned: [x264_pixel_cmp_t; 8],
         pub vsad: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub asd8: Option<
             unsafe extern "C" fn(
@@ -1860,9 +1762,7 @@ pub mod pixel_h {
                 *mut ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 4],
-        pub hadamard_ac: [Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t,
-        >; 4],
+        pub hadamard_ac: [Option<unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t>; 4],
         pub ssd_nv12_core: Option<
             unsafe extern "C" fn(
                 *mut pixel,
@@ -1906,80 +1806,50 @@ pub mod pixel_h {
                 ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 7],
-        pub intra_mbcmp_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sa8d_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
+        pub intra_mbcmp_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sa8d_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
         pub intra_mbcmp_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_satd_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_sad_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_mbcmp_x9_8x8: Option<
             unsafe extern "C" fn(
@@ -2034,12 +1904,7 @@ pub mod pixel_h {
     >;
     #[c2rust::src_loc = "33:1"]
     pub type x264_pixel_cmp_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            *mut pixel,
-            intptr_t,
-        ) -> ::core::ffi::c_int,
+        unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t) -> ::core::ffi::c_int,
     >;
     #[c2rust::src_loc = "37:1"]
     pub type C2RustUnnamed_19 = ::core::ffi::c_uint;
@@ -2069,26 +1934,19 @@ pub mod pixel_h {
     pub const PIXEL_16x16: C2RustUnnamed_19 = 0;
     use super::common_h::pixel;
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
+    use super::stdint_uintn_h::{uint16_t, uint64_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:29"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            *mut pixel,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, *mut pixel, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "30:1"]
     pub type x264_predict_t = Option<unsafe extern "C" fn(*mut pixel) -> ()>;
     #[c2rust::src_loc = "31:1"]
-    pub type x264_predict8x8_t = Option<
-        unsafe extern "C" fn(*mut pixel, *mut pixel) -> (),
-    >;
+    pub type x264_predict8x8_t = Option<unsafe extern "C" fn(*mut pixel, *mut pixel) -> ()>;
     #[c2rust::src_loc = "34:1"]
     pub type intra_chroma_pred_e = ::core::ffi::c_uint;
     #[c2rust::src_loc = "43:5"]
@@ -2312,7 +2170,7 @@ pub mod set_h {
     pub const CQM_8PY: cqm8_e = 1;
     #[c2rust::src_loc = "39:5"]
     pub const CQM_8IY: cqm8_e = 0;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:29"]
 pub mod threadpool_h {
@@ -2363,108 +2221,57 @@ pub mod base_h {
     pub const CHROMA_DC: ::core::ffi::c_int = 49 as ::core::ffi::c_int;
     #[c2rust::src_loc = "180:22"]
     pub static mut x264_scan8: [uint8_t; 51] = [
-        (4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (4 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (5 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (6 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (7 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (0 as ::core::ffi::c_int + 5 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
-        (0 as ::core::ffi::c_int + 10 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-            as uint8_t,
+        (4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 8 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 9 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 11 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 12 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (4 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (5 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 13 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (6 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (7 as ::core::ffi::c_int + 14 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (0 as ::core::ffi::c_int + 5 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
+        (0 as ::core::ffi::c_int + 10 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as uint8_t,
     ];
     #[inline(always)]
     #[c2rust::src_loc = "206:1"]
@@ -2473,9 +2280,15 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min { i_min } else if v > i_max { i_max } else { v };
+        return if v < i_min {
+            i_min
+        } else if v > i_max {
+            i_max
+        } else {
+            v
+        };
     }
-    use super::stdint_uintn_h::{uint16_t, uint8_t, uint32_t, uint64_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/macroblock.h:29"]
 pub mod macroblock_h {
@@ -2609,11 +2422,14 @@ pub mod macroblock_h {
         MB_LEFT as ::core::ffi::c_int as uint8_t,
         (MB_LEFT as ::core::ffi::c_int | MB_TOP as ::core::ffi::c_int) as uint8_t,
         (MB_TOP as ::core::ffi::c_int | MB_TOPRIGHT as ::core::ffi::c_int) as uint8_t,
-        (MB_LEFT as ::core::ffi::c_int | MB_TOPLEFT as ::core::ffi::c_int
+        (MB_LEFT as ::core::ffi::c_int
+            | MB_TOPLEFT as ::core::ffi::c_int
             | MB_TOP as ::core::ffi::c_int) as uint8_t,
-        (MB_LEFT as ::core::ffi::c_int | MB_TOPLEFT as ::core::ffi::c_int
+        (MB_LEFT as ::core::ffi::c_int
+            | MB_TOPLEFT as ::core::ffi::c_int
             | MB_TOP as ::core::ffi::c_int) as uint8_t,
-        (MB_LEFT as ::core::ffi::c_int | MB_TOPLEFT as ::core::ffi::c_int
+        (MB_LEFT as ::core::ffi::c_int
+            | MB_TOPLEFT as ::core::ffi::c_int
             | MB_TOP as ::core::ffi::c_int) as uint8_t,
         (MB_TOP as ::core::ffi::c_int | MB_TOPRIGHT as ::core::ffi::c_int) as uint8_t,
         MB_LEFT as ::core::ffi::c_int as uint8_t,
@@ -2700,103 +2516,72 @@ pub mod macroblock_h {
     #[c2rust::src_loc = "225:22"]
     pub static mut block_idx_xy_fenc: [uint8_t; 16] = [
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE)
-            as uint8_t,
+            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
             + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FENC_STRIDE) as uint8_t,
     ];
     #[c2rust::src_loc = "236:23"]
     pub static mut block_idx_xy_fdec: [uint16_t; 16] = [
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (1 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
         (3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE)
-            as uint16_t,
+            + 3 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * FDEC_STRIDE) as uint16_t,
     ];
     #[c2rust::src_loc = "291:22"]
     pub static mut ctx_cat_plane: [[uint8_t; 3]; 6] = [
@@ -2823,8 +2608,8 @@ pub mod macroblock_h {
             DCT_CHROMAV_8x8 as ::core::ffi::c_int as uint8_t,
         ],
     ];
-    use super::stdint_uintn_h::{uint8_t, uint16_t};
-    use super::common_h::{FENC_STRIDE, FDEC_STRIDE, pixel, x264_t};
+    use super::common_h::{pixel, x264_t, FDEC_STRIDE, FENC_STRIDE};
+    use super::stdint_uintn_h::{uint16_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "333:1"]
         pub fn x264_10_copy_column8(dst: *mut pixel, src: *mut pixel);
@@ -2837,8 +2622,7 @@ pub mod macroblock_h {
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/osdep.h:29"]
 pub mod osdep_h {
     #[c2rust::src_loc = "452:9"]
-    pub const WORD_SIZE: uint64_t = ::core::mem::size_of::<*mut ::core::ffi::c_void>()
-        as uint64_t;
+    pub const WORD_SIZE: uint64_t = ::core::mem::size_of::<*mut ::core::ffi::c_void>() as uint64_t;
     #[inline(always)]
     #[c2rust::src_loc = "503:1"]
     pub unsafe extern "C" fn x264_ctz_4bit(mut x: uint32_t) -> ::core::ffi::c_int {
@@ -2862,7 +2646,7 @@ pub mod osdep_h {
         ];
         return lut[x as usize] as ::core::ffi::c_int;
     }
-    use super::stdint_uintn_h::{uint64_t, uint32_t, uint8_t};
+    use super::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/usr/include/string.h:29"]
 pub mod string_h {
@@ -2913,29 +2697,20 @@ pub mod encoder_macroblock_h {
             CQM_4PY as ::core::ffi::c_int
         };
         if (*h).mb.b_noise_reduction != 0 {
-            (*h)
-                .quantf
-                .denoise_dct
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).quantf.denoise_dct.expect("non-null function pointer")(
                 dct as *mut dctcoef,
-                (*(*h)
-                    .nr_residual_sum
-                    .offset(
-                        (0 as ::core::ffi::c_int
-                            + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
-                            as isize,
-                    ))
-                    .as_mut_ptr(),
-                (*(*h)
-                    .nr_offset
-                    .offset(
-                        (0 as ::core::ffi::c_int
-                            + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
-                            as isize,
-                    ))
-                    .as_mut_ptr(),
+                (*(*h).nr_residual_sum.offset(
+                    (0 as ::core::ffi::c_int
+                        + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                        as isize,
+                ))
+                .as_mut_ptr(),
+                (*(*h).nr_offset.offset(
+                    (0 as ::core::ffi::c_int
+                        + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                        as isize,
+                ))
+                .as_mut_ptr(),
                 16 as ::core::ffi::c_int,
             );
         }
@@ -2949,22 +2724,17 @@ pub mod encoder_macroblock_h {
                 b_intra,
                 (p != 0) as ::core::ffi::c_int,
                 idx + p * 16 as ::core::ffi::c_int,
-            )
+            );
         } else {
-            return (*h)
-                .quantf
-                .quant_4x4
-                .expect(
-                    "non-null function pointer",
-                )(
+            return (*h).quantf.quant_4x4.expect("non-null function pointer")(
                 dct,
                 (*(*(*h).quant4_mf.as_mut_ptr().offset(i_quant_cat as isize))
                     .offset(i_qp as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 (*(*(*h).quant4_bias.as_mut_ptr().offset(i_quant_cat as isize))
                     .offset(i_qp as isize))
-                    .as_mut_ptr(),
-            )
+                .as_mut_ptr(),
+            );
         };
     }
     #[inline(always)]
@@ -2990,29 +2760,20 @@ pub mod encoder_macroblock_h {
             CQM_8PY as ::core::ffi::c_int
         };
         if (*h).mb.b_noise_reduction != 0 {
-            (*h)
-                .quantf
-                .denoise_dct
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).quantf.denoise_dct.expect("non-null function pointer")(
                 dct as *mut dctcoef,
-                (*(*h)
-                    .nr_residual_sum
-                    .offset(
-                        (1 as ::core::ffi::c_int
-                            + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
-                            as isize,
-                    ))
-                    .as_mut_ptr(),
-                (*(*h)
-                    .nr_offset
-                    .offset(
-                        (1 as ::core::ffi::c_int
-                            + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
-                            as isize,
-                    ))
-                    .as_mut_ptr(),
+                (*(*h).nr_residual_sum.offset(
+                    (1 as ::core::ffi::c_int
+                        + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                        as isize,
+                ))
+                .as_mut_ptr(),
+                (*(*h).nr_offset.offset(
+                    (1 as ::core::ffi::c_int
+                        + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                        as isize,
+                ))
+                .as_mut_ptr(),
                 64 as ::core::ffi::c_int,
             );
         }
@@ -3026,22 +2787,17 @@ pub mod encoder_macroblock_h {
                 b_intra,
                 (p != 0) as ::core::ffi::c_int,
                 idx + p * 4 as ::core::ffi::c_int,
-            )
+            );
         } else {
-            return (*h)
-                .quantf
-                .quant_8x8
-                .expect(
-                    "non-null function pointer",
-                )(
+            return (*h).quantf.quant_8x8.expect("non-null function pointer")(
                 dct,
                 (*(*(*h).quant8_mf.as_mut_ptr().offset(i_quant_cat as isize))
                     .offset(i_qp as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 (*(*(*h).quant8_bias.as_mut_ptr().offset(i_quant_cat as isize))
                     .offset(i_qp as isize))
-                    .as_mut_ptr(),
-            )
+                .as_mut_ptr(),
+            );
         };
     }
     #[inline(always)]
@@ -3055,20 +2811,10 @@ pub mod encoder_macroblock_h {
         mut b_predict: ::core::ffi::c_int,
     ) {
         let mut nz: ::core::ffi::c_int = 0;
-        let mut p_src: *mut pixel = &mut *(*(*h)
-            .mb
-            .pic
-            .p_fenc
-            .as_mut_ptr()
-            .offset(p as isize))
+        let mut p_src: *mut pixel = &mut *(*(*h).mb.pic.p_fenc.as_mut_ptr().offset(p as isize))
             .offset(*block_idx_xy_fenc.as_ptr().offset(idx as isize) as isize)
             as *mut pixel;
-        let mut p_dst: *mut pixel = &mut *(*(*h)
-            .mb
-            .pic
-            .p_fdec
-            .as_mut_ptr()
-            .offset(p as isize))
+        let mut p_dst: *mut pixel = &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p as isize))
             .offset(*block_idx_xy_fdec.as_ptr().offset(idx as isize) as isize)
             as *mut pixel;
         let mut dct4x4: [dctcoef; 16] = [0; 16];
@@ -3076,39 +2822,27 @@ pub mod encoder_macroblock_h {
             if (*h).mb.b_lossless != 0 {
                 x264_10_predict_lossless_4x4(h, p_dst, p, idx, i_mode);
             } else {
-                (*h)
-                    .predict_4x4[i_mode as usize]
-                    .expect("non-null function pointer")(p_dst);
+                (*h).predict_4x4[i_mode as usize].expect("non-null function pointer")(p_dst);
             }
         }
         if (*h).mb.b_lossless != 0 {
-            nz = (*h)
-                .zigzagf
-                .sub_4x4
-                .expect(
-                    "non-null function pointer",
-                )(
+            nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                 (*(*h)
                     .dct
                     .luma4x4
                     .as_mut_ptr()
                     .offset((p * 16 as ::core::ffi::c_int + idx) as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 p_src,
                 p_dst,
             );
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(p * 16 as ::core::ffi::c_int + idx) as usize]
-                as usize] = nz as uint8_t;
+            (*h).mb.cache.non_zero_count
+                [x264_scan8[(p * 16 as ::core::ffi::c_int + idx) as usize] as usize] =
+                nz as uint8_t;
             (*h).mb.i_cbp_luma |= nz << (idx >> 2 as ::core::ffi::c_int);
             return;
         }
-        (*h)
-            .dctf
-            .sub4x4_dct
-            .expect("non-null function pointer")(dct4x4.as_mut_ptr(), p_src, p_dst);
+        (*h).dctf.sub4x4_dct.expect("non-null function pointer")(dct4x4.as_mut_ptr(), p_src, p_dst);
         nz = x264_quant_4x4(
             h,
             dct4x4.as_mut_ptr(),
@@ -3119,47 +2853,29 @@ pub mod encoder_macroblock_h {
             p,
             idx,
         );
-        (*h)
-            .mb
-            .cache
-            .non_zero_count[x264_scan8[(p * 16 as ::core::ffi::c_int + idx) as usize]
-            as usize] = nz as uint8_t;
+        (*h).mb.cache.non_zero_count
+            [x264_scan8[(p * 16 as ::core::ffi::c_int + idx) as usize] as usize] = nz as uint8_t;
         if nz != 0 {
-            (*h).mb.i_cbp_luma
-                |= (1 as ::core::ffi::c_int) << (idx >> 2 as ::core::ffi::c_int);
-            (*h)
-                .zigzagf
-                .scan_4x4
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mb.i_cbp_luma |= (1 as ::core::ffi::c_int) << (idx >> 2 as ::core::ffi::c_int);
+            (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                 (*(*h)
                     .dct
                     .luma4x4
                     .as_mut_ptr()
                     .offset((p * 16 as ::core::ffi::c_int + idx) as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 dct4x4.as_mut_ptr(),
             );
-            (*h)
-                .quantf
-                .dequant_4x4
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                 dct4x4.as_mut_ptr(),
-                (*h)
-                    .dequant4_mf[(if p != 0 {
+                (*h).dequant4_mf[(if p != 0 {
                     CQM_4IC as ::core::ffi::c_int
                 } else {
                     CQM_4IY as ::core::ffi::c_int
                 }) as usize],
                 i_qp,
             );
-            (*h)
-                .dctf
-                .add4x4_idct
-                .expect("non-null function pointer")(p_dst, dct4x4.as_mut_ptr());
+            (*h).dctf.add4x4_idct.expect("non-null function pointer")(p_dst, dct4x4.as_mut_ptr());
         }
     }
     #[inline(always)]
@@ -3176,35 +2892,19 @@ pub mod encoder_macroblock_h {
         let mut x: ::core::ffi::c_int = idx & 1 as ::core::ffi::c_int;
         let mut y: ::core::ffi::c_int = idx >> 1 as ::core::ffi::c_int;
         let mut nz: ::core::ffi::c_int = 0;
-        let mut p_src: *mut pixel = &mut *(*(*h)
-            .mb
-            .pic
-            .p_fenc
-            .as_mut_ptr()
-            .offset(p as isize))
+        let mut p_src: *mut pixel = &mut *(*(*h).mb.pic.p_fenc.as_mut_ptr().offset(p as isize))
             .offset(
-                (8 as ::core::ffi::c_int * x + 8 as ::core::ffi::c_int * y * FENC_STRIDE)
-                    as isize,
+                (8 as ::core::ffi::c_int * x + 8 as ::core::ffi::c_int * y * FENC_STRIDE) as isize,
             ) as *mut pixel;
-        let mut p_dst: *mut pixel = &mut *(*(*h)
-            .mb
-            .pic
-            .p_fdec
-            .as_mut_ptr()
-            .offset(p as isize))
+        let mut p_dst: *mut pixel = &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p as isize))
             .offset(
-                (8 as ::core::ffi::c_int * x + 8 as ::core::ffi::c_int * y * FDEC_STRIDE)
-                    as isize,
+                (8 as ::core::ffi::c_int * x + 8 as ::core::ffi::c_int * y * FDEC_STRIDE) as isize,
             ) as *mut pixel;
         let mut dct8x8: [dctcoef; 64] = [0; 64];
         let mut edge_buf: [pixel; 36] = [0; 36];
         if b_predict != 0 {
             if edge.is_null() {
-                (*h)
-                    .predict_8x8_filter
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).predict_8x8_filter.expect("non-null function pointer")(
                     p_dst,
                     edge_buf.as_mut_ptr(),
                     (*h).mb.i_neighbour8[idx as usize] as ::core::ffi::c_int,
@@ -3213,71 +2913,49 @@ pub mod encoder_macroblock_h {
                 edge = edge_buf.as_mut_ptr();
             }
             if (*h).mb.b_lossless != 0 {
-                x264_10_predict_lossless_8x8(
-                    h,
+                x264_10_predict_lossless_8x8(h, p_dst, p, idx, i_mode, edge as *mut pixel);
+            } else {
+                (*h).predict_8x8[i_mode as usize].expect("non-null function pointer")(
                     p_dst,
-                    p,
-                    idx,
-                    i_mode,
                     edge as *mut pixel,
                 );
-            } else {
-                (*h)
-                    .predict_8x8[i_mode as usize]
-                    .expect("non-null function pointer")(p_dst, edge as *mut pixel);
             }
         }
         if (*h).mb.b_lossless != 0 {
-            nz = (*h)
-                .zigzagf
-                .sub_8x8
-                .expect(
-                    "non-null function pointer",
-                )(
+            nz = (*h).zigzagf.sub_8x8.expect("non-null function pointer")(
                 (*(*h)
                     .dct
                     .luma8x8
                     .as_mut_ptr()
                     .offset((p * 4 as ::core::ffi::c_int + idx) as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 p_src,
                 p_dst,
             );
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    (*x264_scan8
-                        .as_ptr()
-                        .offset(
-                            (p * 16 as ::core::ffi::c_int
-                                + idx * 4 as ::core::ffi::c_int) as isize,
-                        ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                ) as *mut uint8_t as *mut x264_union16_t))
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                (*x264_scan8
+                    .as_ptr()
+                    .offset((p * 16 as ::core::ffi::c_int + idx * 4 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + 0 as ::core::ffi::c_int) as isize,
+            ) as *mut uint8_t as *mut x264_union16_t))
                 .i = (nz * 0x101 as ::core::ffi::c_int) as uint16_t;
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    (*x264_scan8
-                        .as_ptr()
-                        .offset(
-                            (p * 16 as ::core::ffi::c_int
-                                + idx * 4 as ::core::ffi::c_int) as isize,
-                        ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                ) as *mut uint8_t as *mut x264_union16_t))
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                (*x264_scan8
+                    .as_ptr()
+                    .offset((p * 16 as ::core::ffi::c_int + idx * 4 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + 8 as ::core::ffi::c_int) as isize,
+            ) as *mut uint8_t as *mut x264_union16_t))
                 .i = (nz * 0x101 as ::core::ffi::c_int) as uint16_t;
             (*h).mb.i_cbp_luma |= nz << idx;
             return;
         }
-        (*h)
-            .dctf
-            .sub8x8_dct8
-            .expect("non-null function pointer")(dct8x8.as_mut_ptr(), p_src, p_dst);
+        (*h).dctf.sub8x8_dct8.expect("non-null function pointer")(
+            dct8x8.as_mut_ptr(),
+            p_src,
+            p_dst,
+        );
         nz = x264_quant_8x8(
             h,
             dct8x8.as_mut_ptr(),
@@ -3290,109 +2968,69 @@ pub mod encoder_macroblock_h {
         );
         if nz != 0 {
             (*h).mb.i_cbp_luma |= (1 as ::core::ffi::c_int) << idx;
-            (*h)
-                .zigzagf
-                .scan_8x8
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).zigzagf.scan_8x8.expect("non-null function pointer")(
                 (*(*h)
                     .dct
                     .luma8x8
                     .as_mut_ptr()
                     .offset((p * 4 as ::core::ffi::c_int + idx) as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 dct8x8.as_mut_ptr(),
             );
-            (*h)
-                .quantf
-                .dequant_8x8
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).quantf.dequant_8x8.expect("non-null function pointer")(
                 dct8x8.as_mut_ptr(),
-                (*h)
-                    .dequant8_mf[(if p != 0 {
+                (*h).dequant8_mf[(if p != 0 {
                     CQM_8IC as ::core::ffi::c_int
                 } else {
                     CQM_8IY as ::core::ffi::c_int
                 }) as usize],
                 i_qp,
             );
-            (*h)
-                .dctf
-                .add8x8_idct8
-                .expect("non-null function pointer")(p_dst, dct8x8.as_mut_ptr());
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    (*x264_scan8
-                        .as_ptr()
-                        .offset(
-                            (p * 16 as ::core::ffi::c_int
-                                + idx * 4 as ::core::ffi::c_int) as isize,
-                        ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                ) as *mut uint8_t as *mut x264_union16_t))
+            (*h).dctf.add8x8_idct8.expect("non-null function pointer")(p_dst, dct8x8.as_mut_ptr());
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                (*x264_scan8
+                    .as_ptr()
+                    .offset((p * 16 as ::core::ffi::c_int + idx * 4 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + 0 as ::core::ffi::c_int) as isize,
+            ) as *mut uint8_t as *mut x264_union16_t))
                 .i = (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    (*x264_scan8
-                        .as_ptr()
-                        .offset(
-                            (p * 16 as ::core::ffi::c_int
-                                + idx * 4 as ::core::ffi::c_int) as isize,
-                        ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                ) as *mut uint8_t as *mut x264_union16_t))
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                (*x264_scan8
+                    .as_ptr()
+                    .offset((p * 16 as ::core::ffi::c_int + idx * 4 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + 8 as ::core::ffi::c_int) as isize,
+            ) as *mut uint8_t as *mut x264_union16_t))
                 .i = (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
         } else {
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    (*x264_scan8
-                        .as_ptr()
-                        .offset(
-                            (p * 16 as ::core::ffi::c_int
-                                + idx * 4 as ::core::ffi::c_int) as isize,
-                        ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                ) as *mut uint8_t as *mut x264_union16_t))
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                (*x264_scan8
+                    .as_ptr()
+                    .offset((p * 16 as ::core::ffi::c_int + idx * 4 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + 0 as ::core::ffi::c_int) as isize,
+            ) as *mut uint8_t as *mut x264_union16_t))
                 .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    (*x264_scan8
-                        .as_ptr()
-                        .offset(
-                            (p * 16 as ::core::ffi::c_int
-                                + idx * 4 as ::core::ffi::c_int) as isize,
-                        ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                ) as *mut uint8_t as *mut x264_union16_t))
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                (*x264_scan8
+                    .as_ptr()
+                    .offset((p * 16 as ::core::ffi::c_int + idx * 4 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + 8 as ::core::ffi::c_int) as isize,
+            ) as *mut uint8_t as *mut x264_union16_t))
                 .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
         };
     }
-    use super::common_h::{x264_t, dctcoef, pixel, FENC_STRIDE, FDEC_STRIDE};
-    use super::set_h::{
-        CQM_8IC, CQM_8IY, CQM_8PC, CQM_8PY, CQM_4IC, CQM_4IY, CQM_4PC, CQM_4PY,
-    };
-    use super::macroblock_h::{
-        block_idx_xy_fenc, block_idx_xy_fdec, DCT_LUMA_4x4, ctx_cat_plane,
-        x264_pred_i4x4_neighbors, DCT_LUMA_8x8,
-    };
-    use super::{x264_10_predict_lossless_4x4, x264_10_predict_lossless_8x8};
-    use super::stdint_uintn_h::{uint8_t, uint16_t};
     use super::base_h::{x264_scan8, x264_union16_t};
+    use super::common_h::{dctcoef, pixel, x264_t, FDEC_STRIDE, FENC_STRIDE};
+    use super::macroblock_h::{
+        block_idx_xy_fdec, block_idx_xy_fenc, ctx_cat_plane, x264_pred_i4x4_neighbors,
+        DCT_LUMA_4x4, DCT_LUMA_8x8,
+    };
+    use super::set_h::{CQM_4IC, CQM_4IY, CQM_4PC, CQM_4PY, CQM_8IC, CQM_8IY, CQM_8PC, CQM_8PY};
+    use super::stdint_uintn_h::{uint16_t, uint8_t};
+    use super::{x264_10_predict_lossless_4x4, x264_10_predict_lossless_8x8};
     extern "C" {
         #[c2rust::src_loc = "76:1"]
         pub fn x264_10_quant_luma_dc_trellis(
@@ -3441,134 +3079,114 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::__va_list_tag;
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
-    __uint64_t,
+pub use self::atomic_wide_counter_h::{C2RustUnnamed, __atomic_wide_counter};
+pub use self::base_h::{
+    chroma_format_e, x264_clip3, x264_scan8, x264_union16_t, x264_union32_t, x264_union64_t,
+    CHROMA_400, CHROMA_420, CHROMA_422, CHROMA_444, CHROMA_DC, LUMA_DC,
 };
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::stdint_h::{intptr_t, uintptr_t};
-pub use self::atomic_wide_counter_h::{__atomic_wide_counter, C2RustUnnamed};
-pub use self::thread_shared_types_h::{
-    __pthread_internal_list, __pthread_list_t, __pthread_cond_s,
-};
-pub use self::struct_mutex_h::__pthread_mutex_s;
-pub use self::pthreadtypes_h::{pthread_t, pthread_mutex_t, pthread_cond_t};
+pub use self::bitstream_h::{bs_s, bs_t, x264_bitstream_function_t, x264_run_level_t};
+pub use self::cabac_h::x264_cabac_t;
 pub use self::common_h::{
-    x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
-    x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
-    x264_left_table_t, C2RustUnnamed_10, C2RustUnnamed_11, x264_slice_header_t,
-    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, SIZEOF_PIXEL,
-    FENC_STRIDE, FDEC_STRIDE, x264_ratecontrol_t,
+    dctcoef, pixel, udctcoef, x264_frame_stat_t, x264_left_table_t, x264_lookahead_t,
+    x264_ratecontrol_t, x264_slice_header_t, x264_t, C2RustUnnamed_10, C2RustUnnamed_11,
+    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, C2RustUnnamed_6,
+    C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9, FDEC_STRIDE, FENC_STRIDE, SIZEOF_PIXEL,
+};
+pub use self::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+pub use self::encoder_macroblock_h::{
+    x264_10_quant_4x4_trellis, x264_10_quant_8x8_trellis, x264_10_quant_chroma_dc_trellis,
+    x264_10_quant_luma_dc_trellis, x264_mb_encode_i4x4, x264_mb_encode_i8x8, x264_quant_4x4,
+    x264_quant_8x8,
 };
 pub use self::frame_h::{
-    x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
-    x264_deblock_intra_t, x264_deblock_inter_t,
+    x264_deblock_function_t, x264_deblock_inter_t, x264_deblock_intra_t, x264_frame, x264_frame_t,
+    x264_sync_frame_list_t,
 };
-pub use self::x264_h::{
-    x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
-    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, x264_zone_t,
-    C2RustUnnamed_4, C2RustUnnamed_5,
+pub use self::internal::__va_list_tag;
+pub use self::macroblock_h::{
+    block_idx_x, block_idx_xy_1d, block_idx_xy_fdec, block_idx_xy_fenc, block_idx_y,
+    block_idx_yx_1d, cabac_ctx_block_cat_e, ctx_cat_plane, macroblock_position_e, mb_class_e,
+    mb_partition_e, x264_10_copy_column8, x264_10_mb_mc, x264_10_mb_mc_8x8,
+    x264_pred_i4x4_neighbors, B_8x8, DCT_CHROMAU_4x4, DCT_CHROMAU_8x8, DCT_CHROMAV_4x4,
+    DCT_CHROMAV_8x8, DCT_LUMA_4x4, DCT_LUMA_8x8, D_16x16, D_16x8, D_8x16, D_8x8, D_BI_4x4,
+    D_BI_4x8, D_BI_8x4, D_BI_8x8, D_DIRECT_8x8, D_L0_4x4, D_L0_4x8, D_L0_8x4, D_L0_8x8, D_L1_4x4,
+    D_L1_4x8, D_L1_8x4, D_L1_8x8, I_16x16, I_4x4, I_8x8, P_8x8, ALL_NEIGHBORS, B_BI_BI, B_BI_L0,
+    B_BI_L1, B_DIRECT, B_L0_BI, B_L0_L0, B_L0_L1, B_L1_BI, B_L1_L0, B_L1_L1, B_SKIP,
+    DCT_CHROMAU_AC, DCT_CHROMAU_DC, DCT_CHROMAV_AC, DCT_CHROMAV_DC, DCT_CHROMA_AC, DCT_CHROMA_DC,
+    DCT_LUMA_AC, DCT_LUMA_DC, I_PCM, MB_LEFT, MB_PRIVATE, MB_TOP, MB_TOPLEFT, MB_TOPRIGHT, P_L0,
+    P_SKIP, X264_MBTYPE_MAX, X264_PARTTYPE_MAX,
 };
-pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
-pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
-pub use self::cabac_h::x264_cabac_t;
-pub use self::quant_h::x264_quant_function_t;
-pub use self::dct_h::{x264_zigzag_function_t, x264_dct_function_t};
+pub use self::mc_h::{weight_fn_t, x264_mc_functions_t, x264_weight_t};
+pub use self::osdep_h::{x264_ctz_4bit, WORD_SIZE};
 pub use self::pixel_h::{
-    x264_pixel_function_t, x264_pixel_cmp_x4_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_t,
-    C2RustUnnamed_19, PIXEL_2x2, PIXEL_2x4, PIXEL_2x8, PIXEL_4x2, PIXEL_4x16, PIXEL_4x4,
-    PIXEL_4x8, PIXEL_8x4, PIXEL_8x8, PIXEL_8x16, PIXEL_16x8, PIXEL_16x16,
+    x264_pixel_cmp_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_x4_t, x264_pixel_function_t,
+    C2RustUnnamed_19, PIXEL_16x16, PIXEL_16x8, PIXEL_2x2, PIXEL_2x4, PIXEL_2x8, PIXEL_4x16,
+    PIXEL_4x2, PIXEL_4x4, PIXEL_4x8, PIXEL_8x16, PIXEL_8x4, PIXEL_8x8,
 };
 pub use self::predict_h::{
-    x264_predict_8x8_filter_t, x264_predict_t, x264_predict8x8_t, intra_chroma_pred_e,
-    I_PRED_CHROMA_DC_128, I_PRED_CHROMA_DC_TOP, I_PRED_CHROMA_DC_LEFT, I_PRED_CHROMA_P,
-    I_PRED_CHROMA_V, I_PRED_CHROMA_H, I_PRED_CHROMA_DC, intra16x16_pred_e,
-    I_PRED_16x16_DC_128, I_PRED_16x16_DC_TOP, I_PRED_16x16_DC_LEFT, I_PRED_16x16_P,
-    I_PRED_16x16_DC, I_PRED_16x16_H, I_PRED_16x16_V, intra4x4_pred_e, I_PRED_4x4_DC_128,
-    I_PRED_4x4_DC_TOP, I_PRED_4x4_DC_LEFT, I_PRED_4x4_HU, I_PRED_4x4_VL, I_PRED_4x4_HD,
-    I_PRED_4x4_VR, I_PRED_4x4_DDR, I_PRED_4x4_DDL, I_PRED_4x4_DC, I_PRED_4x4_H,
-    I_PRED_4x4_V, intra8x8_pred_e, I_PRED_8x8_DC_128, I_PRED_8x8_DC_TOP,
-    I_PRED_8x8_DC_LEFT, I_PRED_8x8_HU, I_PRED_8x8_VL, I_PRED_8x8_HD, I_PRED_8x8_VR,
-    I_PRED_8x8_DDR, I_PRED_8x8_DDL, I_PRED_8x8_DC, I_PRED_8x8_H, I_PRED_8x8_V,
+    intra16x16_pred_e, intra4x4_pred_e, intra8x8_pred_e, intra_chroma_pred_e, x264_predict8x8_t,
+    x264_predict_8x8_filter_t, x264_predict_t, I_PRED_16x16_DC, I_PRED_16x16_DC_128,
+    I_PRED_16x16_DC_LEFT, I_PRED_16x16_DC_TOP, I_PRED_16x16_H, I_PRED_16x16_P, I_PRED_16x16_V,
+    I_PRED_4x4_DC, I_PRED_4x4_DC_128, I_PRED_4x4_DC_LEFT, I_PRED_4x4_DC_TOP, I_PRED_4x4_DDL,
+    I_PRED_4x4_DDR, I_PRED_4x4_H, I_PRED_4x4_HD, I_PRED_4x4_HU, I_PRED_4x4_V, I_PRED_4x4_VL,
+    I_PRED_4x4_VR, I_PRED_8x8_DC, I_PRED_8x8_DC_128, I_PRED_8x8_DC_LEFT, I_PRED_8x8_DC_TOP,
+    I_PRED_8x8_DDL, I_PRED_8x8_DDR, I_PRED_8x8_H, I_PRED_8x8_HD, I_PRED_8x8_HU, I_PRED_8x8_V,
+    I_PRED_8x8_VL, I_PRED_8x8_VR, I_PRED_CHROMA_DC, I_PRED_CHROMA_DC_128, I_PRED_CHROMA_DC_LEFT,
+    I_PRED_CHROMA_DC_TOP, I_PRED_CHROMA_H, I_PRED_CHROMA_P, I_PRED_CHROMA_V,
 };
+pub use self::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
+pub use self::quant_h::x264_quant_function_t;
 pub use self::set_h::{
-    x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16, cqm4_e,
-    CQM_4PC, CQM_4IC, CQM_4PY, CQM_4IY, cqm8_e, CQM_8PC, CQM_8IC, CQM_8PY, CQM_8IY,
+    cqm4_e, cqm8_e, x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
+    CQM_4IC, CQM_4IY, CQM_4PC, CQM_4PY, CQM_8IC, CQM_8IY, CQM_8PC, CQM_8PY,
+};
+pub use self::stdint_h::{intptr_t, uintptr_t};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+use self::string_h::memcpy;
+pub use self::struct_mutex_h::__pthread_mutex_s;
+use self::tables_h::{x264_dct4_weight2_tab, x264_dct8_weight2_tab, x264_lambda2_tab};
+pub use self::thread_shared_types_h::{
+    __pthread_cond_s, __pthread_internal_list, __pthread_list_t,
 };
 use self::threadpool_h::x264_threadpool_t;
-pub use self::base_h::{
-    x264_union16_t, x264_union32_t, x264_union64_t, chroma_format_e, CHROMA_444,
-    CHROMA_422, CHROMA_420, CHROMA_400, LUMA_DC, CHROMA_DC, x264_scan8, x264_clip3,
+pub use self::types_h::{
+    __int16_t, __int32_t, __int64_t, __int8_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t,
 };
-pub use self::macroblock_h::{
-    macroblock_position_e, ALL_NEIGHBORS, MB_PRIVATE, MB_TOPLEFT, MB_TOPRIGHT, MB_TOP,
-    MB_LEFT, mb_class_e, X264_MBTYPE_MAX, B_SKIP, B_8x8, B_BI_BI, B_BI_L1, B_BI_L0,
-    B_L1_BI, B_L1_L1, B_L1_L0, B_L0_BI, B_L0_L1, B_L0_L0, B_DIRECT, P_SKIP, P_8x8, P_L0,
-    I_PCM, I_16x16, I_8x8, I_4x4, mb_partition_e, X264_PARTTYPE_MAX, D_16x16, D_8x16,
-    D_16x8, D_8x8, D_DIRECT_8x8, D_BI_8x8, D_BI_4x8, D_BI_8x4, D_BI_4x4, D_L1_8x8,
-    D_L1_4x8, D_L1_8x4, D_L1_4x4, D_L0_8x8, D_L0_4x8, D_L0_8x4, D_L0_4x4,
-    cabac_ctx_block_cat_e, DCT_CHROMAV_8x8, DCT_CHROMAV_4x4, DCT_CHROMAV_AC,
-    DCT_CHROMAV_DC, DCT_CHROMAU_8x8, DCT_CHROMAU_4x4, DCT_CHROMAU_AC, DCT_CHROMAU_DC,
-    DCT_LUMA_8x8, DCT_CHROMA_AC, DCT_CHROMA_DC, DCT_LUMA_4x4, DCT_LUMA_AC, DCT_LUMA_DC,
-    x264_pred_i4x4_neighbors, block_idx_x, block_idx_y, block_idx_xy_1d, block_idx_yx_1d,
-    block_idx_xy_fenc, block_idx_xy_fdec, ctx_cat_plane, x264_10_copy_column8,
-    x264_10_mb_mc, x264_10_mb_mc_8x8,
+pub use self::x264_h::{
+    x264_hrd_t, x264_nal_t, x264_param_t, x264_sei_payload_t, x264_sei_t, x264_zone_t,
+    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
+    C2RustUnnamed_5,
 };
-pub use self::osdep_h::{WORD_SIZE, x264_ctz_4bit};
-use self::string_h::memcpy;
-use self::tables_h::{x264_lambda2_tab, x264_dct4_weight2_tab, x264_dct8_weight2_tab};
-pub use self::encoder_macroblock_h::{
-    x264_quant_4x4, x264_quant_8x8, x264_mb_encode_i4x4, x264_mb_encode_i8x8,
-    x264_10_quant_luma_dc_trellis, x264_10_quant_chroma_dc_trellis,
-    x264_10_quant_4x4_trellis, x264_10_quant_8x8_trellis,
-};
-pub use self::__stddef_null_h::NULL;
 #[inline]
 #[c2rust::src_loc = "35:1"]
 unsafe extern "C" fn zigzag_scan_2x2_dc(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
-    *level.offset(0 as ::core::ffi::c_int as isize) = *dct
-        .offset(
-            (0 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 0 as ::core::ffi::c_int)
-                as isize,
-        );
-    *level.offset(1 as ::core::ffi::c_int as isize) = *dct
-        .offset(
-            (1 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 0 as ::core::ffi::c_int)
-                as isize,
-        );
-    *level.offset(2 as ::core::ffi::c_int as isize) = *dct
-        .offset(
-            (0 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
-                as isize,
-        );
-    *level.offset(3 as ::core::ffi::c_int as isize) = *dct
-        .offset(
-            (1 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
-                as isize,
-        );
+    *level.offset(0 as ::core::ffi::c_int as isize) = *dct.offset(
+        (0 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
+    );
+    *level.offset(1 as ::core::ffi::c_int as isize) = *dct.offset(
+        (1 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
+    );
+    *level.offset(2 as ::core::ffi::c_int as isize) = *dct.offset(
+        (0 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize,
+    );
+    *level.offset(3 as ::core::ffi::c_int as isize) = *dct.offset(
+        (1 as ::core::ffi::c_int * 2 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize,
+    );
 }
 #[inline]
 #[c2rust::src_loc = "44:1"]
 unsafe extern "C" fn zigzag_scan_2x4_dc(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
-    *level.offset(0 as ::core::ffi::c_int as isize) = *dct
-        .offset(0 as ::core::ffi::c_int as isize);
-    *level.offset(1 as ::core::ffi::c_int as isize) = *dct
-        .offset(2 as ::core::ffi::c_int as isize);
-    *level.offset(2 as ::core::ffi::c_int as isize) = *dct
-        .offset(1 as ::core::ffi::c_int as isize);
-    *level.offset(3 as ::core::ffi::c_int as isize) = *dct
-        .offset(4 as ::core::ffi::c_int as isize);
-    *level.offset(4 as ::core::ffi::c_int as isize) = *dct
-        .offset(6 as ::core::ffi::c_int as isize);
-    *level.offset(5 as ::core::ffi::c_int as isize) = *dct
-        .offset(3 as ::core::ffi::c_int as isize);
-    *level.offset(6 as ::core::ffi::c_int as isize) = *dct
-        .offset(5 as ::core::ffi::c_int as isize);
-    *level.offset(7 as ::core::ffi::c_int as isize) = *dct
-        .offset(7 as ::core::ffi::c_int as isize);
+    *level.offset(0 as ::core::ffi::c_int as isize) = *dct.offset(0 as ::core::ffi::c_int as isize);
+    *level.offset(1 as ::core::ffi::c_int as isize) = *dct.offset(2 as ::core::ffi::c_int as isize);
+    *level.offset(2 as ::core::ffi::c_int as isize) = *dct.offset(1 as ::core::ffi::c_int as isize);
+    *level.offset(3 as ::core::ffi::c_int as isize) = *dct.offset(4 as ::core::ffi::c_int as isize);
+    *level.offset(4 as ::core::ffi::c_int as isize) = *dct.offset(6 as ::core::ffi::c_int as isize);
+    *level.offset(5 as ::core::ffi::c_int as isize) = *dct.offset(3 as ::core::ffi::c_int as isize);
+    *level.offset(6 as ::core::ffi::c_int as isize) = *dct.offset(5 as ::core::ffi::c_int as isize);
+    *level.offset(7 as ::core::ffi::c_int as isize) = *dct.offset(7 as ::core::ffi::c_int as isize);
 }
 #[inline]
 #[c2rust::src_loc = "63:1"]
@@ -3587,21 +3205,16 @@ unsafe extern "C" fn idct_dequant_2x2_dc(
     let mut d3: ::core::ffi::c_int = *dct.offset(2 as ::core::ffi::c_int as isize)
         - *dct.offset(3 as ::core::ffi::c_int as isize);
     let mut dmf: ::core::ffi::c_int = (*dequant_mf
-        .offset(
-            (i_qp % 6 as ::core::ffi::c_int) as isize,
-        ))[0 as ::core::ffi::c_int as usize] << i_qp / 6 as ::core::ffi::c_int;
-    (*dct4x4
-        .offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((d0
-        + d1) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((d0
-        - d1) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((d2
-        + d3) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((d2
-        - d3) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
+        .offset((i_qp % 6 as ::core::ffi::c_int) as isize))[0 as ::core::ffi::c_int as usize]
+        << i_qp / 6 as ::core::ffi::c_int;
+    (*dct4x4.offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((d0 + d1) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((d0 - d1) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((d2 + d3) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((d2 - d3) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
 }
 #[inline]
 #[c2rust::src_loc = "72:1"]
@@ -3619,53 +3232,44 @@ unsafe extern "C" fn idct_dequant_2x2_dconly(
     let mut d3: ::core::ffi::c_int = *dct.offset(2 as ::core::ffi::c_int as isize)
         - *dct.offset(3 as ::core::ffi::c_int as isize);
     let mut dmf: ::core::ffi::c_int = (*dequant_mf
-        .offset(
-            (i_qp % 6 as ::core::ffi::c_int) as isize,
-        ))[0 as ::core::ffi::c_int as usize] << i_qp / 6 as ::core::ffi::c_int;
-    *dct.offset(0 as ::core::ffi::c_int as isize) = ((d0 + d1) * dmf
-        >> 5 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(1 as ::core::ffi::c_int as isize) = ((d0 - d1) * dmf
-        >> 5 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(2 as ::core::ffi::c_int as isize) = ((d2 + d3) * dmf
-        >> 5 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(3 as ::core::ffi::c_int as isize) = ((d2 - d3) * dmf
-        >> 5 as ::core::ffi::c_int) as dctcoef;
+        .offset((i_qp % 6 as ::core::ffi::c_int) as isize))[0 as ::core::ffi::c_int as usize]
+        << i_qp / 6 as ::core::ffi::c_int;
+    *dct.offset(0 as ::core::ffi::c_int as isize) =
+        ((d0 + d1) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(1 as ::core::ffi::c_int as isize) =
+        ((d0 - d1) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(2 as ::core::ffi::c_int as isize) =
+        ((d2 + d3) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(3 as ::core::ffi::c_int as isize) =
+        ((d2 - d3) * dmf >> 5 as ::core::ffi::c_int) as dctcoef;
 }
 #[inline]
 #[c2rust::src_loc = "82:1"]
 unsafe extern "C" fn dct2x2dc(mut d: *mut dctcoef, mut dct4x4: *mut [dctcoef; 16]) {
-    let mut d0: ::core::ffi::c_int = (*dct4x4
-        .offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize]
-        + (*dct4x4
-            .offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
-    let mut d1: ::core::ffi::c_int = (*dct4x4
-        .offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize]
-        + (*dct4x4
-            .offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
-    let mut d2: ::core::ffi::c_int = (*dct4x4
-        .offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize]
-        - (*dct4x4
-            .offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
-    let mut d3: ::core::ffi::c_int = (*dct4x4
-        .offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize]
-        - (*dct4x4
-            .offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
+    let mut d0: ::core::ffi::c_int = (*dct4x4.offset(0 as ::core::ffi::c_int as isize))
+        [0 as ::core::ffi::c_int as usize]
+        + (*dct4x4.offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
+    let mut d1: ::core::ffi::c_int = (*dct4x4.offset(2 as ::core::ffi::c_int as isize))
+        [0 as ::core::ffi::c_int as usize]
+        + (*dct4x4.offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
+    let mut d2: ::core::ffi::c_int = (*dct4x4.offset(0 as ::core::ffi::c_int as isize))
+        [0 as ::core::ffi::c_int as usize]
+        - (*dct4x4.offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
+    let mut d3: ::core::ffi::c_int = (*dct4x4.offset(2 as ::core::ffi::c_int as isize))
+        [0 as ::core::ffi::c_int as usize]
+        - (*dct4x4.offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize];
     *d.offset(0 as ::core::ffi::c_int as isize) = (d0 + d1) as dctcoef;
     *d.offset(2 as ::core::ffi::c_int as isize) = (d2 + d3) as dctcoef;
     *d.offset(1 as ::core::ffi::c_int as isize) = (d0 - d1) as dctcoef;
     *d.offset(3 as ::core::ffi::c_int as isize) = (d2 - d3) as dctcoef;
-    (*dct4x4
-        .offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = 0
-        as ::core::ffi::c_int as dctcoef;
-    (*dct4x4
-        .offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = 0
-        as ::core::ffi::c_int as dctcoef;
-    (*dct4x4
-        .offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = 0
-        as ::core::ffi::c_int as dctcoef;
-    (*dct4x4
-        .offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = 0
-        as ::core::ffi::c_int as dctcoef;
+    (*dct4x4.offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        0 as ::core::ffi::c_int as dctcoef;
+    (*dct4x4.offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        0 as ::core::ffi::c_int as dctcoef;
+    (*dct4x4.offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        0 as ::core::ffi::c_int as dctcoef;
+    (*dct4x4.offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        0 as ::core::ffi::c_int as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "98:1"]
@@ -3676,30 +3280,24 @@ unsafe extern "C" fn array_non_zero(
     if WORD_SIZE == 8 as uint64_t {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < i_count {
-            if (*(&mut *v.offset(i as isize) as *mut dctcoef as *mut x264_union64_t)).i
-                != 0
-            {
+            if (*(&mut *v.offset(i as isize) as *mut dctcoef as *mut x264_union64_t)).i != 0 {
                 return 1 as ::core::ffi::c_int;
             }
-            i = (i as ::core::ffi::c_ulong)
-                .wrapping_add(
-                    (8 as usize).wrapping_div(::core::mem::size_of::<dctcoef>() as usize)
-                        as ::core::ffi::c_ulong,
-                ) as ::core::ffi::c_int as ::core::ffi::c_int;
+            i = (i as ::core::ffi::c_ulong).wrapping_add(
+                (8 as usize).wrapping_div(::core::mem::size_of::<dctcoef>() as usize)
+                    as ::core::ffi::c_ulong,
+            ) as ::core::ffi::c_int as ::core::ffi::c_int;
         }
     } else {
         let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i_0 < i_count {
-            if (*(&mut *v.offset(i_0 as isize) as *mut dctcoef as *mut x264_union32_t)).i
-                != 0
-            {
+            if (*(&mut *v.offset(i_0 as isize) as *mut dctcoef as *mut x264_union32_t)).i != 0 {
                 return 1 as ::core::ffi::c_int;
             }
-            i_0 = (i_0 as ::core::ffi::c_ulong)
-                .wrapping_add(
-                    (4 as usize).wrapping_div(::core::mem::size_of::<dctcoef>() as usize)
-                        as ::core::ffi::c_ulong,
-                ) as ::core::ffi::c_int as ::core::ffi::c_int;
+            i_0 = (i_0 as ::core::ffi::c_ulong).wrapping_add(
+                (4 as usize).wrapping_div(::core::mem::size_of::<dctcoef>() as usize)
+                    as ::core::ffi::c_ulong,
+            ) as ::core::ffi::c_int as ::core::ffi::c_int;
         }
     }
     return 0 as ::core::ffi::c_int;
@@ -3730,119 +3328,80 @@ unsafe extern "C" fn mb_encode_i16x16(
     if (*h).mb.b_lossless != 0 {
         x264_10_predict_lossless_16x16(h, p, i_mode);
     } else {
-        (*h)
-            .predict_16x16[i_mode as usize]
-            .expect("non-null function pointer")((*h).mb.pic.p_fdec[p as usize]);
+        (*h).predict_16x16[i_mode as usize].expect("non-null function pointer")(
+            (*h).mb.pic.p_fdec[p as usize],
+        );
     }
     if (*h).mb.b_lossless != 0 {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 16 as ::core::ffi::c_int {
-            let mut oe: ::core::ffi::c_int = block_idx_xy_fenc[i as usize]
-                as ::core::ffi::c_int;
-            let mut od: ::core::ffi::c_int = block_idx_xy_fdec[i as usize]
-                as ::core::ffi::c_int;
-            nz = (*h)
-                .zigzagf
-                .sub_4x4ac
-                .expect(
-                    "non-null function pointer",
-                )(
+            let mut oe: ::core::ffi::c_int = block_idx_xy_fenc[i as usize] as ::core::ffi::c_int;
+            let mut od: ::core::ffi::c_int = block_idx_xy_fdec[i as usize] as ::core::ffi::c_int;
+            nz = (*h).zigzagf.sub_4x4ac.expect("non-null function pointer")(
                 (*(*h)
                     .dct
                     .luma4x4
                     .as_mut_ptr()
                     .offset((16 as ::core::ffi::c_int * p + i) as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 p_src.offset(oe as isize),
                 p_dst.offset(od as isize),
                 &mut *dct_dc4x4
                     .as_mut_ptr()
                     .offset(*block_idx_yx_1d.as_ptr().offset(i as isize) as isize),
             );
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(16 as ::core::ffi::c_int * p + i) as usize]
-                as usize] = nz as uint8_t;
+            (*h).mb.cache.non_zero_count
+                [x264_scan8[(16 as ::core::ffi::c_int * p + i) as usize] as usize] = nz as uint8_t;
             block_cbp |= nz;
             i += 1;
         }
         (*h).mb.i_cbp_luma |= block_cbp * 0xf as ::core::ffi::c_int;
-        (*h).mb.cache.non_zero_count[x264_scan8[(LUMA_DC + p) as usize] as usize] = array_non_zero(
-            dct_dc4x4.as_mut_ptr(),
-            16 as ::core::ffi::c_int,
-        ) as uint8_t;
-        (*h)
-            .zigzagf
-            .scan_4x4
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mb.cache.non_zero_count[x264_scan8[(LUMA_DC + p) as usize] as usize] =
+            array_non_zero(dct_dc4x4.as_mut_ptr(), 16 as ::core::ffi::c_int) as uint8_t;
+        (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
             (*(*h).dct.luma16x16_dc.as_mut_ptr().offset(p as isize)).as_mut_ptr(),
             dct_dc4x4.as_mut_ptr(),
         );
         return;
     }
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                as ::core::ffi::c_int
-                + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        (*x264_scan8
+            .as_ptr()
+            .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+            + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                as ::core::ffi::c_int
-                + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        (*x264_scan8
+            .as_ptr()
+            .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+            + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                as ::core::ffi::c_int
-                + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        (*x264_scan8
+            .as_ptr()
+            .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+            + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                as ::core::ffi::c_int
-                + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        (*x264_scan8
+            .as_ptr()
+            .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+            + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*h)
-        .dctf
-        .sub16x16_dct
-        .expect("non-null function pointer")(dct4x4.as_mut_ptr(), p_src, p_dst);
+    (*h).dctf.sub16x16_dct.expect("non-null function pointer")(dct4x4.as_mut_ptr(), p_src, p_dst);
     if (*h).mb.b_noise_reduction != 0 {
         let mut idx: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while idx < 16 as ::core::ffi::c_int {
-            (*h)
-                .quantf
-                .denoise_dct
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).quantf.denoise_dct.expect("non-null function pointer")(
                 (*dct4x4.as_mut_ptr().offset(idx as isize)).as_mut_ptr(),
-                (*(*h).nr_residual_sum.offset(0 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr(),
+                (*(*h)
+                    .nr_residual_sum
+                    .offset(0 as ::core::ffi::c_int as isize))
+                .as_mut_ptr(),
                 (*(*h).nr_offset.offset(0 as ::core::ffi::c_int as isize)).as_mut_ptr(),
                 16 as ::core::ffi::c_int,
             );
@@ -3851,10 +3410,10 @@ unsafe extern "C" fn mb_encode_i16x16(
     }
     let mut idx_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while idx_0 < 16 as ::core::ffi::c_int {
-        dct_dc4x4[block_idx_xy_1d[idx_0 as usize] as usize] = dct4x4[idx_0
-            as usize][0 as ::core::ffi::c_int as usize];
-        dct4x4[idx_0 as usize][0 as ::core::ffi::c_int as usize] = 0
-            as ::core::ffi::c_int as dctcoef;
+        dct_dc4x4[block_idx_xy_1d[idx_0 as usize] as usize] =
+            dct4x4[idx_0 as usize][0 as ::core::ffi::c_int as usize];
+        dct4x4[idx_0 as usize][0 as ::core::ffi::c_int as usize] =
+            0 as ::core::ffi::c_int as dctcoef;
         idx_0 += 1;
     }
     if (*h).mb.b_trellis != 0 {
@@ -3873,131 +3432,94 @@ unsafe extern "C" fn mb_encode_i16x16(
             ) != 0
             {
                 block_cbp = 0xf as ::core::ffi::c_int;
-                (*h)
-                    .zigzagf
-                    .scan_4x4
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                     (*(*h)
                         .dct
                         .luma4x4
                         .as_mut_ptr()
                         .offset((16 as ::core::ffi::c_int * p + idx_1) as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     (*dct4x4.as_mut_ptr().offset(idx_1 as isize)).as_mut_ptr(),
                 );
-                (*h)
-                    .quantf
-                    .dequant_4x4
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                     (*dct4x4.as_mut_ptr().offset(idx_1 as isize)).as_mut_ptr(),
                     (*h).dequant4_mf[i_quant_cat as usize],
                     i_qp,
                 );
                 if decimate_score < 6 as ::core::ffi::c_int {
-                    decimate_score
-                        += (*h)
-                            .quantf
-                            .decimate_score15
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            (*(*h)
-                                .dct
-                                .luma4x4
-                                .as_mut_ptr()
-                                .offset((16 as ::core::ffi::c_int * p + idx_1) as isize))
-                                .as_mut_ptr(),
-                        );
+                    decimate_score += (*h)
+                        .quantf
+                        .decimate_score15
+                        .expect("non-null function pointer")(
+                        (*(*h)
+                            .dct
+                            .luma4x4
+                            .as_mut_ptr()
+                            .offset((16 as ::core::ffi::c_int * p + idx_1) as isize))
+                        .as_mut_ptr(),
+                    );
                 }
-                (*h)
-                    .mb
-                    .cache
-                    .non_zero_count[x264_scan8[(16 as ::core::ffi::c_int * p + idx_1)
-                    as usize] as usize] = 1 as uint8_t;
+                (*h).mb.cache.non_zero_count
+                    [x264_scan8[(16 as ::core::ffi::c_int * p + idx_1) as usize] as usize] =
+                    1 as uint8_t;
             }
             idx_1 += 1;
         }
     } else {
         let mut i8x8: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i8x8 < 4 as ::core::ffi::c_int {
-            nz = (*h)
-                .quantf
-                .quant_4x4x4
-                .expect(
-                    "non-null function pointer",
-                )(
+            nz = (*h).quantf.quant_4x4x4.expect("non-null function pointer")(
                 &mut *dct4x4
                     .as_mut_ptr()
                     .offset((i8x8 * 4 as ::core::ffi::c_int) as isize),
                 (*(*(*h).quant4_mf.as_mut_ptr().offset(i_quant_cat as isize))
                     .offset(i_qp as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 (*(*(*h).quant4_bias.as_mut_ptr().offset(i_quant_cat as isize))
                     .offset(i_qp as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
             );
             if nz != 0 {
                 block_cbp = 0xf as ::core::ffi::c_int;
                 let mut idx_2: ::core::ffi::c_int = i8x8 * 4 as ::core::ffi::c_int;
                 let mut msk: ::core::ffi::c_int = nz;
                 let mut skip: ::core::ffi::c_int = 0;
-                while msk != 0
-                    && {
-                        skip = x264_ctz_4bit(msk as uint32_t);
-                        idx_2 += skip;
-                        msk >>= skip + 1 as ::core::ffi::c_int;
-                        1 as ::core::ffi::c_int != 0
-                    }
-                {
-                    (*h)
-                        .zigzagf
-                        .scan_4x4
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                while msk != 0 && {
+                    skip = x264_ctz_4bit(msk as uint32_t);
+                    idx_2 += skip;
+                    msk >>= skip + 1 as ::core::ffi::c_int;
+                    1 as ::core::ffi::c_int != 0
+                } {
+                    (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                         (*(*h)
                             .dct
                             .luma4x4
                             .as_mut_ptr()
                             .offset((16 as ::core::ffi::c_int * p + idx_2) as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         (*dct4x4.as_mut_ptr().offset(idx_2 as isize)).as_mut_ptr(),
                     );
-                    (*h)
-                        .quantf
-                        .dequant_4x4
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                         (*dct4x4.as_mut_ptr().offset(idx_2 as isize)).as_mut_ptr(),
                         (*h).dequant4_mf[i_quant_cat as usize],
                         i_qp,
                     );
                     if decimate_score < 6 as ::core::ffi::c_int {
-                        decimate_score
-                            += (*h)
-                                .quantf
-                                .decimate_score15
-                                .expect(
-                                    "non-null function pointer",
-                                )(
-                                (*(*h)
-                                    .dct
-                                    .luma4x4
-                                    .as_mut_ptr()
-                                    .offset((16 as ::core::ffi::c_int * p + idx_2) as isize))
-                                    .as_mut_ptr(),
-                            );
+                        decimate_score += (*h)
+                            .quantf
+                            .decimate_score15
+                            .expect("non-null function pointer")(
+                            (*(*h)
+                                .dct
+                                .luma4x4
+                                .as_mut_ptr()
+                                .offset((16 as ::core::ffi::c_int * p + idx_2) as isize))
+                            .as_mut_ptr(),
+                        );
                     }
-                    (*h)
-                        .mb
-                        .cache
-                        .non_zero_count[x264_scan8[(16 as ::core::ffi::c_int * p + idx_2)
-                        as usize] as usize] = 1 as uint8_t;
+                    (*h).mb.cache.non_zero_count
+                        [x264_scan8[(16 as ::core::ffi::c_int * p + idx_2) as usize] as usize] =
+                        1 as uint8_t;
                     idx_2 += 1;
                 }
             }
@@ -4005,49 +3527,33 @@ unsafe extern "C" fn mb_encode_i16x16(
         }
     }
     if decimate_score < 6 as ::core::ffi::c_int {
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                    as ::core::ffi::c_int
-                    + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            (*x264_scan8
+                .as_ptr()
+                .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                    as ::core::ffi::c_int
-                    + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            (*x264_scan8
+                .as_ptr()
+                .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                    as ::core::ffi::c_int
-                    + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            (*x264_scan8
+                .as_ptr()
+                .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                (*x264_scan8.as_ptr().offset((16 as ::core::ffi::c_int * p) as isize)
-                    as ::core::ffi::c_int
-                    + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            (*x264_scan8
+                .as_ptr()
+                .offset((16 as ::core::ffi::c_int * p) as isize) as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
         block_cbp = 0 as ::core::ffi::c_int;
     } else {
@@ -4066,59 +3572,43 @@ unsafe extern "C" fn mb_encode_i16x16(
             LUMA_DC + p,
         );
     } else {
-        nz = (*h)
-            .quantf
-            .quant_4x4_dc
-            .expect(
-                "non-null function pointer",
-            )(
+        nz = (*h).quantf.quant_4x4_dc.expect("non-null function pointer")(
             dct_dc4x4.as_mut_ptr(),
-            ((*(*h)
-                .quant4_mf[i_quant_cat as usize]
-                .offset(i_qp as isize))[0 as ::core::ffi::c_int as usize]
+            ((*(*h).quant4_mf[i_quant_cat as usize].offset(i_qp as isize))
+                [0 as ::core::ffi::c_int as usize]
                 >> 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
-            ((*(*h)
-                .quant4_bias[i_quant_cat as usize]
-                .offset(i_qp as isize))[0 as ::core::ffi::c_int as usize]
+            ((*(*h).quant4_bias[i_quant_cat as usize].offset(i_qp as isize))
+                [0 as ::core::ffi::c_int as usize]
                 << 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
         );
     }
-    (*h).mb.cache.non_zero_count[x264_scan8[(LUMA_DC + p) as usize] as usize] = nz
-        as uint8_t;
+    (*h).mb.cache.non_zero_count[x264_scan8[(LUMA_DC + p) as usize] as usize] = nz as uint8_t;
     if nz != 0 {
-        (*h)
-            .zigzagf
-            .scan_4x4
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
             (*(*h).dct.luma16x16_dc.as_mut_ptr().offset(p as isize)).as_mut_ptr(),
             dct_dc4x4.as_mut_ptr(),
         );
         (*h).dctf.idct4x4dc.expect("non-null function pointer")(dct_dc4x4.as_mut_ptr());
-        (*h)
-            .quantf
+        (*h).quantf
             .dequant_4x4_dc
-            .expect(
-                "non-null function pointer",
-            )(dct_dc4x4.as_mut_ptr(), (*h).dequant4_mf[i_quant_cat as usize], i_qp);
+            .expect("non-null function pointer")(
+            dct_dc4x4.as_mut_ptr(),
+            (*h).dequant4_mf[i_quant_cat as usize],
+            i_qp,
+        );
         if block_cbp != 0 {
             let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while i_0 < 16 as ::core::ffi::c_int {
-                dct4x4[i_0 as usize][0 as ::core::ffi::c_int as usize] = dct_dc4x4[block_idx_xy_1d[i_0
-                    as usize] as usize];
+                dct4x4[i_0 as usize][0 as ::core::ffi::c_int as usize] =
+                    dct_dc4x4[block_idx_xy_1d[i_0 as usize] as usize];
                 i_0 += 1;
             }
         }
     }
     if block_cbp != 0 {
-        (*h)
-            .dctf
-            .add16x16_idct
-            .expect("non-null function pointer")(p_dst, dct4x4.as_mut_ptr());
+        (*h).dctf.add16x16_idct.expect("non-null function pointer")(p_dst, dct4x4.as_mut_ptr());
     } else if nz != 0 {
-        (*h)
-            .dctf
+        (*h).dctf
             .add16x16_idct_dc
             .expect("non-null function pointer")(p_dst, dct_dc4x4.as_mut_ptr());
     }
@@ -4133,9 +3623,8 @@ unsafe extern "C" fn mb_optimize_chroma_dc(
     mut chroma422: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut dmf: ::core::ffi::c_int = (*dequant_mf
-        .offset(
-            (i_qp % 6 as ::core::ffi::c_int) as isize,
-        ))[0 as ::core::ffi::c_int as usize] << i_qp / 6 as ::core::ffi::c_int;
+        .offset((i_qp % 6 as ::core::ffi::c_int) as isize))[0 as ::core::ffi::c_int as usize]
+        << i_qp / 6 as ::core::ffi::c_int;
     if dmf > 32 as ::core::ffi::c_int * 64 as ::core::ffi::c_int {
         return 1 as ::core::ffi::c_int;
     }
@@ -4143,12 +3632,12 @@ unsafe extern "C" fn mb_optimize_chroma_dc(
         return (*h)
             .quantf
             .optimize_chroma_2x4_dc
-            .expect("non-null function pointer")(dct_dc as *mut dctcoef, dmf)
+            .expect("non-null function pointer")(dct_dc as *mut dctcoef, dmf);
     } else {
         return (*h)
             .quantf
             .optimize_chroma_2x2_dc
-            .expect("non-null function pointer")(dct_dc as *mut dctcoef, dmf)
+            .expect("non-null function pointer")(dct_dc as *mut dctcoef, dmf);
     };
 }
 #[inline(always)]
@@ -4161,83 +3650,63 @@ unsafe extern "C" fn mb_encode_chroma_internal(
 ) {
     let mut nz: ::core::ffi::c_int = 0;
     let mut nz_dc: ::core::ffi::c_int = 0;
-    let mut b_decimate: ::core::ffi::c_int = (b_inter != 0
-        && (*h).mb.b_dct_decimate != 0) as ::core::ffi::c_int;
-    let mut dequant_mf: *mut [::core::ffi::c_int; 16] = (*h)
-        .dequant4_mf[(CQM_4IC as ::core::ffi::c_int + b_inter) as usize];
+    let mut b_decimate: ::core::ffi::c_int =
+        (b_inter != 0 && (*h).mb.b_dct_decimate != 0) as ::core::ffi::c_int;
+    let mut dequant_mf: *mut [::core::ffi::c_int; 16] =
+        (*h).dequant4_mf[(CQM_4IC as ::core::ffi::c_int + b_inter) as usize];
     let mut dct_dc: [dctcoef; 8] = [0; 8];
     (*h).mb.i_cbp_chroma = 0 as ::core::ffi::c_int;
     let ref mut fresh2 = *(*h).nr_count.offset(2 as ::core::ffi::c_int as isize);
-    *fresh2 = (*fresh2)
-        .wrapping_add(((*h).mb.b_noise_reduction * 4 as ::core::ffi::c_int) as uint32_t);
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(16 as ::core::ffi::c_int as isize) as isize)
-        as *mut uint8_t as *mut x264_union16_t))
+    *fresh2 =
+        (*fresh2).wrapping_add(((*h).mb.b_noise_reduction * 4 as ::core::ffi::c_int) as uint32_t);
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset(16 as ::core::ffi::c_int as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union16_t))
         .i = 0 as uint16_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(18 as ::core::ffi::c_int as isize) as isize)
-        as *mut uint8_t as *mut x264_union16_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset(18 as ::core::ffi::c_int as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union16_t))
         .i = 0 as uint16_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(32 as ::core::ffi::c_int as isize) as isize)
-        as *mut uint8_t as *mut x264_union16_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset(32 as ::core::ffi::c_int as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union16_t))
         .i = 0 as uint16_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(34 as ::core::ffi::c_int as isize) as isize)
-        as *mut uint8_t as *mut x264_union16_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset(34 as ::core::ffi::c_int as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union16_t))
         .i = 0 as uint16_t;
     if chroma422 != 0 {
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8.as_ptr().offset(24 as ::core::ffi::c_int as isize) as isize,
-            ) as *mut uint8_t as *mut x264_union16_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset(24 as ::core::ffi::c_int as isize) as isize,
+        ) as *mut uint8_t as *mut x264_union16_t))
             .i = 0 as uint16_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8.as_ptr().offset(26 as ::core::ffi::c_int as isize) as isize,
-            ) as *mut uint8_t as *mut x264_union16_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset(26 as ::core::ffi::c_int as isize) as isize,
+        ) as *mut uint8_t as *mut x264_union16_t))
             .i = 0 as uint16_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8.as_ptr().offset(40 as ::core::ffi::c_int as isize) as isize,
-            ) as *mut uint8_t as *mut x264_union16_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset(40 as ::core::ffi::c_int as isize) as isize,
+        ) as *mut uint8_t as *mut x264_union16_t))
             .i = 0 as uint16_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8.as_ptr().offset(42 as ::core::ffi::c_int as isize) as isize,
-            ) as *mut uint8_t as *mut x264_union16_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset(42 as ::core::ffi::c_int as isize) as isize,
+        ) as *mut uint8_t as *mut x264_union16_t))
             .i = 0 as uint16_t;
     }
     if b_decimate != 0
@@ -4246,14 +3715,13 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                 12 as ::core::ffi::c_int
             } else {
                 18 as ::core::ffi::c_int
-            }) && (*h).mb.b_noise_reduction == 0
+            })
+        && (*h).mb.b_noise_reduction == 0
     {
         let mut thresh: ::core::ffi::c_int = if chroma422 != 0 {
-            x264_lambda2_tab[i_qp as usize] + 16 as ::core::ffi::c_int
-                >> 5 as ::core::ffi::c_int
+            x264_lambda2_tab[i_qp as usize] + 16 as ::core::ffi::c_int >> 5 as ::core::ffi::c_int
         } else {
-            x264_lambda2_tab[i_qp as usize] + 32 as ::core::ffi::c_int
-                >> 6 as ::core::ffi::c_int
+            x264_lambda2_tab[i_qp as usize] + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int
         };
         let mut ssd: [::core::ffi::c_int; 2] = [0; 2];
         let mut chromapix: ::core::ffi::c_int = if chroma422 != 0 {
@@ -4261,52 +3729,37 @@ unsafe extern "C" fn mb_encode_chroma_internal(
         } else {
             PIXEL_8x8 as ::core::ffi::c_int
         };
-        if (*h)
-            .pixf
-            .var2[chromapix as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        if (*h).pixf.var2[chromapix as usize].expect("non-null function pointer")(
             (*h).mb.pic.p_fenc[1 as ::core::ffi::c_int as usize],
             (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
             ssd.as_mut_ptr(),
         ) < thresh * 4 as ::core::ffi::c_int
         {
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(CHROMA_DC + 0 as ::core::ffi::c_int)
-                as usize] as usize] = 0 as uint8_t;
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(CHROMA_DC + 1 as ::core::ffi::c_int)
-                as usize] as usize] = 0 as uint8_t;
+            (*h).mb.cache.non_zero_count
+                [x264_scan8[(CHROMA_DC + 0 as ::core::ffi::c_int) as usize] as usize] =
+                0 as uint8_t;
+            (*h).mb.cache.non_zero_count
+                [x264_scan8[(CHROMA_DC + 1 as ::core::ffi::c_int) as usize] as usize] =
+                0 as uint8_t;
             let mut ch: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while ch < 2 as ::core::ffi::c_int {
                 if ssd[ch as usize] > thresh {
-                    let mut p_src: *mut pixel = (*h)
-                        .mb
-                        .pic
-                        .p_fenc[(1 as ::core::ffi::c_int + ch) as usize];
-                    let mut p_dst: *mut pixel = (*h)
-                        .mb
-                        .pic
-                        .p_fdec[(1 as ::core::ffi::c_int + ch) as usize];
+                    let mut p_src: *mut pixel =
+                        (*h).mb.pic.p_fenc[(1 as ::core::ffi::c_int + ch) as usize];
+                    let mut p_dst: *mut pixel =
+                        (*h).mb.pic.p_fdec[(1 as ::core::ffi::c_int + ch) as usize];
                     if chroma422 != 0 {
-                        (*h)
-                            .dctf
-                            .sub8x16_dct_dc
-                            .expect(
-                                "non-null function pointer",
-                            )(dct_dc.as_mut_ptr(), p_src, p_dst);
+                        (*h).dctf.sub8x16_dct_dc.expect("non-null function pointer")(
+                            dct_dc.as_mut_ptr(),
+                            p_src,
+                            p_dst,
+                        );
                     } else {
-                        (*h)
-                            .dctf
-                            .sub8x8_dct_dc
-                            .expect(
-                                "non-null function pointer",
-                            )(dct_dc.as_mut_ptr(), p_src, p_dst);
+                        (*h).dctf.sub8x8_dct_dc.expect("non-null function pointer")(
+                            dct_dc.as_mut_ptr(),
+                            p_src,
+                            p_dst,
+                        );
                     }
                     if (*h).mb.b_trellis != 0 {
                         nz_dc = x264_10_quant_chroma_dc_trellis(
@@ -4320,31 +3773,23 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                         nz_dc = 0 as ::core::ffi::c_int;
                         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                         while i <= chroma422 {
-                            nz_dc
-                                |= (*h)
-                                    .quantf
-                                    .quant_2x2_dc
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
-                                    &mut *dct_dc
-                                        .as_mut_ptr()
-                                        .offset((4 as ::core::ffi::c_int * i) as isize),
-                                    ((*(*h)
-                                        .quant4_mf[(CQM_4IC as ::core::ffi::c_int + b_inter)
-                                            as usize]
-                                        .offset(
-                                            (i_qp + 3 as ::core::ffi::c_int * chroma422) as isize,
-                                        ))[0 as ::core::ffi::c_int as usize]
-                                        >> 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
-                                    ((*(*h)
-                                        .quant4_bias[(CQM_4IC as ::core::ffi::c_int + b_inter)
-                                            as usize]
-                                        .offset(
-                                            (i_qp + 3 as ::core::ffi::c_int * chroma422) as isize,
-                                        ))[0 as ::core::ffi::c_int as usize]
-                                        << 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
-                                );
+                            nz_dc |= (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
+                                &mut *dct_dc
+                                    .as_mut_ptr()
+                                    .offset((4 as ::core::ffi::c_int * i) as isize),
+                                ((*(*h).quant4_mf
+                                    [(CQM_4IC as ::core::ffi::c_int + b_inter) as usize]
+                                    .offset((i_qp + 3 as ::core::ffi::c_int * chroma422) as isize))
+                                    [0 as ::core::ffi::c_int as usize]
+                                    >> 1 as ::core::ffi::c_int)
+                                    as ::core::ffi::c_int,
+                                ((*(*h).quant4_bias
+                                    [(CQM_4IC as ::core::ffi::c_int + b_inter) as usize]
+                                    .offset((i_qp + 3 as ::core::ffi::c_int * chroma422) as isize))
+                                    [0 as ::core::ffi::c_int as usize]
+                                    << 1 as ::core::ffi::c_int)
+                                    as ::core::ffi::c_int,
+                            );
                             i += 1;
                         }
                     }
@@ -4357,23 +3802,17 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                             chroma422,
                         ) == 0)
                         {
-                            (*h)
-                                .mb
-                                .cache
-                                .non_zero_count[x264_scan8[(CHROMA_DC + ch) as usize]
-                                as usize] = 1 as uint8_t;
+                            (*h).mb.cache.non_zero_count
+                                [x264_scan8[(CHROMA_DC + ch) as usize] as usize] = 1 as uint8_t;
                             if chroma422 != 0 {
                                 zigzag_scan_2x4_dc(
                                     (*(*h).dct.chroma_dc.as_mut_ptr().offset(ch as isize))
                                         .as_mut_ptr(),
                                     dct_dc.as_mut_ptr(),
                                 );
-                                (*h)
-                                    .quantf
+                                (*h).quantf
                                     .idct_dequant_2x4_dconly
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
+                                    .expect("non-null function pointer")(
                                     dct_dc.as_mut_ptr(),
                                     dequant_mf as *mut [::core::ffi::c_int; 16],
                                     i_qp + 3 as ::core::ffi::c_int,
@@ -4392,16 +3831,10 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                             }
                             let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                             while i_0 <= chroma422 {
-                                (*h)
-                                    .dctf
-                                    .add8x8_idct_dc
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
-                                    p_dst
-                                        .offset(
-                                            (8 as ::core::ffi::c_int * i_0 * FDEC_STRIDE) as isize,
-                                        ),
+                                (*h).dctf.add8x8_idct_dc.expect("non-null function pointer")(
+                                    p_dst.offset(
+                                        (8 as ::core::ffi::c_int * i_0 * FDEC_STRIDE) as isize,
+                                    ),
                                     &mut *dct_dc
                                         .as_mut_ptr()
                                         .offset((4 as ::core::ffi::c_int * i_0) as isize),
@@ -4419,14 +3852,8 @@ unsafe extern "C" fn mb_encode_chroma_internal(
     }
     let mut ch_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while ch_0 < 2 as ::core::ffi::c_int {
-        let mut p_src_0: *mut pixel = (*h)
-            .mb
-            .pic
-            .p_fenc[(1 as ::core::ffi::c_int + ch_0) as usize];
-        let mut p_dst_0: *mut pixel = (*h)
-            .mb
-            .pic
-            .p_fdec[(1 as ::core::ffi::c_int + ch_0) as usize];
+        let mut p_src_0: *mut pixel = (*h).mb.pic.p_fenc[(1 as ::core::ffi::c_int + ch_0) as usize];
+        let mut p_dst_0: *mut pixel = (*h).mb.pic.p_fdec[(1 as ::core::ffi::c_int + ch_0) as usize];
         let mut i_decimate_score: ::core::ffi::c_int = if b_decimate != 0 {
             0 as ::core::ffi::c_int
         } else {
@@ -4455,84 +3882,64 @@ unsafe extern "C" fn mb_encode_chroma_internal(
             {
                 let mut oe: ::core::ffi::c_int = 4 as ::core::ffi::c_int
                     * (i_1 & 1 as ::core::ffi::c_int)
-                    + 4 as ::core::ffi::c_int * (i_1 >> 1 as ::core::ffi::c_int)
-                        * FENC_STRIDE;
+                    + 4 as ::core::ffi::c_int * (i_1 >> 1 as ::core::ffi::c_int) * FENC_STRIDE;
                 let mut od: ::core::ffi::c_int = 4 as ::core::ffi::c_int
                     * (i_1 & 1 as ::core::ffi::c_int)
-                    + 4 as ::core::ffi::c_int * (i_1 >> 1 as ::core::ffi::c_int)
-                        * FDEC_STRIDE;
-                nz = (*h)
-                    .zigzagf
-                    .sub_4x4ac
-                    .expect(
-                        "non-null function pointer",
-                    )(
-                    (*(*h)
-                        .dct
-                        .luma4x4
-                        .as_mut_ptr()
-                        .offset(
-                            (16 as ::core::ffi::c_int + i_1
-                                + (if chroma422 != 0 {
-                                    i_1 & 4 as ::core::ffi::c_int
-                                } else {
-                                    0 as ::core::ffi::c_int
-                                }) + ch_0 * 16 as ::core::ffi::c_int) as isize,
-                        ))
-                        .as_mut_ptr(),
+                    + 4 as ::core::ffi::c_int * (i_1 >> 1 as ::core::ffi::c_int) * FDEC_STRIDE;
+                nz = (*h).zigzagf.sub_4x4ac.expect("non-null function pointer")(
+                    (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                        (16 as ::core::ffi::c_int
+                            + i_1
+                            + (if chroma422 != 0 {
+                                i_1 & 4 as ::core::ffi::c_int
+                            } else {
+                                0 as ::core::ffi::c_int
+                            })
+                            + ch_0 * 16 as ::core::ffi::c_int) as isize,
+                    ))
+                    .as_mut_ptr(),
                     p_src_0.offset(oe as isize),
                     p_dst_0.offset(od as isize),
                     &mut *(*(*h).dct.chroma_dc.as_mut_ptr().offset(ch_0 as isize))
                         .as_mut_ptr()
                         .offset(
                             (if chroma422 != 0 {
-                                *chroma422_scan.as_ptr().offset(i_1 as isize)
-                                    as ::core::ffi::c_int
+                                *chroma422_scan.as_ptr().offset(i_1 as isize) as ::core::ffi::c_int
                             } else {
                                 i_1
                             }) as isize,
                         ),
                 );
-                (*h)
-                    .mb
-                    .cache
-                    .non_zero_count[x264_scan8[(16 as ::core::ffi::c_int + i_1
+                (*h).mb.cache.non_zero_count[x264_scan8[(16 as ::core::ffi::c_int
+                    + i_1
                     + (if chroma422 != 0 {
                         i_1 & 4 as ::core::ffi::c_int
                     } else {
                         0 as ::core::ffi::c_int
-                    }) + ch_0 * 16 as ::core::ffi::c_int) as usize] as usize] = nz
-                    as uint8_t;
+                    })
+                    + ch_0 * 16 as ::core::ffi::c_int)
+                    as usize] as usize] = nz as uint8_t;
                 (*h).mb.i_cbp_chroma |= nz;
                 i_1 += 1;
             }
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(CHROMA_DC + ch_0) as usize] as usize] = array_non_zero(
-                (*(*h).dct.chroma_dc.as_mut_ptr().offset(ch_0 as isize)).as_mut_ptr(),
-                if chroma422 != 0 {
-                    8 as ::core::ffi::c_int
-                } else {
-                    4 as ::core::ffi::c_int
-                },
-            ) as uint8_t;
+            (*h).mb.cache.non_zero_count[x264_scan8[(CHROMA_DC + ch_0) as usize] as usize] =
+                array_non_zero(
+                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(ch_0 as isize)).as_mut_ptr(),
+                    if chroma422 != 0 {
+                        8 as ::core::ffi::c_int
+                    } else {
+                        4 as ::core::ffi::c_int
+                    },
+                ) as uint8_t;
         } else {
             let mut i_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while i_2 <= chroma422 {
-                (*h)
-                    .dctf
-                    .sub8x8_dct
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).dctf.sub8x8_dct.expect("non-null function pointer")(
                     &mut *dct4x4
                         .as_mut_ptr()
                         .offset((4 as ::core::ffi::c_int * i_2) as isize),
-                    p_src_0
-                        .offset((8 as ::core::ffi::c_int * i_2 * FENC_STRIDE) as isize),
-                    p_dst_0
-                        .offset((8 as ::core::ffi::c_int * i_2 * FDEC_STRIDE) as isize),
+                    p_src_0.offset((8 as ::core::ffi::c_int * i_2 * FENC_STRIDE) as isize),
+                    p_dst_0.offset((8 as ::core::ffi::c_int * i_2 * FDEC_STRIDE) as isize),
                 );
                 i_2 += 1;
             }
@@ -4545,29 +3952,23 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                         4 as ::core::ffi::c_int
                     })
                 {
-                    (*h)
-                        .quantf
-                        .denoise_dct
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    (*h).quantf.denoise_dct.expect("non-null function pointer")(
                         (*dct4x4.as_mut_ptr().offset(i_3 as isize)).as_mut_ptr(),
-                        (*(*h).nr_residual_sum.offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
-                        (*(*h).nr_offset.offset(2 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr(),
+                        (*(*h)
+                            .nr_residual_sum
+                            .offset(2 as ::core::ffi::c_int as isize))
+                        .as_mut_ptr(),
+                        (*(*h).nr_offset.offset(2 as ::core::ffi::c_int as isize)).as_mut_ptr(),
                         16 as ::core::ffi::c_int,
                     );
                     i_3 += 1;
                 }
             }
             if chroma422 != 0 {
-                (*h)
-                    .dctf
-                    .dct2x4dc
-                    .expect(
-                        "non-null function pointer",
-                    )(dct_dc.as_mut_ptr(), dct4x4.as_mut_ptr());
+                (*h).dctf.dct2x4dc.expect("non-null function pointer")(
+                    dct_dc.as_mut_ptr(),
+                    dct4x4.as_mut_ptr(),
+                );
             } else {
                 dct2x2dc(dct_dc.as_mut_ptr(), dct4x4.as_mut_ptr());
             }
@@ -4587,7 +3988,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                             (*dct4x4
                                 .as_mut_ptr()
                                 .offset((i8x8 * 4 as ::core::ffi::c_int + i4x4) as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             CQM_4IC as ::core::ffi::c_int + b_inter,
                             i_qp,
                             DCT_CHROMA_AC as ::core::ffi::c_int,
@@ -4598,61 +3999,40 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                         {
                             let mut idx: ::core::ffi::c_int = 16 as ::core::ffi::c_int
                                 + ch_0 * 16 as ::core::ffi::c_int
-                                + i8x8 * 8 as ::core::ffi::c_int + i4x4;
-                            (*h)
-                                .zigzagf
-                                .scan_4x4
-                                .expect(
-                                    "non-null function pointer",
-                                )(
-                                (*(*h).dct.luma4x4.as_mut_ptr().offset(idx as isize))
-                                    .as_mut_ptr(),
+                                + i8x8 * 8 as ::core::ffi::c_int
+                                + i4x4;
+                            (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
+                                (*(*h).dct.luma4x4.as_mut_ptr().offset(idx as isize)).as_mut_ptr(),
                                 (*dct4x4
                                     .as_mut_ptr()
                                     .offset((i8x8 * 4 as ::core::ffi::c_int + i4x4) as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                             );
-                            (*h)
-                                .quantf
-                                .dequant_4x4
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                            (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                                 (*dct4x4
                                     .as_mut_ptr()
                                     .offset((i8x8 * 4 as ::core::ffi::c_int + i4x4) as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                                 dequant_mf as *mut [::core::ffi::c_int; 16],
                                 i_qp,
                             );
                             if i_decimate_score < 7 as ::core::ffi::c_int {
-                                i_decimate_score
-                                    += (*h)
-                                        .quantf
-                                        .decimate_score15
-                                        .expect(
-                                            "non-null function pointer",
-                                        )(
-                                        (*(*h).dct.luma4x4.as_mut_ptr().offset(idx as isize))
-                                            .as_mut_ptr(),
-                                    );
+                                i_decimate_score += (*h)
+                                    .quantf
+                                    .decimate_score15
+                                    .expect("non-null function pointer")(
+                                    (*(*h).dct.luma4x4.as_mut_ptr().offset(idx as isize))
+                                        .as_mut_ptr(),
+                                );
                             }
-                            (*h)
-                                .mb
-                                .cache
-                                .non_zero_count[x264_scan8[idx as usize] as usize] = 1
-                                as uint8_t;
+                            (*h).mb.cache.non_zero_count[x264_scan8[idx as usize] as usize] =
+                                1 as uint8_t;
                             nz_ac = 1 as ::core::ffi::c_int;
                         }
                         i4x4 += 1;
                     }
                 } else {
-                    nz = (*h)
-                        .quantf
-                        .quant_4x4x4
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    nz = (*h).quantf.quant_4x4x4.expect("non-null function pointer")(
                         &mut *dct4x4
                             .as_mut_ptr()
                             .offset((i8x8 * 4 as ::core::ffi::c_int) as isize),
@@ -4660,73 +4040,55 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                             .quant4_mf
                             .as_mut_ptr()
                             .offset((CQM_4IC as ::core::ffi::c_int + b_inter) as isize))
-                            .offset(i_qp as isize))
-                            .as_mut_ptr(),
+                        .offset(i_qp as isize))
+                        .as_mut_ptr(),
                         (*(*(*h)
                             .quant4_bias
                             .as_mut_ptr()
                             .offset((CQM_4IC as ::core::ffi::c_int + b_inter) as isize))
-                            .offset(i_qp as isize))
-                            .as_mut_ptr(),
+                        .offset(i_qp as isize))
+                        .as_mut_ptr(),
                     );
                     nz_ac |= nz;
                     let mut i4x4_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     let mut msk: ::core::ffi::c_int = nz;
                     let mut skip: ::core::ffi::c_int = 0;
-                    while msk != 0
-                        && {
-                            skip = x264_ctz_4bit(msk as uint32_t);
-                            i4x4_0 += skip;
-                            msk >>= skip + 1 as ::core::ffi::c_int;
-                            1 as ::core::ffi::c_int != 0
-                        }
-                    {
+                    while msk != 0 && {
+                        skip = x264_ctz_4bit(msk as uint32_t);
+                        i4x4_0 += skip;
+                        msk >>= skip + 1 as ::core::ffi::c_int;
+                        1 as ::core::ffi::c_int != 0
+                    } {
                         let mut idx_0: ::core::ffi::c_int = 16 as ::core::ffi::c_int
                             + ch_0 * 16 as ::core::ffi::c_int
-                            + i8x8 * 8 as ::core::ffi::c_int + i4x4_0;
-                        (*h)
-                            .zigzagf
-                            .scan_4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            (*(*h).dct.luma4x4.as_mut_ptr().offset(idx_0 as isize))
-                                .as_mut_ptr(),
+                            + i8x8 * 8 as ::core::ffi::c_int
+                            + i4x4_0;
+                        (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
+                            (*(*h).dct.luma4x4.as_mut_ptr().offset(idx_0 as isize)).as_mut_ptr(),
                             (*dct4x4
                                 .as_mut_ptr()
                                 .offset((i8x8 * 4 as ::core::ffi::c_int + i4x4_0) as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                         );
-                        (*h)
-                            .quantf
-                            .dequant_4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                             (*dct4x4
                                 .as_mut_ptr()
                                 .offset((i8x8 * 4 as ::core::ffi::c_int + i4x4_0) as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             dequant_mf as *mut [::core::ffi::c_int; 16],
                             i_qp,
                         );
                         if i_decimate_score < 7 as ::core::ffi::c_int {
-                            i_decimate_score
-                                += (*h)
-                                    .quantf
-                                    .decimate_score15
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
-                                    (*(*h).dct.luma4x4.as_mut_ptr().offset(idx_0 as isize))
-                                        .as_mut_ptr(),
-                                );
+                            i_decimate_score += (*h)
+                                .quantf
+                                .decimate_score15
+                                .expect("non-null function pointer")(
+                                (*(*h).dct.luma4x4.as_mut_ptr().offset(idx_0 as isize))
+                                    .as_mut_ptr(),
+                            );
                         }
-                        (*h)
-                            .mb
-                            .cache
-                            .non_zero_count[x264_scan8[idx_0 as usize] as usize] = 1
-                            as uint8_t;
+                        (*h).mb.cache.non_zero_count[x264_scan8[idx_0 as usize] as usize] =
+                            1 as uint8_t;
                         i4x4_0 += 1;
                     }
                 }
@@ -4744,96 +4106,51 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                 nz_dc = 0 as ::core::ffi::c_int;
                 let mut i_4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while i_4 <= chroma422 {
-                    nz_dc
-                        |= (*h)
-                            .quantf
-                            .quant_2x2_dc
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            &mut *dct_dc
-                                .as_mut_ptr()
-                                .offset((4 as ::core::ffi::c_int * i_4) as isize),
-                            ((*(*h)
-                                .quant4_mf[(CQM_4IC as ::core::ffi::c_int + b_inter)
-                                    as usize]
-                                .offset(
-                                    (i_qp + 3 as ::core::ffi::c_int * chroma422) as isize,
-                                ))[0 as ::core::ffi::c_int as usize]
-                                >> 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
-                            ((*(*h)
-                                .quant4_bias[(CQM_4IC as ::core::ffi::c_int + b_inter)
-                                    as usize]
-                                .offset(
-                                    (i_qp + 3 as ::core::ffi::c_int * chroma422) as isize,
-                                ))[0 as ::core::ffi::c_int as usize]
-                                << 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
-                        );
+                    nz_dc |= (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
+                        &mut *dct_dc
+                            .as_mut_ptr()
+                            .offset((4 as ::core::ffi::c_int * i_4) as isize),
+                        ((*(*h).quant4_mf[(CQM_4IC as ::core::ffi::c_int + b_inter) as usize]
+                            .offset((i_qp + 3 as ::core::ffi::c_int * chroma422) as isize))
+                            [0 as ::core::ffi::c_int as usize]
+                            >> 1 as ::core::ffi::c_int)
+                            as ::core::ffi::c_int,
+                        ((*(*h).quant4_bias[(CQM_4IC as ::core::ffi::c_int + b_inter) as usize]
+                            .offset((i_qp + 3 as ::core::ffi::c_int * chroma422) as isize))
+                            [0 as ::core::ffi::c_int as usize]
+                            << 1 as ::core::ffi::c_int)
+                            as ::core::ffi::c_int,
+                    );
                     i_4 += 1;
                 }
             }
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(CHROMA_DC + ch_0) as usize] as usize] = nz_dc
-                as uint8_t;
+            (*h).mb.cache.non_zero_count[x264_scan8[(CHROMA_DC + ch_0) as usize] as usize] =
+                nz_dc as uint8_t;
             if i_decimate_score < 7 as ::core::ffi::c_int || nz_ac == 0 {
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        *x264_scan8
-                            .as_ptr()
-                            .offset(
-                                (16 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0)
-                                    as isize,
-                            ) as isize,
-                    ) as *mut uint8_t as *mut x264_union16_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    *x264_scan8.as_ptr().offset(
+                        (16 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0) as isize,
+                    ) as isize,
+                ) as *mut uint8_t as *mut x264_union16_t))
                     .i = 0 as uint16_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        *x264_scan8
-                            .as_ptr()
-                            .offset(
-                                (18 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0)
-                                    as isize,
-                            ) as isize,
-                    ) as *mut uint8_t as *mut x264_union16_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    *x264_scan8.as_ptr().offset(
+                        (18 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0) as isize,
+                    ) as isize,
+                ) as *mut uint8_t as *mut x264_union16_t))
                     .i = 0 as uint16_t;
                 if chroma422 != 0 {
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            *x264_scan8
-                                .as_ptr()
-                                .offset(
-                                    (24 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0)
-                                        as isize,
-                                ) as isize,
-                        ) as *mut uint8_t as *mut x264_union16_t))
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        *x264_scan8.as_ptr().offset(
+                            (24 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0) as isize,
+                        ) as isize,
+                    ) as *mut uint8_t as *mut x264_union16_t))
                         .i = 0 as uint16_t;
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            *x264_scan8
-                                .as_ptr()
-                                .offset(
-                                    (26 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0)
-                                        as isize,
-                                ) as isize,
-                        ) as *mut uint8_t as *mut x264_union16_t))
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        *x264_scan8.as_ptr().offset(
+                            (26 as ::core::ffi::c_int + 16 as ::core::ffi::c_int * ch_0) as isize,
+                        ) as isize,
+                    ) as *mut uint8_t as *mut x264_union16_t))
                         .i = 0 as uint16_t;
                 }
                 if !(nz_dc == 0) {
@@ -4845,11 +4162,8 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                         chroma422,
                     ) == 0
                     {
-                        (*h)
-                            .mb
-                            .cache
-                            .non_zero_count[x264_scan8[(CHROMA_DC + ch_0) as usize]
-                            as usize] = 0 as uint8_t;
+                        (*h).mb.cache.non_zero_count
+                            [x264_scan8[(CHROMA_DC + ch_0) as usize] as usize] = 0 as uint8_t;
                     } else {
                         if chroma422 != 0 {
                             zigzag_scan_2x4_dc(
@@ -4857,12 +4171,9 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                                     .as_mut_ptr(),
                                 dct_dc.as_mut_ptr(),
                             );
-                            (*h)
-                                .quantf
+                            (*h).quantf
                                 .idct_dequant_2x4_dconly
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                                .expect("non-null function pointer")(
                                 dct_dc.as_mut_ptr(),
                                 dequant_mf as *mut [::core::ffi::c_int; 16],
                                 i_qp + 3 as ::core::ffi::c_int,
@@ -4881,16 +4192,9 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                         }
                         let mut i_5: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                         while i_5 <= chroma422 {
-                            (*h)
-                                .dctf
-                                .add8x8_idct_dc
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                            (*h).dctf.add8x8_idct_dc.expect("non-null function pointer")(
                                 p_dst_0
-                                    .offset(
-                                        (8 as ::core::ffi::c_int * i_5 * FDEC_STRIDE) as isize,
-                                    ),
+                                    .offset((8 as ::core::ffi::c_int * i_5 * FDEC_STRIDE) as isize),
                                 &mut *dct_dc
                                     .as_mut_ptr()
                                     .offset((4 as ::core::ffi::c_int * i_5) as isize),
@@ -4904,16 +4208,12 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                 if nz_dc != 0 {
                     if chroma422 != 0 {
                         zigzag_scan_2x4_dc(
-                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(ch_0 as isize))
-                                .as_mut_ptr(),
+                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(ch_0 as isize)).as_mut_ptr(),
                             dct_dc.as_mut_ptr(),
                         );
-                        (*h)
-                            .quantf
+                        (*h).quantf
                             .idct_dequant_2x4_dc
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                            .expect("non-null function pointer")(
                             dct_dc.as_mut_ptr(),
                             dct4x4.as_mut_ptr(),
                             dequant_mf as *mut [::core::ffi::c_int; 16],
@@ -4921,8 +4221,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                         );
                     } else {
                         zigzag_scan_2x2_dc(
-                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(ch_0 as isize))
-                                .as_mut_ptr(),
+                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(ch_0 as isize)).as_mut_ptr(),
                             dct_dc.as_mut_ptr(),
                         );
                         idct_dequant_2x2_dc(
@@ -4935,16 +4234,8 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                 }
                 let mut i_6: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while i_6 <= chroma422 {
-                    (*h)
-                        .dctf
-                        .add8x8_idct
-                        .expect(
-                            "non-null function pointer",
-                        )(
-                        p_dst_0
-                            .offset(
-                                (8 as ::core::ffi::c_int * i_6 * FDEC_STRIDE) as isize,
-                            ),
+                    (*h).dctf.add8x8_idct.expect("non-null function pointer")(
+                        p_dst_0.offset((8 as ::core::ffi::c_int * i_6 * FDEC_STRIDE) as isize),
                         &mut *dct4x4
                             .as_mut_ptr()
                             .offset((4 as ::core::ffi::c_int * i_6) as isize),
@@ -4955,17 +4246,13 @@ unsafe extern "C" fn mb_encode_chroma_internal(
         }
         ch_0 += 1;
     }
-    (*h).mb.i_cbp_chroma
-        += (*h)
-            .mb
-            .cache
-            .non_zero_count[x264_scan8[(CHROMA_DC + 0 as ::core::ffi::c_int) as usize]
-            as usize] as ::core::ffi::c_int
-            | (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(CHROMA_DC + 1 as ::core::ffi::c_int)
-                as usize] as usize] as ::core::ffi::c_int | (*h).mb.i_cbp_chroma;
+    (*h).mb.i_cbp_chroma += (*h).mb.cache.non_zero_count
+        [x264_scan8[(CHROMA_DC + 0 as ::core::ffi::c_int) as usize] as usize]
+        as ::core::ffi::c_int
+        | (*h).mb.cache.non_zero_count
+            [x264_scan8[(CHROMA_DC + 1 as ::core::ffi::c_int) as usize] as usize]
+            as ::core::ffi::c_int
+        | (*h).mb.i_cbp_chroma;
 }
 #[no_mangle]
 #[c2rust::src_loc = "492:1"]
@@ -5006,114 +4293,64 @@ unsafe extern "C" fn macroblock_encode_skip(mut h: *mut x264_t) {
         .offset(*x264_scan8.as_ptr().offset(8 as ::core::ffi::c_int as isize) as isize)
         as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(10 as ::core::ffi::c_int as isize) as isize)
-        as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset(10 as ::core::ffi::c_int as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            *x264_scan8
-                .as_ptr()
-                .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
-                as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            *x264_scan8
-                .as_ptr()
-                .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
-                as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            *x264_scan8
-                .as_ptr()
-                .offset((32 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
-                as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset((32 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
-    (*(&mut *(*h)
-        .mb
-        .cache
-        .non_zero_count
-        .as_mut_ptr()
-        .offset(
-            *x264_scan8
-                .as_ptr()
-                .offset((32 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
-                as isize,
-        ) as *mut uint8_t as *mut x264_union32_t))
+    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+        *x264_scan8
+            .as_ptr()
+            .offset((32 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize) as isize,
+    ) as *mut uint8_t as *mut x264_union32_t))
         .i = 0 as uint32_t;
     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc >= CHROMA_422 as ::core::ffi::c_int {
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8
-                    .as_ptr()
-                    .offset(
-                        (16 as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                    ) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset((16 as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize)
+                as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8
-                    .as_ptr()
-                    .offset(
-                        (16 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as isize,
-                    ) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset((16 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as isize)
+                as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8
-                    .as_ptr()
-                    .offset(
-                        (32 as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                    ) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset((32 as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize)
+                as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
-        (*(&mut *(*h)
-            .mb
-            .cache
-            .non_zero_count
-            .as_mut_ptr()
-            .offset(
-                *x264_scan8
-                    .as_ptr()
-                    .offset(
-                        (32 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as isize,
-                    ) as isize,
-            ) as *mut uint8_t as *mut x264_union32_t))
+        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+            *x264_scan8
+                .as_ptr()
+                .offset((32 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as isize)
+                as isize,
+        ) as *mut uint8_t as *mut x264_union32_t))
             .i = 0 as uint32_t;
     }
     (*h).mb.i_cbp_luma = 0 as ::core::ffi::c_int;
@@ -5126,161 +4363,88 @@ pub unsafe extern "C" fn x264_10_predict_lossless_chroma(
     mut h: *mut x264_t,
     mut i_mode: ::core::ffi::c_int,
 ) {
-    let mut height: ::core::ffi::c_int = 16 as ::core::ffi::c_int
-        >> (*h).mb.chroma_v_shift;
+    let mut height: ::core::ffi::c_int = 16 as ::core::ffi::c_int >> (*h).mb.chroma_v_shift;
     if i_mode == I_PRED_CHROMA_V as ::core::ffi::c_int {
-        (*h)
-            .mc
-            .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
             FDEC_STRIDE as intptr_t,
-            (*h)
-                .mb
-                .pic
-                .p_fenc[1 as ::core::ffi::c_int as usize]
-                .offset(-(FENC_STRIDE as isize)),
+            (*h).mb.pic.p_fenc[1 as ::core::ffi::c_int as usize].offset(-(FENC_STRIDE as isize)),
             FENC_STRIDE as intptr_t,
             height,
         );
-        (*h)
-            .mc
-            .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
             FDEC_STRIDE as intptr_t,
-            (*h)
-                .mb
-                .pic
-                .p_fenc[2 as ::core::ffi::c_int as usize]
-                .offset(-(FENC_STRIDE as isize)),
+            (*h).mb.pic.p_fenc[2 as ::core::ffi::c_int as usize].offset(-(FENC_STRIDE as isize)),
             FENC_STRIDE as intptr_t,
             height,
         );
         memcpy(
-            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize]
-                as *mut ::core::ffi::c_void,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[1 as ::core::ffi::c_int as usize]
-                .offset(-(FDEC_STRIDE as isize)) as *const ::core::ffi::c_void,
+            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize] as *mut ::core::ffi::c_void,
+            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize].offset(-(FDEC_STRIDE as isize))
+                as *const ::core::ffi::c_void,
             (8 as ::core::ffi::c_int * SIZEOF_PIXEL) as size_t,
         );
         memcpy(
-            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize]
-                as *mut ::core::ffi::c_void,
-            (*h)
-                .mb
-                .pic
-                .p_fdec[2 as ::core::ffi::c_int as usize]
-                .offset(-(FDEC_STRIDE as isize)) as *const ::core::ffi::c_void,
+            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize] as *mut ::core::ffi::c_void,
+            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize].offset(-(FDEC_STRIDE as isize))
+                as *const ::core::ffi::c_void,
             (8 as ::core::ffi::c_int * SIZEOF_PIXEL) as size_t,
         );
     } else if i_mode == I_PRED_CHROMA_H as ::core::ffi::c_int {
-        (*h)
-            .mc
-            .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
             FDEC_STRIDE as intptr_t,
-            (*h)
-                .mb
-                .pic
-                .p_fenc[1 as ::core::ffi::c_int as usize]
+            (*h).mb.pic.p_fenc[1 as ::core::ffi::c_int as usize]
                 .offset(-(1 as ::core::ffi::c_int as isize)),
             FENC_STRIDE as intptr_t,
             height,
         );
-        (*h)
-            .mc
-            .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
             FDEC_STRIDE as intptr_t,
-            (*h)
-                .mb
-                .pic
-                .p_fenc[2 as ::core::ffi::c_int as usize]
+            (*h).mb.pic.p_fenc[2 as ::core::ffi::c_int as usize]
                 .offset(-(1 as ::core::ffi::c_int as isize)),
             FENC_STRIDE as intptr_t,
             height,
         );
         x264_10_copy_column8(
-            (*h)
-                .mb
-                .pic
-                .p_fdec[1 as ::core::ffi::c_int as usize]
+            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize]
                 .offset((4 as ::core::ffi::c_int * FDEC_STRIDE) as isize),
-            (*h)
-                .mb
-                .pic
-                .p_fdec[1 as ::core::ffi::c_int as usize]
+            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize]
                 .offset((4 as ::core::ffi::c_int * FDEC_STRIDE) as isize)
                 .offset(-(1 as ::core::ffi::c_int as isize)),
         );
         x264_10_copy_column8(
-            (*h)
-                .mb
-                .pic
-                .p_fdec[2 as ::core::ffi::c_int as usize]
+            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize]
                 .offset((4 as ::core::ffi::c_int * FDEC_STRIDE) as isize),
-            (*h)
-                .mb
-                .pic
-                .p_fdec[2 as ::core::ffi::c_int as usize]
+            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize]
                 .offset((4 as ::core::ffi::c_int * FDEC_STRIDE) as isize)
                 .offset(-(1 as ::core::ffi::c_int as isize)),
         );
-        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-            == CHROMA_422 as ::core::ffi::c_int
-        {
+        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_422 as ::core::ffi::c_int {
             x264_10_copy_column8(
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[1 as ::core::ffi::c_int as usize]
+                (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize]
                     .offset((12 as ::core::ffi::c_int * FDEC_STRIDE) as isize),
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[1 as ::core::ffi::c_int as usize]
+                (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize]
                     .offset((12 as ::core::ffi::c_int * FDEC_STRIDE) as isize)
                     .offset(-(1 as ::core::ffi::c_int as isize)),
             );
             x264_10_copy_column8(
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[2 as ::core::ffi::c_int as usize]
+                (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize]
                     .offset((12 as ::core::ffi::c_int * FDEC_STRIDE) as isize),
-                (*h)
-                    .mb
-                    .pic
-                    .p_fdec[2 as ::core::ffi::c_int as usize]
+                (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize]
                     .offset((12 as ::core::ffi::c_int * FDEC_STRIDE) as isize)
                     .offset(-(1 as ::core::ffi::c_int as isize)),
             );
         }
     } else {
-        (*h)
-            .predict_chroma[i_mode as usize]
-            .expect(
-                "non-null function pointer",
-            )((*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize]);
-        (*h)
-            .predict_chroma[i_mode as usize]
-            .expect(
-                "non-null function pointer",
-            )((*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize]);
+        (*h).predict_chroma[i_mode as usize].expect("non-null function pointer")(
+            (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
+        );
+        (*h).predict_chroma[i_mode as usize].expect("non-null function pointer")(
+            (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
+        );
     };
 }
 #[no_mangle]
@@ -5292,27 +4456,17 @@ pub unsafe extern "C" fn x264_10_predict_lossless_4x4(
     mut idx: ::core::ffi::c_int,
     mut i_mode: ::core::ffi::c_int,
 ) {
-    let mut stride: ::core::ffi::c_int = (*(*h).fenc).i_stride[p as usize]
-        << (*h).mb.b_interlaced;
-    let mut p_src: *mut pixel = (*h)
-        .mb
-        .pic
-        .p_fenc_plane[p as usize]
+    let mut stride: ::core::ffi::c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+    let mut p_src: *mut pixel = (*h).mb.pic.p_fenc_plane[p as usize]
         .offset(
-            (block_idx_x[idx as usize] as ::core::ffi::c_int * 4 as ::core::ffi::c_int)
-                as isize,
+            (block_idx_x[idx as usize] as ::core::ffi::c_int * 4 as ::core::ffi::c_int) as isize,
         )
         .offset(
-            (block_idx_y[idx as usize] as ::core::ffi::c_int * 4 as ::core::ffi::c_int
-                * stride) as isize,
+            (block_idx_y[idx as usize] as ::core::ffi::c_int * 4 as ::core::ffi::c_int * stride)
+                as isize,
         );
     if i_mode == I_PRED_4x4_V as ::core::ffi::c_int {
-        (*h)
-            .mc
-            .copy[PIXEL_4x4 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_4x4 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
             p_src.offset(-(stride as isize)),
@@ -5325,12 +4479,7 @@ pub unsafe extern "C" fn x264_10_predict_lossless_4x4(
             (4 as ::core::ffi::c_int * SIZEOF_PIXEL) as size_t,
         );
     } else if i_mode == I_PRED_4x4_H as ::core::ffi::c_int {
-        (*h)
-            .mc
-            .copy[PIXEL_4x4 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_4x4 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
             p_src.offset(-(1 as ::core::ffi::c_int as isize)),
@@ -5339,8 +4488,8 @@ pub unsafe extern "C" fn x264_10_predict_lossless_4x4(
         );
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 4 as ::core::ffi::c_int {
-            *p_dst.offset((i * FDEC_STRIDE) as isize) = *p_dst
-                .offset((i * FDEC_STRIDE - 1 as ::core::ffi::c_int) as isize);
+            *p_dst.offset((i * FDEC_STRIDE) as isize) =
+                *p_dst.offset((i * FDEC_STRIDE - 1 as ::core::ffi::c_int) as isize);
             i += 1;
         }
     } else {
@@ -5357,24 +4506,12 @@ pub unsafe extern "C" fn x264_10_predict_lossless_8x8(
     mut i_mode: ::core::ffi::c_int,
     mut edge: *mut pixel,
 ) {
-    let mut stride: ::core::ffi::c_int = (*(*h).fenc).i_stride[p as usize]
-        << (*h).mb.b_interlaced;
-    let mut p_src: *mut pixel = (*h)
-        .mb
-        .pic
-        .p_fenc_plane[p as usize]
+    let mut stride: ::core::ffi::c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+    let mut p_src: *mut pixel = (*h).mb.pic.p_fenc_plane[p as usize]
         .offset(((idx & 1 as ::core::ffi::c_int) * 8 as ::core::ffi::c_int) as isize)
-        .offset(
-            ((idx >> 1 as ::core::ffi::c_int) * 8 as ::core::ffi::c_int * stride)
-                as isize,
-        );
+        .offset(((idx >> 1 as ::core::ffi::c_int) * 8 as ::core::ffi::c_int * stride) as isize);
     if i_mode == I_PRED_8x8_V as ::core::ffi::c_int {
-        (*h)
-            .mc
-            .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
             p_src.offset(-(stride as isize)),
@@ -5388,12 +4525,7 @@ pub unsafe extern "C" fn x264_10_predict_lossless_8x8(
             (8 as ::core::ffi::c_int * SIZEOF_PIXEL) as size_t,
         );
     } else if i_mode == I_PRED_8x8_H as ::core::ffi::c_int {
-        (*h)
-            .mc
-            .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize].expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
             p_src.offset(-(1 as ::core::ffi::c_int as isize)),
@@ -5402,14 +4534,12 @@ pub unsafe extern "C" fn x264_10_predict_lossless_8x8(
         );
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 8 as ::core::ffi::c_int {
-            *p_dst.offset((i * FDEC_STRIDE) as isize) = *edge
-                .offset((14 as ::core::ffi::c_int - i) as isize);
+            *p_dst.offset((i * FDEC_STRIDE) as isize) =
+                *edge.offset((14 as ::core::ffi::c_int - i) as isize);
             i += 1;
         }
     } else {
-        (*h)
-            .predict_8x8[i_mode as usize]
-            .expect("non-null function pointer")(p_dst, edge);
+        (*h).predict_8x8[i_mode as usize].expect("non-null function pointer")(p_dst, edge);
     };
 }
 #[no_mangle]
@@ -5419,16 +4549,11 @@ pub unsafe extern "C" fn x264_10_predict_lossless_16x16(
     mut p: ::core::ffi::c_int,
     mut i_mode: ::core::ffi::c_int,
 ) {
-    let mut stride: ::core::ffi::c_int = (*(*h).fenc).i_stride[p as usize]
-        << (*h).mb.b_interlaced;
+    let mut stride: ::core::ffi::c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
     let mut p_dst: *mut pixel = (*h).mb.pic.p_fdec[p as usize];
     if i_mode == I_PRED_16x16_V as ::core::ffi::c_int {
-        (*h)
-            .mc
-            .copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
+            .expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
             (*h).mb.pic.p_fenc_plane[p as usize].offset(-(stride as isize)),
@@ -5441,26 +4566,19 @@ pub unsafe extern "C" fn x264_10_predict_lossless_16x16(
             (16 as ::core::ffi::c_int * SIZEOF_PIXEL) as size_t,
         );
     } else if i_mode == I_PRED_16x16_H as ::core::ffi::c_int {
-        (*h)
-            .mc
+        (*h).mc
             .copy_16x16_unaligned
-            .expect(
-                "non-null function pointer",
-            )(
+            .expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
-            (*h)
-                .mb
-                .pic
-                .p_fenc_plane[p as usize]
-                .offset(-(1 as ::core::ffi::c_int as isize)),
+            (*h).mb.pic.p_fenc_plane[p as usize].offset(-(1 as ::core::ffi::c_int as isize)),
             stride as intptr_t,
             16 as ::core::ffi::c_int,
         );
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 16 as ::core::ffi::c_int {
-            *p_dst.offset((i * FDEC_STRIDE) as isize) = *p_dst
-                .offset((i * FDEC_STRIDE - 1 as ::core::ffi::c_int) as isize);
+            *p_dst.offset((i * FDEC_STRIDE) as isize) =
+                *p_dst.offset((i * FDEC_STRIDE - 1 as ::core::ffi::c_int) as isize);
             i += 1;
         }
     } else {
@@ -5481,19 +4599,14 @@ unsafe extern "C" fn macroblock_encode_internal(
     (*h).mb.i_cbp_luma = 0 as ::core::ffi::c_int;
     let mut p: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while p < plane_count {
-        (*h).mb.cache.non_zero_count[x264_scan8[(LUMA_DC + p) as usize] as usize] = 0
-            as uint8_t;
+        (*h).mb.cache.non_zero_count[x264_scan8[(LUMA_DC + p) as usize] as usize] = 0 as uint8_t;
         p += 1;
     }
     if (*h).mb.i_type == I_PCM as ::core::ffi::c_int {
         let mut p_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while p_0 < plane_count {
-            (*h)
-                .mc
-                .copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
+                .expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[p_0 as usize],
                 FDEC_STRIDE as intptr_t,
                 (*h).mb.pic.p_fenc[p_0 as usize],
@@ -5503,26 +4616,17 @@ unsafe extern "C" fn macroblock_encode_internal(
             p_0 += 1;
         }
         if chroma != 0 {
-            let mut height: ::core::ffi::c_int = 16 as ::core::ffi::c_int
-                >> (*h).mb.chroma_v_shift;
-            (*h)
-                .mc
-                .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-                .expect(
-                    "non-null function pointer",
-                )(
+            let mut height: ::core::ffi::c_int = 16 as ::core::ffi::c_int >> (*h).mb.chroma_v_shift;
+            (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
+                .expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
                 FDEC_STRIDE as intptr_t,
                 (*h).mb.pic.p_fenc[1 as ::core::ffi::c_int as usize],
                 FENC_STRIDE as intptr_t,
                 height,
             );
-            (*h)
-                .mc
-                .copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.copy[PIXEL_8x8 as ::core::ffi::c_int as usize]
+                .expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
                 FDEC_STRIDE as intptr_t,
                 (*h).mb.pic.p_fenc[2 as ::core::ffi::c_int as usize],
@@ -5547,33 +4651,22 @@ unsafe extern "C" fn macroblock_encode_internal(
     if (*h).mb.i_type == P_SKIP as ::core::ffi::c_int {
         if (*h).mb.b_skip_mc == 0 {
             let mut mvx: ::core::ffi::c_int = x264_clip3(
-                (*h)
-                    .mb
-                    .cache
-                    .mv[0 as ::core::ffi::c_int
-                    as usize][x264_scan8[0 as ::core::ffi::c_int as usize]
-                    as usize][0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
+                (*h).mb.cache.mv[0 as ::core::ffi::c_int as usize]
+                    [x264_scan8[0 as ::core::ffi::c_int as usize] as usize]
+                    [0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
                 (*h).mb.mv_min[0 as ::core::ffi::c_int as usize],
                 (*h).mb.mv_max[0 as ::core::ffi::c_int as usize],
             );
             let mut mvy: ::core::ffi::c_int = x264_clip3(
-                (*h)
-                    .mb
-                    .cache
-                    .mv[0 as ::core::ffi::c_int
-                    as usize][x264_scan8[0 as ::core::ffi::c_int as usize]
-                    as usize][1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
+                (*h).mb.cache.mv[0 as ::core::ffi::c_int as usize]
+                    [x264_scan8[0 as ::core::ffi::c_int as usize] as usize]
+                    [1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
                 (*h).mb.mv_min[1 as ::core::ffi::c_int as usize],
                 (*h).mb.mv_max[1 as ::core::ffi::c_int as usize],
             );
             let mut p_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while p_1 < plane_count {
-                (*h)
-                    .mc
-                    .mc_luma
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).mc.mc_luma.expect("non-null function pointer")(
                     (*h).mb.pic.p_fdec[p_1 as usize],
                     FDEC_STRIDE as intptr_t,
                     &mut *(*(*(*h)
@@ -5582,10 +4675,10 @@ unsafe extern "C" fn macroblock_encode_internal(
                         .p_fref
                         .as_mut_ptr()
                         .offset(0 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr()
-                        .offset(0 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr()
-                        .offset((p_1 * 4 as ::core::ffi::c_int) as isize),
+                    .as_mut_ptr()
+                    .offset(0 as ::core::ffi::c_int as isize))
+                    .as_mut_ptr()
+                    .offset((p_1 * 4 as ::core::ffi::c_int) as isize),
                     (*h).mb.pic.i_stride[p_1 as usize] as intptr_t,
                     mvx,
                     mvy,
@@ -5596,75 +4689,50 @@ unsafe extern "C" fn macroblock_encode_internal(
                         .weight
                         .as_mut_ptr()
                         .offset(0 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr()
-                        .offset(p_1 as isize),
+                    .as_mut_ptr()
+                    .offset(p_1 as isize),
                 );
                 p_1 += 1;
             }
             if chroma != 0 {
                 let mut v_shift: ::core::ffi::c_int = (*h).mb.chroma_v_shift;
-                let mut height_0: ::core::ffi::c_int = 16 as ::core::ffi::c_int
-                    >> v_shift;
+                let mut height_0: ::core::ffi::c_int = 16 as ::core::ffi::c_int >> v_shift;
                 if mvx | mvy != 0 {
-                    (*h)
-                        .mc
-                        .mc_chroma
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    (*h).mc.mc_chroma.expect("non-null function pointer")(
                         (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
                         (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
                         FDEC_STRIDE as intptr_t,
-                        (*h)
-                            .mb
-                            .pic
-                            .p_fref[0 as ::core::ffi::c_int
-                            as usize][0 as ::core::ffi::c_int
-                            as usize][4 as ::core::ffi::c_int as usize],
-                        (*h).mb.pic.i_stride[1 as ::core::ffi::c_int as usize]
-                            as intptr_t,
+                        (*h).mb.pic.p_fref[0 as ::core::ffi::c_int as usize]
+                            [0 as ::core::ffi::c_int as usize]
+                            [4 as ::core::ffi::c_int as usize],
+                        (*h).mb.pic.i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                         mvx,
                         2 as ::core::ffi::c_int * mvy >> v_shift,
                         8 as ::core::ffi::c_int,
                         height_0,
                     );
                 } else {
-                    (*h)
-                        .mc
+                    (*h).mc
                         .load_deinterleave_chroma_fdec
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                        .expect("non-null function pointer")(
                         (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
-                        (*h)
-                            .mb
-                            .pic
-                            .p_fref[0 as ::core::ffi::c_int
-                            as usize][0 as ::core::ffi::c_int
-                            as usize][4 as ::core::ffi::c_int as usize],
-                        (*h).mb.pic.i_stride[1 as ::core::ffi::c_int as usize]
-                            as intptr_t,
+                        (*h).mb.pic.p_fref[0 as ::core::ffi::c_int as usize]
+                            [0 as ::core::ffi::c_int as usize]
+                            [4 as ::core::ffi::c_int as usize],
+                        (*h).mb.pic.i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                         height_0,
                     );
                 }
-                if !(*h)
-                    .sh
-                    .weight[0 as ::core::ffi::c_int
-                        as usize][1 as ::core::ffi::c_int as usize]
+                if !(*h).sh.weight[0 as ::core::ffi::c_int as usize]
+                    [1 as ::core::ffi::c_int as usize]
                     .weightfn
                     .is_null()
                 {
-                    (*(*h)
-                        .sh
-                        .weight[0 as ::core::ffi::c_int
-                            as usize][1 as ::core::ffi::c_int as usize]
+                    (*(*h).sh.weight[0 as ::core::ffi::c_int as usize]
+                        [1 as ::core::ffi::c_int as usize]
                         .weightfn
-                        .offset(
-                            (8 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize,
-                        ))
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                        .offset((8 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize))
+                    .expect("non-null function pointer")(
                         (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
                         FDEC_STRIDE as intptr_t,
                         (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
@@ -5674,29 +4742,21 @@ unsafe extern "C" fn macroblock_encode_internal(
                             .weight
                             .as_mut_ptr()
                             .offset(0 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr()
-                            .offset(1 as ::core::ffi::c_int as isize),
+                        .as_mut_ptr()
+                        .offset(1 as ::core::ffi::c_int as isize),
                         height_0,
                     );
                 }
-                if !(*h)
-                    .sh
-                    .weight[0 as ::core::ffi::c_int
-                        as usize][2 as ::core::ffi::c_int as usize]
+                if !(*h).sh.weight[0 as ::core::ffi::c_int as usize]
+                    [2 as ::core::ffi::c_int as usize]
                     .weightfn
                     .is_null()
                 {
-                    (*(*h)
-                        .sh
-                        .weight[0 as ::core::ffi::c_int
-                            as usize][2 as ::core::ffi::c_int as usize]
+                    (*(*h).sh.weight[0 as ::core::ffi::c_int as usize]
+                        [2 as ::core::ffi::c_int as usize]
                         .weightfn
-                        .offset(
-                            (8 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize,
-                        ))
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                        .offset((8 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize))
+                    .expect("non-null function pointer")(
                         (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
                         FDEC_STRIDE as intptr_t,
                         (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
@@ -5706,8 +4766,8 @@ unsafe extern "C" fn macroblock_encode_internal(
                             .weight
                             .as_mut_ptr()
                             .offset(0 as ::core::ffi::c_int as isize))
-                            .as_mut_ptr()
-                            .offset(2 as ::core::ffi::c_int as isize),
+                        .as_mut_ptr()
+                        .offset(2 as ::core::ffi::c_int as isize),
                         height_0,
                     );
                 }
@@ -5734,12 +4794,8 @@ unsafe extern "C" fn macroblock_encode_internal(
     } else if (*h).mb.i_type == I_8x8 as ::core::ffi::c_int {
         (*h).mb.b_transform_8x8 = 1 as ::core::ffi::c_int;
         if (*h).mb.i_skip_intra != 0 {
-            (*h)
-                .mc
-                .copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
+                .expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize],
                 FDEC_STRIDE as intptr_t,
                 (*h).mb.pic.i8x8_fdec_buf.as_mut_ptr(),
@@ -5751,49 +4807,34 @@ unsafe extern "C" fn macroblock_encode_internal(
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(0 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+                .offset(*x264_scan8.as_ptr().offset(0 as ::core::ffi::c_int as isize) as isize)
+                as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i8x8_nnz_buf[0 as ::core::ffi::c_int as usize];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(2 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+                .offset(*x264_scan8.as_ptr().offset(2 as ::core::ffi::c_int as isize) as isize)
+                as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i8x8_nnz_buf[1 as ::core::ffi::c_int as usize];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(8 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+                .offset(*x264_scan8.as_ptr().offset(8 as ::core::ffi::c_int as isize) as isize)
+                as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i8x8_nnz_buf[2 as ::core::ffi::c_int as usize];
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(10 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                *x264_scan8
+                    .as_ptr()
+                    .offset(10 as ::core::ffi::c_int as isize) as isize,
+            ) as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i8x8_nnz_buf[3 as ::core::ffi::c_int as usize];
             (*h).mb.i_cbp_luma = (*h).mb.pic.i8x8_cbp;
             if (*h).mb.i_skip_intra == 2 as ::core::ffi::c_int {
-                (*h)
-                    .mc
-                    .memcpy_aligned
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                     (*h).dct.luma8x8.as_mut_ptr() as *mut ::core::ffi::c_void,
                     (*h).mb.pic.i8x8_dct_buf.as_mut_ptr() as *const ::core::ffi::c_void,
                     ::core::mem::size_of::<[[dctcoef; 64]; 3]>() as size_t,
@@ -5802,19 +4843,16 @@ unsafe extern "C" fn macroblock_encode_internal(
         }
         let mut p_3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while p_3 < plane_count {
-            let mut i: ::core::ffi::c_int = if p_3 == 0 as ::core::ffi::c_int
-                && (*h).mb.i_skip_intra != 0
-            {
-                3 as ::core::ffi::c_int
-            } else {
-                0 as ::core::ffi::c_int
-            };
+            let mut i: ::core::ffi::c_int =
+                if p_3 == 0 as ::core::ffi::c_int && (*h).mb.i_skip_intra != 0 {
+                    3 as ::core::ffi::c_int
+                } else {
+                    0 as ::core::ffi::c_int
+                };
             while i < 4 as ::core::ffi::c_int {
-                let mut i_mode: ::core::ffi::c_int = (*h)
-                    .mb
-                    .cache
-                    .intra4x4_pred_mode[x264_scan8[(4 as ::core::ffi::c_int * i)
-                    as usize] as usize] as ::core::ffi::c_int;
+                let mut i_mode: ::core::ffi::c_int = (*h).mb.cache.intra4x4_pred_mode
+                    [x264_scan8[(4 as ::core::ffi::c_int * i) as usize] as usize]
+                    as ::core::ffi::c_int;
                 x264_mb_encode_i8x8(
                     h,
                     p_3,
@@ -5832,12 +4870,8 @@ unsafe extern "C" fn macroblock_encode_internal(
     } else if (*h).mb.i_type == I_4x4 as ::core::ffi::c_int {
         (*h).mb.b_transform_8x8 = 0 as ::core::ffi::c_int;
         if (*h).mb.i_skip_intra != 0 {
-            (*h)
-                .mc
-                .copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.copy[PIXEL_16x16 as ::core::ffi::c_int as usize]
+                .expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[0 as ::core::ffi::c_int as usize],
                 FDEC_STRIDE as intptr_t,
                 (*h).mb.pic.i4x4_fdec_buf.as_mut_ptr(),
@@ -5849,49 +4883,34 @@ unsafe extern "C" fn macroblock_encode_internal(
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(0 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+                .offset(*x264_scan8.as_ptr().offset(0 as ::core::ffi::c_int as isize) as isize)
+                as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i4x4_nnz_buf[0 as ::core::ffi::c_int as usize];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(2 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+                .offset(*x264_scan8.as_ptr().offset(2 as ::core::ffi::c_int as isize) as isize)
+                as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i4x4_nnz_buf[1 as ::core::ffi::c_int as usize];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(8 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+                .offset(*x264_scan8.as_ptr().offset(8 as ::core::ffi::c_int as isize) as isize)
+                as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i4x4_nnz_buf[2 as ::core::ffi::c_int as usize];
-            (*(&mut *(*h)
-                .mb
-                .cache
-                .non_zero_count
-                .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(10 as ::core::ffi::c_int as isize)
-                        as isize,
-                ) as *mut uint8_t as *mut x264_union32_t))
+            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                *x264_scan8
+                    .as_ptr()
+                    .offset(10 as ::core::ffi::c_int as isize) as isize,
+            ) as *mut uint8_t as *mut x264_union32_t))
                 .i = (*h).mb.pic.i4x4_nnz_buf[3 as ::core::ffi::c_int as usize];
             (*h).mb.i_cbp_luma = (*h).mb.pic.i4x4_cbp;
             if (*h).mb.i_skip_intra == 2 as ::core::ffi::c_int {
-                (*h)
-                    .mc
-                    .memcpy_aligned
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                     (*h).dct.luma4x4.as_mut_ptr() as *mut ::core::ffi::c_void,
                     (*h).mb.pic.i4x4_dct_buf.as_mut_ptr() as *const ::core::ffi::c_void,
                     ::core::mem::size_of::<[[dctcoef; 16]; 15]>() as size_t,
@@ -5900,26 +4919,19 @@ unsafe extern "C" fn macroblock_encode_internal(
         }
         let mut p_4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while p_4 < plane_count {
-            let mut i_0: ::core::ffi::c_int = if p_4 == 0 as ::core::ffi::c_int
-                && (*h).mb.i_skip_intra != 0
-            {
-                15 as ::core::ffi::c_int
-            } else {
-                0 as ::core::ffi::c_int
-            };
+            let mut i_0: ::core::ffi::c_int =
+                if p_4 == 0 as ::core::ffi::c_int && (*h).mb.i_skip_intra != 0 {
+                    15 as ::core::ffi::c_int
+                } else {
+                    0 as ::core::ffi::c_int
+                };
             while i_0 < 16 as ::core::ffi::c_int {
-                let mut p_dst: *mut pixel = &mut *(*(*h)
-                    .mb
-                    .pic
-                    .p_fdec
-                    .as_mut_ptr()
-                    .offset(p_4 as isize))
-                    .offset(*block_idx_xy_fdec.as_ptr().offset(i_0 as isize) as isize)
-                    as *mut pixel;
-                let mut i_mode_0: ::core::ffi::c_int = (*h)
-                    .mb
-                    .cache
-                    .intra4x4_pred_mode[x264_scan8[i_0 as usize] as usize]
+                let mut p_dst: *mut pixel =
+                    &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p_4 as isize))
+                        .offset(*block_idx_xy_fdec.as_ptr().offset(i_0 as isize) as isize)
+                        as *mut pixel;
+                let mut i_mode_0: ::core::ffi::c_int = (*h).mb.cache.intra4x4_pred_mode
+                    [x264_scan8[i_0 as usize] as usize]
                     as ::core::ffi::c_int;
                 if (*h).mb.i_neighbour4[i_0 as usize]
                     & (MB_TOPRIGHT as ::core::ffi::c_int | MB_TOP as ::core::ffi::c_int)
@@ -5927,24 +4939,15 @@ unsafe extern "C" fn macroblock_encode_internal(
                     == MB_TOP as ::core::ffi::c_int as ::core::ffi::c_uint
                 {
                     (*(&mut *p_dst
-                        .offset(
-                            (4 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize,
-                        ) as *mut pixel as *mut x264_union64_t))
+                        .offset((4 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize)
+                        as *mut pixel as *mut x264_union64_t))
                         .i = (*p_dst
-                        .offset(
-                            (3 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize,
-                        ) as ::core::ffi::c_ulonglong)
+                        .offset((3 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_ulonglong)
                         .wrapping_mul(0x1000100010001 as ::core::ffi::c_ulonglong)
                         as uint64_t;
                 }
-                x264_mb_encode_i4x4(
-                    h,
-                    p_4,
-                    i_0,
-                    i_qp,
-                    i_mode_0,
-                    1 as ::core::ffi::c_int,
-                );
+                x264_mb_encode_i4x4(h, p_4, i_0, i_qp, i_mode_0, 1 as ::core::ffi::c_int);
                 i_0 += 1;
             }
             p_4 += 1;
@@ -5963,62 +4966,35 @@ unsafe extern "C" fn macroblock_encode_internal(
                     while i8x8 < 4 as ::core::ffi::c_int {
                         let mut x: ::core::ffi::c_int = i8x8 & 1 as ::core::ffi::c_int;
                         let mut y: ::core::ffi::c_int = i8x8 >> 1 as ::core::ffi::c_int;
-                        nz = (*h)
-                            .zigzagf
-                            .sub_8x8
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        nz = (*h).zigzagf.sub_8x8.expect("non-null function pointer")(
                             (*(*h)
                                 .dct
                                 .luma8x8
                                 .as_mut_ptr()
                                 .offset((p_5 * 4 as ::core::ffi::c_int + i8x8) as isize))
-                                .as_mut_ptr(),
-                            (*h)
-                                .mb
-                                .pic
-                                .p_fenc[p_5 as usize]
+                            .as_mut_ptr(),
+                            (*h).mb.pic.p_fenc[p_5 as usize]
                                 .offset((8 as ::core::ffi::c_int * x) as isize)
-                                .offset(
-                                    (8 as ::core::ffi::c_int * y * FENC_STRIDE) as isize,
-                                ),
-                            (*h)
-                                .mb
-                                .pic
-                                .p_fdec[p_5 as usize]
+                                .offset((8 as ::core::ffi::c_int * y * FENC_STRIDE) as isize),
+                            (*h).mb.pic.p_fdec[p_5 as usize]
                                 .offset((8 as ::core::ffi::c_int * x) as isize)
-                                .offset(
-                                    (8 as ::core::ffi::c_int * y * FDEC_STRIDE) as isize,
-                                ),
+                                .offset((8 as ::core::ffi::c_int * y * FDEC_STRIDE) as isize),
                         );
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_5 * 16 as ::core::ffi::c_int
-                                            + i8x8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_5 * 16 as ::core::ffi::c_int + i8x8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 0 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
                             .i = (nz * 0x101 as ::core::ffi::c_int) as uint16_t;
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_5 * 16 as ::core::ffi::c_int
-                                            + i8x8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_5 * 16 as ::core::ffi::c_int + i8x8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 8 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
                             .i = (nz * 0x101 as ::core::ffi::c_int) as uint16_t;
                         (*h).mb.i_cbp_luma |= nz << i8x8;
                         i8x8 += 1;
@@ -6030,40 +5006,23 @@ unsafe extern "C" fn macroblock_encode_internal(
                 while p_6 < plane_count {
                     let mut i4x4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     while i4x4 < 16 as ::core::ffi::c_int {
-                        nz = (*h)
-                            .zigzagf
-                            .sub_4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                             (*(*h)
                                 .dct
                                 .luma4x4
                                 .as_mut_ptr()
                                 .offset((p_6 * 16 as ::core::ffi::c_int + i4x4) as isize))
-                                .as_mut_ptr(),
-                            (*h)
-                                .mb
-                                .pic
-                                .p_fenc[p_6 as usize]
-                                .offset(
-                                    block_idx_xy_fenc[i4x4 as usize] as ::core::ffi::c_int
-                                        as isize,
-                                ),
-                            (*h)
-                                .mb
-                                .pic
-                                .p_fdec[p_6 as usize]
-                                .offset(
-                                    block_idx_xy_fdec[i4x4 as usize] as ::core::ffi::c_int
-                                        as isize,
-                                ),
+                            .as_mut_ptr(),
+                            (*h).mb.pic.p_fenc[p_6 as usize].offset(
+                                block_idx_xy_fenc[i4x4 as usize] as ::core::ffi::c_int as isize,
+                            ),
+                            (*h).mb.pic.p_fdec[p_6 as usize].offset(
+                                block_idx_xy_fdec[i4x4 as usize] as ::core::ffi::c_int as isize,
+                            ),
                         );
-                        (*h)
-                            .mb
-                            .cache
-                            .non_zero_count[x264_scan8[(p_6 * 16 as ::core::ffi::c_int
-                            + i4x4) as usize] as usize] = nz as uint8_t;
+                        (*h).mb.cache.non_zero_count[x264_scan8
+                            [(p_6 * 16 as ::core::ffi::c_int + i4x4) as usize]
+                            as usize] = nz as uint8_t;
                         (*h).mb.i_cbp_luma |= nz << (i4x4 >> 2 as ::core::ffi::c_int);
                         i4x4 += 1;
                     }
@@ -6072,9 +5031,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
         } else if (*h).mb.b_transform_8x8 != 0 {
             let mut dct8x8: [[dctcoef; 64]; 4] = [[0; 64]; 4];
-            b_decimate
-                &= ((*h).mb.b_trellis == 0 || (*h).param.b_cabac == 0)
-                    as ::core::ffi::c_int;
+            b_decimate &= ((*h).mb.b_trellis == 0 || (*h).param.b_cabac == 0) as ::core::ffi::c_int;
             let mut p_7: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while p_7 < plane_count {
                 let mut quant_cat: ::core::ffi::c_int = if p_7 != 0 {
@@ -6082,79 +5039,55 @@ unsafe extern "C" fn macroblock_encode_internal(
                 } else {
                     CQM_8PY as ::core::ffi::c_int
                 };
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_7) as isize)
-                            as ::core::ffi::c_int
-                            + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_7) as isize)
+                        as ::core::ffi::c_int
+                        + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_7) as isize)
-                            as ::core::ffi::c_int
-                            + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_7) as isize)
+                        as ::core::ffi::c_int
+                        + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_7) as isize)
-                            as ::core::ffi::c_int
-                            + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_7) as isize)
+                        as ::core::ffi::c_int
+                        + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_7) as isize)
-                            as ::core::ffi::c_int
-                            + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_7) as isize)
+                        as ::core::ffi::c_int
+                        + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*h)
-                    .dctf
-                    .sub16x16_dct8
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).dctf.sub16x16_dct8.expect("non-null function pointer")(
                     dct8x8.as_mut_ptr(),
                     (*h).mb.pic.p_fenc[p_7 as usize],
                     (*h).mb.pic.p_fdec[p_7 as usize],
                 );
-                let ref mut fresh0 = *(*h)
-                    .nr_count
-                    .offset(
-                        (1 as ::core::ffi::c_int
-                            + (p_7 != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
-                            as isize,
-                    );
-                *fresh0 = (*fresh0)
-                    .wrapping_add(
-                        ((*h).mb.b_noise_reduction * 4 as ::core::ffi::c_int) as uint32_t,
-                    );
+                let ref mut fresh0 = *(*h).nr_count.offset(
+                    (1 as ::core::ffi::c_int
+                        + (p_7 != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                        as isize,
+                );
+                *fresh0 = (*fresh0).wrapping_add(
+                    ((*h).mb.b_noise_reduction * 4 as ::core::ffi::c_int) as uint32_t,
+                );
                 let mut plane_cbp: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 let mut idx: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while idx < 4 as ::core::ffi::c_int {
@@ -6162,40 +5095,33 @@ unsafe extern "C" fn macroblock_encode_internal(
                         h,
                         (*dct8x8.as_mut_ptr().offset(idx as isize)).as_mut_ptr(),
                         i_qp,
-                        ctx_cat_plane[DCT_LUMA_8x8 as ::core::ffi::c_int
-                            as usize][p_7 as usize] as ::core::ffi::c_int,
+                        ctx_cat_plane[DCT_LUMA_8x8 as ::core::ffi::c_int as usize][p_7 as usize]
+                            as ::core::ffi::c_int,
                         0 as ::core::ffi::c_int,
                         p_7,
                         idx,
                     );
                     if nz != 0 {
-                        (*h)
-                            .zigzagf
-                            .scan_8x8
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).zigzagf.scan_8x8.expect("non-null function pointer")(
                             (*(*h)
                                 .dct
                                 .luma8x8
                                 .as_mut_ptr()
                                 .offset((p_7 * 4 as ::core::ffi::c_int + idx) as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                             (*dct8x8.as_mut_ptr().offset(idx as isize)).as_mut_ptr(),
                         );
                         if b_decimate != 0 {
                             let mut i_decimate_8x8: ::core::ffi::c_int = (*h)
                                 .quantf
                                 .decimate_score64
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                                .expect("non-null function pointer")(
                                 (*(*h)
                                     .dct
                                     .luma8x8
                                     .as_mut_ptr()
                                     .offset((p_7 * 4 as ::core::ffi::c_int + idx) as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                             );
                             i_decimate_mb += i_decimate_8x8;
                             if i_decimate_8x8 >= 4 as ::core::ffi::c_int {
@@ -6212,68 +5138,44 @@ unsafe extern "C" fn macroblock_encode_internal(
                     let mut idx_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     let mut msk: ::core::ffi::c_int = plane_cbp;
                     let mut skip: ::core::ffi::c_int = 0;
-                    while msk != 0
-                        && {
-                            skip = x264_ctz_4bit(msk as uint32_t);
-                            idx_0 += skip;
-                            msk >>= skip + 1 as ::core::ffi::c_int;
-                            1 as ::core::ffi::c_int != 0
-                        }
-                    {
-                        (*h)
-                            .quantf
-                            .dequant_8x8
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                    while msk != 0 && {
+                        skip = x264_ctz_4bit(msk as uint32_t);
+                        idx_0 += skip;
+                        msk >>= skip + 1 as ::core::ffi::c_int;
+                        1 as ::core::ffi::c_int != 0
+                    } {
+                        (*h).quantf.dequant_8x8.expect("non-null function pointer")(
                             (*dct8x8.as_mut_ptr().offset(idx_0 as isize)).as_mut_ptr(),
                             (*h).dequant8_mf[quant_cat as usize],
                             i_qp,
                         );
-                        (*h)
-                            .dctf
-                            .add8x8_idct8
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p_7 as isize))
-                                .offset(
-                                    (8 as ::core::ffi::c_int * (idx_0 & 1 as ::core::ffi::c_int)
-                                        + 8 as ::core::ffi::c_int
-                                            * (idx_0 >> 1 as ::core::ffi::c_int) * FDEC_STRIDE) as isize,
-                                ),
+                        (*h).dctf.add8x8_idct8.expect("non-null function pointer")(
+                            &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p_7 as isize)).offset(
+                                (8 as ::core::ffi::c_int * (idx_0 & 1 as ::core::ffi::c_int)
+                                    + 8 as ::core::ffi::c_int
+                                        * (idx_0 >> 1 as ::core::ffi::c_int)
+                                        * FDEC_STRIDE) as isize,
+                            ),
                             (*dct8x8.as_mut_ptr().offset(idx_0 as isize)).as_mut_ptr(),
                         );
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_7 * 16 as ::core::ffi::c_int
-                                            + idx_0 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_7 * 16 as ::core::ffi::c_int
-                                            + idx_0 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_7 * 16 as ::core::ffi::c_int + idx_0 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 0 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_7 * 16 as ::core::ffi::c_int + idx_0 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 8 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
                         idx_0 += 1;
                     }
                 }
@@ -6289,102 +5191,70 @@ unsafe extern "C" fn macroblock_encode_internal(
                 } else {
                     CQM_4PY as ::core::ffi::c_int
                 };
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                            as ::core::ffi::c_int
-                            + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                        as ::core::ffi::c_int
+                        + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                            as ::core::ffi::c_int
-                            + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                        as ::core::ffi::c_int
+                        + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                            as ::core::ffi::c_int
-                            + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                        as ::core::ffi::c_int
+                        + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                            as ::core::ffi::c_int
-                            + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union32_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8
+                        .as_ptr()
+                        .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                        as ::core::ffi::c_int
+                        + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                        as isize,
+                ) as *mut uint8_t as *mut x264_union32_t))
                     .i = 0 as uint32_t;
-                (*h)
-                    .dctf
-                    .sub16x16_dct
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).dctf.sub16x16_dct.expect("non-null function pointer")(
                     dct4x4.as_mut_ptr(),
                     (*h).mb.pic.p_fenc[p_8 as usize],
                     (*h).mb.pic.p_fdec[p_8 as usize],
                 );
                 if (*h).mb.b_noise_reduction != 0 {
-                    let ref mut fresh1 = *(*h)
-                        .nr_count
-                        .offset(
-                            (0 as ::core::ffi::c_int
-                                + (p_8 != 0) as ::core::ffi::c_int
-                                    * 2 as ::core::ffi::c_int) as isize,
-                        );
+                    let ref mut fresh1 = *(*h).nr_count.offset(
+                        (0 as ::core::ffi::c_int
+                            + (p_8 != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                            as isize,
+                    );
                     *fresh1 = (*fresh1).wrapping_add(16 as uint32_t);
                     let mut idx_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     while idx_1 < 16 as ::core::ffi::c_int {
-                        (*h)
-                            .quantf
-                            .denoise_dct
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).quantf.denoise_dct.expect("non-null function pointer")(
                             (*dct4x4.as_mut_ptr().offset(idx_1 as isize)).as_mut_ptr(),
-                            (*(*h)
-                                .nr_residual_sum
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        + (p_8 != 0) as ::core::ffi::c_int
-                                            * 2 as ::core::ffi::c_int) as isize,
-                                ))
-                                .as_mut_ptr(),
-                            (*(*h)
-                                .nr_offset
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        + (p_8 != 0) as ::core::ffi::c_int
-                                            * 2 as ::core::ffi::c_int) as isize,
-                                ))
-                                .as_mut_ptr(),
+                            (*(*h).nr_residual_sum.offset(
+                                (0 as ::core::ffi::c_int
+                                    + (p_8 != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                                    as isize,
+                            ))
+                            .as_mut_ptr(),
+                            (*(*h).nr_offset.offset(
+                                (0 as ::core::ffi::c_int
+                                    + (p_8 != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                                    as isize,
+                            ))
+                            .as_mut_ptr(),
                             16 as ::core::ffi::c_int,
                         );
                         idx_1 += 1;
@@ -6402,148 +5272,104 @@ unsafe extern "C" fn macroblock_encode_internal(
                     if (*h).mb.b_trellis != 0 {
                         let mut i4x4_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                         while i4x4_0 < 4 as ::core::ffi::c_int {
-                            let mut idx_2: ::core::ffi::c_int = i8x8_0
-                                * 4 as ::core::ffi::c_int + i4x4_0;
+                            let mut idx_2: ::core::ffi::c_int =
+                                i8x8_0 * 4 as ::core::ffi::c_int + i4x4_0;
                             if x264_10_quant_4x4_trellis(
                                 h,
                                 (*dct4x4.as_mut_ptr().offset(idx_2 as isize)).as_mut_ptr(),
                                 quant_cat_0,
                                 i_qp,
-                                ctx_cat_plane[DCT_LUMA_4x4 as ::core::ffi::c_int
-                                    as usize][p_8 as usize] as ::core::ffi::c_int,
+                                ctx_cat_plane[DCT_LUMA_4x4 as ::core::ffi::c_int as usize]
+                                    [p_8 as usize]
+                                    as ::core::ffi::c_int,
                                 0 as ::core::ffi::c_int,
                                 (p_8 != 0) as ::core::ffi::c_int,
                                 p_8 * 16 as ::core::ffi::c_int + idx_2,
                             ) != 0
                             {
-                                (*h)
-                                    .zigzagf
-                                    .scan_4x4
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
+                                (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                                     (*(*h)
                                         .dct
                                         .luma4x4
                                         .as_mut_ptr()
                                         .offset((p_8 * 16 as ::core::ffi::c_int + idx_2) as isize))
-                                        .as_mut_ptr(),
+                                    .as_mut_ptr(),
                                     (*dct4x4.as_mut_ptr().offset(idx_2 as isize)).as_mut_ptr(),
                                 );
-                                (*h)
-                                    .quantf
-                                    .dequant_4x4
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
+                                (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                                     (*dct4x4.as_mut_ptr().offset(idx_2 as isize)).as_mut_ptr(),
                                     (*h).dequant4_mf[quant_cat_0 as usize],
                                     i_qp,
                                 );
                                 if i_decimate_8x8_0 < 6 as ::core::ffi::c_int {
-                                    i_decimate_8x8_0
-                                        += (*h)
-                                            .quantf
-                                            .decimate_score16
-                                            .expect(
-                                                "non-null function pointer",
-                                            )(
-                                            (*(*h)
-                                                .dct
-                                                .luma4x4
-                                                .as_mut_ptr()
-                                                .offset((p_8 * 16 as ::core::ffi::c_int + idx_2) as isize))
-                                                .as_mut_ptr(),
-                                        );
+                                    i_decimate_8x8_0 += (*h)
+                                        .quantf
+                                        .decimate_score16
+                                        .expect("non-null function pointer")(
+                                        (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                                            (p_8 * 16 as ::core::ffi::c_int + idx_2) as isize,
+                                        ))
+                                        .as_mut_ptr(),
+                                    );
                                 }
-                                (*h)
-                                    .mb
-                                    .cache
-                                    .non_zero_count[x264_scan8[(p_8 * 16 as ::core::ffi::c_int
-                                    + idx_2) as usize] as usize] = 1 as uint8_t;
+                                (*h).mb.cache.non_zero_count[x264_scan8
+                                    [(p_8 * 16 as ::core::ffi::c_int + idx_2) as usize]
+                                    as usize] = 1 as uint8_t;
                                 nnz8x8 = 1 as ::core::ffi::c_int;
                             }
                             i4x4_0 += 1;
                         }
                     } else {
-                        nz = (*h)
-                            .quantf
-                            .quant_4x4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        nz = (*h).quantf.quant_4x4x4.expect("non-null function pointer")(
                             &mut *dct4x4
                                 .as_mut_ptr()
                                 .offset((i8x8_0 * 4 as ::core::ffi::c_int) as isize),
                             (*(*(*h).quant4_mf.as_mut_ptr().offset(quant_cat_0 as isize))
                                 .offset(i_qp as isize))
-                                .as_mut_ptr(),
-                            (*(*(*h)
-                                .quant4_bias
-                                .as_mut_ptr()
-                                .offset(quant_cat_0 as isize))
+                            .as_mut_ptr(),
+                            (*(*(*h).quant4_bias.as_mut_ptr().offset(quant_cat_0 as isize))
                                 .offset(i_qp as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
                         );
                         nnz8x8 = nz;
                         if nz != 0 {
-                            let mut idx_3: ::core::ffi::c_int = i8x8_0
-                                * 4 as ::core::ffi::c_int;
+                            let mut idx_3: ::core::ffi::c_int = i8x8_0 * 4 as ::core::ffi::c_int;
                             let mut msk_0: ::core::ffi::c_int = nz;
                             let mut skip_0: ::core::ffi::c_int = 0;
-                            while msk_0 != 0
-                                && {
-                                    skip_0 = x264_ctz_4bit(msk_0 as uint32_t);
-                                    idx_3 += skip_0;
-                                    msk_0 >>= skip_0 + 1 as ::core::ffi::c_int;
-                                    1 as ::core::ffi::c_int != 0
-                                }
-                            {
-                                (*h)
-                                    .zigzagf
-                                    .scan_4x4
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
+                            while msk_0 != 0 && {
+                                skip_0 = x264_ctz_4bit(msk_0 as uint32_t);
+                                idx_3 += skip_0;
+                                msk_0 >>= skip_0 + 1 as ::core::ffi::c_int;
+                                1 as ::core::ffi::c_int != 0
+                            } {
+                                (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                                     (*(*h)
                                         .dct
                                         .luma4x4
                                         .as_mut_ptr()
                                         .offset((p_8 * 16 as ::core::ffi::c_int + idx_3) as isize))
-                                        .as_mut_ptr(),
+                                    .as_mut_ptr(),
                                     (*dct4x4.as_mut_ptr().offset(idx_3 as isize)).as_mut_ptr(),
                                 );
-                                (*h)
-                                    .quantf
-                                    .dequant_4x4
-                                    .expect(
-                                        "non-null function pointer",
-                                    )(
+                                (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                                     (*dct4x4.as_mut_ptr().offset(idx_3 as isize)).as_mut_ptr(),
                                     (*h).dequant4_mf[quant_cat_0 as usize],
                                     i_qp,
                                 );
                                 if i_decimate_8x8_0 < 6 as ::core::ffi::c_int {
-                                    i_decimate_8x8_0
-                                        += (*h)
-                                            .quantf
-                                            .decimate_score16
-                                            .expect(
-                                                "non-null function pointer",
-                                            )(
-                                            (*(*h)
-                                                .dct
-                                                .luma4x4
-                                                .as_mut_ptr()
-                                                .offset((p_8 * 16 as ::core::ffi::c_int + idx_3) as isize))
-                                                .as_mut_ptr(),
-                                        );
+                                    i_decimate_8x8_0 += (*h)
+                                        .quantf
+                                        .decimate_score16
+                                        .expect("non-null function pointer")(
+                                        (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                                            (p_8 * 16 as ::core::ffi::c_int + idx_3) as isize,
+                                        ))
+                                        .as_mut_ptr(),
+                                    );
                                 }
-                                (*h)
-                                    .mb
-                                    .cache
-                                    .non_zero_count[x264_scan8[(p_8 * 16 as ::core::ffi::c_int
-                                    + idx_3) as usize] as usize] = 1 as uint8_t;
+                                (*h).mb.cache.non_zero_count[x264_scan8
+                                    [(p_8 * 16 as ::core::ffi::c_int + idx_3) as usize]
+                                    as usize] = 1 as uint8_t;
                                 idx_3 += 1;
                             }
                         }
@@ -6551,36 +5377,30 @@ unsafe extern "C" fn macroblock_encode_internal(
                     if nnz8x8 != 0 {
                         i_decimate_mb += i_decimate_8x8_0;
                         if i_decimate_8x8_0 < 4 as ::core::ffi::c_int {
-                            (*(&mut *(*h)
-                                .mb
-                                .cache
-                                .non_zero_count
-                                .as_mut_ptr()
-                                .offset(
-                                    (*x264_scan8
-                                        .as_ptr()
-                                        .offset(
-                                            (p_8 * 16 as ::core::ffi::c_int
-                                                + i8x8_0 * 4 as ::core::ffi::c_int) as isize,
-                                        ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                                ) as *mut uint8_t as *mut x264_union16_t))
-                                .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                                as uint16_t;
-                            (*(&mut *(*h)
-                                .mb
-                                .cache
-                                .non_zero_count
-                                .as_mut_ptr()
-                                .offset(
-                                    (*x264_scan8
-                                        .as_ptr()
-                                        .offset(
-                                            (p_8 * 16 as ::core::ffi::c_int
-                                                + i8x8_0 * 4 as ::core::ffi::c_int) as isize,
-                                        ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                                ) as *mut uint8_t as *mut x264_union16_t))
-                                .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                                as uint16_t;
+                            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                                (*x264_scan8.as_ptr().offset(
+                                    (p_8 * 16 as ::core::ffi::c_int
+                                        + i8x8_0 * 4 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                                    + 0 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as *mut uint8_t
+                                as *mut x264_union16_t))
+                                .i =
+                                (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
+                            (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                                (*x264_scan8.as_ptr().offset(
+                                    (p_8 * 16 as ::core::ffi::c_int
+                                        + i8x8_0 * 4 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                                    + 8 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as *mut uint8_t
+                                as *mut x264_union16_t))
+                                .i =
+                                (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
                         } else {
                             plane_cbp_0 |= (1 as ::core::ffi::c_int) << i8x8_0;
                         }
@@ -6589,88 +5409,60 @@ unsafe extern "C" fn macroblock_encode_internal(
                 }
                 if i_decimate_mb < 6 as ::core::ffi::c_int {
                     plane_cbp_0 = 0 as ::core::ffi::c_int;
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            (*x264_scan8
-                                .as_ptr()
-                                .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                                as ::core::ffi::c_int
-                                + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-                                as isize,
-                        ) as *mut uint8_t as *mut x264_union32_t))
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        (*x264_scan8
+                            .as_ptr()
+                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                            as ::core::ffi::c_int
+                            + 0 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                            as isize,
+                    ) as *mut uint8_t as *mut x264_union32_t))
                         .i = 0 as uint32_t;
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            (*x264_scan8
-                                .as_ptr()
-                                .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                                as ::core::ffi::c_int
-                                + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-                                as isize,
-                        ) as *mut uint8_t as *mut x264_union32_t))
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        (*x264_scan8
+                            .as_ptr()
+                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                            as ::core::ffi::c_int
+                            + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                            as isize,
+                    ) as *mut uint8_t as *mut x264_union32_t))
                         .i = 0 as uint32_t;
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            (*x264_scan8
-                                .as_ptr()
-                                .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                                as ::core::ffi::c_int
-                                + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-                                as isize,
-                        ) as *mut uint8_t as *mut x264_union32_t))
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        (*x264_scan8
+                            .as_ptr()
+                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                            as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                            as isize,
+                    ) as *mut uint8_t as *mut x264_union32_t))
                         .i = 0 as uint32_t;
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            (*x264_scan8
-                                .as_ptr()
-                                .offset((16 as ::core::ffi::c_int * p_8) as isize)
-                                as ::core::ffi::c_int
-                                + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
-                                as isize,
-                        ) as *mut uint8_t as *mut x264_union32_t))
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        (*x264_scan8
+                            .as_ptr()
+                            .offset((16 as ::core::ffi::c_int * p_8) as isize)
+                            as ::core::ffi::c_int
+                            + 3 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
+                            as isize,
+                    ) as *mut uint8_t as *mut x264_union32_t))
                         .i = 0 as uint32_t;
                 } else {
                     (*h).mb.i_cbp_luma |= plane_cbp_0;
                     let mut i8x8_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     let mut msk_1: ::core::ffi::c_int = plane_cbp_0;
                     let mut skip_1: ::core::ffi::c_int = 0;
-                    while msk_1 != 0
-                        && {
-                            skip_1 = x264_ctz_4bit(msk_1 as uint32_t);
-                            i8x8_1 += skip_1;
-                            msk_1 >>= skip_1 + 1 as ::core::ffi::c_int;
-                            1 as ::core::ffi::c_int != 0
-                        }
-                    {
-                        (*h)
-                            .dctf
-                            .add8x8_idct
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p_8 as isize))
-                                .offset(
-                                    ((i8x8_1 & 1 as ::core::ffi::c_int)
+                    while msk_1 != 0 && {
+                        skip_1 = x264_ctz_4bit(msk_1 as uint32_t);
+                        i8x8_1 += skip_1;
+                        msk_1 >>= skip_1 + 1 as ::core::ffi::c_int;
+                        1 as ::core::ffi::c_int != 0
+                    } {
+                        (*h).dctf.add8x8_idct.expect("non-null function pointer")(
+                            &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p_8 as isize)).offset(
+                                ((i8x8_1 & 1 as ::core::ffi::c_int) * 8 as ::core::ffi::c_int
+                                    + (i8x8_1 >> 1 as ::core::ffi::c_int)
                                         * 8 as ::core::ffi::c_int
-                                        + (i8x8_1 >> 1 as ::core::ffi::c_int)
-                                            * 8 as ::core::ffi::c_int * FDEC_STRIDE) as isize,
-                                ),
+                                        * FDEC_STRIDE) as isize,
+                            ),
                             &mut *dct4x4
                                 .as_mut_ptr()
                                 .offset((i8x8_1 * 4 as ::core::ffi::c_int) as isize),
@@ -6693,16 +5485,12 @@ unsafe extern "C" fn macroblock_encode_internal(
             if (*h).mb.b_lossless != 0 {
                 x264_10_predict_lossless_chroma(h, i_mode_1);
             } else {
-                (*h)
-                    .predict_chroma[i_mode_1 as usize]
-                    .expect(
-                        "non-null function pointer",
-                    )((*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize]);
-                (*h)
-                    .predict_chroma[i_mode_1 as usize]
-                    .expect(
-                        "non-null function pointer",
-                    )((*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize]);
+                (*h).predict_chroma[i_mode_1 as usize].expect("non-null function pointer")(
+                    (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
+                );
+                (*h).predict_chroma[i_mode_1 as usize].expect("non-null function pointer")(
+                    (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
+                );
             }
         }
         x264_10_mb_encode_chroma(
@@ -6716,23 +5504,20 @@ unsafe extern "C" fn macroblock_encode_internal(
     } else {
         (*h).mb.i_cbp_chroma = 0 as ::core::ffi::c_int;
     }
-    let mut cbp: ::core::ffi::c_int = (*h).mb.i_cbp_chroma << 4 as ::core::ffi::c_int
-        | (*h).mb.i_cbp_luma;
+    let mut cbp: ::core::ffi::c_int =
+        (*h).mb.i_cbp_chroma << 4 as ::core::ffi::c_int | (*h).mb.i_cbp_luma;
     if (*h).param.b_cabac != 0 {
-        cbp
-            |= ((*h).mb.cache.non_zero_count[x264_scan8[LUMA_DC as usize] as usize]
-                as ::core::ffi::c_int) << 8 as ::core::ffi::c_int
-                | ((*h)
-                    .mb
-                    .cache
-                    .non_zero_count[x264_scan8[(CHROMA_DC + 0 as ::core::ffi::c_int)
-                    as usize] as usize] as ::core::ffi::c_int) << 9 as ::core::ffi::c_int
-                | ((*h)
-                    .mb
-                    .cache
-                    .non_zero_count[x264_scan8[(CHROMA_DC + 1 as ::core::ffi::c_int)
-                    as usize] as usize] as ::core::ffi::c_int)
-                    << 10 as ::core::ffi::c_int;
+        cbp |= ((*h).mb.cache.non_zero_count[x264_scan8[LUMA_DC as usize] as usize]
+            as ::core::ffi::c_int)
+            << 8 as ::core::ffi::c_int
+            | ((*h).mb.cache.non_zero_count
+                [x264_scan8[(CHROMA_DC + 0 as ::core::ffi::c_int) as usize] as usize]
+                as ::core::ffi::c_int)
+                << 9 as ::core::ffi::c_int
+            | ((*h).mb.cache.non_zero_count
+                [x264_scan8[(CHROMA_DC + 1 as ::core::ffi::c_int) as usize] as usize]
+                as ::core::ffi::c_int)
+                << 10 as ::core::ffi::c_int;
     }
     *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) = cbp as int16_t;
     if b_force_no_skip == 0 {
@@ -6745,19 +5530,15 @@ unsafe extern "C" fn macroblock_encode_internal(
                 .mv
                 .as_mut_ptr()
                 .offset(0 as ::core::ffi::c_int as isize))
-                .as_mut_ptr()
-                .offset(
-                    *x264_scan8.as_ptr().offset(0 as ::core::ffi::c_int as isize)
-                        as isize,
-                ))
-                .as_mut_ptr() as *mut x264_union32_t))
-                .i == (*((*h).mb.cache.pskip_mv.as_mut_ptr() as *mut x264_union32_t)).i
-            && (*h)
-                .mb
-                .cache
-                .ref_0[0 as ::core::ffi::c_int
-                as usize][x264_scan8[0 as ::core::ffi::c_int as usize] as usize]
-                as ::core::ffi::c_int == 0 as ::core::ffi::c_int
+            .as_mut_ptr()
+            .offset(*x264_scan8.as_ptr().offset(0 as ::core::ffi::c_int as isize) as isize))
+            .as_mut_ptr() as *mut x264_union32_t))
+                .i
+                == (*((*h).mb.cache.pskip_mv.as_mut_ptr() as *mut x264_union32_t)).i
+            && (*h).mb.cache.ref_0[0 as ::core::ffi::c_int as usize]
+                [x264_scan8[0 as ::core::ffi::c_int as usize] as usize]
+                as ::core::ffi::c_int
+                == 0 as ::core::ffi::c_int
         {
             (*h).mb.i_type = P_SKIP as ::core::ffi::c_int;
         }
@@ -6800,23 +5581,16 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
         };
         if b_bidir == 0 {
             mvp[0 as ::core::ffi::c_int as usize] = x264_clip3(
-                (*h).mb.cache.pskip_mv[0 as ::core::ffi::c_int as usize]
-                    as ::core::ffi::c_int,
+                (*h).mb.cache.pskip_mv[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
                 (*h).mb.mv_min[0 as ::core::ffi::c_int as usize],
                 (*h).mb.mv_max[0 as ::core::ffi::c_int as usize],
             ) as int16_t;
             mvp[1 as ::core::ffi::c_int as usize] = x264_clip3(
-                (*h).mb.cache.pskip_mv[1 as ::core::ffi::c_int as usize]
-                    as ::core::ffi::c_int,
+                (*h).mb.cache.pskip_mv[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
                 (*h).mb.mv_min[1 as ::core::ffi::c_int as usize],
                 (*h).mb.mv_max[1 as ::core::ffi::c_int as usize],
             ) as int16_t;
-            (*h)
-                .mc
-                .mc_luma
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.mc_luma.expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[p as usize],
                 FDEC_STRIDE as intptr_t,
                 &mut *(*(*(*h)
@@ -6825,10 +5599,10 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     .p_fref
                     .as_mut_ptr()
                     .offset(0 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr()
-                    .offset(0 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr()
-                    .offset((p * 4 as ::core::ffi::c_int) as isize),
+                .as_mut_ptr()
+                .offset(0 as ::core::ffi::c_int as isize))
+                .as_mut_ptr()
+                .offset((p * 4 as ::core::ffi::c_int) as isize),
                 (*h).mb.pic.i_stride[p as usize] as intptr_t,
                 mvp[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
                 mvp[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
@@ -6839,8 +5613,8 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     .weight
                     .as_mut_ptr()
                     .offset(0 as ::core::ffi::c_int as isize))
-                    .as_mut_ptr()
-                    .offset(p as isize),
+                .as_mut_ptr()
+                .offset(p as isize),
             );
         }
         let mut i8x8: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -6848,18 +5622,11 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
         while i8x8 < 4 as ::core::ffi::c_int {
             let mut fenc_offset: ::core::ffi::c_int = (i8x8 & 1 as ::core::ffi::c_int)
                 * 8 as ::core::ffi::c_int
-                + (i8x8 >> 1 as ::core::ffi::c_int) * FENC_STRIDE
-                    * 8 as ::core::ffi::c_int;
+                + (i8x8 >> 1 as ::core::ffi::c_int) * FENC_STRIDE * 8 as ::core::ffi::c_int;
             let mut fdec_offset: ::core::ffi::c_int = (i8x8 & 1 as ::core::ffi::c_int)
                 * 8 as ::core::ffi::c_int
-                + (i8x8 >> 1 as ::core::ffi::c_int) * FDEC_STRIDE
-                    * 8 as ::core::ffi::c_int;
-            (*h)
-                .dctf
-                .sub8x8_dct
-                .expect(
-                    "non-null function pointer",
-                )(
+                + (i8x8 >> 1 as ::core::ffi::c_int) * FDEC_STRIDE * 8 as ::core::ffi::c_int;
+            (*h).dctf.sub8x8_dct.expect("non-null function pointer")(
                 dct4x4.as_mut_ptr(),
                 (*h).mb.pic.p_fenc[p as usize].offset(fenc_offset as isize),
                 (*h).mb.pic.p_fdec[p as usize].offset(fdec_offset as isize),
@@ -6867,73 +5634,54 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
             if (*h).mb.b_noise_reduction != 0 {
                 let mut i4x4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while i4x4 < 4 as ::core::ffi::c_int {
-                    (*h)
-                        .quantf
-                        .denoise_dct
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    (*h).quantf.denoise_dct.expect("non-null function pointer")(
                         (*dct4x4.as_mut_ptr().offset(i4x4 as isize)).as_mut_ptr(),
-                        (*(*h)
-                            .nr_residual_sum
-                            .offset(
-                                (0 as ::core::ffi::c_int
-                                    + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
-                                    as isize,
-                            ))
-                            .as_mut_ptr(),
-                        (*(*h)
-                            .nr_offset
-                            .offset(
-                                (0 as ::core::ffi::c_int
-                                    + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
-                                    as isize,
-                            ))
-                            .as_mut_ptr(),
+                        (*(*h).nr_residual_sum.offset(
+                            (0 as ::core::ffi::c_int
+                                + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                                as isize,
+                        ))
+                        .as_mut_ptr(),
+                        (*(*h).nr_offset.offset(
+                            (0 as ::core::ffi::c_int
+                                + (p != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                                as isize,
+                        ))
+                        .as_mut_ptr(),
                         16 as ::core::ffi::c_int,
                     );
                     i4x4 += 1;
                 }
             }
-            let mut nz: ::core::ffi::c_int = (*h)
-                .quantf
-                .quant_4x4x4
-                .expect(
-                    "non-null function pointer",
-                )(
-                dct4x4.as_mut_ptr(),
-                (*(*(*h).quant4_mf.as_mut_ptr().offset(quant_cat as isize))
-                    .offset(i_qp as isize))
+            let mut nz: ::core::ffi::c_int =
+                (*h).quantf.quant_4x4x4.expect("non-null function pointer")(
+                    dct4x4.as_mut_ptr(),
+                    (*(*(*h).quant4_mf.as_mut_ptr().offset(quant_cat as isize))
+                        .offset(i_qp as isize))
                     .as_mut_ptr(),
-                (*(*(*h).quant4_bias.as_mut_ptr().offset(quant_cat as isize))
-                    .offset(i_qp as isize))
+                    (*(*(*h).quant4_bias.as_mut_ptr().offset(quant_cat as isize))
+                        .offset(i_qp as isize))
                     .as_mut_ptr(),
-            );
+                );
             let mut idx: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             let mut msk: ::core::ffi::c_int = nz;
             let mut skip: ::core::ffi::c_int = 0;
-            while msk != 0
-                && {
-                    skip = x264_ctz_4bit(msk as uint32_t);
-                    idx += skip;
-                    msk >>= skip + 1 as ::core::ffi::c_int;
-                    1 as ::core::ffi::c_int != 0
-                }
-            {
-                (*h)
-                    .zigzagf
-                    .scan_4x4
-                    .expect(
-                        "non-null function pointer",
-                    )(
+            while msk != 0 && {
+                skip = x264_ctz_4bit(msk as uint32_t);
+                idx += skip;
+                msk >>= skip + 1 as ::core::ffi::c_int;
+                1 as ::core::ffi::c_int != 0
+            } {
+                (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                     dctscan.as_mut_ptr(),
                     (*dct4x4.as_mut_ptr().offset(idx as isize)).as_mut_ptr(),
                 );
-                i_decimate_mb
-                    += (*h)
-                        .quantf
-                        .decimate_score16
-                        .expect("non-null function pointer")(dctscan.as_mut_ptr());
+                i_decimate_mb += (*h)
+                    .quantf
+                    .decimate_score16
+                    .expect("non-null function pointer")(
+                    dctscan.as_mut_ptr()
+                );
                 if i_decimate_mb >= 6 as ::core::ffi::c_int {
                     return 0 as ::core::ffi::c_int;
                 }
@@ -6944,38 +5692,26 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
         p += 1;
         i_qp = (*h).mb.i_chroma_qp;
     }
-    if chroma == CHROMA_420 as ::core::ffi::c_int
-        || chroma == CHROMA_422 as ::core::ffi::c_int
-    {
+    if chroma == CHROMA_420 as ::core::ffi::c_int || chroma == CHROMA_422 as ::core::ffi::c_int {
         i_qp = (*h).mb.i_chroma_qp;
-        let mut chroma422: ::core::ffi::c_int = (chroma
-            == CHROMA_422 as ::core::ffi::c_int) as ::core::ffi::c_int;
+        let mut chroma422: ::core::ffi::c_int =
+            (chroma == CHROMA_422 as ::core::ffi::c_int) as ::core::ffi::c_int;
         let mut thresh: ::core::ffi::c_int = if chroma422 != 0 {
-            x264_lambda2_tab[i_qp as usize] + 16 as ::core::ffi::c_int
-                >> 5 as ::core::ffi::c_int
+            x264_lambda2_tab[i_qp as usize] + 16 as ::core::ffi::c_int >> 5 as ::core::ffi::c_int
         } else {
-            x264_lambda2_tab[i_qp as usize] + 32 as ::core::ffi::c_int
-                >> 6 as ::core::ffi::c_int
+            x264_lambda2_tab[i_qp as usize] + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int
         };
         let mut ssd: ::core::ffi::c_int = 0;
         let mut dct_dc: [dctcoef; 8] = [0; 8];
         if b_bidir == 0 {
             if (*(mvp.as_mut_ptr() as *mut x264_union32_t)).i != 0 {
-                (*h)
-                    .mc
-                    .mc_chroma
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).mc.mc_chroma.expect("non-null function pointer")(
                     (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
                     (*h).mb.pic.p_fdec[2 as ::core::ffi::c_int as usize],
                     FDEC_STRIDE as intptr_t,
-                    (*h)
-                        .mb
-                        .pic
-                        .p_fref[0 as ::core::ffi::c_int
-                        as usize][0 as ::core::ffi::c_int
-                        as usize][4 as ::core::ffi::c_int as usize],
+                    (*h).mb.pic.p_fref[0 as ::core::ffi::c_int as usize]
+                        [0 as ::core::ffi::c_int as usize]
+                        [4 as ::core::ffi::c_int as usize],
                     (*h).mb.pic.i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                     mvp[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int,
                     mvp[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
@@ -6988,19 +5724,13 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     },
                 );
             } else {
-                (*h)
-                    .mc
+                (*h).mc
                     .load_deinterleave_chroma_fdec
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                    .expect("non-null function pointer")(
                     (*h).mb.pic.p_fdec[1 as ::core::ffi::c_int as usize],
-                    (*h)
-                        .mb
-                        .pic
-                        .p_fref[0 as ::core::ffi::c_int
-                        as usize][0 as ::core::ffi::c_int
-                        as usize][4 as ::core::ffi::c_int as usize],
+                    (*h).mb.pic.p_fref[0 as ::core::ffi::c_int as usize]
+                        [0 as ::core::ffi::c_int as usize]
+                        [4 as ::core::ffi::c_int as usize],
                     (*h).mb.pic.i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                     if chroma422 != 0 {
                         16 as ::core::ffi::c_int
@@ -7012,33 +5742,19 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
         }
         let mut ch: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while ch < 2 as ::core::ffi::c_int {
-            let mut p_src: *mut pixel = (*h)
-                .mb
-                .pic
-                .p_fenc[(1 as ::core::ffi::c_int + ch) as usize];
-            let mut p_dst: *mut pixel = (*h)
-                .mb
-                .pic
-                .p_fdec[(1 as ::core::ffi::c_int + ch) as usize];
+            let mut p_src: *mut pixel = (*h).mb.pic.p_fenc[(1 as ::core::ffi::c_int + ch) as usize];
+            let mut p_dst: *mut pixel = (*h).mb.pic.p_fdec[(1 as ::core::ffi::c_int + ch) as usize];
             if b_bidir == 0
-                && !(*h)
-                    .sh
-                    .weight[0 as ::core::ffi::c_int
-                        as usize][(1 as ::core::ffi::c_int + ch) as usize]
+                && !(*h).sh.weight[0 as ::core::ffi::c_int as usize]
+                    [(1 as ::core::ffi::c_int + ch) as usize]
                     .weightfn
                     .is_null()
             {
-                (*(*h)
-                    .sh
-                    .weight[0 as ::core::ffi::c_int
-                        as usize][(1 as ::core::ffi::c_int + ch) as usize]
+                (*(*h).sh.weight[0 as ::core::ffi::c_int as usize]
+                    [(1 as ::core::ffi::c_int + ch) as usize]
                     .weightfn
-                    .offset(
-                        (8 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize,
-                    ))
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                    .offset((8 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize))
+                .expect("non-null function pointer")(
                     (*h).mb.pic.p_fdec[(1 as ::core::ffi::c_int + ch) as usize],
                     FDEC_STRIDE as intptr_t,
                     (*h).mb.pic.p_fdec[(1 as ::core::ffi::c_int + ch) as usize],
@@ -7048,8 +5764,8 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                         .weight
                         .as_mut_ptr()
                         .offset(0 as ::core::ffi::c_int as isize))
-                        .as_mut_ptr()
-                        .offset((1 as ::core::ffi::c_int + ch) as isize),
+                    .as_mut_ptr()
+                    .offset((1 as ::core::ffi::c_int + ch) as isize),
                     if chroma422 != 0 {
                         16 as ::core::ffi::c_int
                     } else {
@@ -7057,37 +5773,27 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     },
                 );
             }
-            ssd = (*h)
-                .pixf
-                .ssd[(if chroma422 != 0 {
-                    PIXEL_8x16 as ::core::ffi::c_int
-                } else {
-                    PIXEL_8x8 as ::core::ffi::c_int
-                }) as usize]
-                .expect(
-                    "non-null function pointer",
-                )(p_dst, FDEC_STRIDE as intptr_t, p_src, FENC_STRIDE as intptr_t);
+            ssd = (*h).pixf.ssd[(if chroma422 != 0 {
+                PIXEL_8x16 as ::core::ffi::c_int
+            } else {
+                PIXEL_8x8 as ::core::ffi::c_int
+            }) as usize]
+                .expect("non-null function pointer")(
+                p_dst,
+                FDEC_STRIDE as intptr_t,
+                p_src,
+                FENC_STRIDE as intptr_t,
+            );
             if !(ssd < thresh) {
                 if (*h).mb.b_noise_reduction != 0 {
                     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     while i <= chroma422 {
-                        (*h)
-                            .dctf
-                            .sub8x8_dct
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).dctf.sub8x8_dct.expect("non-null function pointer")(
                             &mut *dct4x4
                                 .as_mut_ptr()
                                 .offset((4 as ::core::ffi::c_int * i) as isize),
-                            p_src
-                                .offset(
-                                    (8 as ::core::ffi::c_int * i * FENC_STRIDE) as isize,
-                                ),
-                            p_dst
-                                .offset(
-                                    (8 as ::core::ffi::c_int * i * FDEC_STRIDE) as isize,
-                                ),
+                            p_src.offset((8 as ::core::ffi::c_int * i * FENC_STRIDE) as isize),
+                            p_dst.offset((8 as ::core::ffi::c_int * i * FDEC_STRIDE) as isize),
                         );
                         i += 1;
                     }
@@ -7099,65 +5805,50 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                             4 as ::core::ffi::c_int
                         })
                     {
-                        (*h)
-                            .quantf
-                            .denoise_dct
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).quantf.denoise_dct.expect("non-null function pointer")(
                             (*dct4x4.as_mut_ptr().offset(i4x4_0 as isize)).as_mut_ptr(),
                             (*(*h)
                                 .nr_residual_sum
                                 .offset(2 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
-                            (*(*h).nr_offset.offset(2 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
+                            (*(*h).nr_offset.offset(2 as ::core::ffi::c_int as isize)).as_mut_ptr(),
                             16 as ::core::ffi::c_int,
                         );
-                        dct_dc[i4x4_0 as usize] = dct4x4[i4x4_0
-                            as usize][0 as ::core::ffi::c_int as usize];
-                        dct4x4[i4x4_0 as usize][0 as ::core::ffi::c_int as usize] = 0
-                            as ::core::ffi::c_int as dctcoef;
+                        dct_dc[i4x4_0 as usize] =
+                            dct4x4[i4x4_0 as usize][0 as ::core::ffi::c_int as usize];
+                        dct4x4[i4x4_0 as usize][0 as ::core::ffi::c_int as usize] =
+                            0 as ::core::ffi::c_int as dctcoef;
                         i4x4_0 += 1;
                     }
                 } else if chroma422 != 0 {
-                    (*h)
-                        .dctf
-                        .sub8x16_dct_dc
-                        .expect(
-                            "non-null function pointer",
-                        )(dct_dc.as_mut_ptr(), p_src, p_dst);
+                    (*h).dctf.sub8x16_dct_dc.expect("non-null function pointer")(
+                        dct_dc.as_mut_ptr(),
+                        p_src,
+                        p_dst,
+                    );
                 } else {
-                    (*h)
-                        .dctf
-                        .sub8x8_dct_dc
-                        .expect(
-                            "non-null function pointer",
-                        )(dct_dc.as_mut_ptr(), p_src, p_dst);
+                    (*h).dctf.sub8x8_dct_dc.expect("non-null function pointer")(
+                        dct_dc.as_mut_ptr(),
+                        p_src,
+                        p_dst,
+                    );
                 }
                 let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while i_0 <= chroma422 {
-                    if (*h)
-                        .quantf
-                        .quant_2x2_dc
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    if (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
                         &mut *dct_dc
                             .as_mut_ptr()
                             .offset((4 as ::core::ffi::c_int * i_0) as isize),
-                        ((*(*h)
-                            .quant4_mf[CQM_4PC as ::core::ffi::c_int as usize]
-                            .offset(
-                                (i_qp + 3 as ::core::ffi::c_int * chroma422) as isize,
-                            ))[0 as ::core::ffi::c_int as usize]
-                            >> 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
-                        ((*(*h)
-                            .quant4_bias[CQM_4PC as ::core::ffi::c_int as usize]
-                            .offset(
-                                (i_qp + 3 as ::core::ffi::c_int * chroma422) as isize,
-                            ))[0 as ::core::ffi::c_int as usize]
-                            << 1 as ::core::ffi::c_int) as ::core::ffi::c_int,
+                        ((*(*h).quant4_mf[CQM_4PC as ::core::ffi::c_int as usize]
+                            .offset((i_qp + 3 as ::core::ffi::c_int * chroma422) as isize))
+                            [0 as ::core::ffi::c_int as usize]
+                            >> 1 as ::core::ffi::c_int)
+                            as ::core::ffi::c_int,
+                        ((*(*h).quant4_bias[CQM_4PC as ::core::ffi::c_int as usize]
+                            .offset((i_qp + 3 as ::core::ffi::c_int * chroma422) as isize))
+                            [0 as ::core::ffi::c_int as usize]
+                            << 1 as ::core::ffi::c_int)
+                            as ::core::ffi::c_int,
                     ) != 0
                     {
                         return 0 as ::core::ffi::c_int;
@@ -7168,46 +5859,32 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     if (*h).mb.b_noise_reduction == 0 {
                         let mut i_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                         while i_1 <= chroma422 {
-                            (*h)
-                                .dctf
-                                .sub8x8_dct
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                            (*h).dctf.sub8x8_dct.expect("non-null function pointer")(
                                 &mut *dct4x4
                                     .as_mut_ptr()
                                     .offset((4 as ::core::ffi::c_int * i_1) as isize),
                                 p_src
-                                    .offset(
-                                        (8 as ::core::ffi::c_int * i_1 * FENC_STRIDE) as isize,
-                                    ),
+                                    .offset((8 as ::core::ffi::c_int * i_1 * FENC_STRIDE) as isize),
                                 p_dst
-                                    .offset(
-                                        (8 as ::core::ffi::c_int * i_1 * FDEC_STRIDE) as isize,
-                                    ),
+                                    .offset((8 as ::core::ffi::c_int * i_1 * FDEC_STRIDE) as isize),
                             );
-                            dct4x4[(i_1 * 4 as ::core::ffi::c_int
-                                + 0 as ::core::ffi::c_int)
-                                as usize][0 as ::core::ffi::c_int as usize] = 0
-                                as ::core::ffi::c_int as dctcoef;
-                            dct4x4[(i_1 * 4 as ::core::ffi::c_int
-                                + 1 as ::core::ffi::c_int)
-                                as usize][0 as ::core::ffi::c_int as usize] = 0
-                                as ::core::ffi::c_int as dctcoef;
-                            dct4x4[(i_1 * 4 as ::core::ffi::c_int
-                                + 2 as ::core::ffi::c_int)
-                                as usize][0 as ::core::ffi::c_int as usize] = 0
-                                as ::core::ffi::c_int as dctcoef;
-                            dct4x4[(i_1 * 4 as ::core::ffi::c_int
-                                + 3 as ::core::ffi::c_int)
-                                as usize][0 as ::core::ffi::c_int as usize] = 0
-                                as ::core::ffi::c_int as dctcoef;
+                            dct4x4[(i_1 * 4 as ::core::ffi::c_int + 0 as ::core::ffi::c_int)
+                                as usize][0 as ::core::ffi::c_int as usize] =
+                                0 as ::core::ffi::c_int as dctcoef;
+                            dct4x4[(i_1 * 4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
+                                as usize][0 as ::core::ffi::c_int as usize] =
+                                0 as ::core::ffi::c_int as dctcoef;
+                            dct4x4[(i_1 * 4 as ::core::ffi::c_int + 2 as ::core::ffi::c_int)
+                                as usize][0 as ::core::ffi::c_int as usize] =
+                                0 as ::core::ffi::c_int as dctcoef;
+                            dct4x4[(i_1 * 4 as ::core::ffi::c_int + 3 as ::core::ffi::c_int)
+                                as usize][0 as ::core::ffi::c_int as usize] =
+                                0 as ::core::ffi::c_int as dctcoef;
                             i_1 += 1;
                         }
                     }
                     let mut i8x8_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                    let mut i_decimate_mb_0: ::core::ffi::c_int = 0
-                        as ::core::ffi::c_int;
+                    let mut i_decimate_mb_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     while i8x8_0
                         < (if chroma422 != 0 {
                             2 as ::core::ffi::c_int
@@ -7215,54 +5892,43 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                             1 as ::core::ffi::c_int
                         })
                     {
-                        let mut nz_0: ::core::ffi::c_int = (*h)
-                            .quantf
-                            .quant_4x4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            &mut *dct4x4
-                                .as_mut_ptr()
-                                .offset((i8x8_0 * 4 as ::core::ffi::c_int) as isize),
-                            (*(*(*h)
-                                .quant4_mf
-                                .as_mut_ptr()
-                                .offset(CQM_4PC as ::core::ffi::c_int as isize))
+                        let mut nz_0: ::core::ffi::c_int =
+                            (*h).quantf.quant_4x4x4.expect("non-null function pointer")(
+                                &mut *dct4x4
+                                    .as_mut_ptr()
+                                    .offset((i8x8_0 * 4 as ::core::ffi::c_int) as isize),
+                                (*(*(*h)
+                                    .quant4_mf
+                                    .as_mut_ptr()
+                                    .offset(CQM_4PC as ::core::ffi::c_int as isize))
                                 .offset(i_qp as isize))
                                 .as_mut_ptr(),
-                            (*(*(*h)
-                                .quant4_bias
-                                .as_mut_ptr()
-                                .offset(CQM_4PC as ::core::ffi::c_int as isize))
+                                (*(*(*h)
+                                    .quant4_bias
+                                    .as_mut_ptr()
+                                    .offset(CQM_4PC as ::core::ffi::c_int as isize))
                                 .offset(i_qp as isize))
                                 .as_mut_ptr(),
-                        );
-                        let mut idx_0: ::core::ffi::c_int = i8x8_0
-                            * 4 as ::core::ffi::c_int;
+                            );
+                        let mut idx_0: ::core::ffi::c_int = i8x8_0 * 4 as ::core::ffi::c_int;
                         let mut msk_0: ::core::ffi::c_int = nz_0;
                         let mut skip_0: ::core::ffi::c_int = 0;
-                        while msk_0 != 0
-                            && {
-                                skip_0 = x264_ctz_4bit(msk_0 as uint32_t);
-                                idx_0 += skip_0;
-                                msk_0 >>= skip_0 + 1 as ::core::ffi::c_int;
-                                1 as ::core::ffi::c_int != 0
-                            }
-                        {
-                            (*h)
-                                .zigzagf
-                                .scan_4x4
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                        while msk_0 != 0 && {
+                            skip_0 = x264_ctz_4bit(msk_0 as uint32_t);
+                            idx_0 += skip_0;
+                            msk_0 >>= skip_0 + 1 as ::core::ffi::c_int;
+                            1 as ::core::ffi::c_int != 0
+                        } {
+                            (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                                 dctscan.as_mut_ptr(),
                                 (*dct4x4.as_mut_ptr().offset(idx_0 as isize)).as_mut_ptr(),
                             );
-                            i_decimate_mb_0
-                                += (*h)
-                                    .quantf
-                                    .decimate_score15
-                                    .expect("non-null function pointer")(dctscan.as_mut_ptr());
+                            i_decimate_mb_0 += (*h)
+                                .quantf
+                                .decimate_score15
+                                .expect("non-null function pointer")(
+                                dctscan.as_mut_ptr()
+                            );
                             if i_decimate_mb_0 >= 7 as ::core::ffi::c_int {
                                 return 0 as ::core::ffi::c_int;
                             }
@@ -7290,32 +5956,28 @@ pub unsafe extern "C" fn x264_10_macroblock_probe_skip(
             b_bidir,
             1 as ::core::ffi::c_int,
             CHROMA_420 as ::core::ffi::c_int,
-        )
-    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-        == CHROMA_422 as ::core::ffi::c_int
-    {
+        );
+    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_422 as ::core::ffi::c_int {
         return macroblock_probe_skip_internal(
             h,
             b_bidir,
             1 as ::core::ffi::c_int,
             CHROMA_422 as ::core::ffi::c_int,
-        )
-    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-        == CHROMA_444 as ::core::ffi::c_int
-    {
+        );
+    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
         return macroblock_probe_skip_internal(
             h,
             b_bidir,
             3 as ::core::ffi::c_int,
             CHROMA_444 as ::core::ffi::c_int,
-        )
+        );
     } else {
         return macroblock_probe_skip_internal(
             h,
             b_bidir,
             1 as ::core::ffi::c_int,
             CHROMA_400 as ::core::ffi::c_int,
-        )
+        );
     };
 }
 #[no_mangle]
@@ -7326,17 +5988,17 @@ pub unsafe extern "C" fn x264_10_noise_reduction_update(mut h: *mut x264_t) {
         .nr_residual_sum_buf
         .as_mut_ptr()
         .offset(0 as ::core::ffi::c_int as isize))
-        .as_mut_ptr() as *mut [uint32_t; 64];
+    .as_mut_ptr() as *mut [uint32_t; 64];
     (*h).nr_count = (*(*h)
         .nr_count_buf
         .as_mut_ptr()
         .offset(0 as ::core::ffi::c_int as isize))
-        .as_mut_ptr();
+    .as_mut_ptr();
     let mut cat: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while cat
         < 3 as ::core::ffi::c_int
-            + ((*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-                == CHROMA_444 as ::core::ffi::c_int) as ::core::ffi::c_int
+            + ((*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int)
+                as ::core::ffi::c_int
     {
         let mut dct8x8: ::core::ffi::c_int = cat & 1 as ::core::ffi::c_int;
         let mut size: ::core::ffi::c_int = if dct8x8 != 0 {
@@ -7358,34 +6020,30 @@ pub unsafe extern "C" fn x264_10_noise_reduction_update(mut h: *mut x264_t) {
         {
             let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while i < size {
-                (*(*h).nr_residual_sum.offset(cat as isize))[i as usize]
-                    >>= 1 as ::core::ffi::c_int;
+                (*(*h).nr_residual_sum.offset(cat as isize))[i as usize] >>=
+                    1 as ::core::ffi::c_int;
                 i += 1;
             }
             *(*h).nr_count.offset(cat as isize) >>= 1 as ::core::ffi::c_int;
         }
         let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i_0 < size {
-            (*(*h).nr_offset.offset(cat as isize))[i_0 as usize] = ((*h)
-                .param
-                .analyse
-                .i_noise_reduction as uint64_t)
-                .wrapping_mul(*(*h).nr_count.offset(cat as isize) as uint64_t)
-                .wrapping_add(
-                    (*(*h).nr_residual_sum.offset(cat as isize))[i_0 as usize]
-                        .wrapping_div(2 as uint32_t) as uint64_t,
-                )
-                .wrapping_div(
-                    ((*(*h).nr_residual_sum.offset(cat as isize))[i_0 as usize]
-                        as uint64_t)
-                        .wrapping_mul(*weight.offset(i_0 as isize) as uint64_t)
-                        .wrapping_div(256 as uint64_t)
-                        .wrapping_add(1 as uint64_t),
-                ) as udctcoef;
+            (*(*h).nr_offset.offset(cat as isize))[i_0 as usize] =
+                ((*h).param.analyse.i_noise_reduction as uint64_t)
+                    .wrapping_mul(*(*h).nr_count.offset(cat as isize) as uint64_t)
+                    .wrapping_add(
+                        (*(*h).nr_residual_sum.offset(cat as isize))[i_0 as usize]
+                            .wrapping_div(2 as uint32_t) as uint64_t,
+                    )
+                    .wrapping_div(
+                        ((*(*h).nr_residual_sum.offset(cat as isize))[i_0 as usize] as uint64_t)
+                            .wrapping_mul(*weight.offset(i_0 as isize) as uint64_t)
+                            .wrapping_div(256 as uint64_t)
+                            .wrapping_add(1 as uint64_t),
+                    ) as udctcoef;
             i_0 += 1;
         }
-        (*(*h).nr_offset.offset(cat as isize))[0 as ::core::ffi::c_int as usize] = 0
-            as udctcoef;
+        (*(*h).nr_offset.offset(cat as isize))[0 as ::core::ffi::c_int as usize] = 0 as udctcoef;
         cat += 1;
     }
 }
@@ -7402,8 +6060,8 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
     let mut x: ::core::ffi::c_int = i8 & 1 as ::core::ffi::c_int;
     let mut y: ::core::ffi::c_int = i8 >> 1 as ::core::ffi::c_int;
     let mut nz: ::core::ffi::c_int = 0;
-    let mut chroma422: ::core::ffi::c_int = (chroma == CHROMA_422 as ::core::ffi::c_int)
-        as ::core::ffi::c_int;
+    let mut chroma422: ::core::ffi::c_int =
+        (chroma == CHROMA_422 as ::core::ffi::c_int) as ::core::ffi::c_int;
     (*h).mb.i_cbp_chroma = 0 as ::core::ffi::c_int;
     (*h).mb.i_cbp_luma &= !((1 as ::core::ffi::c_int) << i8);
     if (*h).mb.b_skip_mc == 0 {
@@ -7412,100 +6070,56 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
     if (*h).mb.b_lossless != 0 {
         let mut p: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while p < plane_count {
-            let mut p_fenc: *mut pixel = (*h)
-                .mb
-                .pic
-                .p_fenc[p as usize]
+            let mut p_fenc: *mut pixel = (*h).mb.pic.p_fenc[p as usize]
                 .offset((8 as ::core::ffi::c_int * x) as isize)
                 .offset((8 as ::core::ffi::c_int * y * FENC_STRIDE) as isize);
-            let mut p_fdec: *mut pixel = (*h)
-                .mb
-                .pic
-                .p_fdec[p as usize]
+            let mut p_fdec: *mut pixel = (*h).mb.pic.p_fdec[p as usize]
                 .offset((8 as ::core::ffi::c_int * x) as isize)
                 .offset((8 as ::core::ffi::c_int * y * FDEC_STRIDE) as isize);
             let mut nnz8x8: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             if (*h).mb.b_transform_8x8 != 0 {
-                nnz8x8 = (*h)
-                    .zigzagf
-                    .sub_8x8
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                nnz8x8 = (*h).zigzagf.sub_8x8.expect("non-null function pointer")(
                     (*(*h)
                         .dct
                         .luma8x8
                         .as_mut_ptr()
                         .offset((4 as ::core::ffi::c_int * p + i8) as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     p_fenc,
                     p_fdec,
                 );
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset(
-                                (p * 16 as ::core::ffi::c_int
-                                    + i8 * 4 as ::core::ffi::c_int) as isize,
-                            ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union16_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8.as_ptr().offset(
+                        (p * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                        + 0 as ::core::ffi::c_int) as isize,
+                ) as *mut uint8_t as *mut x264_union16_t))
                     .i = (nnz8x8 * 0x101 as ::core::ffi::c_int) as uint16_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset(
-                                (p * 16 as ::core::ffi::c_int
-                                    + i8 * 4 as ::core::ffi::c_int) as isize,
-                            ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union16_t))
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8.as_ptr().offset(
+                        (p * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                        + 8 as ::core::ffi::c_int) as isize,
+                ) as *mut uint8_t as *mut x264_union16_t))
                     .i = (nnz8x8 * 0x101 as ::core::ffi::c_int) as uint16_t;
             } else {
                 let mut i4: ::core::ffi::c_int = i8 * 4 as ::core::ffi::c_int;
                 while i4 < i8 * 4 as ::core::ffi::c_int + 4 as ::core::ffi::c_int {
-                    nz = (*h)
-                        .zigzagf
-                        .sub_4x4
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                         (*(*h)
                             .dct
                             .luma4x4
                             .as_mut_ptr()
                             .offset((16 as ::core::ffi::c_int * p + i4) as isize))
-                            .as_mut_ptr(),
-                        (*h)
-                            .mb
-                            .pic
-                            .p_fenc[p as usize]
-                            .offset(
-                                block_idx_xy_fenc[i4 as usize] as ::core::ffi::c_int
-                                    as isize,
-                            ),
-                        (*h)
-                            .mb
-                            .pic
-                            .p_fdec[p as usize]
-                            .offset(
-                                block_idx_xy_fdec[i4 as usize] as ::core::ffi::c_int
-                                    as isize,
-                            ),
+                        .as_mut_ptr(),
+                        (*h).mb.pic.p_fenc[p as usize]
+                            .offset(block_idx_xy_fenc[i4 as usize] as ::core::ffi::c_int as isize),
+                        (*h).mb.pic.p_fdec[p as usize]
+                            .offset(block_idx_xy_fdec[i4 as usize] as ::core::ffi::c_int as isize),
                     );
-                    (*h)
-                        .mb
-                        .cache
-                        .non_zero_count[x264_scan8[(16 as ::core::ffi::c_int * p + i4)
-                        as usize] as usize] = nz as uint8_t;
+                    (*h).mb.cache.non_zero_count
+                        [x264_scan8[(16 as ::core::ffi::c_int * p + i4) as usize] as usize] =
+                        nz as uint8_t;
                     nnz8x8 |= nz;
                     i4 += 1;
                 }
@@ -7513,35 +6127,32 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
             (*h).mb.i_cbp_luma |= nnz8x8 << i8;
             p += 1;
         }
-        if chroma == CHROMA_420 as ::core::ffi::c_int
-            || chroma == CHROMA_422 as ::core::ffi::c_int
+        if chroma == CHROMA_420 as ::core::ffi::c_int || chroma == CHROMA_422 as ::core::ffi::c_int
         {
             let mut ch: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while ch < 2 as ::core::ffi::c_int {
                 let mut dc: dctcoef = 0;
-                let mut p_fenc_0: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fenc[(1 as ::core::ffi::c_int + ch) as usize]
+                let mut p_fenc_0: *mut pixel = (*h).mb.pic.p_fenc
+                    [(1 as ::core::ffi::c_int + ch) as usize]
                     .offset((4 as ::core::ffi::c_int * x) as isize)
                     .offset(
                         ((if chroma422 != 0 {
                             8 as ::core::ffi::c_int
                         } else {
                             4 as ::core::ffi::c_int
-                        }) * y * FENC_STRIDE) as isize,
+                        }) * y
+                            * FENC_STRIDE) as isize,
                     );
-                let mut p_fdec_0: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fdec[(1 as ::core::ffi::c_int + ch) as usize]
+                let mut p_fdec_0: *mut pixel = (*h).mb.pic.p_fdec
+                    [(1 as ::core::ffi::c_int + ch) as usize]
                     .offset((4 as ::core::ffi::c_int * x) as isize)
                     .offset(
                         ((if chroma422 != 0 {
                             8 as ::core::ffi::c_int
                         } else {
                             4 as ::core::ffi::c_int
-                        }) * y * FDEC_STRIDE) as isize,
+                        }) * y
+                            * FDEC_STRIDE) as isize,
                     );
                 let mut i4x4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while i4x4 <= chroma422 {
@@ -7550,37 +6161,20 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                     } else {
                         i8
                     };
-                    nz = (*h)
-                        .zigzagf
-                        .sub_4x4ac
-                        .expect(
-                            "non-null function pointer",
-                        )(
-                        (*(*h)
-                            .dct
-                            .luma4x4
-                            .as_mut_ptr()
-                            .offset(
-                                (16 as ::core::ffi::c_int + offset
-                                    + ch * 16 as ::core::ffi::c_int) as isize,
-                            ))
-                            .as_mut_ptr(),
-                        p_fenc_0
-                            .offset(
-                                (4 as ::core::ffi::c_int * i4x4 * FENC_STRIDE) as isize,
-                            ),
-                        p_fdec_0
-                            .offset(
-                                (4 as ::core::ffi::c_int * i4x4 * FDEC_STRIDE) as isize,
-                            ),
+                    nz = (*h).zigzagf.sub_4x4ac.expect("non-null function pointer")(
+                        (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                            (16 as ::core::ffi::c_int + offset + ch * 16 as ::core::ffi::c_int)
+                                as isize,
+                        ))
+                        .as_mut_ptr(),
+                        p_fenc_0.offset((4 as ::core::ffi::c_int * i4x4 * FENC_STRIDE) as isize),
+                        p_fdec_0.offset((4 as ::core::ffi::c_int * i4x4 * FDEC_STRIDE) as isize),
                         &mut dc,
                     );
-                    (*h)
-                        .mb
-                        .cache
-                        .non_zero_count[x264_scan8[(16 as ::core::ffi::c_int + offset
-                        + ch * 16 as ::core::ffi::c_int) as usize] as usize] = nz
-                        as uint8_t;
+                    (*h).mb.cache.non_zero_count[x264_scan8[(16 as ::core::ffi::c_int
+                        + offset
+                        + ch * 16 as ::core::ffi::c_int)
+                        as usize] as usize] = nz as uint8_t;
                     i4x4 += 1;
                 }
                 ch += 1;
@@ -7596,48 +6190,36 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                 } else {
                     CQM_8PY as ::core::ffi::c_int
                 };
-                let mut p_fenc_1: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fenc[p_0 as usize]
+                let mut p_fenc_1: *mut pixel = (*h).mb.pic.p_fenc[p_0 as usize]
                     .offset((8 as ::core::ffi::c_int * x) as isize)
                     .offset((8 as ::core::ffi::c_int * y * FENC_STRIDE) as isize);
-                let mut p_fdec_1: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fdec[p_0 as usize]
+                let mut p_fdec_1: *mut pixel = (*h).mb.pic.p_fdec[p_0 as usize]
                     .offset((8 as ::core::ffi::c_int * x) as isize)
                     .offset((8 as ::core::ffi::c_int * y * FDEC_STRIDE) as isize);
                 let mut dct8x8: [dctcoef; 64] = [0; 64];
-                (*h)
-                    .dctf
-                    .sub8x8_dct8
-                    .expect(
-                        "non-null function pointer",
-                    )(dct8x8.as_mut_ptr(), p_fenc_1, p_fdec_1);
+                (*h).dctf.sub8x8_dct8.expect("non-null function pointer")(
+                    dct8x8.as_mut_ptr(),
+                    p_fenc_1,
+                    p_fdec_1,
+                );
                 let mut nnz8x8_0: ::core::ffi::c_int = x264_quant_8x8(
                     h,
                     dct8x8.as_mut_ptr(),
                     i_qp,
-                    ctx_cat_plane[DCT_LUMA_8x8 as ::core::ffi::c_int
-                        as usize][p_0 as usize] as ::core::ffi::c_int,
+                    ctx_cat_plane[DCT_LUMA_8x8 as ::core::ffi::c_int as usize][p_0 as usize]
+                        as ::core::ffi::c_int,
                     0 as ::core::ffi::c_int,
                     p_0,
                     i8,
                 );
                 if nnz8x8_0 != 0 {
-                    (*h)
-                        .zigzagf
-                        .scan_8x8
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    (*h).zigzagf.scan_8x8.expect("non-null function pointer")(
                         (*(*h)
                             .dct
                             .luma8x8
                             .as_mut_ptr()
                             .offset((4 as ::core::ffi::c_int * p_0 + i8) as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         dct8x8.as_mut_ptr(),
                     );
                     if b_decimate != 0 && (*h).mb.b_trellis == 0 {
@@ -7645,128 +6227,81 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                             <= (*h)
                                 .quantf
                                 .decimate_score64
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                                .expect("non-null function pointer")(
                                 (*(*h)
                                     .dct
                                     .luma8x8
                                     .as_mut_ptr()
                                     .offset((4 as ::core::ffi::c_int * p_0 + i8) as isize))
-                                    .as_mut_ptr(),
+                                .as_mut_ptr(),
                             )) as ::core::ffi::c_int;
                     }
                     if nnz8x8_0 != 0 {
-                        (*h)
-                            .quantf
-                            .dequant_8x8
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).quantf.dequant_8x8.expect("non-null function pointer")(
                             dct8x8.as_mut_ptr(),
                             (*h).dequant8_mf[quant_cat as usize],
                             i_qp,
                         );
-                        (*h)
-                            .dctf
-                            .add8x8_idct8
-                            .expect(
-                                "non-null function pointer",
-                            )(p_fdec_1, dct8x8.as_mut_ptr());
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_0 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_0 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
+                        (*h).dctf.add8x8_idct8.expect("non-null function pointer")(
+                            p_fdec_1,
+                            dct8x8.as_mut_ptr(),
+                        );
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_0 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 0 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_0 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 8 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (1 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
                         (*h).mb.i_cbp_luma |= (1 as ::core::ffi::c_int) << i8;
                     } else {
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_0 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_0 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_0 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 0 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_0 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 8 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
                     }
                 } else {
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            (*x264_scan8
-                                .as_ptr()
-                                .offset(
-                                    (p_0 * 16 as ::core::ffi::c_int
-                                        + i8 * 4 as ::core::ffi::c_int) as isize,
-                                ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                        ) as *mut uint8_t as *mut x264_union16_t))
-                        .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                        as uint16_t;
-                    (*(&mut *(*h)
-                        .mb
-                        .cache
-                        .non_zero_count
-                        .as_mut_ptr()
-                        .offset(
-                            (*x264_scan8
-                                .as_ptr()
-                                .offset(
-                                    (p_0 * 16 as ::core::ffi::c_int
-                                        + i8 * 4 as ::core::ffi::c_int) as isize,
-                                ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                        ) as *mut uint8_t as *mut x264_union16_t))
-                        .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                        as uint16_t;
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        (*x264_scan8.as_ptr().offset(
+                            (p_0 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 0 as ::core::ffi::c_int) as isize,
+                    ) as *mut uint8_t as *mut x264_union16_t))
+                        .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
+                    (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                        (*x264_scan8.as_ptr().offset(
+                            (p_0 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 8 as ::core::ffi::c_int) as isize,
+                    ) as *mut uint8_t as *mut x264_union16_t))
+                        .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
                 }
                 p_0 += 1;
                 i_qp = (*h).mb.i_chroma_qp;
@@ -7779,16 +6314,10 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                 } else {
                     CQM_4PY as ::core::ffi::c_int
                 };
-                let mut p_fenc_2: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fenc[p_1 as usize]
+                let mut p_fenc_2: *mut pixel = (*h).mb.pic.p_fenc[p_1 as usize]
                     .offset((8 as ::core::ffi::c_int * x) as isize)
                     .offset((8 as ::core::ffi::c_int * y * FENC_STRIDE) as isize);
-                let mut p_fdec_2: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fdec[p_1 as usize]
+                let mut p_fdec_2: *mut pixel = (*h).mb.pic.p_fdec[p_1 as usize]
                     .offset((8 as ::core::ffi::c_int * x) as isize)
                     .offset((8 as ::core::ffi::c_int * y * FDEC_STRIDE) as isize);
                 let mut i_decimate_8x8: ::core::ffi::c_int = if b_decimate != 0 {
@@ -7798,68 +6327,42 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                 };
                 let mut dct4x4: [[dctcoef; 16]; 4] = [[0; 16]; 4];
                 let mut nnz8x8_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                (*h)
-                    .dctf
-                    .sub8x8_dct
-                    .expect(
-                        "non-null function pointer",
-                    )(dct4x4.as_mut_ptr(), p_fenc_2, p_fdec_2);
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset(
-                                (p_1 * 16 as ::core::ffi::c_int
-                                    + i8 * 4 as ::core::ffi::c_int) as isize,
-                            ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union16_t))
-                    .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                    as uint16_t;
-                (*(&mut *(*h)
-                    .mb
-                    .cache
-                    .non_zero_count
-                    .as_mut_ptr()
-                    .offset(
-                        (*x264_scan8
-                            .as_ptr()
-                            .offset(
-                                (p_1 * 16 as ::core::ffi::c_int
-                                    + i8 * 4 as ::core::ffi::c_int) as isize,
-                            ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                    ) as *mut uint8_t as *mut x264_union16_t))
-                    .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                    as uint16_t;
+                (*h).dctf.sub8x8_dct.expect("non-null function pointer")(
+                    dct4x4.as_mut_ptr(),
+                    p_fenc_2,
+                    p_fdec_2,
+                );
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8.as_ptr().offset(
+                        (p_1 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                        + 0 as ::core::ffi::c_int) as isize,
+                ) as *mut uint8_t as *mut x264_union16_t))
+                    .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
+                (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                    (*x264_scan8.as_ptr().offset(
+                        (p_1 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                        + 8 as ::core::ffi::c_int) as isize,
+                ) as *mut uint8_t as *mut x264_union16_t))
+                    .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
                 if (*h).mb.b_noise_reduction != 0 {
                     let mut idx: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     while idx < 4 as ::core::ffi::c_int {
-                        (*h)
-                            .quantf
-                            .denoise_dct
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).quantf.denoise_dct.expect("non-null function pointer")(
                             (*dct4x4.as_mut_ptr().offset(idx as isize)).as_mut_ptr(),
-                            (*(*h)
-                                .nr_residual_sum
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        + (p_1 != 0) as ::core::ffi::c_int
-                                            * 2 as ::core::ffi::c_int) as isize,
-                                ))
-                                .as_mut_ptr(),
-                            (*(*h)
-                                .nr_offset
-                                .offset(
-                                    (0 as ::core::ffi::c_int
-                                        + (p_1 != 0) as ::core::ffi::c_int
-                                            * 2 as ::core::ffi::c_int) as isize,
-                                ))
-                                .as_mut_ptr(),
+                            (*(*h).nr_residual_sum.offset(
+                                (0 as ::core::ffi::c_int
+                                    + (p_1 != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                                    as isize,
+                            ))
+                            .as_mut_ptr(),
+                            (*(*h).nr_offset.offset(
+                                (0 as ::core::ffi::c_int
+                                    + (p_1 != 0) as ::core::ffi::c_int * 2 as ::core::ffi::c_int)
+                                    as isize,
+                            ))
+                            .as_mut_ptr(),
                             16 as ::core::ffi::c_int,
                         );
                         idx += 1;
@@ -7873,149 +6376,103 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                             (*dct4x4.as_mut_ptr().offset(i4x4_0 as isize)).as_mut_ptr(),
                             quant_cat_0,
                             i_qp,
-                            ctx_cat_plane[DCT_LUMA_4x4 as ::core::ffi::c_int
-                                as usize][p_1 as usize] as ::core::ffi::c_int,
+                            ctx_cat_plane[DCT_LUMA_4x4 as ::core::ffi::c_int as usize][p_1 as usize]
+                                as ::core::ffi::c_int,
                             0 as ::core::ffi::c_int,
                             (p_1 != 0) as ::core::ffi::c_int,
-                            i8 * 4 as ::core::ffi::c_int + i4x4_0
-                                + p_1 * 16 as ::core::ffi::c_int,
+                            i8 * 4 as ::core::ffi::c_int + i4x4_0 + p_1 * 16 as ::core::ffi::c_int,
                         ) != 0
                         {
-                            (*h)
-                                .zigzagf
-                                .scan_4x4
-                                .expect(
-                                    "non-null function pointer",
-                                )(
-                                (*(*h)
-                                    .dct
-                                    .luma4x4
-                                    .as_mut_ptr()
-                                    .offset(
-                                        (p_1 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int + i4x4_0) as isize,
-                                    ))
-                                    .as_mut_ptr(),
+                            (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
+                                (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                                    (p_1 * 16 as ::core::ffi::c_int
+                                        + i8 * 4 as ::core::ffi::c_int
+                                        + i4x4_0) as isize,
+                                ))
+                                .as_mut_ptr(),
                                 (*dct4x4.as_mut_ptr().offset(i4x4_0 as isize)).as_mut_ptr(),
                             );
-                            (*h)
-                                .quantf
-                                .dequant_4x4
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                            (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                                 (*dct4x4.as_mut_ptr().offset(i4x4_0 as isize)).as_mut_ptr(),
                                 (*h).dequant4_mf[quant_cat_0 as usize],
                                 i_qp,
                             );
                             if i_decimate_8x8 < 4 as ::core::ffi::c_int {
-                                i_decimate_8x8
-                                    += (*h)
-                                        .quantf
-                                        .decimate_score16
-                                        .expect(
-                                            "non-null function pointer",
-                                        )(
-                                        (*(*h)
-                                            .dct
-                                            .luma4x4
-                                            .as_mut_ptr()
-                                            .offset(
-                                                (p_1 * 16 as ::core::ffi::c_int
-                                                    + i8 * 4 as ::core::ffi::c_int + i4x4_0) as isize,
-                                            ))
-                                            .as_mut_ptr(),
-                                    );
+                                i_decimate_8x8 += (*h)
+                                    .quantf
+                                    .decimate_score16
+                                    .expect("non-null function pointer")(
+                                    (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                                        (p_1 * 16 as ::core::ffi::c_int
+                                            + i8 * 4 as ::core::ffi::c_int
+                                            + i4x4_0)
+                                            as isize,
+                                    ))
+                                    .as_mut_ptr(),
+                                );
                             }
-                            (*h)
-                                .mb
-                                .cache
-                                .non_zero_count[x264_scan8[(p_1 * 16 as ::core::ffi::c_int
-                                + i8 * 4 as ::core::ffi::c_int + i4x4_0) as usize]
+                            (*h).mb.cache.non_zero_count[x264_scan8[(p_1 * 16 as ::core::ffi::c_int
+                                + i8 * 4 as ::core::ffi::c_int
+                                + i4x4_0)
+                                as usize]
                                 as usize] = 1 as uint8_t;
                             nnz8x8_1 = 1 as ::core::ffi::c_int;
                         }
                         i4x4_0 += 1;
                     }
                 } else {
-                    nz = (*h)
-                        .quantf
-                        .quant_4x4x4
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    nz = (*h).quantf.quant_4x4x4.expect("non-null function pointer")(
                         dct4x4.as_mut_ptr(),
                         (*(*(*h).quant4_mf.as_mut_ptr().offset(quant_cat_0 as isize))
                             .offset(i_qp as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                         (*(*(*h).quant4_bias.as_mut_ptr().offset(quant_cat_0 as isize))
                             .offset(i_qp as isize))
-                            .as_mut_ptr(),
+                        .as_mut_ptr(),
                     );
                     nnz8x8_1 = nz;
                     if nz != 0 {
                         let mut i4x4_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                         let mut msk: ::core::ffi::c_int = nz;
                         let mut skip: ::core::ffi::c_int = 0;
-                        while msk != 0
-                            && {
-                                skip = x264_ctz_4bit(msk as uint32_t);
-                                i4x4_1 += skip;
-                                msk >>= skip + 1 as ::core::ffi::c_int;
-                                1 as ::core::ffi::c_int != 0
-                            }
-                        {
-                            (*h)
-                                .zigzagf
-                                .scan_4x4
-                                .expect(
-                                    "non-null function pointer",
-                                )(
-                                (*(*h)
-                                    .dct
-                                    .luma4x4
-                                    .as_mut_ptr()
-                                    .offset(
-                                        (p_1 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int + i4x4_1) as isize,
-                                    ))
-                                    .as_mut_ptr(),
+                        while msk != 0 && {
+                            skip = x264_ctz_4bit(msk as uint32_t);
+                            i4x4_1 += skip;
+                            msk >>= skip + 1 as ::core::ffi::c_int;
+                            1 as ::core::ffi::c_int != 0
+                        } {
+                            (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
+                                (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                                    (p_1 * 16 as ::core::ffi::c_int
+                                        + i8 * 4 as ::core::ffi::c_int
+                                        + i4x4_1) as isize,
+                                ))
+                                .as_mut_ptr(),
                                 (*dct4x4.as_mut_ptr().offset(i4x4_1 as isize)).as_mut_ptr(),
                             );
-                            (*h)
-                                .quantf
-                                .dequant_4x4
-                                .expect(
-                                    "non-null function pointer",
-                                )(
+                            (*h).quantf.dequant_4x4.expect("non-null function pointer")(
                                 (*dct4x4.as_mut_ptr().offset(i4x4_1 as isize)).as_mut_ptr(),
                                 (*h).dequant4_mf[quant_cat_0 as usize],
                                 i_qp,
                             );
                             if i_decimate_8x8 < 4 as ::core::ffi::c_int {
-                                i_decimate_8x8
-                                    += (*h)
-                                        .quantf
-                                        .decimate_score16
-                                        .expect(
-                                            "non-null function pointer",
-                                        )(
-                                        (*(*h)
-                                            .dct
-                                            .luma4x4
-                                            .as_mut_ptr()
-                                            .offset(
-                                                (p_1 * 16 as ::core::ffi::c_int
-                                                    + i8 * 4 as ::core::ffi::c_int + i4x4_1) as isize,
-                                            ))
-                                            .as_mut_ptr(),
-                                    );
+                                i_decimate_8x8 += (*h)
+                                    .quantf
+                                    .decimate_score16
+                                    .expect("non-null function pointer")(
+                                    (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                                        (p_1 * 16 as ::core::ffi::c_int
+                                            + i8 * 4 as ::core::ffi::c_int
+                                            + i4x4_1)
+                                            as isize,
+                                    ))
+                                    .as_mut_ptr(),
+                                );
                             }
-                            (*h)
-                                .mb
-                                .cache
-                                .non_zero_count[x264_scan8[(p_1 * 16 as ::core::ffi::c_int
-                                + i8 * 4 as ::core::ffi::c_int + i4x4_1) as usize]
+                            (*h).mb.cache.non_zero_count[x264_scan8[(p_1 * 16 as ::core::ffi::c_int
+                                + i8 * 4 as ::core::ffi::c_int
+                                + i4x4_1)
+                                as usize]
                                 as usize] = 1 as uint8_t;
                             i4x4_1 += 1;
                         }
@@ -8023,43 +6480,29 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                 }
                 if nnz8x8_1 != 0 {
                     if i_decimate_8x8 < 4 as ::core::ffi::c_int {
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_1 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
-                        (*(&mut *(*h)
-                            .mb
-                            .cache
-                            .non_zero_count
-                            .as_mut_ptr()
-                            .offset(
-                                (*x264_scan8
-                                    .as_ptr()
-                                    .offset(
-                                        (p_1 * 16 as ::core::ffi::c_int
-                                            + i8 * 4 as ::core::ffi::c_int) as isize,
-                                    ) as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize,
-                            ) as *mut uint8_t as *mut x264_union16_t))
-                            .i = (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int)
-                            as uint16_t;
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_1 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 0 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
+                        (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
+                            (*x264_scan8.as_ptr().offset(
+                                (p_1 * 16 as ::core::ffi::c_int + i8 * 4 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                                + 8 as ::core::ffi::c_int) as isize,
+                        ) as *mut uint8_t as *mut x264_union16_t))
+                            .i =
+                            (0 as ::core::ffi::c_int * 0x101 as ::core::ffi::c_int) as uint16_t;
                     } else {
-                        (*h)
-                            .dctf
-                            .add8x8_idct
-                            .expect(
-                                "non-null function pointer",
-                            )(p_fdec_2, dct4x4.as_mut_ptr());
+                        (*h).dctf.add8x8_idct.expect("non-null function pointer")(
+                            p_fdec_2,
+                            dct4x4.as_mut_ptr(),
+                        );
                         (*h).mb.i_cbp_luma |= (1 as ::core::ffi::c_int) << i8;
                     }
                 }
@@ -8067,80 +6510,58 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                 i_qp = (*h).mb.i_chroma_qp;
             }
         }
-        if chroma == CHROMA_420 as ::core::ffi::c_int
-            || chroma == CHROMA_422 as ::core::ffi::c_int
+        if chroma == CHROMA_420 as ::core::ffi::c_int || chroma == CHROMA_422 as ::core::ffi::c_int
         {
             i_qp = (*h).mb.i_chroma_qp;
             let mut ch_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while ch_0 < 2 as ::core::ffi::c_int {
                 let mut dct4x4_0: [[dctcoef; 16]; 2] = [[0; 16]; 2];
-                let mut p_fenc_3: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fenc[(1 as ::core::ffi::c_int + ch_0) as usize]
+                let mut p_fenc_3: *mut pixel = (*h).mb.pic.p_fenc
+                    [(1 as ::core::ffi::c_int + ch_0) as usize]
                     .offset((4 as ::core::ffi::c_int * x) as isize)
                     .offset(
                         ((if chroma422 != 0 {
                             8 as ::core::ffi::c_int
                         } else {
                             4 as ::core::ffi::c_int
-                        }) * y * FENC_STRIDE) as isize,
+                        }) * y
+                            * FENC_STRIDE) as isize,
                     );
-                let mut p_fdec_3: *mut pixel = (*h)
-                    .mb
-                    .pic
-                    .p_fdec[(1 as ::core::ffi::c_int + ch_0) as usize]
+                let mut p_fdec_3: *mut pixel = (*h).mb.pic.p_fdec
+                    [(1 as ::core::ffi::c_int + ch_0) as usize]
                     .offset((4 as ::core::ffi::c_int * x) as isize)
                     .offset(
                         ((if chroma422 != 0 {
                             8 as ::core::ffi::c_int
                         } else {
                             4 as ::core::ffi::c_int
-                        }) * y * FDEC_STRIDE) as isize,
+                        }) * y
+                            * FDEC_STRIDE) as isize,
                     );
                 let mut i4x4_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while i4x4_2 <= chroma422 {
-                    (*h)
-                        .dctf
-                        .sub4x4_dct
-                        .expect(
-                            "non-null function pointer",
-                        )(
+                    (*h).dctf.sub4x4_dct.expect("non-null function pointer")(
                         (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
-                        p_fenc_3
-                            .offset(
-                                (4 as ::core::ffi::c_int * i4x4_2 * FENC_STRIDE) as isize,
-                            ),
-                        p_fdec_3
-                            .offset(
-                                (4 as ::core::ffi::c_int * i4x4_2 * FDEC_STRIDE) as isize,
-                            ),
+                        p_fenc_3.offset((4 as ::core::ffi::c_int * i4x4_2 * FENC_STRIDE) as isize),
+                        p_fdec_3.offset((4 as ::core::ffi::c_int * i4x4_2 * FDEC_STRIDE) as isize),
                     );
                     if (*h).mb.b_noise_reduction != 0 {
-                        (*h)
-                            .quantf
-                            .denoise_dct
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize))
-                                .as_mut_ptr(),
+                        (*h).quantf.denoise_dct.expect("non-null function pointer")(
+                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
                             (*(*h)
                                 .nr_residual_sum
                                 .offset(2 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
-                            (*(*h).nr_offset.offset(2 as ::core::ffi::c_int as isize))
-                                .as_mut_ptr(),
+                            .as_mut_ptr(),
+                            (*(*h).nr_offset.offset(2 as ::core::ffi::c_int as isize)).as_mut_ptr(),
                             16 as ::core::ffi::c_int,
                         );
                     }
-                    dct4x4_0[i4x4_2 as usize][0 as ::core::ffi::c_int as usize] = 0
-                        as ::core::ffi::c_int as dctcoef;
+                    dct4x4_0[i4x4_2 as usize][0 as ::core::ffi::c_int as usize] =
+                        0 as ::core::ffi::c_int as dctcoef;
                     if (*h).mb.b_trellis != 0 {
                         nz = x264_10_quant_4x4_trellis(
                             h,
-                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize))
-                                .as_mut_ptr(),
+                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
                             CQM_4PC as ::core::ffi::c_int,
                             i_qp,
                             DCT_CHROMA_AC as ::core::ffi::c_int,
@@ -8149,26 +6570,20 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                             0 as ::core::ffi::c_int,
                         );
                     } else {
-                        nz = (*h)
-                            .quantf
-                            .quant_4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize))
-                                .as_mut_ptr(),
+                        nz = (*h).quantf.quant_4x4.expect("non-null function pointer")(
+                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
                             (*(*(*h)
                                 .quant4_mf
                                 .as_mut_ptr()
                                 .offset(CQM_4PC as ::core::ffi::c_int as isize))
-                                .offset(i_qp as isize))
-                                .as_mut_ptr(),
+                            .offset(i_qp as isize))
+                            .as_mut_ptr(),
                             (*(*(*h)
                                 .quant4_bias
                                 .as_mut_ptr()
                                 .offset(CQM_4PC as ::core::ffi::c_int as isize))
-                                .offset(i_qp as isize))
-                                .as_mut_ptr(),
+                            .offset(i_qp as isize))
+                            .as_mut_ptr(),
                         );
                     }
                     let mut offset_0: ::core::ffi::c_int = if chroma422 != 0 {
@@ -8177,51 +6592,29 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                     } else {
                         i8
                     };
-                    (*h)
-                        .mb
-                        .cache
-                        .non_zero_count[x264_scan8[(16 as ::core::ffi::c_int + offset_0
-                        + ch_0 * 16 as ::core::ffi::c_int) as usize] as usize] = nz
-                        as uint8_t;
+                    (*h).mb.cache.non_zero_count[x264_scan8[(16 as ::core::ffi::c_int
+                        + offset_0
+                        + ch_0 * 16 as ::core::ffi::c_int)
+                        as usize] as usize] = nz as uint8_t;
                     if nz != 0 {
-                        (*h)
-                            .zigzagf
-                            .scan_4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            (*(*h)
-                                .dct
-                                .luma4x4
-                                .as_mut_ptr()
-                                .offset(
-                                    (16 as ::core::ffi::c_int + offset_0
-                                        + ch_0 * 16 as ::core::ffi::c_int) as isize,
-                                ))
-                                .as_mut_ptr(),
+                        (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
+                            (*(*h).dct.luma4x4.as_mut_ptr().offset(
+                                (16 as ::core::ffi::c_int
+                                    + offset_0
+                                    + ch_0 * 16 as ::core::ffi::c_int)
+                                    as isize,
+                            ))
+                            .as_mut_ptr(),
                             (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
                         );
-                        (*h)
-                            .quantf
-                            .dequant_4x4
-                            .expect(
-                                "non-null function pointer",
-                            )(
-                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize))
-                                .as_mut_ptr(),
+                        (*h).quantf.dequant_4x4.expect("non-null function pointer")(
+                            (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
                             (*h).dequant4_mf[CQM_4PC as ::core::ffi::c_int as usize],
                             i_qp,
                         );
-                        (*h)
-                            .dctf
-                            .add4x4_idct
-                            .expect(
-                                "non-null function pointer",
-                            )(
+                        (*h).dctf.add4x4_idct.expect("non-null function pointer")(
                             p_fdec_3
-                                .offset(
-                                    (4 as ::core::ffi::c_int * i4x4_2 * FDEC_STRIDE) as isize,
-                                ),
+                                .offset((4 as ::core::ffi::c_int * i4x4_2 * FDEC_STRIDE) as isize),
                             (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
                         );
                     }
@@ -8246,18 +6639,14 @@ pub unsafe extern "C" fn x264_10_macroblock_encode_p8x8(
             1 as ::core::ffi::c_int,
             CHROMA_420 as ::core::ffi::c_int,
         );
-    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-        == CHROMA_422 as ::core::ffi::c_int
-    {
+    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_422 as ::core::ffi::c_int {
         macroblock_encode_p8x8_internal(
             h,
             i8,
             1 as ::core::ffi::c_int,
             CHROMA_422 as ::core::ffi::c_int,
         );
-    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-        == CHROMA_444 as ::core::ffi::c_int
-    {
+    } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
         macroblock_encode_p8x8_internal(
             h,
             i8,
@@ -8288,52 +6677,33 @@ unsafe extern "C" fn macroblock_encode_p4x4_internal(
         } else {
             CQM_4PY as ::core::ffi::c_int
         };
-        let mut p_fenc: *mut pixel = &mut *(*(*h)
-            .mb
-            .pic
-            .p_fenc
-            .as_mut_ptr()
-            .offset(p as isize))
+        let mut p_fenc: *mut pixel = &mut *(*(*h).mb.pic.p_fenc.as_mut_ptr().offset(p as isize))
             .offset(*block_idx_xy_fenc.as_ptr().offset(i4 as isize) as isize)
             as *mut pixel;
-        let mut p_fdec: *mut pixel = &mut *(*(*h)
-            .mb
-            .pic
-            .p_fdec
-            .as_mut_ptr()
-            .offset(p as isize))
+        let mut p_fdec: *mut pixel = &mut *(*(*h).mb.pic.p_fdec.as_mut_ptr().offset(p as isize))
             .offset(*block_idx_xy_fdec.as_ptr().offset(i4 as isize) as isize)
             as *mut pixel;
         let mut nz: ::core::ffi::c_int = 0;
         if (*h).mb.b_lossless != 0 {
-            nz = (*h)
-                .zigzagf
-                .sub_4x4
-                .expect(
-                    "non-null function pointer",
-                )(
+            nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                 (*(*h)
                     .dct
                     .luma4x4
                     .as_mut_ptr()
                     .offset((p * 16 as ::core::ffi::c_int + i4) as isize))
-                    .as_mut_ptr(),
+                .as_mut_ptr(),
                 p_fenc,
                 p_fdec,
             );
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(p * 16 as ::core::ffi::c_int + i4) as usize]
-                as usize] = nz as uint8_t;
+            (*h).mb.cache.non_zero_count
+                [x264_scan8[(p * 16 as ::core::ffi::c_int + i4) as usize] as usize] = nz as uint8_t;
         } else {
             let mut dct4x4: [dctcoef; 16] = [0; 16];
-            (*h)
-                .dctf
-                .sub4x4_dct
-                .expect(
-                    "non-null function pointer",
-                )(dct4x4.as_mut_ptr(), p_fenc, p_fdec);
+            (*h).dctf.sub4x4_dct.expect("non-null function pointer")(
+                dct4x4.as_mut_ptr(),
+                p_fenc,
+                p_fdec,
+            );
             nz = x264_quant_4x4(
                 h,
                 dct4x4.as_mut_ptr(),
@@ -8344,36 +6714,27 @@ unsafe extern "C" fn macroblock_encode_p4x4_internal(
                 p,
                 i4,
             );
-            (*h)
-                .mb
-                .cache
-                .non_zero_count[x264_scan8[(p * 16 as ::core::ffi::c_int + i4) as usize]
-                as usize] = nz as uint8_t;
+            (*h).mb.cache.non_zero_count
+                [x264_scan8[(p * 16 as ::core::ffi::c_int + i4) as usize] as usize] = nz as uint8_t;
             if nz != 0 {
-                (*h)
-                    .zigzagf
-                    .scan_4x4
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                (*h).zigzagf.scan_4x4.expect("non-null function pointer")(
                     (*(*h)
                         .dct
                         .luma4x4
                         .as_mut_ptr()
                         .offset((p * 16 as ::core::ffi::c_int + i4) as isize))
-                        .as_mut_ptr(),
+                    .as_mut_ptr(),
                     dct4x4.as_mut_ptr(),
                 );
-                (*h)
-                    .quantf
-                    .dequant_4x4
-                    .expect(
-                        "non-null function pointer",
-                    )(dct4x4.as_mut_ptr(), (*h).dequant4_mf[quant_cat as usize], i_qp);
-                (*h)
-                    .dctf
-                    .add4x4_idct
-                    .expect("non-null function pointer")(p_fdec, dct4x4.as_mut_ptr());
+                (*h).quantf.dequant_4x4.expect("non-null function pointer")(
+                    dct4x4.as_mut_ptr(),
+                    (*h).dequant4_mf[quant_cat as usize],
+                    i_qp,
+                );
+                (*h).dctf.add4x4_idct.expect("non-null function pointer")(
+                    p_fdec,
+                    dct4x4.as_mut_ptr(),
+                );
             }
         }
         p += 1;

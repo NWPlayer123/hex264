@@ -81,7 +81,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -106,7 +106,7 @@ pub mod struct_timespec_h {
         pub tv_sec: __time_t,
         pub tv_nsec: __syscall_slong_t,
     }
-    use super::types_h::{__time_t, __syscall_slong_t};
+    use super::types_h::{__syscall_slong_t, __time_t};
 }
 #[c2rust::header_src = "/usr/include/bits/struct_stat.h:27"]
 pub mod struct_stat_h {
@@ -130,11 +130,11 @@ pub mod struct_stat_h {
         pub st_ctim: timespec,
         pub __glibc_reserved: [__syscall_slong_t; 3],
     }
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t,
-    };
     use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __uid_t,
+    };
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
 pub mod stdint_intn_h {
@@ -148,7 +148,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264cli.h:27"]
 pub mod x264cli_h {
@@ -159,15 +159,11 @@ pub mod x264cli_h {
     pub unsafe extern "C" fn get_filename_extension(
         mut filename: *mut ::core::ffi::c_char,
     ) -> *mut ::core::ffi::c_char {
-        let mut ext: *mut ::core::ffi::c_char = filename
-            .offset(strlen(filename) as isize);
+        let mut ext: *mut ::core::ffi::c_char = filename.offset(strlen(filename) as isize);
         while *ext as ::core::ffi::c_int != '.' as i32 && ext > filename {
             ext = ext.offset(-1);
         }
-        ext = ext
-            .offset(
-                (*ext as ::core::ffi::c_int == '.' as i32) as ::core::ffi::c_int as isize,
-            );
+        ext = ext.offset((*ext as ::core::ffi::c_int == '.' as i32) as ::core::ffi::c_int as isize);
         return ext;
     }
     use super::string_h::strlen;
@@ -180,11 +176,7 @@ pub mod x264cli_h {
             ...
         );
         #[c2rust::src_loc = "77:1"]
-        pub fn x264_cli_printf(
-            i_level: ::core::ffi::c_int,
-            fmt: *const ::core::ffi::c_char,
-            ...
-        );
+        pub fn x264_cli_printf(i_level: ::core::ffi::c_int, fmt: *const ::core::ffi::c_char, ...);
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/input/input.h:27"]
@@ -267,15 +259,10 @@ pub mod input_h {
             ) -> ::core::ffi::c_int,
         >,
         pub read_frame: Option<
-            unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut cli_pic_t, hnd_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
-        pub release_frame: Option<
-            unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
-        >,
+        pub release_frame:
+            Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int>,
         pub picture_clean: Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()>,
         pub close_file: Option<unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int>,
     }
@@ -292,8 +279,8 @@ pub mod input_h {
     }
     #[c2rust::src_loc = "115:9"]
     pub const X264_CSP_OTHER: ::core::ffi::c_int = 0x4000 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::x264cli_h::hnd_t;
     extern "C" {
         #[c2rust::src_loc = "131:1"]
@@ -310,9 +297,8 @@ pub mod input_h {
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/extras/avisynth_c.h:27"]
 pub mod avisynth_c_h {
     #[c2rust::src_loc = "812:1"]
-    pub type avs_is_y_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_y_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "618:16"]
@@ -330,45 +316,35 @@ pub mod avisynth_c_h {
         pub image_type: ::core::ffi::c_int,
     }
     #[c2rust::src_loc = "810:1"]
-    pub type avs_is_420_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_420_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "808:1"]
-    pub type avs_is_422_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_422_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "806:1"]
-    pub type avs_is_444_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_444_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "800:1"]
-    pub type avs_is_y16_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_y16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "799:1"]
-    pub type avs_is_yuv420p16_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_yuv420p16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "798:1"]
-    pub type avs_is_yuv422p16_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_yuv422p16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "797:1"]
-    pub type avs_is_yuv444p16_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_yuv444p16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "795:1"]
-    pub type avs_is_rgb64_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_rgb64_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "793:1"]
-    pub type avs_is_rgb48_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_rgb48_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "880:1"]
-    pub type avs_get_read_ptr_p_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoFrame, ::core::ffi::c_int) -> *const BYTE,
-    >;
+    pub type avs_get_read_ptr_p_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoFrame, ::core::ffi::c_int) -> *const BYTE>;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "857:16"]
@@ -403,35 +379,26 @@ pub mod avisynth_c_h {
     pub type BYTE = uint8_t;
     #[c2rust::src_loc = "874:1"]
     pub type avs_get_pitch_p_func = Option<
-        unsafe extern "C" fn(
-            *const AVS_VideoFrame,
-            ::core::ffi::c_int,
-        ) -> ::core::ffi::c_int,
+        unsafe extern "C" fn(*const AVS_VideoFrame, ::core::ffi::c_int) -> ::core::ffi::c_int,
     >;
     #[c2rust::src_loc = "665:1"]
-    pub type avs_is_y8_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_y8_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "663:1"]
-    pub type avs_is_yv411_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_yv411_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "661:1"]
-    pub type avs_is_yv12_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_yv12_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "659:1"]
-    pub type avs_is_yv16_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_yv16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "657:1"]
-    pub type avs_is_yv24_func = Option<
-        unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int,
-    >;
+    pub type avs_is_yv24_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
     #[c2rust::src_loc = "1022:1"]
-    pub type avs_take_clip_func = Option<
-        unsafe extern "C" fn(AVS_Value, *mut AVS_ScriptEnvironment) -> *mut AVS_Clip,
-    >;
+    pub type avs_take_clip_func =
+        Option<unsafe extern "C" fn(AVS_Value, *mut AVS_ScriptEnvironment) -> *mut AVS_Clip>;
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "994:8"]
@@ -455,9 +422,7 @@ pub mod avisynth_c_h {
         pub double_pt: ::core::ffi::c_double,
     }
     #[c2rust::src_loc = "937:1"]
-    pub type avs_release_video_frame_func = Option<
-        unsafe extern "C" fn(*mut AVS_VideoFrame) -> (),
-    >;
+    pub type avs_release_video_frame_func = Option<unsafe extern "C" fn(*mut AVS_VideoFrame) -> ()>;
     #[c2rust::src_loc = "1021:1"]
     pub type avs_release_value_func = Option<unsafe extern "C" fn(AVS_Value) -> ()>;
     #[c2rust::src_loc = "1079:1"]
@@ -479,29 +444,23 @@ pub mod avisynth_c_h {
         ) -> ::core::ffi::c_int,
     >;
     #[c2rust::src_loc = "1084:1"]
-    pub type avs_get_video_info_func = Option<
-        unsafe extern "C" fn(*mut AVS_Clip) -> *const AVS_VideoInfo,
-    >;
+    pub type avs_get_video_info_func =
+        Option<unsafe extern "C" fn(*mut AVS_Clip) -> *const AVS_VideoInfo>;
     #[c2rust::src_loc = "1088:1"]
-    pub type avs_get_frame_func = Option<
-        unsafe extern "C" fn(*mut AVS_Clip, ::core::ffi::c_int) -> *mut AVS_VideoFrame,
-    >;
+    pub type avs_get_frame_func =
+        Option<unsafe extern "C" fn(*mut AVS_Clip, ::core::ffi::c_int) -> *mut AVS_VideoFrame>;
     #[c2rust::src_loc = "1183:1"]
-    pub type avs_get_error_func = Option<
-        unsafe extern "C" fn(*mut AVS_ScriptEnvironment) -> *const ::core::ffi::c_char,
-    >;
+    pub type avs_get_error_func =
+        Option<unsafe extern "C" fn(*mut AVS_ScriptEnvironment) -> *const ::core::ffi::c_char>;
     #[c2rust::src_loc = "1265:1"]
-    pub type avs_delete_script_environment_func = Option<
-        unsafe extern "C" fn(*mut AVS_ScriptEnvironment) -> (),
-    >;
+    pub type avs_delete_script_environment_func =
+        Option<unsafe extern "C" fn(*mut AVS_ScriptEnvironment) -> ()>;
     #[c2rust::src_loc = "1257:1"]
-    pub type avs_create_script_environment_func = Option<
-        unsafe extern "C" fn(::core::ffi::c_int) -> *mut AVS_ScriptEnvironment,
-    >;
+    pub type avs_create_script_environment_func =
+        Option<unsafe extern "C" fn(::core::ffi::c_int) -> *mut AVS_ScriptEnvironment>;
     #[c2rust::src_loc = "1082:1"]
-    pub type avs_clip_get_error_func = Option<
-        unsafe extern "C" fn(*mut AVS_Clip) -> *const ::core::ffi::c_char,
-    >;
+    pub type avs_clip_get_error_func =
+        Option<unsafe extern "C" fn(*mut AVS_Clip) -> *const ::core::ffi::c_char>;
     #[c2rust::src_loc = "282:7"]
     pub const AVS_PLANAR_V: C2RustUnnamed_1 = 4;
     #[c2rust::src_loc = "281:7"]
@@ -754,99 +713,78 @@ pub mod avisynth_c_h {
     pub const AVS_IT_BFF: C2RustUnnamed_4 = 1;
     #[inline]
     #[c2rust::src_loc = "636:1"]
-    pub unsafe extern "C" fn avs_has_video(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_has_video(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).width != 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "645:1"]
-    pub unsafe extern "C" fn avs_is_rgb24(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_rgb24(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_BGR24 as ::core::ffi::c_int
             == AVS_CS_BGR24 as ::core::ffi::c_int
             && (*p).pixel_type & AVS_CS_SAMPLE_BITS_MASK as ::core::ffi::c_int
-                == AVS_CS_SAMPLE_BITS_8 as ::core::ffi::c_int) as ::core::ffi::c_int;
+                == AVS_CS_SAMPLE_BITS_8 as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "648:1"]
-    pub unsafe extern "C" fn avs_is_rgb32(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_rgb32(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_BGR32 as ::core::ffi::c_int
             == AVS_CS_BGR32 as ::core::ffi::c_int
             && (*p).pixel_type & AVS_CS_SAMPLE_BITS_MASK as ::core::ffi::c_int
-                == AVS_CS_SAMPLE_BITS_8 as ::core::ffi::c_int) as ::core::ffi::c_int;
+                == AVS_CS_SAMPLE_BITS_8 as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "654:1"]
-    pub unsafe extern "C" fn avs_is_yuy2(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_yuy2(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_YUY2 as ::core::ffi::c_int
             == AVS_CS_YUY2 as ::core::ffi::c_int) as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "668:1"]
-    pub unsafe extern "C" fn avs_is_yv24(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_yv24(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
-            == AVS_CS_YV24 as ::core::ffi::c_int
-                & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int) as ::core::ffi::c_int;
+            == AVS_CS_YV24 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "671:1"]
-    pub unsafe extern "C" fn avs_is_yv16(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_yv16(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
-            == AVS_CS_YV16 as ::core::ffi::c_int
-                & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int) as ::core::ffi::c_int;
+            == AVS_CS_YV16 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "674:1"]
-    pub unsafe extern "C" fn avs_is_yv12(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_yv12(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
-            == AVS_CS_YV12 as ::core::ffi::c_int
-                & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int) as ::core::ffi::c_int;
+            == AVS_CS_YV12 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "677:1"]
-    pub unsafe extern "C" fn avs_is_yv411(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_yv411(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
-            == AVS_CS_YV411 as ::core::ffi::c_int
-                & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int) as ::core::ffi::c_int;
+            == AVS_CS_YV411 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "680:1"]
-    pub unsafe extern "C" fn avs_is_y8(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_y8(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
-            == AVS_CS_Y8 as ::core::ffi::c_int
-                & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int) as ::core::ffi::c_int;
+            == AVS_CS_Y8 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "709:1"]
-    pub unsafe extern "C" fn avs_is_field_based(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn avs_is_field_based(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
         return ((*p).image_type & AVS_IT_FIELDBASED as ::core::ffi::c_int != 0)
             as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "724:1"]
-    pub unsafe extern "C" fn avs_is_tff(
-        mut p: *const AVS_VideoInfo,
-    ) -> ::core::ffi::c_int {
-        return ((*p).image_type & AVS_IT_TFF as ::core::ffi::c_int != 0)
-            as ::core::ffi::c_int;
+    pub unsafe extern "C" fn avs_is_tff(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).image_type & AVS_IT_TFF as ::core::ffi::c_int != 0) as ::core::ffi::c_int;
     }
     #[inline]
     #[c2rust::src_loc = "883:1"]
@@ -908,9 +846,7 @@ pub mod avisynth_c_h {
     }
     #[inline]
     #[c2rust::src_loc = "1040:1"]
-    pub unsafe extern "C" fn avs_as_string(
-        mut v: AVS_Value,
-    ) -> *const ::core::ffi::c_char {
+    pub unsafe extern "C" fn avs_as_string(mut v: AVS_Value) -> *const ::core::ffi::c_char {
         return if avs_is_error(v) != 0 || avs_is_string(v) != 0 {
             v.d.string
         } else {
@@ -928,9 +864,7 @@ pub mod avisynth_c_h {
     }
     #[inline]
     #[c2rust::src_loc = "1044:1"]
-    pub unsafe extern "C" fn avs_as_error(
-        mut v: AVS_Value,
-    ) -> *const ::core::ffi::c_char {
+    pub unsafe extern "C" fn avs_as_error(mut v: AVS_Value) -> *const ::core::ffi::c_char {
         return if avs_is_error(v) != 0 {
             v.d.string
         } else {
@@ -939,9 +873,7 @@ pub mod avisynth_c_h {
     }
     #[inline]
     #[c2rust::src_loc = "1055:1"]
-    pub unsafe extern "C" fn avs_new_value_bool(
-        mut v0: ::core::ffi::c_int,
-    ) -> AVS_Value {
+    pub unsafe extern "C" fn avs_new_value_bool(mut v0: ::core::ffi::c_int) -> AVS_Value {
         let mut v: AVS_Value = AVS_Value {
             type_0: 0,
             array_size: 0,
@@ -959,9 +891,7 @@ pub mod avisynth_c_h {
     }
     #[inline]
     #[c2rust::src_loc = "1059:1"]
-    pub unsafe extern "C" fn avs_new_value_string(
-        mut v0: *const ::core::ffi::c_char,
-    ) -> AVS_Value {
+    pub unsafe extern "C" fn avs_new_value_string(mut v0: *const ::core::ffi::c_char) -> AVS_Value {
         let mut v: AVS_Value = AVS_Value {
             type_0: 0,
             array_size: 0,
@@ -1607,9 +1537,7 @@ pub mod strings_h {
 pub mod osdep_h {
     #[inline]
     #[c2rust::src_loc = "270:1"]
-    pub unsafe extern "C" fn x264_is_regular_file(
-        mut filehandle: *mut FILE,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn x264_is_regular_file(mut filehandle: *mut FILE) -> ::core::ffi::c_int {
         let mut file_stat: stat = stat {
             st_dev: 0,
             st_ino: 0,
@@ -1622,9 +1550,18 @@ pub mod osdep_h {
             st_size: 0,
             st_blksize: 0,
             st_blocks: 0,
-            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_atim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_mtim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_ctim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
             __glibc_reserved: [0; 3],
         };
         if fstat(fileno(filehandle), &mut file_stat) != 0 {
@@ -1633,16 +1570,16 @@ pub mod osdep_h {
         return (file_stat.st_mode & __S_IFMT as __mode_t == 0o100000 as __mode_t)
             as ::core::ffi::c_int;
     }
-    use super::FILE_h::FILE;
-    use super::struct_stat_h::stat;
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t, __time_t,
-    };
-    use super::struct_timespec_h::timespec;
+    use super::bits_stat_h::__S_IFMT;
     use super::stat_h::fstat;
     use super::stdio_h::fileno;
-    use super::bits_stat_h::__S_IFMT;
+    use super::struct_stat_h::stat;
+    use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __time_t, __uid_t,
+    };
+    use super::FILE_h::FILE;
 }
 #[c2rust::header_src = "/usr/include/string.h:27"]
 pub mod string_h {
@@ -1721,164 +1658,148 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __uint32_t, __int64_t, __uint64_t, __dev_t, __uid_t, __gid_t, __ino_t,
-    __mode_t, __nlink_t, __off_t, __off64_t, __time_t, __blksize_t, __blkcnt_t,
-    __syscall_slong_t,
-};
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::struct_timespec_h::timespec;
-pub use self::struct_stat_h::stat;
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::x264cli_h::{hnd_t, get_filename_extension, x264_cli_log, x264_cli_printf};
-pub use self::input_h::{
-    cli_input_opt_t, video_info_t, cli_image_t, cli_pic_t, cli_input_t, x264_cli_csp_t,
-    X264_CSP_OTHER, x264_cli_pic_alloc, x264_cli_get_csp,
-};
 pub use self::avisynth_c_h::{
-    avs_is_y_func, AVS_VideoInfo, avs_is_420_func, avs_is_422_func, avs_is_444_func,
-    avs_is_y16_func, avs_is_yuv420p16_func, avs_is_yuv422p16_func, avs_is_yuv444p16_func,
-    avs_is_rgb64_func, avs_is_rgb48_func, avs_get_read_ptr_p_func, AVS_VideoFrame,
-    AVS_VideoFrameBuffer, BYTE, avs_get_pitch_p_func, avs_is_y8_func, avs_is_yv411_func,
-    avs_is_yv12_func, avs_is_yv16_func, avs_is_yv24_func, avs_take_clip_func, AVS_Value,
-    C2RustUnnamed_0, avs_release_video_frame_func, avs_release_value_func,
-    avs_release_clip_func, avs_invoke_func, avs_function_exists_func,
-    avs_get_video_info_func, avs_get_frame_func, avs_get_error_func,
-    avs_delete_script_environment_func, avs_create_script_environment_func,
-    avs_clip_get_error_func, AVS_PLANAR_V, AVS_PLANAR_U, AVS_PLANAR_Y, AVS_PLANAR_A,
-    AVS_PLANAR_R, AVS_PLANAR_B, AVS_CS_PLANAR_FILTER, AVS_CS_YV411, AVS_CS_PLANAR_MASK,
-    AVS_CS_YUY2, AVS_CS_Y8, AVS_CS_YV12, AVS_CS_YV16, AVS_CS_YV24, AVS_CS_SAMPLE_BITS_8,
-    AVS_CS_SAMPLE_BITS_MASK, AVS_CS_BGR24, AVS_CS_BGR32, AVS_IT_TFF, AVS_IT_FIELDBASED,
-    C2RustUnnamed_1, AVS_PLANAR_B_ALIGNED, AVS_PLANAR_G_ALIGNED, AVS_PLANAR_R_ALIGNED,
-    AVS_PLANAR_A_ALIGNED, AVS_PLANAR_G, AVS_PLANAR_V_ALIGNED, AVS_PLANAR_U_ALIGNED,
-    AVS_PLANAR_Y_ALIGNED, AVS_PLANAR_ALIGNED, C2RustUnnamed_2, AVS_CS_GENERIC_YUVA444,
-    AVS_CS_GENERIC_YUVA422, AVS_CS_GENERIC_YUVA420, AVS_CS_GENERIC_RGBAP,
-    AVS_CS_GENERIC_RGBP, AVS_CS_GENERIC_Y, AVS_CS_GENERIC_YUV444, AVS_CS_GENERIC_YUV422,
-    AVS_CS_GENERIC_YUV420, AVS_CS_RGBA_TYPE, AVS_CS_RGB_TYPE, AVS_CS_SAMPLE_BITS_32,
-    AVS_CS_SAMPLE_BITS_16, AVS_CS_SAMPLE_BITS_14, AVS_CS_SAMPLE_BITS_12,
-    AVS_CS_SAMPLE_BITS_10, AVS_CS_SUB_HEIGHT_4, AVS_CS_SUB_HEIGHT_2, AVS_CS_SUB_HEIGHT_1,
-    AVS_CS_SUB_HEIGHT_MASK, AVS_CS_UPLANEFIRST, AVS_CS_VPLANEFIRST, AVS_CS_SUB_WIDTH_4,
-    AVS_CS_SUB_WIDTH_2, AVS_CS_SUB_WIDTH_1, AVS_CS_SUB_WIDTH_MASK,
-    AVS_CS_SHIFT_SAMPLE_BITS, AVS_CS_SHIFT_SUB_HEIGHT, AVS_CS_SHIFT_SUB_WIDTH,
-    AVS_CS_PLANAR, AVS_CS_INTERLEAVED, AVS_CS_YUV, AVS_CS_BGR, AVS_CS_YUVA,
-    C2RustUnnamed_3, AVS_CS_YUVA420PS, AVS_CS_YUVA422PS, AVS_CS_YUVA444PS,
-    AVS_CS_YUVA420P16, AVS_CS_YUVA422P16, AVS_CS_YUVA444P16, AVS_CS_YUVA420P14,
-    AVS_CS_YUVA422P14, AVS_CS_YUVA444P14, AVS_CS_YUVA420P12, AVS_CS_YUVA422P12,
-    AVS_CS_YUVA444P12, AVS_CS_YUVA420P10, AVS_CS_YUVA422P10, AVS_CS_YUVA444P10,
-    AVS_CS_YUVA420, AVS_CS_YUVA422, AVS_CS_YUVA444, AVS_CS_RGBAPS, AVS_CS_RGBAP16,
-    AVS_CS_RGBAP14, AVS_CS_RGBAP12, AVS_CS_RGBAP10, AVS_CS_RGBAP, AVS_CS_RGBPS,
-    AVS_CS_RGBP16, AVS_CS_RGBP14, AVS_CS_RGBP12, AVS_CS_RGBP10, AVS_CS_RGBP,
-    AVS_CS_BGR64, AVS_CS_BGR48, AVS_CS_Y32, AVS_CS_YUV420PS, AVS_CS_YUV422PS,
-    AVS_CS_YUV444PS, AVS_CS_Y16, AVS_CS_YUV420P16, AVS_CS_YUV422P16, AVS_CS_YUV444P16,
-    AVS_CS_Y14, AVS_CS_YUV420P14, AVS_CS_YUV422P14, AVS_CS_YUV444P14, AVS_CS_Y12,
-    AVS_CS_YUV420P12, AVS_CS_YUV422P12, AVS_CS_YUV444P12, AVS_CS_Y10, AVS_CS_YUV420P10,
-    AVS_CS_YUV422P10, AVS_CS_YUV444P10, AVS_CS_YUV9, AVS_CS_IYUV, AVS_CS_I420,
-    AVS_CS_RAW32, AVS_CS_UNKNOWN, C2RustUnnamed_4, AVS_IT_BFF, avs_has_video,
-    avs_is_rgb24, avs_is_rgb32, avs_is_yuy2, avs_is_yv24, avs_is_yv16, avs_is_yv12,
-    avs_is_yv411, avs_is_y8, avs_is_field_based, avs_is_tff, avs_get_pitch_p,
-    avs_get_read_ptr_p, avs_is_clip, avs_is_int, avs_is_float, avs_is_string,
-    avs_is_error, avs_as_int, avs_as_string, avs_as_float, avs_as_error,
-    avs_new_value_bool, avs_new_value_string, avs_new_value_array, AVS_ScriptEnvironment,
-    AVS_Clip,
+    avs_as_error, avs_as_float, avs_as_int, avs_as_string, avs_clip_get_error_func,
+    avs_create_script_environment_func, avs_delete_script_environment_func,
+    avs_function_exists_func, avs_get_error_func, avs_get_frame_func, avs_get_pitch_p,
+    avs_get_pitch_p_func, avs_get_read_ptr_p, avs_get_read_ptr_p_func, avs_get_video_info_func,
+    avs_has_video, avs_invoke_func, avs_is_420_func, avs_is_422_func, avs_is_444_func, avs_is_clip,
+    avs_is_error, avs_is_field_based, avs_is_float, avs_is_int, avs_is_rgb24, avs_is_rgb32,
+    avs_is_rgb48_func, avs_is_rgb64_func, avs_is_string, avs_is_tff, avs_is_y16_func, avs_is_y8,
+    avs_is_y8_func, avs_is_y_func, avs_is_yuv420p16_func, avs_is_yuv422p16_func,
+    avs_is_yuv444p16_func, avs_is_yuy2, avs_is_yv12, avs_is_yv12_func, avs_is_yv16,
+    avs_is_yv16_func, avs_is_yv24, avs_is_yv24_func, avs_is_yv411, avs_is_yv411_func,
+    avs_new_value_array, avs_new_value_bool, avs_new_value_string, avs_release_clip_func,
+    avs_release_value_func, avs_release_video_frame_func, avs_take_clip_func, AVS_Clip,
+    AVS_ScriptEnvironment, AVS_Value, AVS_VideoFrame, AVS_VideoFrameBuffer, AVS_VideoInfo,
+    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
+    AVS_CS_BGR, AVS_CS_BGR24, AVS_CS_BGR32, AVS_CS_BGR48, AVS_CS_BGR64, AVS_CS_GENERIC_RGBAP,
+    AVS_CS_GENERIC_RGBP, AVS_CS_GENERIC_Y, AVS_CS_GENERIC_YUV420, AVS_CS_GENERIC_YUV422,
+    AVS_CS_GENERIC_YUV444, AVS_CS_GENERIC_YUVA420, AVS_CS_GENERIC_YUVA422, AVS_CS_GENERIC_YUVA444,
+    AVS_CS_I420, AVS_CS_INTERLEAVED, AVS_CS_IYUV, AVS_CS_PLANAR, AVS_CS_PLANAR_FILTER,
+    AVS_CS_PLANAR_MASK, AVS_CS_RAW32, AVS_CS_RGBAP, AVS_CS_RGBAP10, AVS_CS_RGBAP12, AVS_CS_RGBAP14,
+    AVS_CS_RGBAP16, AVS_CS_RGBAPS, AVS_CS_RGBA_TYPE, AVS_CS_RGBP, AVS_CS_RGBP10, AVS_CS_RGBP12,
+    AVS_CS_RGBP14, AVS_CS_RGBP16, AVS_CS_RGBPS, AVS_CS_RGB_TYPE, AVS_CS_SAMPLE_BITS_10,
+    AVS_CS_SAMPLE_BITS_12, AVS_CS_SAMPLE_BITS_14, AVS_CS_SAMPLE_BITS_16, AVS_CS_SAMPLE_BITS_32,
+    AVS_CS_SAMPLE_BITS_8, AVS_CS_SAMPLE_BITS_MASK, AVS_CS_SHIFT_SAMPLE_BITS,
+    AVS_CS_SHIFT_SUB_HEIGHT, AVS_CS_SHIFT_SUB_WIDTH, AVS_CS_SUB_HEIGHT_1, AVS_CS_SUB_HEIGHT_2,
+    AVS_CS_SUB_HEIGHT_4, AVS_CS_SUB_HEIGHT_MASK, AVS_CS_SUB_WIDTH_1, AVS_CS_SUB_WIDTH_2,
+    AVS_CS_SUB_WIDTH_4, AVS_CS_SUB_WIDTH_MASK, AVS_CS_UNKNOWN, AVS_CS_UPLANEFIRST,
+    AVS_CS_VPLANEFIRST, AVS_CS_Y10, AVS_CS_Y12, AVS_CS_Y14, AVS_CS_Y16, AVS_CS_Y32, AVS_CS_Y8,
+    AVS_CS_YUV, AVS_CS_YUV420P10, AVS_CS_YUV420P12, AVS_CS_YUV420P14, AVS_CS_YUV420P16,
+    AVS_CS_YUV420PS, AVS_CS_YUV422P10, AVS_CS_YUV422P12, AVS_CS_YUV422P14, AVS_CS_YUV422P16,
+    AVS_CS_YUV422PS, AVS_CS_YUV444P10, AVS_CS_YUV444P12, AVS_CS_YUV444P14, AVS_CS_YUV444P16,
+    AVS_CS_YUV444PS, AVS_CS_YUV9, AVS_CS_YUVA, AVS_CS_YUVA420, AVS_CS_YUVA420P10,
+    AVS_CS_YUVA420P12, AVS_CS_YUVA420P14, AVS_CS_YUVA420P16, AVS_CS_YUVA420PS, AVS_CS_YUVA422,
+    AVS_CS_YUVA422P10, AVS_CS_YUVA422P12, AVS_CS_YUVA422P14, AVS_CS_YUVA422P16, AVS_CS_YUVA422PS,
+    AVS_CS_YUVA444, AVS_CS_YUVA444P10, AVS_CS_YUVA444P12, AVS_CS_YUVA444P14, AVS_CS_YUVA444P16,
+    AVS_CS_YUVA444PS, AVS_CS_YUY2, AVS_CS_YV12, AVS_CS_YV16, AVS_CS_YV24, AVS_CS_YV411, AVS_IT_BFF,
+    AVS_IT_FIELDBASED, AVS_IT_TFF, AVS_PLANAR_A, AVS_PLANAR_ALIGNED, AVS_PLANAR_A_ALIGNED,
+    AVS_PLANAR_B, AVS_PLANAR_B_ALIGNED, AVS_PLANAR_G, AVS_PLANAR_G_ALIGNED, AVS_PLANAR_R,
+    AVS_PLANAR_R_ALIGNED, AVS_PLANAR_U, AVS_PLANAR_U_ALIGNED, AVS_PLANAR_V, AVS_PLANAR_V_ALIGNED,
+    AVS_PLANAR_Y, AVS_PLANAR_Y_ALIGNED, BYTE,
 };
-pub use self::pixfmt_h::{
-    AV_PIX_FMT_YUV411P, AVPixelFormat, AV_PIX_FMT_NB, AV_PIX_FMT_OHCODEC,
-    AV_PIX_FMT_GBRP12MSBLE, AV_PIX_FMT_GBRP12MSBBE, AV_PIX_FMT_GBRP10MSBLE,
-    AV_PIX_FMT_GBRP10MSBBE, AV_PIX_FMT_YUV444P12MSBLE, AV_PIX_FMT_YUV444P12MSBBE,
-    AV_PIX_FMT_YUV444P10MSBLE, AV_PIX_FMT_YUV444P10MSBBE, AV_PIX_FMT_GBRAP32LE,
-    AV_PIX_FMT_GBRAP32BE, AV_PIX_FMT_YAF16LE, AV_PIX_FMT_YAF16BE, AV_PIX_FMT_YAF32LE,
-    AV_PIX_FMT_YAF32BE, AV_PIX_FMT_GRAY32LE, AV_PIX_FMT_GRAY32BE, AV_PIX_FMT_AMF_SURFACE,
-    AV_PIX_FMT_GRAYF16LE, AV_PIX_FMT_GRAYF16BE, AV_PIX_FMT_GBRAPF16LE,
-    AV_PIX_FMT_GBRAPF16BE, AV_PIX_FMT_GBRPF16LE, AV_PIX_FMT_GBRPF16BE, AV_PIX_FMT_XV48LE,
-    AV_PIX_FMT_XV48BE, AV_PIX_FMT_Y216LE, AV_PIX_FMT_Y216BE, AV_PIX_FMT_RGB96LE,
-    AV_PIX_FMT_RGB96BE, AV_PIX_FMT_RGBA128LE, AV_PIX_FMT_RGBA128BE, AV_PIX_FMT_RGBF16LE,
-    AV_PIX_FMT_RGBF16BE, AV_PIX_FMT_V30XLE, AV_PIX_FMT_V30XBE, AV_PIX_FMT_VYU444,
-    AV_PIX_FMT_UYVA, AV_PIX_FMT_AYUV, AV_PIX_FMT_D3D12, AV_PIX_FMT_GBRAP14LE,
-    AV_PIX_FMT_GBRAP14BE, AV_PIX_FMT_P412LE, AV_PIX_FMT_P412BE, AV_PIX_FMT_P212LE,
-    AV_PIX_FMT_P212BE, AV_PIX_FMT_RGBAF32LE, AV_PIX_FMT_RGBAF32BE, AV_PIX_FMT_RGBF32LE,
-    AV_PIX_FMT_RGBF32BE, AV_PIX_FMT_XV36LE, AV_PIX_FMT_XV36BE, AV_PIX_FMT_XV30LE,
-    AV_PIX_FMT_XV30BE, AV_PIX_FMT_Y212LE, AV_PIX_FMT_Y212BE, AV_PIX_FMT_P012BE,
-    AV_PIX_FMT_P012LE, AV_PIX_FMT_VUYX, AV_PIX_FMT_RGBAF16LE, AV_PIX_FMT_RGBAF16BE,
-    AV_PIX_FMT_VUYA, AV_PIX_FMT_P416LE, AV_PIX_FMT_P416BE, AV_PIX_FMT_P216LE,
-    AV_PIX_FMT_P216BE, AV_PIX_FMT_P410LE, AV_PIX_FMT_P410BE, AV_PIX_FMT_P210LE,
-    AV_PIX_FMT_P210BE, AV_PIX_FMT_X2BGR10BE, AV_PIX_FMT_X2BGR10LE, AV_PIX_FMT_X2RGB10BE,
-    AV_PIX_FMT_X2RGB10LE, AV_PIX_FMT_Y210LE, AV_PIX_FMT_Y210BE, AV_PIX_FMT_VULKAN,
-    AV_PIX_FMT_NV42, AV_PIX_FMT_NV24, AV_PIX_FMT_YUVA444P12LE, AV_PIX_FMT_YUVA444P12BE,
-    AV_PIX_FMT_YUVA422P12LE, AV_PIX_FMT_YUVA422P12BE, AV_PIX_FMT_GRAYF32LE,
-    AV_PIX_FMT_GRAYF32BE, AV_PIX_FMT_GRAY14LE, AV_PIX_FMT_GRAY14BE, AV_PIX_FMT_OPENCL,
-    AV_PIX_FMT_DRM_PRIME, AV_PIX_FMT_GBRAPF32LE, AV_PIX_FMT_GBRAPF32BE,
-    AV_PIX_FMT_GBRPF32LE, AV_PIX_FMT_GBRPF32BE, AV_PIX_FMT_GRAY9LE, AV_PIX_FMT_GRAY9BE,
-    AV_PIX_FMT_D3D11, AV_PIX_FMT_P016BE, AV_PIX_FMT_P016LE, AV_PIX_FMT_GRAY10LE,
-    AV_PIX_FMT_GRAY10BE, AV_PIX_FMT_GRAY12LE, AV_PIX_FMT_GRAY12BE, AV_PIX_FMT_MEDIACODEC,
-    AV_PIX_FMT_GBRAP10LE, AV_PIX_FMT_GBRAP10BE, AV_PIX_FMT_GBRAP12LE,
-    AV_PIX_FMT_GBRAP12BE, AV_PIX_FMT_P010BE, AV_PIX_FMT_P010LE, AV_PIX_FMT_VIDEOTOOLBOX,
-    AV_PIX_FMT_AYUV64BE, AV_PIX_FMT_AYUV64LE, AV_PIX_FMT_YUV440P12BE,
-    AV_PIX_FMT_YUV440P12LE, AV_PIX_FMT_YUV440P10BE, AV_PIX_FMT_YUV440P10LE,
-    AV_PIX_FMT_BAYER_GRBG16BE, AV_PIX_FMT_BAYER_GRBG16LE, AV_PIX_FMT_BAYER_GBRG16BE,
-    AV_PIX_FMT_BAYER_GBRG16LE, AV_PIX_FMT_BAYER_RGGB16BE, AV_PIX_FMT_BAYER_RGGB16LE,
-    AV_PIX_FMT_BAYER_BGGR16BE, AV_PIX_FMT_BAYER_BGGR16LE, AV_PIX_FMT_BAYER_GRBG8,
-    AV_PIX_FMT_BAYER_GBRG8, AV_PIX_FMT_BAYER_RGGB8, AV_PIX_FMT_BAYER_BGGR8,
-    AV_PIX_FMT_YUVJ411P, AV_PIX_FMT_GBRP14LE, AV_PIX_FMT_GBRP14BE, AV_PIX_FMT_GBRP12LE,
-    AV_PIX_FMT_GBRP12BE, AV_PIX_FMT_YUV444P14LE, AV_PIX_FMT_YUV444P14BE,
-    AV_PIX_FMT_YUV444P12LE, AV_PIX_FMT_YUV444P12BE, AV_PIX_FMT_YUV422P14LE,
-    AV_PIX_FMT_YUV422P14BE, AV_PIX_FMT_YUV422P12LE, AV_PIX_FMT_YUV422P12BE,
-    AV_PIX_FMT_YUV420P14LE, AV_PIX_FMT_YUV420P14BE, AV_PIX_FMT_YUV420P12LE,
-    AV_PIX_FMT_YUV420P12BE, AV_PIX_FMT_BGR0, AV_PIX_FMT_0BGR, AV_PIX_FMT_RGB0,
-    AV_PIX_FMT_0RGB, AV_PIX_FMT_CUDA, AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_MMAL,
-    AV_PIX_FMT_QSV, AV_PIX_FMT_GBRAP16LE, AV_PIX_FMT_GBRAP16BE, AV_PIX_FMT_GBRAP,
-    AV_PIX_FMT_YA16LE, AV_PIX_FMT_YA16BE, AV_PIX_FMT_YVYU422, AV_PIX_FMT_BGRA64LE,
-    AV_PIX_FMT_BGRA64BE, AV_PIX_FMT_RGBA64LE, AV_PIX_FMT_RGBA64BE, AV_PIX_FMT_NV20BE,
-    AV_PIX_FMT_NV20LE, AV_PIX_FMT_NV16, AV_PIX_FMT_XYZ12BE, AV_PIX_FMT_XYZ12LE,
-    AV_PIX_FMT_VDPAU, AV_PIX_FMT_YUVA444P16LE, AV_PIX_FMT_YUVA444P16BE,
-    AV_PIX_FMT_YUVA422P16LE, AV_PIX_FMT_YUVA422P16BE, AV_PIX_FMT_YUVA420P16LE,
-    AV_PIX_FMT_YUVA420P16BE, AV_PIX_FMT_YUVA444P10LE, AV_PIX_FMT_YUVA444P10BE,
-    AV_PIX_FMT_YUVA422P10LE, AV_PIX_FMT_YUVA422P10BE, AV_PIX_FMT_YUVA420P10LE,
-    AV_PIX_FMT_YUVA420P10BE, AV_PIX_FMT_YUVA444P9LE, AV_PIX_FMT_YUVA444P9BE,
-    AV_PIX_FMT_YUVA422P9LE, AV_PIX_FMT_YUVA422P9BE, AV_PIX_FMT_YUVA420P9LE,
-    AV_PIX_FMT_YUVA420P9BE, AV_PIX_FMT_YUVA444P, AV_PIX_FMT_YUVA422P,
-    AV_PIX_FMT_GBRP16LE, AV_PIX_FMT_GBRP16BE, AV_PIX_FMT_GBRP10LE, AV_PIX_FMT_GBRP10BE,
-    AV_PIX_FMT_GBRP9LE, AV_PIX_FMT_GBRP9BE, AV_PIX_FMT_GBR24P, AV_PIX_FMT_GBRP,
-    AV_PIX_FMT_YUV422P9LE, AV_PIX_FMT_YUV422P9BE, AV_PIX_FMT_YUV444P10LE,
-    AV_PIX_FMT_YUV444P10BE, AV_PIX_FMT_YUV444P9LE, AV_PIX_FMT_YUV444P9BE,
-    AV_PIX_FMT_YUV422P10LE, AV_PIX_FMT_YUV422P10BE, AV_PIX_FMT_YUV420P10LE,
-    AV_PIX_FMT_YUV420P10BE, AV_PIX_FMT_YUV420P9LE, AV_PIX_FMT_YUV420P9BE,
-    AV_PIX_FMT_BGR48LE, AV_PIX_FMT_BGR48BE, AV_PIX_FMT_GRAY8A, AV_PIX_FMT_Y400A,
-    AV_PIX_FMT_YA8, AV_PIX_FMT_BGR444BE, AV_PIX_FMT_BGR444LE, AV_PIX_FMT_RGB444BE,
-    AV_PIX_FMT_RGB444LE, AV_PIX_FMT_DXVA2_VLD, AV_PIX_FMT_YUV444P16BE,
-    AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUV422P16BE, AV_PIX_FMT_YUV422P16LE,
-    AV_PIX_FMT_YUV420P16BE, AV_PIX_FMT_YUV420P16LE, AV_PIX_FMT_VAAPI,
-    AV_PIX_FMT_BGR555LE, AV_PIX_FMT_BGR555BE, AV_PIX_FMT_BGR565LE, AV_PIX_FMT_BGR565BE,
-    AV_PIX_FMT_RGB555LE, AV_PIX_FMT_RGB555BE, AV_PIX_FMT_RGB565LE, AV_PIX_FMT_RGB565BE,
-    AV_PIX_FMT_RGB48LE, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVJ440P,
-    AV_PIX_FMT_YUV440P, AV_PIX_FMT_GRAY16LE, AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_BGRA,
-    AV_PIX_FMT_ABGR, AV_PIX_FMT_RGBA, AV_PIX_FMT_ARGB, AV_PIX_FMT_NV21, AV_PIX_FMT_NV12,
-    AV_PIX_FMT_RGB4_BYTE, AV_PIX_FMT_RGB4, AV_PIX_FMT_RGB8, AV_PIX_FMT_BGR4_BYTE,
-    AV_PIX_FMT_BGR4, AV_PIX_FMT_BGR8, AV_PIX_FMT_UYYVYY411, AV_PIX_FMT_UYVY422,
-    AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ420P, AV_PIX_FMT_PAL8,
-    AV_PIX_FMT_MONOBLACK, AV_PIX_FMT_MONOWHITE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_YUV410P,
-    AV_PIX_FMT_YUV444P, AV_PIX_FMT_YUV422P, AV_PIX_FMT_BGR24, AV_PIX_FMT_RGB24,
-    AV_PIX_FMT_YUYV422, AV_PIX_FMT_YUV420P, AV_PIX_FMT_NONE,
-};
-use self::stdio_h::{stderr, fclose, fflush, fopen, fileno};
-use self::stat_h::fstat;
-use self::stdlib_h::{calloc, free};
-use self::strings_h::{strcasecmp, strncasecmp};
-pub use self::osdep_h::x264_is_regular_file;
-use self::string_h::{memset, strlen};
-pub use self::x264_h::{
-    X264_CSP_NONE, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_YUYV,
-    X264_CSP_I444, X264_CSP_BGR, X264_CSP_BGRA, X264_CSP_VFLIP, X264_CSP_HIGH_DEPTH,
-    X264_LOG_ERROR, X264_LOG_WARNING, X264_LOG_INFO, X264_LOG_DEBUG,
-};
-use self::dlfcn_h::{dlopen, dlclose, dlsym};
 pub use self::bits_dlfcn_h::RTLD_NOW;
 pub use self::bits_stat_h::__S_IFMT;
-pub use self::__stddef_null_h::NULL;
+use self::dlfcn_h::{dlclose, dlopen, dlsym};
+pub use self::input_h::{
+    cli_image_t, cli_input_opt_t, cli_input_t, cli_pic_t, video_info_t, x264_cli_csp_t,
+    x264_cli_get_csp, x264_cli_pic_alloc, X264_CSP_OTHER,
+};
+pub use self::osdep_h::x264_is_regular_file;
+pub use self::pixfmt_h::{
+    AVPixelFormat, AV_PIX_FMT_0BGR, AV_PIX_FMT_0RGB, AV_PIX_FMT_ABGR, AV_PIX_FMT_AMF_SURFACE,
+    AV_PIX_FMT_ARGB, AV_PIX_FMT_AYUV, AV_PIX_FMT_AYUV64BE, AV_PIX_FMT_AYUV64LE,
+    AV_PIX_FMT_BAYER_BGGR16BE, AV_PIX_FMT_BAYER_BGGR16LE, AV_PIX_FMT_BAYER_BGGR8,
+    AV_PIX_FMT_BAYER_GBRG16BE, AV_PIX_FMT_BAYER_GBRG16LE, AV_PIX_FMT_BAYER_GBRG8,
+    AV_PIX_FMT_BAYER_GRBG16BE, AV_PIX_FMT_BAYER_GRBG16LE, AV_PIX_FMT_BAYER_GRBG8,
+    AV_PIX_FMT_BAYER_RGGB16BE, AV_PIX_FMT_BAYER_RGGB16LE, AV_PIX_FMT_BAYER_RGGB8, AV_PIX_FMT_BGR0,
+    AV_PIX_FMT_BGR24, AV_PIX_FMT_BGR4, AV_PIX_FMT_BGR444BE, AV_PIX_FMT_BGR444LE,
+    AV_PIX_FMT_BGR48BE, AV_PIX_FMT_BGR48LE, AV_PIX_FMT_BGR4_BYTE, AV_PIX_FMT_BGR555BE,
+    AV_PIX_FMT_BGR555LE, AV_PIX_FMT_BGR565BE, AV_PIX_FMT_BGR565LE, AV_PIX_FMT_BGR8,
+    AV_PIX_FMT_BGRA, AV_PIX_FMT_BGRA64BE, AV_PIX_FMT_BGRA64LE, AV_PIX_FMT_CUDA, AV_PIX_FMT_D3D11,
+    AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_D3D12, AV_PIX_FMT_DRM_PRIME, AV_PIX_FMT_DXVA2_VLD,
+    AV_PIX_FMT_GBR24P, AV_PIX_FMT_GBRAP, AV_PIX_FMT_GBRAP10BE, AV_PIX_FMT_GBRAP10LE,
+    AV_PIX_FMT_GBRAP12BE, AV_PIX_FMT_GBRAP12LE, AV_PIX_FMT_GBRAP14BE, AV_PIX_FMT_GBRAP14LE,
+    AV_PIX_FMT_GBRAP16BE, AV_PIX_FMT_GBRAP16LE, AV_PIX_FMT_GBRAP32BE, AV_PIX_FMT_GBRAP32LE,
+    AV_PIX_FMT_GBRAPF16BE, AV_PIX_FMT_GBRAPF16LE, AV_PIX_FMT_GBRAPF32BE, AV_PIX_FMT_GBRAPF32LE,
+    AV_PIX_FMT_GBRP, AV_PIX_FMT_GBRP10BE, AV_PIX_FMT_GBRP10LE, AV_PIX_FMT_GBRP10MSBBE,
+    AV_PIX_FMT_GBRP10MSBLE, AV_PIX_FMT_GBRP12BE, AV_PIX_FMT_GBRP12LE, AV_PIX_FMT_GBRP12MSBBE,
+    AV_PIX_FMT_GBRP12MSBLE, AV_PIX_FMT_GBRP14BE, AV_PIX_FMT_GBRP14LE, AV_PIX_FMT_GBRP16BE,
+    AV_PIX_FMT_GBRP16LE, AV_PIX_FMT_GBRP9BE, AV_PIX_FMT_GBRP9LE, AV_PIX_FMT_GBRPF16BE,
+    AV_PIX_FMT_GBRPF16LE, AV_PIX_FMT_GBRPF32BE, AV_PIX_FMT_GBRPF32LE, AV_PIX_FMT_GRAY10BE,
+    AV_PIX_FMT_GRAY10LE, AV_PIX_FMT_GRAY12BE, AV_PIX_FMT_GRAY12LE, AV_PIX_FMT_GRAY14BE,
+    AV_PIX_FMT_GRAY14LE, AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_GRAY16LE, AV_PIX_FMT_GRAY32BE,
+    AV_PIX_FMT_GRAY32LE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY8A, AV_PIX_FMT_GRAY9BE,
+    AV_PIX_FMT_GRAY9LE, AV_PIX_FMT_GRAYF16BE, AV_PIX_FMT_GRAYF16LE, AV_PIX_FMT_GRAYF32BE,
+    AV_PIX_FMT_GRAYF32LE, AV_PIX_FMT_MEDIACODEC, AV_PIX_FMT_MMAL, AV_PIX_FMT_MONOBLACK,
+    AV_PIX_FMT_MONOWHITE, AV_PIX_FMT_NB, AV_PIX_FMT_NONE, AV_PIX_FMT_NV12, AV_PIX_FMT_NV16,
+    AV_PIX_FMT_NV20BE, AV_PIX_FMT_NV20LE, AV_PIX_FMT_NV21, AV_PIX_FMT_NV24, AV_PIX_FMT_NV42,
+    AV_PIX_FMT_OHCODEC, AV_PIX_FMT_OPENCL, AV_PIX_FMT_P010BE, AV_PIX_FMT_P010LE, AV_PIX_FMT_P012BE,
+    AV_PIX_FMT_P012LE, AV_PIX_FMT_P016BE, AV_PIX_FMT_P016LE, AV_PIX_FMT_P210BE, AV_PIX_FMT_P210LE,
+    AV_PIX_FMT_P212BE, AV_PIX_FMT_P212LE, AV_PIX_FMT_P216BE, AV_PIX_FMT_P216LE, AV_PIX_FMT_P410BE,
+    AV_PIX_FMT_P410LE, AV_PIX_FMT_P412BE, AV_PIX_FMT_P412LE, AV_PIX_FMT_P416BE, AV_PIX_FMT_P416LE,
+    AV_PIX_FMT_PAL8, AV_PIX_FMT_QSV, AV_PIX_FMT_RGB0, AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB4,
+    AV_PIX_FMT_RGB444BE, AV_PIX_FMT_RGB444LE, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_RGB48LE,
+    AV_PIX_FMT_RGB4_BYTE, AV_PIX_FMT_RGB555BE, AV_PIX_FMT_RGB555LE, AV_PIX_FMT_RGB565BE,
+    AV_PIX_FMT_RGB565LE, AV_PIX_FMT_RGB8, AV_PIX_FMT_RGB96BE, AV_PIX_FMT_RGB96LE, AV_PIX_FMT_RGBA,
+    AV_PIX_FMT_RGBA128BE, AV_PIX_FMT_RGBA128LE, AV_PIX_FMT_RGBA64BE, AV_PIX_FMT_RGBA64LE,
+    AV_PIX_FMT_RGBAF16BE, AV_PIX_FMT_RGBAF16LE, AV_PIX_FMT_RGBAF32BE, AV_PIX_FMT_RGBAF32LE,
+    AV_PIX_FMT_RGBF16BE, AV_PIX_FMT_RGBF16LE, AV_PIX_FMT_RGBF32BE, AV_PIX_FMT_RGBF32LE,
+    AV_PIX_FMT_UYVA, AV_PIX_FMT_UYVY422, AV_PIX_FMT_UYYVYY411, AV_PIX_FMT_V30XBE,
+    AV_PIX_FMT_V30XLE, AV_PIX_FMT_VAAPI, AV_PIX_FMT_VDPAU, AV_PIX_FMT_VIDEOTOOLBOX,
+    AV_PIX_FMT_VULKAN, AV_PIX_FMT_VUYA, AV_PIX_FMT_VUYX, AV_PIX_FMT_VYU444, AV_PIX_FMT_X2BGR10BE,
+    AV_PIX_FMT_X2BGR10LE, AV_PIX_FMT_X2RGB10BE, AV_PIX_FMT_X2RGB10LE, AV_PIX_FMT_XV30BE,
+    AV_PIX_FMT_XV30LE, AV_PIX_FMT_XV36BE, AV_PIX_FMT_XV36LE, AV_PIX_FMT_XV48BE, AV_PIX_FMT_XV48LE,
+    AV_PIX_FMT_XYZ12BE, AV_PIX_FMT_XYZ12LE, AV_PIX_FMT_Y210BE, AV_PIX_FMT_Y210LE,
+    AV_PIX_FMT_Y212BE, AV_PIX_FMT_Y212LE, AV_PIX_FMT_Y216BE, AV_PIX_FMT_Y216LE, AV_PIX_FMT_Y400A,
+    AV_PIX_FMT_YA16BE, AV_PIX_FMT_YA16LE, AV_PIX_FMT_YA8, AV_PIX_FMT_YAF16BE, AV_PIX_FMT_YAF16LE,
+    AV_PIX_FMT_YAF32BE, AV_PIX_FMT_YAF32LE, AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P,
+    AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P10BE, AV_PIX_FMT_YUV420P10LE, AV_PIX_FMT_YUV420P12BE,
+    AV_PIX_FMT_YUV420P12LE, AV_PIX_FMT_YUV420P14BE, AV_PIX_FMT_YUV420P14LE, AV_PIX_FMT_YUV420P16BE,
+    AV_PIX_FMT_YUV420P16LE, AV_PIX_FMT_YUV420P9BE, AV_PIX_FMT_YUV420P9LE, AV_PIX_FMT_YUV422P,
+    AV_PIX_FMT_YUV422P10BE, AV_PIX_FMT_YUV422P10LE, AV_PIX_FMT_YUV422P12BE, AV_PIX_FMT_YUV422P12LE,
+    AV_PIX_FMT_YUV422P14BE, AV_PIX_FMT_YUV422P14LE, AV_PIX_FMT_YUV422P16BE, AV_PIX_FMT_YUV422P16LE,
+    AV_PIX_FMT_YUV422P9BE, AV_PIX_FMT_YUV422P9LE, AV_PIX_FMT_YUV440P, AV_PIX_FMT_YUV440P10BE,
+    AV_PIX_FMT_YUV440P10LE, AV_PIX_FMT_YUV440P12BE, AV_PIX_FMT_YUV440P12LE, AV_PIX_FMT_YUV444P,
+    AV_PIX_FMT_YUV444P10BE, AV_PIX_FMT_YUV444P10LE, AV_PIX_FMT_YUV444P10MSBBE,
+    AV_PIX_FMT_YUV444P10MSBLE, AV_PIX_FMT_YUV444P12BE, AV_PIX_FMT_YUV444P12LE,
+    AV_PIX_FMT_YUV444P12MSBBE, AV_PIX_FMT_YUV444P12MSBLE, AV_PIX_FMT_YUV444P14BE,
+    AV_PIX_FMT_YUV444P14LE, AV_PIX_FMT_YUV444P16BE, AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUV444P9BE,
+    AV_PIX_FMT_YUV444P9LE, AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVA420P10BE, AV_PIX_FMT_YUVA420P10LE,
+    AV_PIX_FMT_YUVA420P16BE, AV_PIX_FMT_YUVA420P16LE, AV_PIX_FMT_YUVA420P9BE,
+    AV_PIX_FMT_YUVA420P9LE, AV_PIX_FMT_YUVA422P, AV_PIX_FMT_YUVA422P10BE, AV_PIX_FMT_YUVA422P10LE,
+    AV_PIX_FMT_YUVA422P12BE, AV_PIX_FMT_YUVA422P12LE, AV_PIX_FMT_YUVA422P16BE,
+    AV_PIX_FMT_YUVA422P16LE, AV_PIX_FMT_YUVA422P9BE, AV_PIX_FMT_YUVA422P9LE, AV_PIX_FMT_YUVA444P,
+    AV_PIX_FMT_YUVA444P10BE, AV_PIX_FMT_YUVA444P10LE, AV_PIX_FMT_YUVA444P12BE,
+    AV_PIX_FMT_YUVA444P12LE, AV_PIX_FMT_YUVA444P16BE, AV_PIX_FMT_YUVA444P16LE,
+    AV_PIX_FMT_YUVA444P9BE, AV_PIX_FMT_YUVA444P9LE, AV_PIX_FMT_YUVJ411P, AV_PIX_FMT_YUVJ420P,
+    AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ440P, AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUYV422,
+    AV_PIX_FMT_YVYU422,
+};
+use self::stat_h::fstat;
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::stdio_h::{fclose, fflush, fileno, fopen, stderr};
+use self::stdlib_h::{calloc, free};
+use self::string_h::{memset, strlen};
+use self::strings_h::{strcasecmp, strncasecmp};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::struct_stat_h::stat;
+pub use self::struct_timespec_h::timespec;
+pub use self::types_h::{
+    __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __int64_t, __mode_t, __nlink_t, __off64_t,
+    __off_t, __syscall_slong_t, __time_t, __uid_t, __uint32_t, __uint64_t, __uint8_t,
+};
+pub use self::x264_h::{
+    X264_CSP_BGR, X264_CSP_BGRA, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422,
+    X264_CSP_I444, X264_CSP_NONE, X264_CSP_VFLIP, X264_CSP_YUYV, X264_LOG_DEBUG, X264_LOG_ERROR,
+    X264_LOG_INFO, X264_LOG_WARNING,
+};
+pub use self::x264cli_h::{get_filename_extension, hnd_t, x264_cli_log, x264_cli_printf};
+pub use self::FILE_h::FILE;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "78:9"]
@@ -1928,9 +1849,7 @@ pub const AVS_INTERFACE_25: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
 #[c2rust::src_loc = "61:9"]
 pub const AVS_MAX_SEQUENCE: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
 #[c2rust::src_loc = "120:1"]
-unsafe extern "C" fn custom_avs_load_library(
-    mut h: *mut avs_hnd_t,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> ::core::ffi::c_int {
     (*h).library = dlopen(
         b"libavisynth.so\0" as *const u8 as *const ::core::ffi::c_char,
         RTLD_NOW,
@@ -1938,138 +1857,106 @@ unsafe extern "C" fn custom_avs_load_library(
     if (*h).library.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
-    (*h).func.avs_clip_get_error = ::core::mem::transmute::<
-        *mut ::core::ffi::c_void,
-        avs_clip_get_error_func,
-    >(
-        dlsym(
+    (*h).func.avs_clip_get_error =
+        ::core::mem::transmute::<*mut ::core::ffi::c_void, avs_clip_get_error_func>(dlsym(
             (*h).library,
             b"avs_clip_get_error\0" as *const u8 as *const ::core::ffi::c_char,
-        ),
-    );
+        ));
     if !(0 as ::core::ffi::c_int == 0 && (*h).func.avs_clip_get_error.is_none()) {
         (*h).func.avs_create_script_environment = ::core::mem::transmute::<
             *mut ::core::ffi::c_void,
             avs_create_script_environment_func,
-        >(
-            dlsym(
-                (*h).library,
-                b"avs_create_script_environment\0" as *const u8
-                    as *const ::core::ffi::c_char,
-            ),
-        );
-        if !(0 as ::core::ffi::c_int == 0
-            && (*h).func.avs_create_script_environment.is_none())
-        {
+        >(dlsym(
+            (*h).library,
+            b"avs_create_script_environment\0" as *const u8 as *const ::core::ffi::c_char,
+        ));
+        if !(0 as ::core::ffi::c_int == 0 && (*h).func.avs_create_script_environment.is_none()) {
             (*h).func.avs_delete_script_environment = ::core::mem::transmute::<
                 *mut ::core::ffi::c_void,
                 avs_delete_script_environment_func,
-            >(
-                dlsym(
-                    (*h).library,
-                    b"avs_delete_script_environment\0" as *const u8
-                        as *const ::core::ffi::c_char,
-                ),
-            );
-            if !(1 as ::core::ffi::c_int == 0
-                && (*h).func.avs_delete_script_environment.is_none())
+            >(dlsym(
+                (*h).library,
+                b"avs_delete_script_environment\0" as *const u8 as *const ::core::ffi::c_char,
+            ));
+            if !(1 as ::core::ffi::c_int == 0 && (*h).func.avs_delete_script_environment.is_none())
             {
-                (*h).func.avs_get_error = ::core::mem::transmute::<
-                    *mut ::core::ffi::c_void,
-                    avs_get_error_func,
-                >(
-                    dlsym(
+                (*h).func.avs_get_error =
+                    ::core::mem::transmute::<*mut ::core::ffi::c_void, avs_get_error_func>(dlsym(
                         (*h).library,
                         b"avs_get_error\0" as *const u8 as *const ::core::ffi::c_char,
-                    ),
-                );
+                    ));
                 if !(1 as ::core::ffi::c_int == 0 && (*h).func.avs_get_error.is_none()) {
                     (*h).func.avs_get_frame = ::core::mem::transmute::<
                         *mut ::core::ffi::c_void,
                         avs_get_frame_func,
-                    >(
-                        dlsym(
-                            (*h).library,
-                            b"avs_get_frame\0" as *const u8 as *const ::core::ffi::c_char,
-                        ),
-                    );
-                    if !(0 as ::core::ffi::c_int == 0
-                        && (*h).func.avs_get_frame.is_none())
-                    {
+                    >(dlsym(
+                        (*h).library,
+                        b"avs_get_frame\0" as *const u8 as *const ::core::ffi::c_char,
+                    ));
+                    if !(0 as ::core::ffi::c_int == 0 && (*h).func.avs_get_frame.is_none()) {
                         (*h).func.avs_get_video_info = ::core::mem::transmute::<
                             *mut ::core::ffi::c_void,
                             avs_get_video_info_func,
-                        >(
-                            dlsym(
-                                (*h).library,
-                                b"avs_get_video_info\0" as *const u8
-                                    as *const ::core::ffi::c_char,
-                            ),
-                        );
-                        if !(0 as ::core::ffi::c_int == 0
-                            && (*h).func.avs_get_video_info.is_none())
+                        >(dlsym(
+                            (*h).library,
+                            b"avs_get_video_info\0" as *const u8 as *const ::core::ffi::c_char,
+                        ));
+                        if !(0 as ::core::ffi::c_int == 0 && (*h).func.avs_get_video_info.is_none())
                         {
                             (*h).func.avs_function_exists = ::core::mem::transmute::<
                                 *mut ::core::ffi::c_void,
                                 avs_function_exists_func,
-                            >(
-                                dlsym(
-                                    (*h).library,
-                                    b"avs_function_exists\0" as *const u8
-                                        as *const ::core::ffi::c_char,
-                                ),
-                            );
+                            >(dlsym(
+                                (*h).library,
+                                b"avs_function_exists\0" as *const u8 as *const ::core::ffi::c_char,
+                            ));
                             if !(0 as ::core::ffi::c_int == 0
                                 && (*h).func.avs_function_exists.is_none())
                             {
                                 (*h).func.avs_invoke = ::core::mem::transmute::<
                                     *mut ::core::ffi::c_void,
                                     avs_invoke_func,
-                                >(
-                                    dlsym(
-                                        (*h).library,
-                                        b"avs_invoke\0" as *const u8 as *const ::core::ffi::c_char,
-                                    ),
-                                );
-                                if !(0 as ::core::ffi::c_int == 0
-                                    && (*h).func.avs_invoke.is_none())
+                                >(dlsym(
+                                    (*h).library,
+                                    b"avs_invoke\0" as *const u8 as *const ::core::ffi::c_char,
+                                ));
+                                if !(0 as ::core::ffi::c_int == 0 && (*h).func.avs_invoke.is_none())
                                 {
-                                    (*h).func.avs_release_clip = ::core::mem::transmute::<
-                                        *mut ::core::ffi::c_void,
-                                        avs_release_clip_func,
-                                    >(
-                                        dlsym(
+                                    (*h).func.avs_release_clip =
+                                        ::core::mem::transmute::<
+                                            *mut ::core::ffi::c_void,
+                                            avs_release_clip_func,
+                                        >(dlsym(
                                             (*h).library,
                                             b"avs_release_clip\0" as *const u8
                                                 as *const ::core::ffi::c_char,
-                                        ),
-                                    );
+                                        ));
                                     if !(0 as ::core::ffi::c_int == 0
                                         && (*h).func.avs_release_clip.is_none())
                                     {
-                                        (*h).func.avs_release_value = ::core::mem::transmute::<
-                                            *mut ::core::ffi::c_void,
-                                            avs_release_value_func,
-                                        >(
-                                            dlsym(
+                                        (*h).func.avs_release_value =
+                                            ::core::mem::transmute::<
+                                                *mut ::core::ffi::c_void,
+                                                avs_release_value_func,
+                                            >(dlsym(
                                                 (*h).library,
                                                 b"avs_release_value\0" as *const u8
                                                     as *const ::core::ffi::c_char,
-                                            ),
-                                        );
+                                            ));
                                         if !(0 as ::core::ffi::c_int == 0
                                             && (*h).func.avs_release_value.is_none())
                                         {
-                                            (*h).func.avs_release_video_frame = ::core::mem::transmute::<
-                                                *mut ::core::ffi::c_void,
-                                                avs_release_video_frame_func,
-                                            >(
-                                                dlsym(
-                                                    (*h).library,
-                                                    b"avs_release_video_frame\0" as *const u8
-                                                        as *const ::core::ffi::c_char,
-                                                ),
-                                            );
+                                            (*h).func.avs_release_video_frame =
+                                                ::core::mem::transmute::<
+                                                    *mut ::core::ffi::c_void,
+                                                    avs_release_video_frame_func,
+                                                >(
+                                                    dlsym(
+                                                        (*h).library,
+                                                        b"avs_release_video_frame\0" as *const u8
+                                                            as *const ::core::ffi::c_char,
+                                                    ),
+                                                );
                                             if !(0 as ::core::ffi::c_int == 0
                                                 && (*h).func.avs_release_video_frame.is_none())
                                             {
@@ -2092,7 +1979,8 @@ unsafe extern "C" fn custom_avs_load_library(
                                                     >(
                                                         dlsym(
                                                             (*h).library,
-                                                            b"avs_is_yv24\0" as *const u8 as *const ::core::ffi::c_char,
+                                                            b"avs_is_yv24\0" as *const u8
+                                                                as *const ::core::ffi::c_char,
                                                         ),
                                                     );
                                                     if !(1 as ::core::ffi::c_int == 0
@@ -2132,7 +2020,10 @@ unsafe extern "C" fn custom_avs_load_library(
                                                                     ),
                                                                 );
                                                                 if !(1 as ::core::ffi::c_int == 0
-                                                                    && (*h).func.avs_is_yv411.is_none())
+                                                                    && (*h)
+                                                                        .func
+                                                                        .avs_is_yv411
+                                                                        .is_none())
                                                                 {
                                                                     (*h).func.avs_is_y8 = ::core::mem::transmute::<
                                                                         *mut ::core::ffi::c_void,
@@ -2143,8 +2034,12 @@ unsafe extern "C" fn custom_avs_load_library(
                                                                             b"avs_is_y8\0" as *const u8 as *const ::core::ffi::c_char,
                                                                         ),
                                                                     );
-                                                                    if !(1 as ::core::ffi::c_int == 0
-                                                                        && (*h).func.avs_is_y8.is_none())
+                                                                    if !(1 as ::core::ffi::c_int
+                                                                        == 0
+                                                                        && (*h)
+                                                                            .func
+                                                                            .avs_is_y8
+                                                                            .is_none())
                                                                     {
                                                                         (*h).func.avs_get_pitch_p = ::core::mem::transmute::<
                                                                             *mut ::core::ffi::c_void,
@@ -2156,8 +2051,13 @@ unsafe extern "C" fn custom_avs_load_library(
                                                                                     as *const ::core::ffi::c_char,
                                                                             ),
                                                                         );
-                                                                        if !(1 as ::core::ffi::c_int == 0
-                                                                            && (*h).func.avs_get_pitch_p.is_none())
+                                                                        if !(1
+                                                                            as ::core::ffi::c_int
+                                                                            == 0
+                                                                            && (*h)
+                                                                                .func
+                                                                                .avs_get_pitch_p
+                                                                                .is_none())
                                                                         {
                                                                             (*h).func.avs_get_read_ptr_p = ::core::mem::transmute::<
                                                                                 *mut ::core::ffi::c_void,
@@ -2387,13 +2287,17 @@ unsafe extern "C" fn update_clip(
     mut res: AVS_Value,
     mut release: AVS_Value,
 ) -> AVS_Value {
-    (*h).func.avs_release_clip.expect("non-null function pointer")((*h).clip);
-    (*h).clip = (*h)
+    (*h).func
+        .avs_release_clip
+        .expect("non-null function pointer")((*h).clip);
+    (*h).clip = (*h).func.avs_take_clip.expect("non-null function pointer")(res, (*h).env);
+    (*h).func
+        .avs_release_value
+        .expect("non-null function pointer")(release);
+    *vi = (*h)
         .func
-        .avs_take_clip
-        .expect("non-null function pointer")(res, (*h).env);
-    (*h).func.avs_release_value.expect("non-null function pointer")(release);
-    *vi = (*h).func.avs_get_video_info.expect("non-null function pointer")((*h).clip);
+        .avs_get_video_info
+        .expect("non-null function pointer")((*h).clip);
     return res;
 }
 #[c2rust::src_loc = "212:1"]
@@ -2401,24 +2305,19 @@ unsafe extern "C" fn get_avs_version(mut h: *mut avs_hnd_t) -> ::core::ffi::c_fl
     if (*h)
         .func
         .avs_function_exists
-        .expect(
-            "non-null function pointer",
-        )((*h).env, b"VersionNumber\0" as *const u8 as *const ::core::ffi::c_char) == 0
+        .expect("non-null function pointer")(
+        (*h).env,
+        b"VersionNumber\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         x264_cli_log(
             b"avs\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"VersionNumber does not exist\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"VersionNumber does not exist\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int) as ::core::ffi::c_float;
     }
-    let mut ver: AVS_Value = (*h)
-        .func
-        .avs_invoke
-        .expect(
-            "non-null function pointer",
-        )(
+    let mut ver: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
         (*h).env,
         b"VersionNumber\0" as *const u8 as *const ::core::ffi::c_char,
         avs_new_value_array(0 as *mut AVS_Value, 0 as ::core::ffi::c_int),
@@ -2444,7 +2343,9 @@ unsafe extern "C" fn get_avs_version(mut h: *mut avs_hnd_t) -> ::core::ffi::c_fl
         return -(1 as ::core::ffi::c_int) as ::core::ffi::c_float;
     }
     let mut ret: ::core::ffi::c_float = avs_as_float(ver) as ::core::ffi::c_float;
-    (*h).func.avs_release_value.expect("non-null function pointer")(ver);
+    (*h).func
+        .avs_release_value
+        .expect("non-null function pointer")(ver);
     return ret;
 }
 #[c2rust::src_loc = "269:1"]
@@ -2473,10 +2374,8 @@ unsafe extern "C" fn open_file(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    let mut h: *mut avs_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<avs_hnd_t>() as size_t,
-    ) as *mut avs_hnd_t;
+    let mut h: *mut avs_hnd_t =
+        calloc(1 as size_t, ::core::mem::size_of::<avs_hnd_t>() as size_t) as *mut avs_hnd_t;
     if h.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
@@ -2493,10 +2392,8 @@ unsafe extern "C" fn open_file(
         .avs_create_script_environment
         .expect("non-null function pointer")(AVS_INTERFACE_25);
     if (*h).func.avs_get_error.is_some() {
-        let mut error: *const ::core::ffi::c_char = (*h)
-            .func
-            .avs_get_error
-            .expect("non-null function pointer")((*h).env);
+        let mut error: *const ::core::ffi::c_char =
+            (*h).func.avs_get_error.expect("non-null function pointer")((*h).env);
         if !error.is_null() {
             x264_cli_log(
                 b"avs\0" as *const u8 as *const ::core::ffi::c_char,
@@ -2525,17 +2422,13 @@ unsafe extern "C" fn open_file(
             clip: 0 as *mut ::core::ffi::c_void,
         },
     };
-    let mut filename_ext: *mut ::core::ffi::c_char = get_filename_extension(
-        psz_filename,
-    );
-    if strcasecmp(filename_ext, b"avs\0" as *const u8 as *const ::core::ffi::c_char) == 0
+    let mut filename_ext: *mut ::core::ffi::c_char = get_filename_extension(psz_filename);
+    if strcasecmp(
+        filename_ext,
+        b"avs\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
-        res = (*h)
-            .func
-            .avs_invoke
-            .expect(
-                "non-null function pointer",
-            )(
+        res = (*h).func.avs_invoke.expect("non-null function pointer")(
             (*h).env,
             b"Import\0" as *const u8 as *const ::core::ffi::c_char,
             arg,
@@ -2550,12 +2443,7 @@ unsafe extern "C" fn open_file(
             );
             return -(1 as ::core::ffi::c_int);
         }
-        let mut mt_test: AVS_Value = (*h)
-            .func
-            .avs_invoke
-            .expect(
-                "non-null function pointer",
-            )(
+        let mut mt_test: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
             (*h).env,
             b"GetMTMode\0" as *const u8 as *const ::core::ffi::c_char,
             avs_new_value_bool(0 as ::core::ffi::c_int),
@@ -2566,20 +2454,19 @@ unsafe extern "C" fn open_file(
         } else {
             0 as ::core::ffi::c_int
         };
-        (*h).func.avs_release_value.expect("non-null function pointer")(mt_test);
+        (*h).func
+            .avs_release_value
+            .expect("non-null function pointer")(mt_test);
         if mt_mode > 0 as ::core::ffi::c_int && mt_mode < 5 as ::core::ffi::c_int {
-            let mut temp: AVS_Value = (*h)
-                .func
-                .avs_invoke
-                .expect(
-                    "non-null function pointer",
-                )(
+            let mut temp: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
                 (*h).env,
                 b"Distributor\0" as *const u8 as *const ::core::ffi::c_char,
                 res,
                 0 as *mut *const ::core::ffi::c_char,
             );
-            (*h).func.avs_release_value.expect("non-null function pointer")(res);
+            (*h).func
+                .avs_release_value
+                .expect("non-null function pointer")(res);
             res = temp;
         }
     } else {
@@ -2604,7 +2491,8 @@ unsafe extern "C" fn open_file(
             if (*h)
                 .func
                 .avs_function_exists
-                .expect("non-null function pointer")((*h).env, filter[i as usize]) == 0
+                .expect("non-null function pointer")((*h).env, filter[i as usize])
+                == 0
             {
                 x264_cli_printf(
                     X264_LOG_INFO,
@@ -2623,12 +2511,7 @@ unsafe extern "C" fn open_file(
                     );
                     fflush(stderr);
                 }
-                res = (*h)
-                    .func
-                    .avs_invoke
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                res = (*h).func.avs_invoke.expect("non-null function pointer")(
                     (*h).env,
                     filter[i as usize],
                     arg,
@@ -2664,16 +2547,12 @@ unsafe extern "C" fn open_file(
         x264_cli_log(
             b"avs\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"`%s' didn't return a video clip\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"`%s' didn't return a video clip\n\0" as *const u8 as *const ::core::ffi::c_char,
             psz_filename,
         );
         return -(1 as ::core::ffi::c_int);
     }
-    (*h).clip = (*h)
-        .func
-        .avs_take_clip
-        .expect("non-null function pointer")(res, (*h).env);
+    (*h).clip = (*h).func.avs_take_clip.expect("non-null function pointer")(res, (*h).env);
     let mut vi: *const AVS_VideoInfo = (*h)
         .func
         .avs_get_video_info
@@ -2694,12 +2573,7 @@ unsafe extern "C" fn open_file(
             b"detected fieldbased (separated) input, weaving to frames\n\0" as *const u8
                 as *const ::core::ffi::c_char,
         );
-        let mut tmp: AVS_Value = (*h)
-            .func
-            .avs_invoke
-            .expect(
-                "non-null function pointer",
-            )(
+        let mut tmp: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
             (*h).env,
             b"Weave\0" as *const u8 as *const ::core::ffi::c_char,
             res,
@@ -2719,7 +2593,9 @@ unsafe extern "C" fn open_file(
         (*info).interlaced = 1 as ::core::ffi::c_int;
         (*info).tff = avs_is_tff(vi);
     }
-    (*h).func.avs_release_value.expect("non-null function pointer")(res);
+    (*h).func
+        .avs_release_value
+        .expect("non-null function pointer")(res);
     (*info).width = (*vi).width;
     (*info).height = (*vi).height;
     (*info).fps_num = (*vi).fps_numerator as uint32_t;
@@ -2740,7 +2616,11 @@ unsafe extern "C" fn open_file(
     } else if avs_is_rgb24(vi) != 0 {
         (*info).csp = X264_CSP_BGR | X264_CSP_VFLIP;
     } else if (*h).func.avs_is_yuv444p16.is_some()
-        && (*h).func.avs_is_yuv444p16.expect("non-null function pointer")(vi) != 0
+        && (*h)
+            .func
+            .avs_is_yuv444p16
+            .expect("non-null function pointer")(vi)
+            != 0
     {
         (*info).csp = X264_CSP_I444 | X264_CSP_HIGH_DEPTH;
     } else if if (*h).func.avs_is_yv24.is_some() {
@@ -2751,7 +2631,11 @@ unsafe extern "C" fn open_file(
     {
         (*info).csp = X264_CSP_I444;
     } else if (*h).func.avs_is_yuv422p16.is_some()
-        && (*h).func.avs_is_yuv422p16.expect("non-null function pointer")(vi) != 0
+        && (*h)
+            .func
+            .avs_is_yuv422p16
+            .expect("non-null function pointer")(vi)
+            != 0
     {
         (*info).csp = X264_CSP_I422 | X264_CSP_HIGH_DEPTH;
     } else if if (*h).func.avs_is_yv16.is_some() {
@@ -2762,7 +2646,11 @@ unsafe extern "C" fn open_file(
     {
         (*info).csp = X264_CSP_I422;
     } else if (*h).func.avs_is_yuv420p16.is_some()
-        && (*h).func.avs_is_yuv420p16.expect("non-null function pointer")(vi) != 0
+        && (*h)
+            .func
+            .avs_is_yuv420p16
+            .expect("non-null function pointer")(vi)
+            != 0
     {
         (*info).csp = X264_CSP_I420 | X264_CSP_HIGH_DEPTH;
     } else if if (*h).func.avs_is_yv12.is_some() {
@@ -2793,21 +2681,13 @@ unsafe extern "C" fn open_file(
     {
         (*info).csp = AV_PIX_FMT_YUV411P as ::core::ffi::c_int | X264_CSP_OTHER;
     } else {
-        let mut pixel_type: AVS_Value = (*h)
-            .func
-            .avs_invoke
-            .expect(
-                "non-null function pointer",
-            )(
+        let mut pixel_type: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
             (*h).env,
             b"PixelType\0" as *const u8 as *const ::core::ffi::c_char,
             res,
             0 as *mut *const ::core::ffi::c_char,
         );
-        let mut pixel_type_name: *const ::core::ffi::c_char = if avs_is_string(
-            pixel_type,
-        ) != 0
-        {
+        let mut pixel_type_name: *const ::core::ffi::c_char = if avs_is_string(pixel_type) != 0 {
             avs_as_string(pixel_type)
         } else {
             b"unknown\0" as *const u8 as *const ::core::ffi::c_char
@@ -2815,8 +2695,7 @@ unsafe extern "C" fn open_file(
         x264_cli_log(
             b"avs\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"not supported pixel type: %s\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"not supported pixel type: %s\n\0" as *const u8 as *const ::core::ffi::c_char,
             pixel_type_name,
         );
         return -(1 as ::core::ffi::c_int);
@@ -2862,22 +2741,18 @@ unsafe extern "C" fn read_frame(
     if i_frame >= (*h).num_frames {
         return -(1 as ::core::ffi::c_int);
     }
-    (*pic).opaque = (*h)
-        .func
-        .avs_get_frame
-        .expect("non-null function pointer")((*h).clip, i_frame)
+    (*pic).opaque = (*h).func.avs_get_frame.expect("non-null function pointer")((*h).clip, i_frame)
         as *mut ::core::ffi::c_void;
     let mut frm: *mut AVS_VideoFrame = (*pic).opaque as *mut AVS_VideoFrame;
-    let mut err: *const ::core::ffi::c_char = (*h)
-        .func
-        .avs_clip_get_error
-        .expect("non-null function pointer")((*h).clip);
+    let mut err: *const ::core::ffi::c_char =
+        (*h).func
+            .avs_clip_get_error
+            .expect("non-null function pointer")((*h).clip);
     if !err.is_null() {
         x264_cli_log(
             b"avs\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"%s occurred while reading frame %d\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"%s occurred while reading frame %d\n\0" as *const u8 as *const ::core::ffi::c_char,
             err,
             i_frame,
         );
@@ -2886,16 +2761,14 @@ unsafe extern "C" fn read_frame(
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < (*pic).img.planes {
         (*pic).img.plane[i as usize] = (if (*h).func.avs_get_read_ptr_p.is_some() {
-            (*h)
-                .func
+            (*h).func
                 .avs_get_read_ptr_p
                 .expect("non-null function pointer")(frm, plane[i as usize])
         } else {
             avs_get_read_ptr_p(frm, plane[i as usize])
         }) as *mut uint8_t;
         (*pic).img.stride[i as usize] = if (*h).func.avs_get_pitch_p.is_some() {
-            (*h)
-                .func
+            (*h).func
                 .avs_get_pitch_p
                 .expect("non-null function pointer")(frm, plane[i as usize])
         } else {
@@ -2911,8 +2784,7 @@ unsafe extern "C" fn release_frame(
     mut handle: hnd_t,
 ) -> ::core::ffi::c_int {
     let mut h: *mut avs_hnd_t = handle as *mut avs_hnd_t;
-    (*h)
-        .func
+    (*h).func
         .avs_release_video_frame
         .expect("non-null function pointer")((*pic).opaque as *mut AVS_VideoFrame);
     return 0 as ::core::ffi::c_int;
@@ -2929,11 +2801,12 @@ unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut handle: hnd_t) {
 unsafe extern "C" fn close_file(mut handle: hnd_t) -> ::core::ffi::c_int {
     let mut h: *mut avs_hnd_t = handle as *mut avs_hnd_t;
     if (*h).func.avs_release_clip.is_some() && !(*h).clip.is_null() {
-        (*h).func.avs_release_clip.expect("non-null function pointer")((*h).clip);
+        (*h).func
+            .avs_release_clip
+            .expect("non-null function pointer")((*h).clip);
     }
     if (*h).func.avs_delete_script_environment.is_some() && !(*h).env.is_null() {
-        (*h)
-            .func
+        (*h).func
             .avs_delete_script_environment
             .expect("non-null function pointer")((*h).env);
     }
@@ -2976,15 +2849,10 @@ pub static mut avs_input: cli_input_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             release_frame: Some(
-                release_frame
-                    as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
+                release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
             ),
-            picture_clean: Some(
-                picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> (),
-            ),
-            close_file: Some(
-                close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int,
-            ),
+            picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
+            close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int),
         };
         init
     }

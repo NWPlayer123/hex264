@@ -36,7 +36,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:27"]
 pub mod x264_h {
@@ -158,11 +158,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -325,9 +321,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "811:16"]
     pub struct x264_image_properties_t {
         pub quant_offsets: *mut ::core::ffi::c_float,
-        pub quant_offsets_free: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-        >,
+        pub quant_offsets_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub mb_info: *mut uint8_t,
         pub mb_info_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub f_ssim: ::core::ffi::c_double,
@@ -346,9 +340,9 @@ pub mod x264_h {
     }
     #[c2rust::src_loc = "289:9"]
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -385,34 +379,27 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::__va_list_tag;
-pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __uint32_t, __int64_t};
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, x264_picture_t,
-    x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_image_properties_t, x264_image_t,
-    X264_LOG_ERROR, x264_t,
-};
-use self::stdlib_h::{calloc, free};
-use self::base_h::x264_log_internal;
-pub use self::x264_config_h::X264_CHROMA_FORMAT;
 pub use self::__stddef_null_h::NULL;
+pub use self::__stddef_size_t_h::size_t;
+use self::base_h::x264_log_internal;
+pub use self::internal::__va_list_tag;
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::stdlib_h::{calloc, free};
+pub use self::types_h::{__int64_t, __uint32_t, __uint8_t};
+pub use self::x264_config_h::X264_CHROMA_FORMAT;
+pub use self::x264_h::{
+    x264_hrd_t, x264_image_properties_t, x264_image_t, x264_nal_t, x264_param_t, x264_picture_t,
+    x264_sei_payload_t, x264_sei_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0,
+    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_LOG_ERROR,
+};
 extern "C" {
     #[c2rust::src_loc = "34:1"]
-    pub fn x264_8_encoder_open(
-        _: *mut x264_param_t,
-        _: *mut ::core::ffi::c_void,
-    ) -> *mut x264_t;
+    pub fn x264_8_encoder_open(_: *mut x264_param_t, _: *mut ::core::ffi::c_void) -> *mut x264_t;
     #[c2rust::src_loc = "35:1"]
     pub fn x264_8_nal_encode(h: *mut x264_t, dst: *mut uint8_t, nal: *mut x264_nal_t);
     #[c2rust::src_loc = "36:1"]
-    pub fn x264_8_encoder_reconfig(
-        _: *mut x264_t,
-        _: *mut x264_param_t,
-    ) -> ::core::ffi::c_int;
+    pub fn x264_8_encoder_reconfig(_: *mut x264_t, _: *mut x264_param_t) -> ::core::ffi::c_int;
     #[c2rust::src_loc = "37:1"]
     pub fn x264_8_encoder_parameters(_: *mut x264_t, _: *mut x264_param_t);
     #[c2rust::src_loc = "38:1"]
@@ -438,22 +425,13 @@ extern "C" {
     #[c2rust::src_loc = "43:1"]
     pub fn x264_8_encoder_intra_refresh(_: *mut x264_t);
     #[c2rust::src_loc = "44:1"]
-    pub fn x264_8_encoder_invalidate_reference(
-        _: *mut x264_t,
-        pts: int64_t,
-    ) -> ::core::ffi::c_int;
+    pub fn x264_8_encoder_invalidate_reference(_: *mut x264_t, pts: int64_t) -> ::core::ffi::c_int;
     #[c2rust::src_loc = "46:1"]
-    pub fn x264_10_encoder_open(
-        _: *mut x264_param_t,
-        _: *mut ::core::ffi::c_void,
-    ) -> *mut x264_t;
+    pub fn x264_10_encoder_open(_: *mut x264_param_t, _: *mut ::core::ffi::c_void) -> *mut x264_t;
     #[c2rust::src_loc = "47:1"]
     pub fn x264_10_nal_encode(h: *mut x264_t, dst: *mut uint8_t, nal: *mut x264_nal_t);
     #[c2rust::src_loc = "48:1"]
-    pub fn x264_10_encoder_reconfig(
-        _: *mut x264_t,
-        _: *mut x264_param_t,
-    ) -> ::core::ffi::c_int;
+    pub fn x264_10_encoder_reconfig(_: *mut x264_t, _: *mut x264_param_t) -> ::core::ffi::c_int;
     #[c2rust::src_loc = "49:1"]
     pub fn x264_10_encoder_parameters(_: *mut x264_t, _: *mut x264_param_t);
     #[c2rust::src_loc = "50:1"]
@@ -479,25 +457,18 @@ extern "C" {
     #[c2rust::src_loc = "55:1"]
     pub fn x264_10_encoder_intra_refresh(_: *mut x264_t);
     #[c2rust::src_loc = "56:1"]
-    pub fn x264_10_encoder_invalidate_reference(
-        _: *mut x264_t,
-        pts: int64_t,
-    ) -> ::core::ffi::c_int;
+    pub fn x264_10_encoder_invalidate_reference(_: *mut x264_t, pts: int64_t)
+        -> ::core::ffi::c_int;
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "58:16"]
 pub struct x264_api_t {
     pub x264: *mut x264_t,
-    pub nal_encode: Option<
-        unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> (),
-    >,
-    pub encoder_reconfig: Option<
-        unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ::core::ffi::c_int,
-    >,
-    pub encoder_parameters: Option<
-        unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> (),
-    >,
+    pub nal_encode: Option<unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> ()>,
+    pub encoder_reconfig:
+        Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ::core::ffi::c_int>,
+    pub encoder_parameters: Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ()>,
     pub encoder_headers: Option<
         unsafe extern "C" fn(
             *mut x264_t,
@@ -515,29 +486,21 @@ pub struct x264_api_t {
         ) -> ::core::ffi::c_int,
     >,
     pub encoder_close: Option<unsafe extern "C" fn(*mut x264_t) -> ()>,
-    pub encoder_delayed_frames: Option<
-        unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int,
-    >,
-    pub encoder_maximum_delayed_frames: Option<
-        unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int,
-    >,
+    pub encoder_delayed_frames: Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>,
+    pub encoder_maximum_delayed_frames:
+        Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>,
     pub encoder_intra_refresh: Option<unsafe extern "C" fn(*mut x264_t) -> ()>,
-    pub encoder_invalidate_reference: Option<
-        unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int,
-    >,
+    pub encoder_invalidate_reference:
+        Option<unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int>,
 }
 #[no_mangle]
 #[c2rust::src_loc = "32:11"]
 pub static mut x264_chroma_format: ::core::ffi::c_int = X264_CHROMA_FORMAT;
 #[no_mangle]
 #[c2rust::src_loc = "76:1"]
-pub unsafe extern "C" fn x264_encoder_open_165(
-    mut param: *mut x264_param_t,
-) -> *mut x264_t {
-    let mut api: *mut x264_api_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<x264_api_t>() as size_t,
-    ) as *mut x264_api_t;
+pub unsafe extern "C" fn x264_encoder_open_165(mut param: *mut x264_param_t) -> *mut x264_t {
+    let mut api: *mut x264_api_t =
+        calloc(1 as size_t, ::core::mem::size_of::<x264_api_t>() as size_t) as *mut x264_api_t;
     if api.is_null() {
         return 0 as *mut x264_t;
     }
@@ -546,26 +509,16 @@ pub unsafe extern "C" fn x264_encoder_open_165(
             x264_8_nal_encode
                 as unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> (),
         )
-            as Option<
-                unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> (),
-            >;
+            as Option<unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> ()>;
         (*api).encoder_reconfig = Some(
             x264_8_encoder_reconfig
-                as unsafe extern "C" fn(
-                    *mut x264_t,
-                    *mut x264_param_t,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ::core::ffi::c_int,
         )
-            as Option<
-                unsafe extern "C" fn(
-                    *mut x264_t,
-                    *mut x264_param_t,
-                ) -> ::core::ffi::c_int,
-            >;
+            as Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ::core::ffi::c_int>;
         (*api).encoder_parameters = Some(
-            x264_8_encoder_parameters
-                as unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> (),
-        ) as Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ()>;
+            x264_8_encoder_parameters as unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> (),
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ()>;
         (*api).encoder_headers = Some(
             x264_8_encoder_headers
                 as unsafe extern "C" fn(
@@ -600,50 +553,43 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                     *mut x264_picture_t,
                 ) -> ::core::ffi::c_int,
             >;
-        (*api).encoder_close = Some(
-            x264_8_encoder_close as unsafe extern "C" fn(*mut x264_t) -> (),
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
+        (*api).encoder_close = Some(x264_8_encoder_close as unsafe extern "C" fn(*mut x264_t) -> ())
+            as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
         (*api).encoder_delayed_frames = Some(
             x264_8_encoder_delayed_frames
                 as unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int,
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
         (*api).encoder_maximum_delayed_frames = Some(
             x264_8_encoder_maximum_delayed_frames
                 as unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int,
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
-        (*api).encoder_intra_refresh = Some(
-            x264_8_encoder_intra_refresh as unsafe extern "C" fn(*mut x264_t) -> (),
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
+        (*api).encoder_intra_refresh =
+            Some(x264_8_encoder_intra_refresh as unsafe extern "C" fn(*mut x264_t) -> ())
+                as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
         (*api).encoder_invalidate_reference = Some(
             x264_8_encoder_invalidate_reference
                 as unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int,
-        ) as Option<unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int>;
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int>;
         (*api).x264 = x264_8_encoder_open(param, api as *mut ::core::ffi::c_void);
     } else if (*param).i_bitdepth == 10 as ::core::ffi::c_int {
         (*api).nal_encode = Some(
             x264_10_nal_encode
                 as unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> (),
         )
-            as Option<
-                unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> (),
-            >;
+            as Option<unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> ()>;
         (*api).encoder_reconfig = Some(
             x264_10_encoder_reconfig
-                as unsafe extern "C" fn(
-                    *mut x264_t,
-                    *mut x264_param_t,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ::core::ffi::c_int,
         )
-            as Option<
-                unsafe extern "C" fn(
-                    *mut x264_t,
-                    *mut x264_param_t,
-                ) -> ::core::ffi::c_int,
-            >;
+            as Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ::core::ffi::c_int>;
         (*api).encoder_parameters = Some(
             x264_10_encoder_parameters
                 as unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> (),
-        ) as Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ()>;
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t, *mut x264_param_t) -> ()>;
         (*api).encoder_headers = Some(
             x264_10_encoder_headers
                 as unsafe extern "C" fn(
@@ -678,24 +624,27 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                     *mut x264_picture_t,
                 ) -> ::core::ffi::c_int,
             >;
-        (*api).encoder_close = Some(
-            x264_10_encoder_close as unsafe extern "C" fn(*mut x264_t) -> (),
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
+        (*api).encoder_close =
+            Some(x264_10_encoder_close as unsafe extern "C" fn(*mut x264_t) -> ())
+                as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
         (*api).encoder_delayed_frames = Some(
             x264_10_encoder_delayed_frames
                 as unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int,
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
         (*api).encoder_maximum_delayed_frames = Some(
             x264_10_encoder_maximum_delayed_frames
                 as unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int,
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
-        (*api).encoder_intra_refresh = Some(
-            x264_10_encoder_intra_refresh as unsafe extern "C" fn(*mut x264_t) -> (),
-        ) as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t) -> ::core::ffi::c_int>;
+        (*api).encoder_intra_refresh =
+            Some(x264_10_encoder_intra_refresh as unsafe extern "C" fn(*mut x264_t) -> ())
+                as Option<unsafe extern "C" fn(*mut x264_t) -> ()>;
         (*api).encoder_invalidate_reference = Some(
             x264_10_encoder_invalidate_reference
                 as unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int,
-        ) as Option<unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int>;
+        )
+            as Option<unsafe extern "C" fn(*mut x264_t, int64_t) -> ::core::ffi::c_int>;
         (*api).x264 = x264_10_encoder_open(param, api as *mut ::core::ffi::c_void);
     } else {
         x264_log_internal(
@@ -735,18 +684,15 @@ pub unsafe extern "C" fn x264_encoder_reconfig(
     mut param: *mut x264_param_t,
 ) -> ::core::ffi::c_int {
     let mut api: *mut x264_api_t = h as *mut x264_api_t;
-    return (*api)
-        .encoder_reconfig
-        .expect("non-null function pointer")((*api).x264, param);
+    return (*api).encoder_reconfig.expect("non-null function pointer")((*api).x264, param);
 }
 #[no_mangle]
 #[c2rust::src_loc = "152:1"]
-pub unsafe extern "C" fn x264_encoder_parameters(
-    mut h: *mut x264_t,
-    mut param: *mut x264_param_t,
-) {
+pub unsafe extern "C" fn x264_encoder_parameters(mut h: *mut x264_t, mut param: *mut x264_param_t) {
     let mut api: *mut x264_api_t = h as *mut x264_api_t;
-    (*api).encoder_parameters.expect("non-null function pointer")((*api).x264, param);
+    (*api)
+        .encoder_parameters
+        .expect("non-null function pointer")((*api).x264, param);
 }
 #[no_mangle]
 #[c2rust::src_loc = "159:1"]
@@ -756,9 +702,7 @@ pub unsafe extern "C" fn x264_encoder_headers(
     mut pi_nal: *mut ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut api: *mut x264_api_t = h as *mut x264_api_t;
-    return (*api)
-        .encoder_headers
-        .expect("non-null function pointer")((*api).x264, pp_nal, pi_nal);
+    return (*api).encoder_headers.expect("non-null function pointer")((*api).x264, pp_nal, pi_nal);
 }
 #[no_mangle]
 #[c2rust::src_loc = "166:1"]
@@ -770,17 +714,17 @@ pub unsafe extern "C" fn x264_encoder_encode(
     mut pic_out: *mut x264_picture_t,
 ) -> ::core::ffi::c_int {
     let mut api: *mut x264_api_t = h as *mut x264_api_t;
-    return (*api)
-        .encoder_encode
-        .expect(
-            "non-null function pointer",
-        )((*api).x264, pp_nal, pi_nal, pic_in, pic_out);
+    return (*api).encoder_encode.expect("non-null function pointer")(
+        (*api).x264,
+        pp_nal,
+        pi_nal,
+        pic_in,
+        pic_out,
+    );
 }
 #[no_mangle]
 #[c2rust::src_loc = "173:1"]
-pub unsafe extern "C" fn x264_encoder_delayed_frames(
-    mut h: *mut x264_t,
-) -> ::core::ffi::c_int {
+pub unsafe extern "C" fn x264_encoder_delayed_frames(mut h: *mut x264_t) -> ::core::ffi::c_int {
     let mut api: *mut x264_api_t = h as *mut x264_api_t;
     return (*api)
         .encoder_delayed_frames
@@ -800,7 +744,9 @@ pub unsafe extern "C" fn x264_encoder_maximum_delayed_frames(
 #[c2rust::src_loc = "187:1"]
 pub unsafe extern "C" fn x264_encoder_intra_refresh(mut h: *mut x264_t) {
     let mut api: *mut x264_api_t = h as *mut x264_api_t;
-    (*api).encoder_intra_refresh.expect("non-null function pointer")((*api).x264);
+    (*api)
+        .encoder_intra_refresh
+        .expect("non-null function pointer")((*api).x264);
 }
 #[no_mangle]
 #[c2rust::src_loc = "194:1"]

@@ -73,7 +73,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -101,7 +101,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:27"]
 pub mod x264_h {
@@ -223,11 +223,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -382,9 +378,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "811:16"]
     pub struct x264_image_properties_t {
         pub quant_offsets: *mut ::core::ffi::c_float,
-        pub quant_offsets_free: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-        >,
+        pub quant_offsets_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub mb_info: *mut uint8_t,
         pub mb_info_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub f_ssim: ::core::ffi::c_double,
@@ -409,9 +403,9 @@ pub mod x264_h {
         pub extra_sei: x264_sei_t,
         pub opaque: *mut ::core::ffi::c_void,
     }
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -441,12 +435,9 @@ pub mod output_h {
                 *mut cli_output_opt_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub set_param: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
-        >,
-        pub write_headers: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
-        >,
+        pub set_param: Option<unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int>,
+        pub write_headers:
+            Option<unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int>,
         pub write_frame: Option<
             unsafe extern "C" fn(
                 hnd_t,
@@ -455,14 +446,12 @@ pub mod output_h {
                 *mut x264_picture_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub close_file: Option<
-            unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
-        >,
+        pub close_file: Option<unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int>,
     }
-    use super::x264cli_h::hnd_t;
-    use super::x264_h::{x264_param_t, x264_nal_t, x264_picture_t};
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    use super::x264_h::{x264_nal_t, x264_param_t, x264_picture_t};
+    use super::x264cli_h::hnd_t;
 }
 #[c2rust::header_src = "/usr/include/stdio.h:27"]
 pub mod stdio_h {
@@ -497,34 +486,33 @@ pub mod string_h {
         ) -> ::core::ffi::c_int;
     }
 }
-pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __uint32_t, __int64_t, __uint64_t, __off_t, __off64_t,
-};
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
+pub use self::internal::__va_list_tag;
+pub use self::output_h::{cli_output_opt_t, cli_output_t};
 pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::stdio_h::{fclose, fopen, fwrite, stdout};
+use self::string_h::strcmp;
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::types_h::{__int64_t, __off64_t, __off_t, __uint32_t, __uint64_t, __uint8_t};
 pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, x264_hrd_t,
-    x264_sei_payload_t, x264_sei_t, x264_image_t, x264_image_properties_t,
-    x264_picture_t, x264_t,
+    x264_hrd_t, x264_image_properties_t, x264_image_t, x264_nal_t, x264_param_t, x264_picture_t,
+    x264_sei_payload_t, x264_sei_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0,
+    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
 };
 pub use self::x264cli_h::hnd_t;
-pub use self::output_h::{cli_output_opt_t, cli_output_t};
-use self::stdio_h::{stdout, fclose, fopen, fwrite};
-use self::string_h::strcmp;
+pub use self::FILE_h::FILE;
 #[c2rust::src_loc = "29:1"]
 unsafe extern "C" fn open_file(
     mut psz_filename: *mut ::core::ffi::c_char,
     mut p_handle: *mut hnd_t,
     mut opt: *mut cli_output_opt_t,
 ) -> ::core::ffi::c_int {
-    if strcmp(psz_filename, b"-\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
+    if strcmp(
+        psz_filename,
+        b"-\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
+    {
         *p_handle = stdout as hnd_t;
     } else {
         *p_handle = fopen(
@@ -549,12 +537,11 @@ unsafe extern "C" fn write_headers(
     mut handle: hnd_t,
     mut p_nal: *mut x264_nal_t,
 ) -> ::core::ffi::c_int {
-    let mut size: ::core::ffi::c_int = (*p_nal.offset(0 as ::core::ffi::c_int as isize))
-        .i_payload + (*p_nal.offset(1 as ::core::ffi::c_int as isize)).i_payload
+    let mut size: ::core::ffi::c_int = (*p_nal.offset(0 as ::core::ffi::c_int as isize)).i_payload
+        + (*p_nal.offset(1 as ::core::ffi::c_int as isize)).i_payload
         + (*p_nal.offset(2 as ::core::ffi::c_int as isize)).i_payload;
     if fwrite(
-        (*p_nal.offset(0 as ::core::ffi::c_int as isize)).p_payload
-            as *const ::core::ffi::c_void,
+        (*p_nal.offset(0 as ::core::ffi::c_int as isize)).p_payload as *const ::core::ffi::c_void,
         size as size_t,
         1 as size_t,
         handle as *mut FILE,
@@ -607,15 +594,10 @@ pub static mut raw_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             set_param: Some(
-                set_param
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        *mut x264_param_t,
-                    ) -> ::core::ffi::c_int,
+                set_param as unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
             ),
             write_headers: Some(
-                write_headers
-                    as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
+                write_headers as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
             ),
             write_frame: Some(
                 write_frame
@@ -627,12 +609,7 @@ pub static mut raw_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             close_file: Some(
-                close_file
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        int64_t,
-                        int64_t,
-                    ) -> ::core::ffi::c_int,
+                close_file as unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
             ),
         };
         init

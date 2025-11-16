@@ -31,7 +31,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:26"]
 pub mod x264_h {
@@ -153,11 +153,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -275,9 +271,9 @@ pub mod x264_h {
     }
     #[c2rust::src_loc = "289:9"]
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -339,8 +335,8 @@ pub mod input_h {
         pub duration: int64_t,
         pub opaque: *mut ::core::ffi::c_void,
     }
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/filters/video/video.h:26"]
 pub mod video_h {
@@ -360,25 +356,17 @@ pub mod video_h {
             ) -> ::core::ffi::c_int,
         >,
         pub get_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub release_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub free: Option<unsafe extern "C" fn(hnd_t) -> ()>,
         pub next: *mut cli_vid_filter_t,
     }
-    use super::x264cli_h::hnd_t;
-    use super::input_h::{video_info_t, cli_pic_t};
+    use super::input_h::{cli_pic_t, video_info_t};
     use super::x264_h::x264_param_t;
+    use super::x264cli_h::hnd_t;
 }
 #[c2rust::header_src = "/usr/include/strings.h:26"]
 pub mod strings_h {
@@ -395,23 +383,22 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
+pub use self::__stddef_null_h::NULL;
+pub use self::input_h::{cli_image_t, cli_pic_t, video_info_t};
 pub use self::internal::__va_list_tag;
-pub use self::types_h::{__uint8_t, __uint32_t, __int64_t};
 pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::strings_h::strcasecmp;
+pub use self::types_h::{__int64_t, __uint32_t, __uint8_t};
+pub use self::video_h::cli_vid_filter_t;
 pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_LOG_ERROR,
-    x264_t,
+    x264_nal_t, x264_param_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0, C2RustUnnamed_1,
+    C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_LOG_ERROR,
 };
 pub use self::x264cli_h::{hnd_t, x264_cli_log};
-pub use self::input_h::{video_info_t, cli_image_t, cli_pic_t};
-pub use self::video_h::cli_vid_filter_t;
-use self::strings_h::strcasecmp;
-pub use self::__stddef_null_h::NULL;
 #[c2rust::src_loc = "28:26"]
-static mut first_filter: *mut cli_vid_filter_t = 0 as *const cli_vid_filter_t
-    as *mut cli_vid_filter_t;
+static mut first_filter: *mut cli_vid_filter_t =
+    0 as *const cli_vid_filter_t as *mut cli_vid_filter_t;
 #[c2rust::src_loc = "30:1"]
 unsafe extern "C" fn register_vid_filter(mut new_filter: *mut cli_vid_filter_t) {
     let mut filter_i: *mut cli_vid_filter_t = first_filter;
@@ -484,9 +471,7 @@ pub unsafe extern "C" fn x264_init_vid_filter(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    if (*filter_i)
-        .init
-        .expect("non-null function pointer")(handle, filter, info, param, opt_string)
+    if (*filter_i).init.expect("non-null function pointer")(handle, filter, info, param, opt_string)
         != 0
     {
         return -(1 as ::core::ffi::c_int);

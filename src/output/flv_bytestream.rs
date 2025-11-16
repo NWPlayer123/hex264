@@ -61,7 +61,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -87,7 +87,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/output/flv_bytestream.h:26"]
 pub mod flv_bytestream_h {
@@ -129,7 +129,7 @@ pub mod flv_bytestream_h {
         pub fp: *mut FILE,
         pub d_total: uint64_t,
     }
-    use super::stdint_uintn_h::{uint8_t, uint64_t};
+    use super::stdint_uintn_h::{uint64_t, uint8_t};
     use super::FILE_h::FILE;
 }
 #[c2rust::header_src = "/usr/include/stdio.h:26"]
@@ -160,10 +160,8 @@ pub mod stdlib_h {
         #[c2rust::src_loc = "675:1"]
         pub fn calloc(__nmemb: size_t, __size: size_t) -> *mut ::core::ffi::c_void;
         #[c2rust::src_loc = "683:1"]
-        pub fn realloc(
-            __ptr: *mut ::core::ffi::c_void,
-            __size: size_t,
-        ) -> *mut ::core::ffi::c_void;
+        pub fn realloc(__ptr: *mut ::core::ffi::c_void, __size: size_t)
+            -> *mut ::core::ffi::c_void;
         #[c2rust::src_loc = "687:1"]
         pub fn free(__ptr: *mut ::core::ffi::c_void);
     }
@@ -193,24 +191,19 @@ pub mod __stddef_null_h {
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __uint16_t, __uint32_t, __uint64_t, __off_t, __off64_t,
-};
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
 pub use self::flv_bytestream_h::{
-    C2RustUnnamed, AMF_DATA_TYPE_UNSUPPORTED, AMF_DATA_TYPE_LONG_STRING,
-    AMF_DATA_TYPE_DATE, AMF_DATA_TYPE_ARRAY, AMF_DATA_TYPE_OBJECT_END,
-    AMF_DATA_TYPE_MIXEDARRAY, AMF_DATA_TYPE_REFERENCE, AMF_DATA_TYPE_UNDEFINED,
-    AMF_DATA_TYPE_NULL, AMF_DATA_TYPE_OBJECT, AMF_DATA_TYPE_STRING, AMF_DATA_TYPE_BOOL,
-    AMF_DATA_TYPE_NUMBER, flv_buffer,
+    flv_buffer, C2RustUnnamed, AMF_DATA_TYPE_ARRAY, AMF_DATA_TYPE_BOOL, AMF_DATA_TYPE_DATE,
+    AMF_DATA_TYPE_LONG_STRING, AMF_DATA_TYPE_MIXEDARRAY, AMF_DATA_TYPE_NULL, AMF_DATA_TYPE_NUMBER,
+    AMF_DATA_TYPE_OBJECT, AMF_DATA_TYPE_OBJECT_END, AMF_DATA_TYPE_REFERENCE, AMF_DATA_TYPE_STRING,
+    AMF_DATA_TYPE_UNDEFINED, AMF_DATA_TYPE_UNSUPPORTED,
 };
-use self::stdio_h::{stdout, fopen, fwrite};
-use self::stdlib_h::{calloc, realloc, free};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+use self::stdio_h::{fopen, fwrite, stdout};
+use self::stdlib_h::{calloc, free, realloc};
 use self::string_h::{memcpy, strcmp, strlen};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::types_h::{__off64_t, __off_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t};
+pub use self::FILE_h::FILE;
 pub use self::__stddef_null_h::NULL;
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -246,7 +239,10 @@ pub unsafe extern "C" fn flv_put_be64(mut c: *mut flv_buffer, mut val: uint64_t)
 #[no_mangle]
 #[c2rust::src_loc = "55:1"]
 pub unsafe extern "C" fn flv_put_be16(mut c: *mut flv_buffer, mut val: uint16_t) {
-    flv_put_byte(c, (val as ::core::ffi::c_int >> 8 as ::core::ffi::c_int) as uint8_t);
+    flv_put_byte(
+        c,
+        (val as ::core::ffi::c_int >> 8 as ::core::ffi::c_int) as uint8_t,
+    );
     flv_put_byte(c, val as uint8_t);
 }
 #[no_mangle]
@@ -257,10 +253,7 @@ pub unsafe extern "C" fn flv_put_be24(mut c: *mut flv_buffer, mut val: uint32_t)
 }
 #[no_mangle]
 #[c2rust::src_loc = "67:1"]
-pub unsafe extern "C" fn flv_put_tag(
-    mut c: *mut flv_buffer,
-    mut tag: *const ::core::ffi::c_char,
-) {
+pub unsafe extern "C" fn flv_put_tag(mut c: *mut flv_buffer, mut tag: *const ::core::ffi::c_char) {
     while *tag != 0 {
         let fresh0 = tag;
         tag = tag.offset(1);
@@ -279,10 +272,7 @@ pub unsafe extern "C" fn flv_put_amf_string(
 }
 #[no_mangle]
 #[c2rust::src_loc = "80:1"]
-pub unsafe extern "C" fn flv_put_amf_double(
-    mut c: *mut flv_buffer,
-    mut d: ::core::ffi::c_double,
-) {
+pub unsafe extern "C" fn flv_put_amf_double(mut c: *mut flv_buffer, mut d: ::core::ffi::c_double) {
     flv_put_byte(c, AMF_DATA_TYPE_NUMBER as ::core::ffi::c_int as uint8_t);
     flv_put_be64(c, flv_dbl2int(d));
 }
@@ -291,18 +281,15 @@ pub unsafe extern "C" fn flv_put_amf_double(
 pub unsafe extern "C" fn flv_create_writer(
     mut filename: *const ::core::ffi::c_char,
 ) -> *mut flv_buffer {
-    let mut c: *mut flv_buffer = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<flv_buffer>() as size_t,
-    ) as *mut flv_buffer;
+    let mut c: *mut flv_buffer =
+        calloc(1 as size_t, ::core::mem::size_of::<flv_buffer>() as size_t) as *mut flv_buffer;
     if c.is_null() {
         return 0 as *mut flv_buffer;
     }
     if strcmp(filename, b"-\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
         (*c).fp = stdout;
     } else {
-        (*c).fp = fopen(filename, b"wb\0" as *const u8 as *const ::core::ffi::c_char)
-            as *mut FILE;
+        (*c).fp = fopen(filename, b"wb\0" as *const u8 as *const ::core::ffi::c_char) as *mut FILE;
     }
     if (*c).fp.is_null() {
         free(c as *mut ::core::ffi::c_void);
@@ -346,12 +333,18 @@ pub unsafe extern "C" fn flv_rewrite_amf_be24(
     mut length: ::core::ffi::c_uint,
     mut start: ::core::ffi::c_uint,
 ) {
-    *(*c).data.offset(start as isize).offset(0 as ::core::ffi::c_int as isize) = (length
-        >> 16 as ::core::ffi::c_int) as uint8_t;
-    *(*c).data.offset(start as isize).offset(1 as ::core::ffi::c_int as isize) = (length
-        >> 8 as ::core::ffi::c_int) as uint8_t;
-    *(*c).data.offset(start as isize).offset(2 as ::core::ffi::c_int as isize) = (length
-        >> 0 as ::core::ffi::c_int) as uint8_t;
+    *(*c)
+        .data
+        .offset(start as isize)
+        .offset(0 as ::core::ffi::c_int as isize) = (length >> 16 as ::core::ffi::c_int) as uint8_t;
+    *(*c)
+        .data
+        .offset(start as isize)
+        .offset(1 as ::core::ffi::c_int as isize) = (length >> 8 as ::core::ffi::c_int) as uint8_t;
+    *(*c)
+        .data
+        .offset(start as isize)
+        .offset(2 as ::core::ffi::c_int as isize) = (length >> 0 as ::core::ffi::c_int) as uint8_t;
 }
 #[no_mangle]
 #[c2rust::src_loc = "140:1"]
