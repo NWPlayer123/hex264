@@ -4691,8 +4691,7 @@ unsafe extern "C" fn parse(
         }
         (*opt).timebase_convert_multiplier = i_user_timebase_den as c_double
             / info.timebase_den as c_double
-            * (info.timebase_num as c_double
-                / i_user_timebase_num as c_double);
+            * (info.timebase_num as c_double / i_user_timebase_num as c_double);
         info.timebase_num = i_user_timebase_num as uint32_t;
         info.timebase_den = i_user_timebase_den as uint32_t;
         info.vfr = 1 as c_int;
@@ -4952,8 +4951,7 @@ unsafe extern "C" fn print_status(
                 / (*param).i_timebase_den as c_double);
     } else {
         bitrate = i_file as c_double * 8 as c_int as c_double
-            / (1000 as c_int as c_double
-                * (*param).i_fps_den as c_double
+            / (1000 as c_int as c_double * (*param).i_fps_den as c_double
                 / (*param).i_fps_num as c_double);
     }
     if i_frame_total != 0 {
@@ -5085,8 +5083,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
             &*pulldown_values.as_ptr().offset((*opt).i_pulldown as isize) as *const cli_pulldown_t;
         (*param).i_timebase_num = (*param).i_fps_den;
         if fmod(
-            ((*param).i_fps_num as c_float * (*pulldown).fps_factor)
-                as c_double,
+            ((*param).i_fps_num as c_float * (*pulldown).fps_factor) as c_double,
             1 as c_int as c_double,
         ) != 0.
         {
@@ -5250,10 +5247,8 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                             (*opt).tcfile_out,
                                             b"%.6f\n\0" as *const u8 as *const c_char,
                                             pic.i_pts as c_double
-                                                * ((*param).i_timebase_num
-                                                    as c_double
-                                                    / (*param).i_timebase_den
-                                                        as c_double)
+                                                * ((*param).i_timebase_num as c_double
+                                                    / (*param).i_timebase_den as c_double)
                                                 * 1e3f64,
                                         );
                                     }
@@ -5349,8 +5344,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
         );
     }
     if i_frame_output == 1 as c_int {
-        duration = (*param).i_fps_den as c_double
-            / (*param).i_fps_num as c_double;
+        duration = (*param).i_fps_den as c_double / (*param).i_fps_num as c_double;
     } else if b_ctrl_c != 0 {
         duration = (2 as int64_t * last_dts - prev_dts - first_dts) as c_double
             * (*param).i_timebase_num as c_double
@@ -5387,16 +5381,14 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
     );
     (*opt).hout = NULL_0 as hnd_t;
     if i_frame_output > 0 as c_int {
-        let mut fps: c_double = i_frame_output as c_double
-            * 1000000 as c_int as c_double
+        let mut fps: c_double = i_frame_output as c_double * 1000000 as c_int as c_double
             / (i_end - i_start) as c_double;
         fprintf(
             stderr,
             b"encoded %d frames, %.2f fps, %.2f kb/s\n\0" as *const u8 as *const c_char,
             i_frame_output,
             fps,
-            i_file as c_double * 8 as c_int as c_double
-                / (1000 as c_int as c_double * duration),
+            i_file as c_double * 8 as c_int as c_double / (1000 as c_int as c_double * duration),
         );
     }
     return retval;
