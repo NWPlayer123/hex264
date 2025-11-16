@@ -55,8 +55,8 @@ pub mod input_h {
         pub mod_width: ::core::ffi::c_int,
         pub mod_height: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
     extern "C" {
         #[c2rust::src_loc = "127:29"]
         pub static x264_cli_csps: [x264_cli_csp_t; 0];
@@ -98,14 +98,14 @@ pub mod x264cli_h {
     }
 }
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __int64_t};
+pub use self::input_h::{
+    cli_image_t, cli_pic_t, x264_cli_csp_depth_factor, x264_cli_csp_is_invalid, x264_cli_csp_t,
+    x264_cli_csps,
+};
 pub use self::stdint_intn_h::int64_t;
 pub use self::stdint_uintn_h::uint8_t;
-pub use self::input_h::{
-    cli_image_t, cli_pic_t, x264_cli_csp_t, x264_cli_csps, x264_cli_csp_is_invalid,
-    x264_cli_csp_depth_factor,
-};
 use self::string_h::memcpy;
+pub use self::types_h::{__int64_t, __uint8_t};
 pub use self::x264_h::{X264_CSP_MASK, X264_LOG_ERROR};
 use self::x264cli_h::x264_cli_log;
 #[no_mangle]
@@ -131,7 +131,7 @@ pub unsafe extern "C" fn x264_cli_plane_copy(
         );
         dst = dst.offset(i_dst as isize);
         src = src.offset(i_src as isize);
-    };
+    }
 }
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
@@ -149,14 +149,14 @@ pub unsafe extern "C" fn x264_cli_pic_copy(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    if (*in_0).img.csp != (*out).img.csp || (*in_0).img.height != (*out).img.height
+    if (*in_0).img.csp != (*out).img.csp
+        || (*in_0).img.height != (*out).img.height
         || (*in_0).img.width != (*out).img.width
     {
         x264_cli_log(
             b"x264\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"incompatible frame properties\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"incompatible frame properties\n\0" as *const u8 as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }

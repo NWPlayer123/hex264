@@ -95,7 +95,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -120,7 +120,7 @@ pub mod struct_timespec_h {
         pub tv_sec: __time_t,
         pub tv_nsec: __syscall_slong_t,
     }
-    use super::types_h::{__time_t, __syscall_slong_t};
+    use super::types_h::{__syscall_slong_t, __time_t};
 }
 #[c2rust::header_src = "/usr/include/bits/struct_stat.h:26"]
 pub mod struct_stat_h {
@@ -144,11 +144,11 @@ pub mod struct_stat_h {
         pub st_ctim: timespec,
         pub __glibc_reserved: [__syscall_slong_t; 3],
     }
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t,
-    };
     use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __uid_t,
+    };
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:26"]
 pub mod stdint_intn_h {
@@ -166,7 +166,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:26"]
 pub mod x264_h {
@@ -288,11 +288,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -447,9 +443,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "811:16"]
     pub struct x264_image_properties_t {
         pub quant_offsets: *mut ::core::ffi::c_float,
-        pub quant_offsets_free: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-        >,
+        pub quant_offsets_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub mb_info: *mut uint8_t,
         pub mb_info_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub f_ssim: ::core::ffi::c_double,
@@ -478,9 +472,9 @@ pub mod x264_h {
     pub const X264_LOG_WARNING: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
     #[c2rust::src_loc = "291:9"]
     pub const X264_LOG_INFO: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -519,12 +513,9 @@ pub mod output_h {
                 *mut cli_output_opt_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub set_param: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
-        >,
-        pub write_headers: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
-        >,
+        pub set_param: Option<unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int>,
+        pub write_headers:
+            Option<unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int>,
         pub write_frame: Option<
             unsafe extern "C" fn(
                 hnd_t,
@@ -533,14 +524,12 @@ pub mod output_h {
                 *mut x264_picture_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub close_file: Option<
-            unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
-        >,
+        pub close_file: Option<unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int>,
     }
-    use super::x264cli_h::hnd_t;
-    use super::x264_h::{x264_param_t, x264_nal_t, x264_picture_t};
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    use super::x264_h::{x264_nal_t, x264_param_t, x264_picture_t};
+    use super::x264cli_h::hnd_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/output/flv_bytestream.h:26"]
 pub mod flv_bytestream_h {
@@ -602,13 +591,11 @@ pub mod flv_bytestream_h {
     pub const AMF_DATA_TYPE_NUMBER: C2RustUnnamed_8 = 0;
     #[c2rust::src_loc = "45:9"]
     pub const AMF_END_OF_OBJECT: ::core::ffi::c_int = 0x9 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint64_t, uint32_t, uint16_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
     use super::FILE_h::FILE;
     extern "C" {
         #[c2rust::src_loc = "123:1"]
-        pub fn flv_create_writer(
-            filename: *const ::core::ffi::c_char,
-        ) -> *mut flv_buffer;
+        pub fn flv_create_writer(filename: *const ::core::ffi::c_char) -> *mut flv_buffer;
         #[c2rust::src_loc = "124:1"]
         pub fn flv_append_data(
             c: *mut flv_buffer,
@@ -694,9 +681,7 @@ pub mod stdlib_h {
 pub mod osdep_h {
     #[inline]
     #[c2rust::src_loc = "270:1"]
-    pub unsafe extern "C" fn x264_is_regular_file(
-        mut filehandle: *mut FILE,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn x264_is_regular_file(mut filehandle: *mut FILE) -> ::core::ffi::c_int {
         let mut file_stat: stat = stat {
             st_dev: 0,
             st_ino: 0,
@@ -709,9 +694,18 @@ pub mod osdep_h {
             st_size: 0,
             st_blksize: 0,
             st_blocks: 0,
-            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_atim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_mtim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_ctim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
             __glibc_reserved: [0; 3],
         };
         if fstat(fileno(filehandle), &mut file_stat) != 0 {
@@ -732,21 +726,19 @@ pub mod osdep_h {
     #[c2rust::src_loc = "487:1"]
     pub unsafe extern "C" fn endian_fix64(mut x: uint64_t) -> uint64_t {
         return (endian_fix32((x >> 32 as ::core::ffi::c_int) as uint32_t) as uint64_t)
-            .wrapping_add(
-                (endian_fix32(x as uint32_t) as uint64_t) << 32 as ::core::ffi::c_int,
-            );
+            .wrapping_add((endian_fix32(x as uint32_t) as uint64_t) << 32 as ::core::ffi::c_int);
     }
-    use super::FILE_h::FILE;
-    use super::struct_stat_h::stat;
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t, __time_t,
-    };
-    use super::struct_timespec_h::timespec;
-    use super::stat_h::fstat;
-    use super::stdio_h::fileno;
     use super::bits_stat_h::__S_IFMT;
+    use super::stat_h::fstat;
     use super::stdint_uintn_h::{uint32_t, uint64_t};
+    use super::stdio_h::fileno;
+    use super::struct_stat_h::stat;
+    use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __time_t, __uid_t,
+    };
+    use super::FILE_h::FILE;
 }
 #[c2rust::header_src = "/usr/include/string.h:26"]
 pub mod string_h {
@@ -770,46 +762,41 @@ pub mod bits_stat_h {
     #[c2rust::src_loc = "29:9"]
     pub const __S_IFMT: ::core::ffi::c_int = 0o170000 as ::core::ffi::c_int;
 }
-pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __uint16_t, __uint32_t, __int64_t, __uint64_t, __dev_t, __uid_t, __gid_t,
-    __ino_t, __mode_t, __nlink_t, __off_t, __off64_t, __time_t, __blksize_t, __blkcnt_t,
-    __syscall_slong_t,
+pub use self::flv_bytestream_h::{
+    flv_append_data, flv_buffer, flv_create_writer, flv_dbl2int, flv_flush_data,
+    flv_put_amf_double, flv_put_amf_string, flv_put_be16, flv_put_be24, flv_put_be32, flv_put_byte,
+    flv_put_tag, flv_rewrite_amf_be24, C2RustUnnamed_5, C2RustUnnamed_6, C2RustUnnamed_7,
+    C2RustUnnamed_8, AMF_DATA_TYPE_ARRAY, AMF_DATA_TYPE_BOOL, AMF_DATA_TYPE_DATE,
+    AMF_DATA_TYPE_LONG_STRING, AMF_DATA_TYPE_MIXEDARRAY, AMF_DATA_TYPE_NULL, AMF_DATA_TYPE_NUMBER,
+    AMF_DATA_TYPE_OBJECT, AMF_DATA_TYPE_OBJECT_END, AMF_DATA_TYPE_REFERENCE, AMF_DATA_TYPE_STRING,
+    AMF_DATA_TYPE_UNDEFINED, AMF_DATA_TYPE_UNSUPPORTED, AMF_END_OF_OBJECT, FLV_CODECID_H264,
+    FLV_FRAME_INTER, FLV_FRAME_KEY, FLV_TAG_TYPE_AUDIO, FLV_TAG_TYPE_META, FLV_TAG_TYPE_VIDEO,
 };
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::struct_timespec_h::timespec;
-pub use self::struct_stat_h::stat;
+pub use self::internal::__va_list_tag;
+pub use self::osdep_h::{endian_fix32, endian_fix64, x264_is_regular_file};
+pub use self::output_h::{cli_output_opt_t, cli_output_t};
+use self::stat_h::fstat;
 pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+pub use self::stdio_h::{fclose, fileno, fseeko, ftello, fwrite, SEEK_SET};
+use self::stdlib_h::{calloc, free, malloc};
+use self::string_h::memcpy;
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::struct_stat_h::stat;
+pub use self::struct_timespec_h::timespec;
+pub use self::types_h::{
+    __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __int64_t, __mode_t, __nlink_t, __off64_t,
+    __off_t, __syscall_slong_t, __time_t, __uid_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t,
+};
 pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, x264_hrd_t,
-    x264_sei_payload_t, x264_sei_t, x264_image_t, x264_image_properties_t,
-    x264_picture_t, X264_LOG_WARNING, X264_LOG_INFO, x264_t,
+    x264_hrd_t, x264_image_properties_t, x264_image_t, x264_nal_t, x264_param_t, x264_picture_t,
+    x264_sei_payload_t, x264_sei_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0,
+    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_LOG_INFO,
+    X264_LOG_WARNING,
 };
 pub use self::x264cli_h::{hnd_t, x264_cli_log};
-pub use self::output_h::{cli_output_opt_t, cli_output_t};
-pub use self::flv_bytestream_h::{
-    flv_buffer, FLV_CODECID_H264, FLV_FRAME_INTER, FLV_FRAME_KEY, FLV_TAG_TYPE_VIDEO,
-    AMF_DATA_TYPE_MIXEDARRAY, AMF_DATA_TYPE_STRING, FLV_TAG_TYPE_META, C2RustUnnamed_5,
-    FLV_TAG_TYPE_AUDIO, C2RustUnnamed_6, C2RustUnnamed_7, C2RustUnnamed_8,
-    AMF_DATA_TYPE_UNSUPPORTED, AMF_DATA_TYPE_LONG_STRING, AMF_DATA_TYPE_DATE,
-    AMF_DATA_TYPE_ARRAY, AMF_DATA_TYPE_OBJECT_END, AMF_DATA_TYPE_REFERENCE,
-    AMF_DATA_TYPE_UNDEFINED, AMF_DATA_TYPE_NULL, AMF_DATA_TYPE_OBJECT,
-    AMF_DATA_TYPE_BOOL, AMF_DATA_TYPE_NUMBER, AMF_END_OF_OBJECT, flv_create_writer,
-    flv_append_data, flv_flush_data, flv_rewrite_amf_be24, flv_dbl2int, flv_put_byte,
-    flv_put_be32, flv_put_be16, flv_put_be24, flv_put_tag, flv_put_amf_string,
-    flv_put_amf_double,
-};
-pub use self::stdio_h::{SEEK_SET, fclose, fwrite, fseeko, ftello, fileno};
-use self::stat_h::fstat;
-use self::stdlib_h::{malloc, calloc, free};
-pub use self::osdep_h::{x264_is_regular_file, endian_fix32, endian_fix64};
-use self::string_h::memcpy;
+pub use self::FILE_h::FILE;
 pub use self::__stddef_null_h::NULL;
 pub use self::bits_stat_h::__S_IFMT;
 #[derive(Copy, Clone)]
@@ -852,10 +839,8 @@ unsafe extern "C" fn open_file(
     mut p_handle: *mut hnd_t,
     mut opt: *mut cli_output_opt_t,
 ) -> ::core::ffi::c_int {
-    let mut p_flv: *mut flv_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<flv_hnd_t>() as size_t,
-    ) as *mut flv_hnd_t;
+    let mut p_flv: *mut flv_hnd_t =
+        calloc(1 as size_t, ::core::mem::size_of::<flv_hnd_t>() as size_t) as *mut flv_hnd_t;
     if !p_flv.is_null() {
         let mut c: *mut flv_buffer = flv_create_writer(psz_filename);
         if !c.is_null() {
@@ -887,7 +872,10 @@ unsafe extern "C" fn set_param(
     flv_put_be24(c, 0 as uint32_t);
     flv_put_be32(c, 0 as uint32_t);
     flv_put_byte(c, AMF_DATA_TYPE_STRING as ::core::ffi::c_int as uint8_t);
-    flv_put_amf_string(c, b"onMetaData\0" as *const u8 as *const ::core::ffi::c_char);
+    flv_put_amf_string(
+        c,
+        b"onMetaData\0" as *const u8 as *const ::core::ffi::c_char,
+    );
     flv_put_byte(c, AMF_DATA_TYPE_MIXEDARRAY as ::core::ffi::c_int as uint8_t);
     flv_put_be32(c, 7 as uint32_t);
     flv_put_amf_string(c, b"width\0" as *const u8 as *const ::core::ffi::c_char);
@@ -907,7 +895,10 @@ unsafe extern "C" fn set_param(
             .wrapping_add(1 as uint64_t);
         flv_put_amf_double(c, 0 as ::core::ffi::c_int as ::core::ffi::c_double);
     }
-    flv_put_amf_string(c, b"videocodecid\0" as *const u8 as *const ::core::ffi::c_char);
+    flv_put_amf_string(
+        c,
+        b"videocodecid\0" as *const u8 as *const ::core::ffi::c_char,
+    );
     flv_put_amf_double(
         c,
         FLV_CODECID_H264 as ::core::ffi::c_int as ::core::ffi::c_double,
@@ -922,16 +913,17 @@ unsafe extern "C" fn set_param(
         .wrapping_add((*c).d_total)
         .wrapping_add(1 as uint64_t);
     flv_put_amf_double(c, 0 as ::core::ffi::c_int as ::core::ffi::c_double);
-    flv_put_amf_string(c, b"videodatarate\0" as *const u8 as *const ::core::ffi::c_char);
+    flv_put_amf_string(
+        c,
+        b"videodatarate\0" as *const u8 as *const ::core::ffi::c_char,
+    );
     (*p_flv).i_bitrate_pos = ((*c).d_cur as uint64_t)
         .wrapping_add((*c).d_total)
         .wrapping_add(1 as uint64_t);
     flv_put_amf_double(c, 0 as ::core::ffi::c_int as ::core::ffi::c_double);
     flv_put_amf_string(c, b"\0" as *const u8 as *const ::core::ffi::c_char);
     flv_put_byte(c, AMF_END_OF_OBJECT as uint8_t);
-    let mut length: ::core::ffi::c_uint = (*c)
-        .d_cur
-        .wrapping_sub(start as ::core::ffi::c_uint);
+    let mut length: ::core::ffi::c_uint = (*c).d_cur.wrapping_sub(start as ::core::ffi::c_uint);
     flv_rewrite_amf_be24(
         c,
         length.wrapping_sub(10 as ::core::ffi::c_uint),
@@ -961,15 +953,12 @@ unsafe extern "C" fn write_headers(
 ) -> ::core::ffi::c_int {
     let mut p_flv: *mut flv_hnd_t = handle as *mut flv_hnd_t;
     let mut c: *mut flv_buffer = (*p_flv).c;
-    let mut sps_size: ::core::ffi::c_int = (*p_nal
-        .offset(0 as ::core::ffi::c_int as isize))
-        .i_payload;
-    let mut pps_size: ::core::ffi::c_int = (*p_nal
-        .offset(1 as ::core::ffi::c_int as isize))
-        .i_payload;
-    let mut sei_size: ::core::ffi::c_int = (*p_nal
-        .offset(2 as ::core::ffi::c_int as isize))
-        .i_payload;
+    let mut sps_size: ::core::ffi::c_int =
+        (*p_nal.offset(0 as ::core::ffi::c_int as isize)).i_payload;
+    let mut pps_size: ::core::ffi::c_int =
+        (*p_nal.offset(1 as ::core::ffi::c_int as isize)).i_payload;
+    let mut sei_size: ::core::ffi::c_int =
+        (*p_nal.offset(2 as ::core::ffi::c_int as isize)).i_payload;
     (*p_flv).sei = malloc(sei_size as size_t) as *mut uint8_t;
     if (*p_flv).sei.is_null() {
         return -(1 as ::core::ffi::c_int);
@@ -977,8 +966,7 @@ unsafe extern "C" fn write_headers(
     (*p_flv).sei_len = sei_size;
     memcpy(
         (*p_flv).sei as *mut ::core::ffi::c_void,
-        (*p_nal.offset(2 as ::core::ffi::c_int as isize)).p_payload
-            as *const ::core::ffi::c_void,
+        (*p_nal.offset(2 as ::core::ffi::c_int as isize)).p_payload as *const ::core::ffi::c_void,
         sei_size as size_t,
     );
     let mut sps: *mut uint8_t = (*p_nal.offset(0 as ::core::ffi::c_int as isize))
@@ -992,8 +980,7 @@ unsafe extern "C" fn write_headers(
     (*p_flv).start = (*c).d_cur;
     flv_put_byte(
         c,
-        (FLV_FRAME_KEY as ::core::ffi::c_int | FLV_CODECID_H264 as ::core::ffi::c_int)
-            as uint8_t,
+        (FLV_FRAME_KEY as ::core::ffi::c_int | FLV_CODECID_H264 as ::core::ffi::c_int) as uint8_t,
     );
     flv_put_byte(c, 0 as uint8_t);
     flv_put_be24(c, 0 as uint32_t);
@@ -1004,7 +991,11 @@ unsafe extern "C" fn write_headers(
     flv_put_byte(c, 0xff as uint8_t);
     flv_put_byte(c, 0xe1 as uint8_t);
     flv_put_be16(c, (sps_size - 4 as ::core::ffi::c_int) as uint16_t);
-    flv_append_data(c, sps, (sps_size - 4 as ::core::ffi::c_int) as ::core::ffi::c_uint);
+    flv_append_data(
+        c,
+        sps,
+        (sps_size - 4 as ::core::ffi::c_int) as ::core::ffi::c_uint,
+    );
     flv_put_byte(c, 1 as uint8_t);
     flv_put_be16(c, (pps_size - 4 as ::core::ffi::c_int) as uint16_t);
     flv_append_data(
@@ -1036,8 +1027,7 @@ unsafe extern "C" fn write_frame(
     let mut p_flv: *mut flv_hnd_t = handle as *mut flv_hnd_t;
     let mut c: *mut flv_buffer = (*p_flv).c;
     if (*p_flv).i_framenum == 0 {
-        (*p_flv).i_delay_time = (*p_picture).i_dts
-            * -(1 as ::core::ffi::c_int) as int64_t;
+        (*p_flv).i_delay_time = (*p_picture).i_dts * -(1 as ::core::ffi::c_int) as int64_t;
         if (*p_flv).b_dts_compress == 0 && (*p_flv).i_delay_time != 0 {
             x264_cli_log(
                 b"flv\0" as *const u8 as *const ::core::ffi::c_char,
@@ -1045,8 +1035,8 @@ unsafe extern "C" fn write_frame(
                 b"initial delay %ld ms\n\0" as *const u8 as *const ::core::ffi::c_char,
                 (((*p_picture).i_pts + (*p_flv).i_delay_time) as ::core::ffi::c_double
                     * (*p_flv).d_timebase
-                    * 1000 as ::core::ffi::c_int as ::core::ffi::c_double + 0.5f64)
-                    as int64_t,
+                    * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
+                    + 0.5f64) as int64_t,
             );
         }
     }
@@ -1056,26 +1046,32 @@ unsafe extern "C" fn write_frame(
     if (*p_flv).b_dts_compress != 0 {
         if (*p_flv).i_framenum == 1 as int64_t {
             (*p_flv).i_init_delta = (((*p_picture).i_dts + (*p_flv).i_delay_time)
-                as ::core::ffi::c_double * (*p_flv).d_timebase
-                * 1000 as ::core::ffi::c_int as ::core::ffi::c_double + 0.5f64)
-                as int64_t;
+                as ::core::ffi::c_double
+                * (*p_flv).d_timebase
+                * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
+                + 0.5f64) as int64_t;
         }
         dts = if (*p_flv).i_framenum > (*p_flv).i_delay_frames as int64_t {
-            ((*p_picture).i_dts as ::core::ffi::c_double * (*p_flv).d_timebase
-                * 1000 as ::core::ffi::c_int as ::core::ffi::c_double + 0.5f64)
-                as int64_t
+            ((*p_picture).i_dts as ::core::ffi::c_double
+                * (*p_flv).d_timebase
+                * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
+                + 0.5f64) as int64_t
         } else {
             (*p_flv).i_framenum * (*p_flv).i_init_delta
                 / ((*p_flv).i_delay_frames + 1 as ::core::ffi::c_int) as int64_t
         };
-        cts = ((*p_picture).i_pts as ::core::ffi::c_double * (*p_flv).d_timebase
-            * 1000 as ::core::ffi::c_int as ::core::ffi::c_double + 0.5f64) as int64_t;
+        cts = ((*p_picture).i_pts as ::core::ffi::c_double
+            * (*p_flv).d_timebase
+            * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
+            + 0.5f64) as int64_t;
     } else {
         dts = (((*p_picture).i_dts + (*p_flv).i_delay_time) as ::core::ffi::c_double
-            * (*p_flv).d_timebase * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
+            * (*p_flv).d_timebase
+            * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
             + 0.5f64) as int64_t;
         cts = (((*p_picture).i_pts + (*p_flv).i_delay_time) as ::core::ffi::c_double
-            * (*p_flv).d_timebase * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
+            * (*p_flv).d_timebase
+            * 1000 as ::core::ffi::c_int as ::core::ffi::c_double
             + 0.5f64) as int64_t;
     }
     offset = cts - dts;
@@ -1178,7 +1174,8 @@ unsafe extern "C" fn close_file(
             };
         } else {
             total_duration = (2 as int64_t * largest_pts - second_largest_pts)
-                as ::core::ffi::c_double * (*p_flv).d_timebase;
+                as ::core::ffi::c_double
+                * (*p_flv).d_timebase;
         }
         if x264_is_regular_file((*c).fp) != 0
             && total_duration > 0 as ::core::ffi::c_int as ::core::ffi::c_double
@@ -1186,8 +1183,7 @@ unsafe extern "C" fn close_file(
             let mut framerate: ::core::ffi::c_double = 0.;
             let mut filesize: int64_t = ftello((*c).fp) as int64_t;
             if (*p_flv).i_framerate_pos != 0 {
-                framerate = (*p_flv).i_framenum as ::core::ffi::c_double
-                    / total_duration;
+                framerate = (*p_flv).i_framenum as ::core::ffi::c_double / total_duration;
                 if rewrite_amf_double((*c).fp, (*p_flv).i_framerate_pos, framerate)
                     < 0 as ::core::ffi::c_int
                 {
@@ -1201,11 +1197,8 @@ unsafe extern "C" fn close_file(
             match current_block {
                 8311716385155032230 => {}
                 _ => {
-                    if rewrite_amf_double(
-                        (*c).fp,
-                        (*p_flv).i_duration_pos,
-                        total_duration,
-                    ) < 0 as ::core::ffi::c_int
+                    if rewrite_amf_double((*c).fp, (*p_flv).i_duration_pos, total_duration)
+                        < 0 as ::core::ffi::c_int
                     {
                         current_block = 8311716385155032230;
                     } else if rewrite_amf_double(
@@ -1259,15 +1252,10 @@ pub static mut flv_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             set_param: Some(
-                set_param
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        *mut x264_param_t,
-                    ) -> ::core::ffi::c_int,
+                set_param as unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
             ),
             write_headers: Some(
-                write_headers
-                    as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
+                write_headers as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
             ),
             write_frame: Some(
                 write_frame
@@ -1279,12 +1267,7 @@ pub static mut flv_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             close_file: Some(
-                close_file
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        int64_t,
-                        int64_t,
-                    ) -> ::core::ffi::c_int,
+                close_file as unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
             ),
         };
         init

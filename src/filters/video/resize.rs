@@ -42,7 +42,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:26"]
 pub mod x264_h {
@@ -164,11 +164,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -330,9 +326,9 @@ pub mod x264_h {
     pub const X264_LOG_WARNING: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
     #[c2rust::src_loc = "291:9"]
     pub const X264_LOG_INFO: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -409,8 +405,8 @@ pub mod input_h {
     pub const X264_CSP_CLI_MAX: ::core::ffi::c_int = X264_CSP_MAX;
     #[c2rust::src_loc = "115:9"]
     pub const X264_CSP_OTHER: ::core::ffi::c_int = 0x4000 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::x264_h::X264_CSP_MAX;
     extern "C" {
         #[c2rust::src_loc = "127:29"]
@@ -448,25 +444,17 @@ pub mod video_h {
             ) -> ::core::ffi::c_int,
         >,
         pub get_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub release_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub free: Option<unsafe extern "C" fn(hnd_t) -> ()>,
         pub next: *mut cli_vid_filter_t,
     }
-    use super::x264cli_h::hnd_t;
-    use super::input_h::{video_info_t, cli_pic_t};
+    use super::input_h::{cli_pic_t, video_info_t};
     use super::x264_h::x264_param_t;
+    use super::x264cli_h::hnd_t;
 }
 #[c2rust::header_src = "/usr/include/libswscale/swscale.h:26"]
 pub mod swscale_h {
@@ -581,15 +569,13 @@ pub mod swscale_h {
     #[c2rust::src_loc = "375:9"]
     pub const SWS_CS_DEFAULT: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
     use super::log_h::AVClass;
-    use super::stdint_uintn_h::uint8_t;
     use super::pixfmt_h::AVPixelFormat;
+    use super::stdint_uintn_h::uint8_t;
     extern "C" {
         #[c2rust::src_loc = "248:1"]
         pub fn sws_alloc_context() -> *mut SwsContext;
         #[c2rust::src_loc = "385:1"]
-        pub fn sws_getCoefficients(
-            colorspace: ::core::ffi::c_int,
-        ) -> *const ::core::ffi::c_int;
+        pub fn sws_getCoefficients(colorspace: ::core::ffi::c_int) -> *const ::core::ffi::c_int;
         #[c2rust::src_loc = "406:1"]
         pub fn sws_isSupportedInput(pix_fmt: AVPixelFormat) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "412:1"]
@@ -632,17 +618,14 @@ pub mod log_h {
     #[c2rust::src_loc = "76:16"]
     pub struct AVClass {
         pub class_name: *const ::core::ffi::c_char,
-        pub item_name: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *const ::core::ffi::c_char,
-        >,
+        pub item_name:
+            Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *const ::core::ffi::c_char>,
         pub option: *const AVOption,
         pub version: ::core::ffi::c_int,
         pub log_level_offset_offset: ::core::ffi::c_int,
         pub parent_log_context_offset: ::core::ffi::c_int,
         pub category: AVClassCategory,
-        pub get_category: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> AVClassCategory,
-        >,
+        pub get_category: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> AVClassCategory>,
         pub query_ranges: Option<
             unsafe extern "C" fn(
                 *mut *mut AVOptionRanges,
@@ -657,9 +640,8 @@ pub mod log_h {
                 *mut ::core::ffi::c_void,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub child_class_iterate: Option<
-            unsafe extern "C" fn(*mut *mut ::core::ffi::c_void) -> *const AVClass,
-        >,
+        pub child_class_iterate:
+            Option<unsafe extern "C" fn(*mut *mut ::core::ffi::c_void) -> *const AVClass>,
         pub state_flags_offset: ::core::ffi::c_int,
     }
     #[c2rust::src_loc = "28:9"]
@@ -802,8 +784,8 @@ pub mod opt_h {
     pub const AV_OPT_TYPE_INT: AVOptionType = 2;
     #[c2rust::src_loc = "255:5"]
     pub const AV_OPT_TYPE_FLAGS: AVOptionType = 1;
-    use super::stdint_intn_h::int64_t;
     use super::rational_h::AVRational;
+    use super::stdint_intn_h::int64_t;
     extern "C" {
         #[c2rust::src_loc = "870:1"]
         pub fn av_opt_set_int(
@@ -1398,13 +1380,13 @@ pub mod pixdesc_h {
         pub alias: *const ::core::ffi::c_char,
     }
     #[c2rust::src_loc = "120:9"]
-    pub const AV_PIX_FMT_FLAG_PAL: ::core::ffi::c_int = (1 as ::core::ffi::c_int)
-        << 1 as ::core::ffi::c_int;
+    pub const AV_PIX_FMT_FLAG_PAL: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 1 as ::core::ffi::c_int;
     #[c2rust::src_loc = "136:9"]
-    pub const AV_PIX_FMT_FLAG_RGB: ::core::ffi::c_int = (1 as ::core::ffi::c_int)
-        << 5 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint64_t};
+    pub const AV_PIX_FMT_FLAG_RGB: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 5 as ::core::ffi::c_int;
     use super::pixfmt_h::{AVPixelFormat, AV_PIX_FMT_YUV420P};
+    use super::stdint_uintn_h::{uint64_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "186:1"]
         pub fn av_pix_fmt_desc_get(pix_fmt: AVPixelFormat) -> *const AVPixFmtDescriptor;
@@ -1527,151 +1509,140 @@ pub mod filters_h {
         ) -> *mut ::core::ffi::c_char;
     }
 }
-pub use self::internal::{__va_list_tag, __INT_MAX__};
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __uint32_t, __int64_t, __uint64_t};
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t, uint64_t};
-pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_CSP_MASK,
-    X264_CSP_NONE, X264_CSP_I400, X264_CSP_I420, X264_CSP_YV12, X264_CSP_NV12,
-    X264_CSP_NV21, X264_CSP_I422, X264_CSP_YV16, X264_CSP_NV16, X264_CSP_YUYV,
-    X264_CSP_UYVY, X264_CSP_I444, X264_CSP_YV24, X264_CSP_BGR, X264_CSP_BGRA,
-    X264_CSP_RGB, X264_CSP_MAX, X264_CSP_VFLIP, X264_CSP_HIGH_DEPTH, X264_LOG_ERROR,
-    X264_LOG_WARNING, X264_LOG_INFO, x264_t,
-};
-pub use self::x264cli_h::{hnd_t, x264_cli_log};
+use self::base_h::{x264_reduce_fraction, x264_reduce_fraction64};
+use self::filters_h::{x264_get_option, x264_otoi, x264_otos, x264_split_options};
 pub use self::input_h::{
-    video_info_t, cli_image_t, cli_pic_t, x264_cli_csp_t, X264_CSP_CLI_MAX,
-    X264_CSP_OTHER, x264_cli_csps, x264_cli_csp_depth_factor, x264_cli_pic_alloc_aligned,
-    x264_cli_pic_clean, x264_cli_get_csp,
+    cli_image_t, cli_pic_t, video_info_t, x264_cli_csp_depth_factor, x264_cli_csp_t, x264_cli_csps,
+    x264_cli_get_csp, x264_cli_pic_alloc_aligned, x264_cli_pic_clean, X264_CSP_CLI_MAX,
+    X264_CSP_OTHER,
 };
-pub use self::video_h::cli_vid_filter_t;
-pub use self::swscale_h::{
-    SwsContext, SwsAlphaBlend, SWS_ALPHA_BLEND_NB, SWS_ALPHA_BLEND_CHECKERBOARD,
-    SWS_ALPHA_BLEND_UNIFORM, SWS_ALPHA_BLEND_NONE, SwsDither, SWS_DITHER_NB,
-    SWS_DITHER_X_DITHER, SWS_DITHER_A_DITHER, SWS_DITHER_ED, SWS_DITHER_BAYER,
-    SWS_DITHER_AUTO, SWS_DITHER_NONE, SwsFilter, SwsVector, SWS_ACCURATE_RND,
-    SWS_FULL_CHR_H_INP, SWS_FULL_CHR_H_INT, SWS_FAST_BILINEAR, SWS_BICUBIC, SWS_SPLINE,
-    SWS_LANCZOS, SWS_SINC, SWS_GAUSS, SWS_BICUBLIN, SWS_AREA, SWS_POINT, SWS_X,
-    SWS_BILINEAR, SwsFlags, SWS_ERROR_DIFFUSION, SWS_DIRECT_BGR, SWS_BITEXACT,
-    SWS_PRINT_INFO, SWS_STRICT, SWS_CS_DEFAULT, sws_alloc_context, sws_getCoefficients,
-    sws_isSupportedInput, sws_isSupportedOutput, sws_init_context, sws_freeContext,
-    sws_scale, sws_setColorspaceDetails,
-};
+pub use self::internal::{__va_list_tag, __INT_MAX__};
+pub use self::limits_h::INT_MAX;
 pub use self::log_h::{
-    AVClass, AVClassCategory, AV_CLASS_CATEGORY_NB, AV_CLASS_CATEGORY_DEVICE_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_OUTPUT, AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT, AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
-    AV_CLASS_CATEGORY_DEVICE_VIDEO_OUTPUT, AV_CLASS_CATEGORY_HWDEVICE,
+    AVClass, AVClassCategory, AV_CLASS_CATEGORY_BITSTREAM_FILTER, AV_CLASS_CATEGORY_DECODER,
+    AV_CLASS_CATEGORY_DEMUXER, AV_CLASS_CATEGORY_DEVICE_AUDIO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_AUDIO_OUTPUT, AV_CLASS_CATEGORY_DEVICE_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_OUTPUT, AV_CLASS_CATEGORY_DEVICE_VIDEO_INPUT,
+    AV_CLASS_CATEGORY_DEVICE_VIDEO_OUTPUT, AV_CLASS_CATEGORY_ENCODER, AV_CLASS_CATEGORY_FILTER,
+    AV_CLASS_CATEGORY_HWDEVICE, AV_CLASS_CATEGORY_INPUT, AV_CLASS_CATEGORY_MUXER,
+    AV_CLASS_CATEGORY_NA, AV_CLASS_CATEGORY_NB, AV_CLASS_CATEGORY_OUTPUT,
     AV_CLASS_CATEGORY_SWRESAMPLER, AV_CLASS_CATEGORY_SWSCALER,
-    AV_CLASS_CATEGORY_BITSTREAM_FILTER, AV_CLASS_CATEGORY_FILTER,
-    AV_CLASS_CATEGORY_DECODER, AV_CLASS_CATEGORY_ENCODER, AV_CLASS_CATEGORY_DEMUXER,
-    AV_CLASS_CATEGORY_MUXER, AV_CLASS_CATEGORY_OUTPUT, AV_CLASS_CATEGORY_INPUT,
-    AV_CLASS_CATEGORY_NA,
 };
+use self::mathcalls_h::round;
 pub use self::opt_h::{
-    AVOptionRanges, AVOptionRange, AVOption, C2RustUnnamed_5, AVOptionArrayDef,
-    AVOptionType, AV_OPT_TYPE_FLAG_ARRAY, AV_OPT_TYPE_UINT, AV_OPT_TYPE_CHLAYOUT,
-    AV_OPT_TYPE_BOOL, AV_OPT_TYPE_COLOR, AV_OPT_TYPE_DURATION, AV_OPT_TYPE_VIDEO_RATE,
-    AV_OPT_TYPE_SAMPLE_FMT, AV_OPT_TYPE_PIXEL_FMT, AV_OPT_TYPE_IMAGE_SIZE,
-    AV_OPT_TYPE_CONST, AV_OPT_TYPE_UINT64, AV_OPT_TYPE_DICT, AV_OPT_TYPE_BINARY,
-    AV_OPT_TYPE_RATIONAL, AV_OPT_TYPE_STRING, AV_OPT_TYPE_FLOAT, AV_OPT_TYPE_DOUBLE,
-    AV_OPT_TYPE_INT64, AV_OPT_TYPE_INT, AV_OPT_TYPE_FLAGS, av_opt_set_int,
-};
-pub use self::rational_h::AVRational;
-pub use self::pixfmt_h::{
-    AV_PIX_FMT_NONE, AV_PIX_FMT_UYVY422, AV_PIX_FMT_YUYV422, AV_PIX_FMT_NV21,
-    AV_PIX_FMT_NV12, AV_PIX_FMT_BGRA, AV_PIX_FMT_BGRA64LE, AV_PIX_FMT_BGR24,
-    AV_PIX_FMT_BGR48LE, AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB48LE, AV_PIX_FMT_YUV444P,
-    AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV422P16LE,
-    AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P16LE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY16LE,
-    AVPixelFormat, AV_PIX_FMT_NB, AV_PIX_FMT_OHCODEC, AV_PIX_FMT_GBRP12MSBLE,
-    AV_PIX_FMT_GBRP12MSBBE, AV_PIX_FMT_GBRP10MSBLE, AV_PIX_FMT_GBRP10MSBBE,
-    AV_PIX_FMT_YUV444P12MSBLE, AV_PIX_FMT_YUV444P12MSBBE, AV_PIX_FMT_YUV444P10MSBLE,
-    AV_PIX_FMT_YUV444P10MSBBE, AV_PIX_FMT_GBRAP32LE, AV_PIX_FMT_GBRAP32BE,
-    AV_PIX_FMT_YAF16LE, AV_PIX_FMT_YAF16BE, AV_PIX_FMT_YAF32LE, AV_PIX_FMT_YAF32BE,
-    AV_PIX_FMT_GRAY32LE, AV_PIX_FMT_GRAY32BE, AV_PIX_FMT_AMF_SURFACE,
-    AV_PIX_FMT_GRAYF16LE, AV_PIX_FMT_GRAYF16BE, AV_PIX_FMT_GBRAPF16LE,
-    AV_PIX_FMT_GBRAPF16BE, AV_PIX_FMT_GBRPF16LE, AV_PIX_FMT_GBRPF16BE, AV_PIX_FMT_XV48LE,
-    AV_PIX_FMT_XV48BE, AV_PIX_FMT_Y216LE, AV_PIX_FMT_Y216BE, AV_PIX_FMT_RGB96LE,
-    AV_PIX_FMT_RGB96BE, AV_PIX_FMT_RGBA128LE, AV_PIX_FMT_RGBA128BE, AV_PIX_FMT_RGBF16LE,
-    AV_PIX_FMT_RGBF16BE, AV_PIX_FMT_V30XLE, AV_PIX_FMT_V30XBE, AV_PIX_FMT_VYU444,
-    AV_PIX_FMT_UYVA, AV_PIX_FMT_AYUV, AV_PIX_FMT_D3D12, AV_PIX_FMT_GBRAP14LE,
-    AV_PIX_FMT_GBRAP14BE, AV_PIX_FMT_P412LE, AV_PIX_FMT_P412BE, AV_PIX_FMT_P212LE,
-    AV_PIX_FMT_P212BE, AV_PIX_FMT_RGBAF32LE, AV_PIX_FMT_RGBAF32BE, AV_PIX_FMT_RGBF32LE,
-    AV_PIX_FMT_RGBF32BE, AV_PIX_FMT_XV36LE, AV_PIX_FMT_XV36BE, AV_PIX_FMT_XV30LE,
-    AV_PIX_FMT_XV30BE, AV_PIX_FMT_Y212LE, AV_PIX_FMT_Y212BE, AV_PIX_FMT_P012BE,
-    AV_PIX_FMT_P012LE, AV_PIX_FMT_VUYX, AV_PIX_FMT_RGBAF16LE, AV_PIX_FMT_RGBAF16BE,
-    AV_PIX_FMT_VUYA, AV_PIX_FMT_P416LE, AV_PIX_FMT_P416BE, AV_PIX_FMT_P216LE,
-    AV_PIX_FMT_P216BE, AV_PIX_FMT_P410LE, AV_PIX_FMT_P410BE, AV_PIX_FMT_P210LE,
-    AV_PIX_FMT_P210BE, AV_PIX_FMT_X2BGR10BE, AV_PIX_FMT_X2BGR10LE, AV_PIX_FMT_X2RGB10BE,
-    AV_PIX_FMT_X2RGB10LE, AV_PIX_FMT_Y210LE, AV_PIX_FMT_Y210BE, AV_PIX_FMT_VULKAN,
-    AV_PIX_FMT_NV42, AV_PIX_FMT_NV24, AV_PIX_FMT_YUVA444P12LE, AV_PIX_FMT_YUVA444P12BE,
-    AV_PIX_FMT_YUVA422P12LE, AV_PIX_FMT_YUVA422P12BE, AV_PIX_FMT_GRAYF32LE,
-    AV_PIX_FMT_GRAYF32BE, AV_PIX_FMT_GRAY14LE, AV_PIX_FMT_GRAY14BE, AV_PIX_FMT_OPENCL,
-    AV_PIX_FMT_DRM_PRIME, AV_PIX_FMT_GBRAPF32LE, AV_PIX_FMT_GBRAPF32BE,
-    AV_PIX_FMT_GBRPF32LE, AV_PIX_FMT_GBRPF32BE, AV_PIX_FMT_GRAY9LE, AV_PIX_FMT_GRAY9BE,
-    AV_PIX_FMT_D3D11, AV_PIX_FMT_P016BE, AV_PIX_FMT_P016LE, AV_PIX_FMT_GRAY10LE,
-    AV_PIX_FMT_GRAY10BE, AV_PIX_FMT_GRAY12LE, AV_PIX_FMT_GRAY12BE, AV_PIX_FMT_MEDIACODEC,
-    AV_PIX_FMT_GBRAP10LE, AV_PIX_FMT_GBRAP10BE, AV_PIX_FMT_GBRAP12LE,
-    AV_PIX_FMT_GBRAP12BE, AV_PIX_FMT_P010BE, AV_PIX_FMT_P010LE, AV_PIX_FMT_VIDEOTOOLBOX,
-    AV_PIX_FMT_AYUV64BE, AV_PIX_FMT_AYUV64LE, AV_PIX_FMT_YUV440P12BE,
-    AV_PIX_FMT_YUV440P12LE, AV_PIX_FMT_YUV440P10BE, AV_PIX_FMT_YUV440P10LE,
-    AV_PIX_FMT_BAYER_GRBG16BE, AV_PIX_FMT_BAYER_GRBG16LE, AV_PIX_FMT_BAYER_GBRG16BE,
-    AV_PIX_FMT_BAYER_GBRG16LE, AV_PIX_FMT_BAYER_RGGB16BE, AV_PIX_FMT_BAYER_RGGB16LE,
-    AV_PIX_FMT_BAYER_BGGR16BE, AV_PIX_FMT_BAYER_BGGR16LE, AV_PIX_FMT_BAYER_GRBG8,
-    AV_PIX_FMT_BAYER_GBRG8, AV_PIX_FMT_BAYER_RGGB8, AV_PIX_FMT_BAYER_BGGR8,
-    AV_PIX_FMT_YUVJ411P, AV_PIX_FMT_GBRP14LE, AV_PIX_FMT_GBRP14BE, AV_PIX_FMT_GBRP12LE,
-    AV_PIX_FMT_GBRP12BE, AV_PIX_FMT_YUV444P14LE, AV_PIX_FMT_YUV444P14BE,
-    AV_PIX_FMT_YUV444P12LE, AV_PIX_FMT_YUV444P12BE, AV_PIX_FMT_YUV422P14LE,
-    AV_PIX_FMT_YUV422P14BE, AV_PIX_FMT_YUV422P12LE, AV_PIX_FMT_YUV422P12BE,
-    AV_PIX_FMT_YUV420P14LE, AV_PIX_FMT_YUV420P14BE, AV_PIX_FMT_YUV420P12LE,
-    AV_PIX_FMT_YUV420P12BE, AV_PIX_FMT_BGR0, AV_PIX_FMT_0BGR, AV_PIX_FMT_RGB0,
-    AV_PIX_FMT_0RGB, AV_PIX_FMT_CUDA, AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_MMAL,
-    AV_PIX_FMT_QSV, AV_PIX_FMT_GBRAP16LE, AV_PIX_FMT_GBRAP16BE, AV_PIX_FMT_GBRAP,
-    AV_PIX_FMT_YA16LE, AV_PIX_FMT_YA16BE, AV_PIX_FMT_YVYU422, AV_PIX_FMT_BGRA64BE,
-    AV_PIX_FMT_RGBA64LE, AV_PIX_FMT_RGBA64BE, AV_PIX_FMT_NV20BE, AV_PIX_FMT_NV20LE,
-    AV_PIX_FMT_NV16, AV_PIX_FMT_XYZ12BE, AV_PIX_FMT_XYZ12LE, AV_PIX_FMT_VDPAU,
-    AV_PIX_FMT_YUVA444P16LE, AV_PIX_FMT_YUVA444P16BE, AV_PIX_FMT_YUVA422P16LE,
-    AV_PIX_FMT_YUVA422P16BE, AV_PIX_FMT_YUVA420P16LE, AV_PIX_FMT_YUVA420P16BE,
-    AV_PIX_FMT_YUVA444P10LE, AV_PIX_FMT_YUVA444P10BE, AV_PIX_FMT_YUVA422P10LE,
-    AV_PIX_FMT_YUVA422P10BE, AV_PIX_FMT_YUVA420P10LE, AV_PIX_FMT_YUVA420P10BE,
-    AV_PIX_FMT_YUVA444P9LE, AV_PIX_FMT_YUVA444P9BE, AV_PIX_FMT_YUVA422P9LE,
-    AV_PIX_FMT_YUVA422P9BE, AV_PIX_FMT_YUVA420P9LE, AV_PIX_FMT_YUVA420P9BE,
-    AV_PIX_FMT_YUVA444P, AV_PIX_FMT_YUVA422P, AV_PIX_FMT_GBRP16LE, AV_PIX_FMT_GBRP16BE,
-    AV_PIX_FMT_GBRP10LE, AV_PIX_FMT_GBRP10BE, AV_PIX_FMT_GBRP9LE, AV_PIX_FMT_GBRP9BE,
-    AV_PIX_FMT_GBR24P, AV_PIX_FMT_GBRP, AV_PIX_FMT_YUV422P9LE, AV_PIX_FMT_YUV422P9BE,
-    AV_PIX_FMT_YUV444P10LE, AV_PIX_FMT_YUV444P10BE, AV_PIX_FMT_YUV444P9LE,
-    AV_PIX_FMT_YUV444P9BE, AV_PIX_FMT_YUV422P10LE, AV_PIX_FMT_YUV422P10BE,
-    AV_PIX_FMT_YUV420P10LE, AV_PIX_FMT_YUV420P10BE, AV_PIX_FMT_YUV420P9LE,
-    AV_PIX_FMT_YUV420P9BE, AV_PIX_FMT_BGR48BE, AV_PIX_FMT_GRAY8A, AV_PIX_FMT_Y400A,
-    AV_PIX_FMT_YA8, AV_PIX_FMT_BGR444BE, AV_PIX_FMT_BGR444LE, AV_PIX_FMT_RGB444BE,
-    AV_PIX_FMT_RGB444LE, AV_PIX_FMT_DXVA2_VLD, AV_PIX_FMT_YUV444P16BE,
-    AV_PIX_FMT_YUV422P16BE, AV_PIX_FMT_YUV420P16BE, AV_PIX_FMT_VAAPI,
-    AV_PIX_FMT_BGR555LE, AV_PIX_FMT_BGR555BE, AV_PIX_FMT_BGR565LE, AV_PIX_FMT_BGR565BE,
-    AV_PIX_FMT_RGB555LE, AV_PIX_FMT_RGB555BE, AV_PIX_FMT_RGB565LE, AV_PIX_FMT_RGB565BE,
-    AV_PIX_FMT_RGB48BE, AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVJ440P, AV_PIX_FMT_YUV440P,
-    AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_ABGR, AV_PIX_FMT_RGBA, AV_PIX_FMT_ARGB,
-    AV_PIX_FMT_RGB4_BYTE, AV_PIX_FMT_RGB4, AV_PIX_FMT_RGB8, AV_PIX_FMT_BGR4_BYTE,
-    AV_PIX_FMT_BGR4, AV_PIX_FMT_BGR8, AV_PIX_FMT_UYYVYY411, AV_PIX_FMT_YUVJ444P,
-    AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ420P, AV_PIX_FMT_PAL8, AV_PIX_FMT_MONOBLACK,
-    AV_PIX_FMT_MONOWHITE, AV_PIX_FMT_YUV411P, AV_PIX_FMT_YUV410P,
+    av_opt_set_int, AVOption, AVOptionArrayDef, AVOptionRange, AVOptionRanges, AVOptionType,
+    C2RustUnnamed_5, AV_OPT_TYPE_BINARY, AV_OPT_TYPE_BOOL, AV_OPT_TYPE_CHLAYOUT, AV_OPT_TYPE_COLOR,
+    AV_OPT_TYPE_CONST, AV_OPT_TYPE_DICT, AV_OPT_TYPE_DOUBLE, AV_OPT_TYPE_DURATION,
+    AV_OPT_TYPE_FLAGS, AV_OPT_TYPE_FLAG_ARRAY, AV_OPT_TYPE_FLOAT, AV_OPT_TYPE_IMAGE_SIZE,
+    AV_OPT_TYPE_INT, AV_OPT_TYPE_INT64, AV_OPT_TYPE_PIXEL_FMT, AV_OPT_TYPE_RATIONAL,
+    AV_OPT_TYPE_SAMPLE_FMT, AV_OPT_TYPE_STRING, AV_OPT_TYPE_UINT, AV_OPT_TYPE_UINT64,
+    AV_OPT_TYPE_VIDEO_RATE,
 };
 pub use self::pixdesc_h::{
-    AVComponentDescriptor, AVPixFmtDescriptor, AV_PIX_FMT_FLAG_PAL, AV_PIX_FMT_FLAG_RGB,
-    av_pix_fmt_desc_get, av_get_pix_fmt_name,
+    av_get_pix_fmt_name, av_pix_fmt_desc_get, AVComponentDescriptor, AVPixFmtDescriptor,
+    AV_PIX_FMT_FLAG_PAL, AV_PIX_FMT_FLAG_RGB,
 };
-use self::stdlib_h::{calloc, free};
-use self::string_h::{memcmp, strcmp, strchr, strstr, strlen};
-use self::base_h::{x264_reduce_fraction, x264_reduce_fraction64};
-pub use self::limits_h::INT_MAX;
-pub use self::__stddef_null_h::NULL;
+pub use self::pixfmt_h::{
+    AVPixelFormat, AV_PIX_FMT_0BGR, AV_PIX_FMT_0RGB, AV_PIX_FMT_ABGR, AV_PIX_FMT_AMF_SURFACE,
+    AV_PIX_FMT_ARGB, AV_PIX_FMT_AYUV, AV_PIX_FMT_AYUV64BE, AV_PIX_FMT_AYUV64LE,
+    AV_PIX_FMT_BAYER_BGGR16BE, AV_PIX_FMT_BAYER_BGGR16LE, AV_PIX_FMT_BAYER_BGGR8,
+    AV_PIX_FMT_BAYER_GBRG16BE, AV_PIX_FMT_BAYER_GBRG16LE, AV_PIX_FMT_BAYER_GBRG8,
+    AV_PIX_FMT_BAYER_GRBG16BE, AV_PIX_FMT_BAYER_GRBG16LE, AV_PIX_FMT_BAYER_GRBG8,
+    AV_PIX_FMT_BAYER_RGGB16BE, AV_PIX_FMT_BAYER_RGGB16LE, AV_PIX_FMT_BAYER_RGGB8, AV_PIX_FMT_BGR0,
+    AV_PIX_FMT_BGR24, AV_PIX_FMT_BGR4, AV_PIX_FMT_BGR444BE, AV_PIX_FMT_BGR444LE,
+    AV_PIX_FMT_BGR48BE, AV_PIX_FMT_BGR48LE, AV_PIX_FMT_BGR4_BYTE, AV_PIX_FMT_BGR555BE,
+    AV_PIX_FMT_BGR555LE, AV_PIX_FMT_BGR565BE, AV_PIX_FMT_BGR565LE, AV_PIX_FMT_BGR8,
+    AV_PIX_FMT_BGRA, AV_PIX_FMT_BGRA64BE, AV_PIX_FMT_BGRA64LE, AV_PIX_FMT_CUDA, AV_PIX_FMT_D3D11,
+    AV_PIX_FMT_D3D11VA_VLD, AV_PIX_FMT_D3D12, AV_PIX_FMT_DRM_PRIME, AV_PIX_FMT_DXVA2_VLD,
+    AV_PIX_FMT_GBR24P, AV_PIX_FMT_GBRAP, AV_PIX_FMT_GBRAP10BE, AV_PIX_FMT_GBRAP10LE,
+    AV_PIX_FMT_GBRAP12BE, AV_PIX_FMT_GBRAP12LE, AV_PIX_FMT_GBRAP14BE, AV_PIX_FMT_GBRAP14LE,
+    AV_PIX_FMT_GBRAP16BE, AV_PIX_FMT_GBRAP16LE, AV_PIX_FMT_GBRAP32BE, AV_PIX_FMT_GBRAP32LE,
+    AV_PIX_FMT_GBRAPF16BE, AV_PIX_FMT_GBRAPF16LE, AV_PIX_FMT_GBRAPF32BE, AV_PIX_FMT_GBRAPF32LE,
+    AV_PIX_FMT_GBRP, AV_PIX_FMT_GBRP10BE, AV_PIX_FMT_GBRP10LE, AV_PIX_FMT_GBRP10MSBBE,
+    AV_PIX_FMT_GBRP10MSBLE, AV_PIX_FMT_GBRP12BE, AV_PIX_FMT_GBRP12LE, AV_PIX_FMT_GBRP12MSBBE,
+    AV_PIX_FMT_GBRP12MSBLE, AV_PIX_FMT_GBRP14BE, AV_PIX_FMT_GBRP14LE, AV_PIX_FMT_GBRP16BE,
+    AV_PIX_FMT_GBRP16LE, AV_PIX_FMT_GBRP9BE, AV_PIX_FMT_GBRP9LE, AV_PIX_FMT_GBRPF16BE,
+    AV_PIX_FMT_GBRPF16LE, AV_PIX_FMT_GBRPF32BE, AV_PIX_FMT_GBRPF32LE, AV_PIX_FMT_GRAY10BE,
+    AV_PIX_FMT_GRAY10LE, AV_PIX_FMT_GRAY12BE, AV_PIX_FMT_GRAY12LE, AV_PIX_FMT_GRAY14BE,
+    AV_PIX_FMT_GRAY14LE, AV_PIX_FMT_GRAY16BE, AV_PIX_FMT_GRAY16LE, AV_PIX_FMT_GRAY32BE,
+    AV_PIX_FMT_GRAY32LE, AV_PIX_FMT_GRAY8, AV_PIX_FMT_GRAY8A, AV_PIX_FMT_GRAY9BE,
+    AV_PIX_FMT_GRAY9LE, AV_PIX_FMT_GRAYF16BE, AV_PIX_FMT_GRAYF16LE, AV_PIX_FMT_GRAYF32BE,
+    AV_PIX_FMT_GRAYF32LE, AV_PIX_FMT_MEDIACODEC, AV_PIX_FMT_MMAL, AV_PIX_FMT_MONOBLACK,
+    AV_PIX_FMT_MONOWHITE, AV_PIX_FMT_NB, AV_PIX_FMT_NONE, AV_PIX_FMT_NV12, AV_PIX_FMT_NV16,
+    AV_PIX_FMT_NV20BE, AV_PIX_FMT_NV20LE, AV_PIX_FMT_NV21, AV_PIX_FMT_NV24, AV_PIX_FMT_NV42,
+    AV_PIX_FMT_OHCODEC, AV_PIX_FMT_OPENCL, AV_PIX_FMT_P010BE, AV_PIX_FMT_P010LE, AV_PIX_FMT_P012BE,
+    AV_PIX_FMT_P012LE, AV_PIX_FMT_P016BE, AV_PIX_FMT_P016LE, AV_PIX_FMT_P210BE, AV_PIX_FMT_P210LE,
+    AV_PIX_FMT_P212BE, AV_PIX_FMT_P212LE, AV_PIX_FMT_P216BE, AV_PIX_FMT_P216LE, AV_PIX_FMT_P410BE,
+    AV_PIX_FMT_P410LE, AV_PIX_FMT_P412BE, AV_PIX_FMT_P412LE, AV_PIX_FMT_P416BE, AV_PIX_FMT_P416LE,
+    AV_PIX_FMT_PAL8, AV_PIX_FMT_QSV, AV_PIX_FMT_RGB0, AV_PIX_FMT_RGB24, AV_PIX_FMT_RGB4,
+    AV_PIX_FMT_RGB444BE, AV_PIX_FMT_RGB444LE, AV_PIX_FMT_RGB48BE, AV_PIX_FMT_RGB48LE,
+    AV_PIX_FMT_RGB4_BYTE, AV_PIX_FMT_RGB555BE, AV_PIX_FMT_RGB555LE, AV_PIX_FMT_RGB565BE,
+    AV_PIX_FMT_RGB565LE, AV_PIX_FMT_RGB8, AV_PIX_FMT_RGB96BE, AV_PIX_FMT_RGB96LE, AV_PIX_FMT_RGBA,
+    AV_PIX_FMT_RGBA128BE, AV_PIX_FMT_RGBA128LE, AV_PIX_FMT_RGBA64BE, AV_PIX_FMT_RGBA64LE,
+    AV_PIX_FMT_RGBAF16BE, AV_PIX_FMT_RGBAF16LE, AV_PIX_FMT_RGBAF32BE, AV_PIX_FMT_RGBAF32LE,
+    AV_PIX_FMT_RGBF16BE, AV_PIX_FMT_RGBF16LE, AV_PIX_FMT_RGBF32BE, AV_PIX_FMT_RGBF32LE,
+    AV_PIX_FMT_UYVA, AV_PIX_FMT_UYVY422, AV_PIX_FMT_UYYVYY411, AV_PIX_FMT_V30XBE,
+    AV_PIX_FMT_V30XLE, AV_PIX_FMT_VAAPI, AV_PIX_FMT_VDPAU, AV_PIX_FMT_VIDEOTOOLBOX,
+    AV_PIX_FMT_VULKAN, AV_PIX_FMT_VUYA, AV_PIX_FMT_VUYX, AV_PIX_FMT_VYU444, AV_PIX_FMT_X2BGR10BE,
+    AV_PIX_FMT_X2BGR10LE, AV_PIX_FMT_X2RGB10BE, AV_PIX_FMT_X2RGB10LE, AV_PIX_FMT_XV30BE,
+    AV_PIX_FMT_XV30LE, AV_PIX_FMT_XV36BE, AV_PIX_FMT_XV36LE, AV_PIX_FMT_XV48BE, AV_PIX_FMT_XV48LE,
+    AV_PIX_FMT_XYZ12BE, AV_PIX_FMT_XYZ12LE, AV_PIX_FMT_Y210BE, AV_PIX_FMT_Y210LE,
+    AV_PIX_FMT_Y212BE, AV_PIX_FMT_Y212LE, AV_PIX_FMT_Y216BE, AV_PIX_FMT_Y216LE, AV_PIX_FMT_Y400A,
+    AV_PIX_FMT_YA16BE, AV_PIX_FMT_YA16LE, AV_PIX_FMT_YA8, AV_PIX_FMT_YAF16BE, AV_PIX_FMT_YAF16LE,
+    AV_PIX_FMT_YAF32BE, AV_PIX_FMT_YAF32LE, AV_PIX_FMT_YUV410P, AV_PIX_FMT_YUV411P,
+    AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV420P10BE, AV_PIX_FMT_YUV420P10LE, AV_PIX_FMT_YUV420P12BE,
+    AV_PIX_FMT_YUV420P12LE, AV_PIX_FMT_YUV420P14BE, AV_PIX_FMT_YUV420P14LE, AV_PIX_FMT_YUV420P16BE,
+    AV_PIX_FMT_YUV420P16LE, AV_PIX_FMT_YUV420P9BE, AV_PIX_FMT_YUV420P9LE, AV_PIX_FMT_YUV422P,
+    AV_PIX_FMT_YUV422P10BE, AV_PIX_FMT_YUV422P10LE, AV_PIX_FMT_YUV422P12BE, AV_PIX_FMT_YUV422P12LE,
+    AV_PIX_FMT_YUV422P14BE, AV_PIX_FMT_YUV422P14LE, AV_PIX_FMT_YUV422P16BE, AV_PIX_FMT_YUV422P16LE,
+    AV_PIX_FMT_YUV422P9BE, AV_PIX_FMT_YUV422P9LE, AV_PIX_FMT_YUV440P, AV_PIX_FMT_YUV440P10BE,
+    AV_PIX_FMT_YUV440P10LE, AV_PIX_FMT_YUV440P12BE, AV_PIX_FMT_YUV440P12LE, AV_PIX_FMT_YUV444P,
+    AV_PIX_FMT_YUV444P10BE, AV_PIX_FMT_YUV444P10LE, AV_PIX_FMT_YUV444P10MSBBE,
+    AV_PIX_FMT_YUV444P10MSBLE, AV_PIX_FMT_YUV444P12BE, AV_PIX_FMT_YUV444P12LE,
+    AV_PIX_FMT_YUV444P12MSBBE, AV_PIX_FMT_YUV444P12MSBLE, AV_PIX_FMT_YUV444P14BE,
+    AV_PIX_FMT_YUV444P14LE, AV_PIX_FMT_YUV444P16BE, AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUV444P9BE,
+    AV_PIX_FMT_YUV444P9LE, AV_PIX_FMT_YUVA420P, AV_PIX_FMT_YUVA420P10BE, AV_PIX_FMT_YUVA420P10LE,
+    AV_PIX_FMT_YUVA420P16BE, AV_PIX_FMT_YUVA420P16LE, AV_PIX_FMT_YUVA420P9BE,
+    AV_PIX_FMT_YUVA420P9LE, AV_PIX_FMT_YUVA422P, AV_PIX_FMT_YUVA422P10BE, AV_PIX_FMT_YUVA422P10LE,
+    AV_PIX_FMT_YUVA422P12BE, AV_PIX_FMT_YUVA422P12LE, AV_PIX_FMT_YUVA422P16BE,
+    AV_PIX_FMT_YUVA422P16LE, AV_PIX_FMT_YUVA422P9BE, AV_PIX_FMT_YUVA422P9LE, AV_PIX_FMT_YUVA444P,
+    AV_PIX_FMT_YUVA444P10BE, AV_PIX_FMT_YUVA444P10LE, AV_PIX_FMT_YUVA444P12BE,
+    AV_PIX_FMT_YUVA444P12LE, AV_PIX_FMT_YUVA444P16BE, AV_PIX_FMT_YUVA444P16LE,
+    AV_PIX_FMT_YUVA444P9BE, AV_PIX_FMT_YUVA444P9LE, AV_PIX_FMT_YUVJ411P, AV_PIX_FMT_YUVJ420P,
+    AV_PIX_FMT_YUVJ422P, AV_PIX_FMT_YUVJ440P, AV_PIX_FMT_YUVJ444P, AV_PIX_FMT_YUYV422,
+    AV_PIX_FMT_YVYU422,
+};
+pub use self::rational_h::AVRational;
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
 use self::stdio_h::{printf, sscanf};
-use self::mathcalls_h::round;
+use self::stdlib_h::{calloc, free};
+use self::string_h::{memcmp, strchr, strcmp, strlen, strstr};
 use self::strings_h::strcasecmp;
-use self::filters_h::{x264_split_options, x264_get_option, x264_otoi, x264_otos};
+pub use self::swscale_h::{
+    sws_alloc_context, sws_freeContext, sws_getCoefficients, sws_init_context,
+    sws_isSupportedInput, sws_isSupportedOutput, sws_scale, sws_setColorspaceDetails,
+    SwsAlphaBlend, SwsContext, SwsDither, SwsFilter, SwsFlags, SwsVector, SWS_ACCURATE_RND,
+    SWS_ALPHA_BLEND_CHECKERBOARD, SWS_ALPHA_BLEND_NB, SWS_ALPHA_BLEND_NONE,
+    SWS_ALPHA_BLEND_UNIFORM, SWS_AREA, SWS_BICUBIC, SWS_BICUBLIN, SWS_BILINEAR, SWS_BITEXACT,
+    SWS_CS_DEFAULT, SWS_DIRECT_BGR, SWS_DITHER_AUTO, SWS_DITHER_A_DITHER, SWS_DITHER_BAYER,
+    SWS_DITHER_ED, SWS_DITHER_NB, SWS_DITHER_NONE, SWS_DITHER_X_DITHER, SWS_ERROR_DIFFUSION,
+    SWS_FAST_BILINEAR, SWS_FULL_CHR_H_INP, SWS_FULL_CHR_H_INT, SWS_GAUSS, SWS_LANCZOS, SWS_POINT,
+    SWS_PRINT_INFO, SWS_SINC, SWS_SPLINE, SWS_STRICT, SWS_X,
+};
+pub use self::types_h::{__int64_t, __uint32_t, __uint64_t, __uint8_t};
+pub use self::video_h::cli_vid_filter_t;
+pub use self::x264_h::{
+    x264_nal_t, x264_param_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0, C2RustUnnamed_1,
+    C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_CSP_BGR, X264_CSP_BGRA,
+    X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK,
+    X264_CSP_MAX, X264_CSP_NONE, X264_CSP_NV12, X264_CSP_NV16, X264_CSP_NV21, X264_CSP_RGB,
+    X264_CSP_UYVY, X264_CSP_VFLIP, X264_CSP_YUYV, X264_CSP_YV12, X264_CSP_YV16, X264_CSP_YV24,
+    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING,
+};
+pub use self::x264cli_h::{hnd_t, x264_cli_log};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "61:9"]
@@ -1702,9 +1673,8 @@ pub struct frame_prop_t {
     pub range: ::core::ffi::c_int,
 }
 #[c2rust::src_loc = "28:9"]
-pub const NAME: [::core::ffi::c_char; 7] = unsafe {
-    ::core::mem::transmute::<[u8; 7], [::core::ffi::c_char; 7]>(*b"resize\0")
-};
+pub const NAME: [::core::ffi::c_char; 7] =
+    unsafe { ::core::mem::transmute::<[u8; 7], [::core::ffi::c_char; 7]>(*b"resize\0") };
 #[c2rust::src_loc = "33:1"]
 unsafe extern "C" fn full_check(
     mut info: *mut video_info_t,
@@ -1749,20 +1719,24 @@ unsafe extern "C" fn help(mut longhelp: ::core::ffi::c_int) {
     );
 }
 #[c2rust::src_loc = "114:1"]
-unsafe extern "C" fn convert_method_to_flag(
-    mut name: *const ::core::ffi::c_char,
-) -> uint32_t {
+unsafe extern "C" fn convert_method_to_flag(mut name: *const ::core::ffi::c_char) -> uint32_t {
     let mut flag: uint32_t = 0 as uint32_t;
-    if strcasecmp(name, b"fastbilinear\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    if strcasecmp(
+        name,
+        b"fastbilinear\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         flag = SWS_FAST_BILINEAR as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"bilinear\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcasecmp(
+        name,
+        b"bilinear\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         flag = SWS_BILINEAR as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"bicubic\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcasecmp(
+        name,
+        b"bicubic\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         flag = SWS_BICUBIC as ::core::ffi::c_int as uint32_t;
     } else if strcasecmp(
@@ -1771,31 +1745,27 @@ unsafe extern "C" fn convert_method_to_flag(
     ) == 0
     {
         flag = SWS_X as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"point\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
-    {
+    } else if strcasecmp(name, b"point\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
         flag = SWS_POINT as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"area\0" as *const u8 as *const ::core::ffi::c_char) == 0
-    {
+    } else if strcasecmp(name, b"area\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
         flag = SWS_AREA as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"bicublin\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcasecmp(
+        name,
+        b"bicublin\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         flag = SWS_BICUBLIN as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"gauss\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
-    {
+    } else if strcasecmp(name, b"gauss\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
         flag = SWS_GAUSS as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"sinc\0" as *const u8 as *const ::core::ffi::c_char) == 0
-    {
+    } else if strcasecmp(name, b"sinc\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
         flag = SWS_SINC as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"lanczos\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
+    } else if strcasecmp(
+        name,
+        b"lanczos\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
     {
         flag = SWS_LANCZOS as ::core::ffi::c_int as uint32_t;
-    } else if strcasecmp(name, b"spline\0" as *const u8 as *const ::core::ffi::c_char)
-        == 0
-    {
+    } else if strcasecmp(name, b"spline\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
         flag = SWS_SPLINE as ::core::ffi::c_int as uint32_t;
     } else {
         flag = SWS_BICUBIC as ::core::ffi::c_int as uint32_t;
@@ -1803,9 +1773,7 @@ unsafe extern "C" fn convert_method_to_flag(
     return flag;
 }
 #[c2rust::src_loc = "144:1"]
-unsafe extern "C" fn convert_csp_to_pix_fmt(
-    mut csp: ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn convert_csp_to_pix_fmt(mut csp: ::core::ffi::c_int) -> ::core::ffi::c_int {
     if csp & X264_CSP_OTHER != 0 {
         return csp & X264_CSP_MASK;
     }
@@ -1897,33 +1865,34 @@ unsafe extern "C" fn pix_number_of_planes(
     let mut num_planes: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < (*pix_desc).nb_components as ::core::ffi::c_int {
-        let mut plane_plus1: ::core::ffi::c_int = (*pix_desc).comp[i as usize].plane
-            + 1 as ::core::ffi::c_int;
-        num_planes = if plane_plus1 > num_planes { plane_plus1 } else { num_planes };
+        let mut plane_plus1: ::core::ffi::c_int =
+            (*pix_desc).comp[i as usize].plane + 1 as ::core::ffi::c_int;
+        num_planes = if plane_plus1 > num_planes {
+            plane_plus1
+        } else {
+            num_planes
+        };
         i += 1;
     }
     return num_planes;
 }
 #[c2rust::src_loc = "182:1"]
-unsafe extern "C" fn pick_closest_supported_csp(
-    mut csp: ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn pick_closest_supported_csp(mut csp: ::core::ffi::c_int) -> ::core::ffi::c_int {
     let mut pix_fmt: ::core::ffi::c_int = convert_csp_to_pix_fmt(csp);
     let mut ret: ::core::ffi::c_int = X264_CSP_NONE;
-    let mut pix_desc: *const AVPixFmtDescriptor = av_pix_fmt_desc_get(
-        pix_fmt as AVPixelFormat,
-    );
+    let mut pix_desc: *const AVPixFmtDescriptor = av_pix_fmt_desc_get(pix_fmt as AVPixelFormat);
     if pix_desc.is_null() || (*pix_desc).name.is_null() {
         return ret;
     }
     let mut pix_fmt_name: *const ::core::ffi::c_char = (*pix_desc).name;
     let mut is_rgb: ::core::ffi::c_int = ((*pix_desc).flags
-        & (AV_PIX_FMT_FLAG_RGB | AV_PIX_FMT_FLAG_PAL) as uint64_t) as ::core::ffi::c_int;
+        & (AV_PIX_FMT_FLAG_RGB | AV_PIX_FMT_FLAG_PAL) as uint64_t)
+        as ::core::ffi::c_int;
     let mut is_bgr: ::core::ffi::c_int = !strstr(
-            pix_fmt_name,
-            b"bgr\0" as *const u8 as *const ::core::ffi::c_char,
-        )
-        .is_null() as ::core::ffi::c_int;
+        pix_fmt_name,
+        b"bgr\0" as *const u8 as *const ::core::ffi::c_char,
+    )
+    .is_null() as ::core::ffi::c_int;
     if is_bgr != 0 || is_rgb != 0 {
         if (*pix_desc).nb_components as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
             ret = X264_CSP_BGRA;
@@ -1967,38 +1936,25 @@ unsafe extern "C" fn handle_opts(
 ) -> ::core::ffi::c_int {
     let mut out_sar_w: uint32_t = 0;
     let mut out_sar_h: uint32_t = 0;
-    let mut str_width: *mut ::core::ffi::c_char = x264_get_option(
-        *optlist.offset(0 as ::core::ffi::c_int as isize),
-        opts,
-    );
-    let mut str_height: *mut ::core::ffi::c_char = x264_get_option(
-        *optlist.offset(1 as ::core::ffi::c_int as isize),
-        opts,
-    );
-    let mut str_sar: *mut ::core::ffi::c_char = x264_get_option(
-        *optlist.offset(2 as ::core::ffi::c_int as isize),
-        opts,
-    );
-    let mut fittobox: *mut ::core::ffi::c_char = x264_get_option(
-        *optlist.offset(3 as ::core::ffi::c_int as isize),
-        opts,
-    );
-    let mut str_csp: *mut ::core::ffi::c_char = x264_get_option(
-        *optlist.offset(4 as ::core::ffi::c_int as isize),
-        opts,
-    );
+    let mut str_width: *mut ::core::ffi::c_char =
+        x264_get_option(*optlist.offset(0 as ::core::ffi::c_int as isize), opts);
+    let mut str_height: *mut ::core::ffi::c_char =
+        x264_get_option(*optlist.offset(1 as ::core::ffi::c_int as isize), opts);
+    let mut str_sar: *mut ::core::ffi::c_char =
+        x264_get_option(*optlist.offset(2 as ::core::ffi::c_int as isize), opts);
+    let mut fittobox: *mut ::core::ffi::c_char =
+        x264_get_option(*optlist.offset(3 as ::core::ffi::c_int as isize), opts);
+    let mut str_csp: *mut ::core::ffi::c_char =
+        x264_get_option(*optlist.offset(4 as ::core::ffi::c_int as isize), opts);
     let mut width: ::core::ffi::c_int = x264_otoi(str_width, -(1 as ::core::ffi::c_int));
-    let mut height: ::core::ffi::c_int = x264_otoi(
-        str_height,
-        -(1 as ::core::ffi::c_int),
-    );
+    let mut height: ::core::ffi::c_int = x264_otoi(str_height, -(1 as ::core::ffi::c_int));
     let mut csp_only: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     let mut in_sar_w: uint32_t = (*info).sar_width;
     let mut in_sar_h: uint32_t = (*info).sar_height;
     if !str_csp.is_null() {
         let mut str_depth: *mut ::core::ffi::c_char = strchr(str_csp, ':' as i32);
-        let mut depth: ::core::ffi::c_int = x264_cli_csp_depth_factor((*info).csp)
-            * 8 as ::core::ffi::c_int;
+        let mut depth: ::core::ffi::c_int =
+            x264_cli_csp_depth_factor((*info).csp) * 8 as ::core::ffi::c_int;
         if !str_depth.is_null() {
             let fresh0 = str_depth;
             str_depth = str_depth.offset(1);
@@ -2008,8 +1964,7 @@ unsafe extern "C" fn handle_opts(
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"unsupported bit depth %d\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"unsupported bit depth %d\n\0" as *const u8 as *const ::core::ffi::c_char,
                     depth,
                 );
                 return -(1 as ::core::ffi::c_int);
@@ -2021,11 +1976,10 @@ unsafe extern "C" fn handle_opts(
         } else {
             csp = X264_CSP_CLI_MAX - 1 as ::core::ffi::c_int;
             while csp > X264_CSP_NONE {
-                if !(*x264_cli_csps.as_ptr().offset(csp as isize)).name.is_null()
-                    && strcasecmp(
-                        (*x264_cli_csps.as_ptr().offset(csp as isize)).name,
-                        str_csp,
-                    ) == 0
+                if !(*x264_cli_csps.as_ptr().offset(csp as isize))
+                    .name
+                    .is_null()
+                    && strcasecmp((*x264_cli_csps.as_ptr().offset(csp as isize)).name, str_csp) == 0
                 {
                     break;
                 }
@@ -2036,8 +1990,7 @@ unsafe extern "C" fn handle_opts(
             x264_cli_log(
                 b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                 X264_LOG_ERROR,
-                b"unsupported colorspace `%s'\n\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"unsupported colorspace `%s'\n\0" as *const u8 as *const ::core::ffi::c_char,
                 str_csp,
             );
             return -(1 as ::core::ffi::c_int);
@@ -2080,15 +2033,16 @@ unsafe extern "C" fn handle_opts(
         out_sar_w = out_sar_h;
     }
     if !fittobox.is_null() {
-        if strcasecmp(fittobox, b"both\0" as *const u8 as *const ::core::ffi::c_char)
-            == 0
+        if strcasecmp(
+            fittobox,
+            b"both\0" as *const u8 as *const ::core::ffi::c_char,
+        ) == 0
         {
             if width <= 0 as ::core::ffi::c_int || height <= 0 as ::core::ffi::c_int {
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"invalid box resolution %sx%s\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"invalid box resolution %sx%s\n\0" as *const u8 as *const ::core::ffi::c_char,
                     x264_otos(
                         str_width,
                         b"<unset>\0" as *const u8 as *const ::core::ffi::c_char
@@ -2111,8 +2065,7 @@ unsafe extern "C" fn handle_opts(
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"invalid box width `%s'\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"invalid box width `%s'\n\0" as *const u8 as *const ::core::ffi::c_char,
                     x264_otos(
                         str_width,
                         b"<unset>\0" as *const u8 as *const ::core::ffi::c_char
@@ -2131,8 +2084,7 @@ unsafe extern "C" fn handle_opts(
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"invalid box height `%s'\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"invalid box height `%s'\n\0" as *const u8 as *const ::core::ffi::c_char,
                     x264_otos(
                         str_height,
                         b"<unset>\0" as *const u8 as *const ::core::ffi::c_char
@@ -2146,18 +2098,17 @@ unsafe extern "C" fn handle_opts(
             x264_cli_log(
                 b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                 X264_LOG_ERROR,
-                b"invalid fittobox mode `%s'\n\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"invalid fittobox mode `%s'\n\0" as *const u8 as *const ::core::ffi::c_char,
                 fittobox,
             );
             return -(1 as ::core::ffi::c_int);
         }
         let mut csp_0: *const x264_cli_csp_t = x264_cli_get_csp((*h).dst_csp);
-        let mut width_units: ::core::ffi::c_double = (*info).height
-            as ::core::ffi::c_double * in_sar_h as ::core::ffi::c_double
+        let mut width_units: ::core::ffi::c_double = (*info).height as ::core::ffi::c_double
+            * in_sar_h as ::core::ffi::c_double
             * out_sar_w as ::core::ffi::c_double;
-        let mut height_units: ::core::ffi::c_double = (*info).width
-            as ::core::ffi::c_double * in_sar_w as ::core::ffi::c_double
+        let mut height_units: ::core::ffi::c_double = (*info).width as ::core::ffi::c_double
+            * in_sar_w as ::core::ffi::c_double
             * out_sar_h as ::core::ffi::c_double;
         width = width / (*csp_0).mod_width * (*csp_0).mod_width;
         height = height / (*csp_0).mod_height * (*csp_0).mod_height;
@@ -2176,15 +2127,18 @@ unsafe extern "C" fn handle_opts(
                     / (height_units * (*csp_0).mod_height as ::core::ffi::c_double),
             ) as ::core::ffi::c_int;
             new_height *= (*csp_0).mod_height;
-            height = if new_height < height { new_height } else { height };
+            height = if new_height < height {
+                new_height
+            } else {
+                height
+            };
         }
     } else if !str_width.is_null() || !str_height.is_null() {
         if width <= 0 as ::core::ffi::c_int || height <= 0 as ::core::ffi::c_int {
             x264_cli_log(
                 b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                 X264_LOG_ERROR,
-                b"invalid resolution %sx%s\n\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"invalid resolution %sx%s\n\0" as *const u8 as *const ::core::ffi::c_char,
                 x264_otos(
                     str_width,
                     b"<unset>\0" as *const u8 as *const ::core::ffi::c_char
@@ -2199,10 +2153,8 @@ unsafe extern "C" fn handle_opts(
             return -(1 as ::core::ffi::c_int);
         }
         if str_sar.is_null() {
-            let mut num: uint64_t = ((*info).width as uint64_t)
-                .wrapping_mul(height as uint64_t);
-            let mut den: uint64_t = ((*info).height as uint64_t)
-                .wrapping_mul(width as uint64_t);
+            let mut num: uint64_t = ((*info).width as uint64_t).wrapping_mul(height as uint64_t);
+            let mut den: uint64_t = ((*info).height as uint64_t).wrapping_mul(width as uint64_t);
             x264_reduce_fraction64(&mut num, &mut den);
             out_sar_w = num.wrapping_mul(in_sar_w as uint64_t) as uint32_t;
             out_sar_h = den.wrapping_mul(in_sar_h as uint64_t) as uint32_t;
@@ -2210,10 +2162,10 @@ unsafe extern "C" fn handle_opts(
         }
     } else if !str_sar.is_null() {
         let mut csp_1: *const x264_cli_csp_t = x264_cli_get_csp((*h).dst_csp);
-        let mut width_units_0: ::core::ffi::c_double = in_sar_h as ::core::ffi::c_double
-            * out_sar_w as ::core::ffi::c_double;
-        let mut height_units_0: ::core::ffi::c_double = in_sar_w as ::core::ffi::c_double
-            * out_sar_h as ::core::ffi::c_double;
+        let mut width_units_0: ::core::ffi::c_double =
+            in_sar_h as ::core::ffi::c_double * out_sar_w as ::core::ffi::c_double;
+        let mut height_units_0: ::core::ffi::c_double =
+            in_sar_w as ::core::ffi::c_double * out_sar_h as ::core::ffi::c_double;
         width = (*info).width;
         height = (*info).height;
         if width_units_0 > height_units_0 {
@@ -2347,8 +2299,7 @@ unsafe extern "C" fn check_resizer(
         x264_cli_log(
             NAME.as_ptr(),
             X264_LOG_WARNING,
-            b"stream properties changed at pts %ld\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"stream properties changed at pts %ld\n\0" as *const u8 as *const ::core::ffi::c_char,
             (*in_0).pts,
         );
         (*h).fast_mono = 0 as ::core::ffi::c_int;
@@ -2385,8 +2336,11 @@ unsafe extern "C" fn init(
     mut opt_string: *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
     if !opt_string.is_null()
-        && strcmp(opt_string, b"normcsp\0" as *const u8 as *const ::core::ffi::c_char)
-            == 0 && (*info).csp & X264_CSP_OTHER == 0
+        && strcmp(
+            opt_string,
+            b"normcsp\0" as *const u8 as *const ::core::ffi::c_char,
+        ) == 0
+        && (*info).csp & X264_CSP_OTHER == 0
     {
         return 0 as ::core::ffi::c_int;
     }
@@ -2402,10 +2356,7 @@ unsafe extern "C" fn init(
         b"method\0" as *const u8 as *const ::core::ffi::c_char,
         0 as *const ::core::ffi::c_char,
     ];
-    let mut opts: *mut *mut ::core::ffi::c_char = x264_split_options(
-        opt_string,
-        optlist.as_ptr(),
-    );
+    let mut opts: *mut *mut ::core::ffi::c_char = x264_split_options(opt_string, optlist.as_ptr());
     if opts.is_null() && !opt_string.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
@@ -2416,19 +2367,19 @@ unsafe extern "C" fn init(
     if h.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
-    (*h).ctx_flags = convert_method_to_flag(
-        x264_otos(
-            x264_get_option(optlist[5 as ::core::ffi::c_int as usize], opts),
-            b"\0" as *const u8 as *const ::core::ffi::c_char as *mut ::core::ffi::c_char,
-        ),
-    );
+    (*h).ctx_flags = convert_method_to_flag(x264_otos(
+        x264_get_option(optlist[5 as ::core::ffi::c_int as usize], opts),
+        b"\0" as *const u8 as *const ::core::ffi::c_char as *mut ::core::ffi::c_char,
+    ));
     if !opts.is_null() {
         (*h).dst_csp = (*info).csp;
         (*h).dst.width = (*info).width;
         (*h).dst.height = (*info).height;
         (*h).dst.range = (*info).fullrange;
-        if strcmp(opt_string, b"normcsp\0" as *const u8 as *const ::core::ffi::c_char)
-            == 0
+        if strcmp(
+            opt_string,
+            b"normcsp\0" as *const u8 as *const ::core::ffi::c_char,
+        ) == 0
         {
             free(opts as *mut ::core::ffi::c_void);
             (*h).variable_input = 1 as ::core::ffi::c_int;
@@ -2437,20 +2388,15 @@ unsafe extern "C" fn init(
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"filter get invalid input pixel format %d (colorspace %d)\n\0"
-                        as *const u8 as *const ::core::ffi::c_char,
+                    b"filter get invalid input pixel format %d (colorspace %d)\n\0" as *const u8
+                        as *const ::core::ffi::c_char,
                     convert_csp_to_pix_fmt((*info).csp),
                     (*info).csp,
                 );
                 return -(1 as ::core::ffi::c_int);
             }
         } else {
-            let mut err: ::core::ffi::c_int = handle_opts(
-                optlist.as_ptr(),
-                opts,
-                info,
-                h,
-            );
+            let mut err: ::core::ffi::c_int = handle_opts(optlist.as_ptr(), opts, info, h);
             free(opts as *mut ::core::ffi::c_void);
             if err != 0 {
                 return -(1 as ::core::ffi::c_int);
@@ -2463,28 +2409,26 @@ unsafe extern "C" fn init(
         (*h).dst.range = (*param).vui.b_fullrange;
     }
     if (*h).ctx_flags != SWS_FAST_BILINEAR as ::core::ffi::c_int as uint32_t {
-        (*h).ctx_flags
-            |= (SWS_FULL_CHR_H_INT as ::core::ffi::c_int
-                | SWS_FULL_CHR_H_INP as ::core::ffi::c_int
-                | SWS_ACCURATE_RND as ::core::ffi::c_int) as uint32_t;
+        (*h).ctx_flags |= (SWS_FULL_CHR_H_INT as ::core::ffi::c_int
+            | SWS_FULL_CHR_H_INP as ::core::ffi::c_int
+            | SWS_ACCURATE_RND as ::core::ffi::c_int) as uint32_t;
     }
     (*h).dst.pix_fmt = convert_csp_to_pix_fmt((*h).dst_csp);
     (*h).scale = (*h).dst;
     (*h).input_range = (*info).fullrange;
     let mut src_csp: ::core::ffi::c_int = (*info).csp & (X264_CSP_MASK | X264_CSP_OTHER);
-    let mut dst_csp: ::core::ffi::c_int = (*h).dst_csp
-        & (X264_CSP_MASK | X264_CSP_OTHER);
-    (*h).pre_swap_chroma = (src_csp == X264_CSP_YV12 || src_csp == X264_CSP_YV16
+    let mut dst_csp: ::core::ffi::c_int = (*h).dst_csp & (X264_CSP_MASK | X264_CSP_OTHER);
+    (*h).pre_swap_chroma = (src_csp == X264_CSP_YV12
+        || src_csp == X264_CSP_YV16
         || src_csp == X264_CSP_YV24) as ::core::ffi::c_int;
-    (*h).post_swap_chroma = (dst_csp == X264_CSP_YV12 || dst_csp == X264_CSP_YV16
+    (*h).post_swap_chroma = (dst_csp == X264_CSP_YV12
+        || dst_csp == X264_CSP_YV16
         || dst_csp == X264_CSP_YV24) as ::core::ffi::c_int;
     let mut src_pix_fmt: ::core::ffi::c_int = convert_csp_to_pix_fmt((*info).csp);
-    let mut src_pix_fmt_inv: ::core::ffi::c_int = convert_csp_to_pix_fmt(
-        (*info).csp ^ X264_CSP_HIGH_DEPTH,
-    );
-    let mut dst_pix_fmt_inv: ::core::ffi::c_int = convert_csp_to_pix_fmt(
-        (*h).dst_csp ^ X264_CSP_HIGH_DEPTH,
-    );
+    let mut src_pix_fmt_inv: ::core::ffi::c_int =
+        convert_csp_to_pix_fmt((*info).csp ^ X264_CSP_HIGH_DEPTH);
+    let mut dst_pix_fmt_inv: ::core::ffi::c_int =
+        convert_csp_to_pix_fmt((*h).dst_csp ^ X264_CSP_HIGH_DEPTH);
     if (*h).dst.width <= 0 as ::core::ffi::c_int
         || (*h).dst.height <= 0 as ::core::ffi::c_int
         || (*h).dst.width > 16384 as ::core::ffi::c_int
@@ -2493,8 +2437,7 @@ unsafe extern "C" fn init(
         x264_cli_log(
             b"resize\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"invalid width x height (%dx%d)\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"invalid width x height (%dx%d)\n\0" as *const u8 as *const ::core::ffi::c_char,
             (*h).dst.width,
             (*h).dst.height,
         );
@@ -2521,8 +2464,7 @@ unsafe extern "C" fn init(
         x264_cli_log(
             b"resize\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"input colorspace %s is not supported\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"input colorspace %s is not supported\n\0" as *const u8 as *const ::core::ffi::c_char,
             av_get_pix_fmt_name(src_pix_fmt as AVPixelFormat),
         );
         return -(1 as ::core::ffi::c_int);
@@ -2548,8 +2490,7 @@ unsafe extern "C" fn init(
         x264_cli_log(
             b"resize\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"output colorspace %s is not supported\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"output colorspace %s is not supported\n\0" as *const u8 as *const ::core::ffi::c_char,
             av_get_pix_fmt_name((*h).dst.pix_fmt as AVPixelFormat),
         );
         return -(1 as ::core::ffi::c_int);
@@ -2558,14 +2499,13 @@ unsafe extern "C" fn init(
         x264_cli_log(
             b"resize\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
-            b"swscale is not compatible with interlaced vertical resizing\n\0"
-                as *const u8 as *const ::core::ffi::c_char,
+            b"swscale is not compatible with interlaced vertical resizing\n\0" as *const u8
+                as *const ::core::ffi::c_char,
         );
         return -(1 as ::core::ffi::c_int);
     }
     let mut csp: *const x264_cli_csp_t = x264_cli_get_csp((*h).dst_csp);
-    if (*h).dst.width % (*csp).mod_width != 0 || (*h).dst.height % (*csp).mod_height != 0
-    {
+    if (*h).dst.width % (*csp).mod_width != 0 || (*h).dst.height % (*csp).mod_height != 0 {
         x264_cli_log(
             b"resize\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
@@ -2598,8 +2538,7 @@ unsafe extern "C" fn init(
         x264_cli_log(
             NAME.as_ptr(),
             X264_LOG_WARNING,
-            b"converting range from %s to %s\n\0" as *const u8
-                as *const ::core::ffi::c_char,
+            b"converting range from %s to %s\n\0" as *const u8 as *const ::core::ffi::c_char,
             if (*h).input_range != 0 {
                 b"PC\0" as *const u8 as *const ::core::ffi::c_char
             } else {
@@ -2615,8 +2554,10 @@ unsafe extern "C" fn init(
     (*h).dst_csp |= (*info).csp & X264_CSP_VFLIP;
     if dst_csp == X264_CSP_I400
         && (src_csp >= X264_CSP_I420 && src_csp <= X264_CSP_NV16
-            || src_csp == X264_CSP_I444 || src_csp == X264_CSP_YV24)
-        && (*h).dst.width == (*info).width && (*h).dst.height == (*info).height
+            || src_csp == X264_CSP_I444
+            || src_csp == X264_CSP_YV24)
+        && (*h).dst.width == (*info).width
+        && (*h).dst.height == (*info).height
         && (*h).dst.range == (*h).input_range
     {
         (*h).fast_mono = 1 as ::core::ffi::c_int;
@@ -2665,7 +2606,8 @@ unsafe extern "C" fn get_frame(
     if (*h)
         .prev_filter
         .get_frame
-        .expect("non-null function pointer")((*h).prev_hnd, output, frame) != 0
+        .expect("non-null function pointer")((*h).prev_hnd, output, frame)
+        != 0
     {
         return -(1 as ::core::ffi::c_int);
     }
@@ -2675,9 +2617,8 @@ unsafe extern "C" fn get_frame(
     (*h).working = 1 as ::core::ffi::c_int;
     if (*h).pre_swap_chroma != 0 {
         let mut t: *mut uint8_t = (*output).img.plane[1 as ::core::ffi::c_int as usize];
-        (*output).img.plane[1 as ::core::ffi::c_int as usize] = (*output)
-            .img
-            .plane[2 as ::core::ffi::c_int as usize];
+        (*output).img.plane[1 as ::core::ffi::c_int as usize] =
+            (*output).img.plane[2 as ::core::ffi::c_int as usize];
         (*output).img.plane[2 as ::core::ffi::c_int as usize] = t;
     }
     if !(*h).ctx.is_null() && (*h).fast_mono == 0 {
@@ -2695,12 +2636,9 @@ unsafe extern "C" fn get_frame(
         (*output).img.csp = (*h).dst_csp;
     }
     if (*h).post_swap_chroma != 0 {
-        let mut t_0: *mut uint8_t = (*output)
-            .img
-            .plane[1 as ::core::ffi::c_int as usize];
-        (*output).img.plane[1 as ::core::ffi::c_int as usize] = (*output)
-            .img
-            .plane[2 as ::core::ffi::c_int as usize];
+        let mut t_0: *mut uint8_t = (*output).img.plane[1 as ::core::ffi::c_int as usize];
+        (*output).img.plane[1 as ::core::ffi::c_int as usize] =
+            (*output).img.plane[2 as ::core::ffi::c_int as usize];
         (*output).img.plane[2 as ::core::ffi::c_int as usize] = t_0;
     }
     return 0 as ::core::ffi::c_int;
@@ -2737,14 +2675,13 @@ pub static mut resize_filter: cli_vid_filter_t = unsafe {
             name: NAME.as_ptr(),
             help: Some(help as unsafe extern "C" fn(::core::ffi::c_int) -> ()),
             init: Some(
-                init
-                    as unsafe extern "C" fn(
-                        *mut hnd_t,
-                        *mut cli_vid_filter_t,
-                        *mut video_info_t,
-                        *mut x264_param_t,
-                        *mut ::core::ffi::c_char,
-                    ) -> ::core::ffi::c_int,
+                init as unsafe extern "C" fn(
+                    *mut hnd_t,
+                    *mut cli_vid_filter_t,
+                    *mut video_info_t,
+                    *mut x264_param_t,
+                    *mut ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
             ),
             get_frame: Some(
                 get_frame

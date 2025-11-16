@@ -71,10 +71,9 @@ pub mod strings_h {
 pub mod assert_h {
     #[c2rust::src_loc = "137:12"]
     pub const __ASSERT_FUNCTION: [::core::ffi::c_char; 61] = unsafe {
-        ::core::mem::transmute::<
-            [u8; 61],
-            [::core::ffi::c_char; 61],
-        >(*b"char **x264_split_options(const char *, const char *const *)\0")
+        ::core::mem::transmute::<[u8; 61], [::core::ffi::c_char; 61]>(
+            *b"char **x264_split_options(const char *, const char *const *)\0",
+        )
     };
     extern "C" {
         #[c2rust::src_loc = "67:1"]
@@ -103,14 +102,14 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::__stddef_size_t_h::size_t;
-use self::stdlib_h::{strtod, strtol, calloc};
-use self::string_h::{memcpy, strcmp, strncmp, strcspn, strlen};
-pub use self::x264_h::X264_LOG_ERROR;
-use self::strings_h::strcasecmp;
-pub use self::assert_h::{__ASSERT_FUNCTION, __assert_fail};
-use self::x264cli_h::x264_cli_log;
 pub use self::__stddef_null_h::NULL;
+pub use self::__stddef_size_t_h::size_t;
+pub use self::assert_h::{__assert_fail, __ASSERT_FUNCTION};
+use self::stdlib_h::{calloc, strtod, strtol};
+use self::string_h::{memcpy, strcmp, strcspn, strlen, strncmp};
+use self::strings_h::strcasecmp;
+pub use self::x264_h::X264_LOG_ERROR;
+use self::x264cli_h::x264_cli_log;
 #[no_mangle]
 #[c2rust::src_loc = "32:1"]
 pub unsafe extern "C" fn x264_split_options(
@@ -129,10 +128,8 @@ pub unsafe extern "C" fn x264_split_options(
         options_count += 1;
     }
     loop {
-        let mut length: size_t = strcspn(
-            opt,
-            b"=,\0" as *const u8 as *const ::core::ffi::c_char,
-        ) as size_t;
+        let mut length: size_t =
+            strcspn(opt, b"=,\0" as *const u8 as *const ::core::ffi::c_char) as size_t;
         if *opt.offset(length as isize) as ::core::ffi::c_int == '=' as i32 {
             let mut option: *const *const ::core::ffi::c_char = options;
             while !(*option).is_null()
@@ -144,28 +141,23 @@ pub unsafe extern "C" fn x264_split_options(
                 x264_cli_log(
                     b"options\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"Invalid option '%.*s'\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"Invalid option '%.*s'\n\0" as *const u8 as *const ::core::ffi::c_char,
                     length,
                     opt,
                 );
                 return 0 as *mut *mut ::core::ffi::c_char;
             }
             found_named = 1 as ::core::ffi::c_int;
-            length = (length as ::core::ffi::c_ulong)
-                .wrapping_add(
-                    strcspn(
-                        opt.offset(length as isize),
-                        b",\0" as *const u8 as *const ::core::ffi::c_char,
-                    ),
-                ) as size_t as size_t;
+            length = (length as ::core::ffi::c_ulong).wrapping_add(strcspn(
+                opt.offset(length as isize),
+                b",\0" as *const u8 as *const ::core::ffi::c_char,
+            )) as size_t as size_t;
         } else {
             if opt_count >= options_count {
                 x264_cli_log(
                     b"options\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"Too many options given\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"Too many options given\n\0" as *const u8 as *const ::core::ffi::c_char,
                 );
                 return 0 as *mut *mut ::core::ffi::c_char;
             }
@@ -178,10 +170,9 @@ pub unsafe extern "C" fn x264_split_options(
                 );
                 return 0 as *mut *mut ::core::ffi::c_char;
             }
-            size = size
-                .wrapping_add(
-                    strlen(*options.offset(opt_count as isize)).wrapping_add(1 as size_t),
-                );
+            size = size.wrapping_add(
+                strlen(*options.offset(opt_count as isize)).wrapping_add(1 as size_t),
+            );
         }
         opt_count += 1;
         opt = opt.offset(length as isize);
@@ -191,16 +182,14 @@ pub unsafe extern "C" fn x264_split_options(
             break;
         }
     }
-    let mut offset: size_t = ((2 as ::core::ffi::c_int
-        * (opt_count + 1 as ::core::ffi::c_int)) as size_t)
+    let mut offset: size_t = ((2 as ::core::ffi::c_int * (opt_count + 1 as ::core::ffi::c_int))
+        as size_t)
         .wrapping_mul(::core::mem::size_of::<*mut ::core::ffi::c_char>() as size_t);
-    size = size
-        .wrapping_add(
-            offset
-                .wrapping_add(opt.offset_from(opt_str) as ::core::ffi::c_long as size_t),
-        );
-    let mut opts: *mut *mut ::core::ffi::c_char = calloc(1 as size_t, size)
-        as *mut *mut ::core::ffi::c_char;
+    size = size.wrapping_add(
+        offset.wrapping_add(opt.offset_from(opt_str) as ::core::ffi::c_long as size_t),
+    );
+    let mut opts: *mut *mut ::core::ffi::c_char =
+        calloc(1 as size_t, size) as *mut *mut ::core::ffi::c_char;
     if opts.is_null() {
         x264_cli_log(
             b"options\0" as *const u8 as *const ::core::ffi::c_char,
@@ -211,10 +200,8 @@ pub unsafe extern "C" fn x264_split_options(
     }
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < 2 as ::core::ffi::c_int * opt_count {
-        let mut length_0: size_t = strcspn(
-            opt_str,
-            b"=,\0" as *const u8 as *const ::core::ffi::c_char,
-        ) as size_t;
+        let mut length_0: size_t =
+            strcspn(opt_str, b"=,\0" as *const u8 as *const ::core::ffi::c_char) as size_t;
         if *opt_str.offset(length_0 as isize) as ::core::ffi::c_int == '=' as i32 {
             let fresh1 = i;
             i = i + 1;
@@ -227,13 +214,11 @@ pub unsafe extern "C" fn x264_split_options(
             ) as *mut ::core::ffi::c_char;
             offset = offset.wrapping_add(length_0.wrapping_add(1 as size_t));
             opt_str = opt_str.offset(length_0.wrapping_add(1 as size_t) as isize);
-            length_0 = strcspn(
-                opt_str,
-                b",\0" as *const u8 as *const ::core::ffi::c_char,
-            ) as size_t;
+            length_0 =
+                strcspn(opt_str, b",\0" as *const u8 as *const ::core::ffi::c_char) as size_t;
         } else {
-            let mut option_0: *const ::core::ffi::c_char = *options
-                .offset((i / 2 as ::core::ffi::c_int) as isize);
+            let mut option_0: *const ::core::ffi::c_char =
+                *options.offset((i / 2 as ::core::ffi::c_int) as isize);
             let mut option_length: size_t = strlen(option_0);
             let fresh3 = i;
             i = i + 1;
@@ -251,15 +236,15 @@ pub unsafe extern "C" fn x264_split_options(
         i = i + 1;
         let ref mut fresh6 = *opts.offset(fresh5 as isize);
         *fresh6 = memcpy(
-            (opts as *mut ::core::ffi::c_char).offset(offset as isize)
-                as *mut ::core::ffi::c_void,
+            (opts as *mut ::core::ffi::c_char).offset(offset as isize) as *mut ::core::ffi::c_void,
             opt_str as *const ::core::ffi::c_void,
             length_0,
         ) as *mut ::core::ffi::c_char;
         offset = offset.wrapping_add(length_0.wrapping_add(1 as size_t));
         opt_str = opt_str.offset(length_0.wrapping_add(1 as size_t) as isize);
     }
-    if offset == size {} else {
+    if offset == size {
+    } else {
         __assert_fail(
             b"offset == size\0" as *const u8 as *const ::core::ffi::c_char,
             b"filters/filters.c\0" as *const u8 as *const ::core::ffi::c_char,
@@ -268,7 +253,8 @@ pub unsafe extern "C" fn x264_split_options(
         );
     }
     'c_11546: {
-        if offset == size {} else {
+        if offset == size {
+        } else {
             __assert_fail(
                 b"offset == size\0" as *const u8 as *const ::core::ffi::c_char,
                 b"filters/filters.c\0" as *const u8 as *const ::core::ffi::c_char,
@@ -296,7 +282,8 @@ pub unsafe extern "C" fn x264_get_option(
         }
         if last_i >= 0 as ::core::ffi::c_int
             && *(*split_options.offset((last_i + 1 as ::core::ffi::c_int) as isize))
-                .offset(0 as ::core::ffi::c_int as isize) as ::core::ffi::c_int != 0
+                .offset(0 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+                != 0
         {
             return *split_options.offset((last_i + 1 as ::core::ffi::c_int) as isize);
         }
@@ -310,8 +297,8 @@ pub unsafe extern "C" fn x264_otob(
     mut def: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     if !str.is_null() {
-        return (strcasecmp(str, b"true\0" as *const u8 as *const ::core::ffi::c_char)
-            == 0 || strcmp(str, b"1\0" as *const u8 as *const ::core::ffi::c_char) == 0
+        return (strcasecmp(str, b"true\0" as *const u8 as *const ::core::ffi::c_char) == 0
+            || strcmp(str, b"1\0" as *const u8 as *const ::core::ffi::c_char) == 0
             || strcasecmp(str, b"yes\0" as *const u8 as *const ::core::ffi::c_char) == 0)
             as ::core::ffi::c_int;
     }
@@ -327,9 +314,7 @@ pub unsafe extern "C" fn x264_otof(
     if !str.is_null() {
         let mut end: *mut ::core::ffi::c_char = 0 as *mut ::core::ffi::c_char;
         ret = strtod(str, &mut end);
-        if end == str as *mut ::core::ffi::c_char
-            || *end as ::core::ffi::c_int != '\0' as i32
-        {
+        if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
             ret = def;
         }
     }
@@ -345,9 +330,7 @@ pub unsafe extern "C" fn x264_otoi(
     if !str.is_null() {
         let mut end: *mut ::core::ffi::c_char = 0 as *mut ::core::ffi::c_char;
         ret = strtol(str, &mut end, 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
-        if end == str as *mut ::core::ffi::c_char
-            || *end as ::core::ffi::c_int != '\0' as i32
-        {
+        if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
             ret = def;
         }
     }

@@ -6340,7 +6340,11 @@ unsafe extern "C" fn parse(
                 current_block = 11702799181856929651;
             }
             277 => {
-                if parse_enum_value(optarg, x264_log_level_names.as_ptr(), addr_of_mut!(cli_log_level)) == 0
+                if parse_enum_value(
+                    optarg,
+                    x264_log_level_names.as_ptr(),
+                    addr_of_mut!(cli_log_level),
+                ) == 0
                 {
                     cli_log_level += X264_LOG_NONE;
                 } else {

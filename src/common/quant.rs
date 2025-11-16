@@ -44,7 +44,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:29"]
 pub mod stdint_uintn_h {
@@ -56,7 +56,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdint.h:29"]
 pub mod stdint_h {
@@ -602,20 +602,20 @@ pub mod common_h {
         pub p_bitstream: *mut uint8_t,
         pub bs: bs_t,
     }
-    use super::x264_h::{x264_param_t, x264_nal_t};
-    use super::threadpool_h::x264_threadpool_t;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int32_t, int16_t, int8_t};
-    use super::set_h::{x264_sps_t, x264_pps_t};
+    use super::bitstream_h::{bs_t, x264_bitstream_function_t};
     use super::cabac_h::x264_cabac_t;
-    use super::frame_h::{x264_frame_t, x264_deblock_function_t, x264_sync_frame_list_t};
-    use super::predict_h::{x264_predict_t, x264_predict8x8_t, x264_predict_8x8_filter_t};
-    use super::pixel_h::x264_pixel_function_t;
-    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
     use super::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+    use super::frame_h::{x264_deblock_function_t, x264_frame_t, x264_sync_frame_list_t};
+    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
+    use super::pixel_h::x264_pixel_function_t;
+    use super::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
     use super::quant_h::x264_quant_function_t;
-    use super::bitstream_h::{x264_bitstream_function_t, bs_t};
+    use super::set_h::{x264_pps_t, x264_sps_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::threadpool_h::x264_threadpool_t;
+    use super::x264_h::{x264_nal_t, x264_param_t};
     extern "C" {
         #[c2rust::src_loc = "231:16"]
         pub type x264_ratecontrol_t;
@@ -777,12 +777,7 @@ pub mod frame_h {
     }
     #[c2rust::src_loc = "197:1"]
     pub type x264_deblock_intra_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "196:1"]
     pub type x264_deblock_inter_t = Option<
@@ -794,13 +789,13 @@ pub mod frame_h {
             *mut int8_t,
         ) -> (),
     >;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int8_t, int16_t};
-    use super::x264_h::{x264_param_t, x264_hrd_t, x264_sei_t};
     use super::common_h::pixel;
     use super::mc_h::x264_weight_t;
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t};
     use super::stdint_h::intptr_t;
+    use super::stdint_intn_h::{int16_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::x264_h::{x264_hrd_t, x264_param_t, x264_sei_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:29"]
 pub mod x264_h {
@@ -923,11 +918,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -1067,10 +1058,10 @@ pub mod x264_h {
         pub i_colmatrix: ::core::ffi::c_int,
         pub i_chroma_loc: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
-    use super::internal::__va_list_tag;
     use super::common_h::x264_t;
+    use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:29"]
 pub mod mc_h {
@@ -1178,20 +1169,10 @@ pub mod mc_h {
             ) -> (),
         >,
         pub load_deinterleave_chroma_fenc: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub load_deinterleave_chroma_fdec: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub plane_copy: Option<
             unsafe extern "C" fn(
@@ -1324,9 +1305,8 @@ pub mod mc_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub prefetch_ref: Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> (),
-        >,
+        pub prefetch_ref:
+            Option<unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ()>,
         pub memcpy_aligned: Option<
             unsafe extern "C" fn(
                 *mut ::core::ffi::c_void,
@@ -1334,18 +1314,13 @@ pub mod mc_h {
                 size_t,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub memzero_aligned: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> (),
-        >,
-        pub integral_init4h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init8h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init4v: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> (),
-        >,
+        pub memzero_aligned: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> ()>,
+        pub integral_init4h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init8h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init4v:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> ()>,
         pub integral_init8v: Option<unsafe extern "C" fn(*mut uint16_t, intptr_t) -> ()>,
         pub frame_init_lowres_core: Option<
             unsafe extern "C" fn(
@@ -1363,9 +1338,7 @@ pub mod mc_h {
         pub weight: *mut weight_fn_t,
         pub offsetadd: *mut weight_fn_t,
         pub offsetsub: *mut weight_fn_t,
-        pub weight_cache: Option<
-            unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> (),
-        >,
+        pub weight_cache: Option<unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> ()>,
         pub mbtree_propagate_cost: Option<
             unsafe extern "C" fn(
                 *mut int16_t,
@@ -1405,11 +1378,11 @@ pub mod mc_h {
             ) -> (),
         >,
     }
-    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::__stddef_size_t_h::size_t;
     use super::common_h::{pixel, x264_t};
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint32_t, uint16_t};
-    use super::__stddef_size_t_h::size_t;
+    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:29"]
 pub mod bitstream_h {
@@ -1417,13 +1390,8 @@ pub mod bitstream_h {
     #[repr(C)]
     #[c2rust::src_loc = "57:9"]
     pub struct x264_bitstream_function_t {
-        pub nal_escape: Option<
-            unsafe extern "C" fn(
-                *mut uint8_t,
-                *mut uint8_t,
-                *mut uint8_t,
-            ) -> *mut uint8_t,
-        >,
+        pub nal_escape:
+            Option<unsafe extern "C" fn(*mut uint8_t, *mut uint8_t, *mut uint8_t) -> *mut uint8_t>,
         pub cabac_block_residual_internal: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1470,11 +1438,11 @@ pub mod bitstream_h {
         pub i_left: ::core::ffi::c_int,
         pub i_bits_encoded: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::uint8_t;
+    use super::cabac_h::x264_cabac_t;
     use super::common_h::dctcoef;
     use super::stdint_h::{intptr_t, uintptr_t};
-    use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:29"]
 pub mod cabac_h {
@@ -1502,18 +1470,10 @@ pub mod quant_h {
     #[c2rust::src_loc = "30:9"]
     pub struct x264_quant_function_t {
         pub quant_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4x4: Option<
             unsafe extern "C" fn(
@@ -1572,12 +1532,10 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub optimize_chroma_2x2_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
-        pub optimize_chroma_2x4_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
+        pub optimize_chroma_2x2_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
+        pub optimize_chroma_2x4_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
         pub denoise_dct: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1586,42 +1544,19 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub decimate_score15: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score16: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score64: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last: [Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >; 14],
-        pub coeff_last4: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last8: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
+        pub decimate_score15: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score16: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score64: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last: [Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>; 14],
+        pub coeff_last4: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last8: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
         pub coeff_level_run: [Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
         >; 13],
-        pub coeff_level_run4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
-        pub coeff_level_run8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
+        pub coeff_level_run4:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
+        pub coeff_level_run8:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
         pub trellis_cabac_4x4: Option<
             unsafe extern "C" fn(
                 *const ::core::ffi::c_int,
@@ -1722,9 +1657,9 @@ pub mod quant_h {
             ) -> ::core::ffi::c_int,
         >,
     }
-    use super::common_h::{dctcoef, udctcoef};
-    use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
+    use super::common_h::{dctcoef, udctcoef};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:29"]
 pub mod dct_h {
@@ -1735,18 +1670,10 @@ pub mod dct_h {
         pub scan_8x8: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub scan_4x4: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub sub_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4ac: Option<
             unsafe extern "C" fn(
@@ -1756,55 +1683,34 @@ pub mod dct_h {
                 *mut dctcoef,
             ) -> ::core::ffi::c_int,
         >,
-        pub interleave_8x8_cavlc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> (),
-        >,
+        pub interleave_8x8_cavlc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> ()>,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "29:9"]
     pub struct x264_dct_function_t {
-        pub sub4x4_dct: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub4x4_dct: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add4x4_idct: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x8_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub8x8_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub add8x8_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
+        pub sub8x8_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub sub8x8_dct_dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub add8x8_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
         pub add8x8_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x16_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub16x16_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
-        pub add16x16_idct_dc: Option<
-            unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> (),
-        >,
-        pub sub8x8_dct8: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub8x16_dct_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub sub16x16_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
+        pub add16x16_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
+        pub sub8x8_dct8: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add8x8_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub16x16_dct8: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> (),
-        >,
+        pub sub16x16_dct8:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> ()>,
         pub dct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
         pub idct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
-        pub dct2x4dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> (),
-        >,
+        pub dct2x4dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> ()>,
     }
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
@@ -1827,11 +1733,7 @@ pub mod pixel_h {
         pub fpelcmp_x4: [x264_pixel_cmp_x4_t; 7],
         pub sad_aligned: [x264_pixel_cmp_t; 8],
         pub vsad: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub asd8: Option<
             unsafe extern "C" fn(
@@ -1853,9 +1755,7 @@ pub mod pixel_h {
                 *mut ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 4],
-        pub hadamard_ac: [Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t,
-        >; 4],
+        pub hadamard_ac: [Option<unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t>; 4],
         pub ssd_nv12_core: Option<
             unsafe extern "C" fn(
                 *mut pixel,
@@ -1899,80 +1799,50 @@ pub mod pixel_h {
                 ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 7],
-        pub intra_mbcmp_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sa8d_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
+        pub intra_mbcmp_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sa8d_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
         pub intra_mbcmp_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_satd_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_sad_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_mbcmp_x9_8x8: Option<
             unsafe extern "C" fn(
@@ -2027,35 +1897,23 @@ pub mod pixel_h {
     >;
     #[c2rust::src_loc = "33:1"]
     pub type x264_pixel_cmp_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            *mut pixel,
-            intptr_t,
-        ) -> ::core::ffi::c_int,
+        unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t) -> ::core::ffi::c_int,
     >;
     use super::common_h::pixel;
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
+    use super::stdint_uintn_h::{uint16_t, uint64_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:29"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            *mut pixel,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, *mut pixel, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "30:1"]
     pub type x264_predict_t = Option<unsafe extern "C" fn(*mut pixel) -> ()>;
     #[c2rust::src_loc = "31:1"]
-    pub type x264_predict8x8_t = Option<
-        unsafe extern "C" fn(*mut pixel, *mut pixel) -> (),
-    >;
+    pub type x264_predict8x8_t = Option<unsafe extern "C" fn(*mut pixel, *mut pixel) -> ()>;
     use super::common_h::pixel;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:29"]
@@ -2175,7 +2033,7 @@ pub mod set_h {
         pub i_top: ::core::ffi::c_int,
         pub i_bottom: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:29"]
 pub mod threadpool_h {
@@ -2227,56 +2085,54 @@ pub mod tables_h {
         pub static x264_decimate_table8: [uint8_t; 64];
     }
 }
-pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
-    __uint64_t,
-};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::stdint_h::{intptr_t, uintptr_t};
-pub use self::atomic_wide_counter_h::{__atomic_wide_counter, C2RustUnnamed};
-pub use self::thread_shared_types_h::{
-    __pthread_internal_list, __pthread_list_t, __pthread_cond_s,
-};
-pub use self::struct_mutex_h::__pthread_mutex_s;
-pub use self::pthreadtypes_h::{pthread_t, pthread_mutex_t, pthread_cond_t};
-pub use self::common_h::{
-    x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
-    x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
-    x264_left_table_t, C2RustUnnamed_10, C2RustUnnamed_11, x264_slice_header_t,
-    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18,
-    x264_ratecontrol_t,
-};
-pub use self::frame_h::{
-    x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
-    x264_deblock_intra_t, x264_deblock_inter_t,
-};
-pub use self::x264_h::{
-    x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
-    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, x264_zone_t,
-    C2RustUnnamed_4, C2RustUnnamed_5,
-};
-pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
-pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
+pub use self::atomic_wide_counter_h::{C2RustUnnamed, __atomic_wide_counter};
+pub use self::bitstream_h::{bs_s, bs_t, x264_bitstream_function_t, x264_run_level_t};
 pub use self::cabac_h::x264_cabac_t;
-pub use self::quant_h::x264_quant_function_t;
-pub use self::dct_h::{x264_zigzag_function_t, x264_dct_function_t};
-pub use self::pixel_h::{
-    x264_pixel_function_t, x264_pixel_cmp_x4_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_t,
+pub use self::common_h::{
+    dctcoef, pixel, udctcoef, x264_frame_stat_t, x264_left_table_t, x264_lookahead_t,
+    x264_ratecontrol_t, x264_slice_header_t, x264_t, C2RustUnnamed_10, C2RustUnnamed_11,
+    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, C2RustUnnamed_6,
+    C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
 };
-pub use self::predict_h::{x264_predict_8x8_filter_t, x264_predict_t, x264_predict8x8_t};
+pub use self::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+pub use self::frame_h::{
+    x264_deblock_function_t, x264_deblock_inter_t, x264_deblock_intra_t, x264_frame, x264_frame_t,
+    x264_sync_frame_list_t,
+};
+pub use self::internal::__va_list_tag;
+pub use self::macroblock_h::{
+    cabac_ctx_block_cat_e, DCT_CHROMAU_4x4, DCT_CHROMAU_8x8, DCT_CHROMAV_4x4, DCT_CHROMAV_8x8,
+    DCT_LUMA_4x4, DCT_LUMA_8x8, DCT_CHROMAU_AC, DCT_CHROMAU_DC, DCT_CHROMAV_AC, DCT_CHROMAV_DC,
+    DCT_CHROMA_AC, DCT_CHROMA_DC, DCT_LUMA_AC, DCT_LUMA_DC,
+};
+pub use self::mc_h::{weight_fn_t, x264_mc_functions_t, x264_weight_t};
+pub use self::pixel_h::{
+    x264_pixel_cmp_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_x4_t, x264_pixel_function_t,
+};
+pub use self::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+pub use self::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
+pub use self::quant_h::x264_quant_function_t;
 pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
-use self::threadpool_h::x264_threadpool_t;
-pub use self::macroblock_h::{
-    DCT_LUMA_AC, DCT_CHROMAV_AC, DCT_CHROMAU_AC, DCT_CHROMA_AC, DCT_LUMA_4x4,
-    DCT_CHROMAV_4x4, DCT_CHROMAU_4x4, DCT_CHROMAV_DC, DCT_CHROMAU_DC, DCT_LUMA_DC,
-    DCT_LUMA_8x8, DCT_CHROMAV_8x8, DCT_CHROMAU_8x8, cabac_ctx_block_cat_e, DCT_CHROMA_DC,
-};
+pub use self::stdint_h::{intptr_t, uintptr_t};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+pub use self::struct_mutex_h::__pthread_mutex_s;
 use self::tables_h::{x264_decimate_table4, x264_decimate_table8};
+pub use self::thread_shared_types_h::{
+    __pthread_cond_s, __pthread_internal_list, __pthread_list_t,
+};
+use self::threadpool_h::x264_threadpool_t;
+pub use self::types_h::{
+    __int16_t, __int32_t, __int64_t, __int8_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t,
+};
+pub use self::x264_h::{
+    x264_hrd_t, x264_nal_t, x264_param_t, x264_sei_payload_t, x264_sei_t, x264_zone_t,
+    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
+    C2RustUnnamed_5,
+};
 #[c2rust::src_loc = "59:1"]
 unsafe extern "C" fn quant_8x8(
     mut dct: *mut dctcoef,
@@ -2289,13 +2145,14 @@ unsafe extern "C" fn quant_8x8(
         if *dct.offset(i as isize) > 0 as dctcoef {
             *dct.offset(i as isize) = ((*bias.offset(i as isize))
                 .wrapping_add(*dct.offset(i as isize) as udctcoef)
-                .wrapping_mul(*mf.offset(i as isize)) >> 16 as ::core::ffi::c_int)
-                as dctcoef;
+                .wrapping_mul(*mf.offset(i as isize))
+                >> 16 as ::core::ffi::c_int) as dctcoef;
         } else {
             *dct.offset(i as isize) = -(((*bias.offset(i as isize))
                 .wrapping_add(-*dct.offset(i as isize) as udctcoef)
-                .wrapping_mul(*mf.offset(i as isize)) >> 16 as ::core::ffi::c_int)
-                as int32_t) as dctcoef;
+                .wrapping_mul(*mf.offset(i as isize))
+                >> 16 as ::core::ffi::c_int) as int32_t)
+                as dctcoef;
         }
         nz |= *dct.offset(i as isize) as ::core::ffi::c_int;
         i += 1;
@@ -2314,13 +2171,14 @@ unsafe extern "C" fn quant_4x4(
         if *dct.offset(i as isize) > 0 as dctcoef {
             *dct.offset(i as isize) = ((*bias.offset(i as isize))
                 .wrapping_add(*dct.offset(i as isize) as udctcoef)
-                .wrapping_mul(*mf.offset(i as isize)) >> 16 as ::core::ffi::c_int)
-                as dctcoef;
+                .wrapping_mul(*mf.offset(i as isize))
+                >> 16 as ::core::ffi::c_int) as dctcoef;
         } else {
             *dct.offset(i as isize) = -(((*bias.offset(i as isize))
                 .wrapping_add(-*dct.offset(i as isize) as udctcoef)
-                .wrapping_mul(*mf.offset(i as isize)) >> 16 as ::core::ffi::c_int)
-                as int32_t) as dctcoef;
+                .wrapping_mul(*mf.offset(i as isize))
+                >> 16 as ::core::ffi::c_int) as int32_t)
+                as dctcoef;
         }
         nz |= *dct.offset(i as isize) as ::core::ffi::c_int;
         i += 1;
@@ -2342,12 +2200,14 @@ unsafe extern "C" fn quant_4x4x4(
             if (*dct.offset(j as isize))[i as usize] > 0 as dctcoef {
                 (*dct.offset(j as isize))[i as usize] = ((*bias.offset(i as isize))
                     .wrapping_add((*dct.offset(j as isize))[i as usize] as udctcoef)
-                    .wrapping_mul(*mf.offset(i as isize)) >> 16 as ::core::ffi::c_int)
+                    .wrapping_mul(*mf.offset(i as isize))
+                    >> 16 as ::core::ffi::c_int)
                     as dctcoef;
             } else {
                 (*dct.offset(j as isize))[i as usize] = -(((*bias.offset(i as isize))
                     .wrapping_add(-(*dct.offset(j as isize))[i as usize] as udctcoef)
-                    .wrapping_mul(*mf.offset(i as isize)) >> 16 as ::core::ffi::c_int)
+                    .wrapping_mul(*mf.offset(i as isize))
+                    >> 16 as ::core::ffi::c_int)
                     as int32_t) as dctcoef;
             }
             nz |= (*dct.offset(j as isize))[i as usize] as ::core::ffi::c_int;
@@ -2370,11 +2230,13 @@ unsafe extern "C" fn quant_4x4_dc(
         if *dct.offset(i as isize) > 0 as dctcoef {
             *dct.offset(i as isize) = ((bias as uint32_t)
                 .wrapping_add(*dct.offset(i as isize) as uint32_t)
-                .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as dctcoef;
+                .wrapping_mul(mf as uint32_t)
+                >> 16 as ::core::ffi::c_int) as dctcoef;
         } else {
             *dct.offset(i as isize) = -(((bias as uint32_t)
                 .wrapping_add(-*dct.offset(i as isize) as uint32_t)
-                .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as int32_t)
+                .wrapping_mul(mf as uint32_t)
+                >> 16 as ::core::ffi::c_int) as int32_t)
                 as dctcoef;
         }
         nz |= *dct.offset(i as isize) as ::core::ffi::c_int;
@@ -2392,45 +2254,57 @@ unsafe extern "C" fn quant_2x2_dc(
     if *dct.offset(0 as ::core::ffi::c_int as isize) > 0 as dctcoef {
         *dct.offset(0 as ::core::ffi::c_int as isize) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(0 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as dctcoef;
     } else {
         *dct.offset(0 as ::core::ffi::c_int as isize) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(0 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as int32_t)
-            as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as int32_t) as dctcoef;
     }
     nz |= *dct.offset(0 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
     if *dct.offset(1 as ::core::ffi::c_int as isize) > 0 as dctcoef {
         *dct.offset(1 as ::core::ffi::c_int as isize) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(1 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as dctcoef;
     } else {
         *dct.offset(1 as ::core::ffi::c_int as isize) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(1 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as int32_t)
-            as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as int32_t) as dctcoef;
     }
     nz |= *dct.offset(1 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
     if *dct.offset(2 as ::core::ffi::c_int as isize) > 0 as dctcoef {
         *dct.offset(2 as ::core::ffi::c_int as isize) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(2 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as dctcoef;
     } else {
         *dct.offset(2 as ::core::ffi::c_int as isize) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(2 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as int32_t)
-            as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as int32_t) as dctcoef;
     }
     nz |= *dct.offset(2 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
     if *dct.offset(3 as ::core::ffi::c_int as isize) > 0 as dctcoef {
         *dct.offset(3 as ::core::ffi::c_int as isize) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(3 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as dctcoef;
     } else {
         *dct.offset(3 as ::core::ffi::c_int as isize) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(3 as ::core::ffi::c_int as isize) as uint32_t)
-            .wrapping_mul(mf as uint32_t) >> 16 as ::core::ffi::c_int) as int32_t)
-            as dctcoef;
+            .wrapping_mul(mf as uint32_t)
+            >> 16 as ::core::ffi::c_int)
+            as int32_t) as dctcoef;
     }
     nz |= *dct.offset(3 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
     return (nz != 0) as ::core::ffi::c_int;
@@ -2442,8 +2316,7 @@ unsafe extern "C" fn dequant_4x4(
     mut i_qp: ::core::ffi::c_int,
 ) {
     let i_mf: ::core::ffi::c_int = i_qp % 6 as ::core::ffi::c_int;
-    let i_qbits: ::core::ffi::c_int = i_qp / 6 as ::core::ffi::c_int
-        - 4 as ::core::ffi::c_int;
+    let i_qbits: ::core::ffi::c_int = i_qp / 6 as ::core::ffi::c_int - 4 as ::core::ffi::c_int;
     if i_qbits >= 0 as ::core::ffi::c_int {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 16 as ::core::ffi::c_int {
@@ -2453,12 +2326,12 @@ unsafe extern "C" fn dequant_4x4(
             i += 1;
         }
     } else {
-        let f: ::core::ffi::c_int = (1 as ::core::ffi::c_int)
-            << -i_qbits - 1 as ::core::ffi::c_int;
+        let f: ::core::ffi::c_int = (1 as ::core::ffi::c_int) << -i_qbits - 1 as ::core::ffi::c_int;
         let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i_0 < 16 as ::core::ffi::c_int {
             *dct.offset(i_0 as isize) = *dct.offset(i_0 as isize)
-                * (*dequant_mf.offset(i_mf as isize))[i_0 as usize] + f as dctcoef
+                * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
+                + f as dctcoef
                 >> -i_qbits;
             i_0 += 1;
         }
@@ -2471,8 +2344,7 @@ unsafe extern "C" fn dequant_8x8(
     mut i_qp: ::core::ffi::c_int,
 ) {
     let i_mf: ::core::ffi::c_int = i_qp % 6 as ::core::ffi::c_int;
-    let i_qbits: ::core::ffi::c_int = i_qp / 6 as ::core::ffi::c_int
-        - 6 as ::core::ffi::c_int;
+    let i_qbits: ::core::ffi::c_int = i_qp / 6 as ::core::ffi::c_int - 6 as ::core::ffi::c_int;
     if i_qbits >= 0 as ::core::ffi::c_int {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 64 as ::core::ffi::c_int {
@@ -2482,12 +2354,12 @@ unsafe extern "C" fn dequant_8x8(
             i += 1;
         }
     } else {
-        let f: ::core::ffi::c_int = (1 as ::core::ffi::c_int)
-            << -i_qbits - 1 as ::core::ffi::c_int;
+        let f: ::core::ffi::c_int = (1 as ::core::ffi::c_int) << -i_qbits - 1 as ::core::ffi::c_int;
         let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i_0 < 64 as ::core::ffi::c_int {
             *dct.offset(i_0 as isize) = *dct.offset(i_0 as isize)
-                * (*dequant_mf.offset(i_mf as isize))[i_0 as usize] + f as dctcoef
+                * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
+                + f as dctcoef
                 >> -i_qbits;
             i_0 += 1;
         }
@@ -2499,13 +2371,11 @@ unsafe extern "C" fn dequant_4x4_dc(
     mut dequant_mf: *mut [::core::ffi::c_int; 16],
     mut i_qp: ::core::ffi::c_int,
 ) {
-    let i_qbits: ::core::ffi::c_int = i_qp / 6 as ::core::ffi::c_int
-        - 6 as ::core::ffi::c_int;
+    let i_qbits: ::core::ffi::c_int = i_qp / 6 as ::core::ffi::c_int - 6 as ::core::ffi::c_int;
     if i_qbits >= 0 as ::core::ffi::c_int {
         let i_dmf: ::core::ffi::c_int = (*dequant_mf
-            .offset(
-                (i_qp % 6 as ::core::ffi::c_int) as isize,
-            ))[0 as ::core::ffi::c_int as usize] << i_qbits;
+            .offset((i_qp % 6 as ::core::ffi::c_int) as isize))[0 as ::core::ffi::c_int as usize]
+            << i_qbits;
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 16 as ::core::ffi::c_int {
             let ref mut fresh6 = *dct.offset(i as isize);
@@ -2514,15 +2384,12 @@ unsafe extern "C" fn dequant_4x4_dc(
         }
     } else {
         let i_dmf_0: ::core::ffi::c_int = (*dequant_mf
-            .offset(
-                (i_qp % 6 as ::core::ffi::c_int) as isize,
-            ))[0 as ::core::ffi::c_int as usize];
-        let f: ::core::ffi::c_int = (1 as ::core::ffi::c_int)
-            << -i_qbits - 1 as ::core::ffi::c_int;
+            .offset((i_qp % 6 as ::core::ffi::c_int) as isize))[0 as ::core::ffi::c_int as usize];
+        let f: ::core::ffi::c_int = (1 as ::core::ffi::c_int) << -i_qbits - 1 as ::core::ffi::c_int;
         let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i_0 < 16 as ::core::ffi::c_int {
-            *dct.offset(i_0 as isize) = *dct.offset(i_0 as isize) * i_dmf_0 as dctcoef
-                + f as dctcoef >> -i_qbits;
+            *dct.offset(i_0 as isize) =
+                *dct.offset(i_0 as isize) * i_dmf_0 as dctcoef + f as dctcoef >> -i_qbits;
             i_0 += 1;
         }
     };
@@ -2559,33 +2426,24 @@ unsafe extern "C" fn idct_dequant_2x4_dc(
     let mut b6: ::core::ffi::c_int = a4 - a5;
     let mut b7: ::core::ffi::c_int = a6 - a7;
     let mut dmf: ::core::ffi::c_int = (*dequant_mf
-        .offset(
-            (i_qp % 6 as ::core::ffi::c_int) as isize,
-        ))[0 as ::core::ffi::c_int as usize] << i_qp / 6 as ::core::ffi::c_int;
-    (*dct4x4
-        .offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b0
-        + b1) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b2
-        + b3) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b0
-        - b1) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b2
-        - b3) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(4 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b4
-        - b5) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(5 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b6
-        - b7) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(6 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b4
-        + b5) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    (*dct4x4
-        .offset(7 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] = ((b6
-        + b7) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+        .offset((i_qp % 6 as ::core::ffi::c_int) as isize))[0 as ::core::ffi::c_int as usize]
+        << i_qp / 6 as ::core::ffi::c_int;
+    (*dct4x4.offset(0 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b0 + b1) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(1 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b2 + b3) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(2 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b0 - b1) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(3 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b2 - b3) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(4 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b4 - b5) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(5 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b6 - b7) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(6 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b4 + b5) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    (*dct4x4.offset(7 as ::core::ffi::c_int as isize))[0 as ::core::ffi::c_int as usize] =
+        ((b6 + b7) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
 }
 #[c2rust::src_loc = "199:1"]
 unsafe extern "C" fn idct_dequant_2x4_dconly(
@@ -2618,25 +2476,24 @@ unsafe extern "C" fn idct_dequant_2x4_dconly(
     let mut b6: ::core::ffi::c_int = a4 - a5;
     let mut b7: ::core::ffi::c_int = a6 - a7;
     let mut dmf: ::core::ffi::c_int = (*dequant_mf
-        .offset(
-            (i_qp % 6 as ::core::ffi::c_int) as isize,
-        ))[0 as ::core::ffi::c_int as usize] << i_qp / 6 as ::core::ffi::c_int;
-    *dct.offset(0 as ::core::ffi::c_int as isize) = ((b0 + b1) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(1 as ::core::ffi::c_int as isize) = ((b2 + b3) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(2 as ::core::ffi::c_int as isize) = ((b0 - b1) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(3 as ::core::ffi::c_int as isize) = ((b2 - b3) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(4 as ::core::ffi::c_int as isize) = ((b4 - b5) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(5 as ::core::ffi::c_int as isize) = ((b6 - b7) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(6 as ::core::ffi::c_int as isize) = ((b4 + b5) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *dct.offset(7 as ::core::ffi::c_int as isize) = ((b6 + b7) * dmf
-        + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+        .offset((i_qp % 6 as ::core::ffi::c_int) as isize))[0 as ::core::ffi::c_int as usize]
+        << i_qp / 6 as ::core::ffi::c_int;
+    *dct.offset(0 as ::core::ffi::c_int as isize) =
+        ((b0 + b1) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(1 as ::core::ffi::c_int as isize) =
+        ((b2 + b3) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(2 as ::core::ffi::c_int as isize) =
+        ((b0 - b1) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(3 as ::core::ffi::c_int as isize) =
+        ((b2 - b3) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(4 as ::core::ffi::c_int as isize) =
+        ((b4 - b5) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(5 as ::core::ffi::c_int as isize) =
+        ((b6 - b7) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(6 as ::core::ffi::c_int as isize) =
+        ((b4 + b5) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *dct.offset(7 as ::core::ffi::c_int as isize) =
+        ((b6 + b7) * dmf + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "213:1"]
@@ -2669,22 +2526,22 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x4(
     let mut b5: ::core::ffi::c_int = a2 - a3;
     let mut b6: ::core::ffi::c_int = a4 - a5;
     let mut b7: ::core::ffi::c_int = a6 - a7;
-    *out.offset(0 as ::core::ffi::c_int as isize) = ((b0 + b1) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(1 as ::core::ffi::c_int as isize) = ((b2 + b3) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(2 as ::core::ffi::c_int as isize) = ((b0 - b1) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(3 as ::core::ffi::c_int as isize) = ((b2 - b3) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(4 as ::core::ffi::c_int as isize) = ((b4 - b5) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(5 as ::core::ffi::c_int as isize) = ((b6 - b7) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(6 as ::core::ffi::c_int as isize) = ((b4 + b5) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(7 as ::core::ffi::c_int as isize) = ((b6 + b7) * dmf
-        + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(0 as ::core::ffi::c_int as isize) =
+        ((b0 + b1) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(1 as ::core::ffi::c_int as isize) =
+        ((b2 + b3) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(2 as ::core::ffi::c_int as isize) =
+        ((b0 - b1) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(3 as ::core::ffi::c_int as isize) =
+        ((b2 - b3) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(4 as ::core::ffi::c_int as isize) =
+        ((b4 - b5) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(5 as ::core::ffi::c_int as isize) =
+        ((b6 - b7) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(6 as ::core::ffi::c_int as isize) =
+        ((b4 + b5) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(7 as ::core::ffi::c_int as isize) =
+        ((b6 + b7) * dmf + 2080 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int) as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "227:1"]
@@ -2701,14 +2558,14 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x2(
         - *dct.offset(1 as ::core::ffi::c_int as isize);
     let mut d3: ::core::ffi::c_int = *dct.offset(2 as ::core::ffi::c_int as isize)
         - *dct.offset(3 as ::core::ffi::c_int as isize);
-    *out.offset(0 as ::core::ffi::c_int as isize) = (((d0 + d1) * dmf
-        >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(1 as ::core::ffi::c_int as isize) = (((d0 - d1) * dmf
-        >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(2 as ::core::ffi::c_int as isize) = (((d2 + d3) * dmf
-        >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
-    *out.offset(3 as ::core::ffi::c_int as isize) = (((d2 - d3) * dmf
-        >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(0 as ::core::ffi::c_int as isize) =
+        (((d0 + d1) * dmf >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(1 as ::core::ffi::c_int as isize) =
+        (((d0 - d1) * dmf >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(2 as ::core::ffi::c_int as isize) =
+        (((d2 + d3) * dmf >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
+    *out.offset(3 as ::core::ffi::c_int as isize) =
+        (((d2 - d3) * dmf >> 5 as ::core::ffi::c_int) + 32 as ::core::ffi::c_int) as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "239:1"]
@@ -2720,17 +2577,9 @@ unsafe extern "C" fn optimize_chroma_round(
 ) -> ::core::ffi::c_int {
     let mut out: [dctcoef; 8] = [0; 8];
     if chroma422 != 0 {
-        optimize_chroma_idct_dequant_2x4(
-            out.as_mut_ptr(),
-            dct as *mut dctcoef,
-            dequant_mf,
-        );
+        optimize_chroma_idct_dequant_2x4(out.as_mut_ptr(), dct as *mut dctcoef, dequant_mf);
     } else {
-        optimize_chroma_idct_dequant_2x2(
-            out.as_mut_ptr(),
-            dct as *mut dctcoef,
-            dequant_mf,
-        );
+        optimize_chroma_idct_dequant_2x2(out.as_mut_ptr(), dct as *mut dctcoef, dequant_mf);
     }
     let mut sum: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -2757,17 +2606,9 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
     let mut coeff: ::core::ffi::c_int = 0;
     let mut nz: ::core::ffi::c_int = 0;
     if chroma422 != 0 {
-        optimize_chroma_idct_dequant_2x4(
-            dct_orig.as_mut_ptr(),
-            dct as *mut dctcoef,
-            dequant_mf,
-        );
+        optimize_chroma_idct_dequant_2x4(dct_orig.as_mut_ptr(), dct as *mut dctcoef, dequant_mf);
     } else {
-        optimize_chroma_idct_dequant_2x2(
-            dct_orig.as_mut_ptr(),
-            dct as *mut dctcoef,
-            dequant_mf,
-        );
+        optimize_chroma_idct_dequant_2x2(dct_orig.as_mut_ptr(), dct as *mut dctcoef, dequant_mf);
     }
     let mut sum: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -2792,13 +2633,11 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
     });
     while coeff >= 0 as ::core::ffi::c_int {
         let mut level: ::core::ffi::c_int = *dct.offset(coeff as isize);
-        let mut sign: ::core::ffi::c_int = level >> 31 as ::core::ffi::c_int
-            | 1 as ::core::ffi::c_int;
+        let mut sign: ::core::ffi::c_int =
+            level >> 31 as ::core::ffi::c_int | 1 as ::core::ffi::c_int;
         while level != 0 {
             *dct.offset(coeff as isize) = (level - sign) as dctcoef;
-            if optimize_chroma_round(dct_orig.as_mut_ptr(), dct, dequant_mf, chroma422)
-                != 0
-            {
+            if optimize_chroma_round(dct_orig.as_mut_ptr(), dct, dequant_mf, chroma422) != 0 {
                 nz = 1 as ::core::ffi::c_int;
                 *dct.offset(coeff as isize) = level as dctcoef;
                 break;
@@ -2815,22 +2654,14 @@ unsafe extern "C" fn optimize_chroma_2x2_dc(
     mut dct: *mut dctcoef,
     mut dequant_mf: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
-    return optimize_chroma_dc_internal(
-        dct as *mut dctcoef,
-        dequant_mf,
-        0 as ::core::ffi::c_int,
-    );
+    return optimize_chroma_dc_internal(dct as *mut dctcoef, dequant_mf, 0 as ::core::ffi::c_int);
 }
 #[c2rust::src_loc = "299:1"]
 unsafe extern "C" fn optimize_chroma_2x4_dc(
     mut dct: *mut dctcoef,
     mut dequant_mf: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
-    return optimize_chroma_dc_internal(
-        dct as *mut dctcoef,
-        dequant_mf,
-        1 as ::core::ffi::c_int,
-    );
+    return optimize_chroma_dc_internal(dct as *mut dctcoef, dequant_mf, 1 as ::core::ffi::c_int);
 }
 #[c2rust::src_loc = "304:1"]
 unsafe extern "C" fn denoise_dct(
@@ -2846,8 +2677,8 @@ unsafe extern "C" fn denoise_dct(
         level = level + sign ^ sign;
         let ref mut fresh5 = *sum.offset(i as isize);
         *fresh5 = (*fresh5).wrapping_add(level as uint32_t);
-        level = (level as udctcoef).wrapping_sub(*offset.offset(i as isize))
-            as ::core::ffi::c_int as ::core::ffi::c_int;
+        level = (level as udctcoef).wrapping_sub(*offset.offset(i as isize)) as ::core::ffi::c_int
+            as ::core::ffi::c_int;
         *dct.offset(i as isize) = (if level < 0 as ::core::ffi::c_int {
             0 as ::core::ffi::c_int
         } else {
@@ -2882,8 +2713,7 @@ unsafe extern "C" fn decimate_score_internal(
             return 9 as ::core::ffi::c_int;
         }
         i_run = 0 as ::core::ffi::c_int;
-        while idx >= 0 as ::core::ffi::c_int && *dct.offset(idx as isize) == 0 as dctcoef
-        {
+        while idx >= 0 as ::core::ffi::c_int && *dct.offset(idx as isize) == 0 as dctcoef {
             idx -= 1;
             i_run += 1;
         }
@@ -2908,50 +2738,40 @@ unsafe extern "C" fn decimate_score64(mut dct: *mut dctcoef) -> ::core::ffi::c_i
 }
 #[c2rust::src_loc = "375:1"]
 unsafe extern "C" fn coeff_last4(mut l: *mut dctcoef) -> ::core::ffi::c_int {
-    let mut i_last: ::core::ffi::c_int = 4 as ::core::ffi::c_int
-        - 1 as ::core::ffi::c_int;
-    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef
-    {
+    let mut i_last: ::core::ffi::c_int = 4 as ::core::ffi::c_int - 1 as ::core::ffi::c_int;
+    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "376:1"]
 unsafe extern "C" fn coeff_last8(mut l: *mut dctcoef) -> ::core::ffi::c_int {
-    let mut i_last: ::core::ffi::c_int = 8 as ::core::ffi::c_int
-        - 1 as ::core::ffi::c_int;
-    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef
-    {
+    let mut i_last: ::core::ffi::c_int = 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int;
+    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "377:1"]
 unsafe extern "C" fn coeff_last15(mut l: *mut dctcoef) -> ::core::ffi::c_int {
-    let mut i_last: ::core::ffi::c_int = 15 as ::core::ffi::c_int
-        - 1 as ::core::ffi::c_int;
-    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef
-    {
+    let mut i_last: ::core::ffi::c_int = 15 as ::core::ffi::c_int - 1 as ::core::ffi::c_int;
+    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "378:1"]
 unsafe extern "C" fn coeff_last16(mut l: *mut dctcoef) -> ::core::ffi::c_int {
-    let mut i_last: ::core::ffi::c_int = 16 as ::core::ffi::c_int
-        - 1 as ::core::ffi::c_int;
-    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef
-    {
+    let mut i_last: ::core::ffi::c_int = 16 as ::core::ffi::c_int - 1 as ::core::ffi::c_int;
+    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "379:1"]
 unsafe extern "C" fn coeff_last64(mut l: *mut dctcoef) -> ::core::ffi::c_int {
-    let mut i_last: ::core::ffi::c_int = 64 as ::core::ffi::c_int
-        - 1 as ::core::ffi::c_int;
-    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef
-    {
+    let mut i_last: ::core::ffi::c_int = 64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int;
+    while i_last >= 0 as ::core::ffi::c_int && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
@@ -2972,8 +2792,7 @@ unsafe extern "C" fn coeff_level_run4(
         mask |= (1 as ::core::ffi::c_int) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as ::core::ffi::c_int
-                && *dct.offset(i_last as isize) == 0 as dctcoef)
+            if !(i_last >= 0 as ::core::ffi::c_int && *dct.offset(i_last as isize) == 0 as dctcoef)
             {
                 break;
             }
@@ -3001,8 +2820,7 @@ unsafe extern "C" fn coeff_level_run8(
         mask |= (1 as ::core::ffi::c_int) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as ::core::ffi::c_int
-                && *dct.offset(i_last as isize) == 0 as dctcoef)
+            if !(i_last >= 0 as ::core::ffi::c_int && *dct.offset(i_last as isize) == 0 as dctcoef)
             {
                 break;
             }
@@ -3030,8 +2848,7 @@ unsafe extern "C" fn coeff_level_run15(
         mask |= (1 as ::core::ffi::c_int) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as ::core::ffi::c_int
-                && *dct.offset(i_last as isize) == 0 as dctcoef)
+            if !(i_last >= 0 as ::core::ffi::c_int && *dct.offset(i_last as isize) == 0 as dctcoef)
             {
                 break;
             }
@@ -3059,8 +2876,7 @@ unsafe extern "C" fn coeff_level_run16(
         mask |= (1 as ::core::ffi::c_int) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as ::core::ffi::c_int
-                && *dct.offset(i_last as isize) == 0 as dctcoef)
+            if !(i_last >= 0 as ::core::ffi::c_int && *dct.offset(i_last as isize) == 0 as dctcoef)
             {
                 break;
             }
@@ -3088,11 +2904,7 @@ pub unsafe extern "C" fn x264_10_quant_init(
             ) -> ::core::ffi::c_int,
     )
         as Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >;
     (*pf).quant_4x4 = Some(
         quant_4x4
@@ -3103,11 +2915,7 @@ pub unsafe extern "C" fn x264_10_quant_init(
             ) -> ::core::ffi::c_int,
     )
         as Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >;
     (*pf).quant_4x4x4 = Some(
         quant_4x4x4
@@ -3233,24 +3041,14 @@ pub unsafe extern "C" fn x264_10_quant_init(
         >;
     (*pf).optimize_chroma_2x2_dc = Some(
         optimize_chroma_2x2_dc
-            as unsafe extern "C" fn(
-                *mut dctcoef,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            as unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
     )
-        as Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >;
+        as Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>;
     (*pf).optimize_chroma_2x4_dc = Some(
         optimize_chroma_2x4_dc
-            as unsafe extern "C" fn(
-                *mut dctcoef,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            as unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
     )
-        as Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >;
+        as Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>;
     (*pf).denoise_dct = Some(
         denoise_dct
             as unsafe extern "C" fn(
@@ -3268,116 +3066,84 @@ pub unsafe extern "C" fn x264_10_quant_init(
                 ::core::ffi::c_int,
             ) -> (),
         >;
-    (*pf).decimate_score15 = Some(
-        decimate_score15 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
-    (*pf).decimate_score16 = Some(
-        decimate_score16 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
-    (*pf).decimate_score64 = Some(
-        decimate_score64 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
-    (*pf).coeff_last4 = Some(
-        coeff_last4 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
-    (*pf).coeff_last8 = Some(
-        coeff_last8 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
-    (*pf).coeff_last[DCT_LUMA_AC as ::core::ffi::c_int as usize] = Some(
-        coeff_last15 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
-    (*pf).coeff_last[DCT_LUMA_4x4 as ::core::ffi::c_int as usize] = Some(
-        coeff_last16 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
-    (*pf).coeff_last[DCT_LUMA_8x8 as ::core::ffi::c_int as usize] = Some(
-        coeff_last64 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-    ) as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).decimate_score15 =
+        Some(decimate_score15 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).decimate_score16 =
+        Some(decimate_score16 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).decimate_score64 =
+        Some(decimate_score64 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).coeff_last4 =
+        Some(coeff_last4 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).coeff_last8 =
+        Some(coeff_last8 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).coeff_last[DCT_LUMA_AC as ::core::ffi::c_int as usize] =
+        Some(coeff_last15 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).coeff_last[DCT_LUMA_4x4 as ::core::ffi::c_int as usize] =
+        Some(coeff_last16 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
+    (*pf).coeff_last[DCT_LUMA_8x8 as ::core::ffi::c_int as usize] =
+        Some(coeff_last64 as unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int)
+            as Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>;
     (*pf).coeff_level_run4 = Some(
         coeff_level_run4
-            as unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            as unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
     )
-        as Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >;
+        as Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>;
     (*pf).coeff_level_run8 = Some(
         coeff_level_run8
-            as unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            as unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
     )
-        as Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >;
+        as Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>;
     (*pf).coeff_level_run[DCT_LUMA_AC as ::core::ffi::c_int as usize] = Some(
         coeff_level_run15
-            as unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            as unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
     )
-        as Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >;
+        as Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>;
     (*pf).coeff_level_run[DCT_LUMA_4x4 as ::core::ffi::c_int as usize] = Some(
         coeff_level_run16
-            as unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            as unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
     )
-        as Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >;
-    (*pf).coeff_last[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMAV_DC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMAU_DC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_LUMA_DC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMAV_AC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_LUMA_AC as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMAU_AC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMA_AC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_LUMA_8x8 as ::core::ffi::c_int as usize];
-    (*pf).coeff_last[DCT_CHROMAU_8x8 as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_last[DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_CHROMAV_DC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_CHROMAU_DC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_LUMA_DC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_CHROMAV_AC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_LUMA_AC as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_CHROMAU_AC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
-    (*pf).coeff_level_run[DCT_CHROMA_AC as ::core::ffi::c_int as usize] = (*pf)
-        .coeff_level_run[DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
+        as Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>;
+    (*pf).coeff_last[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMAV_DC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMAU_DC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_LUMA_DC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMAV_AC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_LUMA_AC as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMAU_AC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMA_AC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_LUMA_8x8 as ::core::ffi::c_int as usize];
+    (*pf).coeff_last[DCT_CHROMAU_8x8 as ::core::ffi::c_int as usize] =
+        (*pf).coeff_last[DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_CHROMAV_DC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_CHROMAU_DC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_LUMA_DC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_CHROMAV_AC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_LUMA_AC as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_CHROMAU_AC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
+    (*pf).coeff_level_run[DCT_CHROMA_AC as ::core::ffi::c_int as usize] =
+        (*pf).coeff_level_run[DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
 }

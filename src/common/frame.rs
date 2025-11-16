@@ -46,7 +46,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:28"]
 pub mod stdint_uintn_h {
@@ -58,7 +58,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdint.h:28"]
 pub mod stdint_h {
@@ -619,22 +619,22 @@ pub mod common_h {
         pub bs: bs_t,
     }
     #[c2rust::src_loc = "111:9"]
-    pub const SIZEOF_PIXEL: ::core::ffi::c_int = ::core::mem::size_of::<pixel>()
-        as ::core::ffi::c_int;
-    use super::x264_h::{x264_param_t, x264_nal_t};
-    use super::threadpool_h::x264_threadpool_t;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int32_t, int16_t, int8_t};
-    use super::set_h::{x264_sps_t, x264_pps_t};
+    pub const SIZEOF_PIXEL: ::core::ffi::c_int =
+        ::core::mem::size_of::<pixel>() as ::core::ffi::c_int;
+    use super::bitstream_h::{bs_t, x264_bitstream_function_t};
     use super::cabac_h::x264_cabac_t;
-    use super::frame_h::{x264_frame_t, x264_deblock_function_t, x264_sync_frame_list_t};
-    use super::predict_h::{x264_predict_t, x264_predict8x8_t, x264_predict_8x8_filter_t};
-    use super::pixel_h::x264_pixel_function_t;
-    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
     use super::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+    use super::frame_h::{x264_deblock_function_t, x264_frame_t, x264_sync_frame_list_t};
+    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
+    use super::pixel_h::x264_pixel_function_t;
+    use super::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
     use super::quant_h::x264_quant_function_t;
-    use super::bitstream_h::{x264_bitstream_function_t, bs_t};
+    use super::set_h::{x264_pps_t, x264_sps_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::threadpool_h::x264_threadpool_t;
+    use super::x264_h::{x264_nal_t, x264_param_t};
     extern "C" {
         #[c2rust::src_loc = "231:16"]
         pub type x264_ratecontrol_t;
@@ -803,12 +803,7 @@ pub mod frame_h {
     }
     #[c2rust::src_loc = "197:1"]
     pub type x264_deblock_intra_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "196:1"]
     pub type x264_deblock_inter_t = Option<
@@ -824,13 +819,13 @@ pub mod frame_h {
     pub const PADH: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
     #[c2rust::src_loc = "33:9"]
     pub const PADV: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int8_t, int16_t};
-    use super::x264_h::{x264_param_t, x264_hrd_t, x264_sei_t};
     use super::common_h::pixel;
     use super::mc_h::x264_weight_t;
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t};
     use super::stdint_h::intptr_t;
+    use super::stdint_intn_h::{int16_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::x264_h::{x264_hrd_t, x264_param_t, x264_sei_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:28"]
 pub mod x264_h {
@@ -953,11 +948,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -1129,9 +1120,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "811:16"]
     pub struct x264_image_properties_t {
         pub quant_offsets: *mut ::core::ffi::c_float,
-        pub quant_offsets_free: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-        >,
+        pub quant_offsets_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub mb_info: *mut uint8_t,
         pub mb_info_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub f_ssim: ::core::ffi::c_double,
@@ -1157,17 +1146,17 @@ pub mod x264_h {
         pub opaque: *mut ::core::ffi::c_void,
     }
     #[c2rust::src_loc = "149:9"]
-    pub const X264_CPU_AVX: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 9 as ::core::ffi::c_int;
+    pub const X264_CPU_AVX: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 9 as ::core::ffi::c_int;
     #[c2rust::src_loc = "156:9"]
-    pub const X264_CPU_AVX512: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 16 as ::core::ffi::c_int;
+    pub const X264_CPU_AVX512: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 16 as ::core::ffi::c_int;
     #[c2rust::src_loc = "158:9"]
-    pub const X264_CPU_CACHELINE_32: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 17 as ::core::ffi::c_int;
+    pub const X264_CPU_CACHELINE_32: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 17 as ::core::ffi::c_int;
     #[c2rust::src_loc = "159:9"]
-    pub const X264_CPU_CACHELINE_64: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 18 as ::core::ffi::c_int;
+    pub const X264_CPU_CACHELINE_64: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 18 as ::core::ffi::c_int;
     #[c2rust::src_loc = "209:9"]
     pub const X264_ME_ESA: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
     #[c2rust::src_loc = "217:9"]
@@ -1220,10 +1209,10 @@ pub mod x264_h {
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     #[c2rust::src_loc = "290:9"]
     pub const X264_LOG_WARNING: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
-    use super::internal::__va_list_tag;
     use super::common_h::x264_t;
+    use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "679:10"]
         pub fn x264_param_cleanup(param: *mut x264_param_t);
@@ -1335,20 +1324,10 @@ pub mod mc_h {
             ) -> (),
         >,
         pub load_deinterleave_chroma_fenc: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub load_deinterleave_chroma_fdec: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub plane_copy: Option<
             unsafe extern "C" fn(
@@ -1481,9 +1460,8 @@ pub mod mc_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub prefetch_ref: Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> (),
-        >,
+        pub prefetch_ref:
+            Option<unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ()>,
         pub memcpy_aligned: Option<
             unsafe extern "C" fn(
                 *mut ::core::ffi::c_void,
@@ -1491,18 +1469,13 @@ pub mod mc_h {
                 size_t,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub memzero_aligned: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> (),
-        >,
-        pub integral_init4h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init8h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init4v: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> (),
-        >,
+        pub memzero_aligned: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> ()>,
+        pub integral_init4h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init8h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init4v:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> ()>,
         pub integral_init8v: Option<unsafe extern "C" fn(*mut uint16_t, intptr_t) -> ()>,
         pub frame_init_lowres_core: Option<
             unsafe extern "C" fn(
@@ -1520,9 +1493,7 @@ pub mod mc_h {
         pub weight: *mut weight_fn_t,
         pub offsetadd: *mut weight_fn_t,
         pub offsetsub: *mut weight_fn_t,
-        pub weight_cache: Option<
-            unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> (),
-        >,
+        pub weight_cache: Option<unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> ()>,
         pub mbtree_propagate_cost: Option<
             unsafe extern "C" fn(
                 *mut int16_t,
@@ -1562,11 +1533,11 @@ pub mod mc_h {
             ) -> (),
         >,
     }
-    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::__stddef_size_t_h::size_t;
     use super::common_h::{pixel, x264_t};
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint32_t, uint16_t};
-    use super::__stddef_size_t_h::size_t;
+    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:28"]
 pub mod bitstream_h {
@@ -1574,13 +1545,8 @@ pub mod bitstream_h {
     #[repr(C)]
     #[c2rust::src_loc = "57:9"]
     pub struct x264_bitstream_function_t {
-        pub nal_escape: Option<
-            unsafe extern "C" fn(
-                *mut uint8_t,
-                *mut uint8_t,
-                *mut uint8_t,
-            ) -> *mut uint8_t,
-        >,
+        pub nal_escape:
+            Option<unsafe extern "C" fn(*mut uint8_t, *mut uint8_t, *mut uint8_t) -> *mut uint8_t>,
         pub cabac_block_residual_internal: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1627,11 +1593,11 @@ pub mod bitstream_h {
         pub i_left: ::core::ffi::c_int,
         pub i_bits_encoded: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::uint8_t;
+    use super::cabac_h::x264_cabac_t;
     use super::common_h::dctcoef;
     use super::stdint_h::{intptr_t, uintptr_t};
-    use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:28"]
 pub mod cabac_h {
@@ -1659,18 +1625,10 @@ pub mod quant_h {
     #[c2rust::src_loc = "30:9"]
     pub struct x264_quant_function_t {
         pub quant_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4x4: Option<
             unsafe extern "C" fn(
@@ -1729,12 +1687,10 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub optimize_chroma_2x2_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
-        pub optimize_chroma_2x4_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
+        pub optimize_chroma_2x2_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
+        pub optimize_chroma_2x4_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
         pub denoise_dct: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1743,42 +1699,19 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub decimate_score15: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score16: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score64: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last: [Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >; 14],
-        pub coeff_last4: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last8: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
+        pub decimate_score15: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score16: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score64: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last: [Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>; 14],
+        pub coeff_last4: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last8: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
         pub coeff_level_run: [Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
         >; 13],
-        pub coeff_level_run4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
-        pub coeff_level_run8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
+        pub coeff_level_run4:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
+        pub coeff_level_run8:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
         pub trellis_cabac_4x4: Option<
             unsafe extern "C" fn(
                 *const ::core::ffi::c_int,
@@ -1879,9 +1812,9 @@ pub mod quant_h {
             ) -> ::core::ffi::c_int,
         >,
     }
-    use super::common_h::{dctcoef, udctcoef};
-    use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
+    use super::common_h::{dctcoef, udctcoef};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:28"]
 pub mod dct_h {
@@ -1892,18 +1825,10 @@ pub mod dct_h {
         pub scan_8x8: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub scan_4x4: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub sub_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4ac: Option<
             unsafe extern "C" fn(
@@ -1913,55 +1838,34 @@ pub mod dct_h {
                 *mut dctcoef,
             ) -> ::core::ffi::c_int,
         >,
-        pub interleave_8x8_cavlc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> (),
-        >,
+        pub interleave_8x8_cavlc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> ()>,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "29:9"]
     pub struct x264_dct_function_t {
-        pub sub4x4_dct: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub4x4_dct: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add4x4_idct: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x8_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub8x8_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub add8x8_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
+        pub sub8x8_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub sub8x8_dct_dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub add8x8_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
         pub add8x8_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x16_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub16x16_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
-        pub add16x16_idct_dc: Option<
-            unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> (),
-        >,
-        pub sub8x8_dct8: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub8x16_dct_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub sub16x16_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
+        pub add16x16_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
+        pub sub8x8_dct8: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add8x8_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub16x16_dct8: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> (),
-        >,
+        pub sub16x16_dct8:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> ()>,
         pub dct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
         pub idct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
-        pub dct2x4dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> (),
-        >,
+        pub dct2x4dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> ()>,
     }
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
@@ -1984,11 +1888,7 @@ pub mod pixel_h {
         pub fpelcmp_x4: [x264_pixel_cmp_x4_t; 7],
         pub sad_aligned: [x264_pixel_cmp_t; 8],
         pub vsad: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub asd8: Option<
             unsafe extern "C" fn(
@@ -2010,9 +1910,7 @@ pub mod pixel_h {
                 *mut ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 4],
-        pub hadamard_ac: [Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t,
-        >; 4],
+        pub hadamard_ac: [Option<unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t>; 4],
         pub ssd_nv12_core: Option<
             unsafe extern "C" fn(
                 *mut pixel,
@@ -2056,80 +1954,50 @@ pub mod pixel_h {
                 ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 7],
-        pub intra_mbcmp_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sa8d_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
+        pub intra_mbcmp_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sa8d_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
         pub intra_mbcmp_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_satd_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_sad_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_mbcmp_x9_8x8: Option<
             unsafe extern "C" fn(
@@ -2184,35 +2052,23 @@ pub mod pixel_h {
     >;
     #[c2rust::src_loc = "33:1"]
     pub type x264_pixel_cmp_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            *mut pixel,
-            intptr_t,
-        ) -> ::core::ffi::c_int,
+        unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t) -> ::core::ffi::c_int,
     >;
     use super::common_h::pixel;
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
+    use super::stdint_uintn_h::{uint16_t, uint64_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:28"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            *mut pixel,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, *mut pixel, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "30:1"]
     pub type x264_predict_t = Option<unsafe extern "C" fn(*mut pixel) -> ()>;
     #[c2rust::src_loc = "31:1"]
-    pub type x264_predict8x8_t = Option<
-        unsafe extern "C" fn(*mut pixel, *mut pixel) -> (),
-    >;
+    pub type x264_predict8x8_t = Option<unsafe extern "C" fn(*mut pixel, *mut pixel) -> ()>;
     use super::common_h::pixel;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:28"]
@@ -2332,7 +2188,7 @@ pub mod set_h {
         pub i_top: ::core::ffi::c_int,
         pub i_bottom: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:28"]
 pub mod threadpool_h {
@@ -2377,8 +2233,8 @@ pub mod base_h {
     pub const CHROMA_420: chroma_format_e = 1;
     #[c2rust::src_loc = "105:5"]
     pub const CHROMA_400: chroma_format_e = 0;
-    use super::stdint_uintn_h::{uint16_t, uint8_t, uint32_t, uint64_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "279:10"]
         pub fn x264_malloc(_: int64_t) -> *mut ::core::ffi::c_void;
@@ -2389,7 +2245,7 @@ pub mod base_h {
 #[c2rust::header_src = "/usr/include/pthread.h:28"]
 pub mod pthread_h {
     use super::pthreadtypes_h::{
-        pthread_mutex_t, pthread_mutexattr_t, pthread_cond_t, pthread_condattr_t,
+        pthread_cond_t, pthread_condattr_t, pthread_mutex_t, pthread_mutexattr_t,
     };
     extern "C" {
         #[c2rust::src_loc = "781:1"]
@@ -2398,9 +2254,7 @@ pub mod pthread_h {
             __mutexattr: *const pthread_mutexattr_t,
         ) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "786:1"]
-        pub fn pthread_mutex_destroy(
-            __mutex: *mut pthread_mutex_t,
-        ) -> ::core::ffi::c_int;
+        pub fn pthread_mutex_destroy(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "794:1"]
         pub fn pthread_mutex_lock(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "835:1"]
@@ -2435,8 +2289,7 @@ pub mod osdep_h {
         return ::core::intrinsics::atomic_xadd_seqcst(val, add);
     }
     #[c2rust::src_loc = "452:9"]
-    pub const WORD_SIZE: uint64_t = ::core::mem::size_of::<*mut ::core::ffi::c_void>()
-        as uint64_t;
+    pub const WORD_SIZE: uint64_t = ::core::mem::size_of::<*mut ::core::ffi::c_void>() as uint64_t;
     use super::pthreadtypes_h::pthread_mutex_t;
     use super::stdint_uintn_h::uint64_t;
 }
@@ -2482,75 +2335,71 @@ pub mod assert_h {
         ) -> !;
     }
 }
-pub use self::internal::{__va_list_tag, BIT_DEPTH};
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
-    __uint64_t,
+use self::assert_h::__assert_fail;
+pub use self::atomic_wide_counter_h::{C2RustUnnamed, __atomic_wide_counter};
+pub use self::base_h::{
+    chroma_format_e, x264_free, x264_malloc, x264_union16_t, x264_union32_t, x264_union64_t,
+    CHROMA_400, CHROMA_420, CHROMA_422, CHROMA_444,
 };
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::stdint_h::{intptr_t, uintptr_t};
-pub use self::atomic_wide_counter_h::{__atomic_wide_counter, C2RustUnnamed};
-pub use self::thread_shared_types_h::{
-    __pthread_internal_list, __pthread_list_t, __pthread_cond_s,
-};
-pub use self::struct_mutex_h::__pthread_mutex_s;
-pub use self::pthreadtypes_h::{
-    pthread_t, pthread_mutexattr_t, pthread_condattr_t, pthread_mutex_t, pthread_cond_t,
-};
-pub use self::common_h::{
-    x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
-    x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
-    x264_left_table_t, C2RustUnnamed_10, C2RustUnnamed_11, x264_slice_header_t,
-    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, SIZEOF_PIXEL,
-    x264_ratecontrol_t, x264_10_log,
-};
-pub use self::frame_h::{
-    x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
-    x264_deblock_intra_t, x264_deblock_inter_t, PADH, PADV,
-};
-pub use self::x264_h::{
-    x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
-    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, x264_zone_t,
-    C2RustUnnamed_4, C2RustUnnamed_5, pic_struct_e, PIC_STRUCT_TRIPLE, PIC_STRUCT_DOUBLE,
-    PIC_STRUCT_BOTTOM_TOP_BOTTOM, PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_BOTTOM_TOP,
-    PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_PROGRESSIVE, PIC_STRUCT_AUTO, x264_image_t,
-    x264_image_properties_t, x264_picture_t, X264_CPU_AVX, X264_CPU_AVX512,
-    X264_CPU_CACHELINE_32, X264_CPU_CACHELINE_64, X264_ME_ESA, X264_QP_AUTO,
-    X264_CSP_MASK, X264_CSP_NONE, X264_CSP_I400, X264_CSP_I420, X264_CSP_YV12,
-    X264_CSP_NV12, X264_CSP_NV21, X264_CSP_I422, X264_CSP_YV16, X264_CSP_NV16,
-    X264_CSP_YUYV, X264_CSP_UYVY, X264_CSP_V210, X264_CSP_I444, X264_CSP_YV24,
-    X264_CSP_BGR, X264_CSP_BGRA, X264_CSP_RGB, X264_CSP_VFLIP, X264_CSP_HIGH_DEPTH,
-    X264_TYPE_AUTO, X264_TYPE_KEYFRAME, X264_LOG_ERROR, X264_LOG_WARNING,
-    x264_param_cleanup,
-};
-pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
-pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
+pub use self::bitstream_h::{bs_s, bs_t, x264_bitstream_function_t, x264_run_level_t};
 pub use self::cabac_h::x264_cabac_t;
-pub use self::quant_h::x264_quant_function_t;
-pub use self::dct_h::{x264_zigzag_function_t, x264_dct_function_t};
-pub use self::pixel_h::{
-    x264_pixel_function_t, x264_pixel_cmp_x4_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_t,
+pub use self::common_h::{
+    dctcoef, pixel, udctcoef, x264_10_log, x264_frame_stat_t, x264_left_table_t, x264_lookahead_t,
+    x264_ratecontrol_t, x264_slice_header_t, x264_t, C2RustUnnamed_10, C2RustUnnamed_11,
+    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, C2RustUnnamed_6,
+    C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9, SIZEOF_PIXEL,
 };
-pub use self::predict_h::{x264_predict_8x8_filter_t, x264_predict_t, x264_predict8x8_t};
+pub use self::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+pub use self::frame_h::{
+    x264_deblock_function_t, x264_deblock_inter_t, x264_deblock_intra_t, x264_frame, x264_frame_t,
+    x264_sync_frame_list_t, PADH, PADV,
+};
+pub use self::internal::{__va_list_tag, BIT_DEPTH};
+pub use self::mc_h::{weight_fn_t, x264_mc_functions_t, x264_weight_t};
+pub use self::osdep_h::{x264_pthread_fetch_and_add, NATIVE_ALIGN, WORD_SIZE};
+pub use self::pixel_h::{
+    x264_pixel_cmp_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_x4_t, x264_pixel_function_t,
+};
+pub use self::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+use self::pthread_h::{
+    pthread_cond_broadcast, pthread_cond_destroy, pthread_cond_init, pthread_cond_wait,
+    pthread_mutex_destroy, pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock,
+};
+pub use self::pthreadtypes_h::{
+    pthread_cond_t, pthread_condattr_t, pthread_mutex_t, pthread_mutexattr_t, pthread_t,
+};
+pub use self::quant_h::x264_quant_function_t;
 pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
-use self::threadpool_h::x264_threadpool_t;
-pub use self::base_h::{
-    x264_union16_t, x264_union32_t, x264_union64_t, chroma_format_e, CHROMA_444,
-    CHROMA_422, CHROMA_420, CHROMA_400, x264_malloc, x264_free,
-};
-use self::pthread_h::{
-    pthread_mutex_init, pthread_mutex_destroy, pthread_mutex_lock, pthread_mutex_unlock,
-    pthread_cond_init, pthread_cond_destroy, pthread_cond_broadcast, pthread_cond_wait,
-};
-pub use self::osdep_h::{NATIVE_ALIGN, x264_pthread_fetch_and_add, WORD_SIZE};
-use self::string_h::{memcpy, memset};
+pub use self::stdint_h::{intptr_t, uintptr_t};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use self::stdlib_h::abs;
-pub use self::__stddef_null_h::NULL;
-use self::assert_h::__assert_fail;
+use self::string_h::{memcpy, memset};
+pub use self::struct_mutex_h::__pthread_mutex_s;
+pub use self::thread_shared_types_h::{
+    __pthread_cond_s, __pthread_internal_list, __pthread_list_t,
+};
+use self::threadpool_h::x264_threadpool_t;
+pub use self::types_h::{
+    __int16_t, __int32_t, __int64_t, __int8_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t,
+};
+pub use self::x264_h::{
+    pic_struct_e, x264_hrd_t, x264_image_properties_t, x264_image_t, x264_nal_t,
+    x264_param_cleanup, x264_param_t, x264_picture_t, x264_sei_payload_t, x264_sei_t, x264_zone_t,
+    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
+    C2RustUnnamed_5, PIC_STRUCT_AUTO, PIC_STRUCT_BOTTOM_TOP, PIC_STRUCT_BOTTOM_TOP_BOTTOM,
+    PIC_STRUCT_DOUBLE, PIC_STRUCT_PROGRESSIVE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TOP_BOTTOM_TOP,
+    PIC_STRUCT_TRIPLE, X264_CPU_AVX, X264_CPU_AVX512, X264_CPU_CACHELINE_32, X264_CPU_CACHELINE_64,
+    X264_CSP_BGR, X264_CSP_BGRA, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422,
+    X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE, X264_CSP_NV12, X264_CSP_NV16, X264_CSP_NV21,
+    X264_CSP_RGB, X264_CSP_UYVY, X264_CSP_V210, X264_CSP_VFLIP, X264_CSP_YUYV, X264_CSP_YV12,
+    X264_CSP_YV16, X264_CSP_YV24, X264_LOG_ERROR, X264_LOG_WARNING, X264_ME_ESA, X264_QP_AUTO,
+    X264_TYPE_AUTO, X264_TYPE_KEYFRAME,
+};
 #[c2rust::src_loc = "30:1"]
 unsafe extern "C" fn align_stride(
     mut x: ::core::ffi::c_int,
@@ -2569,12 +2418,11 @@ unsafe extern "C" fn align_plane_size(
     mut disalign: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     if x & disalign - 1 as ::core::ffi::c_int == 0 {
-        x
-            += (if 128 as ::core::ffi::c_int > 64 as ::core::ffi::c_int {
-                128 as ::core::ffi::c_int
-            } else {
-                64 as ::core::ffi::c_int
-            }) / SIZEOF_PIXEL;
+        x += (if 128 as ::core::ffi::c_int > 64 as ::core::ffi::c_int {
+            128 as ::core::ffi::c_int
+        } else {
+            64 as ::core::ffi::c_int
+        }) / SIZEOF_PIXEL;
     }
     return x;
 }
@@ -2626,10 +2474,9 @@ unsafe extern "C" fn frame_new(
     } else {
         align = 16 as ::core::ffi::c_int / SIZEOF_PIXEL;
     }
-    let mut disalign: ::core::ffi::c_int = ((1 as ::core::ffi::c_int)
-        << 10 as ::core::ffi::c_int) / SIZEOF_PIXEL;
-    frame = x264_malloc(::core::mem::size_of::<x264_frame_t>() as int64_t)
-        as *mut x264_frame_t;
+    let mut disalign: ::core::ffi::c_int =
+        ((1 as ::core::ffi::c_int) << 10 as ::core::ffi::c_int) / SIZEOF_PIXEL;
+    frame = x264_malloc(::core::mem::size_of::<x264_frame_t>() as int64_t) as *mut x264_frame_t;
     if !frame.is_null() {
         memset(
             frame as *mut ::core::ffi::c_void,
@@ -2649,8 +2496,7 @@ unsafe extern "C" fn frame_new(
                 {
                     32 as ::core::ffi::c_int
                 } else {
-                    64 as ::core::ffi::c_int
-                        / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
+                    64 as ::core::ffi::c_int / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
                 }) + PADH),
             align,
             disalign,
@@ -2661,8 +2507,8 @@ unsafe extern "C" fn frame_new(
             let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while i < 2 as ::core::ffi::c_int {
                 (*frame).i_width[i as usize] = i_width >> i;
-                (*frame).i_lines[i as usize] = i_lines
-                    >> (i != 0 && i_csp == X264_CSP_NV12) as ::core::ffi::c_int;
+                (*frame).i_lines[i as usize] =
+                    i_lines >> (i != 0 && i_csp == X264_CSP_NV12) as ::core::ffi::c_int;
                 (*frame).i_stride[i as usize] = i_stride;
                 i += 1;
             }
@@ -2692,10 +2538,10 @@ unsafe extern "C" fn frame_new(
             18021720757857092697 => {}
             _ => {
                 (*frame).i_csp = i_csp;
-                (*frame).i_width_lowres = (*frame)
-                    .i_width[0 as ::core::ffi::c_int as usize] / 2 as ::core::ffi::c_int;
-                (*frame).i_lines_lowres = (*frame)
-                    .i_lines[0 as ::core::ffi::c_int as usize] / 2 as ::core::ffi::c_int;
+                (*frame).i_width_lowres =
+                    (*frame).i_width[0 as ::core::ffi::c_int as usize] / 2 as ::core::ffi::c_int;
+                (*frame).i_lines_lowres =
+                    (*frame).i_lines[0 as ::core::ffi::c_int as usize] / 2 as ::core::ffi::c_int;
                 (*frame).i_stride_lowres = align_stride(
                     (*frame).i_width_lowres
                         + ((if 32 as ::core::ffi::c_int
@@ -2714,27 +2560,22 @@ unsafe extern "C" fn frame_new(
                 while i_1 < (*h).param.i_bframe + 2 as ::core::ffi::c_int {
                     let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     while j < (*h).param.i_bframe + 2 as ::core::ffi::c_int {
-                        (*frame).i_row_satds[i_1 as usize][j as usize] = prealloc_size
-                            as intptr_t as *mut ::core::ffi::c_void
+                        (*frame).i_row_satds[i_1 as usize][j as usize] = prealloc_size as intptr_t
+                            as *mut ::core::ffi::c_void
                             as *mut ::core::ffi::c_int;
                         let fresh8 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
-                        preallocs[fresh8 as usize] = &mut *(*(*frame)
-                            .i_row_satds
-                            .as_mut_ptr()
-                            .offset(i_1 as isize))
-                            .as_mut_ptr()
-                            .offset(j as isize) as *mut *mut ::core::ffi::c_int
-                            as *mut *mut uint8_t;
-                        prealloc_size
-                            += ((i_lines / 16 as ::core::ffi::c_int) as usize)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<::core::ffi::c_int>() as usize,
-                                ) as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                        preallocs[fresh8 as usize] =
+                            &mut *(*(*frame).i_row_satds.as_mut_ptr().offset(i_1 as isize))
+                                .as_mut_ptr()
+                                .offset(j as isize)
+                                as *mut *mut ::core::ffi::c_int
+                                as *mut *mut uint8_t;
+                        prealloc_size += ((i_lines / 16 as ::core::ffi::c_int) as usize)
+                            .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>() as usize)
+                            as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                         j += 1;
                     }
                     i_1 += 1;
@@ -2757,379 +2598,332 @@ unsafe extern "C" fn frame_new(
                 (*frame).i_coded_fields_lookahead = (*frame).i_cpb_delay_lookahead;
                 (*frame).orig = frame as *mut x264_frame;
                 if i_csp == X264_CSP_NV12 || i_csp == X264_CSP_NV16 {
-                    let mut chroma_padv: ::core::ffi::c_int = i_padv
-                        >> (i_csp == X264_CSP_NV12) as ::core::ffi::c_int;
-                    let mut chroma_plane_size: ::core::ffi::c_int = (*frame)
-                        .i_stride[1 as ::core::ffi::c_int as usize]
+                    let mut chroma_padv: ::core::ffi::c_int =
+                        i_padv >> (i_csp == X264_CSP_NV12) as ::core::ffi::c_int;
+                    let mut chroma_plane_size: ::core::ffi::c_int = (*frame).i_stride
+                        [1 as ::core::ffi::c_int as usize]
                         * ((*frame).i_lines[1 as ::core::ffi::c_int as usize]
                             + 2 as ::core::ffi::c_int * chroma_padv);
-                    (*frame).buffer[1 as ::core::ffi::c_int as usize] = prealloc_size
-                        as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
+                    (*frame).buffer[1 as ::core::ffi::c_int as usize] =
+                        prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
                     let fresh9 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
                     preallocs[fresh9 as usize] = &mut *(*frame)
                         .buffer
                         .as_mut_ptr()
-                        .offset(1 as ::core::ffi::c_int as isize) as *mut *mut pixel
+                        .offset(1 as ::core::ffi::c_int as isize)
+                        as *mut *mut pixel
                         as *mut *mut uint8_t;
-                    prealloc_size
-                        += (chroma_plane_size
-                            * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int)
-                            as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
+                    prealloc_size += (chroma_plane_size
+                        * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     if (*h).param.b_interlaced != 0 {
-                        (*frame).buffer_fld[1 as ::core::ffi::c_int as usize] = prealloc_size
-                            as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
+                        (*frame).buffer_fld[1 as ::core::ffi::c_int as usize] =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
                         let fresh10 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[fresh10 as usize] = &mut *(*frame)
                             .buffer_fld
                             .as_mut_ptr()
-                            .offset(1 as ::core::ffi::c_int as isize) as *mut *mut pixel
+                            .offset(1 as ::core::ffi::c_int as isize)
+                            as *mut *mut pixel
                             as *mut *mut uint8_t;
-                        prealloc_size
-                            += (chroma_plane_size
-                                * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int)
-                                as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                        prealloc_size += (chroma_plane_size
+                            * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int)
+                            as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     }
                 }
                 let mut p: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while p < luma_plane_count {
                     let mut luma_plane_size: int64_t = align_plane_size(
                         (*frame).i_stride[p as usize]
-                            * ((*frame).i_lines[p as usize]
-                                + 2 as ::core::ffi::c_int * i_padv),
+                            * ((*frame).i_lines[p as usize] + 2 as ::core::ffi::c_int * i_padv),
                         disalign,
                     ) as int64_t;
                     if (*h).param.analyse.i_subpel_refine != 0 && b_fdec != 0 {
                         luma_plane_size *= 4 as int64_t;
                     }
-                    (*frame).buffer[p as usize] = prealloc_size as intptr_t
-                        as *mut ::core::ffi::c_void as *mut pixel;
+                    (*frame).buffer[p as usize] =
+                        prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
                     let fresh11 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
-                    preallocs[fresh11 as usize] = &mut *(*frame)
-                        .buffer
-                        .as_mut_ptr()
-                        .offset(p as isize) as *mut *mut pixel as *mut *mut uint8_t;
-                    prealloc_size
-                        += luma_plane_size
-                            * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
-                                as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
+                    preallocs[fresh11 as usize] =
+                        &mut *(*frame).buffer.as_mut_ptr().offset(p as isize) as *mut *mut pixel
+                            as *mut *mut uint8_t;
+                    prealloc_size += luma_plane_size
+                        * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     if (*h).param.b_interlaced != 0 {
-                        (*frame).buffer_fld[p as usize] = prealloc_size as intptr_t
-                            as *mut ::core::ffi::c_void as *mut pixel;
+                        (*frame).buffer_fld[p as usize] =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
                         let fresh12 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
-                        preallocs[fresh12 as usize] = &mut *(*frame)
-                            .buffer_fld
-                            .as_mut_ptr()
-                            .offset(p as isize) as *mut *mut pixel as *mut *mut uint8_t;
-                        prealloc_size
-                            += luma_plane_size
-                                * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
-                                    as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                        preallocs[fresh12 as usize] =
+                            &mut *(*frame).buffer_fld.as_mut_ptr().offset(p as isize)
+                                as *mut *mut pixel as *mut *mut uint8_t;
+                        prealloc_size += luma_plane_size
+                            * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     }
                     p += 1;
                 }
                 (*frame).b_duplicate = 0 as ::core::ffi::c_int;
                 if b_fdec != 0 {
-                    (*frame).mb_type = prealloc_size as intptr_t
-                        as *mut ::core::ffi::c_void as *mut int8_t;
+                    (*frame).mb_type =
+                        prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut int8_t;
                     let fresh13 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
-                    preallocs[fresh13 as usize] = &mut (*frame).mb_type
-                        as *mut *mut int8_t as *mut *mut uint8_t;
-                    prealloc_size
-                        += (i_mb_count as usize)
-                            .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
-                            as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
-                    (*frame).mb_partition = prealloc_size as intptr_t
-                        as *mut ::core::ffi::c_void as *mut uint8_t;
+                    preallocs[fresh13 as usize] =
+                        &mut (*frame).mb_type as *mut *mut int8_t as *mut *mut uint8_t;
+                    prealloc_size += (i_mb_count as usize)
+                        .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                    (*frame).mb_partition =
+                        prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut uint8_t;
                     let fresh14 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
-                    preallocs[fresh14 as usize] = &mut (*frame).mb_partition
-                        as *mut *mut uint8_t;
-                    prealloc_size
-                        += (i_mb_count as usize)
-                            .wrapping_mul(::core::mem::size_of::<uint8_t>() as usize)
-                            as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
-                    (*frame).mv[0 as ::core::ffi::c_int as usize] = prealloc_size
-                        as intptr_t as *mut ::core::ffi::c_void as *mut [int16_t; 2];
+                    preallocs[fresh14 as usize] = &mut (*frame).mb_partition as *mut *mut uint8_t;
+                    prealloc_size += (i_mb_count as usize)
+                        .wrapping_mul(::core::mem::size_of::<uint8_t>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                    (*frame).mv[0 as ::core::ffi::c_int as usize] =
+                        prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut [int16_t; 2];
                     let fresh15 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
                     preallocs[fresh15 as usize] = &mut *(*frame)
                         .mv
                         .as_mut_ptr()
                         .offset(0 as ::core::ffi::c_int as isize)
-                        as *mut *mut [int16_t; 2] as *mut *mut uint8_t;
-                    prealloc_size
-                        += ((2 as ::core::ffi::c_int * 16 as ::core::ffi::c_int
-                            * i_mb_count) as usize)
-                            .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
-                            as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
-                    (*frame).mv16x16 = prealloc_size as intptr_t
-                        as *mut ::core::ffi::c_void as *mut [int16_t; 2];
+                        as *mut *mut [int16_t; 2]
+                        as *mut *mut uint8_t;
+                    prealloc_size += ((2 as ::core::ffi::c_int
+                        * 16 as ::core::ffi::c_int
+                        * i_mb_count) as usize)
+                        .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                    (*frame).mv16x16 =
+                        prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut [int16_t; 2];
                     let fresh16 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
-                    preallocs[fresh16 as usize] = &mut (*frame).mv16x16
-                        as *mut *mut [int16_t; 2] as *mut *mut uint8_t;
-                    prealloc_size
-                        += ((2 as ::core::ffi::c_int
-                            * (i_mb_count + 1 as ::core::ffi::c_int)) as usize)
-                            .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
-                            as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
-                    (*frame).ref_0[0 as ::core::ffi::c_int as usize] = prealloc_size
-                        as intptr_t as *mut ::core::ffi::c_void as *mut int8_t;
+                    preallocs[fresh16 as usize] =
+                        &mut (*frame).mv16x16 as *mut *mut [int16_t; 2] as *mut *mut uint8_t;
+                    prealloc_size += ((2 as ::core::ffi::c_int
+                        * (i_mb_count + 1 as ::core::ffi::c_int))
+                        as usize)
+                        .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                    (*frame).ref_0[0 as ::core::ffi::c_int as usize] =
+                        prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut int8_t;
                     let fresh17 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
                     preallocs[fresh17 as usize] = &mut *(*frame)
                         .ref_0
                         .as_mut_ptr()
-                        .offset(0 as ::core::ffi::c_int as isize) as *mut *mut int8_t
+                        .offset(0 as ::core::ffi::c_int as isize)
+                        as *mut *mut int8_t
                         as *mut *mut uint8_t;
-                    prealloc_size
-                        += ((4 as ::core::ffi::c_int * i_mb_count) as usize)
-                            .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
-                            as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
+                    prealloc_size += ((4 as ::core::ffi::c_int * i_mb_count) as usize)
+                        .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     if (*h).param.i_bframe != 0 {
-                        (*frame).mv[1 as ::core::ffi::c_int as usize] = prealloc_size
-                            as intptr_t as *mut ::core::ffi::c_void as *mut [int16_t; 2];
+                        (*frame).mv[1 as ::core::ffi::c_int as usize] = prealloc_size as intptr_t
+                            as *mut ::core::ffi::c_void
+                            as *mut [int16_t; 2];
                         let fresh18 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[fresh18 as usize] = &mut *(*frame)
                             .mv
                             .as_mut_ptr()
                             .offset(1 as ::core::ffi::c_int as isize)
-                            as *mut *mut [int16_t; 2] as *mut *mut uint8_t;
-                        prealloc_size
-                            += ((2 as ::core::ffi::c_int * 16 as ::core::ffi::c_int
-                                * i_mb_count) as usize)
-                                .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
-                                as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
-                        (*frame).ref_0[1 as ::core::ffi::c_int as usize] = prealloc_size
-                            as intptr_t as *mut ::core::ffi::c_void as *mut int8_t;
+                            as *mut *mut [int16_t; 2]
+                            as *mut *mut uint8_t;
+                        prealloc_size += ((2 as ::core::ffi::c_int
+                            * 16 as ::core::ffi::c_int
+                            * i_mb_count) as usize)
+                            .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                            as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                        (*frame).ref_0[1 as ::core::ffi::c_int as usize] =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut int8_t;
                         let fresh19 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[fresh19 as usize] = &mut *(*frame)
                             .ref_0
                             .as_mut_ptr()
-                            .offset(1 as ::core::ffi::c_int as isize) as *mut *mut int8_t
+                            .offset(1 as ::core::ffi::c_int as isize)
+                            as *mut *mut int8_t
                             as *mut *mut uint8_t;
-                        prealloc_size
-                            += ((4 as ::core::ffi::c_int * i_mb_count) as usize)
-                                .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
-                                as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                        prealloc_size += ((4 as ::core::ffi::c_int * i_mb_count) as usize)
+                            .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
+                            as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     } else {
-                        (*frame).mv[1 as ::core::ffi::c_int as usize] = 0
-                            as *mut [int16_t; 2];
-                        (*frame).ref_0[1 as ::core::ffi::c_int as usize] = 0
-                            as *mut int8_t;
+                        (*frame).mv[1 as ::core::ffi::c_int as usize] = 0 as *mut [int16_t; 2];
+                        (*frame).ref_0[1 as ::core::ffi::c_int as usize] = 0 as *mut int8_t;
                     }
-                    (*frame).i_row_bits = prealloc_size as intptr_t
-                        as *mut ::core::ffi::c_void as *mut ::core::ffi::c_int;
+                    (*frame).i_row_bits = prealloc_size as intptr_t as *mut ::core::ffi::c_void
+                        as *mut ::core::ffi::c_int;
                     let fresh20 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
                     preallocs[fresh20 as usize] = &mut (*frame).i_row_bits
-                        as *mut *mut ::core::ffi::c_int as *mut *mut uint8_t;
-                    prealloc_size
-                        += ((i_lines / 16 as ::core::ffi::c_int) as usize)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<::core::ffi::c_int>() as usize,
-                            ) as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
-                    (*frame).f_row_qp = prealloc_size as intptr_t
-                        as *mut ::core::ffi::c_void as *mut ::core::ffi::c_float;
+                        as *mut *mut ::core::ffi::c_int
+                        as *mut *mut uint8_t;
+                    prealloc_size += ((i_lines / 16 as ::core::ffi::c_int) as usize)
+                        .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                    (*frame).f_row_qp = prealloc_size as intptr_t as *mut ::core::ffi::c_void
+                        as *mut ::core::ffi::c_float;
                     let fresh21 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
                     preallocs[fresh21 as usize] = &mut (*frame).f_row_qp
-                        as *mut *mut ::core::ffi::c_float as *mut *mut uint8_t;
-                    prealloc_size
-                        += ((i_lines / 16 as ::core::ffi::c_int) as usize)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<::core::ffi::c_float>() as usize,
-                            ) as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
-                    (*frame).f_row_qscale = prealloc_size as intptr_t
-                        as *mut ::core::ffi::c_void as *mut ::core::ffi::c_float;
+                        as *mut *mut ::core::ffi::c_float
+                        as *mut *mut uint8_t;
+                    prealloc_size += ((i_lines / 16 as ::core::ffi::c_int) as usize)
+                        .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                    (*frame).f_row_qscale = prealloc_size as intptr_t as *mut ::core::ffi::c_void
+                        as *mut ::core::ffi::c_float;
                     let fresh22 = prealloc_idx;
                     prealloc_idx = prealloc_idx + 1;
                     preallocs[fresh22 as usize] = &mut (*frame).f_row_qscale
-                        as *mut *mut ::core::ffi::c_float as *mut *mut uint8_t;
-                    prealloc_size
-                        += ((i_lines / 16 as ::core::ffi::c_int) as usize)
-                            .wrapping_mul(
-                                ::core::mem::size_of::<::core::ffi::c_float>() as usize,
-                            ) as int64_t
-                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t
-                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                as int64_t;
+                        as *mut *mut ::core::ffi::c_float
+                        as *mut *mut uint8_t;
+                    prealloc_size += ((i_lines / 16 as ::core::ffi::c_int) as usize)
+                        .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>() as usize)
+                        as int64_t
+                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     if (*h).param.analyse.i_me_method >= X264_ME_ESA {
-                        (*frame).buffer[3 as ::core::ffi::c_int as usize] = prealloc_size
-                            as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
+                        (*frame).buffer[3 as ::core::ffi::c_int as usize] =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
                         let fresh23 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[fresh23 as usize] = &mut *(*frame)
                             .buffer
                             .as_mut_ptr()
-                            .offset(3 as ::core::ffi::c_int as isize) as *mut *mut pixel
+                            .offset(3 as ::core::ffi::c_int as isize)
+                            as *mut *mut pixel
                             as *mut *mut uint8_t;
-                        prealloc_size
-                            += ((((*frame).i_stride[0 as ::core::ffi::c_int as usize]
-                                * ((*frame).i_lines[0 as ::core::ffi::c_int as usize]
-                                    + 2 as ::core::ffi::c_int * i_padv)) as usize)
-                                .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
-                                << (*h).frames.b_have_sub8x8_esa) as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                        prealloc_size += ((((*frame).i_stride[0 as ::core::ffi::c_int as usize]
+                            * ((*frame).i_lines[0 as ::core::ffi::c_int as usize]
+                                + 2 as ::core::ffi::c_int * i_padv))
+                            as usize)
+                            .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
+                            << (*h).frames.b_have_sub8x8_esa)
+                            as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     }
                     if (*h).param.b_interlaced != 0 {
-                        (*frame).field = prealloc_size as intptr_t
-                            as *mut ::core::ffi::c_void as *mut uint8_t;
+                        (*frame).field =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut uint8_t;
                         let fresh24 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
-                        preallocs[fresh24 as usize] = &mut (*frame).field
-                            as *mut *mut uint8_t;
-                        prealloc_size
-                            += (i_mb_count as usize)
+                        preallocs[fresh24 as usize] = &mut (*frame).field as *mut *mut uint8_t;
+                        prealloc_size +=
+                            (i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<uint8_t>() as usize)
                                 as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     }
                     if (*h).param.analyse.b_mb_info != 0 {
-                        (*frame).effective_qp = prealloc_size as intptr_t
-                            as *mut ::core::ffi::c_void as *mut uint8_t;
+                        (*frame).effective_qp =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut uint8_t;
                         let fresh25 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
-                        preallocs[fresh25 as usize] = &mut (*frame).effective_qp
-                            as *mut *mut uint8_t;
-                        prealloc_size
-                            += (i_mb_count as usize)
+                        preallocs[fresh25 as usize] =
+                            &mut (*frame).effective_qp as *mut *mut uint8_t;
+                        prealloc_size +=
+                            (i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<uint8_t>() as usize)
                                 as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                     }
                 } else {
                     if (*h).frames.b_have_lowres != 0 {
                         let mut luma_plane_size_0: int64_t = align_plane_size(
                             (*frame).i_stride_lowres
                                 * ((*frame).i_lines[0 as ::core::ffi::c_int as usize]
-                                    / 2 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * PADV),
+                                    / 2 as ::core::ffi::c_int
+                                    + 2 as ::core::ffi::c_int * PADV),
                             disalign,
                         ) as int64_t;
-                        (*frame).buffer_lowres = prealloc_size as intptr_t
-                            as *mut ::core::ffi::c_void as *mut pixel;
+                        (*frame).buffer_lowres =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut pixel;
                         let fresh26 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
-                        preallocs[fresh26 as usize] = &mut (*frame).buffer_lowres
-                            as *mut *mut pixel as *mut *mut uint8_t;
-                        prealloc_size
-                            += 4 as int64_t * luma_plane_size_0
-                                * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
-                                    as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                        preallocs[fresh26 as usize] =
+                            &mut (*frame).buffer_lowres as *mut *mut pixel as *mut *mut uint8_t;
+                        prealloc_size += 4 as int64_t
+                            * luma_plane_size_0
+                            * ::core::mem::size_of::<pixel>() as ::core::ffi::c_int as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                         let mut j_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                         while j_0 <= ((*h).param.i_bframe != 0) as ::core::ffi::c_int {
                             let mut i_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                             while i_2 <= (*h).param.i_bframe {
-                                (*frame).lowres_mvs[j_0 as usize][i_2 as usize] = prealloc_size
-                                    as intptr_t as *mut ::core::ffi::c_void
-                                    as *mut [int16_t; 2];
+                                (*frame).lowres_mvs[j_0 as usize][i_2 as usize] =
+                                    prealloc_size as intptr_t as *mut ::core::ffi::c_void
+                                        as *mut [int16_t; 2];
                                 let fresh27 = prealloc_idx;
                                 prealloc_idx = prealloc_idx + 1;
-                                preallocs[fresh27 as usize] = &mut *(*(*frame)
-                                    .lowres_mvs
-                                    .as_mut_ptr()
-                                    .offset(j_0 as isize))
-                                    .as_mut_ptr()
-                                    .offset(i_2 as isize) as *mut *mut [int16_t; 2]
-                                    as *mut *mut uint8_t;
-                                prealloc_size
-                                    += ((2 as ::core::ffi::c_int * i_mb_count) as usize)
-                                        .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                                preallocs[fresh27 as usize] =
+                                    &mut *(*(*frame).lowres_mvs.as_mut_ptr().offset(j_0 as isize))
+                                        .as_mut_ptr()
+                                        .offset(i_2 as isize)
+                                        as *mut *mut [int16_t; 2]
+                                        as *mut *mut uint8_t;
+                                prealloc_size += ((2 as ::core::ffi::c_int * i_mb_count) as usize)
+                                    .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                                    as int64_t
+                                    + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
                                         as int64_t
-                                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                            as int64_t
-                                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                            as int64_t;
-                                (*frame).lowres_mv_costs[j_0 as usize][i_2 as usize] = prealloc_size
-                                    as intptr_t as *mut ::core::ffi::c_void
-                                    as *mut ::core::ffi::c_int;
+                                    & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                                        as int64_t;
+                                (*frame).lowres_mv_costs[j_0 as usize][i_2 as usize] =
+                                    prealloc_size as intptr_t as *mut ::core::ffi::c_void
+                                        as *mut ::core::ffi::c_int;
                                 let fresh28 = prealloc_idx;
                                 prealloc_idx = prealloc_idx + 1;
                                 preallocs[fresh28 as usize] = &mut *(*(*frame)
                                     .lowres_mv_costs
                                     .as_mut_ptr()
                                     .offset(j_0 as isize))
-                                    .as_mut_ptr()
-                                    .offset(i_2 as isize) as *mut *mut ::core::ffi::c_int
+                                .as_mut_ptr()
+                                .offset(i_2 as isize)
+                                    as *mut *mut ::core::ffi::c_int
                                     as *mut *mut uint8_t;
-                                prealloc_size
-                                    += (i_mb_count as usize)
-                                        .wrapping_mul(
-                                            ::core::mem::size_of::<::core::ffi::c_int>() as usize,
-                                        ) as int64_t
+                                prealloc_size +=
+                                    (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<
+                                        ::core::ffi::c_int,
+                                    >(
+                                    )
+                                        as usize) as int64_t
                                         + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
                                             as int64_t
                                         & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
@@ -3138,95 +2932,92 @@ unsafe extern "C" fn frame_new(
                             }
                             j_0 += 1;
                         }
-                        (*frame).i_propagate_cost = prealloc_size as intptr_t
-                            as *mut ::core::ffi::c_void as *mut uint16_t;
+                        (*frame).i_propagate_cost =
+                            prealloc_size as intptr_t as *mut ::core::ffi::c_void as *mut uint16_t;
                         let fresh29 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[fresh29 as usize] = &mut (*frame).i_propagate_cost
-                            as *mut *mut uint16_t as *mut *mut uint8_t;
-                        prealloc_size
-                            += (i_mb_count as usize)
+                            as *mut *mut uint16_t
+                            as *mut *mut uint8_t;
+                        prealloc_size +=
+                            (i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
                                 as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
+                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                         let mut j_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                         while j_1 <= (*h).param.i_bframe + 1 as ::core::ffi::c_int {
                             let mut i_3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                             while i_3 <= (*h).param.i_bframe + 1 as ::core::ffi::c_int {
-                                (*frame).lowres_costs[j_1 as usize][i_3 as usize] = prealloc_size
-                                    as intptr_t as *mut ::core::ffi::c_void as *mut uint16_t;
+                                (*frame).lowres_costs[j_1 as usize][i_3 as usize] =
+                                    prealloc_size as intptr_t as *mut ::core::ffi::c_void
+                                        as *mut uint16_t;
                                 let fresh30 = prealloc_idx;
                                 prealloc_idx = prealloc_idx + 1;
                                 preallocs[fresh30 as usize] = &mut *(*(*frame)
                                     .lowres_costs
                                     .as_mut_ptr()
                                     .offset(j_1 as isize))
-                                    .as_mut_ptr()
-                                    .offset(i_3 as isize) as *mut *mut uint16_t
+                                .as_mut_ptr()
+                                .offset(i_3 as isize)
+                                    as *mut *mut uint16_t
                                     as *mut *mut uint8_t;
-                                prealloc_size
-                                    += (i_mb_count as usize)
-                                        .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
-                                        as int64_t
-                                        + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                            as int64_t
-                                        & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                            as int64_t;
-                                i_3 += 1;
-                            }
-                            j_1 += 1;
-                        }
-                    }
-                    if (*h).param.rc.i_aq_mode != 0 {
-                        (*frame).f_qp_offset = prealloc_size as intptr_t
-                            as *mut ::core::ffi::c_void as *mut ::core::ffi::c_float;
-                        let fresh31 = prealloc_idx;
-                        prealloc_idx = prealloc_idx + 1;
-                        preallocs[fresh31 as usize] = &mut (*frame).f_qp_offset
-                            as *mut *mut ::core::ffi::c_float as *mut *mut uint8_t;
-                        prealloc_size
-                            += (i_mb_count as usize)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<::core::ffi::c_float>() as usize,
-                                ) as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
-                        (*frame).f_qp_offset_aq = prealloc_size as intptr_t
-                            as *mut ::core::ffi::c_void as *mut ::core::ffi::c_float;
-                        let fresh32 = prealloc_idx;
-                        prealloc_idx = prealloc_idx + 1;
-                        preallocs[fresh32 as usize] = &mut (*frame).f_qp_offset_aq
-                            as *mut *mut ::core::ffi::c_float as *mut *mut uint8_t;
-                        prealloc_size
-                            += (i_mb_count as usize)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<::core::ffi::c_float>() as usize,
-                                ) as int64_t
-                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t
-                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
-                                    as int64_t;
-                        if (*h).frames.b_have_lowres != 0 {
-                            (*frame).i_inv_qscale_factor = prealloc_size as intptr_t
-                                as *mut ::core::ffi::c_void as *mut uint16_t;
-                            let fresh33 = prealloc_idx;
-                            prealloc_idx = prealloc_idx + 1;
-                            preallocs[fresh33 as usize] = &mut (*frame)
-                                .i_inv_qscale_factor as *mut *mut uint16_t
-                                as *mut *mut uint8_t;
-                            prealloc_size
-                                += (i_mb_count as usize)
+                                prealloc_size += (i_mb_count as usize)
                                     .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
                                     as int64_t
                                     + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
                                         as int64_t
                                     & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
                                         as int64_t;
+                                i_3 += 1;
+                            }
+                            j_1 += 1;
+                        }
+                    }
+                    if (*h).param.rc.i_aq_mode != 0 {
+                        (*frame).f_qp_offset = prealloc_size as intptr_t as *mut ::core::ffi::c_void
+                            as *mut ::core::ffi::c_float;
+                        let fresh31 = prealloc_idx;
+                        prealloc_idx = prealloc_idx + 1;
+                        preallocs[fresh31 as usize] = &mut (*frame).f_qp_offset
+                            as *mut *mut ::core::ffi::c_float
+                            as *mut *mut uint8_t;
+                        prealloc_size += (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<
+                            ::core::ffi::c_float,
+                        >(
+                        )
+                            as usize) as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                        (*frame).f_qp_offset_aq = prealloc_size as intptr_t
+                            as *mut ::core::ffi::c_void
+                            as *mut ::core::ffi::c_float;
+                        let fresh32 = prealloc_idx;
+                        prealloc_idx = prealloc_idx + 1;
+                        preallocs[fresh32 as usize] = &mut (*frame).f_qp_offset_aq
+                            as *mut *mut ::core::ffi::c_float
+                            as *mut *mut uint8_t;
+                        prealloc_size += (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<
+                            ::core::ffi::c_float,
+                        >(
+                        )
+                            as usize) as int64_t
+                            + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                            & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
+                        if (*h).frames.b_have_lowres != 0 {
+                            (*frame).i_inv_qscale_factor = prealloc_size as intptr_t
+                                as *mut ::core::ffi::c_void
+                                as *mut uint16_t;
+                            let fresh33 = prealloc_idx;
+                            prealloc_idx = prealloc_idx + 1;
+                            preallocs[fresh33 as usize] = &mut (*frame).i_inv_qscale_factor
+                                as *mut *mut uint16_t
+                                as *mut *mut uint8_t;
+                            prealloc_size += (i_mb_count as usize)
+                                .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
+                                as int64_t
+                                + (64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t
+                                & !(64 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as int64_t;
                         }
                     }
                     if (*h).frames.b_have_lowres != 0 {
@@ -3241,15 +3032,16 @@ unsafe extern "C" fn frame_new(
                         if !(fresh34 != 0) {
                             break;
                         }
-                        *preallocs[prealloc_idx as usize] = (*preallocs[prealloc_idx
-                            as usize] as intptr_t + (*frame).base as intptr_t)
+                        *preallocs[prealloc_idx as usize] = (*preallocs[prealloc_idx as usize]
+                            as intptr_t
+                            + (*frame).base as intptr_t)
                             as *mut uint8_t;
                     }
                     if i_csp == X264_CSP_NV12 || i_csp == X264_CSP_NV16 {
-                        let mut chroma_padv_0: ::core::ffi::c_int = i_padv
-                            >> (i_csp == X264_CSP_NV12) as ::core::ffi::c_int;
-                        (*frame).plane[1 as ::core::ffi::c_int as usize] = (*frame)
-                            .buffer[1 as ::core::ffi::c_int as usize]
+                        let mut chroma_padv_0: ::core::ffi::c_int =
+                            i_padv >> (i_csp == X264_CSP_NV12) as ::core::ffi::c_int;
+                        (*frame).plane[1 as ::core::ffi::c_int as usize] = (*frame).buffer
+                            [1 as ::core::ffi::c_int as usize]
                             .offset(
                                 ((*frame).i_stride[1 as ::core::ffi::c_int as usize]
                                     * chroma_padv_0) as isize,
@@ -3270,7 +3062,8 @@ unsafe extern "C" fn frame_new(
                                 .buffer_fld[1 as ::core::ffi::c_int as usize]
                                 .offset(
                                     ((*frame).i_stride[1 as ::core::ffi::c_int as usize]
-                                        * chroma_padv_0) as isize,
+                                        * chroma_padv_0)
+                                        as isize,
                                 )
                                 .offset(
                                     (if 32 as ::core::ffi::c_int
@@ -3296,19 +3089,21 @@ unsafe extern "C" fn frame_new(
                         if (*h).param.analyse.i_subpel_refine != 0 && b_fdec != 0 {
                             let mut i_4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                             while i_4 < 4 as ::core::ffi::c_int {
-                                (*frame).filtered[p_0 as usize][i_4 as usize] = (*frame)
-                                    .buffer[p_0 as usize]
+                                (*frame).filtered[p_0 as usize][i_4 as usize] = (*frame).buffer
+                                    [p_0 as usize]
                                     .offset((i_4 as int64_t * luma_plane_size_1) as isize)
                                     .offset(((*frame).i_stride[p_0 as usize] * i_padv) as isize)
                                     .offset(
                                         (if 32 as ::core::ffi::c_int
                                             > 64 as ::core::ffi::c_int
-                                                / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
+                                                / ::core::mem::size_of::<pixel>()
+                                                    as ::core::ffi::c_int
                                         {
                                             32 as ::core::ffi::c_int
                                         } else {
                                             64 as ::core::ffi::c_int
-                                                / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
+                                                / ::core::mem::size_of::<pixel>()
+                                                    as ::core::ffi::c_int
                                         }) as isize,
                                     );
                                 if (*h).param.b_interlaced != 0 {
@@ -3319,25 +3114,25 @@ unsafe extern "C" fn frame_new(
                                         .offset(
                                             (if 32 as ::core::ffi::c_int
                                                 > 64 as ::core::ffi::c_int
-                                                    / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
+                                                    / ::core::mem::size_of::<pixel>()
+                                                        as ::core::ffi::c_int
                                             {
                                                 32 as ::core::ffi::c_int
                                             } else {
                                                 64 as ::core::ffi::c_int
-                                                    / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
+                                                    / ::core::mem::size_of::<pixel>()
+                                                        as ::core::ffi::c_int
                                             }) as isize,
                                         );
                                 }
                                 i_4 += 1;
                             }
-                            (*frame).plane[p_0 as usize] = (*frame)
-                                .filtered[p_0 as usize][0 as ::core::ffi::c_int as usize];
-                            (*frame).plane_fld[p_0 as usize] = (*frame)
-                                .filtered_fld[p_0
-                                as usize][0 as ::core::ffi::c_int as usize];
+                            (*frame).plane[p_0 as usize] =
+                                (*frame).filtered[p_0 as usize][0 as ::core::ffi::c_int as usize];
+                            (*frame).plane_fld[p_0 as usize] = (*frame).filtered_fld[p_0 as usize]
+                                [0 as ::core::ffi::c_int as usize];
                         } else {
-                            (*frame).plane[p_0 as usize] = (*frame)
-                                .buffer[p_0 as usize]
+                            (*frame).plane[p_0 as usize] = (*frame).buffer[p_0 as usize]
                                 .offset(((*frame).i_stride[p_0 as usize] * i_padv) as isize)
                                 .offset(
                                     (if 32 as ::core::ffi::c_int
@@ -3350,28 +3145,28 @@ unsafe extern "C" fn frame_new(
                                             / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
                                     }) as isize,
                                 );
-                            (*frame)
-                                .filtered[p_0 as usize][0 as ::core::ffi::c_int as usize] = (*frame)
-                                .plane[p_0 as usize];
+                            (*frame).filtered[p_0 as usize][0 as ::core::ffi::c_int as usize] =
+                                (*frame).plane[p_0 as usize];
                             if (*h).param.b_interlaced != 0 {
-                                (*frame).plane_fld[p_0 as usize] = (*frame)
-                                    .buffer_fld[p_0 as usize]
+                                (*frame).plane_fld[p_0 as usize] = (*frame).buffer_fld
+                                    [p_0 as usize]
                                     .offset(((*frame).i_stride[p_0 as usize] * i_padv) as isize)
                                     .offset(
                                         (if 32 as ::core::ffi::c_int
                                             > 64 as ::core::ffi::c_int
-                                                / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
+                                                / ::core::mem::size_of::<pixel>()
+                                                    as ::core::ffi::c_int
                                         {
                                             32 as ::core::ffi::c_int
                                         } else {
                                             64 as ::core::ffi::c_int
-                                                / ::core::mem::size_of::<pixel>() as ::core::ffi::c_int
+                                                / ::core::mem::size_of::<pixel>()
+                                                    as ::core::ffi::c_int
                                         }) as isize,
                                     );
-                                (*frame)
-                                    .filtered_fld[p_0
-                                    as usize][0 as ::core::ffi::c_int as usize] = (*frame)
-                                    .plane_fld[p_0 as usize];
+                                (*frame).filtered_fld[p_0 as usize]
+                                    [0 as ::core::ffi::c_int as usize] =
+                                    (*frame).plane_fld[p_0 as usize];
                             }
                         }
                         p_0 += 1;
@@ -3382,11 +3177,11 @@ unsafe extern "C" fn frame_new(
                             .i = 0 as uint32_t;
                         (*frame).mv16x16 = (*frame).mv16x16.offset(1);
                         if (*h).param.analyse.i_me_method >= X264_ME_ESA {
-                            (*frame).integral = ((*frame)
-                                .buffer[3 as ::core::ffi::c_int as usize] as *mut uint16_t)
+                            (*frame).integral = ((*frame).buffer[3 as ::core::ffi::c_int as usize]
+                                as *mut uint16_t)
                                 .offset(
-                                    ((*frame).i_stride[0 as ::core::ffi::c_int as usize]
-                                        * i_padv) as isize,
+                                    ((*frame).i_stride[0 as ::core::ffi::c_int as usize] * i_padv)
+                                        as isize,
                                 )
                                 .offset(
                                     (if 32 as ::core::ffi::c_int
@@ -3404,7 +3199,8 @@ unsafe extern "C" fn frame_new(
                         let mut luma_plane_size_2: int64_t = align_plane_size(
                             (*frame).i_stride_lowres
                                 * ((*frame).i_lines[0 as ::core::ffi::c_int as usize]
-                                    / 2 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * PADV),
+                                    / 2 as ::core::ffi::c_int
+                                    + 2 as ::core::ffi::c_int * PADV),
                             disalign,
                         ) as int64_t;
                         let mut i_5: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -3441,9 +3237,10 @@ unsafe extern "C" fn frame_new(
                             }
                             j_2 += 1;
                         }
-                        (*frame).i_intra_cost = (*frame)
-                            .lowres_costs[0 as ::core::ffi::c_int
-                            as usize][0 as ::core::ffi::c_int as usize] as *mut uint16_t;
+                        (*frame).i_intra_cost = (*frame).lowres_costs
+                            [0 as ::core::ffi::c_int as usize]
+                            [0 as ::core::ffi::c_int as usize]
+                            as *mut uint16_t;
                         memset(
                             (*frame).i_intra_cost as *mut ::core::ffi::c_void,
                             -(1 as ::core::ffi::c_int),
@@ -3459,15 +3256,11 @@ unsafe extern "C" fn frame_new(
                             );
                         }
                     }
-                    if !(pthread_mutex_init(
-                        &mut (*frame).mutex,
-                        0 as *const pthread_mutexattr_t,
-                    ) != 0)
+                    if !(pthread_mutex_init(&mut (*frame).mutex, 0 as *const pthread_mutexattr_t)
+                        != 0)
                     {
-                        if !(pthread_cond_init(
-                            &mut (*frame).cv,
-                            0 as *const pthread_condattr_t,
-                        ) != 0)
+                        if !(pthread_cond_init(&mut (*frame).cv, 0 as *const pthread_condattr_t)
+                            != 0)
                         {
                             return frame;
                         }
@@ -3488,16 +3281,14 @@ pub unsafe extern "C" fn x264_10_frame_delete(mut frame: *mut x264_frame_t) {
             x264_param_cleanup((*frame).param);
             (*(*frame).param)
                 .param_free
-                .expect(
-                    "non-null function pointer",
-                )((*frame).param as *mut ::core::ffi::c_void);
+                .expect("non-null function pointer")(
+                (*frame).param as *mut ::core::ffi::c_void
+            );
         }
         if (*frame).mb_info_free.is_some() {
-            (*frame)
-                .mb_info_free
-                .expect(
-                    "non-null function pointer",
-                )((*frame).mb_info as *mut ::core::ffi::c_void);
+            (*frame).mb_info_free.expect("non-null function pointer")(
+                (*frame).mb_info as *mut ::core::ffi::c_void,
+            );
         }
         if (*frame).extra_sei.sei_free.is_some() {
             let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -3505,9 +3296,7 @@ pub unsafe extern "C" fn x264_10_frame_delete(mut frame: *mut x264_frame_t) {
                 (*frame)
                     .extra_sei
                     .sei_free
-                    .expect(
-                        "non-null function pointer",
-                    )(
+                    .expect("non-null function pointer")(
                     (*(*frame).extra_sei.payloads.offset(i as isize)).payload
                         as *mut ::core::ffi::c_void,
                 );
@@ -3516,9 +3305,9 @@ pub unsafe extern "C" fn x264_10_frame_delete(mut frame: *mut x264_frame_t) {
             (*frame)
                 .extra_sei
                 .sei_free
-                .expect(
-                    "non-null function pointer",
-                )((*frame).extra_sei.payloads as *mut ::core::ffi::c_void);
+                .expect("non-null function pointer")(
+                (*frame).extra_sei.payloads as *mut ::core::ffi::c_void,
+            );
         }
         pthread_mutex_destroy(&mut (*frame).mutex);
         pthread_cond_destroy(&mut (*frame).cv);
@@ -3625,35 +3414,25 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
     let mut stride: [::core::ffi::c_int; 3] = [0; 3];
     if i_csp == X264_CSP_YUYV || i_csp == X264_CSP_UYVY {
         let mut p: ::core::ffi::c_int = (i_csp == X264_CSP_UYVY) as ::core::ffi::c_int;
-        (*h)
-            .mc
+        (*h).mc
             .plane_copy_deinterleave_yuyv
-            .expect(
-                "non-null function pointer",
-            )(
+            .expect("non-null function pointer")(
             (*dst).plane[p as usize],
             (*dst).i_stride[p as usize] as intptr_t,
             (*dst).plane[(p ^ 1 as ::core::ffi::c_int) as usize],
             (*dst).i_stride[(p ^ 1 as ::core::ffi::c_int) as usize] as intptr_t,
             (*src).img.plane[0 as ::core::ffi::c_int as usize] as *mut pixel,
-            ((*src).img.i_stride[0 as ::core::ffi::c_int as usize] / SIZEOF_PIXEL)
-                as intptr_t,
+            ((*src).img.i_stride[0 as ::core::ffi::c_int as usize] / SIZEOF_PIXEL) as intptr_t,
             (*h).param.i_width,
             (*h).param.i_height,
         );
     } else if i_csp == X264_CSP_V210 {
-        stride[0 as ::core::ffi::c_int as usize] = (*src)
-            .img
-            .i_stride[0 as ::core::ffi::c_int as usize];
-        pix[0 as ::core::ffi::c_int as usize] = (*src)
-            .img
-            .plane[0 as ::core::ffi::c_int as usize];
-        (*h)
-            .mc
+        stride[0 as ::core::ffi::c_int as usize] =
+            (*src).img.i_stride[0 as ::core::ffi::c_int as usize];
+        pix[0 as ::core::ffi::c_int as usize] = (*src).img.plane[0 as ::core::ffi::c_int as usize];
+        (*h).mc
             .plane_copy_deinterleave_v210
-            .expect(
-                "non-null function pointer",
-            )(
+            .expect("non-null function pointer")(
             (*dst).plane[0 as ::core::ffi::c_int as usize],
             (*dst).i_stride[0 as ::core::ffi::c_int as usize] as intptr_t,
             (*dst).plane[1 as ::core::ffi::c_int as usize],
@@ -3665,28 +3444,20 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
             (*h).param.i_height,
         );
     } else if i_csp >= X264_CSP_BGR {
-        stride[0 as ::core::ffi::c_int as usize] = (*src)
-            .img
-            .i_stride[0 as ::core::ffi::c_int as usize];
-        pix[0 as ::core::ffi::c_int as usize] = (*src)
-            .img
-            .plane[0 as ::core::ffi::c_int as usize];
+        stride[0 as ::core::ffi::c_int as usize] =
+            (*src).img.i_stride[0 as ::core::ffi::c_int as usize];
+        pix[0 as ::core::ffi::c_int as usize] = (*src).img.plane[0 as ::core::ffi::c_int as usize];
         if (*src).img.i_csp & X264_CSP_VFLIP != 0 {
-            pix[0 as ::core::ffi::c_int as usize] = pix[0 as ::core::ffi::c_int as usize]
-                .offset(
-                    (((*h).param.i_height - 1 as ::core::ffi::c_int)
-                        * stride[0 as ::core::ffi::c_int as usize]) as isize,
-                );
-            stride[0 as ::core::ffi::c_int as usize] = -stride[0 as ::core::ffi::c_int
-                as usize];
+            pix[0 as ::core::ffi::c_int as usize] = pix[0 as ::core::ffi::c_int as usize].offset(
+                (((*h).param.i_height - 1 as ::core::ffi::c_int)
+                    * stride[0 as ::core::ffi::c_int as usize]) as isize,
+            );
+            stride[0 as ::core::ffi::c_int as usize] = -stride[0 as ::core::ffi::c_int as usize];
         }
         let mut b: ::core::ffi::c_int = (i_csp == X264_CSP_RGB) as ::core::ffi::c_int;
-        (*h)
-            .mc
+        (*h).mc
             .plane_copy_deinterleave_rgb
-            .expect(
-                "non-null function pointer",
-            )(
+            .expect("non-null function pointer")(
             (*dst).plane[(1 as ::core::ffi::c_int + b) as usize],
             (*dst).i_stride[(1 as ::core::ffi::c_int + b) as usize] as intptr_t,
             (*dst).plane[0 as ::core::ffi::c_int as usize],
@@ -3717,12 +3488,7 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
         {
             return -(1 as ::core::ffi::c_int);
         }
-        (*h)
-            .mc
-            .plane_copy
-            .expect(
-                "non-null function pointer",
-            )(
+        (*h).mc.plane_copy.expect("non-null function pointer")(
             (*dst).plane[0 as ::core::ffi::c_int as usize],
             (*dst).i_stride[0 as ::core::ffi::c_int as usize] as intptr_t,
             pix[0 as ::core::ffi::c_int as usize] as *mut pixel,
@@ -3743,12 +3509,7 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
             {
                 return -(1 as ::core::ffi::c_int);
             }
-            (*h)
-                .mc
-                .plane_copy
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.plane_copy.expect("non-null function pointer")(
                 (*dst).plane[1 as ::core::ffi::c_int as usize],
                 (*dst).i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                 pix[1 as ::core::ffi::c_int as usize] as *mut pixel,
@@ -3769,12 +3530,7 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
             {
                 return -(1 as ::core::ffi::c_int);
             }
-            (*h)
-                .mc
-                .plane_copy_swap
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.plane_copy_swap.expect("non-null function pointer")(
                 (*dst).plane[1 as ::core::ffi::c_int as usize],
                 (*dst).i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                 pix[1 as ::core::ffi::c_int as usize] as *mut pixel,
@@ -3782,11 +3538,13 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
                 (*h).param.i_width >> 1 as ::core::ffi::c_int,
                 (*h).param.i_height >> v_shift,
             );
-        } else if i_csp == X264_CSP_I420 || i_csp == X264_CSP_I422
-            || i_csp == X264_CSP_YV12 || i_csp == X264_CSP_YV16
+        } else if i_csp == X264_CSP_I420
+            || i_csp == X264_CSP_I422
+            || i_csp == X264_CSP_YV12
+            || i_csp == X264_CSP_YV16
         {
-            let mut uv_swap: ::core::ffi::c_int = (i_csp == X264_CSP_YV12
-                || i_csp == X264_CSP_YV16) as ::core::ffi::c_int;
+            let mut uv_swap: ::core::ffi::c_int =
+                (i_csp == X264_CSP_YV12 || i_csp == X264_CSP_YV16) as ::core::ffi::c_int;
             if get_plane_ptr(
                 h,
                 src,
@@ -3819,12 +3577,9 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
             {
                 return -(1 as ::core::ffi::c_int);
             }
-            (*h)
-                .mc
+            (*h).mc
                 .plane_copy_interleave
-                .expect(
-                    "non-null function pointer",
-                )(
+                .expect("non-null function pointer")(
                 (*dst).plane[1 as ::core::ffi::c_int as usize],
                 (*dst).i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                 pix[1 as ::core::ffi::c_int as usize] as *mut pixel,
@@ -3867,12 +3622,7 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
             {
                 return -(1 as ::core::ffi::c_int);
             }
-            (*h)
-                .mc
-                .plane_copy
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.plane_copy.expect("non-null function pointer")(
                 (*dst).plane[1 as ::core::ffi::c_int as usize],
                 (*dst).i_stride[1 as ::core::ffi::c_int as usize] as intptr_t,
                 pix[1 as ::core::ffi::c_int as usize] as *mut pixel,
@@ -3880,12 +3630,7 @@ pub unsafe extern "C" fn x264_10_frame_copy_picture(
                 (*h).param.i_width,
                 (*h).param.i_height,
             );
-            (*h)
-                .mc
-                .plane_copy
-                .expect(
-                    "non-null function pointer",
-                )(
+            (*h).mc.plane_copy.expect("non-null function pointer")(
                 (*dst).plane[2 as ::core::ffi::c_int as usize],
                 (*dst).i_stride[2 as ::core::ffi::c_int as usize] as intptr_t,
                 pix[2 as ::core::ffi::c_int as usize] as *mut pixel,
@@ -3937,8 +3682,8 @@ unsafe extern "C" fn pixel_memset(
         }
     }
     if WORD_SIZE == 8 as uint64_t {
-        let mut v8: uint64_t = (v4 as uint64_t)
-            .wrapping_add((v4 as uint64_t) << 32 as ::core::ffi::c_int);
+        let mut v8: uint64_t =
+            (v4 as uint64_t).wrapping_add((v4 as uint64_t) << 32 as ::core::ffi::c_int);
         while i < len - 7 as ::core::ffi::c_int {
             (*(dstp.offset(i as isize) as *mut x264_union64_t)).i = v8;
             i += 8 as ::core::ffi::c_int;
@@ -3975,14 +3720,14 @@ unsafe extern "C" fn plane_expand_border(
     while y < i_height {
         pixel_memset(
             pix.offset(-i_padh as isize).offset((y * i_stride) as isize),
-            pix.offset(0 as ::core::ffi::c_int as isize).offset((y * i_stride) as isize),
+            pix.offset(0 as ::core::ffi::c_int as isize)
+                .offset((y * i_stride) as isize),
             i_padh >> b_chroma,
             SIZEOF_PIXEL << b_chroma,
         );
         pixel_memset(
             pix.offset(i_width as isize).offset((y * i_stride) as isize),
-            pix
-                .offset((i_width - 1 as ::core::ffi::c_int - b_chroma) as isize)
+            pix.offset((i_width - 1 as ::core::ffi::c_int - b_chroma) as isize)
                 .offset((y * i_stride) as isize),
             i_padh >> b_chroma,
             SIZEOF_PIXEL << b_chroma,
@@ -3993,12 +3738,10 @@ unsafe extern "C" fn plane_expand_border(
         let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while y_0 < i_padv {
             memcpy(
-                pix
-                    .offset(-i_padh as isize)
+                pix.offset(-i_padh as isize)
                     .offset(((-y_0 - 1 as ::core::ffi::c_int) * i_stride) as isize)
                     as *mut ::core::ffi::c_void,
-                pix
-                    .offset(-i_padh as isize)
+                pix.offset(-i_padh as isize)
                     .offset((0 as ::core::ffi::c_int * i_stride) as isize)
                     as *const ::core::ffi::c_void,
                 ((i_width + 2 as ::core::ffi::c_int * i_padh) * SIZEOF_PIXEL) as size_t,
@@ -4010,12 +3753,10 @@ unsafe extern "C" fn plane_expand_border(
         let mut y_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while y_1 < i_padv {
             memcpy(
-                pix
-                    .offset(-i_padh as isize)
+                pix.offset(-i_padh as isize)
                     .offset(((i_height + y_1) * i_stride) as isize)
                     as *mut ::core::ffi::c_void,
-                pix
-                    .offset(-i_padh as isize)
+                pix.offset(-i_padh as isize)
                     .offset(((i_height - 1 as ::core::ffi::c_int) * i_stride) as isize)
                     as *const ::core::ffi::c_void,
                 ((i_width + 2 as ::core::ffi::c_int * i_padh) * SIZEOF_PIXEL) as size_t,
@@ -4031,13 +3772,11 @@ pub unsafe extern "C" fn x264_10_frame_expand_border(
     mut frame: *mut x264_frame_t,
     mut mb_y: ::core::ffi::c_int,
 ) {
-    let mut pad_top: ::core::ffi::c_int = (mb_y == 0 as ::core::ffi::c_int)
-        as ::core::ffi::c_int;
+    let mut pad_top: ::core::ffi::c_int = (mb_y == 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
     let mut pad_bot: ::core::ffi::c_int = (mb_y
         == (*h).mb.i_mb_height - ((1 as ::core::ffi::c_int) << (*h).sh.b_mbaff))
         as ::core::ffi::c_int;
-    let mut b_start: ::core::ffi::c_int = (mb_y == (*h).i_threadslice_start)
-        as ::core::ffi::c_int;
+    let mut b_start: ::core::ffi::c_int = (mb_y == (*h).i_threadslice_start) as ::core::ffi::c_int;
     let mut b_end: ::core::ffi::c_int = (mb_y
         == (*h).i_threadslice_end - ((1 as ::core::ffi::c_int) << (*h).sh.b_mbaff))
         as ::core::ffi::c_int;
@@ -4046,13 +3785,12 @@ pub unsafe extern "C" fn x264_10_frame_expand_border(
     }
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < (*frame).i_plane {
-        let mut h_shift: ::core::ffi::c_int = (i != 0 && (*h).mb.chroma_h_shift != 0)
-            as ::core::ffi::c_int;
-        let mut v_shift: ::core::ffi::c_int = (i != 0 && (*h).mb.chroma_v_shift != 0)
-            as ::core::ffi::c_int;
+        let mut h_shift: ::core::ffi::c_int =
+            (i != 0 && (*h).mb.chroma_h_shift != 0) as ::core::ffi::c_int;
+        let mut v_shift: ::core::ffi::c_int =
+            (i != 0 && (*h).mb.chroma_v_shift != 0) as ::core::ffi::c_int;
         let mut stride: ::core::ffi::c_int = (*frame).i_stride[i as usize];
-        let mut width: ::core::ffi::c_int = 16 as ::core::ffi::c_int
-            * (*h).mb.i_mb_width;
+        let mut width: ::core::ffi::c_int = 16 as ::core::ffi::c_int * (*h).mb.i_mb_width;
         let mut height: ::core::ffi::c_int = (if pad_bot != 0 {
             16 as ::core::ffi::c_int * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.b_mbaff
         } else {
@@ -4067,9 +3805,7 @@ pub unsafe extern "C" fn x264_10_frame_expand_border(
         let mut starty: ::core::ffi::c_int = 16 as ::core::ffi::c_int * mb_y
             - 4 as ::core::ffi::c_int * (b_start == 0) as ::core::ffi::c_int;
         if (*h).sh.b_mbaff != 0 {
-            pix = (*frame)
-                .plane_fld[i as usize]
-                .offset((starty * stride >> v_shift) as isize);
+            pix = (*frame).plane_fld[i as usize].offset((starty * stride >> v_shift) as isize);
             plane_expand_border(
                 pix,
                 stride * 2 as ::core::ffi::c_int,
@@ -4100,34 +3836,14 @@ pub unsafe extern "C" fn x264_10_frame_expand_border(
             if b_end != 0 && b_start == 0 {
                 height += 4 as ::core::ffi::c_int >> v_shift;
             }
-            pix = (*frame)
-                .plane[i as usize]
-                .offset((starty * stride >> v_shift) as isize);
+            pix = (*frame).plane[i as usize].offset((starty * stride >> v_shift) as isize);
             plane_expand_border(
-                pix,
-                stride,
-                width,
-                height,
-                padh,
-                padv,
-                pad_top,
-                pad_bot,
-                h_shift,
+                pix, stride, width, height, padh, padv, pad_top, pad_bot, h_shift,
             );
         } else {
-            pix = (*frame)
-                .plane[i as usize]
-                .offset((starty * stride >> v_shift) as isize);
+            pix = (*frame).plane[i as usize].offset((starty * stride >> v_shift) as isize);
             plane_expand_border(
-                pix,
-                stride,
-                width,
-                height,
-                padh,
-                padv,
-                pad_top,
-                pad_bot,
-                h_shift,
+                pix, stride, width, height, padh, padv, pad_top, pad_bot, h_shift,
             );
         }
         i += 1;
@@ -4142,8 +3858,8 @@ pub unsafe extern "C" fn x264_10_frame_expand_border_filtered(
     mut b_end: ::core::ffi::c_int,
 ) {
     let mut b_start: ::core::ffi::c_int = (mb_y == 0) as ::core::ffi::c_int;
-    let mut width: ::core::ffi::c_int = 16 as ::core::ffi::c_int * (*h).mb.i_mb_width
-        + 8 as ::core::ffi::c_int;
+    let mut width: ::core::ffi::c_int =
+        16 as ::core::ffi::c_int * (*h).mb.i_mb_width + 8 as ::core::ffi::c_int;
     let mut height: ::core::ffi::c_int = if b_end != 0 {
         (16 as ::core::ffi::c_int * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.b_mbaff)
             + 16 as ::core::ffi::c_int
@@ -4154,9 +3870,7 @@ pub unsafe extern "C" fn x264_10_frame_expand_border_filtered(
     let mut padv: ::core::ffi::c_int = PADV - 8 as ::core::ffi::c_int;
     let mut p: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while p
-        < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
-            == CHROMA_444 as ::core::ffi::c_int
-        {
+        < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
             3 as ::core::ffi::c_int
         } else {
             1 as ::core::ffi::c_int
@@ -4167,11 +3881,10 @@ pub unsafe extern "C" fn x264_10_frame_expand_border_filtered(
             let mut stride: ::core::ffi::c_int = (*frame).i_stride[p as usize];
             let mut pix: *mut pixel = 0 as *mut pixel;
             if (*h).sh.b_mbaff != 0 {
-                pix = (*frame)
-                    .filtered_fld[p as usize][i as usize]
+                pix = (*frame).filtered_fld[p as usize][i as usize]
                     .offset(
-                        ((16 as ::core::ffi::c_int * mb_y - 16 as ::core::ffi::c_int)
-                            * stride) as isize,
+                        ((16 as ::core::ffi::c_int * mb_y - 16 as ::core::ffi::c_int) * stride)
+                            as isize,
                     )
                     .offset(-(4 as ::core::ffi::c_int as isize));
                 plane_expand_border(
@@ -4197,11 +3910,9 @@ pub unsafe extern "C" fn x264_10_frame_expand_border_filtered(
                     0 as ::core::ffi::c_int,
                 );
             }
-            pix = (*frame)
-                .filtered[p as usize][i as usize]
+            pix = (*frame).filtered[p as usize][i as usize]
                 .offset(
-                    ((16 as ::core::ffi::c_int * mb_y - 8 as ::core::ffi::c_int)
-                        * stride) as isize,
+                    ((16 as ::core::ffi::c_int * mb_y - 8 as ::core::ffi::c_int) * stride) as isize,
                 )
                 .offset(-(4 as ::core::ffi::c_int as isize));
             plane_expand_border(
@@ -4222,9 +3933,7 @@ pub unsafe extern "C" fn x264_10_frame_expand_border_filtered(
 }
 #[no_mangle]
 #[c2rust::src_loc = "627:1"]
-pub unsafe extern "C" fn x264_10_frame_expand_border_lowres(
-    mut frame: *mut x264_frame_t,
-) {
+pub unsafe extern "C" fn x264_10_frame_expand_border_lowres(mut frame: *mut x264_frame_t) {
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < 4 as ::core::ffi::c_int {
         plane_expand_border(
@@ -4270,29 +3979,27 @@ pub unsafe extern "C" fn x264_10_frame_expand_border_mod16(
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < (*frame).i_plane {
         let mut i_width: ::core::ffi::c_int = (*h).param.i_width;
-        let mut h_shift: ::core::ffi::c_int = (i != 0 && (*h).mb.chroma_h_shift != 0)
-            as ::core::ffi::c_int;
-        let mut v_shift: ::core::ffi::c_int = (i != 0 && (*h).mb.chroma_v_shift != 0)
-            as ::core::ffi::c_int;
+        let mut h_shift: ::core::ffi::c_int =
+            (i != 0 && (*h).mb.chroma_h_shift != 0) as ::core::ffi::c_int;
+        let mut v_shift: ::core::ffi::c_int =
+            (i != 0 && (*h).mb.chroma_v_shift != 0) as ::core::ffi::c_int;
         let mut i_height: ::core::ffi::c_int = (*h).param.i_height >> v_shift;
-        let mut i_padx: ::core::ffi::c_int = (*h).mb.i_mb_width
-            * 16 as ::core::ffi::c_int - (*h).param.i_width;
-        let mut i_pady: ::core::ffi::c_int = (*h).mb.i_mb_height
-            * 16 as ::core::ffi::c_int - (*h).param.i_height >> v_shift;
+        let mut i_padx: ::core::ffi::c_int =
+            (*h).mb.i_mb_width * 16 as ::core::ffi::c_int - (*h).param.i_width;
+        let mut i_pady: ::core::ffi::c_int =
+            (*h).mb.i_mb_height * 16 as ::core::ffi::c_int - (*h).param.i_height >> v_shift;
         if i_padx != 0 {
             let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while y < i_height {
                 pixel_memset(
-                    &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize))
-                        .offset(
-                            (y * *(*frame).i_stride.as_mut_ptr().offset(i as isize)
-                                + i_width) as isize,
-                        ),
-                    &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize))
-                        .offset(
-                            (y * *(*frame).i_stride.as_mut_ptr().offset(i as isize)
-                                + i_width - 1 as ::core::ffi::c_int - h_shift) as isize,
-                        ),
+                    &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize)).offset(
+                        (y * *(*frame).i_stride.as_mut_ptr().offset(i as isize) + i_width) as isize,
+                    ),
+                    &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize)).offset(
+                        (y * *(*frame).i_stride.as_mut_ptr().offset(i as isize) + i_width
+                            - 1 as ::core::ffi::c_int
+                            - h_shift) as isize,
+                    ),
                     i_padx >> h_shift,
                     SIZEOF_PIXEL << h_shift,
                 );
@@ -4304,17 +4011,13 @@ pub unsafe extern "C" fn x264_10_frame_expand_border_mod16(
             while y_0 < i_height + i_pady {
                 memcpy(
                     &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize))
-                        .offset(
-                            (y_0 * *(*frame).i_stride.as_mut_ptr().offset(i as isize))
-                                as isize,
-                        ) as *mut pixel as *mut ::core::ffi::c_void,
-                    &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize))
-                        .offset(
-                            ((i_height - (!y_0 & (*h).param.b_interlaced)
-                                - 1 as ::core::ffi::c_int)
-                                * *(*frame).i_stride.as_mut_ptr().offset(i as isize))
-                                as isize,
-                        ) as *mut pixel as *const ::core::ffi::c_void,
+                        .offset((y_0 * *(*frame).i_stride.as_mut_ptr().offset(i as isize)) as isize)
+                        as *mut pixel as *mut ::core::ffi::c_void,
+                    &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize)).offset(
+                        ((i_height - (!y_0 & (*h).param.b_interlaced) - 1 as ::core::ffi::c_int)
+                            * *(*frame).i_stride.as_mut_ptr().offset(i as isize))
+                            as isize,
+                    ) as *mut pixel as *const ::core::ffi::c_void,
                     ((i_width + i_padx) * SIZEOF_PIXEL) as size_t,
                 );
                 y_0 += 1;
@@ -4332,15 +4035,14 @@ pub unsafe extern "C" fn x264_10_expand_border_mbpair(
 ) {
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < (*(*h).fenc).i_plane {
-        let mut v_shift: ::core::ffi::c_int = (i != 0 && (*h).mb.chroma_v_shift != 0)
-            as ::core::ffi::c_int;
+        let mut v_shift: ::core::ffi::c_int =
+            (i != 0 && (*h).mb.chroma_v_shift != 0) as ::core::ffi::c_int;
         let mut stride: ::core::ffi::c_int = (*(*h).fenc).i_stride[i as usize];
         let mut height: ::core::ffi::c_int = (*h).param.i_height >> v_shift;
-        let mut pady: ::core::ffi::c_int = (*h).mb.i_mb_height * 16 as ::core::ffi::c_int
-            - (*h).param.i_height >> v_shift;
-        let mut fenc: *mut pixel = (*(*h).fenc)
-            .plane[i as usize]
-            .offset((16 as ::core::ffi::c_int * mb_x) as isize);
+        let mut pady: ::core::ffi::c_int =
+            (*h).mb.i_mb_height * 16 as ::core::ffi::c_int - (*h).param.i_height >> v_shift;
+        let mut fenc: *mut pixel =
+            (*(*h).fenc).plane[i as usize].offset((16 as ::core::ffi::c_int * mb_x) as isize);
         let mut y: ::core::ffi::c_int = height;
         while y < height + pady {
             memcpy(
@@ -4375,9 +4077,7 @@ pub unsafe extern "C" fn x264_10_frame_cond_wait(
     pthread_mutex_lock(&mut (*frame).mutex);
     loop {
         completed = (*frame).i_lines_completed;
-        if !(completed < i_lines_completed
-            && i_lines_completed >= 0 as ::core::ffi::c_int)
-        {
+        if !(completed < i_lines_completed && i_lines_completed >= 0 as ::core::ffi::c_int) {
             break;
         }
         pthread_cond_wait(&mut (*frame).cv, &mut (*frame).mutex);
@@ -4450,34 +4150,32 @@ pub unsafe extern "C" fn x264_10_frame_push(
 }
 #[no_mangle]
 #[c2rust::src_loc = "742:1"]
-pub unsafe extern "C" fn x264_10_frame_pop(
-    mut list: *mut *mut x264_frame_t,
-) -> *mut x264_frame_t {
+pub unsafe extern "C" fn x264_10_frame_pop(mut list: *mut *mut x264_frame_t) -> *mut x264_frame_t {
     let mut frame: *mut x264_frame_t = 0 as *mut x264_frame_t;
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    if !(*list.offset(0 as ::core::ffi::c_int as isize)).is_null() {} else {
+    if !(*list.offset(0 as ::core::ffi::c_int as isize)).is_null() {
+    } else {
         __assert_fail(
             b"list[0]\0" as *const u8 as *const ::core::ffi::c_char,
             b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
             746 as ::core::ffi::c_uint,
-            ::core::mem::transmute::<
-                [u8; 49],
-                [::core::ffi::c_char; 49],
-            >(*b"x264_frame_t *x264_10_frame_pop(x264_frame_t **)\0")
-                .as_ptr(),
+            ::core::mem::transmute::<[u8; 49], [::core::ffi::c_char; 49]>(
+                *b"x264_frame_t *x264_10_frame_pop(x264_frame_t **)\0",
+            )
+            .as_ptr(),
         );
     }
     'c_18603: {
-        if !(*list.offset(0 as ::core::ffi::c_int as isize)).is_null() {} else {
+        if !(*list.offset(0 as ::core::ffi::c_int as isize)).is_null() {
+        } else {
             __assert_fail(
                 b"list[0]\0" as *const u8 as *const ::core::ffi::c_char,
                 b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
                 746 as ::core::ffi::c_uint,
-                ::core::mem::transmute::<
-                    [u8; 49],
-                    [::core::ffi::c_char; 49],
-                >(*b"x264_frame_t *x264_10_frame_pop(x264_frame_t **)\0")
-                    .as_ptr(),
+                ::core::mem::transmute::<[u8; 49], [::core::ffi::c_char; 49]>(
+                    *b"x264_frame_t *x264_10_frame_pop(x264_frame_t **)\0",
+                )
+                .as_ptr(),
             );
         }
     };
@@ -4524,29 +4222,29 @@ pub unsafe extern "C" fn x264_10_frame_shift(
         *fresh7 = *list.offset((i + 1 as ::core::ffi::c_int) as isize);
         i += 1;
     }
-    if !frame.is_null() {} else {
+    if !frame.is_null() {
+    } else {
         __assert_fail(
             b"frame\0" as *const u8 as *const ::core::ffi::c_char,
             b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
             768 as ::core::ffi::c_uint,
-            ::core::mem::transmute::<
-                [u8; 51],
-                [::core::ffi::c_char; 51],
-            >(*b"x264_frame_t *x264_10_frame_shift(x264_frame_t **)\0")
-                .as_ptr(),
+            ::core::mem::transmute::<[u8; 51], [::core::ffi::c_char; 51]>(
+                *b"x264_frame_t *x264_10_frame_shift(x264_frame_t **)\0",
+            )
+            .as_ptr(),
         );
     }
     'c_18705: {
-        if !frame.is_null() {} else {
+        if !frame.is_null() {
+        } else {
             __assert_fail(
                 b"frame\0" as *const u8 as *const ::core::ffi::c_char,
                 b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
                 768 as ::core::ffi::c_uint,
-                ::core::mem::transmute::<
-                    [u8; 51],
-                    [::core::ffi::c_char; 51],
-                >(*b"x264_frame_t *x264_10_frame_shift(x264_frame_t **)\0")
-                    .as_ptr(),
+                ::core::mem::transmute::<[u8; 51], [::core::ffi::c_char; 51]>(
+                    *b"x264_frame_t *x264_10_frame_shift(x264_frame_t **)\0",
+                )
+                .as_ptr(),
             );
         }
     };
@@ -4558,30 +4256,29 @@ pub unsafe extern "C" fn x264_10_frame_push_unused(
     mut h: *mut x264_t,
     mut frame: *mut x264_frame_t,
 ) {
-    if (*frame).i_reference_count > 0 as ::core::ffi::c_int {} else {
+    if (*frame).i_reference_count > 0 as ::core::ffi::c_int {
+    } else {
         __assert_fail(
             b"frame->i_reference_count > 0\0" as *const u8 as *const ::core::ffi::c_char,
             b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
             774 as ::core::ffi::c_uint,
-            ::core::mem::transmute::<
-                [u8; 57],
-                [::core::ffi::c_char; 57],
-            >(*b"void x264_10_frame_push_unused(x264_t *, x264_frame_t *)\0")
-                .as_ptr(),
+            ::core::mem::transmute::<[u8; 57], [::core::ffi::c_char; 57]>(
+                *b"void x264_10_frame_push_unused(x264_t *, x264_frame_t *)\0",
+            )
+            .as_ptr(),
         );
     }
     'c_18802: {
-        if (*frame).i_reference_count > 0 as ::core::ffi::c_int {} else {
+        if (*frame).i_reference_count > 0 as ::core::ffi::c_int {
+        } else {
             __assert_fail(
-                b"frame->i_reference_count > 0\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"frame->i_reference_count > 0\0" as *const u8 as *const ::core::ffi::c_char,
                 b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
                 774 as ::core::ffi::c_uint,
-                ::core::mem::transmute::<
-                    [u8; 57],
-                    [::core::ffi::c_char; 57],
-                >(*b"void x264_10_frame_push_unused(x264_t *, x264_frame_t *)\0")
-                    .as_ptr(),
+                ::core::mem::transmute::<[u8; 57], [::core::ffi::c_char; 57]>(
+                    *b"void x264_10_frame_push_unused(x264_t *, x264_frame_t *)\0",
+                )
+                .as_ptr(),
             );
         }
     };
@@ -4597,9 +4294,7 @@ pub unsafe extern "C" fn x264_10_frame_pop_unused(
     mut b_fdec: ::core::ffi::c_int,
 ) -> *mut x264_frame_t {
     let mut frame: *mut x264_frame_t = 0 as *mut x264_frame_t;
-    if !(*(*h).frames.unused[b_fdec as usize].offset(0 as ::core::ffi::c_int as isize))
-        .is_null()
-    {
+    if !(*(*h).frames.unused[b_fdec as usize].offset(0 as ::core::ffi::c_int as isize)).is_null() {
         frame = x264_10_frame_pop((*h).frames.unused[b_fdec as usize]);
     } else {
         frame = frame_new(h, b_fdec);
@@ -4636,30 +4331,29 @@ pub unsafe extern "C" fn x264_10_frame_push_blank_unused(
     mut h: *mut x264_t,
     mut frame: *mut x264_frame_t,
 ) {
-    if (*frame).i_reference_count > 0 as ::core::ffi::c_int {} else {
+    if (*frame).i_reference_count > 0 as ::core::ffi::c_int {
+    } else {
         __assert_fail(
             b"frame->i_reference_count > 0\0" as *const u8 as *const ::core::ffi::c_char,
             b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
             805 as ::core::ffi::c_uint,
-            ::core::mem::transmute::<
-                [u8; 63],
-                [::core::ffi::c_char; 63],
-            >(*b"void x264_10_frame_push_blank_unused(x264_t *, x264_frame_t *)\0")
-                .as_ptr(),
+            ::core::mem::transmute::<[u8; 63], [::core::ffi::c_char; 63]>(
+                *b"void x264_10_frame_push_blank_unused(x264_t *, x264_frame_t *)\0",
+            )
+            .as_ptr(),
         );
     }
     'c_18871: {
-        if (*frame).i_reference_count > 0 as ::core::ffi::c_int {} else {
+        if (*frame).i_reference_count > 0 as ::core::ffi::c_int {
+        } else {
             __assert_fail(
-                b"frame->i_reference_count > 0\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"frame->i_reference_count > 0\0" as *const u8 as *const ::core::ffi::c_char,
                 b"common/frame.c\0" as *const u8 as *const ::core::ffi::c_char,
                 805 as ::core::ffi::c_uint,
-                ::core::mem::transmute::<
-                    [u8; 63],
-                    [::core::ffi::c_char; 63],
-                >(*b"void x264_10_frame_push_blank_unused(x264_t *, x264_frame_t *)\0")
-                    .as_ptr(),
+                ::core::mem::transmute::<[u8; 63], [::core::ffi::c_char; 63]>(
+                    *b"void x264_10_frame_push_blank_unused(x264_t *, x264_frame_t *)\0",
+                )
+                .as_ptr(),
             );
         }
     };
@@ -4670,15 +4364,17 @@ pub unsafe extern "C" fn x264_10_frame_push_blank_unused(
 }
 #[no_mangle]
 #[c2rust::src_loc = "811:1"]
-pub unsafe extern "C" fn x264_10_frame_pop_blank_unused(
-    mut h: *mut x264_t,
-) -> *mut x264_frame_t {
+pub unsafe extern "C" fn x264_10_frame_pop_blank_unused(mut h: *mut x264_t) -> *mut x264_frame_t {
     let mut frame: *mut x264_frame_t = 0 as *mut x264_frame_t;
-    if !(*(*h).frames.blank_unused.offset(0 as ::core::ffi::c_int as isize)).is_null() {
+    if !(*(*h)
+        .frames
+        .blank_unused
+        .offset(0 as ::core::ffi::c_int as isize))
+    .is_null()
+    {
         frame = x264_10_frame_pop((*h).frames.blank_unused);
     } else {
-        frame = x264_malloc(::core::mem::size_of::<x264_frame_t>() as int64_t)
-            as *mut x264_frame_t;
+        frame = x264_malloc(::core::mem::size_of::<x264_frame_t>() as int64_t) as *mut x264_frame_t;
     }
     if frame.is_null() {
         return 0 as *mut x264_frame_t;
@@ -4706,9 +4402,7 @@ pub unsafe extern "C" fn x264_10_weight_scale_plane(
             (*(*w)
                 .weightfn
                 .offset((16 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize))
-                .expect(
-                    "non-null function pointer",
-                )(
+            .expect("non-null function pointer")(
                 dst.offset(x as isize),
                 i_dst_stride,
                 src.offset(x as isize),
@@ -4726,9 +4420,7 @@ pub unsafe extern "C" fn x264_10_weight_scale_plane(
             (*(*w)
                 .weightfn
                 .offset((8 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int) as isize))
-                .expect(
-                    "non-null function pointer",
-                )(
+            .expect("non-null function pointer")(
                 dst.offset(x as isize),
                 i_dst_stride,
                 src.offset(x as isize),
@@ -4773,11 +4465,10 @@ pub unsafe extern "C" fn x264_10_sync_frame_list_init(
     (*slist).i_size = 0 as ::core::ffi::c_int;
     (*slist).list = x264_malloc(
         ((max_size + 1 as ::core::ffi::c_int) as usize)
-            .wrapping_mul(::core::mem::size_of::<*mut x264_frame_t>() as usize)
-            as int64_t,
+            .wrapping_mul(::core::mem::size_of::<*mut x264_frame_t>() as usize) as int64_t,
     ) as *mut *mut x264_frame_t;
     if (*slist).list.is_null() {
-        return -(1 as ::core::ffi::c_int)
+        return -(1 as ::core::ffi::c_int);
     } else {
         memset(
             (*slist).list as *mut ::core::ffi::c_void,
@@ -4786,10 +4477,8 @@ pub unsafe extern "C" fn x264_10_sync_frame_list_init(
                 .wrapping_mul(::core::mem::size_of::<*mut x264_frame_t>() as size_t),
         );
         if pthread_mutex_init(&mut (*slist).mutex, 0 as *const pthread_mutexattr_t) != 0
-            || pthread_cond_init(&mut (*slist).cv_fill, 0 as *const pthread_condattr_t)
-                != 0
-            || pthread_cond_init(&mut (*slist).cv_empty, 0 as *const pthread_condattr_t)
-                != 0
+            || pthread_cond_init(&mut (*slist).cv_fill, 0 as *const pthread_condattr_t) != 0
+            || pthread_cond_init(&mut (*slist).cv_empty, 0 as *const pthread_condattr_t) != 0
         {
             return -(1 as ::core::ffi::c_int);
         }
@@ -4798,9 +4487,7 @@ pub unsafe extern "C" fn x264_10_sync_frame_list_init(
 }
 #[no_mangle]
 #[c2rust::src_loc = "869:1"]
-pub unsafe extern "C" fn x264_10_sync_frame_list_delete(
-    mut slist: *mut x264_sync_frame_list_t,
-) {
+pub unsafe extern "C" fn x264_10_sync_frame_list_delete(mut slist: *mut x264_sync_frame_list_t) {
     pthread_mutex_destroy(&mut (*slist).mutex);
     pthread_cond_destroy(&mut (*slist).cv_fill);
     pthread_cond_destroy(&mut (*slist).cv_empty);

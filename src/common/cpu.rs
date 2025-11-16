@@ -29,10 +29,7 @@ pub mod cpu_set_h {
     use super::__stddef_size_t_h::size_t;
     extern "C" {
         #[c2rust::src_loc = "117:1"]
-        pub fn __sched_cpucount(
-            __setsize: size_t,
-            __setp: *const cpu_set_t,
-        ) -> ::core::ffi::c_int;
+        pub fn __sched_cpucount(__setsize: size_t, __setp: *const cpu_set_t) -> ::core::ffi::c_int;
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cpu.h:28"]
@@ -48,9 +45,9 @@ pub mod cpu_h {
 }
 #[c2rust::header_src = "/usr/include/sched.h:28"]
 pub mod sched_h {
-    use super::types_h::__pid_t;
     use super::__stddef_size_t_h::size_t;
     use super::cpu_set_h::cpu_set_t;
+    use super::types_h::__pid_t;
     extern "C" {
         #[c2rust::src_loc = "134:1"]
         pub fn sched_getaffinity(
@@ -75,98 +72,98 @@ pub mod string_h {
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:28"]
 pub mod x264_h {
     #[c2rust::src_loc = "139:9"]
-    pub const X264_CPU_MMX: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 0 as ::core::ffi::c_int;
+    pub const X264_CPU_MMX: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 0 as ::core::ffi::c_int;
     #[c2rust::src_loc = "140:9"]
-    pub const X264_CPU_MMX2: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 1 as ::core::ffi::c_int;
+    pub const X264_CPU_MMX2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 1 as ::core::ffi::c_int;
     #[c2rust::src_loc = "142:9"]
-    pub const X264_CPU_SSE: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 2 as ::core::ffi::c_int;
+    pub const X264_CPU_SSE: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 2 as ::core::ffi::c_int;
     #[c2rust::src_loc = "143:9"]
-    pub const X264_CPU_SSE2: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 3 as ::core::ffi::c_int;
+    pub const X264_CPU_SSE2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 3 as ::core::ffi::c_int;
     #[c2rust::src_loc = "144:9"]
-    pub const X264_CPU_LZCNT: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 4 as ::core::ffi::c_int;
+    pub const X264_CPU_LZCNT: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 4 as ::core::ffi::c_int;
     #[c2rust::src_loc = "145:9"]
-    pub const X264_CPU_SSE3: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 5 as ::core::ffi::c_int;
+    pub const X264_CPU_SSE3: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 5 as ::core::ffi::c_int;
     #[c2rust::src_loc = "146:9"]
-    pub const X264_CPU_SSSE3: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 6 as ::core::ffi::c_int;
+    pub const X264_CPU_SSSE3: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 6 as ::core::ffi::c_int;
     #[c2rust::src_loc = "147:9"]
-    pub const X264_CPU_SSE4: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 7 as ::core::ffi::c_int;
+    pub const X264_CPU_SSE4: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 7 as ::core::ffi::c_int;
     #[c2rust::src_loc = "148:9"]
-    pub const X264_CPU_SSE42: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 8 as ::core::ffi::c_int;
+    pub const X264_CPU_SSE42: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 8 as ::core::ffi::c_int;
     #[c2rust::src_loc = "149:9"]
-    pub const X264_CPU_AVX: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 9 as ::core::ffi::c_int;
+    pub const X264_CPU_AVX: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 9 as ::core::ffi::c_int;
     #[c2rust::src_loc = "150:9"]
-    pub const X264_CPU_XOP: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 10 as ::core::ffi::c_int;
+    pub const X264_CPU_XOP: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 10 as ::core::ffi::c_int;
     #[c2rust::src_loc = "151:9"]
-    pub const X264_CPU_FMA4: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 11 as ::core::ffi::c_int;
+    pub const X264_CPU_FMA4: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 11 as ::core::ffi::c_int;
     #[c2rust::src_loc = "152:9"]
-    pub const X264_CPU_FMA3: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 12 as ::core::ffi::c_int;
+    pub const X264_CPU_FMA3: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 12 as ::core::ffi::c_int;
     #[c2rust::src_loc = "153:9"]
-    pub const X264_CPU_BMI1: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 13 as ::core::ffi::c_int;
+    pub const X264_CPU_BMI1: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 13 as ::core::ffi::c_int;
     #[c2rust::src_loc = "154:9"]
-    pub const X264_CPU_BMI2: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 14 as ::core::ffi::c_int;
+    pub const X264_CPU_BMI2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 14 as ::core::ffi::c_int;
     #[c2rust::src_loc = "155:9"]
-    pub const X264_CPU_AVX2: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 15 as ::core::ffi::c_int;
+    pub const X264_CPU_AVX2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 15 as ::core::ffi::c_int;
     #[c2rust::src_loc = "156:9"]
-    pub const X264_CPU_AVX512: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 16 as ::core::ffi::c_int;
+    pub const X264_CPU_AVX512: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 16 as ::core::ffi::c_int;
     #[c2rust::src_loc = "158:9"]
-    pub const X264_CPU_CACHELINE_32: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 17 as ::core::ffi::c_int;
+    pub const X264_CPU_CACHELINE_32: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 17 as ::core::ffi::c_int;
     #[c2rust::src_loc = "159:9"]
-    pub const X264_CPU_CACHELINE_64: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 18 as ::core::ffi::c_int;
+    pub const X264_CPU_CACHELINE_64: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 18 as ::core::ffi::c_int;
     #[c2rust::src_loc = "160:9"]
-    pub const X264_CPU_SSE2_IS_SLOW: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 19 as ::core::ffi::c_int;
+    pub const X264_CPU_SSE2_IS_SLOW: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 19 as ::core::ffi::c_int;
     #[c2rust::src_loc = "161:9"]
-    pub const X264_CPU_SSE2_IS_FAST: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 20 as ::core::ffi::c_int;
+    pub const X264_CPU_SSE2_IS_FAST: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 20 as ::core::ffi::c_int;
     #[c2rust::src_loc = "162:9"]
-    pub const X264_CPU_SLOW_SHUFFLE: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 21 as ::core::ffi::c_int;
+    pub const X264_CPU_SLOW_SHUFFLE: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 21 as ::core::ffi::c_int;
     #[c2rust::src_loc = "163:9"]
-    pub const X264_CPU_STACK_MOD4: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 22 as ::core::ffi::c_int;
+    pub const X264_CPU_STACK_MOD4: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 22 as ::core::ffi::c_int;
     #[c2rust::src_loc = "164:9"]
-    pub const X264_CPU_SLOW_ATOM: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 23 as ::core::ffi::c_int;
+    pub const X264_CPU_SLOW_ATOM: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 23 as ::core::ffi::c_int;
     #[c2rust::src_loc = "169:9"]
-    pub const X264_CPU_SLOW_PSHUFB: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 24 as ::core::ffi::c_int;
+    pub const X264_CPU_SLOW_PSHUFB: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 24 as ::core::ffi::c_int;
     #[c2rust::src_loc = "170:9"]
-    pub const X264_CPU_SLOW_PALIGNR: ::core::ffi::c_uint = (1 as ::core::ffi::c_uint)
-        << 25 as ::core::ffi::c_int;
+    pub const X264_CPU_SLOW_PALIGNR: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 25 as ::core::ffi::c_int;
 }
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint32_t, __pid_t};
-pub use self::stdint_uintn_h::uint32_t;
-pub use self::cpu_set_h::{__cpu_mask, cpu_set_t, __sched_cpucount};
 pub use self::cpu_h::x264_cpu_name_t;
+pub use self::cpu_set_h::{__cpu_mask, __sched_cpucount, cpu_set_t};
 use self::sched_h::sched_getaffinity;
+pub use self::stdint_uintn_h::uint32_t;
 use self::string_h::memset;
+pub use self::types_h::{__pid_t, __uint32_t};
 pub use self::x264_h::{
-    X264_CPU_MMX, X264_CPU_MMX2, X264_CPU_SSE, X264_CPU_SSE2, X264_CPU_LZCNT,
-    X264_CPU_SSE3, X264_CPU_SSSE3, X264_CPU_SSE4, X264_CPU_SSE42, X264_CPU_AVX,
-    X264_CPU_XOP, X264_CPU_FMA4, X264_CPU_FMA3, X264_CPU_BMI1, X264_CPU_BMI2,
-    X264_CPU_AVX2, X264_CPU_AVX512, X264_CPU_CACHELINE_32, X264_CPU_CACHELINE_64,
-    X264_CPU_SSE2_IS_SLOW, X264_CPU_SSE2_IS_FAST, X264_CPU_SLOW_SHUFFLE,
-    X264_CPU_STACK_MOD4, X264_CPU_SLOW_ATOM, X264_CPU_SLOW_PSHUFB, X264_CPU_SLOW_PALIGNR,
+    X264_CPU_AVX, X264_CPU_AVX2, X264_CPU_AVX512, X264_CPU_BMI1, X264_CPU_BMI2,
+    X264_CPU_CACHELINE_32, X264_CPU_CACHELINE_64, X264_CPU_FMA3, X264_CPU_FMA4, X264_CPU_LZCNT,
+    X264_CPU_MMX, X264_CPU_MMX2, X264_CPU_SLOW_ATOM, X264_CPU_SLOW_PALIGNR, X264_CPU_SLOW_PSHUFB,
+    X264_CPU_SLOW_SHUFFLE, X264_CPU_SSE, X264_CPU_SSE2, X264_CPU_SSE2_IS_FAST,
+    X264_CPU_SSE2_IS_SLOW, X264_CPU_SSE3, X264_CPU_SSE4, X264_CPU_SSE42, X264_CPU_SSSE3,
+    X264_CPU_STACK_MOD4, X264_CPU_XOP,
 };
 #[no_mangle]
 #[c2rust::src_loc = "50:23"]
@@ -188,16 +185,17 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t,
+            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t | X264_CPU_SSE as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE2Slow\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
                 | X264_CPU_SSE2_IS_SLOW as uint32_t,
         };
         init
@@ -205,16 +203,20 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE2\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE2Fast\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
                 | X264_CPU_SSE2_IS_FAST as uint32_t,
         };
         init
@@ -222,8 +224,10 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"LZCNT\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
                 | X264_CPU_LZCNT as uint32_t,
         };
         init
@@ -231,8 +235,10 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE3\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
                 | X264_CPU_SSE3 as uint32_t,
         };
         init
@@ -240,18 +246,24 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"SSSE3\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE4.1\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
                 | X264_CPU_SSE4 as uint32_t,
         };
         init
@@ -259,9 +271,12 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE4\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
                 | X264_CPU_SSE4 as uint32_t,
         };
         init
@@ -269,20 +284,28 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"SSE4.2\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"AVX\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
                 | X264_CPU_AVX as uint32_t,
         };
         init
@@ -290,44 +313,64 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"XOP\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
-                | X264_CPU_AVX as uint32_t | X264_CPU_XOP as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
+                | X264_CPU_AVX as uint32_t
+                | X264_CPU_XOP as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"FMA4\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
-                | X264_CPU_AVX as uint32_t | X264_CPU_FMA4 as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
+                | X264_CPU_AVX as uint32_t
+                | X264_CPU_FMA4 as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"FMA3\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
-                | X264_CPU_AVX as uint32_t | X264_CPU_FMA3 as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
+                | X264_CPU_AVX as uint32_t
+                | X264_CPU_FMA3 as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"BMI1\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
-                | X264_CPU_AVX as uint32_t | X264_CPU_LZCNT as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
+                | X264_CPU_AVX as uint32_t
+                | X264_CPU_LZCNT as uint32_t
                 | X264_CPU_BMI1 as uint32_t,
         };
         init
@@ -335,38 +378,58 @@ pub static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
     {
         let mut init = x264_cpu_name_t {
             name: b"BMI2\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
-                | X264_CPU_AVX as uint32_t | X264_CPU_LZCNT as uint32_t
-                | X264_CPU_BMI1 as uint32_t | X264_CPU_BMI2 as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
+                | X264_CPU_AVX as uint32_t
+                | X264_CPU_LZCNT as uint32_t
+                | X264_CPU_BMI1 as uint32_t
+                | X264_CPU_BMI2 as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"AVX2\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
-                | X264_CPU_AVX as uint32_t | X264_CPU_FMA3 as uint32_t
-                | X264_CPU_LZCNT as uint32_t | X264_CPU_BMI1 as uint32_t
-                | X264_CPU_BMI2 as uint32_t | X264_CPU_AVX2 as uint32_t,
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
+                | X264_CPU_AVX as uint32_t
+                | X264_CPU_FMA3 as uint32_t
+                | X264_CPU_LZCNT as uint32_t
+                | X264_CPU_BMI1 as uint32_t
+                | X264_CPU_BMI2 as uint32_t
+                | X264_CPU_AVX2 as uint32_t,
         };
         init
     },
     {
         let mut init = x264_cpu_name_t {
             name: b"AVX512\0" as *const u8 as *const ::core::ffi::c_char,
-            flags: X264_CPU_MMX as uint32_t | X264_CPU_MMX2 as uint32_t
-                | X264_CPU_SSE as uint32_t | X264_CPU_SSE2 as uint32_t
-                | X264_CPU_SSE3 as uint32_t | X264_CPU_SSSE3 as uint32_t
-                | X264_CPU_SSE4 as uint32_t | X264_CPU_SSE42 as uint32_t
-                | X264_CPU_AVX as uint32_t | X264_CPU_FMA3 as uint32_t
-                | X264_CPU_LZCNT as uint32_t | X264_CPU_BMI1 as uint32_t
-                | X264_CPU_BMI2 as uint32_t | X264_CPU_AVX2 as uint32_t
+            flags: X264_CPU_MMX as uint32_t
+                | X264_CPU_MMX2 as uint32_t
+                | X264_CPU_SSE as uint32_t
+                | X264_CPU_SSE2 as uint32_t
+                | X264_CPU_SSE3 as uint32_t
+                | X264_CPU_SSSE3 as uint32_t
+                | X264_CPU_SSE4 as uint32_t
+                | X264_CPU_SSE42 as uint32_t
+                | X264_CPU_AVX as uint32_t
+                | X264_CPU_FMA3 as uint32_t
+                | X264_CPU_LZCNT as uint32_t
+                | X264_CPU_BMI1 as uint32_t
+                | X264_CPU_BMI2 as uint32_t
+                | X264_CPU_AVX2 as uint32_t
                 | X264_CPU_AVX512 as uint32_t,
         };
         init

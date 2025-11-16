@@ -24,7 +24,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:27"]
 pub mod threadpool_h {
@@ -40,9 +40,7 @@ pub mod threadpool_h {
         pub fn x264_10_threadpool_run(
             pool: *mut x264_threadpool_t,
             func: Option<
-                unsafe extern "C" fn(
-                    *mut ::core::ffi::c_void,
-                ) -> *mut ::core::ffi::c_void,
+                unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *mut ::core::ffi::c_void,
             >,
             arg: *mut ::core::ffi::c_void,
         );
@@ -149,20 +147,15 @@ pub mod input_h {
             ) -> ::core::ffi::c_int,
         >,
         pub read_frame: Option<
-            unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut cli_pic_t, hnd_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
-        pub release_frame: Option<
-            unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
-        >,
+        pub release_frame:
+            Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int>,
         pub picture_clean: Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()>,
         pub close_file: Option<unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int>,
     }
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::x264cli_h::hnd_t;
     extern "C" {
         #[c2rust::src_loc = "111:20"]
@@ -185,19 +178,19 @@ pub mod x264_h {
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
 }
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __uint32_t, __int64_t};
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
-use self::threadpool_h::{
-    x264_threadpool_t, x264_10_threadpool_init, x264_10_threadpool_run,
-    x264_10_threadpool_wait, x264_10_threadpool_delete,
-};
-pub use self::x264cli_h::{hnd_t, x264_cli_log};
 pub use self::input_h::{
-    cli_input_opt_t, video_info_t, cli_image_t, cli_pic_t, cli_input_t, cli_input,
+    cli_image_t, cli_input, cli_input_opt_t, cli_input_t, cli_pic_t, video_info_t,
 };
-use self::stdlib_h::{malloc, free};
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::stdlib_h::{free, malloc};
+use self::threadpool_h::{
+    x264_10_threadpool_delete, x264_10_threadpool_init, x264_10_threadpool_run,
+    x264_10_threadpool_wait, x264_threadpool_t,
+};
+pub use self::types_h::{__int64_t, __uint32_t, __uint8_t};
 pub use self::x264_h::X264_LOG_ERROR;
+pub use self::x264cli_h::{hnd_t, x264_cli_log};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "32:9"]
@@ -226,15 +219,16 @@ unsafe extern "C" fn open_file(
     mut info: *mut video_info_t,
     mut opt: *mut cli_input_opt_t,
 ) -> ::core::ffi::c_int {
-    let mut h: *mut thread_hnd_t = malloc(
-        ::core::mem::size_of::<thread_hnd_t>() as size_t,
-    ) as *mut thread_hnd_t;
+    let mut h: *mut thread_hnd_t =
+        malloc(::core::mem::size_of::<thread_hnd_t>() as size_t) as *mut thread_hnd_t;
     if h.is_null()
-        || cli_input
-            .picture_alloc
-            .expect(
-                "non-null function pointer",
-            )(&mut (*h).pic, *p_handle, (*info).csp, (*info).width, (*info).height) != 0
+        || cli_input.picture_alloc.expect("non-null function pointer")(
+            &mut (*h).pic,
+            *p_handle,
+            (*info).csp,
+            (*info).width,
+            (*info).height,
+        ) != 0
     {
         x264_cli_log(
             b"x264\0" as *const u8 as *const ::core::ffi::c_char,
@@ -246,8 +240,8 @@ unsafe extern "C" fn open_file(
     (*h).input = cli_input;
     (*h).p_handle = *p_handle;
     (*h).next_frame = -(1 as ::core::ffi::c_int);
-    (*h).next_args = malloc(::core::mem::size_of::<thread_input_arg_t>() as size_t)
-        as *mut thread_input_arg_t;
+    (*h).next_args =
+        malloc(::core::mem::size_of::<thread_input_arg_t>() as size_t) as *mut thread_input_arg_t;
     if (*h).next_args.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
@@ -262,10 +256,11 @@ unsafe extern "C" fn open_file(
 }
 #[c2rust::src_loc = "73:1"]
 unsafe extern "C" fn read_frame_thread_int(mut i: *mut thread_input_arg_t) {
-    (*i).status = (*(*i).h)
-        .input
-        .read_frame
-        .expect("non-null function pointer")((*i).pic, (*(*i).h).p_handle, (*i).i_frame);
+    (*i).status =
+        (*(*i).h)
+            .input
+            .read_frame
+            .expect("non-null function pointer")((*i).pic, (*(*i).h).p_handle, (*i).i_frame);
 }
 #[c2rust::src_loc = "78:1"]
 unsafe extern "C" fn read_frame(
@@ -289,11 +284,11 @@ unsafe extern "C" fn read_frame(
                 .release_frame
                 .expect("non-null function pointer")(&mut (*h).pic, handle);
         }
-        ret
-            |= (*h)
-                .input
-                .read_frame
-                .expect("non-null function pointer")(p_pic, (*h).p_handle, i_frame);
+        ret |= (*h).input.read_frame.expect("non-null function pointer")(
+            p_pic,
+            (*h).p_handle,
+            i_frame,
+        );
     }
     if (*h).frame_total == 0 || (i_frame + 1 as ::core::ffi::c_int) < (*h).frame_total {
         (*(*h).next_args).i_frame = i_frame + 1 as ::core::ffi::c_int;
@@ -303,22 +298,13 @@ unsafe extern "C" fn read_frame(
             (*h).pool,
             ::core::mem::transmute::<
                 *mut ::core::ffi::c_void,
-                Option<
-                    unsafe extern "C" fn(
-                        *mut ::core::ffi::c_void,
-                    ) -> *mut ::core::ffi::c_void,
-                >,
-            >(
-                ::core::mem::transmute::<
-                    Option<unsafe extern "C" fn(*mut thread_input_arg_t) -> ()>,
-                    *mut ::core::ffi::c_void,
-                >(
-                    Some(
-                        read_frame_thread_int
-                            as unsafe extern "C" fn(*mut thread_input_arg_t) -> (),
-                    ),
-                ),
-            ),
+                Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *mut ::core::ffi::c_void>,
+            >(::core::mem::transmute::<
+                Option<unsafe extern "C" fn(*mut thread_input_arg_t) -> ()>,
+                *mut ::core::ffi::c_void,
+            >(Some(
+                read_frame_thread_int as unsafe extern "C" fn(*mut thread_input_arg_t) -> (),
+            ))),
             (*h).next_args as *mut ::core::ffi::c_void,
         );
     } else {
@@ -333,10 +319,7 @@ unsafe extern "C" fn release_frame(
 ) -> ::core::ffi::c_int {
     let mut h: *mut thread_hnd_t = handle as *mut thread_hnd_t;
     if (*h).input.release_frame.is_some() {
-        return (*h)
-            .input
-            .release_frame
-            .expect("non-null function pointer")(pic, (*h).p_handle);
+        return (*h).input.release_frame.expect("non-null function pointer")(pic, (*h).p_handle);
     }
     return 0 as ::core::ffi::c_int;
 }
@@ -349,10 +332,13 @@ unsafe extern "C" fn picture_alloc(
     mut height: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut h: *mut thread_hnd_t = handle as *mut thread_hnd_t;
-    return (*h)
-        .input
-        .picture_alloc
-        .expect("non-null function pointer")(pic, (*h).p_handle, csp, width, height);
+    return (*h).input.picture_alloc.expect("non-null function pointer")(
+        pic,
+        (*h).p_handle,
+        csp,
+        width,
+        height,
+    );
 }
 #[c2rust::src_loc = "125:1"]
 unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut handle: hnd_t) {
@@ -363,10 +349,7 @@ unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut handle: hnd_t) {
 unsafe extern "C" fn close_file(mut handle: hnd_t) -> ::core::ffi::c_int {
     let mut h: *mut thread_hnd_t = handle as *mut thread_hnd_t;
     x264_10_threadpool_delete((*h).pool);
-    (*h)
-        .input
-        .picture_clean
-        .expect("non-null function pointer")(&mut (*h).pic, (*h).p_handle);
+    (*h).input.picture_clean.expect("non-null function pointer")(&mut (*h).pic, (*h).p_handle);
     (*h).input.close_file.expect("non-null function pointer")((*h).p_handle);
     free((*h).next_args as *mut ::core::ffi::c_void);
     free(h as *mut ::core::ffi::c_void);
@@ -405,15 +388,10 @@ pub static mut thread_10_input: cli_input_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             release_frame: Some(
-                release_frame
-                    as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
+                release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
             ),
-            picture_clean: Some(
-                picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> (),
-            ),
-            close_file: Some(
-                close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int,
-            ),
+            picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
+            close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int),
         };
         init
     }

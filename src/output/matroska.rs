@@ -36,7 +36,7 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "26:1"]
     pub type uint32_t = __uint32_t;
-    use super::types_h::{__uint8_t, __uint32_t};
+    use super::types_h::{__uint32_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:26"]
 pub mod x264_h {
@@ -158,11 +158,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -317,9 +313,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "811:16"]
     pub struct x264_image_properties_t {
         pub quant_offsets: *mut ::core::ffi::c_float,
-        pub quant_offsets_free: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-        >,
+        pub quant_offsets_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub mb_info: *mut uint8_t,
         pub mb_info_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub f_ssim: ::core::ffi::c_double,
@@ -346,9 +340,9 @@ pub mod x264_h {
     }
     #[c2rust::src_loc = "282:9"]
     pub const X264_TYPE_B: ::core::ffi::c_int = 0x5 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -378,12 +372,9 @@ pub mod output_h {
                 *mut cli_output_opt_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub set_param: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
-        >,
-        pub write_headers: Option<
-            unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
-        >,
+        pub set_param: Option<unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int>,
+        pub write_headers:
+            Option<unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int>,
         pub write_frame: Option<
             unsafe extern "C" fn(
                 hnd_t,
@@ -392,14 +383,12 @@ pub mod output_h {
                 *mut x264_picture_t,
             ) -> ::core::ffi::c_int,
         >,
-        pub close_file: Option<
-            unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
-        >,
+        pub close_file: Option<unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int>,
     }
-    use super::x264cli_h::hnd_t;
-    use super::x264_h::{x264_param_t, x264_nal_t, x264_picture_t};
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    use super::x264_h::{x264_nal_t, x264_param_t, x264_picture_t};
+    use super::x264cli_h::hnd_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/output/matroska_ebml.h:26"]
 pub mod matroska_ebml_h {
@@ -475,26 +464,25 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::__va_list_tag;
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __uint32_t, __int64_t};
+pub use self::internal::__va_list_tag;
+pub use self::matroska_ebml_h::{
+    mk_add_frame_data, mk_close, mk_create_writer, mk_set_frame_flags, mk_start_frame,
+    mk_write_header, mk_writer, DS_PIXELS,
+};
+pub use self::output_h::{cli_output_opt_t, cli_output_t};
 pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t};
+pub use self::stdint_uintn_h::{uint32_t, uint8_t};
+use self::stdlib_h::{calloc, free, malloc};
+use self::string_h::memcpy;
+pub use self::types_h::{__int64_t, __uint32_t, __uint8_t};
 pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, x264_hrd_t,
-    x264_sei_payload_t, x264_sei_t, x264_image_t, x264_image_properties_t,
-    x264_picture_t, X264_TYPE_B, x264_t,
+    x264_hrd_t, x264_image_properties_t, x264_image_t, x264_nal_t, x264_param_t, x264_picture_t,
+    x264_sei_payload_t, x264_sei_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0,
+    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_TYPE_B,
 };
 pub use self::x264cli_h::hnd_t;
-pub use self::output_h::{cli_output_opt_t, cli_output_t};
-pub use self::matroska_ebml_h::{
-    DS_PIXELS, mk_writer, mk_create_writer, mk_write_header, mk_start_frame,
-    mk_add_frame_data, mk_set_frame_flags, mk_close,
-};
-use self::stdlib_h::{malloc, calloc, free};
-use self::string_h::memcpy;
-pub use self::__stddef_null_h::NULL;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "29:9"]
@@ -518,10 +506,8 @@ unsafe extern "C" fn open_file(
     mut opt: *mut cli_output_opt_t,
 ) -> ::core::ffi::c_int {
     *p_handle = NULL as hnd_t;
-    let mut p_mkv: *mut mkv_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<mkv_hnd_t>() as size_t,
-    ) as *mut mkv_hnd_t;
+    let mut p_mkv: *mut mkv_hnd_t =
+        calloc(1 as size_t, ::core::mem::size_of::<mkv_hnd_t>() as size_t) as *mut mkv_hnd_t;
     if p_mkv.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
@@ -589,20 +575,21 @@ unsafe extern "C" fn set_param(
     if (*p_param).i_frame_packing >= 0 as ::core::ffi::c_int
         && (*p_param).i_frame_packing < STEREO_COUNT
     {
-        (*p_mkv).stereo_mode = stereo_modes[(*p_param).i_frame_packing as usize]
-            as ::core::ffi::c_int;
+        (*p_mkv).stereo_mode =
+            stereo_modes[(*p_param).i_frame_packing as usize] as ::core::ffi::c_int;
         dw /= stereo_w_div[(*p_param).i_frame_packing as usize] as int64_t;
         dh /= stereo_h_div[(*p_param).i_frame_packing as usize] as int64_t;
     }
-    if (*p_param).vui.i_sar_width != 0 && (*p_param).vui.i_sar_height != 0
+    if (*p_param).vui.i_sar_width != 0
+        && (*p_param).vui.i_sar_height != 0
         && (*p_param).vui.i_sar_width != (*p_param).vui.i_sar_height
     {
         if (*p_param).vui.i_sar_width > (*p_param).vui.i_sar_height {
-            dw = dw * (*p_param).vui.i_sar_width as int64_t
-                / (*p_param).vui.i_sar_height as int64_t;
+            dw =
+                dw * (*p_param).vui.i_sar_width as int64_t / (*p_param).vui.i_sar_height as int64_t;
         } else {
-            dh = dh * (*p_param).vui.i_sar_height as int64_t
-                / (*p_param).vui.i_sar_width as int64_t;
+            dh =
+                dh * (*p_param).vui.i_sar_height as int64_t / (*p_param).vui.i_sar_width as int64_t;
         }
     }
     (*p_mkv).d_width = dw as ::core::ffi::c_int;
@@ -617,49 +604,48 @@ unsafe extern "C" fn write_headers(
     mut p_nal: *mut x264_nal_t,
 ) -> ::core::ffi::c_int {
     let mut p_mkv: *mut mkv_hnd_t = handle as *mut mkv_hnd_t;
-    let mut sps_size: ::core::ffi::c_int = (*p_nal
-        .offset(0 as ::core::ffi::c_int as isize))
-        .i_payload - 4 as ::core::ffi::c_int;
-    let mut pps_size: ::core::ffi::c_int = (*p_nal
-        .offset(1 as ::core::ffi::c_int as isize))
-        .i_payload - 4 as ::core::ffi::c_int;
-    let mut sei_size: ::core::ffi::c_int = (*p_nal
-        .offset(2 as ::core::ffi::c_int as isize))
-        .i_payload;
+    let mut sps_size: ::core::ffi::c_int =
+        (*p_nal.offset(0 as ::core::ffi::c_int as isize)).i_payload - 4 as ::core::ffi::c_int;
+    let mut pps_size: ::core::ffi::c_int =
+        (*p_nal.offset(1 as ::core::ffi::c_int as isize)).i_payload - 4 as ::core::ffi::c_int;
+    let mut sei_size: ::core::ffi::c_int =
+        (*p_nal.offset(2 as ::core::ffi::c_int as isize)).i_payload;
     let mut sps: *mut uint8_t = (*p_nal.offset(0 as ::core::ffi::c_int as isize))
         .p_payload
         .offset(4 as ::core::ffi::c_int as isize);
     let mut pps: *mut uint8_t = (*p_nal.offset(1 as ::core::ffi::c_int as isize))
         .p_payload
         .offset(4 as ::core::ffi::c_int as isize);
-    let mut sei: *mut uint8_t = (*p_nal.offset(2 as ::core::ffi::c_int as isize))
-        .p_payload;
+    let mut sei: *mut uint8_t = (*p_nal.offset(2 as ::core::ffi::c_int as isize)).p_payload;
     let mut ret: ::core::ffi::c_int = 0;
     let mut avcC: *mut uint8_t = 0 as *mut uint8_t;
     let mut avcC_len: ::core::ffi::c_int = 0;
-    if (*p_mkv).width == 0 || (*p_mkv).height == 0 || (*p_mkv).d_width == 0
+    if (*p_mkv).width == 0
+        || (*p_mkv).height == 0
+        || (*p_mkv).d_width == 0
         || (*p_mkv).d_height == 0
     {
         return -(1 as ::core::ffi::c_int);
     }
-    avcC_len = 5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int
-        + 2 as ::core::ffi::c_int + sps_size + 1 as ::core::ffi::c_int
-        + 2 as ::core::ffi::c_int + pps_size;
+    avcC_len = 5 as ::core::ffi::c_int
+        + 1 as ::core::ffi::c_int
+        + 2 as ::core::ffi::c_int
+        + sps_size
+        + 1 as ::core::ffi::c_int
+        + 2 as ::core::ffi::c_int
+        + pps_size;
     avcC = malloc(avcC_len as size_t) as *mut uint8_t;
     if avcC.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
     *avcC.offset(0 as ::core::ffi::c_int as isize) = 1 as uint8_t;
-    *avcC.offset(1 as ::core::ffi::c_int as isize) = *sps
-        .offset(1 as ::core::ffi::c_int as isize);
-    *avcC.offset(2 as ::core::ffi::c_int as isize) = *sps
-        .offset(2 as ::core::ffi::c_int as isize);
-    *avcC.offset(3 as ::core::ffi::c_int as isize) = *sps
-        .offset(3 as ::core::ffi::c_int as isize);
+    *avcC.offset(1 as ::core::ffi::c_int as isize) = *sps.offset(1 as ::core::ffi::c_int as isize);
+    *avcC.offset(2 as ::core::ffi::c_int as isize) = *sps.offset(2 as ::core::ffi::c_int as isize);
+    *avcC.offset(3 as ::core::ffi::c_int as isize) = *sps.offset(3 as ::core::ffi::c_int as isize);
     *avcC.offset(4 as ::core::ffi::c_int as isize) = 0xff as uint8_t;
     *avcC.offset(5 as ::core::ffi::c_int as isize) = 0xe1 as uint8_t;
-    *avcC.offset(6 as ::core::ffi::c_int as isize) = (sps_size
-        >> 8 as ::core::ffi::c_int) as uint8_t;
+    *avcC.offset(6 as ::core::ffi::c_int as isize) =
+        (sps_size >> 8 as ::core::ffi::c_int) as uint8_t;
     *avcC.offset(7 as ::core::ffi::c_int as isize) = sps_size as uint8_t;
     memcpy(
         avcC.offset(8 as ::core::ffi::c_int as isize) as *mut ::core::ffi::c_void,
@@ -667,12 +653,12 @@ unsafe extern "C" fn write_headers(
         sps_size as size_t,
     );
     *avcC.offset((8 as ::core::ffi::c_int + sps_size) as isize) = 1 as uint8_t;
-    *avcC.offset((9 as ::core::ffi::c_int + sps_size) as isize) = (pps_size
-        >> 8 as ::core::ffi::c_int) as uint8_t;
+    *avcC.offset((9 as ::core::ffi::c_int + sps_size) as isize) =
+        (pps_size >> 8 as ::core::ffi::c_int) as uint8_t;
     *avcC.offset((10 as ::core::ffi::c_int + sps_size) as isize) = pps_size as uint8_t;
     memcpy(
-        avcC.offset(11 as ::core::ffi::c_int as isize).offset(sps_size as isize)
-            as *mut ::core::ffi::c_void,
+        avcC.offset(11 as ::core::ffi::c_int as isize)
+            .offset(sps_size as isize) as *mut ::core::ffi::c_void,
         pps as *const ::core::ffi::c_void,
         pps_size as size_t,
     );
@@ -733,9 +719,11 @@ unsafe extern "C" fn write_frame(
     {
         return -(1 as ::core::ffi::c_int);
     }
-    let mut i_stamp: int64_t = ((*p_picture).i_pts as ::core::ffi::c_double * 1e9f64
+    let mut i_stamp: int64_t = ((*p_picture).i_pts as ::core::ffi::c_double
+        * 1e9f64
         * (*p_mkv).i_timebase_num as ::core::ffi::c_double
-        / (*p_mkv).i_timebase_den as ::core::ffi::c_double + 0.5f64) as int64_t;
+        / (*p_mkv).i_timebase_den as ::core::ffi::c_double
+        + 0.5f64) as int64_t;
     (*p_mkv).b_writing_frame = 0 as ::core::ffi::c_char;
     if mk_set_frame_flags(
         (*p_mkv).w,
@@ -759,8 +747,8 @@ unsafe extern "C" fn close_file(
     let mut i_last_delta: int64_t = 0;
     i_last_delta = if (*p_mkv).i_timebase_den != 0 {
         (((largest_pts - second_largest_pts) * (*p_mkv).i_timebase_num as int64_t
-            / (*p_mkv).i_timebase_den as int64_t) as ::core::ffi::c_double + 0.5f64)
-            as int64_t
+            / (*p_mkv).i_timebase_den as int64_t) as ::core::ffi::c_double
+            + 0.5f64) as int64_t
     } else {
         0 as int64_t
     };
@@ -782,15 +770,10 @@ pub static mut mkv_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             set_param: Some(
-                set_param
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        *mut x264_param_t,
-                    ) -> ::core::ffi::c_int,
+                set_param as unsafe extern "C" fn(hnd_t, *mut x264_param_t) -> ::core::ffi::c_int,
             ),
             write_headers: Some(
-                write_headers
-                    as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
+                write_headers as unsafe extern "C" fn(hnd_t, *mut x264_nal_t) -> ::core::ffi::c_int,
             ),
             write_frame: Some(
                 write_frame
@@ -802,12 +785,7 @@ pub static mut mkv_output: cli_output_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             close_file: Some(
-                close_file
-                    as unsafe extern "C" fn(
-                        hnd_t,
-                        int64_t,
-                        int64_t,
-                    ) -> ::core::ffi::c_int,
+                close_file as unsafe extern "C" fn(hnd_t, int64_t, int64_t) -> ::core::ffi::c_int,
             ),
         };
         init

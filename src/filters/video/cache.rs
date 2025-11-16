@@ -44,7 +44,7 @@ pub mod stdint_intn_h {
     pub type int32_t = __int32_t;
     #[c2rust::src_loc = "27:1"]
     pub type int64_t = __int64_t;
-    use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
+    use super::types_h::{__int16_t, __int32_t, __int64_t, __int8_t};
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:26"]
 pub mod stdint_uintn_h {
@@ -56,7 +56,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdint.h:26"]
 pub mod stdint_h {
@@ -602,20 +602,20 @@ pub mod common_h {
         pub p_bitstream: *mut uint8_t,
         pub bs: bs_t,
     }
-    use super::x264_h::{x264_param_t, x264_nal_t};
-    use super::threadpool_h::x264_threadpool_t;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int32_t, int16_t, int8_t};
-    use super::set_h::{x264_sps_t, x264_pps_t};
+    use super::bitstream_h::{bs_t, x264_bitstream_function_t};
     use super::cabac_h::x264_cabac_t;
-    use super::frame_h::{x264_frame_t, x264_deblock_function_t, x264_sync_frame_list_t};
-    use super::predict_h::{x264_predict_t, x264_predict8x8_t, x264_predict_8x8_filter_t};
-    use super::pixel_h::x264_pixel_function_t;
-    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
     use super::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+    use super::frame_h::{x264_deblock_function_t, x264_frame_t, x264_sync_frame_list_t};
+    use super::mc_h::{x264_mc_functions_t, x264_weight_t};
+    use super::pixel_h::x264_pixel_function_t;
+    use super::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
     use super::quant_h::x264_quant_function_t;
-    use super::bitstream_h::{x264_bitstream_function_t, bs_t};
+    use super::set_h::{x264_pps_t, x264_sps_t};
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::threadpool_h::x264_threadpool_t;
+    use super::x264_h::{x264_nal_t, x264_param_t};
     extern "C" {
         #[c2rust::src_loc = "231:16"]
         pub type x264_ratecontrol_t;
@@ -777,12 +777,7 @@ pub mod frame_h {
     }
     #[c2rust::src_loc = "197:1"]
     pub type x264_deblock_intra_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "196:1"]
     pub type x264_deblock_inter_t = Option<
@@ -794,19 +789,16 @@ pub mod frame_h {
             *mut int8_t,
         ) -> (),
     >;
-    use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t};
-    use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-    use super::stdint_intn_h::{int64_t, int8_t, int16_t};
-    use super::x264_h::{x264_param_t, x264_hrd_t, x264_sei_t};
     use super::common_h::pixel;
     use super::mc_h::x264_weight_t;
+    use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t};
     use super::stdint_h::intptr_t;
+    use super::stdint_intn_h::{int16_t, int64_t, int8_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    use super::x264_h::{x264_hrd_t, x264_param_t, x264_sei_t};
     extern "C" {
         #[c2rust::src_loc = "266:10"]
-        pub fn x264_10_frame_push(
-            list: *mut *mut x264_frame_t,
-            frame: *mut x264_frame_t,
-        );
+        pub fn x264_10_frame_push(list: *mut *mut x264_frame_t, frame: *mut x264_frame_t);
         #[c2rust::src_loc = "272:10"]
         pub fn x264_10_frame_shift(list: *mut *mut x264_frame_t) -> *mut x264_frame_t;
     }
@@ -932,11 +924,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -1078,10 +1066,10 @@ pub mod x264_h {
     }
     #[c2rust::src_loc = "289:9"]
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
-    use super::internal::__va_list_tag;
     use super::common_h::x264_t;
+    use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:26"]
 pub mod mc_h {
@@ -1189,20 +1177,10 @@ pub mod mc_h {
             ) -> (),
         >,
         pub load_deinterleave_chroma_fenc: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub load_deinterleave_chroma_fdec: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> (),
+            unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, ::core::ffi::c_int) -> (),
         >,
         pub plane_copy: Option<
             unsafe extern "C" fn(
@@ -1335,9 +1313,8 @@ pub mod mc_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub prefetch_ref: Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> (),
-        >,
+        pub prefetch_ref:
+            Option<unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ()>,
         pub memcpy_aligned: Option<
             unsafe extern "C" fn(
                 *mut ::core::ffi::c_void,
@@ -1345,18 +1322,13 @@ pub mod mc_h {
                 size_t,
             ) -> *mut ::core::ffi::c_void,
         >,
-        pub memzero_aligned: Option<
-            unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> (),
-        >,
-        pub integral_init4h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init8h: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> (),
-        >,
-        pub integral_init4v: Option<
-            unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> (),
-        >,
+        pub memzero_aligned: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void, size_t) -> ()>,
+        pub integral_init4h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init8h:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>,
+        pub integral_init4v:
+            Option<unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> ()>,
         pub integral_init8v: Option<unsafe extern "C" fn(*mut uint16_t, intptr_t) -> ()>,
         pub frame_init_lowres_core: Option<
             unsafe extern "C" fn(
@@ -1374,9 +1346,7 @@ pub mod mc_h {
         pub weight: *mut weight_fn_t,
         pub offsetadd: *mut weight_fn_t,
         pub offsetsub: *mut weight_fn_t,
-        pub weight_cache: Option<
-            unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> (),
-        >,
+        pub weight_cache: Option<unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> ()>,
         pub mbtree_propagate_cost: Option<
             unsafe extern "C" fn(
                 *mut int16_t,
@@ -1416,11 +1386,11 @@ pub mod mc_h {
             ) -> (),
         >,
     }
-    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::__stddef_size_t_h::size_t;
     use super::common_h::{pixel, x264_t};
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint32_t, uint16_t};
-    use super::__stddef_size_t_h::size_t;
+    use super::stdint_intn_h::{int16_t, int32_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:26"]
 pub mod bitstream_h {
@@ -1428,13 +1398,8 @@ pub mod bitstream_h {
     #[repr(C)]
     #[c2rust::src_loc = "57:9"]
     pub struct x264_bitstream_function_t {
-        pub nal_escape: Option<
-            unsafe extern "C" fn(
-                *mut uint8_t,
-                *mut uint8_t,
-                *mut uint8_t,
-            ) -> *mut uint8_t,
-        >,
+        pub nal_escape:
+            Option<unsafe extern "C" fn(*mut uint8_t, *mut uint8_t, *mut uint8_t) -> *mut uint8_t>,
         pub cabac_block_residual_internal: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1481,11 +1446,11 @@ pub mod bitstream_h {
         pub i_left: ::core::ffi::c_int,
         pub i_bits_encoded: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::uint8_t;
+    use super::cabac_h::x264_cabac_t;
     use super::common_h::dctcoef;
     use super::stdint_h::{intptr_t, uintptr_t};
-    use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
+    use super::stdint_uintn_h::uint8_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:26"]
 pub mod cabac_h {
@@ -1513,18 +1478,10 @@ pub mod quant_h {
     #[c2rust::src_loc = "30:9"]
     pub struct x264_quant_function_t {
         pub quant_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut udctcoef,
-                *mut udctcoef,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> ::core::ffi::c_int,
         >,
         pub quant_4x4x4: Option<
             unsafe extern "C" fn(
@@ -1583,12 +1540,10 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub optimize_chroma_2x2_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
-        pub optimize_chroma_2x4_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int,
-        >,
+        pub optimize_chroma_2x2_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
+        pub optimize_chroma_2x4_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, ::core::ffi::c_int) -> ::core::ffi::c_int>,
         pub denoise_dct: Option<
             unsafe extern "C" fn(
                 *mut dctcoef,
@@ -1597,42 +1552,19 @@ pub mod quant_h {
                 ::core::ffi::c_int,
             ) -> (),
         >,
-        pub decimate_score15: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score16: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub decimate_score64: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last: [Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >; 14],
-        pub coeff_last4: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
-        pub coeff_last8: Option<
-            unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int,
-        >,
+        pub decimate_score15: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score16: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub decimate_score64: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last: [Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>; 14],
+        pub coeff_last4: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
+        pub coeff_last8: Option<unsafe extern "C" fn(*mut dctcoef) -> ::core::ffi::c_int>,
         pub coeff_level_run: [Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int,
         >; 13],
-        pub coeff_level_run4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
-        pub coeff_level_run8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *mut x264_run_level_t,
-            ) -> ::core::ffi::c_int,
-        >,
+        pub coeff_level_run4:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
+        pub coeff_level_run8:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> ::core::ffi::c_int>,
         pub trellis_cabac_4x4: Option<
             unsafe extern "C" fn(
                 *const ::core::ffi::c_int,
@@ -1733,9 +1665,9 @@ pub mod quant_h {
             ) -> ::core::ffi::c_int,
         >,
     }
-    use super::common_h::{dctcoef, udctcoef};
-    use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
+    use super::common_h::{dctcoef, udctcoef};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:26"]
 pub mod dct_h {
@@ -1746,18 +1678,10 @@ pub mod dct_h {
         pub scan_8x8: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub scan_4x4: Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef) -> ()>,
         pub sub_8x8: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4: Option<
-            unsafe extern "C" fn(
-                *mut dctcoef,
-                *const pixel,
-                *mut pixel,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut dctcoef, *const pixel, *mut pixel) -> ::core::ffi::c_int,
         >,
         pub sub_4x4ac: Option<
             unsafe extern "C" fn(
@@ -1767,55 +1691,34 @@ pub mod dct_h {
                 *mut dctcoef,
             ) -> ::core::ffi::c_int,
         >,
-        pub interleave_8x8_cavlc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> (),
-        >,
+        pub interleave_8x8_cavlc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut dctcoef, *mut uint8_t) -> ()>,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "29:9"]
     pub struct x264_dct_function_t {
-        pub sub4x4_dct: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub4x4_dct: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add4x4_idct: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x8_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub8x8_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub add8x8_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
+        pub sub8x8_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub sub8x8_dct_dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub add8x8_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
         pub add8x8_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub8x16_dct_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
-        pub sub16x16_dct: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> (),
-        >,
-        pub add16x16_idct_dc: Option<
-            unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> (),
-        >,
-        pub sub8x8_dct8: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> (),
-        >,
+        pub sub8x16_dct_dc:
+            Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
+        pub sub16x16_dct:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 16]) -> ()>,
+        pub add16x16_idct_dc: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
+        pub sub8x8_dct8: Option<unsafe extern "C" fn(*mut dctcoef, *mut pixel, *mut pixel) -> ()>,
         pub add8x8_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut dctcoef) -> ()>,
-        pub sub16x16_dct8: Option<
-            unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> (),
-        >,
-        pub add16x16_idct8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> (),
-        >,
+        pub sub16x16_dct8:
+            Option<unsafe extern "C" fn(*mut [dctcoef; 64], *mut pixel, *mut pixel) -> ()>,
+        pub add16x16_idct8: Option<unsafe extern "C" fn(*mut pixel, *mut [dctcoef; 64]) -> ()>,
         pub dct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
         pub idct4x4dc: Option<unsafe extern "C" fn(*mut dctcoef) -> ()>,
-        pub dct2x4dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> (),
-        >,
+        pub dct2x4dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> ()>,
     }
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
@@ -1838,11 +1741,7 @@ pub mod pixel_h {
         pub fpelcmp_x4: [x264_pixel_cmp_x4_t; 7],
         pub sad_aligned: [x264_pixel_cmp_t; 8],
         pub vsad: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, intptr_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub asd8: Option<
             unsafe extern "C" fn(
@@ -1864,9 +1763,7 @@ pub mod pixel_h {
                 *mut ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 4],
-        pub hadamard_ac: [Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t,
-        >; 4],
+        pub hadamard_ac: [Option<unsafe extern "C" fn(*mut pixel, intptr_t) -> uint64_t>; 4],
         pub ssd_nv12_core: Option<
             unsafe extern "C" fn(
                 *mut pixel,
@@ -1910,80 +1807,50 @@ pub mod pixel_h {
                 ::core::ffi::c_int,
             ) -> ::core::ffi::c_int,
         >; 7],
-        pub intra_mbcmp_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_16x16: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_4x4: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_chroma: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x16c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_satd_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8c: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_mbcmp_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sa8d_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
-        pub intra_sad_x3_8x8: Option<
-            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> (),
-        >,
+        pub intra_mbcmp_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_16x16:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_4x4:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_chroma:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x16c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_satd_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8c:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_mbcmp_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sa8d_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
+        pub intra_sad_x3_8x8:
+            Option<unsafe extern "C" fn(*mut pixel, *mut pixel, *mut ::core::ffi::c_int) -> ()>,
         pub intra_mbcmp_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_satd_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_sad_x9_4x4: Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut uint16_t,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut pixel, *mut pixel, *mut uint16_t) -> ::core::ffi::c_int,
         >,
         pub intra_mbcmp_x9_8x8: Option<
             unsafe extern "C" fn(
@@ -2038,35 +1905,23 @@ pub mod pixel_h {
     >;
     #[c2rust::src_loc = "33:1"]
     pub type x264_pixel_cmp_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            intptr_t,
-            *mut pixel,
-            intptr_t,
-        ) -> ::core::ffi::c_int,
+        unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t) -> ::core::ffi::c_int,
     >;
     use super::common_h::pixel;
     use super::stdint_h::intptr_t;
-    use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
+    use super::stdint_uintn_h::{uint16_t, uint64_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:26"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
-        unsafe extern "C" fn(
-            *mut pixel,
-            *mut pixel,
-            ::core::ffi::c_int,
-            ::core::ffi::c_int,
-        ) -> (),
+        unsafe extern "C" fn(*mut pixel, *mut pixel, ::core::ffi::c_int, ::core::ffi::c_int) -> (),
     >;
     #[c2rust::src_loc = "30:1"]
     pub type x264_predict_t = Option<unsafe extern "C" fn(*mut pixel) -> ()>;
     #[c2rust::src_loc = "31:1"]
-    pub type x264_predict8x8_t = Option<
-        unsafe extern "C" fn(*mut pixel, *mut pixel) -> (),
-    >;
+    pub type x264_predict8x8_t = Option<unsafe extern "C" fn(*mut pixel, *mut pixel) -> ()>;
     use super::common_h::pixel;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:26"]
@@ -2186,7 +2041,7 @@ pub mod set_h {
         pub i_top: ::core::ffi::c_int,
         pub i_bottom: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:26"]
 pub mod threadpool_h {
@@ -2251,8 +2106,8 @@ pub mod input_h {
         pub duration: int64_t,
         pub opaque: *mut ::core::ffi::c_void,
     }
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "131:1"]
         pub fn x264_cli_pic_alloc(
@@ -2283,25 +2138,17 @@ pub mod video_h {
             ) -> ::core::ffi::c_int,
         >,
         pub get_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub release_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub free: Option<unsafe extern "C" fn(hnd_t) -> ()>,
         pub next: *mut cli_vid_filter_t,
     }
-    use super::x264cli_h::hnd_t;
-    use super::input_h::{video_info_t, cli_pic_t};
+    use super::input_h::{cli_pic_t, video_info_t};
     use super::x264_h::x264_param_t;
+    use super::x264cli_h::hnd_t;
 }
 #[c2rust::header_src = "/usr/include/stdlib.h:26"]
 pub mod stdlib_h {
@@ -2320,10 +2167,7 @@ pub mod internal_h {
     use super::input_h::cli_pic_t;
     extern "C" {
         #[c2rust::src_loc = "32:1"]
-        pub fn x264_cli_pic_copy(
-            out: *mut cli_pic_t,
-            in_0: *mut cli_pic_t,
-        ) -> ::core::ffi::c_int;
+        pub fn x264_cli_pic_copy(out: *mut cli_pic_t, in_0: *mut cli_pic_t) -> ::core::ffi::c_int;
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:26"]
@@ -2331,58 +2175,56 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::__va_list_tag;
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
-    __uint64_t,
-};
-pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::stdint_h::{intptr_t, uintptr_t};
-pub use self::atomic_wide_counter_h::{__atomic_wide_counter, C2RustUnnamed};
-pub use self::thread_shared_types_h::{
-    __pthread_internal_list, __pthread_list_t, __pthread_cond_s,
-};
-pub use self::struct_mutex_h::__pthread_mutex_s;
-pub use self::pthreadtypes_h::{pthread_t, pthread_mutex_t, pthread_cond_t};
-pub use self::common_h::{
-    x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
-    x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
-    x264_left_table_t, C2RustUnnamed_10, C2RustUnnamed_11, x264_slice_header_t,
-    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18,
-    x264_ratecontrol_t,
-};
-pub use self::frame_h::{
-    x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
-    x264_deblock_intra_t, x264_deblock_inter_t, x264_10_frame_push, x264_10_frame_shift,
-};
-pub use self::x264_h::{
-    x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
-    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, x264_zone_t,
-    C2RustUnnamed_4, C2RustUnnamed_5, X264_LOG_ERROR,
-};
-pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
-pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
+pub use self::atomic_wide_counter_h::{C2RustUnnamed, __atomic_wide_counter};
+pub use self::bitstream_h::{bs_s, bs_t, x264_bitstream_function_t, x264_run_level_t};
 pub use self::cabac_h::x264_cabac_t;
-pub use self::quant_h::x264_quant_function_t;
-pub use self::dct_h::{x264_zigzag_function_t, x264_dct_function_t};
-pub use self::pixel_h::{
-    x264_pixel_function_t, x264_pixel_cmp_x4_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_t,
+pub use self::common_h::{
+    dctcoef, pixel, udctcoef, x264_frame_stat_t, x264_left_table_t, x264_lookahead_t,
+    x264_ratecontrol_t, x264_slice_header_t, x264_t, C2RustUnnamed_10, C2RustUnnamed_11,
+    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, C2RustUnnamed_6,
+    C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
 };
-pub use self::predict_h::{x264_predict_8x8_filter_t, x264_predict_t, x264_predict8x8_t};
+pub use self::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
+pub use self::frame_h::{
+    x264_10_frame_push, x264_10_frame_shift, x264_deblock_function_t, x264_deblock_inter_t,
+    x264_deblock_intra_t, x264_frame, x264_frame_t, x264_sync_frame_list_t,
+};
+pub use self::input_h::{
+    cli_image_t, cli_pic_t, video_info_t, x264_cli_pic_alloc, x264_cli_pic_clean,
+};
+pub use self::internal::__va_list_tag;
+use self::internal_h::x264_cli_pic_copy;
+pub use self::mc_h::{weight_fn_t, x264_mc_functions_t, x264_weight_t};
+pub use self::pixel_h::{
+    x264_pixel_cmp_t, x264_pixel_cmp_x3_t, x264_pixel_cmp_x4_t, x264_pixel_function_t,
+};
+pub use self::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
+pub use self::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
+pub use self::quant_h::x264_quant_function_t;
 pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
+pub use self::stdint_h::{intptr_t, uintptr_t};
+pub use self::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+use self::stdlib_h::{calloc, free, malloc};
+pub use self::struct_mutex_h::__pthread_mutex_s;
+pub use self::thread_shared_types_h::{
+    __pthread_cond_s, __pthread_internal_list, __pthread_list_t,
+};
 use self::threadpool_h::x264_threadpool_t;
-pub use self::x264cli_h::{hnd_t, x264_cli_log};
-pub use self::input_h::{
-    video_info_t, cli_image_t, cli_pic_t, x264_cli_pic_alloc, x264_cli_pic_clean,
+pub use self::types_h::{
+    __int16_t, __int32_t, __int64_t, __int8_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t,
 };
 pub use self::video_h::cli_vid_filter_t;
-use self::stdlib_h::{malloc, calloc, free};
-use self::internal_h::x264_cli_pic_copy;
-pub use self::__stddef_null_h::NULL;
+pub use self::x264_h::{
+    x264_hrd_t, x264_nal_t, x264_param_t, x264_sei_payload_t, x264_sei_t, x264_zone_t,
+    C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
+    C2RustUnnamed_5, X264_LOG_ERROR,
+};
+pub use self::x264cli_h::{hnd_t, x264_cli_log};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "39:9"]
@@ -2396,9 +2238,8 @@ pub struct cache_hnd_t {
     pub eof: ::core::ffi::c_int,
 }
 #[c2rust::src_loc = "34:9"]
-pub const NAME: [::core::ffi::c_char; 9] = unsafe {
-    ::core::mem::transmute::<[u8; 9], [::core::ffi::c_char; 9]>(*b"cache_10\0")
-};
+pub const NAME: [::core::ffi::c_char; 9] =
+    unsafe { ::core::mem::transmute::<[u8; 9], [::core::ffi::c_char; 9]>(*b"cache_10\0") };
 #[c2rust::src_loc = "53:1"]
 unsafe extern "C" fn init(
     mut handle: *mut hnd_t,
@@ -2411,10 +2252,8 @@ unsafe extern "C" fn init(
     if size <= 0 as intptr_t {
         return 0 as ::core::ffi::c_int;
     }
-    let mut h: *mut cache_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<cache_hnd_t>() as size_t,
-    ) as *mut cache_hnd_t;
+    let mut h: *mut cache_hnd_t =
+        calloc(1 as size_t, ::core::mem::size_of::<cache_hnd_t>() as size_t) as *mut cache_hnd_t;
     if h.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
@@ -2429,8 +2268,7 @@ unsafe extern "C" fn init(
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < (*h).max_size {
         let ref mut fresh0 = *(*h).cache.offset(i as isize);
-        *fresh0 = malloc(::core::mem::size_of::<cli_pic_t>() as size_t)
-            as *mut cli_pic_t;
+        *fresh0 = malloc(::core::mem::size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
         if (*(*h).cache.offset(i as isize)).is_null()
             || x264_cli_pic_alloc(
                 *(*h).cache.offset(i as isize),
@@ -2453,18 +2291,17 @@ unsafe extern "C" fn init(
 }
 #[c2rust::src_loc = "84:1"]
 unsafe extern "C" fn fill_cache(mut h: *mut cache_hnd_t, mut frame: ::core::ffi::c_int) {
-    let mut shift: ::core::ffi::c_int = frame
-        - ((*h).first_frame + (*h).cur_size - 1 as ::core::ffi::c_int);
+    let mut shift: ::core::ffi::c_int =
+        frame - ((*h).first_frame + (*h).cur_size - 1 as ::core::ffi::c_int);
     if shift <= 0 as ::core::ffi::c_int || (*h).eof != 0 {
         return;
     }
-    let mut cur_frame: ::core::ffi::c_int = if (*h).first_frame + (*h).cur_size
-        > frame - (*h).max_size + 1 as ::core::ffi::c_int
-    {
-        (*h).first_frame + (*h).cur_size
-    } else {
-        frame - (*h).max_size + 1 as ::core::ffi::c_int
-    };
+    let mut cur_frame: ::core::ffi::c_int =
+        if (*h).first_frame + (*h).cur_size > frame - (*h).max_size + 1 as ::core::ffi::c_int {
+            (*h).first_frame + (*h).cur_size
+        } else {
+            frame - (*h).max_size + 1 as ::core::ffi::c_int
+        };
     (*h).first_frame = if (*h).first_frame + shift < cur_frame {
         (*h).first_frame + shift
     } else {
@@ -2489,28 +2326,26 @@ unsafe extern "C" fn fill_cache(mut h: *mut cache_hnd_t, mut frame: ::core::ffi:
             duration: 0,
             opaque: 0 as *mut ::core::ffi::c_void,
         };
-        let mut cache: *mut cli_pic_t = *(*h)
-            .cache
-            .offset(0 as ::core::ffi::c_int as isize);
+        let mut cache: *mut cli_pic_t = *(*h).cache.offset(0 as ::core::ffi::c_int as isize);
         if (*h)
             .prev_filter
             .get_frame
             .expect("non-null function pointer")((*h).prev_hnd, &mut temp, cur_frame)
-            != 0 || x264_cli_pic_copy(cache, &mut temp) != 0
+            != 0
+            || x264_cli_pic_copy(cache, &mut temp) != 0
             || (*h)
                 .prev_filter
                 .release_frame
-                .expect("non-null function pointer")((*h).prev_hnd, &mut temp, cur_frame)
-                != 0
+                .expect("non-null function pointer")(
+                (*h).prev_hnd, &mut temp, cur_frame
+            ) != 0
         {
             (*h).eof = cur_frame;
             return;
         }
         x264_10_frame_push(
             (*h).cache as *mut ::core::ffi::c_void as *mut *mut x264_frame_t,
-            x264_10_frame_shift(
-                (*h).cache as *mut ::core::ffi::c_void as *mut *mut x264_frame_t,
-            ),
+            x264_10_frame_shift((*h).cache as *mut ::core::ffi::c_void as *mut *mut x264_frame_t),
         );
         cur_frame += 1;
         (*h).cur_size += 1;
@@ -2539,7 +2374,11 @@ unsafe extern "C" fn get_frame(
         return -(1 as ::core::ffi::c_int);
     }
     let mut idx: ::core::ffi::c_int = frame
-        - (if (*h).eof != 0 { (*h).eof - (*h).max_size } else { (*h).first_frame });
+        - (if (*h).eof != 0 {
+            (*h).eof - (*h).max_size
+        } else {
+            (*h).first_frame
+        });
     *output = **(*h).cache.offset(idx as isize);
     return 0 as ::core::ffi::c_int;
 }
@@ -2572,14 +2411,13 @@ pub static mut cache_10_filter: cli_vid_filter_t = unsafe {
             name: NAME.as_ptr(),
             help: None,
             init: Some(
-                init
-                    as unsafe extern "C" fn(
-                        *mut hnd_t,
-                        *mut cli_vid_filter_t,
-                        *mut video_info_t,
-                        *mut x264_param_t,
-                        *mut ::core::ffi::c_char,
-                    ) -> ::core::ffi::c_int,
+                init as unsafe extern "C" fn(
+                    *mut hnd_t,
+                    *mut cli_vid_filter_t,
+                    *mut video_info_t,
+                    *mut x264_param_t,
+                    *mut ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
             ),
             get_frame: Some(
                 get_frame

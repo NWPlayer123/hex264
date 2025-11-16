@@ -40,7 +40,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdint.h:26"]
 pub mod stdint_h {
@@ -167,11 +167,7 @@ pub mod x264_h {
         pub i_slice_count_max: ::core::ffi::c_int,
         pub param_free: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>,
         pub nalu_process: Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut x264_nal_t,
-                *mut ::core::ffi::c_void,
-            ) -> (),
+            unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut ::core::ffi::c_void) -> (),
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
@@ -289,9 +285,9 @@ pub mod x264_h {
     }
     #[c2rust::src_loc = "289:9"]
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "80:16"]
         pub type x264_t;
@@ -353,8 +349,8 @@ pub mod input_h {
         pub duration: int64_t,
         pub opaque: *mut ::core::ffi::c_void,
     }
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/filters/video/video.h:26"]
 pub mod video_h {
@@ -374,25 +370,17 @@ pub mod video_h {
             ) -> ::core::ffi::c_int,
         >,
         pub get_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub release_frame: Option<
-            unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(hnd_t, *mut cli_pic_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
         pub free: Option<unsafe extern "C" fn(hnd_t) -> ()>,
         pub next: *mut cli_vid_filter_t,
     }
-    use super::x264cli_h::hnd_t;
-    use super::input_h::{video_info_t, cli_pic_t};
+    use super::input_h::{cli_pic_t, video_info_t};
     use super::x264_h::x264_param_t;
+    use super::x264cli_h::hnd_t;
     extern "C" {
         #[c2rust::src_loc = "60:1"]
         pub fn x264_init_vid_filter(
@@ -469,26 +457,25 @@ pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::__va_list_tag;
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{__uint8_t, __uint32_t, __int64_t, __uint64_t};
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t, uint64_t};
+use self::base_h::x264_reduce_fraction;
+use self::filters_h::x264_otoi;
+pub use self::input_h::{cli_image_t, cli_pic_t, video_info_t};
+pub use self::internal::__va_list_tag;
 pub use self::stdint_h::intptr_t;
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
+use self::stdio_h::{printf, sprintf};
+use self::stdlib_h::{free, malloc};
+use self::string_h::{memcpy, strtok_r};
+pub use self::types_h::{__int64_t, __uint32_t, __uint64_t, __uint8_t};
+pub use self::video_h::{cli_vid_filter_t, x264_init_vid_filter};
 pub use self::x264_h::{
-    x264_nal_t, x264_zone_t, x264_param_t, C2RustUnnamed, C2RustUnnamed_0,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_LOG_ERROR,
-    x264_t,
+    x264_nal_t, x264_param_t, x264_t, x264_zone_t, C2RustUnnamed, C2RustUnnamed_0, C2RustUnnamed_1,
+    C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, X264_LOG_ERROR,
 };
 pub use self::x264cli_h::{hnd_t, x264_cli_log};
-pub use self::input_h::{video_info_t, cli_image_t, cli_pic_t};
-pub use self::video_h::{cli_vid_filter_t, x264_init_vid_filter};
-use self::stdlib_h::{malloc, free};
-use self::string_h::{memcpy, strtok_r};
-use self::base_h::x264_reduce_fraction;
-use self::stdio_h::{printf, sprintf};
-use self::filters_h::x264_otoi;
-pub use self::__stddef_null_h::NULL;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "33:9"]
@@ -502,15 +489,11 @@ pub struct selvry_hnd_t {
     pub pts: int64_t,
 }
 #[c2rust::src_loc = "28:9"]
-pub const NAME: [::core::ffi::c_char; 13] = unsafe {
-    ::core::mem::transmute::<[u8; 13], [::core::ffi::c_char; 13]>(*b"select_every\0")
-};
+pub const NAME: [::core::ffi::c_char; 13] =
+    unsafe { ::core::mem::transmute::<[u8; 13], [::core::ffi::c_char; 13]>(*b"select_every\0") };
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn help(mut longhelp: ::core::ffi::c_int) {
-    printf(
-        b"      select_every:step,offset1[,...]\n\0" as *const u8
-            as *const ::core::ffi::c_char,
-    );
+    printf(b"      select_every:step,offset1[,...]\n\0" as *const u8 as *const ::core::ffi::c_char);
     if longhelp == 0 {
         return;
     }
@@ -527,9 +510,8 @@ unsafe extern "C" fn init(
     mut param: *mut x264_param_t,
     mut opt_string: *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
-    let mut h: *mut selvry_hnd_t = malloc(
-        ::core::mem::size_of::<selvry_hnd_t>() as size_t,
-    ) as *mut selvry_hnd_t;
+    let mut h: *mut selvry_hnd_t =
+        malloc(::core::mem::size_of::<selvry_hnd_t>() as size_t) as *mut selvry_hnd_t;
     if h.is_null() {
         return -(1 as ::core::ffi::c_int);
     }
@@ -565,8 +547,7 @@ unsafe extern "C" fn init(
                 x264_cli_log(
                     b"select_every\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"invalid offset `%s'\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"invalid offset `%s'\n\0" as *const u8 as *const ::core::ffi::c_char,
                     tok,
                 );
                 return -(1 as ::core::ffi::c_int);
@@ -575,8 +556,7 @@ unsafe extern "C" fn init(
                 x264_cli_log(
                     b"select_every\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
-                    b"max pattern size %d reached\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"max pattern size %d reached\n\0" as *const u8 as *const ::core::ffi::c_char,
                     100 as ::core::ffi::c_int,
                 );
                 return -(1 as ::core::ffi::c_int);
@@ -620,16 +600,20 @@ unsafe extern "C" fn init(
     let mut min: ::core::ffi::c_int = (*h).step_size;
     let mut i: ::core::ffi::c_int = (*h).pattern_len - 1 as ::core::ffi::c_int;
     while i >= 0 as ::core::ffi::c_int {
-        min = if min < offsets[i as usize] { min } else { offsets[i as usize] };
+        min = if min < offsets[i as usize] {
+            min
+        } else {
+            offsets[i as usize]
+        };
         if i != 0 {
             max_rewind = if max_rewind
-                > (offsets[(i - 1 as ::core::ffi::c_int) as usize] - min
-                    + 1 as ::core::ffi::c_int) as intptr_t
+                > (offsets[(i - 1 as ::core::ffi::c_int) as usize] - min + 1 as ::core::ffi::c_int)
+                    as intptr_t
             {
                 max_rewind
             } else {
-                (offsets[(i - 1 as ::core::ffi::c_int) as usize] - min
-                    + 1 as ::core::ffi::c_int) as intptr_t
+                (offsets[(i - 1 as ::core::ffi::c_int) as usize] - min + 1 as ::core::ffi::c_int)
+                    as intptr_t
             };
         }
         if max_rewind == (*h).step_size as intptr_t {
@@ -657,7 +641,8 @@ unsafe extern "C" fn init(
     if (*h).step_size != (*h).pattern_len {
         (*info).num_frames = ((*info).num_frames as uint64_t)
             .wrapping_mul((*h).pattern_len as uint64_t)
-            .wrapping_div((*h).step_size as uint64_t) as ::core::ffi::c_int;
+            .wrapping_div((*h).step_size as uint64_t)
+            as ::core::ffi::c_int;
         (*info).fps_den = (*info).fps_den.wrapping_mul((*h).step_size as uint32_t);
         (*info).fps_num = (*info).fps_num.wrapping_mul((*h).pattern_len as uint32_t);
         x264_reduce_fraction(&mut (*info).fps_num, &mut (*info).fps_den);
@@ -686,14 +671,14 @@ unsafe extern "C" fn get_frame(
     mut frame: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut h: *mut selvry_hnd_t = handle as *mut selvry_hnd_t;
-    let mut pat_frame: ::core::ffi::c_int = *(*h)
-        .pattern
-        .offset((frame % (*h).pattern_len) as isize)
-        + frame / (*h).pattern_len * (*h).step_size;
+    let mut pat_frame: ::core::ffi::c_int =
+        *(*h).pattern.offset((frame % (*h).pattern_len) as isize)
+            + frame / (*h).pattern_len * (*h).step_size;
     if (*h)
         .prev_filter
         .get_frame
-        .expect("non-null function pointer")((*h).prev_hnd, output, pat_frame) != 0
+        .expect("non-null function pointer")((*h).prev_hnd, output, pat_frame)
+        != 0
     {
         return -(1 as ::core::ffi::c_int);
     }
@@ -710,10 +695,9 @@ unsafe extern "C" fn release_frame(
     mut frame: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut h: *mut selvry_hnd_t = handle as *mut selvry_hnd_t;
-    let mut pat_frame: ::core::ffi::c_int = *(*h)
-        .pattern
-        .offset((frame % (*h).pattern_len) as isize)
-        + frame / (*h).pattern_len * (*h).step_size;
+    let mut pat_frame: ::core::ffi::c_int =
+        *(*h).pattern.offset((frame % (*h).pattern_len) as isize)
+            + frame / (*h).pattern_len * (*h).step_size;
     return (*h)
         .prev_filter
         .release_frame
@@ -734,14 +718,13 @@ pub static mut select_every_filter: cli_vid_filter_t = unsafe {
             name: NAME.as_ptr(),
             help: Some(help as unsafe extern "C" fn(::core::ffi::c_int) -> ()),
             init: Some(
-                init
-                    as unsafe extern "C" fn(
-                        *mut hnd_t,
-                        *mut cli_vid_filter_t,
-                        *mut video_info_t,
-                        *mut x264_param_t,
-                        *mut ::core::ffi::c_char,
-                    ) -> ::core::ffi::c_int,
+                init as unsafe extern "C" fn(
+                    *mut hnd_t,
+                    *mut cli_vid_filter_t,
+                    *mut video_info_t,
+                    *mut x264_param_t,
+                    *mut ::core::ffi::c_char,
+                ) -> ::core::ffi::c_int,
             ),
             get_frame: Some(
                 get_frame

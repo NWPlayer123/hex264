@@ -81,7 +81,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -106,7 +106,7 @@ pub mod struct_timespec_h {
         pub tv_sec: __time_t,
         pub tv_nsec: __syscall_slong_t,
     }
-    use super::types_h::{__time_t, __syscall_slong_t};
+    use super::types_h::{__syscall_slong_t, __time_t};
 }
 #[c2rust::header_src = "/usr/include/bits/struct_stat.h:26"]
 pub mod struct_stat_h {
@@ -130,11 +130,11 @@ pub mod struct_stat_h {
         pub st_ctim: timespec,
         pub __glibc_reserved: [__syscall_slong_t; 3],
     }
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t,
-    };
     use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __uid_t,
+    };
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:26"]
 pub mod stdint_intn_h {
@@ -150,7 +150,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264cli.h:26"]
 pub mod x264cli_h {
@@ -166,15 +166,15 @@ pub mod x264cli_h {
             }
             a = b;
             b = c as uint64_t;
-        };
+        }
     }
     #[inline]
     #[c2rust::src_loc = "62:1"]
     pub unsafe extern "C" fn lcm(mut a: uint64_t, mut b: uint64_t) -> uint64_t {
         return a.wrapping_div(gcd(a, b)).wrapping_mul(b);
     }
-    use super::stdint_uintn_h::uint64_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint64_t;
     extern "C" {
         #[c2rust::src_loc = "76:1"]
         pub fn x264_cli_log(
@@ -265,20 +265,15 @@ pub mod input_h {
             ) -> ::core::ffi::c_int,
         >,
         pub read_frame: Option<
-            unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut cli_pic_t, hnd_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
-        pub release_frame: Option<
-            unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
-        >,
+        pub release_frame:
+            Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int>,
         pub picture_clean: Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()>,
         pub close_file: Option<unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int>,
     }
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::x264cli_h::hnd_t;
     extern "C" {
         #[c2rust::src_loc = "111:20"]
@@ -289,8 +284,8 @@ pub mod input_h {
 pub mod stdio_h {
     #[c2rust::src_loc = "110:9"]
     pub const SEEK_SET: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    use super::FILE_h::FILE;
     use super::types_h::__off64_t;
+    use super::FILE_h::FILE;
     extern "C" {
         #[c2rust::src_loc = "187:1"]
         pub fn fclose(__stream: *mut FILE) -> ::core::ffi::c_int;
@@ -351,9 +346,7 @@ pub mod stdlib_h {
 pub mod osdep_h {
     #[inline]
     #[c2rust::src_loc = "270:1"]
-    pub unsafe extern "C" fn x264_is_regular_file(
-        mut filehandle: *mut FILE,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn x264_is_regular_file(mut filehandle: *mut FILE) -> ::core::ffi::c_int {
         let mut file_stat: stat = stat {
             st_dev: 0,
             st_ino: 0,
@@ -366,9 +359,18 @@ pub mod osdep_h {
             st_size: 0,
             st_blksize: 0,
             st_blocks: 0,
-            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_atim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_mtim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_ctim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
             __glibc_reserved: [0; 3],
         };
         if fstat(fileno(filehandle), &mut file_stat) != 0 {
@@ -377,16 +379,16 @@ pub mod osdep_h {
         return (file_stat.st_mode & __S_IFMT as __mode_t == 0o100000 as __mode_t)
             as ::core::ffi::c_int;
     }
-    use super::FILE_h::FILE;
-    use super::struct_stat_h::stat;
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t, __time_t,
-    };
-    use super::struct_timespec_h::timespec;
+    use super::bits_stat_h::__S_IFMT;
     use super::stat_h::fstat;
     use super::stdio_h::fileno;
-    use super::bits_stat_h::__S_IFMT;
+    use super::struct_stat_h::stat;
+    use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __time_t, __uid_t,
+    };
+    use super::FILE_h::FILE;
 }
 #[c2rust::header_src = "/usr/include/stdint.h:26"]
 pub mod stdint_h {
@@ -399,10 +401,8 @@ pub mod mathcalls_h {
         #[c2rust::src_loc = "129:1"]
         pub fn log10(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
         #[c2rust::src_loc = "177:1"]
-        pub fn pow(
-            __x: ::core::ffi::c_double,
-            __y: ::core::ffi::c_double,
-        ) -> ::core::ffi::c_double;
+        pub fn pow(__x: ::core::ffi::c_double, __y: ::core::ffi::c_double)
+            -> ::core::ffi::c_double;
         #[c2rust::src_loc = "216:1"]
         pub fn fabs(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
         #[c2rust::src_loc = "219:1"]
@@ -429,31 +429,28 @@ pub mod __stddef_null_h {
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __uint32_t, __int64_t, __uint64_t, __dev_t, __uid_t, __gid_t, __ino_t,
-    __mode_t, __nlink_t, __off_t, __off64_t, __time_t, __blksize_t, __blkcnt_t,
-    __syscall_slong_t,
-};
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::struct_timespec_h::timespec;
-pub use self::struct_stat_h::stat;
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint32_t, uint64_t};
-pub use self::x264cli_h::{hnd_t, gcd, lcm, x264_cli_log};
-pub use self::input_h::{
-    cli_input_opt_t, video_info_t, cli_image_t, cli_pic_t, cli_input_t, cli_input,
-};
-pub use self::stdio_h::{SEEK_SET, fclose, fopen, sscanf, fgets, fseeko, ftello, fileno};
-use self::stat_h::fstat;
-use self::stdlib_h::{strtoul, malloc, free};
-pub use self::osdep_h::x264_is_regular_file;
-pub use self::stdint_h::UINT32_MAX;
-use self::mathcalls_h::{log10, pow, fabs, floor, round};
-pub use self::x264_h::{X264_LOG_ERROR, X264_LOG_INFO};
 pub use self::bits_stat_h::__S_IFMT;
+pub use self::input_h::{
+    cli_image_t, cli_input, cli_input_opt_t, cli_input_t, cli_pic_t, video_info_t,
+};
+use self::mathcalls_h::{fabs, floor, log10, pow, round};
+pub use self::osdep_h::x264_is_regular_file;
+use self::stat_h::fstat;
+pub use self::stdint_h::UINT32_MAX;
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
+pub use self::stdio_h::{fclose, fgets, fileno, fopen, fseeko, ftello, sscanf, SEEK_SET};
+use self::stdlib_h::{free, malloc, strtoul};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::struct_stat_h::stat;
+pub use self::struct_timespec_h::timespec;
+pub use self::types_h::{
+    __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __int64_t, __mode_t, __nlink_t, __off64_t,
+    __off_t, __syscall_slong_t, __time_t, __uid_t, __uint32_t, __uint64_t, __uint8_t,
+};
+pub use self::x264_h::{X264_LOG_ERROR, X264_LOG_INFO};
+pub use self::x264cli_h::{gcd, hnd_t, lcm, x264_cli_log};
+pub use self::FILE_h::FILE;
 pub use self::__stddef_null_h::NULL;
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -498,8 +495,7 @@ unsafe extern "C" fn correct_fps(
     let mut fps_sig: ::core::ffi::c_double = sigexp10(fps, &mut exponent);
     loop {
         fps_den = (i as uint64_t).wrapping_mul((*h).timebase_num);
-        fps_num = (round(fps_den as ::core::ffi::c_double * fps_sig) * exponent)
-            as uint64_t;
+        fps_num = (round(fps_den as ::core::ffi::c_double * fps_sig) * exponent) as uint64_t;
         if fps_num > 4294967295 as uint64_t {
             x264_cli_log(
                 b"timecode\0" as *const u8 as *const ::core::ffi::c_char,
@@ -510,8 +506,8 @@ unsafe extern "C" fn correct_fps(
             return -(1 as ::core::ffi::c_int) as ::core::ffi::c_double;
         }
         if fabs(
-            fps_num as ::core::ffi::c_double / fps_den as ::core::ffi::c_double
-                / exponent - fps_sig,
+            fps_num as ::core::ffi::c_double / fps_den as ::core::ffi::c_double / exponent
+                - fps_sig,
         ) < DOUBLE_EPSILON
         {
             break;
@@ -542,12 +538,10 @@ unsafe extern "C" fn try_mkv_timebase_den(
     while num < loop_num {
         let mut fps_den: uint64_t = 0;
         let mut exponent: ::core::ffi::c_double = 0.;
-        let mut fps_sig: ::core::ffi::c_double = sigexp10(
-            *fpss.offset(num as isize),
-            &mut exponent,
-        );
-        fps_den = (round(MKV_TIMEBASE_DEN as ::core::ffi::c_double / fps_sig) / exponent)
-            as uint64_t;
+        let mut fps_sig: ::core::ffi::c_double =
+            sigexp10(*fpss.offset(num as isize), &mut exponent);
+        fps_den =
+            (round(MKV_TIMEBASE_DEN as ::core::ffi::c_double / fps_sig) / exponent) as uint64_t;
         (*h).timebase_num = if fps_den != 0 && (*h).timebase_num != 0 {
             gcd((*h).timebase_num, fps_den)
         } else {
@@ -582,11 +576,11 @@ unsafe extern "C" fn parse_tcfile(
     let mut timecodes: *mut ::core::ffi::c_double = 0 as *mut ::core::ffi::c_double;
     let mut fpss: *mut ::core::ffi::c_double = 0 as *mut ::core::ffi::c_double;
     ret = (!fgets(
-            buff.as_mut_ptr(),
-            ::core::mem::size_of::<[::core::ffi::c_char; 256]>() as ::core::ffi::c_int,
-            tcfile_in,
-        )
-        .is_null()
+        buff.as_mut_ptr(),
+        ::core::mem::size_of::<[::core::ffi::c_char; 256]>() as ::core::ffi::c_int,
+        tcfile_in,
+    )
+    .is_null()
         && (sscanf(
             buff.as_mut_ptr(),
             b"# timecode format v%d\0" as *const u8 as *const ::core::ffi::c_char,
@@ -616,18 +610,15 @@ unsafe extern "C" fn parse_tcfile(
         (*h).assume_fps = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
         num = 2 as ::core::ffi::c_int;
         while !fgets(
-                buff.as_mut_ptr(),
-                ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
-                    as ::core::ffi::c_int,
-                tcfile_in,
-            )
-            .is_null()
+            buff.as_mut_ptr(),
+            ::core::mem::size_of::<[::core::ffi::c_char; 256]>() as ::core::ffi::c_int,
+            tcfile_in,
+        )
+        .is_null()
         {
             if buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '#' as i32
-                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                    == '\n' as i32
-                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                    == '\r' as i32
+                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\n' as i32
+                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\r' as i32
             {
                 num += 1;
             } else {
@@ -657,8 +648,7 @@ unsafe extern "C" fn parse_tcfile(
             x264_cli_log(
                 b"timecode\0" as *const u8 as *const ::core::ffi::c_char,
                 X264_LOG_ERROR,
-                b"invalid assumed fps %.6f\n\0" as *const u8
-                    as *const ::core::ffi::c_char,
+                b"invalid assumed fps %.6f\n\0" as *const u8 as *const ::core::ffi::c_char,
                 (*h).assume_fps,
             );
             return -(1 as ::core::ffi::c_int);
@@ -667,18 +657,15 @@ unsafe extern "C" fn parse_tcfile(
         (*h).stored_pts_num = 0 as ::core::ffi::c_int;
         seq_num = 0 as ::core::ffi::c_int;
         while !fgets(
-                buff.as_mut_ptr(),
-                ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
-                    as ::core::ffi::c_int,
-                tcfile_in,
-            )
-            .is_null()
+            buff.as_mut_ptr(),
+            ::core::mem::size_of::<[::core::ffi::c_char; 256]>() as ::core::ffi::c_int,
+            tcfile_in,
+        )
+        .is_null()
         {
             if buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '#' as i32
-                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                    == '\n' as i32
-                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                    == '\r' as i32
+                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\n' as i32
+                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\r' as i32
             {
                 if sscanf(
                     buff.as_mut_ptr(),
@@ -701,12 +688,13 @@ unsafe extern "C" fn parse_tcfile(
                     x264_cli_log(
                         b"timecode\0" as *const u8 as *const ::core::ffi::c_char,
                         X264_LOG_ERROR,
-                        b"invalid input tcfile\n\0" as *const u8
-                            as *const ::core::ffi::c_char,
+                        b"invalid input tcfile\n\0" as *const u8 as *const ::core::ffi::c_char,
                     );
                     return -(1 as ::core::ffi::c_int);
                 }
-                if start > end || start <= prev_start || end <= prev_end
+                if start > end
+                    || start <= prev_start
+                    || end <= prev_end
                     || seq_fps <= 0 as ::core::ffi::c_int as ::core::ffi::c_double
                 {
                     x264_cli_log(
@@ -742,9 +730,7 @@ unsafe extern "C" fn parse_tcfile(
         if (*h).auto_timebase_den != 0 || (*h).auto_timebase_num != 0 {
             fpss = malloc(
                 ((seq_num + 1 as ::core::ffi::c_int) as size_t)
-                    .wrapping_mul(
-                        ::core::mem::size_of::<::core::ffi::c_double>() as size_t,
-                    ),
+                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_double>() as size_t),
             ) as *mut ::core::ffi::c_double;
             if fpss.is_null() {
                 current_block = 15792084957793291482;
@@ -761,29 +747,29 @@ unsafe extern "C" fn parse_tcfile(
                 if assume_fps < 0 as ::core::ffi::c_int as ::core::ffi::c_double {
                     current_block = 15792084957793291482;
                 } else {
-                    *timecodes.offset(0 as ::core::ffi::c_int as isize) = 0
-                        as ::core::ffi::c_int as ::core::ffi::c_double;
+                    *timecodes.offset(0 as ::core::ffi::c_int as isize) =
+                        0 as ::core::ffi::c_int as ::core::ffi::c_double;
                     seq_num = 0 as ::core::ffi::c_int;
                     num = seq_num;
                     loop {
                         if !(num < timecodes_num - 1 as ::core::ffi::c_int
                             && !fgets(
-                                    buff.as_mut_ptr(),
-                                    ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
-                                        as ::core::ffi::c_int,
-                                    tcfile_in,
-                                )
-                                .is_null())
+                                buff.as_mut_ptr(),
+                                ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
+                                    as ::core::ffi::c_int,
+                                tcfile_in,
+                            )
+                            .is_null())
                         {
                             current_block = 13660591889533726445;
                             break;
                         }
                         if buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
                             == '#' as i32
-                            || buff[0 as ::core::ffi::c_int as usize]
-                                as ::core::ffi::c_int == '\n' as i32
-                            || buff[0 as ::core::ffi::c_int as usize]
-                                as ::core::ffi::c_int == '\r' as i32
+                            || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+                                == '\n' as i32
+                            || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+                                == '\r' as i32
                         {
                             continue;
                         }
@@ -798,14 +784,10 @@ unsafe extern "C" fn parse_tcfile(
                             end = timecodes_num - 1 as ::core::ffi::c_int;
                             start = end;
                         }
-                        while num < start
-                            && num < timecodes_num - 1 as ::core::ffi::c_int
-                        {
-                            *timecodes
-                                .offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
+                        while num < start && num < timecodes_num - 1 as ::core::ffi::c_int {
+                            *timecodes.offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
                                 .offset(num as isize)
-                                + 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                                    / assume_fps;
+                                + 1 as ::core::ffi::c_int as ::core::ffi::c_double / assume_fps;
                             num += 1;
                         }
                         if !(num < timecodes_num - 1 as ::core::ffi::c_int) {
@@ -822,13 +804,10 @@ unsafe extern "C" fn parse_tcfile(
                             break;
                         }
                         num = start;
-                        while num <= end && num < timecodes_num - 1 as ::core::ffi::c_int
-                        {
-                            *timecodes
-                                .offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
+                        while num <= end && num < timecodes_num - 1 as ::core::ffi::c_int {
+                            *timecodes.offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
                                 .offset(num as isize)
-                                + 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                                    / seq_fps;
+                                + 1 as ::core::ffi::c_int as ::core::ffi::c_double / seq_fps;
                             num += 1;
                         }
                     }
@@ -836,27 +815,21 @@ unsafe extern "C" fn parse_tcfile(
                         15792084957793291482 => {}
                         _ => {
                             while num < timecodes_num - 1 as ::core::ffi::c_int {
-                                *timecodes
-                                    .offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
-                                    .offset(num as isize)
-                                    + 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                                        / assume_fps;
+                                *timecodes.offset((num + 1 as ::core::ffi::c_int) as isize) =
+                                    *timecodes.offset(num as isize)
+                                        + 1 as ::core::ffi::c_int as ::core::ffi::c_double
+                                            / assume_fps;
                                 num += 1;
                             }
-                            if (*h).auto_timebase_den != 0 || (*h).auto_timebase_num != 0
-                            {
+                            if (*h).auto_timebase_den != 0 || (*h).auto_timebase_num != 0 {
                                 *fpss.offset(seq_num as isize) = (*h).assume_fps;
                             }
-                            if (*h).auto_timebase_num != 0 && (*h).auto_timebase_den == 0
-                            {
+                            if (*h).auto_timebase_num != 0 && (*h).auto_timebase_den == 0 {
                                 let mut exponent: ::core::ffi::c_double = 0.;
                                 let mut assume_fps_sig: ::core::ffi::c_double = 0.;
                                 let mut seq_fps_sig: ::core::ffi::c_double = 0.;
-                                if try_mkv_timebase_den(
-                                    fpss,
-                                    h,
-                                    seq_num + 1 as ::core::ffi::c_int,
-                                ) < 0 as ::core::ffi::c_int
+                                if try_mkv_timebase_den(fpss, h, seq_num + 1 as ::core::ffi::c_int)
+                                    < 0 as ::core::ffi::c_int
                                 {
                                     current_block = 15792084957793291482;
                                 } else {
@@ -864,30 +837,35 @@ unsafe extern "C" fn parse_tcfile(
                                     assume_fps_sig = sigexp10((*h).assume_fps, &mut exponent);
                                     assume_fps = MKV_TIMEBASE_DEN as ::core::ffi::c_double
                                         / (round(
-                                            MKV_TIMEBASE_DEN as ::core::ffi::c_double / assume_fps_sig,
+                                            MKV_TIMEBASE_DEN as ::core::ffi::c_double
+                                                / assume_fps_sig,
                                         ) / exponent);
                                     num = 0 as ::core::ffi::c_int;
                                     while num < timecodes_num - 1 as ::core::ffi::c_int
                                         && !fgets(
-                                                buff.as_mut_ptr(),
-                                                ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
-                                                    as ::core::ffi::c_int,
-                                                tcfile_in,
-                                            )
-                                            .is_null()
+                                            buff.as_mut_ptr(),
+                                            ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
+                                                as ::core::ffi::c_int,
+                                            tcfile_in,
+                                        )
+                                        .is_null()
                                     {
                                         if buff[0 as ::core::ffi::c_int as usize]
-                                            as ::core::ffi::c_int == '#' as i32
+                                            as ::core::ffi::c_int
+                                            == '#' as i32
                                             || buff[0 as ::core::ffi::c_int as usize]
-                                                as ::core::ffi::c_int == '\n' as i32
+                                                as ::core::ffi::c_int
+                                                == '\n' as i32
                                             || buff[0 as ::core::ffi::c_int as usize]
-                                                as ::core::ffi::c_int == '\r' as i32
+                                                as ::core::ffi::c_int
+                                                == '\r' as i32
                                         {
                                             continue;
                                         }
                                         ret = sscanf(
                                             buff.as_mut_ptr(),
-                                            b"%d,%d,%lf\0" as *const u8 as *const ::core::ffi::c_char,
+                                            b"%d,%d,%lf\0" as *const u8
+                                                as *const ::core::ffi::c_char,
                                             &mut start as *mut ::core::ffi::c_int,
                                             &mut end as *mut ::core::ffi::c_int,
                                             &mut seq_fps as *mut ::core::ffi::c_double,
@@ -899,16 +877,18 @@ unsafe extern "C" fn parse_tcfile(
                                         seq_fps_sig = sigexp10(seq_fps, &mut exponent);
                                         seq_fps = MKV_TIMEBASE_DEN as ::core::ffi::c_double
                                             / (round(
-                                                MKV_TIMEBASE_DEN as ::core::ffi::c_double / seq_fps_sig,
+                                                MKV_TIMEBASE_DEN as ::core::ffi::c_double
+                                                    / seq_fps_sig,
                                             ) / exponent);
                                         while num < start
                                             && num < timecodes_num - 1 as ::core::ffi::c_int
                                         {
                                             *timecodes
-                                                .offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
-                                                .offset(num as isize)
-                                                + 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                                                    / assume_fps;
+                                                .offset((num + 1 as ::core::ffi::c_int) as isize) =
+                                                *timecodes.offset(num as isize)
+                                                    + 1 as ::core::ffi::c_int
+                                                        as ::core::ffi::c_double
+                                                        / assume_fps;
                                             num += 1;
                                         }
                                         num = start;
@@ -916,19 +896,20 @@ unsafe extern "C" fn parse_tcfile(
                                             && num < timecodes_num - 1 as ::core::ffi::c_int
                                         {
                                             *timecodes
-                                                .offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
-                                                .offset(num as isize)
-                                                + 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                                                    / seq_fps;
+                                                .offset((num + 1 as ::core::ffi::c_int) as isize) =
+                                                *timecodes.offset(num as isize)
+                                                    + 1 as ::core::ffi::c_int
+                                                        as ::core::ffi::c_double
+                                                        / seq_fps;
                                             num += 1;
                                         }
                                     }
                                     while num < timecodes_num - 1 as ::core::ffi::c_int {
                                         *timecodes
-                                            .offset((num + 1 as ::core::ffi::c_int) as isize) = *timecodes
-                                            .offset(num as isize)
-                                            + 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                                                / assume_fps;
+                                            .offset((num + 1 as ::core::ffi::c_int) as isize) =
+                                            *timecodes.offset(num as isize)
+                                                + 1 as ::core::ffi::c_int as ::core::ffi::c_double
+                                                    / assume_fps;
                                         num += 1;
                                     }
                                     current_block = 496303045384785551;
@@ -958,18 +939,15 @@ unsafe extern "C" fn parse_tcfile(
         let mut file_pos_0: int64_t = ftello(tcfile_in) as int64_t;
         (*h).stored_pts_num = 0 as ::core::ffi::c_int;
         while !fgets(
-                buff.as_mut_ptr(),
-                ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
-                    as ::core::ffi::c_int,
-                tcfile_in,
-            )
-            .is_null()
+            buff.as_mut_ptr(),
+            ::core::mem::size_of::<[::core::ffi::c_char; 256]>() as ::core::ffi::c_int,
+            tcfile_in,
+        )
+        .is_null()
         {
             if buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '#' as i32
-                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                    == '\n' as i32
-                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                    == '\r' as i32
+                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\n' as i32
+                || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\r' as i32
             {
                 if (*h).stored_pts_num == 0 {
                     file_pos_0 = ftello(tcfile_in) as int64_t;
@@ -998,12 +976,11 @@ unsafe extern "C" fn parse_tcfile(
         }
         num = 0 as ::core::ffi::c_int;
         if !fgets(
-                buff.as_mut_ptr(),
-                ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
-                    as ::core::ffi::c_int,
-                tcfile_in,
-            )
-            .is_null()
+            buff.as_mut_ptr(),
+            ::core::mem::size_of::<[::core::ffi::c_char; 256]>() as ::core::ffi::c_int,
+            tcfile_in,
+        )
+        .is_null()
         {
             ret = sscanf(
                 buff.as_mut_ptr(),
@@ -1024,19 +1001,15 @@ unsafe extern "C" fn parse_tcfile(
             num = 1 as ::core::ffi::c_int;
             while num < timecodes_num
                 && !fgets(
-                        buff.as_mut_ptr(),
-                        ::core::mem::size_of::<[::core::ffi::c_char; 256]>()
-                            as ::core::ffi::c_int,
-                        tcfile_in,
-                    )
-                    .is_null()
+                    buff.as_mut_ptr(),
+                    ::core::mem::size_of::<[::core::ffi::c_char; 256]>() as ::core::ffi::c_int,
+                    tcfile_in,
+                )
+                .is_null()
             {
-                if buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                    == '#' as i32
-                    || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                        == '\n' as i32
-                    || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                        == '\r' as i32
+                if buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '#' as i32
+                    || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\n' as i32
+                    || buff[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int == '\r' as i32
                 {
                     continue;
                 }
@@ -1078,17 +1051,14 @@ unsafe extern "C" fn parse_tcfile(
         } else if (*h).auto_timebase_den != 0 {
             fpss = malloc(
                 ((timecodes_num - 1 as ::core::ffi::c_int) as size_t)
-                    .wrapping_mul(
-                        ::core::mem::size_of::<::core::ffi::c_double>() as size_t,
-                    ),
+                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_double>() as size_t),
             ) as *mut ::core::ffi::c_double;
             if fpss.is_null() {
                 current_block = 15792084957793291482;
             } else {
                 num = 0 as ::core::ffi::c_int;
                 while num < timecodes_num - 1 as ::core::ffi::c_int {
-                    *fpss.offset(num as isize) = 1 as ::core::ffi::c_int
-                        as ::core::ffi::c_double
+                    *fpss.offset(num as isize) = 1 as ::core::ffi::c_int as ::core::ffi::c_double
                         / (*timecodes.offset((num + 1 as ::core::ffi::c_int) as isize)
                             - *timecodes.offset(num as isize));
                     if (*h).auto_timebase_den != 0 {
@@ -1096,10 +1066,8 @@ unsafe extern "C" fn parse_tcfile(
                         let mut fps_num: uint64_t = 0;
                         let mut fps_den: uint64_t = 0;
                         let mut exponent_0: ::core::ffi::c_double = 0.;
-                        let mut fps_sig: ::core::ffi::c_double = sigexp10(
-                            *fpss.offset(num as isize),
-                            &mut exponent_0,
-                        );
+                        let mut fps_sig: ::core::ffi::c_double =
+                            sigexp10(*fpss.offset(num as isize), &mut exponent_0);
                         loop {
                             fps_den = (i as uint64_t).wrapping_mul((*h).timebase_num);
                             fps_num = (round(fps_den as ::core::ffi::c_double * fps_sig)
@@ -1107,7 +1075,9 @@ unsafe extern "C" fn parse_tcfile(
                             if fps_num > UINT32_MAX as uint64_t
                                 || fabs(
                                     fps_num as ::core::ffi::c_double
-                                        / fps_den as ::core::ffi::c_double / exponent_0 - fps_sig,
+                                        / fps_den as ::core::ffi::c_double
+                                        / exponent_0
+                                        - fps_sig,
                                 ) < DOUBLE_EPSILON
                             {
                                 break;
@@ -1126,11 +1096,8 @@ unsafe extern "C" fn parse_tcfile(
                     num += 1;
                 }
                 if (*h).auto_timebase_num != 0 && (*h).auto_timebase_den == 0 {
-                    if try_mkv_timebase_den(
-                        fpss,
-                        h,
-                        timecodes_num - 1 as ::core::ffi::c_int,
-                    ) < 0 as ::core::ffi::c_int
+                    if try_mkv_timebase_den(fpss, h, timecodes_num - 1 as ::core::ffi::c_int)
+                        < 0 as ::core::ffi::c_int
                     {
                         current_block = 15792084957793291482;
                     } else {
@@ -1156,18 +1123,15 @@ unsafe extern "C" fn parse_tcfile(
             _ => {
                 if timecodes_num > 1 as ::core::ffi::c_int {
                     (*h).assume_fps = 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                        / (*timecodes
-                            .offset((timecodes_num - 1 as ::core::ffi::c_int) as isize)
+                        / (*timecodes.offset((timecodes_num - 1 as ::core::ffi::c_int) as isize)
                             - *timecodes
-                                .offset(
-                                    (timecodes_num - 2 as ::core::ffi::c_int) as isize,
-                                ));
+                                .offset((timecodes_num - 2 as ::core::ffi::c_int) as isize));
                 } else {
                     (*h).assume_fps = (*info).fps_num as ::core::ffi::c_double
                         / (*info).fps_den as ::core::ffi::c_double;
                 }
-                (*h).last_timecode = *timecodes
-                    .offset((timecodes_num - 1 as ::core::ffi::c_int) as isize);
+                (*h).last_timecode =
+                    *timecodes.offset((timecodes_num - 1 as ::core::ffi::c_int) as isize);
                 current_block = 12129449210080749085;
             }
         }
@@ -1186,9 +1150,7 @@ unsafe extern "C" fn parse_tcfile(
                     (*h).timebase_num,
                     (*h).timebase_den,
                 );
-            } else if (*h).timebase_den > 4294967295 as uint64_t
-                || (*h).timebase_den == 0
-            {
+            } else if (*h).timebase_den > 4294967295 as uint64_t || (*h).timebase_den == 0 {
                 x264_cli_log(
                     b"timecode\0" as *const u8 as *const ::core::ffi::c_char,
                     X264_LOG_ERROR,
@@ -1206,8 +1168,8 @@ unsafe extern "C" fn parse_tcfile(
                 while num < (*h).stored_pts_num {
                     *(*h).pts.offset(num as isize) = (*timecodes.offset(num as isize)
                         * ((*h).timebase_den as ::core::ffi::c_double
-                            / (*h).timebase_num as ::core::ffi::c_double) + 0.5f64)
-                        as int64_t;
+                            / (*h).timebase_num as ::core::ffi::c_double)
+                        + 0.5f64) as int64_t;
                     if num > 0 as ::core::ffi::c_int
                         && *(*h).pts.offset(num as isize)
                             <= *(*h).pts.offset((num - 1 as ::core::ffi::c_int) as isize)
@@ -1246,9 +1208,8 @@ unsafe extern "C" fn open_file(
 ) -> ::core::ffi::c_int {
     let mut ret: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     let mut tcfile_in: *mut FILE = 0 as *mut FILE;
-    let mut h: *mut timecode_hnd_t = malloc(
-        ::core::mem::size_of::<timecode_hnd_t>() as size_t,
-    ) as *mut timecode_hnd_t;
+    let mut h: *mut timecode_hnd_t =
+        malloc(::core::mem::size_of::<timecode_hnd_t>() as size_t) as *mut timecode_hnd_t;
     if h.is_null() {
         x264_cli_log(
             b"timecode\0" as *const u8 as *const ::core::ffi::c_char,
@@ -1275,8 +1236,7 @@ unsafe extern "C" fn open_file(
             ) as uint64_t;
             (*h).timebase_den = 0 as uint64_t;
         }
-        if (*h).timebase_num > 4294967295 as uint64_t
-            || (*h).timebase_den > 4294967295 as uint64_t
+        if (*h).timebase_num > 4294967295 as uint64_t || (*h).timebase_den > 4294967295 as uint64_t
         {
             x264_cli_log(
                 b"timecode\0" as *const u8 as *const ::core::ffi::c_char,
@@ -1295,8 +1255,10 @@ unsafe extern "C" fn open_file(
     if (*h).auto_timebase_den != 0 {
         (*h).timebase_den = 0 as uint64_t;
     }
-    tcfile_in = fopen(psz_filename, b"rb\0" as *const u8 as *const ::core::ffi::c_char)
-        as *mut FILE;
+    tcfile_in = fopen(
+        psz_filename,
+        b"rb\0" as *const u8 as *const ::core::ffi::c_char,
+    ) as *mut FILE;
     if tcfile_in.is_null() {
         x264_cli_log(
             b"timecode\0" as *const u8 as *const ::core::ffi::c_char,
@@ -1338,7 +1300,7 @@ unsafe extern "C" fn get_frame_pts(
     mut real_frame: ::core::ffi::c_int,
 ) -> int64_t {
     if frame < (*h).stored_pts_num {
-        return *(*h).pts.offset(frame as isize)
+        return *(*h).pts.offset(frame as isize);
     } else {
         if !(*h).pts.is_null() && real_frame != 0 {
             x264_cli_log(
@@ -1352,14 +1314,15 @@ unsafe extern "C" fn get_frame_pts(
             free((*h).pts as *mut ::core::ffi::c_void);
             (*h).pts = 0 as *mut int64_t;
         }
-        let mut timecode: ::core::ffi::c_double = (*h).last_timecode
-            + 1 as ::core::ffi::c_int as ::core::ffi::c_double / (*h).assume_fps;
+        let mut timecode: ::core::ffi::c_double =
+            (*h).last_timecode + 1 as ::core::ffi::c_int as ::core::ffi::c_double / (*h).assume_fps;
         if real_frame != 0 {
             (*h).last_timecode = timecode;
         }
         return (timecode
             * ((*h).timebase_den as ::core::ffi::c_double
-                / (*h).timebase_num as ::core::ffi::c_double) + 0.5f64) as int64_t;
+                / (*h).timebase_num as ::core::ffi::c_double)
+            + 0.5f64) as int64_t;
     };
 }
 #[c2rust::src_loc = "417:1"]
@@ -1369,19 +1332,12 @@ unsafe extern "C" fn read_frame(
     mut frame: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut h: *mut timecode_hnd_t = handle as *mut timecode_hnd_t;
-    if (*h)
-        .input
-        .read_frame
-        .expect("non-null function pointer")(pic, (*h).p_handle, frame) != 0
-    {
+    if (*h).input.read_frame.expect("non-null function pointer")(pic, (*h).p_handle, frame) != 0 {
         return -(1 as ::core::ffi::c_int);
     }
     (*pic).pts = get_frame_pts(h, frame, 1 as ::core::ffi::c_int);
-    (*pic).duration = get_frame_pts(
-        h,
-        frame + 1 as ::core::ffi::c_int,
-        0 as ::core::ffi::c_int,
-    ) - (*pic).pts;
+    (*pic).duration =
+        get_frame_pts(h, frame + 1 as ::core::ffi::c_int, 0 as ::core::ffi::c_int) - (*pic).pts;
     return 0 as ::core::ffi::c_int;
 }
 #[c2rust::src_loc = "429:1"]
@@ -1391,10 +1347,7 @@ unsafe extern "C" fn release_frame(
 ) -> ::core::ffi::c_int {
     let mut h: *mut timecode_hnd_t = handle as *mut timecode_hnd_t;
     if (*h).input.release_frame.is_some() {
-        return (*h)
-            .input
-            .release_frame
-            .expect("non-null function pointer")(pic, (*h).p_handle);
+        return (*h).input.release_frame.expect("non-null function pointer")(pic, (*h).p_handle);
     }
     return 0 as ::core::ffi::c_int;
 }
@@ -1407,10 +1360,13 @@ unsafe extern "C" fn picture_alloc(
     mut height: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut h: *mut timecode_hnd_t = handle as *mut timecode_hnd_t;
-    return (*h)
-        .input
-        .picture_alloc
-        .expect("non-null function pointer")(pic, (*h).p_handle, csp, width, height);
+    return (*h).input.picture_alloc.expect("non-null function pointer")(
+        pic,
+        (*h).p_handle,
+        csp,
+        width,
+        height,
+    );
 }
 #[c2rust::src_loc = "443:1"]
 unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut handle: hnd_t) {
@@ -1460,15 +1416,10 @@ pub static mut timecode_input: cli_input_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             release_frame: Some(
-                release_frame
-                    as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
+                release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
             ),
-            picture_clean: Some(
-                picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> (),
-            ),
-            close_file: Some(
-                close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int,
-            ),
+            picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
+            close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int),
         };
         init
     }

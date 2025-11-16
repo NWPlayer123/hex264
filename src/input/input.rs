@@ -79,7 +79,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -104,7 +104,7 @@ pub mod struct_timespec_h {
         pub tv_sec: __time_t,
         pub tv_nsec: __syscall_slong_t,
     }
-    use super::types_h::{__time_t, __syscall_slong_t};
+    use super::types_h::{__syscall_slong_t, __time_t};
 }
 #[c2rust::header_src = "/usr/include/bits/struct_stat.h:27"]
 pub mod struct_stat_h {
@@ -128,11 +128,11 @@ pub mod struct_stat_h {
         pub st_ctim: timespec,
         pub __glibc_reserved: [__syscall_slong_t; 3],
     }
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t,
-    };
     use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __uid_t,
+    };
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
 pub mod stdint_intn_h {
@@ -146,15 +146,14 @@ pub mod stdint_uintn_h {
     pub type uint8_t = __uint8_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint64_t};
+    use super::types_h::{__uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/usr/include/stdint.h:27"]
 pub mod stdint_h {
     #[c2rust::src_loc = "76:1"]
     pub type intptr_t = isize;
     #[c2rust::src_loc = "216:11"]
-    pub const SIZE_MAX: ::core::ffi::c_ulong = 18446744073709551615
-        as ::core::ffi::c_ulong;
+    pub const SIZE_MAX: ::core::ffi::c_ulong = 18446744073709551615 as ::core::ffi::c_ulong;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/input/input.h:27"]
 pub mod input_h {
@@ -201,8 +200,8 @@ pub mod input_h {
     pub const X264_CSP_CLI_MAX: ::core::ffi::c_int = X264_CSP_MAX;
     #[c2rust::src_loc = "115:9"]
     pub const X264_CSP_OTHER: ::core::ffi::c_int = 0x4000 as ::core::ffi::c_int;
-    use super::stdint_uintn_h::uint8_t;
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
     use super::x264_h::X264_CSP_MAX;
 }
 #[c2rust::header_src = "/usr/include/bits/confname.h:27"]
@@ -685,8 +684,8 @@ pub mod base_h {
 #[c2rust::header_src = "/usr/include/sys/mman.h:27"]
 pub mod mman_h {
     #[c2rust::src_loc = "44:9"]
-    pub const MAP_FAILED: *mut ::core::ffi::c_void = -(1 as ::core::ffi::c_int)
-        as *mut ::core::ffi::c_void;
+    pub const MAP_FAILED: *mut ::core::ffi::c_void =
+        -(1 as ::core::ffi::c_int) as *mut ::core::ffi::c_void;
     use super::__stddef_size_t_h::size_t;
     use super::types_h::__off64_t;
     extern "C" {
@@ -700,10 +699,7 @@ pub mod mman_h {
             __offset: __off64_t,
         ) -> *mut ::core::ffi::c_void;
         #[c2rust::src_loc = "76:1"]
-        pub fn munmap(
-            __addr: *mut ::core::ffi::c_void,
-            __len: size_t,
-        ) -> ::core::ffi::c_int;
+        pub fn munmap(__addr: *mut ::core::ffi::c_void, __len: size_t) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "94:1"]
         pub fn madvise(
             __addr: *mut ::core::ffi::c_void,
@@ -753,90 +749,83 @@ pub mod mman_linux_h {
     #[c2rust::src_loc = "91:10"]
     pub const MADV_WILLNEED: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
 }
+pub use self::__stddef_null_h::NULL;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __int64_t, __uint64_t, __dev_t, __uid_t, __gid_t, __ino_t, __mode_t,
-    __nlink_t, __off_t, __off64_t, __time_t, __blksize_t, __blkcnt_t, __syscall_slong_t,
+use self::base_h::{x264_free, x264_malloc};
+pub use self::confname_h::{
+    C2RustUnnamed, _SC_2_CHAR_TERM, _SC_2_C_BIND, _SC_2_C_DEV, _SC_2_C_VERSION, _SC_2_FORT_DEV,
+    _SC_2_FORT_RUN, _SC_2_LOCALEDEF, _SC_2_PBS, _SC_2_PBS_ACCOUNTING, _SC_2_PBS_CHECKPOINT,
+    _SC_2_PBS_LOCATE, _SC_2_PBS_MESSAGE, _SC_2_PBS_TRACK, _SC_2_SW_DEV, _SC_2_UPE, _SC_2_VERSION,
+    _SC_ADVISORY_INFO, _SC_AIO_LISTIO_MAX, _SC_AIO_MAX, _SC_AIO_PRIO_DELTA_MAX, _SC_ARG_MAX,
+    _SC_ASYNCHRONOUS_IO, _SC_ATEXIT_MAX, _SC_AVPHYS_PAGES, _SC_BARRIERS, _SC_BASE, _SC_BC_BASE_MAX,
+    _SC_BC_DIM_MAX, _SC_BC_SCALE_MAX, _SC_BC_STRING_MAX, _SC_CHARCLASS_NAME_MAX, _SC_CHAR_BIT,
+    _SC_CHAR_MAX, _SC_CHAR_MIN, _SC_CHILD_MAX, _SC_CLK_TCK, _SC_CLOCK_SELECTION,
+    _SC_COLL_WEIGHTS_MAX, _SC_CPUTIME, _SC_C_LANG_SUPPORT, _SC_C_LANG_SUPPORT_R,
+    _SC_DELAYTIMER_MAX, _SC_DEVICE_IO, _SC_DEVICE_SPECIFIC, _SC_DEVICE_SPECIFIC_R,
+    _SC_EQUIV_CLASS_MAX, _SC_EXPR_NEST_MAX, _SC_FD_MGMT, _SC_FIFO, _SC_FILE_ATTRIBUTES,
+    _SC_FILE_LOCKING, _SC_FILE_SYSTEM, _SC_FSYNC, _SC_GETGR_R_SIZE_MAX, _SC_GETPW_R_SIZE_MAX,
+    _SC_HOST_NAME_MAX, _SC_INT_MAX, _SC_INT_MIN, _SC_IOV_MAX, _SC_IPV6, _SC_JOB_CONTROL,
+    _SC_LEVEL1_DCACHE_ASSOC, _SC_LEVEL1_DCACHE_LINESIZE, _SC_LEVEL1_DCACHE_SIZE,
+    _SC_LEVEL1_ICACHE_ASSOC, _SC_LEVEL1_ICACHE_LINESIZE, _SC_LEVEL1_ICACHE_SIZE,
+    _SC_LEVEL2_CACHE_ASSOC, _SC_LEVEL2_CACHE_LINESIZE, _SC_LEVEL2_CACHE_SIZE,
+    _SC_LEVEL3_CACHE_ASSOC, _SC_LEVEL3_CACHE_LINESIZE, _SC_LEVEL3_CACHE_SIZE,
+    _SC_LEVEL4_CACHE_ASSOC, _SC_LEVEL4_CACHE_LINESIZE, _SC_LEVEL4_CACHE_SIZE, _SC_LINE_MAX,
+    _SC_LOGIN_NAME_MAX, _SC_LONG_BIT, _SC_MAPPED_FILES, _SC_MB_LEN_MAX, _SC_MEMLOCK,
+    _SC_MEMLOCK_RANGE, _SC_MEMORY_PROTECTION, _SC_MESSAGE_PASSING, _SC_MINSIGSTKSZ,
+    _SC_MONOTONIC_CLOCK, _SC_MQ_OPEN_MAX, _SC_MQ_PRIO_MAX, _SC_MULTI_PROCESS, _SC_NETWORKING,
+    _SC_NGROUPS_MAX, _SC_NL_ARGMAX, _SC_NL_LANGMAX, _SC_NL_MSGMAX, _SC_NL_NMAX, _SC_NL_SETMAX,
+    _SC_NL_TEXTMAX, _SC_NPROCESSORS_CONF, _SC_NPROCESSORS_ONLN, _SC_NZERO, _SC_OPEN_MAX,
+    _SC_PAGESIZE, _SC_PASS_MAX, _SC_PHYS_PAGES, _SC_PII, _SC_PII_INTERNET, _SC_PII_INTERNET_DGRAM,
+    _SC_PII_INTERNET_STREAM, _SC_PII_OSI, _SC_PII_OSI_CLTS, _SC_PII_OSI_COTS, _SC_PII_OSI_M,
+    _SC_PII_SOCKET, _SC_PII_XTI, _SC_PIPE, _SC_POLL, _SC_PRIORITIZED_IO, _SC_PRIORITY_SCHEDULING,
+    _SC_RAW_SOCKETS, _SC_READER_WRITER_LOCKS, _SC_REALTIME_SIGNALS, _SC_REGEXP, _SC_REGEX_VERSION,
+    _SC_RE_DUP_MAX, _SC_RTSIG_MAX, _SC_SAVED_IDS, _SC_SCHAR_MAX, _SC_SCHAR_MIN, _SC_SELECT,
+    _SC_SEMAPHORES, _SC_SEM_NSEMS_MAX, _SC_SEM_VALUE_MAX, _SC_SHARED_MEMORY_OBJECTS, _SC_SHELL,
+    _SC_SHRT_MAX, _SC_SHRT_MIN, _SC_SIGNALS, _SC_SIGQUEUE_MAX, _SC_SIGSTKSZ, _SC_SINGLE_PROCESS,
+    _SC_SPAWN, _SC_SPIN_LOCKS, _SC_SPORADIC_SERVER, _SC_SSIZE_MAX, _SC_SS_REPL_MAX, _SC_STREAMS,
+    _SC_STREAM_MAX, _SC_SYMLOOP_MAX, _SC_SYNCHRONIZED_IO, _SC_SYSTEM_DATABASE,
+    _SC_SYSTEM_DATABASE_R, _SC_THREADS, _SC_THREAD_ATTR_STACKADDR, _SC_THREAD_ATTR_STACKSIZE,
+    _SC_THREAD_CPUTIME, _SC_THREAD_DESTRUCTOR_ITERATIONS, _SC_THREAD_KEYS_MAX,
+    _SC_THREAD_PRIORITY_SCHEDULING, _SC_THREAD_PRIO_INHERIT, _SC_THREAD_PRIO_PROTECT,
+    _SC_THREAD_PROCESS_SHARED, _SC_THREAD_ROBUST_PRIO_INHERIT, _SC_THREAD_ROBUST_PRIO_PROTECT,
+    _SC_THREAD_SAFE_FUNCTIONS, _SC_THREAD_SPORADIC_SERVER, _SC_THREAD_STACK_MIN,
+    _SC_THREAD_THREADS_MAX, _SC_TIMEOUTS, _SC_TIMERS, _SC_TIMER_MAX, _SC_TRACE,
+    _SC_TRACE_EVENT_FILTER, _SC_TRACE_EVENT_NAME_MAX, _SC_TRACE_INHERIT, _SC_TRACE_LOG,
+    _SC_TRACE_NAME_MAX, _SC_TRACE_SYS_MAX, _SC_TRACE_USER_EVENT_MAX, _SC_TTY_NAME_MAX,
+    _SC_TYPED_MEMORY_OBJECTS, _SC_TZNAME_MAX, _SC_T_IOV_MAX, _SC_UCHAR_MAX, _SC_UINT_MAX,
+    _SC_UIO_MAXIOV, _SC_ULONG_MAX, _SC_USER_GROUPS, _SC_USER_GROUPS_R, _SC_USHRT_MAX,
+    _SC_V6_ILP32_OFF32, _SC_V6_ILP32_OFFBIG, _SC_V6_LP64_OFF64, _SC_V6_LPBIG_OFFBIG,
+    _SC_V7_ILP32_OFF32, _SC_V7_ILP32_OFFBIG, _SC_V7_LP64_OFF64, _SC_V7_LPBIG_OFFBIG, _SC_VERSION,
+    _SC_WORD_BIT, _SC_XBS5_ILP32_OFF32, _SC_XBS5_ILP32_OFFBIG, _SC_XBS5_LP64_OFF64,
+    _SC_XBS5_LPBIG_OFFBIG, _SC_XOPEN_CRYPT, _SC_XOPEN_ENH_I18N, _SC_XOPEN_LEGACY,
+    _SC_XOPEN_REALTIME, _SC_XOPEN_REALTIME_THREADS, _SC_XOPEN_SHM, _SC_XOPEN_STREAMS,
+    _SC_XOPEN_UNIX, _SC_XOPEN_VERSION, _SC_XOPEN_XCU_VERSION, _SC_XOPEN_XPG2, _SC_XOPEN_XPG3,
+    _SC_XOPEN_XPG4,
 };
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
+pub use self::input_h::{
+    cli_image_t, cli_mmap_t, cli_pic_t, x264_cli_csp_t, X264_CSP_CLI_MAX, X264_CSP_OTHER,
+};
+pub use self::mman_h::{madvise, mmap, munmap, MAP_FAILED};
+pub use self::mman_linux_h::{MADV_WILLNEED, MAP_FIXED, MAP_PRIVATE, PROT_READ};
+pub use self::osdep_h::NATIVE_ALIGN;
+use self::stat_h::fstat;
+pub use self::stdint_h::{intptr_t, SIZE_MAX};
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint64_t, uint8_t};
+use self::stdio_h::fileno;
+use self::string_h::memset;
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::struct_stat_h::stat;
+pub use self::struct_timespec_h::timespec;
+pub use self::types_h::{
+    __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __int64_t, __mode_t, __nlink_t, __off64_t,
+    __off_t, __syscall_slong_t, __time_t, __uid_t, __uint64_t, __uint8_t,
+};
+use self::unistd_h::sysconf;
+pub use self::x264_h::{
+    X264_CSP_HIGH_DEPTH, X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE, X264_CSP_V210,
 };
 pub use self::FILE_h::FILE;
-pub use self::struct_timespec_h::timespec;
-pub use self::struct_stat_h::stat;
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint64_t};
-pub use self::stdint_h::{intptr_t, SIZE_MAX};
-pub use self::input_h::{
-    cli_image_t, cli_pic_t, x264_cli_csp_t, cli_mmap_t, X264_CSP_CLI_MAX, X264_CSP_OTHER,
-};
-pub use self::confname_h::{
-    _SC_PAGESIZE, C2RustUnnamed, _SC_SIGSTKSZ, _SC_MINSIGSTKSZ,
-    _SC_THREAD_ROBUST_PRIO_PROTECT, _SC_THREAD_ROBUST_PRIO_INHERIT, _SC_XOPEN_STREAMS,
-    _SC_TRACE_USER_EVENT_MAX, _SC_TRACE_SYS_MAX, _SC_TRACE_NAME_MAX,
-    _SC_TRACE_EVENT_NAME_MAX, _SC_SS_REPL_MAX, _SC_V7_LPBIG_OFFBIG, _SC_V7_LP64_OFF64,
-    _SC_V7_ILP32_OFFBIG, _SC_V7_ILP32_OFF32, _SC_RAW_SOCKETS, _SC_IPV6,
-    _SC_LEVEL4_CACHE_LINESIZE, _SC_LEVEL4_CACHE_ASSOC, _SC_LEVEL4_CACHE_SIZE,
-    _SC_LEVEL3_CACHE_LINESIZE, _SC_LEVEL3_CACHE_ASSOC, _SC_LEVEL3_CACHE_SIZE,
-    _SC_LEVEL2_CACHE_LINESIZE, _SC_LEVEL2_CACHE_ASSOC, _SC_LEVEL2_CACHE_SIZE,
-    _SC_LEVEL1_DCACHE_LINESIZE, _SC_LEVEL1_DCACHE_ASSOC, _SC_LEVEL1_DCACHE_SIZE,
-    _SC_LEVEL1_ICACHE_LINESIZE, _SC_LEVEL1_ICACHE_ASSOC, _SC_LEVEL1_ICACHE_SIZE,
-    _SC_TRACE_LOG, _SC_TRACE_INHERIT, _SC_TRACE_EVENT_FILTER, _SC_TRACE,
-    _SC_HOST_NAME_MAX, _SC_V6_LPBIG_OFFBIG, _SC_V6_LP64_OFF64, _SC_V6_ILP32_OFFBIG,
-    _SC_V6_ILP32_OFF32, _SC_2_PBS_CHECKPOINT, _SC_STREAMS, _SC_SYMLOOP_MAX,
-    _SC_2_PBS_TRACK, _SC_2_PBS_MESSAGE, _SC_2_PBS_LOCATE, _SC_2_PBS_ACCOUNTING,
-    _SC_2_PBS, _SC_USER_GROUPS_R, _SC_USER_GROUPS, _SC_TYPED_MEMORY_OBJECTS,
-    _SC_TIMEOUTS, _SC_SYSTEM_DATABASE_R, _SC_SYSTEM_DATABASE, _SC_THREAD_SPORADIC_SERVER,
-    _SC_SPORADIC_SERVER, _SC_SPAWN, _SC_SIGNALS, _SC_SHELL, _SC_REGEX_VERSION,
-    _SC_REGEXP, _SC_SPIN_LOCKS, _SC_READER_WRITER_LOCKS, _SC_NETWORKING,
-    _SC_SINGLE_PROCESS, _SC_MULTI_PROCESS, _SC_MONOTONIC_CLOCK, _SC_FILE_SYSTEM,
-    _SC_FILE_LOCKING, _SC_FILE_ATTRIBUTES, _SC_PIPE, _SC_FIFO, _SC_FD_MGMT,
-    _SC_DEVICE_SPECIFIC_R, _SC_DEVICE_SPECIFIC, _SC_DEVICE_IO, _SC_THREAD_CPUTIME,
-    _SC_CPUTIME, _SC_CLOCK_SELECTION, _SC_C_LANG_SUPPORT_R, _SC_C_LANG_SUPPORT, _SC_BASE,
-    _SC_BARRIERS, _SC_ADVISORY_INFO, _SC_XOPEN_REALTIME_THREADS, _SC_XOPEN_REALTIME,
-    _SC_XOPEN_LEGACY, _SC_XBS5_LPBIG_OFFBIG, _SC_XBS5_LP64_OFF64, _SC_XBS5_ILP32_OFFBIG,
-    _SC_XBS5_ILP32_OFF32, _SC_NL_TEXTMAX, _SC_NL_SETMAX, _SC_NL_NMAX, _SC_NL_MSGMAX,
-    _SC_NL_LANGMAX, _SC_NL_ARGMAX, _SC_USHRT_MAX, _SC_ULONG_MAX, _SC_UINT_MAX,
-    _SC_UCHAR_MAX, _SC_SHRT_MIN, _SC_SHRT_MAX, _SC_SCHAR_MIN, _SC_SCHAR_MAX,
-    _SC_SSIZE_MAX, _SC_NZERO, _SC_MB_LEN_MAX, _SC_WORD_BIT, _SC_LONG_BIT, _SC_INT_MIN,
-    _SC_INT_MAX, _SC_CHAR_MIN, _SC_CHAR_MAX, _SC_CHAR_BIT, _SC_XOPEN_XPG4,
-    _SC_XOPEN_XPG3, _SC_XOPEN_XPG2, _SC_2_UPE, _SC_2_C_VERSION, _SC_2_CHAR_TERM,
-    _SC_XOPEN_SHM, _SC_XOPEN_ENH_I18N, _SC_XOPEN_CRYPT, _SC_XOPEN_UNIX,
-    _SC_XOPEN_XCU_VERSION, _SC_XOPEN_VERSION, _SC_PASS_MAX, _SC_ATEXIT_MAX,
-    _SC_AVPHYS_PAGES, _SC_PHYS_PAGES, _SC_NPROCESSORS_ONLN, _SC_NPROCESSORS_CONF,
-    _SC_THREAD_PROCESS_SHARED, _SC_THREAD_PRIO_PROTECT, _SC_THREAD_PRIO_INHERIT,
-    _SC_THREAD_PRIORITY_SCHEDULING, _SC_THREAD_ATTR_STACKSIZE, _SC_THREAD_ATTR_STACKADDR,
-    _SC_THREAD_THREADS_MAX, _SC_THREAD_STACK_MIN, _SC_THREAD_KEYS_MAX,
-    _SC_THREAD_DESTRUCTOR_ITERATIONS, _SC_TTY_NAME_MAX, _SC_LOGIN_NAME_MAX,
-    _SC_GETPW_R_SIZE_MAX, _SC_GETGR_R_SIZE_MAX, _SC_THREAD_SAFE_FUNCTIONS, _SC_THREADS,
-    _SC_T_IOV_MAX, _SC_PII_OSI_M, _SC_PII_OSI_CLTS, _SC_PII_OSI_COTS,
-    _SC_PII_INTERNET_DGRAM, _SC_PII_INTERNET_STREAM, _SC_IOV_MAX, _SC_UIO_MAXIOV,
-    _SC_SELECT, _SC_POLL, _SC_PII_OSI, _SC_PII_INTERNET, _SC_PII_SOCKET, _SC_PII_XTI,
-    _SC_PII, _SC_2_LOCALEDEF, _SC_2_SW_DEV, _SC_2_FORT_RUN, _SC_2_FORT_DEV, _SC_2_C_DEV,
-    _SC_2_C_BIND, _SC_2_VERSION, _SC_CHARCLASS_NAME_MAX, _SC_RE_DUP_MAX, _SC_LINE_MAX,
-    _SC_EXPR_NEST_MAX, _SC_EQUIV_CLASS_MAX, _SC_COLL_WEIGHTS_MAX, _SC_BC_STRING_MAX,
-    _SC_BC_SCALE_MAX, _SC_BC_DIM_MAX, _SC_BC_BASE_MAX, _SC_TIMER_MAX, _SC_SIGQUEUE_MAX,
-    _SC_SEM_VALUE_MAX, _SC_SEM_NSEMS_MAX, _SC_RTSIG_MAX, _SC_VERSION, _SC_MQ_PRIO_MAX,
-    _SC_MQ_OPEN_MAX, _SC_DELAYTIMER_MAX, _SC_AIO_PRIO_DELTA_MAX, _SC_AIO_MAX,
-    _SC_AIO_LISTIO_MAX, _SC_SHARED_MEMORY_OBJECTS, _SC_SEMAPHORES, _SC_MESSAGE_PASSING,
-    _SC_MEMORY_PROTECTION, _SC_MEMLOCK_RANGE, _SC_MEMLOCK, _SC_MAPPED_FILES, _SC_FSYNC,
-    _SC_SYNCHRONIZED_IO, _SC_PRIORITIZED_IO, _SC_ASYNCHRONOUS_IO, _SC_TIMERS,
-    _SC_PRIORITY_SCHEDULING, _SC_REALTIME_SIGNALS, _SC_SAVED_IDS, _SC_JOB_CONTROL,
-    _SC_TZNAME_MAX, _SC_STREAM_MAX, _SC_OPEN_MAX, _SC_NGROUPS_MAX, _SC_CLK_TCK,
-    _SC_CHILD_MAX, _SC_ARG_MAX,
-};
-use self::stdio_h::fileno;
-use self::stat_h::fstat;
-use self::string_h::memset;
-use self::base_h::{x264_malloc, x264_free};
-pub use self::mman_h::{MAP_FAILED, mmap, munmap, madvise};
-pub use self::x264_h::{
-    X264_CSP_MASK, X264_CSP_NONE, X264_CSP_V210, X264_CSP_MAX, X264_CSP_HIGH_DEPTH,
-};
-pub use self::osdep_h::NATIVE_ALIGN;
-use self::unistd_h::sysconf;
-pub use self::__stddef_null_h::NULL;
-pub use self::mman_linux_h::{PROT_READ, MAP_PRIVATE, MAP_FIXED, MADV_WILLNEED};
 #[no_mangle]
 #[c2rust::src_loc = "36:22"]
 pub static mut x264_cli_csps: [x264_cli_csp_t; 17] = [
@@ -1118,8 +1107,10 @@ pub unsafe extern "C" fn x264_cli_csp_is_invalid(
     mut csp: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut csp_mask: ::core::ffi::c_int = csp & X264_CSP_MASK;
-    return (csp_mask <= X264_CSP_NONE || csp_mask >= X264_CSP_CLI_MAX
-        || csp_mask == X264_CSP_V210 || csp & X264_CSP_OTHER != 0) as ::core::ffi::c_int;
+    return (csp_mask <= X264_CSP_NONE
+        || csp_mask >= X264_CSP_CLI_MAX
+        || csp_mask == X264_CSP_V210
+        || csp & X264_CSP_OTHER != 0) as ::core::ffi::c_int;
 }
 #[no_mangle]
 #[c2rust::src_loc = "61:1"]
@@ -1144,7 +1135,8 @@ pub unsafe extern "C" fn x264_cli_pic_plane_size(
     mut plane: ::core::ffi::c_int,
 ) -> int64_t {
     let mut csp_mask: ::core::ffi::c_int = csp & X264_CSP_MASK;
-    if x264_cli_csp_is_invalid(csp) != 0 || plane < 0 as ::core::ffi::c_int
+    if x264_cli_csp_is_invalid(csp) != 0
+        || plane < 0 as ::core::ffi::c_int
         || plane >= x264_cli_csps[csp_mask as usize].planes
     {
         return 0 as int64_t;
@@ -1201,14 +1193,15 @@ unsafe extern "C" fn cli_pic_init_internal(
     let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     while i < (*pic).img.planes {
         let mut stride: ::core::ffi::c_int = (width as ::core::ffi::c_float
-            * x264_cli_csps[csp_mask as usize].width[i as usize]) as ::core::ffi::c_int;
+            * x264_cli_csps[csp_mask as usize].width[i as usize])
+            as ::core::ffi::c_int;
         stride *= x264_cli_csp_depth_factor(csp);
-        stride = stride + (align - 1 as ::core::ffi::c_int)
-            & !(align - 1 as ::core::ffi::c_int);
+        stride = stride + (align - 1 as ::core::ffi::c_int) & !(align - 1 as ::core::ffi::c_int);
         (*pic).img.stride[i as usize] = stride;
         if alloc != 0 {
             let mut size: int64_t = (height as ::core::ffi::c_float
-                * x264_cli_csps[csp_mask as usize].height[i as usize]) as int64_t
+                * x264_cli_csps[csp_mask as usize].height[i as usize])
+                as int64_t
                 * stride as int64_t;
             (*pic).img.plane[i as usize] = x264_malloc(size) as *mut uint8_t;
             if (*pic).img.plane[i as usize].is_null() {
@@ -1286,13 +1279,13 @@ pub unsafe extern "C" fn x264_cli_pic_clean(mut pic: *mut cli_pic_t) {
 }
 #[no_mangle]
 #[c2rust::src_loc = "142:1"]
-pub unsafe extern "C" fn x264_cli_get_csp(
-    mut csp: ::core::ffi::c_int,
-) -> *const x264_cli_csp_t {
+pub unsafe extern "C" fn x264_cli_get_csp(mut csp: ::core::ffi::c_int) -> *const x264_cli_csp_t {
     if x264_cli_csp_is_invalid(csp) != 0 {
         return 0 as *const x264_cli_csp_t;
     }
-    return x264_cli_csps.as_ptr().offset((csp & X264_CSP_MASK) as isize);
+    return x264_cli_csps
+        .as_ptr()
+        .offset((csp & X264_CSP_MASK) as isize);
 }
 #[no_mangle]
 #[c2rust::src_loc = "150:1"]
@@ -1313,18 +1306,27 @@ pub unsafe extern "C" fn x264_cli_mmap_init(
         st_size: 0,
         st_blksize: 0,
         st_blocks: 0,
-        st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-        st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-        st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+        st_atim: timespec {
+            tv_sec: 0,
+            tv_nsec: 0,
+        },
+        st_mtim: timespec {
+            tv_sec: 0,
+            tv_nsec: 0,
+        },
+        st_ctim: timespec {
+            tv_sec: 0,
+            tv_nsec: 0,
+        },
         __glibc_reserved: [0; 3],
     };
     if fstat(fd, &mut file_stat) == 0 {
         (*h).file_size = file_stat.st_size as int64_t;
-        (*h).align_mask = (sysconf(_SC_PAGESIZE as ::core::ffi::c_int)
-            - 1 as ::core::ffi::c_long) as ::core::ffi::c_int;
+        (*h).align_mask = (sysconf(_SC_PAGESIZE as ::core::ffi::c_int) - 1 as ::core::ffi::c_long)
+            as ::core::ffi::c_int;
         (*h).fd = fd;
-        return ((*h).align_mask < 0 as ::core::ffi::c_int
-            || fd < 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
+        return ((*h).align_mask < 0 as ::core::ffi::c_int || fd < 0 as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
     }
     return -(1 as ::core::ffi::c_int);
 }
@@ -1338,9 +1340,9 @@ pub unsafe extern "C" fn x264_cli_mmap(
     mut size: int64_t,
 ) -> *mut ::core::ffi::c_void {
     let mut base: *mut uint8_t = 0 as *mut uint8_t;
-    let mut align: ::core::ffi::c_int = (offset & (*h).align_mask as int64_t)
-        as ::core::ffi::c_int;
-    if offset < 0 as int64_t || size < 0 as int64_t
+    let mut align: ::core::ffi::c_int = (offset & (*h).align_mask as int64_t) as ::core::ffi::c_int;
+    if offset < 0 as int64_t
+        || size < 0 as int64_t
         || size as uint64_t
             > (SIZE_MAX as uint64_t)
                 .wrapping_sub(MMAP_PADDING as uint64_t)
@@ -1351,12 +1353,22 @@ pub unsafe extern "C" fn x264_cli_mmap(
     offset -= align as int64_t;
     size += align as int64_t;
     let mut padded_size: size_t = (size + MMAP_PADDING as int64_t) as size_t;
-    base = mmap(NULL, padded_size, PROT_READ, MAP_PRIVATE, (*h).fd, offset as __off64_t)
-        as *mut uint8_t;
+    base = mmap(
+        NULL,
+        padded_size,
+        PROT_READ,
+        MAP_PRIVATE,
+        (*h).fd,
+        offset as __off64_t,
+    ) as *mut uint8_t;
     if base != MAP_FAILED as *mut uint8_t {
-        madvise(base as *mut ::core::ffi::c_void, size as size_t, MADV_WILLNEED);
-        let mut aligned_size: size_t = padded_size.wrapping_sub(1 as size_t)
-            & !(*h).align_mask as size_t;
+        madvise(
+            base as *mut ::core::ffi::c_void,
+            size as size_t,
+            MADV_WILLNEED,
+        );
+        let mut aligned_size: size_t =
+            padded_size.wrapping_sub(1 as size_t) & !(*h).align_mask as size_t;
         if (offset as size_t).wrapping_add(aligned_size) >= (*h).file_size as size_t {
             mmap(
                 base.offset(aligned_size as isize) as *mut ::core::ffi::c_void,
@@ -1379,15 +1391,13 @@ pub unsafe extern "C" fn x264_cli_munmap(
     mut addr: *mut ::core::ffi::c_void,
     mut size: int64_t,
 ) -> ::core::ffi::c_int {
-    let mut base: *mut ::core::ffi::c_void = (addr as intptr_t
-        & !(*h).align_mask as intptr_t) as *mut ::core::ffi::c_void;
+    let mut base: *mut ::core::ffi::c_void =
+        (addr as intptr_t & !(*h).align_mask as intptr_t) as *mut ::core::ffi::c_void;
     if size < 0 as int64_t
         || size as ::core::ffi::c_ulong
             > SIZE_MAX
                 .wrapping_sub(MMAP_PADDING as ::core::ffi::c_ulong)
-                .wrapping_sub(
-                    (addr as intptr_t - base as intptr_t) as ::core::ffi::c_ulong,
-                )
+                .wrapping_sub((addr as intptr_t - base as intptr_t) as ::core::ffi::c_ulong)
     {
         return -(1 as ::core::ffi::c_int);
     }

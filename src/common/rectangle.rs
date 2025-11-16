@@ -19,7 +19,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:26"]
 pub mod base_h {
@@ -47,13 +47,12 @@ pub mod base_h {
         pub w: [uint16_t; 4],
         pub b: [uint8_t; 8],
     }
-    use super::stdint_uintn_h::{uint16_t, uint8_t, uint32_t, uint64_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/osdep.h:26"]
 pub mod osdep_h {
     #[c2rust::src_loc = "452:9"]
-    pub const WORD_SIZE: uint64_t = ::core::mem::size_of::<*mut ::core::ffi::c_void>()
-        as uint64_t;
+    pub const WORD_SIZE: uint64_t = ::core::mem::size_of::<*mut ::core::ffi::c_void>() as uint64_t;
     use super::stdint_uintn_h::uint64_t;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/rectangle.h:26"]
@@ -80,101 +79,86 @@ pub mod rectangle_h {
         } else {
             v.wrapping_mul(0x1010101 as uint32_t)
         };
-        let mut v8: uint64_t = (v4 as uint64_t)
-            .wrapping_add((v4 as uint64_t) << 32 as ::core::ffi::c_int);
+        let mut v8: uint64_t =
+            (v4 as uint64_t).wrapping_add((v4 as uint64_t) << 32 as ::core::ffi::c_int);
         s *= 8 as ::core::ffi::c_int;
         if w == 2 as ::core::ffi::c_int {
-            (*(d.offset((s * 0 as ::core::ffi::c_int) as isize) as *mut x264_union16_t))
-                .i = v2;
+            (*(d.offset((s * 0 as ::core::ffi::c_int) as isize) as *mut x264_union16_t)).i = v2;
             if h == 1 as ::core::ffi::c_int {
                 return;
             }
-            (*(d.offset((s * 1 as ::core::ffi::c_int) as isize) as *mut x264_union16_t))
-                .i = v2;
+            (*(d.offset((s * 1 as ::core::ffi::c_int) as isize) as *mut x264_union16_t)).i = v2;
             if h == 2 as ::core::ffi::c_int {
                 return;
             }
-            (*(d.offset((s * 2 as ::core::ffi::c_int) as isize) as *mut x264_union16_t))
-                .i = v2;
-            (*(d.offset((s * 3 as ::core::ffi::c_int) as isize) as *mut x264_union16_t))
-                .i = v2;
+            (*(d.offset((s * 2 as ::core::ffi::c_int) as isize) as *mut x264_union16_t)).i = v2;
+            (*(d.offset((s * 3 as ::core::ffi::c_int) as isize) as *mut x264_union16_t)).i = v2;
         } else if w == 4 as ::core::ffi::c_int {
-            (*(d.offset((s * 0 as ::core::ffi::c_int) as isize) as *mut x264_union32_t))
-                .i = v4;
+            (*(d.offset((s * 0 as ::core::ffi::c_int) as isize) as *mut x264_union32_t)).i = v4;
             if h == 1 as ::core::ffi::c_int {
                 return;
             }
-            (*(d.offset((s * 1 as ::core::ffi::c_int) as isize) as *mut x264_union32_t))
-                .i = v4;
+            (*(d.offset((s * 1 as ::core::ffi::c_int) as isize) as *mut x264_union32_t)).i = v4;
             if h == 2 as ::core::ffi::c_int {
                 return;
             }
-            (*(d.offset((s * 2 as ::core::ffi::c_int) as isize) as *mut x264_union32_t))
-                .i = v4;
-            (*(d.offset((s * 3 as ::core::ffi::c_int) as isize) as *mut x264_union32_t))
-                .i = v4;
+            (*(d.offset((s * 2 as ::core::ffi::c_int) as isize) as *mut x264_union32_t)).i = v4;
+            (*(d.offset((s * 3 as ::core::ffi::c_int) as isize) as *mut x264_union32_t)).i = v4;
         } else if w == 8 as ::core::ffi::c_int {
             if WORD_SIZE == 8 as uint64_t {
+                (*(d.offset((s * 0 as ::core::ffi::c_int) as isize) as *mut x264_union64_t)).i = v8;
+                if h == 1 as ::core::ffi::c_int {
+                    return;
+                }
+                (*(d.offset((s * 1 as ::core::ffi::c_int) as isize) as *mut x264_union64_t)).i = v8;
+                if h == 2 as ::core::ffi::c_int {
+                    return;
+                }
+                (*(d.offset((s * 2 as ::core::ffi::c_int) as isize) as *mut x264_union64_t)).i = v8;
+                (*(d.offset((s * 3 as ::core::ffi::c_int) as isize) as *mut x264_union64_t)).i = v8;
+            } else {
                 (*(d.offset((s * 0 as ::core::ffi::c_int) as isize)
-                    as *mut x264_union64_t))
-                    .i = v8;
+                    .offset(0 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
+                    .i = v4;
+                (*(d.offset((s * 0 as ::core::ffi::c_int) as isize)
+                    .offset(4 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
+                    .i = v4;
                 if h == 1 as ::core::ffi::c_int {
                     return;
                 }
                 (*(d.offset((s * 1 as ::core::ffi::c_int) as isize)
-                    as *mut x264_union64_t))
-                    .i = v8;
+                    .offset(0 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
+                    .i = v4;
+                (*(d.offset((s * 1 as ::core::ffi::c_int) as isize)
+                    .offset(4 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
+                    .i = v4;
                 if h == 2 as ::core::ffi::c_int {
                     return;
                 }
                 (*(d.offset((s * 2 as ::core::ffi::c_int) as isize)
-                    as *mut x264_union64_t))
-                    .i = v8;
+                    .offset(0 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
+                    .i = v4;
+                (*(d.offset((s * 2 as ::core::ffi::c_int) as isize)
+                    .offset(4 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
+                    .i = v4;
                 (*(d.offset((s * 3 as ::core::ffi::c_int) as isize)
-                    as *mut x264_union64_t))
-                    .i = v8;
-            } else {
-                (*(d
-                    .offset((s * 0 as ::core::ffi::c_int) as isize)
-                    .offset(0 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
+                    .offset(0 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
                     .i = v4;
-                (*(d
-                    .offset((s * 0 as ::core::ffi::c_int) as isize)
-                    .offset(4 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                if h == 1 as ::core::ffi::c_int {
-                    return;
-                }
-                (*(d
-                    .offset((s * 1 as ::core::ffi::c_int) as isize)
-                    .offset(0 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d
-                    .offset((s * 1 as ::core::ffi::c_int) as isize)
-                    .offset(4 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                if h == 2 as ::core::ffi::c_int {
-                    return;
-                }
-                (*(d
-                    .offset((s * 2 as ::core::ffi::c_int) as isize)
-                    .offset(0 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d
-                    .offset((s * 2 as ::core::ffi::c_int) as isize)
-                    .offset(4 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d
-                    .offset((s * 3 as ::core::ffi::c_int) as isize)
-                    .offset(0 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d
-                    .offset((s * 3 as ::core::ffi::c_int) as isize)
-                    .offset(4 as ::core::ffi::c_int as isize) as *mut x264_union32_t))
+                (*(d.offset((s * 3 as ::core::ffi::c_int) as isize)
+                    .offset(4 as ::core::ffi::c_int as isize)
+                    as *mut x264_union32_t))
                     .i = v4;
             }
         } else if w == 16 as ::core::ffi::c_int {
-            if h != 1 as ::core::ffi::c_int {} else {
+            if h != 1 as ::core::ffi::c_int {
+            } else {
                 __assert_fail(
                     b"h != 1\0" as *const u8 as *const ::core::ffi::c_char,
                     b"common/rectangle.h\0" as *const u8 as *const ::core::ffi::c_char,
@@ -183,11 +167,11 @@ pub mod rectangle_h {
                 );
             }
             'c_27249: {
-                if h != 1 as ::core::ffi::c_int {} else {
+                if h != 1 as ::core::ffi::c_int {
+                } else {
                     __assert_fail(
                         b"h != 1\0" as *const u8 as *const ::core::ffi::c_char,
-                        b"common/rectangle.h\0" as *const u8
-                            as *const ::core::ffi::c_char,
+                        b"common/rectangle.h\0" as *const u8 as *const ::core::ffi::c_char,
                         82 as ::core::ffi::c_uint,
                         __ASSERT_FUNCTION.as_ptr(),
                     );
@@ -195,23 +179,19 @@ pub mod rectangle_h {
             };
             if WORD_SIZE == 8 as uint64_t {
                 loop {
-                    (*(d
-                        .offset((s * 0 as ::core::ffi::c_int) as isize)
+                    (*(d.offset((s * 0 as ::core::ffi::c_int) as isize)
                         .offset(0 as ::core::ffi::c_int as isize)
                         as *mut x264_union64_t))
                         .i = v8;
-                    (*(d
-                        .offset((s * 0 as ::core::ffi::c_int) as isize)
+                    (*(d.offset((s * 0 as ::core::ffi::c_int) as isize)
                         .offset(8 as ::core::ffi::c_int as isize)
                         as *mut x264_union64_t))
                         .i = v8;
-                    (*(d
-                        .offset((s * 1 as ::core::ffi::c_int) as isize)
+                    (*(d.offset((s * 1 as ::core::ffi::c_int) as isize)
                         .offset(0 as ::core::ffi::c_int as isize)
                         as *mut x264_union64_t))
                         .i = v8;
-                    (*(d
-                        .offset((s * 1 as ::core::ffi::c_int) as isize)
+                    (*(d.offset((s * 1 as ::core::ffi::c_int) as isize)
                         .offset(8 as ::core::ffi::c_int as isize)
                         as *mut x264_union64_t))
                         .i = v8;
@@ -223,18 +203,10 @@ pub mod rectangle_h {
                 }
             } else {
                 loop {
-                    (*(d.offset(0 as ::core::ffi::c_int as isize)
-                        as *mut x264_union32_t))
-                        .i = v4;
-                    (*(d.offset(4 as ::core::ffi::c_int as isize)
-                        as *mut x264_union32_t))
-                        .i = v4;
-                    (*(d.offset(8 as ::core::ffi::c_int as isize)
-                        as *mut x264_union32_t))
-                        .i = v4;
-                    (*(d.offset(12 as ::core::ffi::c_int as isize)
-                        as *mut x264_union32_t))
-                        .i = v4;
+                    (*(d.offset(0 as ::core::ffi::c_int as isize) as *mut x264_union32_t)).i = v4;
+                    (*(d.offset(4 as ::core::ffi::c_int as isize) as *mut x264_union32_t)).i = v4;
+                    (*(d.offset(8 as ::core::ffi::c_int as isize) as *mut x264_union32_t)).i = v4;
+                    (*(d.offset(12 as ::core::ffi::c_int as isize) as *mut x264_union32_t)).i = v4;
                     d = d.offset(s as isize);
                     h -= 1;
                     if !(h != 0) {
@@ -259,10 +231,10 @@ pub mod rectangle_h {
             };
         };
     }
-    use super::stdint_uintn_h::{uint32_t, uint8_t, uint16_t, uint64_t};
+    use super::assert_h::{__assert_fail, __ASSERT_FUNCTION};
     use super::base_h::{x264_union16_t, x264_union32_t, x264_union64_t};
     use super::osdep_h::WORD_SIZE;
-    use super::assert_h::{__assert_fail, __ASSERT_FUNCTION};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 }
 #[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:26"]
 pub mod __stddef_null_h {
@@ -273,10 +245,9 @@ pub mod __stddef_null_h {
 pub mod assert_h {
     #[c2rust::src_loc = "137:12"]
     pub const __ASSERT_FUNCTION: [::core::ffi::c_char; 65] = unsafe {
-        ::core::mem::transmute::<
-            [u8; 65],
-            [::core::ffi::c_char; 65],
-        >(*b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0")
+        ::core::mem::transmute::<[u8; 65], [::core::ffi::c_char; 65]>(
+            *b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0",
+        )
     };
     extern "C" {
         #[c2rust::src_loc = "67:1"]
@@ -288,13 +259,13 @@ pub mod assert_h {
         ) -> !;
     }
 }
-pub use self::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
+pub use self::__stddef_null_h::NULL;
+pub use self::assert_h::{__assert_fail, __ASSERT_FUNCTION};
 pub use self::base_h::{x264_union16_t, x264_union32_t, x264_union64_t};
 pub use self::osdep_h::WORD_SIZE;
 pub use self::rectangle_h::x264_macroblock_cache_rect;
-pub use self::__stddef_null_h::NULL;
-pub use self::assert_h::{__ASSERT_FUNCTION, __assert_fail};
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+pub use self::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_4_4(
     mut target: *mut ::core::ffi::c_void,

@@ -83,7 +83,7 @@ pub mod struct_FILE_h {
     }
     #[c2rust::src_loc = "45:1"]
     pub type _IO_lock_t = ();
-    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    use super::types_h::{__off64_t, __off_t, __uint64_t};
     extern "C" {
         #[c2rust::src_loc = "40:8"]
         pub type _IO_wide_data;
@@ -108,7 +108,7 @@ pub mod struct_timespec_h {
         pub tv_sec: __time_t,
         pub tv_nsec: __syscall_slong_t,
     }
-    use super::types_h::{__time_t, __syscall_slong_t};
+    use super::types_h::{__syscall_slong_t, __time_t};
 }
 #[c2rust::header_src = "/usr/include/bits/struct_stat.h:27"]
 pub mod struct_stat_h {
@@ -132,11 +132,11 @@ pub mod struct_stat_h {
         pub st_ctim: timespec,
         pub __glibc_reserved: [__syscall_slong_t; 3],
     }
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t,
-    };
     use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __uid_t,
+    };
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
 pub mod stdint_intn_h {
@@ -154,7 +154,7 @@ pub mod stdint_uintn_h {
     pub type uint32_t = __uint32_t;
     #[c2rust::src_loc = "27:1"]
     pub type uint64_t = __uint64_t;
-    use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
+    use super::types_h::{__uint16_t, __uint32_t, __uint64_t, __uint8_t};
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264cli.h:27"]
 pub mod x264cli_h {
@@ -250,15 +250,10 @@ pub mod input_h {
             ) -> ::core::ffi::c_int,
         >,
         pub read_frame: Option<
-            unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                ::core::ffi::c_int,
-            ) -> ::core::ffi::c_int,
+            unsafe extern "C" fn(*mut cli_pic_t, hnd_t, ::core::ffi::c_int) -> ::core::ffi::c_int,
         >,
-        pub release_frame: Option<
-            unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
-        >,
+        pub release_frame:
+            Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int>,
         pub picture_clean: Option<unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()>,
         pub close_file: Option<unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int>,
     }
@@ -281,8 +276,8 @@ pub mod input_h {
         pub mod_width: ::core::ffi::c_int,
         pub mod_height: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
     use super::x264cli_h::hnd_t;
     use super::FILE_h::FILE;
     extern "C" {
@@ -314,10 +309,7 @@ pub mod input_h {
         #[c2rust::src_loc = "137:1"]
         pub fn x264_cli_get_csp(csp: ::core::ffi::c_int) -> *const x264_cli_csp_t;
         #[c2rust::src_loc = "153:1"]
-        pub fn x264_cli_mmap_init(
-            h: *mut cli_mmap_t,
-            fh: *mut FILE,
-        ) -> ::core::ffi::c_int;
+        pub fn x264_cli_mmap_init(h: *mut cli_mmap_t, fh: *mut FILE) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "154:1"]
         pub fn x264_cli_mmap(
             h: *mut cli_mmap_t,
@@ -408,9 +400,7 @@ pub mod stdlib_h {
 pub mod osdep_h {
     #[inline]
     #[c2rust::src_loc = "270:1"]
-    pub unsafe extern "C" fn x264_is_regular_file(
-        mut filehandle: *mut FILE,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn x264_is_regular_file(mut filehandle: *mut FILE) -> ::core::ffi::c_int {
         let mut file_stat: stat = stat {
             st_dev: 0,
             st_ino: 0,
@@ -423,9 +413,18 @@ pub mod osdep_h {
             st_size: 0,
             st_blksize: 0,
             st_blocks: 0,
-            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
-            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_atim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_mtim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
+            st_ctim: timespec {
+                tv_sec: 0,
+                tv_nsec: 0,
+            },
             __glibc_reserved: [0; 3],
         };
         if fstat(fileno(filehandle), &mut file_stat) != 0 {
@@ -434,16 +433,16 @@ pub mod osdep_h {
         return (file_stat.st_mode & __S_IFMT as __mode_t == 0o100000 as __mode_t)
             as ::core::ffi::c_int;
     }
-    use super::FILE_h::FILE;
-    use super::struct_stat_h::stat;
-    use super::types_h::{
-        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
-        __blkcnt_t, __syscall_slong_t, __time_t,
-    };
-    use super::struct_timespec_h::timespec;
+    use super::bits_stat_h::__S_IFMT;
     use super::stat_h::fstat;
     use super::stdio_h::fileno;
-    use super::bits_stat_h::__S_IFMT;
+    use super::struct_stat_h::stat;
+    use super::struct_timespec_h::timespec;
+    use super::types_h::{
+        __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __mode_t, __nlink_t, __off_t,
+        __syscall_slong_t, __time_t, __uid_t,
+    };
+    use super::FILE_h::FILE;
 }
 #[c2rust::header_src = "/usr/include/string.h:27"]
 pub mod string_h {
@@ -517,41 +516,36 @@ pub mod __stddef_null_h {
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
 pub use self::__stddef_size_t_h::size_t;
-pub use self::types_h::{
-    __uint8_t, __uint16_t, __uint32_t, __int64_t, __uint64_t, __dev_t, __uid_t, __gid_t,
-    __ino_t, __mode_t, __nlink_t, __off_t, __off64_t, __time_t, __blksize_t, __blkcnt_t,
-    __syscall_slong_t,
-};
-pub use self::struct_FILE_h::{
-    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
-};
-pub use self::FILE_h::FILE;
-pub use self::struct_timespec_h::timespec;
-pub use self::struct_stat_h::stat;
-pub use self::stdint_intn_h::int64_t;
-pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
-pub use self::x264cli_h::{hnd_t, x264_cli_log};
-pub use self::input_h::{
-    cli_input_opt_t, video_info_t, cli_image_t, cli_pic_t, cli_input_t, cli_mmap_t,
-    x264_cli_csp_t, x264_cli_csp_depth_factor, x264_cli_pic_alloc,
-    x264_cli_pic_init_noalloc, x264_cli_pic_clean, x264_cli_pic_plane_size,
-    x264_cli_get_csp, x264_cli_mmap_init, x264_cli_mmap, x264_cli_munmap,
-    x264_cli_mmap_close,
-};
-pub use self::stdio_h::{
-    SEEK_SET, SEEK_END, stdin, fclose, fopen, sscanf, fgetc, fread, fseeko, ftello,
-    fileno,
-};
-use self::stat_h::fstat;
-use self::stdlib_h::{strtol, calloc, free};
-pub use self::osdep_h::x264_is_regular_file;
-use self::string_h::{memset, memcmp, strcmp, strncmp, strchr};
 use self::base_h::x264_reduce_fraction;
-pub use self::x264_h::{
-    X264_CSP_NONE, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444,
-    X264_CSP_MAX, X264_CSP_HIGH_DEPTH, X264_LOG_ERROR,
-};
 pub use self::bits_stat_h::__S_IFMT;
+pub use self::input_h::{
+    cli_image_t, cli_input_opt_t, cli_input_t, cli_mmap_t, cli_pic_t, video_info_t,
+    x264_cli_csp_depth_factor, x264_cli_csp_t, x264_cli_get_csp, x264_cli_mmap,
+    x264_cli_mmap_close, x264_cli_mmap_init, x264_cli_munmap, x264_cli_pic_alloc,
+    x264_cli_pic_clean, x264_cli_pic_init_noalloc, x264_cli_pic_plane_size,
+};
+pub use self::osdep_h::x264_is_regular_file;
+use self::stat_h::fstat;
+pub use self::stdint_intn_h::int64_t;
+pub use self::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+pub use self::stdio_h::{
+    fclose, fgetc, fileno, fopen, fread, fseeko, ftello, sscanf, stdin, SEEK_END, SEEK_SET,
+};
+use self::stdlib_h::{calloc, free, strtol};
+use self::string_h::{memcmp, memset, strchr, strcmp, strncmp};
+pub use self::struct_FILE_h::{_IO_codecvt, _IO_lock_t, _IO_marker, _IO_wide_data, _IO_FILE};
+pub use self::struct_stat_h::stat;
+pub use self::struct_timespec_h::timespec;
+pub use self::types_h::{
+    __blkcnt_t, __blksize_t, __dev_t, __gid_t, __ino_t, __int64_t, __mode_t, __nlink_t, __off64_t,
+    __off_t, __syscall_slong_t, __time_t, __uid_t, __uint16_t, __uint32_t, __uint64_t, __uint8_t,
+};
+pub use self::x264_h::{
+    X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MAX,
+    X264_CSP_NONE, X264_LOG_ERROR,
+};
+pub use self::x264cli_h::{hnd_t, x264_cli_log};
+pub use self::FILE_h::FILE;
 pub use self::__stddef_null_h::NULL;
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -569,13 +563,11 @@ pub struct y4m_hnd_t {
 }
 static mut slen: size_t = 0;
 #[c2rust::src_loc = "44:9"]
-pub const Y4M_MAGIC: [::core::ffi::c_char; 10] = unsafe {
-    ::core::mem::transmute::<[u8; 10], [::core::ffi::c_char; 10]>(*b"YUV4MPEG2\0")
-};
+pub const Y4M_MAGIC: [::core::ffi::c_char; 10] =
+    unsafe { ::core::mem::transmute::<[u8; 10], [::core::ffi::c_char; 10]>(*b"YUV4MPEG2\0") };
 #[c2rust::src_loc = "45:9"]
-pub const Y4M_FRAME_MAGIC: [::core::ffi::c_char; 6] = unsafe {
-    ::core::mem::transmute::<[u8; 6], [::core::ffi::c_char; 6]>(*b"FRAME\0")
-};
+pub const Y4M_FRAME_MAGIC: [::core::ffi::c_char; 6] =
+    unsafe { ::core::mem::transmute::<[u8; 6], [::core::ffi::c_char; 6]>(*b"FRAME\0") };
 #[c2rust::src_loc = "46:9"]
 pub const Y4M_MAX_HEADER: ::core::ffi::c_int = 256 as ::core::ffi::c_int;
 #[c2rust::src_loc = "48:1"]
@@ -640,10 +632,8 @@ unsafe extern "C" fn open_file(
     mut info: *mut video_info_t,
     mut opt: *mut cli_input_opt_t,
 ) -> ::core::ffi::c_int {
-    let mut h: *mut y4m_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<y4m_hnd_t>() as size_t,
-    ) as *mut y4m_hnd_t;
+    let mut h: *mut y4m_hnd_t =
+        calloc(1 as size_t, ::core::mem::size_of::<y4m_hnd_t>() as size_t) as *mut y4m_hnd_t;
     let mut i: ::core::ffi::c_int = 0;
     let mut n: uint32_t = 0;
     let mut d: uint32_t = 0;
@@ -657,11 +647,17 @@ unsafe extern "C" fn open_file(
         return -(1 as ::core::ffi::c_int);
     }
     (*info).vfr = 0 as ::core::ffi::c_int;
-    if strcmp(psz_filename, b"-\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
+    if strcmp(
+        psz_filename,
+        b"-\0" as *const u8 as *const ::core::ffi::c_char,
+    ) == 0
+    {
         (*h).fh = stdin;
     } else {
-        (*h).fh = fopen(psz_filename, b"rb\0" as *const u8 as *const ::core::ffi::c_char)
-            as *mut FILE;
+        (*h).fh = fopen(
+            psz_filename,
+            b"rb\0" as *const u8 as *const ::core::ffi::c_char,
+        ) as *mut FILE;
     }
     if (*h).fh.is_null() {
         return -(1 as ::core::ffi::c_int);
@@ -680,8 +676,7 @@ unsafe extern "C" fn open_file(
     if strncmp(
         header.as_mut_ptr(),
         b"YUV4MPEG2\0" as *const u8 as *const ::core::ffi::c_char,
-        (::core::mem::size_of::<[::core::ffi::c_char; 10]>() as size_t)
-            .wrapping_sub(1 as size_t),
+        (::core::mem::size_of::<[::core::ffi::c_char; 10]>() as size_t).wrapping_sub(1 as size_t),
     ) != 0
     {
         x264_cli_log(
@@ -699,7 +694,9 @@ unsafe extern "C" fn open_file(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    header_end = &mut *header.as_mut_ptr().offset((i + 1 as ::core::ffi::c_int) as isize)
+    header_end = &mut *header
+        .as_mut_ptr()
+        .offset((i + 1 as ::core::ffi::c_int) as isize)
         as *mut ::core::ffi::c_char;
     (*h).seq_header_len = i + 1 as ::core::ffi::c_int;
     let mut tokstart: *mut ::core::ffi::c_char = header
@@ -711,19 +708,13 @@ unsafe extern "C" fn open_file(
             tokstart = tokstart.offset(1);
             match *fresh0 as ::core::ffi::c_int {
                 87 => {
-                    (*info).width = strtol(
-                        tokstart,
-                        &mut tokend,
-                        10 as ::core::ffi::c_int,
-                    ) as ::core::ffi::c_int;
+                    (*info).width = strtol(tokstart, &mut tokend, 10 as ::core::ffi::c_int)
+                        as ::core::ffi::c_int;
                     tokstart = tokend;
                 }
                 72 => {
-                    (*info).height = strtol(
-                        tokstart,
-                        &mut tokend,
-                        10 as ::core::ffi::c_int,
-                    ) as ::core::ffi::c_int;
+                    (*info).height = strtol(tokstart, &mut tokend, 10 as ::core::ffi::c_int)
+                        as ::core::ffi::c_int;
                     tokstart = tokend;
                 }
                 67 => {
@@ -754,7 +745,9 @@ unsafe extern "C" fn open_file(
                         b"%u:%u\0" as *const u8 as *const ::core::ffi::c_char,
                         &mut n as *mut uint32_t,
                         &mut d as *mut uint32_t,
-                    ) == 2 as ::core::ffi::c_int && n != 0 && d != 0
+                    ) == 2 as ::core::ffi::c_int
+                        && n != 0
+                        && d != 0
                     {
                         x264_reduce_fraction(&mut n, &mut d);
                         (*info).fps_num = n;
@@ -768,7 +761,9 @@ unsafe extern "C" fn open_file(
                         b"%u:%u\0" as *const u8 as *const ::core::ffi::c_char,
                         &mut n as *mut uint32_t,
                         &mut d as *mut uint32_t,
-                    ) == 2 as ::core::ffi::c_int && n != 0 && d != 0
+                    ) == 2 as ::core::ffi::c_int
+                        && n != 0
+                        && d != 0
                     {
                         x264_reduce_fraction(&mut n, &mut d);
                         (*info).sar_width = n;
@@ -784,10 +779,7 @@ unsafe extern "C" fn open_file(
                     ) == 0
                     {
                         tokstart = tokstart.offset(6 as ::core::ffi::c_int as isize);
-                        alt_colorspace = parse_csp_and_depth(
-                            tokstart,
-                            &mut alt_bit_depth,
-                        );
+                        alt_colorspace = parse_csp_and_depth(tokstart, &mut alt_bit_depth);
                     } else if strncmp(
                         b"COLORRANGE=\0" as *const u8 as *const ::core::ffi::c_char,
                         tokstart,
@@ -826,8 +818,7 @@ unsafe extern "C" fn open_file(
         colorspace = X264_CSP_I420;
         (*h).bit_depth = 8 as ::core::ffi::c_int;
     }
-    if colorspace <= 0 as ::core::ffi::c_int || colorspace >= 0x11 as ::core::ffi::c_int
-    {
+    if colorspace <= 0 as ::core::ffi::c_int || colorspace >= 0x11 as ::core::ffi::c_int {
         x264_cli_log(
             b"y4m\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
@@ -835,9 +826,7 @@ unsafe extern "C" fn open_file(
         );
         return -(1 as ::core::ffi::c_int);
     }
-    if (*h).bit_depth < 8 as ::core::ffi::c_int
-        || (*h).bit_depth > 16 as ::core::ffi::c_int
-    {
+    if (*h).bit_depth < 8 as ::core::ffi::c_int || (*h).bit_depth > 16 as ::core::ffi::c_int {
         x264_cli_log(
             b"y4m\0" as *const u8 as *const ::core::ffi::c_char,
             X264_LOG_ERROR,
@@ -855,12 +844,8 @@ unsafe extern "C" fn open_file(
     let mut csp: *const x264_cli_csp_t = x264_cli_get_csp((*info).csp);
     i = 0 as ::core::ffi::c_int;
     while i < (*csp).planes {
-        (*h).plane_size[i as usize] = x264_cli_pic_plane_size(
-            (*info).csp,
-            (*info).width,
-            (*info).height,
-            i,
-        );
+        (*h).plane_size[i as usize] =
+            x264_cli_pic_plane_size((*info).csp, (*info).width, (*info).height, i);
         (*h).frame_size += (*h).plane_size[i as usize];
         (*h).plane_size[i as usize] /= x264_cli_csp_depth_factor((*info).csp) as int64_t;
         i += 1;
@@ -871,8 +856,7 @@ unsafe extern "C" fn open_file(
         while len <= Y4M_MAX_HEADER as size_t && fgetc((*h).fh) != '\n' as i32 {
             len = len.wrapping_add(1);
         }
-        if len > 256 as size_t
-            || len < ::core::mem::size_of::<[::core::ffi::c_char; 6]>() as usize
+        if len > 256 as size_t || len < ::core::mem::size_of::<[::core::ffi::c_char; 6]>() as usize
         {
             x264_cli_log(
                 b"y4m\0" as *const u8 as *const ::core::ffi::c_char,
@@ -882,13 +866,12 @@ unsafe extern "C" fn open_file(
             return -(1 as ::core::ffi::c_int);
         }
         (*h).frame_header_len = len as ::core::ffi::c_int;
-        (*h).frame_size = ((*h).frame_size as size_t).wrapping_add(len) as int64_t
-            as int64_t;
+        (*h).frame_size = ((*h).frame_size as size_t).wrapping_add(len) as int64_t as int64_t;
         fseeko((*h).fh, 0 as __off64_t, SEEK_END);
         let mut i_size: int64_t = ftello((*h).fh) as int64_t;
         fseeko((*h).fh, init_pos as __off64_t, SEEK_SET);
-        (*info).num_frames = ((i_size - (*h).seq_header_len as int64_t)
-            / (*h).frame_size) as ::core::ffi::c_int;
+        (*info).num_frames =
+            ((i_size - (*h).seq_header_len as int64_t) / (*h).frame_size) as ::core::ffi::c_int;
         if (*info).num_frames == 0 {
             x264_cli_log(
                 b"y4m\0" as *const u8 as *const ::core::ffi::c_char,
@@ -898,8 +881,8 @@ unsafe extern "C" fn open_file(
             return -(1 as ::core::ffi::c_int);
         }
         if (*h).bit_depth & 7 as ::core::ffi::c_int == 0 {
-            (*h).use_mmap = (x264_cli_mmap_init(&mut (*h).mmap, (*h).fh) == 0)
-                as ::core::ffi::c_int;
+            (*h).use_mmap =
+                (x264_cli_mmap_init(&mut (*h).mmap, (*h).fh) == 0) as ::core::ffi::c_int;
         }
     }
     *p_handle = h as hnd_t;
@@ -912,20 +895,18 @@ unsafe extern "C" fn read_frame_internal(
     mut bit_depth_uc: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     let mut pixel_depth: ::core::ffi::c_int = x264_cli_csp_depth_factor((*pic).img.csp);
-    let mut i: ::core::ffi::c_int = ::core::mem::size_of::<[::core::ffi::c_char; 6]>()
-        as ::core::ffi::c_int;
+    let mut i: ::core::ffi::c_int =
+        ::core::mem::size_of::<[::core::ffi::c_char; 6]>() as ::core::ffi::c_int;
     let mut header_buf: [::core::ffi::c_char; 16] = [0; 16];
     let mut header: *mut ::core::ffi::c_char = 0 as *mut ::core::ffi::c_char;
     if (*h).use_mmap != 0 {
-        header = (*pic).img.plane[0 as ::core::ffi::c_int as usize]
-            as *mut ::core::ffi::c_char;
-        (*pic).img.plane[0 as ::core::ffi::c_int as usize] = (*pic)
-            .img
-            .plane[0 as ::core::ffi::c_int as usize]
+        header = (*pic).img.plane[0 as ::core::ffi::c_int as usize] as *mut ::core::ffi::c_char;
+        (*pic).img.plane[0 as ::core::ffi::c_int as usize] = (*pic).img.plane
+            [0 as ::core::ffi::c_int as usize]
             .offset((*h).frame_header_len as isize);
         while i <= (*h).frame_header_len
-            && *header.offset((i - 1 as ::core::ffi::c_int) as isize)
-                as ::core::ffi::c_int != '\n' as i32
+            && *header.offset((i - 1 as ::core::ffi::c_int) as isize) as ::core::ffi::c_int
+                != '\n' as i32
         {
             i += 1;
         }
@@ -939,8 +920,13 @@ unsafe extern "C" fn read_frame_internal(
         }
     } else {
         header = header_buf.as_mut_ptr();
-        if fread(header as *mut ::core::ffi::c_void, 1 as size_t, slen, (*h).fh)
-            as size_t != slen
+        if fread(
+            header as *mut ::core::ffi::c_void,
+            1 as size_t,
+            slen,
+            (*h).fh,
+        ) as size_t
+            != slen
         {
             return -(1 as ::core::ffi::c_int);
         }
@@ -958,8 +944,7 @@ unsafe extern "C" fn read_frame_internal(
     }
     if memcmp(
         header as *const ::core::ffi::c_void,
-        b"FRAME\0" as *const u8 as *const ::core::ffi::c_char
-            as *const ::core::ffi::c_void,
+        b"FRAME\0" as *const u8 as *const ::core::ffi::c_char as *const ::core::ffi::c_void,
         slen,
     ) != 0
     {
@@ -974,10 +959,8 @@ unsafe extern "C" fn read_frame_internal(
     while i < (*pic).img.planes {
         if (*h).use_mmap != 0 {
             if i != 0 {
-                (*pic).img.plane[i as usize] = (*pic)
-                    .img
-                    .plane[(i - 1 as ::core::ffi::c_int) as usize]
-                    .offset(
+                (*pic).img.plane[i as usize] =
+                    (*pic).img.plane[(i - 1 as ::core::ffi::c_int) as usize].offset(
                         (pixel_depth as int64_t
                             * (*h).plane_size[(i - 1 as ::core::ffi::c_int) as usize])
                             as isize,
@@ -988,19 +971,19 @@ unsafe extern "C" fn read_frame_internal(
             pixel_depth as size_t,
             (*h).plane_size[i as usize] as size_t,
             (*h).fh,
-        ) as uint64_t != (*h).plane_size[i as usize] as uint64_t
+        ) as uint64_t
+            != (*h).plane_size[i as usize] as uint64_t
         {
-            return -(1 as ::core::ffi::c_int)
+            return -(1 as ::core::ffi::c_int);
         }
         if bit_depth_uc != 0 {
             let mut plane: *mut uint16_t = (*pic).img.plane[i as usize] as *mut uint16_t;
             let mut pixel_count: int64_t = (*h).plane_size[i as usize];
-            let mut lshift: ::core::ffi::c_int = 16 as ::core::ffi::c_int
-                - (*h).bit_depth;
+            let mut lshift: ::core::ffi::c_int = 16 as ::core::ffi::c_int - (*h).bit_depth;
             let mut j: int64_t = 0 as int64_t;
             while j < pixel_count {
-                *plane.offset(j as isize) = ((*plane.offset(j as isize)
-                    as ::core::ffi::c_int) << lshift) as uint16_t;
+                *plane.offset(j as isize) =
+                    ((*plane.offset(j as isize) as ::core::ffi::c_int) << lshift) as uint16_t;
                 j += 1;
             }
         }
@@ -1056,9 +1039,7 @@ unsafe extern "C" fn release_frame(
     if (*h).use_mmap != 0 {
         return x264_cli_munmap(
             &mut (*h).mmap,
-            (*pic)
-                .img
-                .plane[0 as ::core::ffi::c_int as usize]
+            (*pic).img.plane[0 as ::core::ffi::c_int as usize]
                 .offset(-((*h).frame_header_len as isize)) as *mut ::core::ffi::c_void,
             (*h).frame_size,
         );
@@ -1095,7 +1076,7 @@ unsafe extern "C" fn picture_alloc(
                 ) -> ::core::ffi::c_int,
         )
     }
-        .expect("non-null function pointer")(pic, csp, width, height);
+    .expect("non-null function pointer")(pic, csp, width, height);
 }
 #[c2rust::src_loc = "349:1"]
 unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut handle: hnd_t) {
@@ -1156,22 +1137,16 @@ pub static mut y4m_input: cli_input_t = unsafe {
                     ) -> ::core::ffi::c_int,
             ),
             release_frame: Some(
-                release_frame
-                    as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
+                release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ::core::ffi::c_int,
             ),
-            picture_clean: Some(
-                picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> (),
-            ),
-            close_file: Some(
-                close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int,
-            ),
+            picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
+            close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> ::core::ffi::c_int),
         };
         init
     }
 };
 unsafe extern "C" fn run_static_initializers() {
-    slen = (::core::mem::size_of::<[::core::ffi::c_char; 6]>() as size_t)
-        .wrapping_sub(1 as size_t);
+    slen = (::core::mem::size_of::<[::core::ffi::c_char; 6]>() as size_t).wrapping_sub(1 as size_t);
 }
 #[used]
 #[cfg_attr(target_os = "linux", link_section = ".init_array")]
