@@ -8,6 +8,7 @@
 #![allow(internal_features)]
 #![feature(core_intrinsics)]
 #![feature(extern_types)]
+#![feature(lint_reasons)]
 #![feature(register_tool)]
 //#![feature(stdsimd)]
 #![register_tool(c2rust)]
@@ -293,6 +294,15 @@ pub mod stdio_h {
         ) -> ::core::ffi::c_int;
         #[c2rust::src_loc = "612:1"]
         pub fn putc(__c: ::core::ffi::c_int, __stream: *mut FILE) -> ::core::ffi::c_int;
+    }
+    extern "C" {
+        #[c2rust::src_loc = "735:1"]
+        pub fn fwrite(
+            __ptr: *const ::core::ffi::c_void,
+            __size: size_t,
+            __n: size_t,
+            __s: *mut FILE,
+        ) -> ::core::ffi::c_ulong;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/types/struct_timespec.h:37"]
@@ -987,6 +997,109 @@ pub mod x264_h {
     #[c2rust::src_loc = "853:13"]
     pub const X264_MBINFO_CONSTANT: ::core::ffi::c_uint =
         (1 as ::core::ffi::c_uint) << 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "86:1"]
+    pub type nal_unit_type_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "98:5"]
+    pub const NAL_FILLER: nal_unit_type_e = 12;
+    #[c2rust::src_loc = "97:5"]
+    pub const NAL_AUD: nal_unit_type_e = 9;
+    #[c2rust::src_loc = "96:5"]
+    pub const NAL_PPS: nal_unit_type_e = 8;
+    #[c2rust::src_loc = "95:5"]
+    pub const NAL_SPS: nal_unit_type_e = 7;
+    #[c2rust::src_loc = "94:5"]
+    pub const NAL_SEI: nal_unit_type_e = 6;
+    #[c2rust::src_loc = "93:5"]
+    pub const NAL_SLICE_IDR: nal_unit_type_e = 5;
+    #[c2rust::src_loc = "92:5"]
+    pub const NAL_SLICE_DPC: nal_unit_type_e = 4;
+    #[c2rust::src_loc = "91:5"]
+    pub const NAL_SLICE_DPB: nal_unit_type_e = 3;
+    #[c2rust::src_loc = "90:5"]
+    pub const NAL_SLICE_DPA: nal_unit_type_e = 2;
+    #[c2rust::src_loc = "89:5"]
+    pub const NAL_SLICE: nal_unit_type_e = 1;
+    #[c2rust::src_loc = "88:5"]
+    pub const NAL_UNKNOWN: nal_unit_type_e = 0;
+    #[c2rust::src_loc = "101:1"]
+    pub type nal_priority_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "106:5"]
+    pub const NAL_PRIORITY_HIGHEST: nal_priority_e = 3;
+    #[c2rust::src_loc = "105:5"]
+    pub const NAL_PRIORITY_HIGH: nal_priority_e = 2;
+    #[c2rust::src_loc = "104:5"]
+    pub const NAL_PRIORITY_LOW: nal_priority_e = 1;
+    #[c2rust::src_loc = "103:5"]
+    pub const NAL_PRIORITY_DISPOSABLE: nal_priority_e = 0;
+    #[c2rust::src_loc = "143:9"]
+    pub const X264_CPU_SSE2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 3 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "146:9"]
+    pub const X264_CPU_SSSE3: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 6 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "148:9"]
+    pub const X264_CPU_SSE42: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 8 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "152:9"]
+    pub const X264_CPU_FMA3: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 12 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "153:9"]
+    pub const X264_CPU_BMI1: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 13 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "154:9"]
+    pub const X264_CPU_BMI2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 14 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "156:9"]
+    pub const X264_CPU_AVX512: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 16 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "159:9"]
+    pub const X264_CPU_CACHELINE_64: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 18 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "160:9"]
+    pub const X264_CPU_SSE2_IS_SLOW: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 19 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "161:9"]
+    pub const X264_CPU_SSE2_IS_FAST: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 20 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "202:9"]
+    pub const X264_DIRECT_PRED_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "203:9"]
+    pub const X264_DIRECT_PRED_SPATIAL: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "205:9"]
+    pub const X264_DIRECT_PRED_AUTO: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "207:9"]
+    pub const X264_ME_HEX: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "208:9"]
+    pub const X264_ME_UMH: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "210:9"]
+    pub const X264_ME_TESA: ::core::ffi::c_int = 4 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "211:9"]
+    pub const X264_CQM_FLAT: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "213:9"]
+    pub const X264_CQM_CUSTOM: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "215:9"]
+    pub const X264_RC_CRF: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "216:9"]
+    pub const X264_RC_ABR: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "222:9"]
+    pub const X264_B_ADAPT_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "225:9"]
+    pub const X264_WEIGHTP_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "227:9"]
+    pub const X264_WEIGHTP_SMART: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "228:9"]
+    pub const X264_B_PYRAMID_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "229:9"]
+    pub const X264_B_PYRAMID_STRICT: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "231:9"]
+    pub const X264_KEYINT_MIN_AUTO: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "232:9"]
+    pub const X264_KEYINT_MAX_INFINITE: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 30 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "236:9"]
+    pub const X264_AVCINTRA_FLAVOR_SONY: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "299:9"]
+    pub const X264_NAL_HRD_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264cli.h:37"]
 pub mod x264cli_h {
@@ -1999,6 +2112,31 @@ pub mod osdep_h {
         return lut[x as usize] as ::core::ffi::c_int;
     }
     use super::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
+
+    #[inline(always)]
+    #[c2rust::src_loc = "475:1"]
+    pub unsafe extern "C" fn endian_fix32(mut x: uint32_t) -> uint32_t {
+        return (x << 24 as ::core::ffi::c_int)
+            .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as uint32_t)
+            .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as uint32_t)
+            .wrapping_add(x >> 24 as ::core::ffi::c_int);
+    }
+    #[inline(always)]
+    #[c2rust::src_loc = "487:1"]
+    pub unsafe extern "C" fn endian_fix64(mut x: uint64_t) -> uint64_t {
+        return (endian_fix32((x >> 32 as ::core::ffi::c_int) as uint32_t) as uint64_t)
+            .wrapping_add((endian_fix32(x as uint32_t) as uint64_t) << 32 as ::core::ffi::c_int);
+    }
+    #[inline(always)]
+    #[c2rust::src_loc = "492:1"]
+    pub unsafe extern "C" fn endian_fix(mut x: uintptr_t) -> uintptr_t {
+        return if WORD_SIZE == 8 as uint64_t {
+            endian_fix64(x as uint64_t) as uintptr_t
+        } else {
+            endian_fix32(x as uint32_t) as uintptr_t
+        };
+    }
+    use super::stdint_h::uintptr_t;
 }
 #[c2rust::header_src = "/usr/include/string.h:37"]
 pub mod string_h {
@@ -2046,6 +2184,14 @@ pub mod string_h {
             __s: *const ::core::ffi::c_char,
             __c: ::core::ffi::c_int,
         ) -> *mut ::core::ffi::c_char;
+    }
+    extern "C" {
+        #[c2rust::src_loc = "47:1"]
+        pub fn memmove(
+            __dest: *mut ::core::ffi::c_void,
+            __src: *const ::core::ffi::c_void,
+            __n: size_t,
+        ) -> *mut ::core::ffi::c_void;
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:37"]
@@ -2290,6 +2436,35 @@ pub mod base_h {
         #[c2rust::src_loc = "280:10"]
         pub fn x264_free(_: *mut ::core::ffi::c_void);
     }
+
+    #[c2rust::src_loc = "118:19"]
+    pub static mut slice_type_to_char: [::core::ffi::c_char; 3] = [
+        'P' as i32 as ::core::ffi::c_char,
+        'B' as i32 as ::core::ffi::c_char,
+        'I' as i32 as ::core::ffi::c_char,
+    ];
+    #[c2rust::src_loc = "137:9"]
+    pub const X264_REF_MAX: ::core::ffi::c_int = 16 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "138:9"]
+    pub const X264_THREAD_MAX: ::core::ffi::c_int = 128 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "140:9"]
+    pub const X264_LOOKAHEAD_MAX: ::core::ffi::c_int = 250 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "144:9"]
+    pub const X264_THREAD_HEIGHT: ::core::ffi::c_int = 24 as ::core::ffi::c_int;
+    use super::x264_h::x264_param_t;
+    extern "C" {
+        #[c2rust::src_loc = "275:10"]
+        pub fn x264_log_internal(
+            i_level: ::core::ffi::c_int,
+            psz_fmt: *const ::core::ffi::c_char,
+            ...
+        );
+        #[c2rust::src_loc = "287:1"]
+        pub fn x264_param_strdup(
+            param: *mut x264_param_t,
+            src: *const ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_char;
+    }
 }
 #[c2rust::header_src = "/usr/include/libavutil/pixdesc.h:58"]
 pub mod pixdesc_h {
@@ -2344,6 +2519,15 @@ pub mod mathcalls_h {
         pub fn sqrtf(__x: ::core::ffi::c_float) -> ::core::ffi::c_float;
         #[c2rust::src_loc = "216:1"]
         pub fn fabsf(__x: ::core::ffi::c_float) -> ::core::ffi::c_float;
+    }
+    extern "C" {
+        #[c2rust::src_loc = "129:1"]
+        pub fn log10(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
+        #[c2rust::src_loc = "177:1"]
+        pub fn pow(__x: ::core::ffi::c_double, __y: ::core::ffi::c_double)
+            -> ::core::ffi::c_double;
+        #[c2rust::src_loc = "216:1"]
+        pub fn fabs(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
     }
 }
 #[c2rust::header_src = "/usr/include/strings.h:37"]
@@ -2624,6 +2808,10 @@ pub mod stdint_h {
     pub type intptr_t = isize;
     #[c2rust::src_loc = "79:1"]
     pub type uintptr_t = usize;
+    #[c2rust::src_loc = "117:10"]
+    pub const UINT16_MAX: ::core::ffi::c_int = 65535 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "118:10"]
+    pub const UINT32_MAX: ::core::ffi::c_uint = 4294967295 as ::core::ffi::c_uint;
 }
 #[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:28"]
 pub mod thread_shared_types_h {
@@ -2690,6 +2878,20 @@ pub mod pthreadtypes_h {
     }
     use super::struct_mutex_h::__pthread_mutex_s;
     use super::thread_shared_types_h::__pthread_cond_s;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "32:9"]
+    pub union pthread_mutexattr_t {
+        pub __size: [::core::ffi::c_char; 4],
+        pub __align: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "41:9"]
+    pub union pthread_condattr_t {
+        pub __size: [::core::ffi::c_char; 4],
+        pub __align: ::core::ffi::c_int,
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:28"]
 pub mod common_h {
@@ -3189,6 +3391,19 @@ pub mod common_h {
             ...
         );
     }
+    #[c2rust::src_loc = "61:9"]
+    pub const PIXEL_MAX: ::core::ffi::c_int =
+        ((1 as ::core::ffi::c_int) << BIT_DEPTH) - 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "66:9"]
+    pub const NALU_OVERHEAD: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "67:9"]
+    pub const FILLER_OVERHEAD: ::core::ffi::c_int = NALU_OVERHEAD + 1 as ::core::ffi::c_int;
+    extern "C" {
+        #[c2rust::src_loc = "141:1"]
+        pub fn x264_10_cavlc_init(h: *mut x264_t);
+        #[c2rust::src_loc = "143:1"]
+        pub fn x264_10_cabac_init(h: *mut x264_t);
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:28"]
 pub mod frame_h {
@@ -3399,6 +3614,91 @@ pub mod frame_h {
             i_height: ::core::ffi::c_int,
             w: *mut x264_weight_t,
         );
+    }
+
+    use super::x264_h::x264_picture_t;
+    extern "C" {
+        #[c2rust::src_loc = "222:1"]
+        pub fn x264_10_frame_delete(frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "225:1"]
+        pub fn x264_10_frame_copy_picture(
+            h: *mut x264_t,
+            dst: *mut x264_frame_t,
+            src: *mut x264_picture_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "228:1"]
+        pub fn x264_10_frame_expand_border(
+            h: *mut x264_t,
+            frame: *mut x264_frame_t,
+            mb_y: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "230:1"]
+        pub fn x264_10_frame_expand_border_filtered(
+            h: *mut x264_t,
+            frame: *mut x264_frame_t,
+            mb_y: ::core::ffi::c_int,
+            b_end: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "236:1"]
+        pub fn x264_10_frame_expand_border_mod16(h: *mut x264_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "238:1"]
+        pub fn x264_10_expand_border_mbpair(
+            h: *mut x264_t,
+            mb_x: ::core::ffi::c_int,
+            mb_y: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "241:1"]
+        pub fn x264_10_frame_deblock_row(h: *mut x264_t, mb_y: ::core::ffi::c_int);
+        #[c2rust::src_loc = "246:1"]
+        pub fn x264_10_frame_filter(
+            h: *mut x264_t,
+            frame: *mut x264_frame_t,
+            mb_y: ::core::ffi::c_int,
+            b_end: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "248:1"]
+        pub fn x264_10_frame_init_lowres(h: *mut x264_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "251:1"]
+        pub fn x264_10_deblock_init(
+            cpu: uint32_t,
+            pf: *mut x264_deblock_function_t,
+            b_mbaff: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "254:1"]
+        pub fn x264_10_frame_cond_broadcast(
+            frame: *mut x264_frame_t,
+            i_lines_completed: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "258:1"]
+        pub fn x264_10_frame_new_slice(
+            h: *mut x264_t,
+            frame: *mut x264_frame_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "261:1"]
+        pub fn x264_10_threadslice_cond_broadcast(h: *mut x264_t, pass: ::core::ffi::c_int);
+        #[c2rust::src_loc = "263:1"]
+        pub fn x264_10_threadslice_cond_wait(h: *mut x264_t, pass: ::core::ffi::c_int);
+        #[c2rust::src_loc = "266:10"]
+        pub fn x264_10_frame_push(list: *mut *mut x264_frame_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "268:10"]
+        pub fn x264_10_frame_pop(list: *mut *mut x264_frame_t) -> *mut x264_frame_t;
+        #[c2rust::src_loc = "270:10"]
+        pub fn x264_10_frame_unshift(list: *mut *mut x264_frame_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "272:10"]
+        pub fn x264_10_frame_shift(list: *mut *mut x264_frame_t) -> *mut x264_frame_t;
+        #[c2rust::src_loc = "275:1"]
+        pub fn x264_10_frame_push_unused(h: *mut x264_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "277:1"]
+        pub fn x264_10_frame_push_blank_unused(h: *mut x264_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "279:1"]
+        pub fn x264_10_frame_pop_blank_unused(h: *mut x264_t) -> *mut x264_frame_t;
+        #[c2rust::src_loc = "284:1"]
+        pub fn x264_10_frame_pop_unused(
+            h: *mut x264_t,
+            b_fdec: ::core::ffi::c_int,
+        ) -> *mut x264_frame_t;
+        #[c2rust::src_loc = "286:1"]
+        pub fn x264_10_frame_delete_list(list: *mut *mut x264_frame_t);
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:28"]
@@ -3721,6 +4021,14 @@ pub mod mc_h {
     use super::stdint_h::intptr_t;
     use super::stdint_intn_h::{int16_t, int32_t};
     use super::stdint_uintn_h::{uint16_t, uint32_t};
+    extern "C" {
+        #[c2rust::src_loc = "343:1"]
+        pub fn x264_10_mc_init(
+            cpu: uint32_t,
+            pf: *mut x264_mc_functions_t,
+            cpu_independent: ::core::ffi::c_int,
+        );
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:28"]
 pub mod bitstream_h {
@@ -4103,6 +4411,167 @@ pub mod bitstream_h {
         #[c2rust::src_loc = "84:17"]
         pub static mut x264_10_run_before: [uint32_t; 65536];
     }
+
+    #[inline]
+    #[c2rust::src_loc = "86:1"]
+    pub unsafe extern "C" fn bs_init(
+        mut s: *mut bs_t,
+        mut p_data: *mut ::core::ffi::c_void,
+        mut i_data: ::core::ffi::c_int,
+    ) {
+        let mut offset: ::core::ffi::c_int =
+            (p_data as intptr_t & 3 as intptr_t) as ::core::ffi::c_int;
+        (*s).p_start = (p_data as *mut uint8_t).offset(-(offset as isize));
+        (*s).p = (*s).p_start;
+        (*s).p_end = (p_data as *mut uint8_t).offset(i_data as isize);
+        (*s).i_left = WORD_SIZE
+            .wrapping_sub(offset as uint64_t)
+            .wrapping_mul(8 as uint64_t) as ::core::ffi::c_int;
+        if offset != 0 {
+            (*s).cur_bits = endian_fix32((*((*s).p as *mut x264_union32_t)).i) as uintptr_t;
+            (*s).cur_bits >>= (4 as ::core::ffi::c_int - offset) * 8 as ::core::ffi::c_int;
+        } else {
+            (*s).cur_bits = 0 as uintptr_t;
+        };
+    }
+    #[inline]
+    #[c2rust::src_loc = "100:1"]
+    pub unsafe extern "C" fn bs_pos(mut s: *mut bs_t) -> ::core::ffi::c_int {
+        return ((8 as ::core::ffi::c_long * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long)
+            as uint64_t)
+            .wrapping_add(WORD_SIZE.wrapping_mul(8 as uint64_t))
+            .wrapping_sub((*s).i_left as uint64_t) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "106:1"]
+    pub unsafe extern "C" fn bs_flush(mut s: *mut bs_t) {
+        (*((*s).p as *mut x264_union32_t)).i =
+            endian_fix32(((*s).cur_bits << ((*s).i_left & 31 as ::core::ffi::c_int)) as uint32_t);
+        (*s).p = (*s).p.offset(
+            WORD_SIZE.wrapping_sub(((*s).i_left >> 3 as ::core::ffi::c_int) as uint64_t) as isize,
+        );
+        (*s).i_left = WORD_SIZE.wrapping_mul(8 as uint64_t) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "113:1"]
+    pub unsafe extern "C" fn bs_realign(mut s: *mut bs_t) {
+        let mut offset: ::core::ffi::c_int =
+            ((*s).p as intptr_t & 3 as intptr_t) as ::core::ffi::c_int;
+        if offset != 0 {
+            (*s).p = (*s).p.offset(-(offset as isize));
+            (*s).i_left = WORD_SIZE
+                .wrapping_sub(offset as uint64_t)
+                .wrapping_mul(8 as uint64_t) as ::core::ffi::c_int;
+            (*s).cur_bits = endian_fix32((*((*s).p as *mut x264_union32_t)).i) as uintptr_t;
+            (*s).cur_bits >>= (4 as ::core::ffi::c_int - offset) * 8 as ::core::ffi::c_int;
+        }
+    }
+    #[inline]
+    #[c2rust::src_loc = "125:1"]
+    pub unsafe extern "C" fn bs_write(
+        mut s: *mut bs_t,
+        mut i_count: ::core::ffi::c_int,
+        mut i_bits: uint32_t,
+    ) {
+        if WORD_SIZE == 8 as uint64_t {
+            (*s).cur_bits = (*s).cur_bits << i_count | i_bits as uintptr_t;
+            (*s).i_left -= i_count;
+            if (*s).i_left <= 32 as ::core::ffi::c_int {
+                (*((*s).p as *mut x264_union32_t)).i =
+                    endian_fix((*s).cur_bits << (*s).i_left) as uint32_t;
+                (*s).i_left += 32 as ::core::ffi::c_int;
+                (*s).p = (*s).p.offset(4 as ::core::ffi::c_int as isize);
+            }
+        } else if i_count < (*s).i_left {
+            (*s).cur_bits = (*s).cur_bits << i_count | i_bits as uintptr_t;
+            (*s).i_left -= i_count;
+        } else {
+            i_count -= (*s).i_left;
+            (*s).cur_bits = (*s).cur_bits << (*s).i_left | (i_bits >> i_count) as uintptr_t;
+            (*((*s).p as *mut x264_union32_t)).i = endian_fix((*s).cur_bits) as uint32_t;
+            (*s).p = (*s).p.offset(4 as ::core::ffi::c_int as isize);
+            (*s).cur_bits = i_bits as uintptr_t;
+            (*s).i_left = 32 as ::core::ffi::c_int - i_count;
+        };
+    }
+    #[inline]
+    #[c2rust::src_loc = "169:1"]
+    pub unsafe extern "C" fn bs_write1(mut s: *mut bs_t, mut i_bit: uint32_t) {
+        (*s).cur_bits <<= 1 as ::core::ffi::c_int;
+        (*s).cur_bits |= i_bit as uintptr_t;
+        (*s).i_left -= 1;
+        if (*s).i_left as uint64_t
+            == WORD_SIZE
+                .wrapping_mul(8 as uint64_t)
+                .wrapping_sub(32 as uint64_t)
+        {
+            (*((*s).p as *mut x264_union32_t)).i = endian_fix32((*s).cur_bits as uint32_t);
+            (*s).p = (*s).p.offset(4 as ::core::ffi::c_int as isize);
+            (*s).i_left = WORD_SIZE.wrapping_mul(8 as uint64_t) as ::core::ffi::c_int;
+        }
+    }
+    #[inline]
+    #[c2rust::src_loc = "187:1"]
+    pub unsafe extern "C" fn bs_align_1(mut s: *mut bs_t) {
+        bs_write(
+            s,
+            (*s).i_left & 7 as ::core::ffi::c_int,
+            (((1 as ::core::ffi::c_int) << ((*s).i_left & 7 as ::core::ffi::c_int))
+                - 1 as ::core::ffi::c_int) as uint32_t,
+        );
+        bs_flush(s);
+    }
+    #[inline]
+    #[c2rust::src_loc = "221:1"]
+    pub unsafe extern "C" fn bs_write_ue_big(mut s: *mut bs_t, mut val: ::core::ffi::c_uint) {
+        let mut size: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        val = val.wrapping_add(1);
+        let mut tmp: ::core::ffi::c_int = val as ::core::ffi::c_int;
+        if tmp >= 0x10000 as ::core::ffi::c_int {
+            size = 32 as ::core::ffi::c_int;
+            tmp >>= 16 as ::core::ffi::c_int;
+        }
+        if tmp >= 0x100 as ::core::ffi::c_int {
+            size += 16 as ::core::ffi::c_int;
+            tmp >>= 8 as ::core::ffi::c_int;
+        }
+        size += x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int;
+        bs_write(s, size >> 1 as ::core::ffi::c_int, 0 as uint32_t);
+        bs_write(
+            s,
+            (size >> 1 as ::core::ffi::c_int) + 1 as ::core::ffi::c_int,
+            val as uint32_t,
+        );
+    }
+    #[inline]
+    #[c2rust::src_loc = "246:1"]
+    pub unsafe extern "C" fn bs_write_se(mut s: *mut bs_t, mut val: ::core::ffi::c_int) {
+        let mut size: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut tmp: ::core::ffi::c_int = 1 as ::core::ffi::c_int - val * 2 as ::core::ffi::c_int;
+        if tmp < 0 as ::core::ffi::c_int {
+            tmp = val * 2 as ::core::ffi::c_int;
+        }
+        val = tmp;
+        if tmp >= 0x100 as ::core::ffi::c_int {
+            size = 16 as ::core::ffi::c_int;
+            tmp >>= 8 as ::core::ffi::c_int;
+        }
+        size += x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int;
+        bs_write(s, size, val as uint32_t);
+    }
+    #[inline]
+    #[c2rust::src_loc = "272:1"]
+    pub unsafe extern "C" fn bs_rbsp_trailing(mut s: *mut bs_t) {
+        bs_write1(s, 1 as uint32_t);
+        bs_write(s, (*s).i_left & 7 as ::core::ffi::c_int, 0 as uint32_t);
+    }
+    use super::base_h::x264_union32_t;
+    use super::osdep_h::{endian_fix, endian_fix32, WORD_SIZE};
+    use super::stdint_uintn_h::uint64_t;
+    extern "C" {
+        #[c2rust::src_loc = "69:1"]
+        pub fn x264_10_bitstream_init(cpu: uint32_t, pf: *mut x264_bitstream_function_t);
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:28"]
 pub mod cabac_h {
@@ -4166,6 +4635,35 @@ pub mod cabac_h {
     }
     use super::stdint_uintn_h::{uint16_t, uint8_t};
     use super::tables_h::{x264_cabac_entropy, x264_cabac_transition};
+    #[inline(always)]
+    #[c2rust::src_loc = "94:1"]
+    pub unsafe extern "C" fn x264_cabac_pos(mut cb: *mut x264_cabac_t) -> ::core::ffi::c_int {
+        return (((*cb).p.offset_from((*cb).p_start) as ::core::ffi::c_long
+            + (*cb).i_bytes_outstanding as ::core::ffi::c_long)
+            * 8 as ::core::ffi::c_long
+            + (*cb).i_queue as ::core::ffi::c_long) as ::core::ffi::c_int;
+    }
+    use super::common_h::x264_t;
+    extern "C" {
+        #[c2rust::src_loc = "56:1"]
+        pub fn x264_10_cabac_context_init(
+            h: *mut x264_t,
+            cb: *mut x264_cabac_t,
+            i_slice_type: ::core::ffi::c_int,
+            i_qp: ::core::ffi::c_int,
+            i_model: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "61:1"]
+        pub fn x264_10_cabac_encode_init(
+            cb: *mut x264_cabac_t,
+            p_data: *mut uint8_t,
+            p_end: *mut uint8_t,
+        );
+        #[c2rust::src_loc = "71:1"]
+        pub fn x264_10_cabac_encode_terminal_c(cb: *mut x264_cabac_t);
+        #[c2rust::src_loc = "77:1"]
+        pub fn x264_10_cabac_encode_flush(h: *mut x264_t, cb: *mut x264_cabac_t);
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:28"]
 pub mod quant_h {
@@ -4364,6 +4862,12 @@ pub mod quant_h {
     use super::bitstream_h::x264_run_level_t;
     use super::common_h::{dctcoef, udctcoef};
     use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+
+    use super::common_h::x264_t;
+    extern "C" {
+        #[c2rust::src_loc = "73:1"]
+        pub fn x264_10_quant_init(h: *mut x264_t, cpu: uint32_t, pf: *mut x264_quant_function_t);
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:28"]
 pub mod dct_h {
@@ -4417,7 +4921,18 @@ pub mod dct_h {
         pub dct2x4dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16]) -> ()>,
     }
     use super::common_h::{dctcoef, pixel};
+    use super::stdint_uintn_h::uint32_t;
     use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "73:1"]
+        pub fn x264_10_dct_init(cpu: uint32_t, dctf: *mut x264_dct_function_t);
+        #[c2rust::src_loc = "75:1"]
+        pub fn x264_10_zigzag_init(
+            cpu: uint32_t,
+            pf_progressive: *mut x264_zigzag_function_t,
+            pf_interlaced: *mut x264_zigzag_function_t,
+        );
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:28"]
 pub mod pixel_h {
@@ -4727,6 +5242,84 @@ pub mod pixel_h {
     use super::stdint_h::intptr_t;
     use super::stdint_intn_h::int16_t;
     use super::stdint_uintn_h::{uint16_t, uint64_t, uint8_t};
+
+    #[c2rust::src_loc = "70:22"]
+    pub static mut x264_luma2chroma_pixel: [[uint8_t; 7]; 4] = [
+        [0 as ::core::ffi::c_int as uint8_t, 0, 0, 0, 0, 0, 0],
+        [
+            PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x4 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x4 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x2 as ::core::ffi::c_int as uint8_t,
+            PIXEL_2x4 as ::core::ffi::c_int as uint8_t,
+            PIXEL_2x2 as ::core::ffi::c_int as uint8_t,
+        ],
+        [
+            PIXEL_8x16 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x16 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x4 as ::core::ffi::c_int as uint8_t,
+            PIXEL_2x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_2x4 as ::core::ffi::c_int as uint8_t,
+        ],
+        [
+            PIXEL_16x16 as ::core::ffi::c_int as uint8_t,
+            PIXEL_16x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x16 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x4 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x4 as ::core::ffi::c_int as uint8_t,
+        ],
+    ];
+    use super::common_h::x264_t;
+    use super::stdint_uintn_h::uint32_t;
+    extern "C" {
+        #[c2rust::src_loc = "147:1"]
+        pub fn x264_10_pixel_init(cpu: uint32_t, pixf: *mut x264_pixel_function_t);
+        #[c2rust::src_loc = "149:1"]
+        pub fn x264_10_pixel_ssd_nv12(
+            pf: *mut x264_pixel_function_t,
+            pix1: *mut pixel,
+            i_pix1: intptr_t,
+            pix2: *mut pixel,
+            i_pix2: intptr_t,
+            i_width: ::core::ffi::c_int,
+            i_height: ::core::ffi::c_int,
+            ssd_u: *mut uint64_t,
+            ssd_v: *mut uint64_t,
+        );
+        #[c2rust::src_loc = "152:1"]
+        pub fn x264_10_pixel_ssd_wxh(
+            pf: *mut x264_pixel_function_t,
+            pix1: *mut pixel,
+            i_pix1: intptr_t,
+            pix2: *mut pixel,
+            i_pix2: intptr_t,
+            i_width: ::core::ffi::c_int,
+            i_height: ::core::ffi::c_int,
+        ) -> uint64_t;
+        #[c2rust::src_loc = "155:1"]
+        pub fn x264_10_pixel_ssim_wxh(
+            pf: *mut x264_pixel_function_t,
+            pix1: *mut pixel,
+            i_pix1: intptr_t,
+            pix2: *mut pixel,
+            i_pix2: intptr_t,
+            i_width: ::core::ffi::c_int,
+            i_height: ::core::ffi::c_int,
+            buf: *mut ::core::ffi::c_void,
+            cnt: *mut ::core::ffi::c_int,
+        ) -> ::core::ffi::c_float;
+        #[c2rust::src_loc = "158:1"]
+        pub fn x264_10_field_vsad(
+            h: *mut x264_t,
+            mb_x: ::core::ffi::c_int,
+            mb_y: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:28"]
 pub mod predict_h {
@@ -4835,6 +5428,50 @@ pub mod predict_h {
     use super::common_h::pixel;
     use super::stdint_intn_h::int8_t;
     use super::stdint_uintn_h::uint8_t;
+
+    #[c2rust::src_loc = "95:1"]
+    pub type intra8x8_pred_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "109:5"]
+    pub const I_PRED_8x8_DC_128: intra8x8_pred_e = 11;
+    #[c2rust::src_loc = "108:5"]
+    pub const I_PRED_8x8_DC_TOP: intra8x8_pred_e = 10;
+    #[c2rust::src_loc = "107:5"]
+    pub const I_PRED_8x8_DC_LEFT: intra8x8_pred_e = 9;
+    #[c2rust::src_loc = "105:5"]
+    pub const I_PRED_8x8_HU: intra8x8_pred_e = 8;
+    #[c2rust::src_loc = "104:5"]
+    pub const I_PRED_8x8_VL: intra8x8_pred_e = 7;
+    #[c2rust::src_loc = "103:5"]
+    pub const I_PRED_8x8_HD: intra8x8_pred_e = 6;
+    #[c2rust::src_loc = "102:5"]
+    pub const I_PRED_8x8_VR: intra8x8_pred_e = 5;
+    #[c2rust::src_loc = "101:5"]
+    pub const I_PRED_8x8_DDR: intra8x8_pred_e = 4;
+    #[c2rust::src_loc = "100:5"]
+    pub const I_PRED_8x8_DDL: intra8x8_pred_e = 3;
+    #[c2rust::src_loc = "99:5"]
+    pub const I_PRED_8x8_DC: intra8x8_pred_e = 2;
+    #[c2rust::src_loc = "98:5"]
+    pub const I_PRED_8x8_H: intra8x8_pred_e = 1;
+    #[c2rust::src_loc = "97:5"]
+    pub const I_PRED_8x8_V: intra8x8_pred_e = 0;
+    use super::stdint_uintn_h::uint32_t;
+    extern "C" {
+        #[c2rust::src_loc = "150:1"]
+        pub fn x264_10_predict_16x16_init(cpu: uint32_t, pf: *mut x264_predict_t);
+        #[c2rust::src_loc = "152:1"]
+        pub fn x264_10_predict_8x8c_init(cpu: uint32_t, pf: *mut x264_predict_t);
+        #[c2rust::src_loc = "154:1"]
+        pub fn x264_10_predict_8x16c_init(cpu: uint32_t, pf: *mut x264_predict_t);
+        #[c2rust::src_loc = "156:1"]
+        pub fn x264_10_predict_4x4_init(cpu: uint32_t, pf: *mut x264_predict_t);
+        #[c2rust::src_loc = "158:1"]
+        pub fn x264_10_predict_8x8_init(
+            cpu: uint32_t,
+            pf: *mut x264_predict8x8_t,
+            predict_filter: *mut x264_predict_8x8_filter_t,
+        );
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:28"]
 pub mod set_h {
@@ -4974,6 +5611,19 @@ pub mod set_h {
     #[c2rust::src_loc = "39:5"]
     pub const CQM_8IY: cqm8_e = 0;
     use super::stdint_uintn_h::{uint32_t, uint8_t};
+
+    use super::common_h::x264_t;
+    extern "C" {
+        #[c2rust::src_loc = "180:1"]
+        pub fn x264_10_cqm_init(h: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "182:1"]
+        pub fn x264_10_cqm_delete(h: *mut x264_t);
+        #[c2rust::src_loc = "184:1"]
+        pub fn x264_10_cqm_parse_file(
+            h: *mut x264_t,
+            filename: *const ::core::ffi::c_char,
+        ) -> ::core::ffi::c_int;
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:28"]
 pub mod threadpool_h {
@@ -4993,6 +5643,15 @@ pub mod threadpool_h {
             pool: *mut x264_threadpool_t,
             arg: *mut ::core::ffi::c_void,
         ) -> *mut ::core::ffi::c_void;
+    }
+    extern "C" {
+        #[c2rust::src_loc = "33:10"]
+        pub fn x264_10_threadpool_init(
+            p_pool: *mut *mut x264_threadpool_t,
+            threads: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "39:10"]
+        pub fn x264_10_threadpool_delete(pool: *mut x264_threadpool_t);
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/tables.h:28"]
@@ -5058,6 +5717,32 @@ pub mod tables_h {
         pub static x264_total_zeros_2x4_dc: [[vlc_t; 8]; 7];
         #[c2rust::src_loc = "100:16"]
         pub static mut x264_zero: [uint8_t; 1024];
+    }
+    extern "C" {
+        #[c2rust::src_loc = "52:22"]
+        pub static x264_cqm_jvt4i: [uint8_t; 16];
+        #[c2rust::src_loc = "58:22"]
+        pub static x264_cqm_avci50_4ic: [uint8_t; 16];
+        #[c2rust::src_loc = "59:22"]
+        pub static x264_cqm_avci50_p_8iy: [uint8_t; 64];
+        #[c2rust::src_loc = "60:22"]
+        pub static x264_cqm_avci50_1080i_8iy: [uint8_t; 64];
+        #[c2rust::src_loc = "61:22"]
+        pub static x264_cqm_avci100_720p_4ic: [uint8_t; 16];
+        #[c2rust::src_loc = "62:22"]
+        pub static x264_cqm_avci100_720p_8iy: [uint8_t; 64];
+        #[c2rust::src_loc = "63:22"]
+        pub static x264_cqm_avci100_1080_4ic: [uint8_t; 16];
+        #[c2rust::src_loc = "64:22"]
+        pub static x264_cqm_avci100_1080i_8iy: [uint8_t; 64];
+        #[c2rust::src_loc = "65:22"]
+        pub static x264_cqm_avci100_1080p_8iy: [uint8_t; 64];
+        #[c2rust::src_loc = "66:22"]
+        pub static x264_cqm_avci300_2160p_4iy: [uint8_t; 16];
+        #[c2rust::src_loc = "67:22"]
+        pub static x264_cqm_avci300_2160p_4ic: [uint8_t; 16];
+        #[c2rust::src_loc = "68:22"]
+        pub static x264_cqm_avci300_2160p_8iy: [uint8_t; 64];
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/macroblock.h:28"]
@@ -5876,6 +6561,169 @@ pub mod macroblock_h {
         );
         #[c2rust::src_loc = "367:1"]
         pub fn x264_10_mb_mc(h: *mut x264_t);
+    }
+
+    #[c2rust::src_loc = "171:22"]
+    pub static mut x264_mb_partition_pixel_table: [uint8_t; 17] = [
+        PIXEL_4x4 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x4 as ::core::ffi::c_int as uint8_t,
+        PIXEL_4x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_4x4 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x4 as ::core::ffi::c_int as uint8_t,
+        PIXEL_4x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_4x4 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x4 as ::core::ffi::c_int as uint8_t,
+        PIXEL_4x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_16x8 as ::core::ffi::c_int as uint8_t,
+        PIXEL_8x16 as ::core::ffi::c_int as uint8_t,
+        PIXEL_16x16 as ::core::ffi::c_int as uint8_t,
+    ];
+    #[c2rust::src_loc = "249:22"]
+    pub static mut i_chroma_qp_table: [uint8_t; 106] = [
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        0 as ::core::ffi::c_int as uint8_t,
+        (-(12 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(11 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(10 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(9 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(8 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(7 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(6 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(5 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(4 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(3 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(2 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (-(1 as ::core::ffi::c_int) + QP_BD_OFFSET) as uint8_t,
+        (0 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (1 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (2 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (3 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (4 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (5 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (6 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (7 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (8 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (9 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (10 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (11 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (12 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (13 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (14 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (15 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (16 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (17 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (18 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (19 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (20 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (21 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (22 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (23 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (24 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (25 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (26 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (27 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (28 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (29 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (29 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (30 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (31 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (32 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (32 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (33 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (34 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (34 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (35 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (35 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (36 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (36 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (37 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (37 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (37 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (38 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (38 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (38 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        (39 as ::core::ffi::c_int + QP_BD_OFFSET) as uint8_t,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ];
+    use super::common_h::QP_BD_OFFSET;
+    use super::pixel_h::{
+        PIXEL_16x16, PIXEL_16x8, PIXEL_4x4, PIXEL_4x8, PIXEL_8x16, PIXEL_8x4, PIXEL_8x8,
+    };
+    extern "C" {
+        #[c2rust::src_loc = "303:1"]
+        pub fn x264_10_macroblock_cache_allocate(h: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "305:1"]
+        pub fn x264_10_macroblock_cache_free(h: *mut x264_t);
+        #[c2rust::src_loc = "309:1"]
+        pub fn x264_10_macroblock_thread_allocate(
+            h: *mut x264_t,
+            b_lookahead: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "311:1"]
+        pub fn x264_10_macroblock_thread_free(h: *mut x264_t, b_lookahead: ::core::ffi::c_int);
+        #[c2rust::src_loc = "314:1"]
+        pub fn x264_10_macroblock_slice_init(h: *mut x264_t);
+        #[c2rust::src_loc = "316:1"]
+        pub fn x264_10_macroblock_thread_init(h: *mut x264_t);
+        #[c2rust::src_loc = "320:1"]
+        pub fn x264_10_macroblock_cache_load_interlaced(
+            h: *mut x264_t,
+            mb_x: ::core::ffi::c_int,
+            mb_y: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "322:1"]
+        pub fn x264_10_macroblock_deblock_strength(h: *mut x264_t);
+        #[c2rust::src_loc = "324:1"]
+        pub fn x264_10_macroblock_cache_save(h: *mut x264_t);
+        #[c2rust::src_loc = "327:1"]
+        pub fn x264_10_macroblock_bipred_init(h: *mut x264_t);
     }
 }
 #[c2rust::header_src = "/usr/lib/clang/21/include/xmmintrin.h:28"]
@@ -15467,6 +16315,19 @@ pub mod encoder_macroblock_h {
             i_qp: ::core::ffi::c_int,
         );
     }
+    use super::cabac_h::x264_cabac_t;
+    extern "C" {
+        #[c2rust::src_loc = "33:1"]
+        pub fn x264_10_rdo_init();
+        #[c2rust::src_loc = "55:1"]
+        pub fn x264_10_macroblock_write_cabac(h: *mut x264_t, cb: *mut x264_cabac_t);
+        #[c2rust::src_loc = "57:1"]
+        pub fn x264_10_macroblock_write_cavlc(h: *mut x264_t);
+        #[c2rust::src_loc = "67:1"]
+        pub fn x264_10_cabac_mb_skip(h: *mut x264_t, b_skip: ::core::ffi::c_int);
+        #[c2rust::src_loc = "88:1"]
+        pub fn x264_10_noise_reduction_update(h: *mut x264_t);
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/encoder/cabac.c:28"]
 pub mod cabac_c {
@@ -21374,10 +22235,204 @@ pub mod ratecontrol_h {
         #[c2rust::src_loc = "73:1"]
         pub fn x264_10_ratecontrol_mb_qp(h: *mut x264_t) -> ::core::ffi::c_int;
     }
+    use super::frame_h::x264_frame_t;
+    extern "C" {
+        #[c2rust::src_loc = "43:1"]
+        pub fn x264_10_ratecontrol_new(_: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "45:1"]
+        pub fn x264_10_ratecontrol_delete(_: *mut x264_t);
+        #[c2rust::src_loc = "48:1"]
+        pub fn x264_10_ratecontrol_init_reconfigurable(h: *mut x264_t, b_init: ::core::ffi::c_int);
+        #[c2rust::src_loc = "53:1"]
+        pub fn x264_10_adaptive_quant_frame(
+            h: *mut x264_t,
+            frame: *mut x264_frame_t,
+            quant_offsets: *mut ::core::ffi::c_float,
+        );
+        #[c2rust::src_loc = "55:1"]
+        pub fn x264_10_macroblock_tree_read(
+            h: *mut x264_t,
+            frame: *mut x264_frame_t,
+            quant_offsets: *mut ::core::ffi::c_float,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "57:1"]
+        pub fn x264_10_reference_build_list_optimal(h: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "59:1"]
+        pub fn x264_10_thread_sync_ratecontrol(
+            cur: *mut x264_t,
+            prev: *mut x264_t,
+            next: *mut x264_t,
+        );
+        #[c2rust::src_loc = "61:1"]
+        pub fn x264_10_ratecontrol_zone_init(_: *mut x264_t);
+        #[c2rust::src_loc = "63:1"]
+        pub fn x264_10_ratecontrol_start(
+            _: *mut x264_t,
+            i_force_qp: ::core::ffi::c_int,
+            overhead: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "67:1"]
+        pub fn x264_10_ratecontrol_set_weights(h: *mut x264_t, frm: *mut x264_frame_t);
+        #[c2rust::src_loc = "69:1"]
+        pub fn x264_10_ratecontrol_mb(
+            _: *mut x264_t,
+            bits: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "71:1"]
+        pub fn x264_10_ratecontrol_qp(_: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "75:1"]
+        pub fn x264_10_ratecontrol_end(
+            _: *mut x264_t,
+            bits: ::core::ffi::c_int,
+            filler: *mut ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "77:1"]
+        pub fn x264_10_ratecontrol_summary(_: *mut x264_t);
+        #[c2rust::src_loc = "81:1"]
+        pub fn x264_10_threads_distribute_ratecontrol(h: *mut x264_t);
+        #[c2rust::src_loc = "83:1"]
+        pub fn x264_10_threads_merge_ratecontrol(h: *mut x264_t);
+        #[c2rust::src_loc = "85:1"]
+        pub fn x264_10_hrd_fullness(h: *mut x264_t);
+    }
 }
 #[c2rust::header_src = "/usr/lib/clang/21/include/limits.h:28"]
 pub mod limits_h {
     #[c2rust::src_loc = "50:9"]
     pub const INT_MAX: ::core::ffi::c_int = __INT_MAX__;
     use super::internal::__INT_MAX__;
+}
+
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/encoder/analyse.h:28"]
+pub mod analyse_h {
+    use super::common_h::x264_t;
+    use super::frame_h::x264_frame_t;
+    extern "C" {
+        #[c2rust::src_loc = "31:1"]
+        pub fn x264_10_analyse_init_costs(h: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "33:1"]
+        pub fn x264_10_analyse_free_costs(h: *mut x264_t);
+        #[c2rust::src_loc = "35:1"]
+        pub fn x264_10_analyse_weight_frame(h: *mut x264_t, end: ::core::ffi::c_int);
+        #[c2rust::src_loc = "37:1"]
+        pub fn x264_10_macroblock_analyse(h: *mut x264_t);
+        #[c2rust::src_loc = "45:1"]
+        pub fn x264_10_lookahead_init(
+            h: *mut x264_t,
+            i_slicetype_length: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "47:1"]
+        pub fn x264_10_lookahead_is_empty(h: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "49:1"]
+        pub fn x264_10_lookahead_put_frame(h: *mut x264_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "51:1"]
+        pub fn x264_10_lookahead_get_frames(h: *mut x264_t);
+        #[c2rust::src_loc = "53:1"]
+        pub fn x264_10_lookahead_delete(h: *mut x264_t);
+    }
+}
+
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/encoder/set.h:28"]
+pub mod encoder_set_h {
+    use super::bitstream_h::bs_t;
+    use super::common_h::x264_t;
+    use super::set_h::{x264_pps_t, x264_sps_t};
+    use super::stdint_uintn_h::uint8_t;
+    use super::x264_h::x264_param_t;
+    extern "C" {
+        #[c2rust::src_loc = "31:1"]
+        pub fn x264_10_sps_init(
+            sps: *mut x264_sps_t,
+            i_id: ::core::ffi::c_int,
+            param: *mut x264_param_t,
+        );
+        #[c2rust::src_loc = "33:1"]
+        pub fn x264_10_sps_init_reconfigurable(sps: *mut x264_sps_t, param: *mut x264_param_t);
+        #[c2rust::src_loc = "35:1"]
+        pub fn x264_10_sps_init_scaling_list(sps: *mut x264_sps_t, param: *mut x264_param_t);
+        #[c2rust::src_loc = "37:1"]
+        pub fn x264_10_sps_write(s: *mut bs_t, sps: *mut x264_sps_t);
+        #[c2rust::src_loc = "39:1"]
+        pub fn x264_10_pps_init(
+            pps: *mut x264_pps_t,
+            i_id: ::core::ffi::c_int,
+            param: *mut x264_param_t,
+            sps: *mut x264_sps_t,
+        );
+        #[c2rust::src_loc = "41:1"]
+        pub fn x264_10_pps_write(s: *mut bs_t, sps: *mut x264_sps_t, pps: *mut x264_pps_t);
+        #[c2rust::src_loc = "43:1"]
+        pub fn x264_10_sei_recovery_point_write(
+            h: *mut x264_t,
+            s: *mut bs_t,
+            recovery_frame_cnt: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "45:1"]
+        pub fn x264_10_sei_version_write(h: *mut x264_t, s: *mut bs_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "47:1"]
+        pub fn x264_10_validate_levels(
+            h: *mut x264_t,
+            verbose: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "49:1"]
+        pub fn x264_10_sei_buffering_period_write(h: *mut x264_t, s: *mut bs_t);
+        #[c2rust::src_loc = "51:1"]
+        pub fn x264_10_sei_pic_timing_write(h: *mut x264_t, s: *mut bs_t);
+        #[c2rust::src_loc = "53:1"]
+        pub fn x264_10_sei_dec_ref_pic_marking_write(h: *mut x264_t, s: *mut bs_t);
+        #[c2rust::src_loc = "55:1"]
+        pub fn x264_10_sei_frame_packing_write(h: *mut x264_t, s: *mut bs_t);
+        #[c2rust::src_loc = "57:1"]
+        pub fn x264_10_sei_mastering_display_write(h: *mut x264_t, s: *mut bs_t);
+        #[c2rust::src_loc = "59:1"]
+        pub fn x264_10_sei_content_light_level_write(h: *mut x264_t, s: *mut bs_t);
+        #[c2rust::src_loc = "61:1"]
+        pub fn x264_10_sei_alternative_transfer_write(h: *mut x264_t, s: *mut bs_t);
+        #[c2rust::src_loc = "63:1"]
+        pub fn x264_10_sei_avcintra_umid_write(h: *mut x264_t, s: *mut bs_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "65:1"]
+        pub fn x264_10_sei_avcintra_vanc_write(
+            h: *mut x264_t,
+            s: *mut bs_t,
+            len: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "67:1"]
+        pub fn x264_10_sei_write(
+            s: *mut bs_t,
+            payload: *mut uint8_t,
+            payload_size: ::core::ffi::c_int,
+            payload_type: ::core::ffi::c_int,
+        );
+        #[c2rust::src_loc = "69:1"]
+        pub fn x264_10_filler_write(h: *mut x264_t, s: *mut bs_t, filler: ::core::ffi::c_int);
+    }
+}
+
+#[c2rust::header_src = "/usr/include/pthread.h:28"]
+pub mod pthread_h {
+    use super::pthreadtypes_h::{
+        pthread_cond_t, pthread_condattr_t, pthread_mutex_t, pthread_mutexattr_t,
+    };
+    extern "C" {
+        #[c2rust::src_loc = "781:1"]
+        pub fn pthread_mutex_init(
+            __mutex: *mut pthread_mutex_t,
+            __mutexattr: *const pthread_mutexattr_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "786:1"]
+        pub fn pthread_mutex_destroy(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "794:1"]
+        pub fn pthread_mutex_lock(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "835:1"]
+        pub fn pthread_mutex_unlock(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1112:1"]
+        pub fn pthread_cond_init(
+            __cond: *mut pthread_cond_t,
+            __cond_attr: *const pthread_condattr_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1117:1"]
+        pub fn pthread_cond_destroy(__cond: *mut pthread_cond_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1125:1"]
+        pub fn pthread_cond_broadcast(__cond: *mut pthread_cond_t) -> ::core::ffi::c_int;
+    }
 }
