@@ -1,7 +1,5 @@
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
-    pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "0:0"]
@@ -12,18 +10,12 @@ pub mod internal {
         pub reg_save_area: *mut ::core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:27"]
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:26"]
 pub mod __stddef_size_t_h {
     #[c2rust::src_loc = "18:1"]
     pub type size_t = usize;
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stdarg___gnuc_va_list.h:27"]
-pub mod __stdarg___gnuc_va_list_h {
-    #[c2rust::src_loc = "12:1"]
-    pub type __gnuc_va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/types.h:26"]
 pub mod types_h {
     #[c2rust::src_loc = "37:1"]
     pub type __int8_t = i8;
@@ -42,13 +34,7 @@ pub mod types_h {
     #[c2rust::src_loc = "45:1"]
     pub type __uint64_t = u64;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:27"]
-pub mod stdio_h {
-    #[c2rust::src_loc = "53:1"]
-    pub type va_list = __gnuc_va_list;
-    use super::__stdarg___gnuc_va_list_h::__gnuc_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:26"]
 pub mod stdint_intn_h {
     #[c2rust::src_loc = "24:1"]
     pub type int8_t = __int8_t;
@@ -60,7 +46,7 @@ pub mod stdint_intn_h {
     pub type int64_t = __int64_t;
     use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:26"]
 pub mod stdint_uintn_h {
     #[c2rust::src_loc = "24:1"]
     pub type uint8_t = __uint8_t;
@@ -72,14 +58,14 @@ pub mod stdint_uintn_h {
     pub type uint64_t = __uint64_t;
     use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
 }
-#[c2rust::header_src = "/usr/include/stdint.h:27"]
+#[c2rust::header_src = "/usr/include/stdint.h:26"]
 pub mod stdint_h {
     #[c2rust::src_loc = "76:1"]
     pub type intptr_t = isize;
     #[c2rust::src_loc = "79:1"]
     pub type uintptr_t = usize;
 }
-#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:27"]
+#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:26"]
 pub mod atomic_wide_counter_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -96,7 +82,7 @@ pub mod atomic_wide_counter_h {
         pub __high: ::core::ffi::c_uint,
     }
 }
-#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:26"]
 pub mod thread_shared_types_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -122,7 +108,7 @@ pub mod thread_shared_types_h {
     }
     use super::atomic_wide_counter_h::__atomic_wide_counter;
 }
-#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:27"]
+#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:26"]
 pub mod struct_mutex_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -139,10 +125,17 @@ pub mod struct_mutex_h {
     }
     use super::thread_shared_types_h::__pthread_list_t;
 }
-#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:27"]
+#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:26"]
 pub mod pthreadtypes_h {
     #[c2rust::src_loc = "27:1"]
     pub type pthread_t = ::core::ffi::c_ulong;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "56:7"]
+    pub union pthread_attr_t {
+        pub __size: [::core::ffi::c_char; 56],
+        pub __align: ::core::ffi::c_long,
+    }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "67:9"]
@@ -162,7 +155,7 @@ pub mod pthreadtypes_h {
     use super::struct_mutex_h::__pthread_mutex_s;
     use super::thread_shared_types_h::__pthread_cond_s;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:26"]
 pub mod common_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -617,7 +610,7 @@ pub mod common_h {
         pub bs: bs_t,
     }
     use super::x264_h::{x264_param_t, x264_nal_t};
-    use super::threadpool_h::x264_threadpool_t;
+    use super::x264_threadpool_t;
     use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
     use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
     use super::stdint_intn_h::{int64_t, int32_t, int16_t, int8_t};
@@ -635,7 +628,7 @@ pub mod common_h {
         pub type x264_ratecontrol_t;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:26"]
 pub mod frame_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -815,8 +808,28 @@ pub mod frame_h {
     use super::common_h::pixel;
     use super::mc_h::x264_weight_t;
     use super::stdint_h::intptr_t;
+    extern "C" {
+        #[c2rust::src_loc = "272:10"]
+        pub fn x264_10_frame_shift(list: *mut *mut x264_frame_t) -> *mut x264_frame_t;
+        #[c2rust::src_loc = "289:1"]
+        pub fn x264_10_sync_frame_list_init(
+            slist: *mut x264_sync_frame_list_t,
+            nelem: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "291:1"]
+        pub fn x264_10_sync_frame_list_delete(slist: *mut x264_sync_frame_list_t);
+        #[c2rust::src_loc = "293:1"]
+        pub fn x264_10_sync_frame_list_push(
+            slist: *mut x264_sync_frame_list_t,
+            frame: *mut x264_frame_t,
+        );
+        #[c2rust::src_loc = "295:1"]
+        pub fn x264_10_sync_frame_list_pop(
+            slist: *mut x264_sync_frame_list_t,
+        ) -> *mut x264_frame_t;
+    }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:26"]
 pub mod x264_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1086,7 +1099,7 @@ pub mod x264_h {
     use super::common_h::x264_t;
     use super::stdint_intn_h::int64_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:26"]
 pub mod mc_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1425,7 +1438,7 @@ pub mod mc_h {
     use super::stdint_uintn_h::{uint32_t, uint16_t};
     use super::__stddef_size_t_h::size_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:26"]
 pub mod bitstream_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1490,7 +1503,7 @@ pub mod bitstream_h {
     use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:26"]
 pub mod cabac_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1509,7 +1522,7 @@ pub mod cabac_h {
     }
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:26"]
 pub mod quant_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1740,7 +1753,7 @@ pub mod quant_h {
     use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:26"]
 pub mod dct_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1823,7 +1836,7 @@ pub mod dct_h {
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:26"]
 pub mod pixel_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2053,7 +2066,7 @@ pub mod pixel_h {
     use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:26"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
@@ -2072,7 +2085,7 @@ pub mod predict_h {
     >;
     use super::common_h::pixel;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:26"]
 pub mod set_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2191,39 +2204,74 @@ pub mod set_h {
     }
     use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:27"]
-pub mod threadpool_h {
+#[c2rust::header_src = "/usr/include/pthread.h:26"]
+pub mod pthread_h {
+    use super::pthreadtypes_h::{
+        pthread_t, pthread_attr_t, pthread_mutex_t, pthread_cond_t,
+    };
     extern "C" {
-        #[c2rust::src_loc = "29:16"]
-        pub type x264_threadpool_t;
+        #[c2rust::src_loc = "202:1"]
+        pub fn pthread_create(
+            __newthread: *mut pthread_t,
+            __attr: *const pthread_attr_t,
+            __start_routine: Option<
+                unsafe extern "C" fn(
+                    *mut ::core::ffi::c_void,
+                ) -> *mut ::core::ffi::c_void,
+            >,
+            __arg: *mut ::core::ffi::c_void,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "219:1"]
+        pub fn pthread_join(
+            __th: pthread_t,
+            __thread_return: *mut *mut ::core::ffi::c_void,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "794:1"]
+        pub fn pthread_mutex_lock(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "835:1"]
+        pub fn pthread_mutex_unlock(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1125:1"]
+        pub fn pthread_cond_broadcast(__cond: *mut pthread_cond_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1133:1"]
+        pub fn pthread_cond_wait(
+            __cond: *mut pthread_cond_t,
+            __mutex: *mut pthread_mutex_t,
+        ) -> ::core::ffi::c_int;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:27"]
+#[c2rust::header_src = "/usr/include/string.h:26"]
+pub mod string_h {
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "61:1"]
+        pub fn memset(
+            __s: *mut ::core::ffi::c_void,
+            __c: ::core::ffi::c_int,
+            __n: size_t,
+        ) -> *mut ::core::ffi::c_void;
+    }
+}
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:26"]
 pub mod base_h {
-    use super::internal::__va_list_tag;
+    use super::stdint_intn_h::int64_t;
     extern "C" {
-        #[c2rust::src_loc = "274:10"]
-        pub fn x264_log_default(
-            p_unused: *mut ::core::ffi::c_void,
-            i_level: ::core::ffi::c_int,
-            psz_fmt: *const ::core::ffi::c_char,
-            arg: ::core::ffi::VaList,
-        );
+        #[c2rust::src_loc = "279:10"]
+        pub fn x264_malloc(_: int64_t) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "280:10"]
+        pub fn x264_free(_: *mut ::core::ffi::c_void);
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:27"]
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:26"]
 pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::{__builtin_va_list, __va_list_tag};
+pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::__stdarg___gnuc_va_list_h::__gnuc_va_list;
 pub use self::types_h::{
     __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
     __uint64_t,
 };
-pub use self::stdio_h::va_list;
 pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
 pub use self::stdint_h::{intptr_t, uintptr_t};
@@ -2232,7 +2280,9 @@ pub use self::thread_shared_types_h::{
     __pthread_internal_list, __pthread_list_t, __pthread_cond_s,
 };
 pub use self::struct_mutex_h::__pthread_mutex_s;
-pub use self::pthreadtypes_h::{pthread_t, pthread_mutex_t, pthread_cond_t};
+pub use self::pthreadtypes_h::{
+    pthread_t, pthread_attr_t, pthread_mutex_t, pthread_cond_t,
+};
 pub use self::common_h::{
     x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
     x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
@@ -2242,7 +2292,9 @@ pub use self::common_h::{
 };
 pub use self::frame_h::{
     x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
-    x264_deblock_intra_t, x264_deblock_inter_t,
+    x264_deblock_intra_t, x264_deblock_inter_t, x264_10_frame_shift,
+    x264_10_sync_frame_list_init, x264_10_sync_frame_list_delete,
+    x264_10_sync_frame_list_push, x264_10_sync_frame_list_pop,
 };
 pub use self::x264_h::{
     x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
@@ -2261,29 +2313,251 @@ pub use self::predict_h::{x264_predict_8x8_filter_t, x264_predict_t, x264_predic
 pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
-use self::threadpool_h::x264_threadpool_t;
-use self::base_h::x264_log_default;
+use self::pthread_h::{
+    pthread_create, pthread_join, pthread_mutex_lock, pthread_mutex_unlock,
+    pthread_cond_broadcast, pthread_cond_wait,
+};
+use self::string_h::memset;
+use self::base_h::{x264_malloc, x264_free};
 pub use self::__stddef_null_h::NULL;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "35:8"]
+pub struct x264_threadpool_t {
+    pub exit: ::core::ffi::c_int,
+    pub threads: ::core::ffi::c_int,
+    pub thread_handle: *mut pthread_t,
+    pub uninit: x264_sync_frame_list_t,
+    pub run: x264_sync_frame_list_t,
+    pub done: x264_sync_frame_list_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "28:9"]
+pub struct x264_threadpool_job_t {
+    pub func: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *mut ::core::ffi::c_void,
+    >,
+    pub arg: *mut ::core::ffi::c_void,
+    pub ret: *mut ::core::ffi::c_void,
+}
+#[c2rust::src_loc = "48:1"]
+unsafe extern "C" fn threadpool_thread(
+    mut pool: *mut x264_threadpool_t,
+) -> *mut ::core::ffi::c_void {
+    while (*pool).exit == 0 {
+        let mut job: *mut x264_threadpool_job_t = 0 as *mut x264_threadpool_job_t;
+        pthread_mutex_lock(&mut (*pool).run.mutex);
+        while (*pool).exit == 0 && (*pool).run.i_size == 0 {
+            pthread_cond_wait(&mut (*pool).run.cv_fill, &mut (*pool).run.mutex);
+        }
+        if (*pool).run.i_size != 0 {
+            job = x264_10_frame_shift((*pool).run.list) as *mut ::core::ffi::c_void
+                as *mut x264_threadpool_job_t;
+            (*pool).run.i_size -= 1;
+        }
+        pthread_mutex_unlock(&mut (*pool).run.mutex);
+        if job.is_null() {
+            continue;
+        }
+        (*job).ret = (*job).func.expect("non-null function pointer")((*job).arg);
+        x264_10_sync_frame_list_push(
+            &mut (*pool).done,
+            job as *mut ::core::ffi::c_void as *mut x264_frame_t,
+        );
+    }
+    return NULL;
+}
 #[no_mangle]
-#[c2rust::src_loc = "32:1"]
-pub unsafe extern "C" fn x264_10_log(
-    mut h: *mut x264_t,
-    mut i_level: ::core::ffi::c_int,
-    mut psz_fmt: *const ::core::ffi::c_char,
-    mut args: ...
-) {
-    if h.is_null() || i_level <= (*h).param.i_log_level {
-        let mut arg: ::core::ffi::VaListImpl;
-        arg = args.clone();
-        if h.is_null() {
-            x264_log_default(NULL, i_level, psz_fmt, arg.as_va_list());
-        } else {
-            (*h)
-                .param
-                .pf_log
-                .expect(
-                    "non-null function pointer",
-                )((*h).param.p_log_private, i_level, psz_fmt, arg.as_va_list());
+#[c2rust::src_loc = "70:1"]
+pub unsafe extern "C" fn x264_10_threadpool_init(
+    mut p_pool: *mut *mut x264_threadpool_t,
+    mut threads: ::core::ffi::c_int,
+) -> ::core::ffi::c_int {
+    let mut current_block: u64;
+    if threads <= 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if (0 as ::core::ffi::c_int) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    let mut pool: *mut x264_threadpool_t = 0 as *mut x264_threadpool_t;
+    pool = x264_malloc(::core::mem::size_of::<x264_threadpool_t>() as int64_t)
+        as *mut x264_threadpool_t;
+    if !pool.is_null() {
+        memset(
+            pool as *mut ::core::ffi::c_void,
+            0 as ::core::ffi::c_int,
+            ::core::mem::size_of::<x264_threadpool_t>() as size_t,
+        );
+        *p_pool = pool;
+        (*pool).threads = threads;
+        (*pool).thread_handle = x264_malloc(
+            ((*pool).threads as usize)
+                .wrapping_mul(::core::mem::size_of::<pthread_t>() as usize) as int64_t,
+        ) as *mut pthread_t;
+        if !(*pool).thread_handle.is_null() {
+            if !(x264_10_sync_frame_list_init(&mut (*pool).uninit, (*pool).threads) != 0
+                || x264_10_sync_frame_list_init(&mut (*pool).run, (*pool).threads) != 0
+                || x264_10_sync_frame_list_init(&mut (*pool).done, (*pool).threads) != 0)
+            {
+                let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                loop {
+                    if !(i < (*pool).threads) {
+                        current_block = 11584701595673473500;
+                        break;
+                    }
+                    let mut job: *mut x264_threadpool_job_t = 0
+                        as *mut x264_threadpool_job_t;
+                    job = x264_malloc(
+                        ::core::mem::size_of::<x264_threadpool_job_t>() as int64_t,
+                    ) as *mut x264_threadpool_job_t;
+                    if job.is_null() {
+                        current_block = 598935323617260105;
+                        break;
+                    }
+                    x264_10_sync_frame_list_push(
+                        &mut (*pool).uninit,
+                        job as *mut ::core::ffi::c_void as *mut x264_frame_t,
+                    );
+                    i += 1;
+                }
+                match current_block {
+                    598935323617260105 => {}
+                    _ => {
+                        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        loop {
+                            if !(i_0 < (*pool).threads) {
+                                current_block = 5634871135123216486;
+                                break;
+                            }
+                            if pthread_create(
+                                (*pool).thread_handle.offset(i_0 as isize),
+                                0 as *const pthread_attr_t,
+                                ::core::mem::transmute::<
+                                    *mut ::core::ffi::c_void,
+                                    Option<
+                                        unsafe extern "C" fn(
+                                            *mut ::core::ffi::c_void,
+                                        ) -> *mut ::core::ffi::c_void,
+                                    >,
+                                >(
+                                    ::core::mem::transmute::<
+                                        Option<
+                                            unsafe extern "C" fn(
+                                                *mut x264_threadpool_t,
+                                            ) -> *mut ::core::ffi::c_void,
+                                        >,
+                                        *mut ::core::ffi::c_void,
+                                    >(
+                                        Some(
+                                            threadpool_thread
+                                                as unsafe extern "C" fn(
+                                                    *mut x264_threadpool_t,
+                                                ) -> *mut ::core::ffi::c_void,
+                                        ),
+                                    ),
+                                ),
+                                pool as *mut ::core::ffi::c_void,
+                            ) != 0
+                            {
+                                current_block = 598935323617260105;
+                                break;
+                            }
+                            i_0 += 1;
+                        }
+                        match current_block {
+                            598935323617260105 => {}
+                            _ => return 0 as ::core::ffi::c_int,
+                        }
+                    }
+                }
+            }
         }
     }
+    return -(1 as ::core::ffi::c_int);
+}
+#[no_mangle]
+#[c2rust::src_loc = "106:1"]
+pub unsafe extern "C" fn x264_10_threadpool_run(
+    mut pool: *mut x264_threadpool_t,
+    mut func: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *mut ::core::ffi::c_void,
+    >,
+    mut arg: *mut ::core::ffi::c_void,
+) {
+    let mut job: *mut x264_threadpool_job_t = x264_10_sync_frame_list_pop(
+        &mut (*pool).uninit,
+    ) as *mut ::core::ffi::c_void as *mut x264_threadpool_job_t;
+    (*job).func = func;
+    (*job).arg = arg;
+    x264_10_sync_frame_list_push(
+        &mut (*pool).run,
+        job as *mut ::core::ffi::c_void as *mut x264_frame_t,
+    );
+}
+#[no_mangle]
+#[c2rust::src_loc = "114:1"]
+pub unsafe extern "C" fn x264_10_threadpool_wait(
+    mut pool: *mut x264_threadpool_t,
+    mut arg: *mut ::core::ffi::c_void,
+) -> *mut ::core::ffi::c_void {
+    pthread_mutex_lock(&mut (*pool).done.mutex);
+    loop {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < (*pool).done.i_size {
+            if (*(*(*pool).done.list.offset(i as isize) as *mut x264_threadpool_job_t))
+                .arg == arg
+            {
+                let mut job: *mut x264_threadpool_job_t = x264_10_frame_shift(
+                    (*pool).done.list.offset(i as isize),
+                ) as *mut ::core::ffi::c_void as *mut x264_threadpool_job_t;
+                (*pool).done.i_size -= 1;
+                pthread_mutex_unlock(&mut (*pool).done.mutex);
+                let mut ret: *mut ::core::ffi::c_void = (*job).ret;
+                x264_10_sync_frame_list_push(
+                    &mut (*pool).uninit,
+                    job as *mut ::core::ffi::c_void as *mut x264_frame_t,
+                );
+                return ret;
+            }
+            i += 1;
+        }
+        pthread_cond_wait(&mut (*pool).done.cv_fill, &mut (*pool).done.mutex);
+    };
+}
+#[c2rust::src_loc = "135:1"]
+unsafe extern "C" fn threadpool_list_delete(mut slist: *mut x264_sync_frame_list_t) {
+    let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    while !(*(*slist).list.offset(i as isize)).is_null() {
+        x264_free(*(*slist).list.offset(i as isize) as *mut ::core::ffi::c_void);
+        let ref mut fresh0 = *(*slist).list.offset(i as isize);
+        *fresh0 = 0 as *mut x264_frame_t;
+        i += 1;
+    }
+    x264_10_sync_frame_list_delete(slist);
+}
+#[no_mangle]
+#[c2rust::src_loc = "145:1"]
+pub unsafe extern "C" fn x264_10_threadpool_delete(mut pool: *mut x264_threadpool_t) {
+    pthread_mutex_lock(&mut (*pool).run.mutex);
+    ::core::ptr::write_volatile(
+        &mut (*pool).exit as *mut ::core::ffi::c_int,
+        1 as ::core::ffi::c_int,
+    );
+    pthread_cond_broadcast(&mut (*pool).run.cv_fill);
+    pthread_mutex_unlock(&mut (*pool).run.mutex);
+    let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    while i < (*pool).threads {
+        pthread_join(
+            *(*pool).thread_handle.offset(i as isize),
+            0 as *mut *mut ::core::ffi::c_void,
+        );
+        i += 1;
+    }
+    threadpool_list_delete(&mut (*pool).uninit);
+    threadpool_list_delete(&mut (*pool).run);
+    threadpool_list_delete(&mut (*pool).done);
+    x264_free((*pool).thread_handle as *mut ::core::ffi::c_void);
+    x264_free(pool as *mut ::core::ffi::c_void);
 }

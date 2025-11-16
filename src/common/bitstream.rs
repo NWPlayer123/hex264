@@ -1,7 +1,5 @@
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
-    pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "0:0"]
@@ -16,12 +14,6 @@ pub mod internal {
 pub mod __stddef_size_t_h {
     #[c2rust::src_loc = "18:1"]
     pub type size_t = usize;
-}
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stdarg___gnuc_va_list.h:27"]
-pub mod __stdarg___gnuc_va_list_h {
-    #[c2rust::src_loc = "12:1"]
-    pub type __gnuc_va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
 }
 #[c2rust::header_src = "/usr/include/bits/types.h:27"]
 pub mod types_h {
@@ -41,12 +33,6 @@ pub mod types_h {
     pub type __int64_t = i64;
     #[c2rust::src_loc = "45:1"]
     pub type __uint64_t = u64;
-}
-#[c2rust::header_src = "/usr/include/stdio.h:27"]
-pub mod stdio_h {
-    #[c2rust::src_loc = "53:1"]
-    pub type va_list = __gnuc_va_list;
-    use super::__stdarg___gnuc_va_list_h::__gnuc_va_list;
 }
 #[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
 pub mod stdint_intn_h {
@@ -616,6 +602,8 @@ pub mod common_h {
         pub p_bitstream: *mut uint8_t,
         pub bs: bs_t,
     }
+    #[c2rust::src_loc = "66:9"]
+    pub const NALU_OVERHEAD: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
     use super::x264_h::{x264_param_t, x264_nal_t};
     use super::threadpool_h::x264_threadpool_t;
     use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
@@ -2198,32 +2186,24 @@ pub mod threadpool_h {
         pub type x264_threadpool_t;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:27"]
-pub mod base_h {
-    use super::internal::__va_list_tag;
+#[c2rust::header_src = "/usr/include/string.h:27"]
+pub mod string_h {
+    use super::__stddef_size_t_h::size_t;
     extern "C" {
-        #[c2rust::src_loc = "274:10"]
-        pub fn x264_log_default(
-            p_unused: *mut ::core::ffi::c_void,
-            i_level: ::core::ffi::c_int,
-            psz_fmt: *const ::core::ffi::c_char,
-            arg: ::core::ffi::VaList,
-        );
+        #[c2rust::src_loc = "61:1"]
+        pub fn memset(
+            __s: *mut ::core::ffi::c_void,
+            __c: ::core::ffi::c_int,
+            __n: size_t,
+        ) -> *mut ::core::ffi::c_void;
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:27"]
-pub mod __stddef_null_h {
-    #[c2rust::src_loc = "26:9"]
-    pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
-}
-pub use self::internal::{__builtin_va_list, __va_list_tag};
+pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::__stdarg___gnuc_va_list_h::__gnuc_va_list;
 pub use self::types_h::{
     __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
     __uint64_t,
 };
-pub use self::stdio_h::va_list;
 pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
 pub use self::stdint_h::{intptr_t, uintptr_t};
@@ -2238,7 +2218,7 @@ pub use self::common_h::{
     x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
     x264_left_table_t, C2RustUnnamed_10, C2RustUnnamed_11, x264_slice_header_t,
     C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18,
-    x264_ratecontrol_t,
+    NALU_OVERHEAD, x264_ratecontrol_t,
 };
 pub use self::frame_h::{
     x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
@@ -2262,28 +2242,135 @@ pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
 use self::threadpool_h::x264_threadpool_t;
-use self::base_h::x264_log_default;
-pub use self::__stddef_null_h::NULL;
-#[no_mangle]
-#[c2rust::src_loc = "32:1"]
-pub unsafe extern "C" fn x264_10_log(
-    mut h: *mut x264_t,
-    mut i_level: ::core::ffi::c_int,
-    mut psz_fmt: *const ::core::ffi::c_char,
-    mut args: ...
-) {
-    if h.is_null() || i_level <= (*h).param.i_log_level {
-        let mut arg: ::core::ffi::VaListImpl;
-        arg = args.clone();
-        if h.is_null() {
-            x264_log_default(NULL, i_level, psz_fmt, arg.as_va_list());
-        } else {
-            (*h)
-                .param
-                .pf_log
-                .expect(
-                    "non-null function pointer",
-                )((*h).param.p_log_private, i_level, psz_fmt, arg.as_va_list());
-        }
+use self::string_h::memset;
+#[c2rust::src_loc = "29:1"]
+unsafe extern "C" fn nal_escape_c(
+    mut dst: *mut uint8_t,
+    mut src: *mut uint8_t,
+    mut end: *mut uint8_t,
+) -> *mut uint8_t {
+    if src < end {
+        let fresh0 = src;
+        src = src.offset(1);
+        let fresh1 = dst;
+        dst = dst.offset(1);
+        *fresh1 = *fresh0;
     }
+    if src < end {
+        let fresh2 = src;
+        src = src.offset(1);
+        let fresh3 = dst;
+        dst = dst.offset(1);
+        *fresh3 = *fresh2;
+    }
+    while src < end {
+        if *src.offset(0 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            <= 0x3 as ::core::ffi::c_int
+            && *dst.offset(-(2 as ::core::ffi::c_int) as isize) == 0
+            && *dst.offset(-(1 as ::core::ffi::c_int) as isize) == 0
+        {
+            let fresh4 = dst;
+            dst = dst.offset(1);
+            *fresh4 = 0x3 as uint8_t;
+        }
+        let fresh5 = src;
+        src = src.offset(1);
+        let fresh6 = dst;
+        dst = dst.offset(1);
+        *fresh6 = *fresh5;
+    }
+    return dst;
+}
+#[no_mangle]
+#[c2rust::src_loc = "55:1"]
+pub unsafe extern "C" fn x264_10_nal_encode(
+    mut h: *mut x264_t,
+    mut dst: *mut uint8_t,
+    mut nal: *mut x264_nal_t,
+) {
+    let mut src: *mut uint8_t = (*nal).p_payload;
+    let mut end: *mut uint8_t = (*nal).p_payload.offset((*nal).i_payload as isize);
+    let mut orig_dst: *mut uint8_t = dst;
+    if (*h).param.b_annexb != 0 {
+        if (*nal).b_long_startcode != 0 {
+            let fresh7 = dst;
+            dst = dst.offset(1);
+            *fresh7 = 0 as uint8_t;
+        }
+        let fresh8 = dst;
+        dst = dst.offset(1);
+        *fresh8 = 0 as uint8_t;
+        let fresh9 = dst;
+        dst = dst.offset(1);
+        *fresh9 = 0 as uint8_t;
+        let fresh10 = dst;
+        dst = dst.offset(1);
+        *fresh10 = 0x1 as uint8_t;
+    } else {
+        dst = dst.offset(4 as ::core::ffi::c_int as isize);
+    }
+    let fresh11 = dst;
+    dst = dst.offset(1);
+    *fresh11 = ((0 as ::core::ffi::c_int) << 7 as ::core::ffi::c_int
+        | (*nal).i_ref_idc << 5 as ::core::ffi::c_int | (*nal).i_type) as uint8_t;
+    dst = (*h).bsf.nal_escape.expect("non-null function pointer")(dst, src, end);
+    let mut size: ::core::ffi::c_int = dst.offset_from(orig_dst) as ::core::ffi::c_long
+        as ::core::ffi::c_int;
+    if (*h).param.i_avcintra_class != 0 {
+        let mut padding: ::core::ffi::c_int = (*nal).i_payload + (*nal).i_padding
+            + NALU_OVERHEAD - size;
+        if padding > 0 as ::core::ffi::c_int {
+            memset(
+                dst as *mut ::core::ffi::c_void,
+                0 as ::core::ffi::c_int,
+                padding as size_t,
+            );
+            size += padding;
+        }
+        (*nal).i_padding = if padding > 0 as ::core::ffi::c_int {
+            padding
+        } else {
+            0 as ::core::ffi::c_int
+        };
+    }
+    if (*h).param.b_annexb == 0 {
+        let mut chunk_size: ::core::ffi::c_int = size - 4 as ::core::ffi::c_int;
+        *orig_dst.offset(0 as ::core::ffi::c_int as isize) = (chunk_size
+            >> 24 as ::core::ffi::c_int) as uint8_t;
+        *orig_dst.offset(1 as ::core::ffi::c_int as isize) = (chunk_size
+            >> 16 as ::core::ffi::c_int) as uint8_t;
+        *orig_dst.offset(2 as ::core::ffi::c_int as isize) = (chunk_size
+            >> 8 as ::core::ffi::c_int) as uint8_t;
+        *orig_dst.offset(3 as ::core::ffi::c_int as isize) = (chunk_size
+            >> 0 as ::core::ffi::c_int) as uint8_t;
+    }
+    (*nal).i_payload = size;
+    (*nal).p_payload = orig_dst;
+}
+#[no_mangle]
+#[c2rust::src_loc = "106:1"]
+pub unsafe extern "C" fn x264_10_bitstream_init(
+    mut cpu: uint32_t,
+    mut pf: *mut x264_bitstream_function_t,
+) {
+    memset(
+        pf as *mut ::core::ffi::c_void,
+        0 as ::core::ffi::c_int,
+        ::core::mem::size_of::<x264_bitstream_function_t>() as size_t,
+    );
+    (*pf).nal_escape = Some(
+        nal_escape_c
+            as unsafe extern "C" fn(
+                *mut uint8_t,
+                *mut uint8_t,
+                *mut uint8_t,
+            ) -> *mut uint8_t,
+    )
+        as Option<
+            unsafe extern "C" fn(
+                *mut uint8_t,
+                *mut uint8_t,
+                *mut uint8_t,
+            ) -> *mut uint8_t,
+        >;
 }
