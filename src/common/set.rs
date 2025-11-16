@@ -1,7 +1,5 @@
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
-    pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "0:0"]
@@ -11,19 +9,15 @@ pub mod internal {
         pub overflow_arg_area: *mut ::core::ffi::c_void,
         pub reg_save_area: *mut ::core::ffi::c_void,
     }
+    #[c2rust::src_loc = "3:9"]
+    pub const BIT_DEPTH: ::core::ffi::c_int = 10 as ::core::ffi::c_int;
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:27"]
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:26"]
 pub mod __stddef_size_t_h {
     #[c2rust::src_loc = "18:1"]
     pub type size_t = usize;
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stdarg___gnuc_va_list.h:27"]
-pub mod __stdarg___gnuc_va_list_h {
-    #[c2rust::src_loc = "12:1"]
-    pub type __gnuc_va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/types.h:26"]
 pub mod types_h {
     #[c2rust::src_loc = "37:1"]
     pub type __int8_t = i8;
@@ -42,13 +36,7 @@ pub mod types_h {
     #[c2rust::src_loc = "45:1"]
     pub type __uint64_t = u64;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:27"]
-pub mod stdio_h {
-    #[c2rust::src_loc = "53:1"]
-    pub type va_list = __gnuc_va_list;
-    use super::__stdarg___gnuc_va_list_h::__gnuc_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:26"]
 pub mod stdint_intn_h {
     #[c2rust::src_loc = "24:1"]
     pub type int8_t = __int8_t;
@@ -60,7 +48,7 @@ pub mod stdint_intn_h {
     pub type int64_t = __int64_t;
     use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:26"]
 pub mod stdint_uintn_h {
     #[c2rust::src_loc = "24:1"]
     pub type uint8_t = __uint8_t;
@@ -72,14 +60,14 @@ pub mod stdint_uintn_h {
     pub type uint64_t = __uint64_t;
     use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
 }
-#[c2rust::header_src = "/usr/include/stdint.h:27"]
+#[c2rust::header_src = "/usr/include/stdint.h:26"]
 pub mod stdint_h {
     #[c2rust::src_loc = "76:1"]
     pub type intptr_t = isize;
     #[c2rust::src_loc = "79:1"]
     pub type uintptr_t = usize;
 }
-#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:27"]
+#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:26"]
 pub mod atomic_wide_counter_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -96,7 +84,7 @@ pub mod atomic_wide_counter_h {
         pub __high: ::core::ffi::c_uint,
     }
 }
-#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:26"]
 pub mod thread_shared_types_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -122,7 +110,7 @@ pub mod thread_shared_types_h {
     }
     use super::atomic_wide_counter_h::__atomic_wide_counter;
 }
-#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:27"]
+#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:26"]
 pub mod struct_mutex_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -139,7 +127,7 @@ pub mod struct_mutex_h {
     }
     use super::thread_shared_types_h::__pthread_list_t;
 }
-#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:27"]
+#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:26"]
 pub mod pthreadtypes_h {
     #[c2rust::src_loc = "27:1"]
     pub type pthread_t = ::core::ffi::c_ulong;
@@ -162,7 +150,7 @@ pub mod pthreadtypes_h {
     use super::struct_mutex_h::__pthread_mutex_s;
     use super::thread_shared_types_h::__pthread_cond_s;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:26"]
 pub mod common_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -616,6 +604,13 @@ pub mod common_h {
         pub p_bitstream: *mut uint8_t,
         pub bs: bs_t,
     }
+    #[c2rust::src_loc = "58:9"]
+    pub const QP_BD_OFFSET: ::core::ffi::c_int = 6 as ::core::ffi::c_int
+        * (BIT_DEPTH - 8 as ::core::ffi::c_int);
+    #[c2rust::src_loc = "59:9"]
+    pub const QP_MAX_SPEC: ::core::ffi::c_int = 51 as ::core::ffi::c_int + QP_BD_OFFSET;
+    #[c2rust::src_loc = "60:9"]
+    pub const QP_MAX: ::core::ffi::c_int = QP_MAX_SPEC + 18 as ::core::ffi::c_int;
     use super::x264_h::{x264_param_t, x264_nal_t};
     use super::threadpool_h::x264_threadpool_t;
     use super::pthreadtypes_h::{pthread_mutex_t, pthread_cond_t, pthread_t};
@@ -630,12 +625,20 @@ pub mod common_h {
     use super::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
     use super::quant_h::x264_quant_function_t;
     use super::bitstream_h::{x264_bitstream_function_t, bs_t};
+    use super::internal::BIT_DEPTH;
     extern "C" {
         #[c2rust::src_loc = "231:16"]
         pub type x264_ratecontrol_t;
+        #[c2rust::src_loc = "138:1"]
+        pub fn x264_10_log(
+            h: *mut x264_t,
+            i_level: ::core::ffi::c_int,
+            psz_fmt: *const ::core::ffi::c_char,
+            ...
+        );
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:26"]
 pub mod frame_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -816,7 +819,7 @@ pub mod frame_h {
     use super::mc_h::x264_weight_t;
     use super::stdint_h::intptr_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:26"]
 pub mod x264_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1081,12 +1084,16 @@ pub mod x264_h {
         pub i_colmatrix: ::core::ffi::c_int,
         pub i_chroma_loc: ::core::ffi::c_int,
     }
+    #[c2rust::src_loc = "213:9"]
+    pub const X264_CQM_CUSTOM: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "289:9"]
+    pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
     use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::common_h::x264_t;
     use super::stdint_intn_h::int64_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:26"]
 pub mod mc_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1425,7 +1432,7 @@ pub mod mc_h {
     use super::stdint_uintn_h::{uint32_t, uint16_t};
     use super::__stddef_size_t_h::size_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:26"]
 pub mod bitstream_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1490,7 +1497,7 @@ pub mod bitstream_h {
     use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:26"]
 pub mod cabac_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1509,7 +1516,7 @@ pub mod cabac_h {
     }
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:26"]
 pub mod quant_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1740,7 +1747,7 @@ pub mod quant_h {
     use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:26"]
 pub mod dct_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1823,7 +1830,7 @@ pub mod dct_h {
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:26"]
 pub mod pixel_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2053,7 +2060,7 @@ pub mod pixel_h {
     use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:26"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
@@ -2072,7 +2079,7 @@ pub mod predict_h {
     >;
     use super::common_h::pixel;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:26"]
 pub mod set_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2189,41 +2196,165 @@ pub mod set_h {
         pub i_top: ::core::ffi::c_int,
         pub i_bottom: ::core::ffi::c_int,
     }
+    #[c2rust::src_loc = "30:1"]
+    pub type cqm4_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "35:5"]
+    pub const CQM_4PC: cqm4_e = 3;
+    #[c2rust::src_loc = "34:5"]
+    pub const CQM_4IC: cqm4_e = 2;
+    #[c2rust::src_loc = "33:5"]
+    pub const CQM_4PY: cqm4_e = 1;
+    #[c2rust::src_loc = "32:5"]
+    pub const CQM_4IY: cqm4_e = 0;
+    #[c2rust::src_loc = "37:1"]
+    pub type cqm8_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "42:5"]
+    pub const CQM_8PC: cqm8_e = 3;
+    #[c2rust::src_loc = "41:5"]
+    pub const CQM_8IC: cqm8_e = 2;
+    #[c2rust::src_loc = "40:5"]
+    pub const CQM_8PY: cqm8_e = 1;
+    #[c2rust::src_loc = "39:5"]
+    pub const CQM_8IY: cqm8_e = 0;
     use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:26"]
 pub mod threadpool_h {
     extern "C" {
         #[c2rust::src_loc = "29:16"]
         pub type x264_threadpool_t;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:26"]
 pub mod base_h {
-    use super::internal::__va_list_tag;
+    #[c2rust::src_loc = "93:1"]
+    pub type profile_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "100:5"]
+    pub const PROFILE_HIGH444_PREDICTIVE: profile_e = 244;
+    #[c2rust::src_loc = "99:5"]
+    pub const PROFILE_HIGH422: profile_e = 122;
+    #[c2rust::src_loc = "98:5"]
+    pub const PROFILE_HIGH10: profile_e = 110;
+    #[c2rust::src_loc = "97:5"]
+    pub const PROFILE_HIGH: profile_e = 100;
+    #[c2rust::src_loc = "96:5"]
+    pub const PROFILE_MAIN: profile_e = 77;
+    #[c2rust::src_loc = "95:5"]
+    pub const PROFILE_BASELINE: profile_e = 66;
+    #[c2rust::src_loc = "103:1"]
+    pub type chroma_format_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "108:5"]
+    pub const CHROMA_444: chroma_format_e = 3;
+    #[c2rust::src_loc = "107:5"]
+    pub const CHROMA_422: chroma_format_e = 2;
+    #[c2rust::src_loc = "106:5"]
+    pub const CHROMA_420: chroma_format_e = 1;
+    #[c2rust::src_loc = "105:5"]
+    pub const CHROMA_400: chroma_format_e = 0;
+    use super::stdint_intn_h::int64_t;
     extern "C" {
-        #[c2rust::src_loc = "274:10"]
-        pub fn x264_log_default(
-            p_unused: *mut ::core::ffi::c_void,
-            i_level: ::core::ffi::c_int,
-            psz_fmt: *const ::core::ffi::c_char,
-            arg: ::core::ffi::VaList,
-        );
+        #[c2rust::src_loc = "279:10"]
+        pub fn x264_malloc(_: int64_t) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "280:10"]
+        pub fn x264_free(_: *mut ::core::ffi::c_void);
+        #[c2rust::src_loc = "283:10"]
+        pub fn x264_slurp_file(
+            filename: *const ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_char;
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:27"]
+#[c2rust::header_src = "/usr/include/string.h:26"]
+pub mod string_h {
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "43:1"]
+        pub fn memcpy(
+            __dest: *mut ::core::ffi::c_void,
+            __src: *const ::core::ffi::c_void,
+            __n: size_t,
+        ) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "61:1"]
+        pub fn memset(
+            __s: *mut ::core::ffi::c_void,
+            __c: ::core::ffi::c_int,
+            __n: size_t,
+        ) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "64:1"]
+        pub fn memcmp(
+            __s1: *const ::core::ffi::c_void,
+            __s2: *const ::core::ffi::c_void,
+            __n: size_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "246:1"]
+        pub fn strchr(
+            __s: *const ::core::ffi::c_char,
+            __c: ::core::ffi::c_int,
+        ) -> *mut ::core::ffi::c_char;
+        #[c2rust::src_loc = "293:1"]
+        pub fn strcspn(
+            __s: *const ::core::ffi::c_char,
+            __reject: *const ::core::ffi::c_char,
+        ) -> ::core::ffi::c_ulong;
+        #[c2rust::src_loc = "323:1"]
+        pub fn strpbrk(
+            __s: *const ::core::ffi::c_char,
+            __accept: *const ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_char;
+        #[c2rust::src_loc = "350:1"]
+        pub fn strstr(
+            __haystack: *const ::core::ffi::c_char,
+            __needle: *const ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_char;
+        #[c2rust::src_loc = "407:1"]
+        pub fn strlen(__s: *const ::core::ffi::c_char) -> size_t;
+    }
+}
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/tables.h:26"]
+pub mod tables_h {
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "52:22"]
+        pub static x264_cqm_jvt4i: [uint8_t; 16];
+        #[c2rust::src_loc = "53:22"]
+        pub static x264_cqm_jvt4p: [uint8_t; 16];
+        #[c2rust::src_loc = "54:22"]
+        pub static x264_cqm_jvt8i: [uint8_t; 64];
+        #[c2rust::src_loc = "55:22"]
+        pub static x264_cqm_jvt8p: [uint8_t; 64];
+    }
+}
+#[c2rust::header_src = "/usr/include/stdio.h:26"]
+pub mod stdio_h {
+    extern "C" {
+        #[c2rust::src_loc = "450:1"]
+        pub fn sscanf(
+            __s: *const ::core::ffi::c_char,
+            __format: *const ::core::ffi::c_char,
+            ...
+        ) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/bits/mathcalls.h:26"]
+pub mod mathcalls_h {
+    extern "C" {
+        #[c2rust::src_loc = "177:1"]
+        pub fn pow(
+            __x: ::core::ffi::c_double,
+            __y: ::core::ffi::c_double,
+        ) -> ::core::ffi::c_double;
+    }
+}
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:26"]
 pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::{__builtin_va_list, __va_list_tag};
+pub use self::internal::{__va_list_tag, BIT_DEPTH};
 pub use self::__stddef_size_t_h::size_t;
-pub use self::__stdarg___gnuc_va_list_h::__gnuc_va_list;
 pub use self::types_h::{
     __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
     __uint64_t,
 };
-pub use self::stdio_h::va_list;
 pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
 pub use self::stdint_h::{intptr_t, uintptr_t};
@@ -2237,8 +2368,8 @@ pub use self::common_h::{
     x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
     x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
     x264_left_table_t, C2RustUnnamed_10, C2RustUnnamed_11, x264_slice_header_t,
-    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18,
-    x264_ratecontrol_t,
+    C2RustUnnamed_12, C2RustUnnamed_13, C2RustUnnamed_17, C2RustUnnamed_18, QP_BD_OFFSET,
+    QP_MAX_SPEC, QP_MAX, x264_ratecontrol_t, x264_10_log,
 };
 pub use self::frame_h::{
     x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
@@ -2247,7 +2378,7 @@ pub use self::frame_h::{
 pub use self::x264_h::{
     x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
     C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, x264_zone_t,
-    C2RustUnnamed_4, C2RustUnnamed_5,
+    C2RustUnnamed_4, C2RustUnnamed_5, X264_CQM_CUSTOM, X264_LOG_ERROR,
 };
 pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
 pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
@@ -2259,31 +2390,1185 @@ pub use self::pixel_h::{
 };
 pub use self::predict_h::{x264_predict_8x8_filter_t, x264_predict_t, x264_predict8x8_t};
 pub use self::set_h::{
-    x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
+    x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16, cqm4_e,
+    CQM_4PC, CQM_4IC, CQM_4PY, CQM_4IY, cqm8_e, CQM_8PC, CQM_8IC, CQM_8PY, CQM_8IY,
 };
 use self::threadpool_h::x264_threadpool_t;
-use self::base_h::x264_log_default;
+pub use self::base_h::{
+    profile_e, PROFILE_HIGH444_PREDICTIVE, PROFILE_HIGH422, PROFILE_HIGH10, PROFILE_HIGH,
+    PROFILE_MAIN, PROFILE_BASELINE, chroma_format_e, CHROMA_444, CHROMA_422, CHROMA_420,
+    CHROMA_400, x264_malloc, x264_free, x264_slurp_file,
+};
+use self::string_h::{memcpy, memset, memcmp, strchr, strcspn, strpbrk, strstr, strlen};
+use self::tables_h::{x264_cqm_jvt4i, x264_cqm_jvt4p, x264_cqm_jvt8i, x264_cqm_jvt8p};
+use self::stdio_h::sscanf;
+use self::mathcalls_h::pow;
 pub use self::__stddef_null_h::NULL;
+#[c2rust::src_loc = "31:22"]
+static mut dequant4_scale: [[uint8_t; 3]; 6] = [
+    [
+        10 as ::core::ffi::c_int as uint8_t,
+        13 as ::core::ffi::c_int as uint8_t,
+        16 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        11 as ::core::ffi::c_int as uint8_t,
+        14 as ::core::ffi::c_int as uint8_t,
+        18 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        13 as ::core::ffi::c_int as uint8_t,
+        16 as ::core::ffi::c_int as uint8_t,
+        20 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        14 as ::core::ffi::c_int as uint8_t,
+        18 as ::core::ffi::c_int as uint8_t,
+        23 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        16 as ::core::ffi::c_int as uint8_t,
+        20 as ::core::ffi::c_int as uint8_t,
+        25 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        18 as ::core::ffi::c_int as uint8_t,
+        23 as ::core::ffi::c_int as uint8_t,
+        29 as ::core::ffi::c_int as uint8_t,
+    ],
+];
+#[c2rust::src_loc = "40:23"]
+static mut quant4_scale: [[uint16_t; 3]; 6] = [
+    [
+        13107 as ::core::ffi::c_int as uint16_t,
+        8066 as ::core::ffi::c_int as uint16_t,
+        5243 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        11916 as ::core::ffi::c_int as uint16_t,
+        7490 as ::core::ffi::c_int as uint16_t,
+        4660 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        10082 as ::core::ffi::c_int as uint16_t,
+        6554 as ::core::ffi::c_int as uint16_t,
+        4194 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        9362 as ::core::ffi::c_int as uint16_t,
+        5825 as ::core::ffi::c_int as uint16_t,
+        3647 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        8192 as ::core::ffi::c_int as uint16_t,
+        5243 as ::core::ffi::c_int as uint16_t,
+        3355 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        7282 as ::core::ffi::c_int as uint16_t,
+        4559 as ::core::ffi::c_int as uint16_t,
+        2893 as ::core::ffi::c_int as uint16_t,
+    ],
+];
+#[c2rust::src_loc = "50:22"]
+static mut quant8_scan: [uint8_t; 16] = [
+    0 as ::core::ffi::c_int as uint8_t,
+    3 as ::core::ffi::c_int as uint8_t,
+    4 as ::core::ffi::c_int as uint8_t,
+    3 as ::core::ffi::c_int as uint8_t,
+    3 as ::core::ffi::c_int as uint8_t,
+    1 as ::core::ffi::c_int as uint8_t,
+    5 as ::core::ffi::c_int as uint8_t,
+    1 as ::core::ffi::c_int as uint8_t,
+    4 as ::core::ffi::c_int as uint8_t,
+    5 as ::core::ffi::c_int as uint8_t,
+    2 as ::core::ffi::c_int as uint8_t,
+    5 as ::core::ffi::c_int as uint8_t,
+    3 as ::core::ffi::c_int as uint8_t,
+    1 as ::core::ffi::c_int as uint8_t,
+    5 as ::core::ffi::c_int as uint8_t,
+    1 as ::core::ffi::c_int as uint8_t,
+];
+#[c2rust::src_loc = "54:22"]
+static mut dequant8_scale: [[uint8_t; 6]; 6] = [
+    [
+        20 as ::core::ffi::c_int as uint8_t,
+        18 as ::core::ffi::c_int as uint8_t,
+        32 as ::core::ffi::c_int as uint8_t,
+        19 as ::core::ffi::c_int as uint8_t,
+        25 as ::core::ffi::c_int as uint8_t,
+        24 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        22 as ::core::ffi::c_int as uint8_t,
+        19 as ::core::ffi::c_int as uint8_t,
+        35 as ::core::ffi::c_int as uint8_t,
+        21 as ::core::ffi::c_int as uint8_t,
+        28 as ::core::ffi::c_int as uint8_t,
+        26 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        26 as ::core::ffi::c_int as uint8_t,
+        23 as ::core::ffi::c_int as uint8_t,
+        42 as ::core::ffi::c_int as uint8_t,
+        24 as ::core::ffi::c_int as uint8_t,
+        33 as ::core::ffi::c_int as uint8_t,
+        31 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        28 as ::core::ffi::c_int as uint8_t,
+        25 as ::core::ffi::c_int as uint8_t,
+        45 as ::core::ffi::c_int as uint8_t,
+        26 as ::core::ffi::c_int as uint8_t,
+        35 as ::core::ffi::c_int as uint8_t,
+        33 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        32 as ::core::ffi::c_int as uint8_t,
+        28 as ::core::ffi::c_int as uint8_t,
+        51 as ::core::ffi::c_int as uint8_t,
+        30 as ::core::ffi::c_int as uint8_t,
+        40 as ::core::ffi::c_int as uint8_t,
+        38 as ::core::ffi::c_int as uint8_t,
+    ],
+    [
+        36 as ::core::ffi::c_int as uint8_t,
+        32 as ::core::ffi::c_int as uint8_t,
+        58 as ::core::ffi::c_int as uint8_t,
+        34 as ::core::ffi::c_int as uint8_t,
+        46 as ::core::ffi::c_int as uint8_t,
+        43 as ::core::ffi::c_int as uint8_t,
+    ],
+];
+#[c2rust::src_loc = "63:23"]
+static mut quant8_scale: [[uint16_t; 6]; 6] = [
+    [
+        13107 as ::core::ffi::c_int as uint16_t,
+        11428 as ::core::ffi::c_int as uint16_t,
+        20972 as ::core::ffi::c_int as uint16_t,
+        12222 as ::core::ffi::c_int as uint16_t,
+        16777 as ::core::ffi::c_int as uint16_t,
+        15481 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        11916 as ::core::ffi::c_int as uint16_t,
+        10826 as ::core::ffi::c_int as uint16_t,
+        19174 as ::core::ffi::c_int as uint16_t,
+        11058 as ::core::ffi::c_int as uint16_t,
+        14980 as ::core::ffi::c_int as uint16_t,
+        14290 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        10082 as ::core::ffi::c_int as uint16_t,
+        8943 as ::core::ffi::c_int as uint16_t,
+        15978 as ::core::ffi::c_int as uint16_t,
+        9675 as ::core::ffi::c_int as uint16_t,
+        12710 as ::core::ffi::c_int as uint16_t,
+        11985 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        9362 as ::core::ffi::c_int as uint16_t,
+        8228 as ::core::ffi::c_int as uint16_t,
+        14913 as ::core::ffi::c_int as uint16_t,
+        8931 as ::core::ffi::c_int as uint16_t,
+        11984 as ::core::ffi::c_int as uint16_t,
+        11259 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        8192 as ::core::ffi::c_int as uint16_t,
+        7346 as ::core::ffi::c_int as uint16_t,
+        13159 as ::core::ffi::c_int as uint16_t,
+        7740 as ::core::ffi::c_int as uint16_t,
+        10486 as ::core::ffi::c_int as uint16_t,
+        9777 as ::core::ffi::c_int as uint16_t,
+    ],
+    [
+        7282 as ::core::ffi::c_int as uint16_t,
+        6428 as ::core::ffi::c_int as uint16_t,
+        11570 as ::core::ffi::c_int as uint16_t,
+        6830 as ::core::ffi::c_int as uint16_t,
+        9118 as ::core::ffi::c_int as uint16_t,
+        8640 as ::core::ffi::c_int as uint16_t,
+    ],
+];
 #[no_mangle]
-#[c2rust::src_loc = "32:1"]
-pub unsafe extern "C" fn x264_10_log(
-    mut h: *mut x264_t,
-    mut i_level: ::core::ffi::c_int,
-    mut psz_fmt: *const ::core::ffi::c_char,
-    mut args: ...
-) {
-    if h.is_null() || i_level <= (*h).param.i_log_level {
-        let mut arg: ::core::ffi::VaListImpl;
-        arg = args.clone();
-        if h.is_null() {
-            x264_log_default(NULL, i_level, psz_fmt, arg.as_va_list());
-        } else {
-            (*h)
-                .param
-                .pf_log
-                .expect(
-                    "non-null function pointer",
-                )((*h).param.p_log_private, i_level, psz_fmt, arg.as_va_list());
+#[c2rust::src_loc = "73:1"]
+pub unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> ::core::ffi::c_int {
+    let mut current_block: u64;
+    let mut def_quant4: [[::core::ffi::c_int; 16]; 6] = [[0; 16]; 6];
+    let mut def_quant8: [[::core::ffi::c_int; 64]; 6] = [[0; 64]; 6];
+    let mut def_dequant4: [[::core::ffi::c_int; 16]; 6] = [[0; 16]; 6];
+    let mut def_dequant8: [[::core::ffi::c_int; 64]; 6] = [[0; 64]; 6];
+    let mut quant4_mf: [[[::core::ffi::c_int; 16]; 6]; 4] = [[[0; 16]; 6]; 4];
+    let mut quant8_mf: [[[::core::ffi::c_int; 64]; 6]; 4] = [[[0; 64]; 6]; 4];
+    let mut deadzone: [::core::ffi::c_int; 4] = [
+        32 as ::core::ffi::c_int
+            - (*h).param.analyse.i_luma_deadzone[1 as ::core::ffi::c_int as usize],
+        32 as ::core::ffi::c_int
+            - (*h).param.analyse.i_luma_deadzone[0 as ::core::ffi::c_int as usize],
+        32 as ::core::ffi::c_int - 11 as ::core::ffi::c_int,
+        32 as ::core::ffi::c_int - 21 as ::core::ffi::c_int,
+    ];
+    let mut max_qp_err: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
+    let mut max_chroma_qp_err: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
+    let mut min_qp_err: ::core::ffi::c_int = QP_MAX + 1 as ::core::ffi::c_int;
+    let mut num_8x8_lists: ::core::ffi::c_int = if (*(*h).sps.as_mut_ptr())
+        .i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int
+    {
+        4 as ::core::ffi::c_int
+    } else if (*h).param.analyse.b_transform_8x8 != 0 {
+        2 as ::core::ffi::c_int
+    } else {
+        0 as ::core::ffi::c_int
+    };
+    let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    loop {
+        if !(i < 4 as ::core::ffi::c_int) {
+            current_block = 5529461102203738653;
+            break;
         }
+        let mut size: ::core::ffi::c_int = 4 as ::core::ffi::c_int
+            * 4 as ::core::ffi::c_int;
+        let mut start: ::core::ffi::c_int = if 4 as ::core::ffi::c_int
+            == 8 as ::core::ffi::c_int
+        {
+            4 as ::core::ffi::c_int
+        } else {
+            0 as ::core::ffi::c_int
+        };
+        let mut j: ::core::ffi::c_int = 0;
+        j = 0 as ::core::ffi::c_int;
+        while j < i {
+            if memcmp(
+                (*(*h).sps.as_mut_ptr()).scaling_list[(i + start) as usize]
+                    as *const ::core::ffi::c_void,
+                (*(*h).sps.as_mut_ptr()).scaling_list[(j + start) as usize]
+                    as *const ::core::ffi::c_void,
+                (size as size_t)
+                    .wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+            ) == 0
+            {
+                break;
+            }
+            j += 1;
+        }
+        if j < i {
+            (*h).quant4_mf[i as usize] = (*h).quant4_mf[j as usize];
+            (*h).dequant4_mf[i as usize] = (*h).dequant4_mf[j as usize];
+            (*h).unquant4_mf[i as usize] = (*h).unquant4_mf[j as usize];
+        } else {
+            (*h).quant4_mf[i as usize] = x264_malloc(
+                (((51 as ::core::ffi::c_int
+                    + 6 as ::core::ffi::c_int
+                        * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int) * size) as usize)
+                    .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize) as int64_t,
+            ) as *mut [udctcoef; 16];
+            if (*h).quant4_mf[i as usize].is_null() {
+                current_block = 4491644631990352080;
+                break;
+            }
+            (*h).dequant4_mf[i as usize] = x264_malloc(
+                ((6 as ::core::ffi::c_int * size) as usize)
+                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>() as usize)
+                    as int64_t,
+            ) as *mut [::core::ffi::c_int; 16];
+            if (*h).dequant4_mf[i as usize].is_null() {
+                current_block = 4491644631990352080;
+                break;
+            }
+            (*h).unquant4_mf[i as usize] = x264_malloc(
+                (((51 as ::core::ffi::c_int
+                    + 6 as ::core::ffi::c_int
+                        * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int) * size) as usize)
+                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>() as usize)
+                    as int64_t,
+            ) as *mut [::core::ffi::c_int; 16];
+            if (*h).unquant4_mf[i as usize].is_null() {
+                current_block = 4491644631990352080;
+                break;
+            }
+        }
+        j = 0 as ::core::ffi::c_int;
+        while j < i {
+            if deadzone[j as usize] == deadzone[i as usize]
+                && memcmp(
+                    (*(*h).sps.as_mut_ptr()).scaling_list[(i + start) as usize]
+                        as *const ::core::ffi::c_void,
+                    (*(*h).sps.as_mut_ptr()).scaling_list[(j + start) as usize]
+                        as *const ::core::ffi::c_void,
+                    (size as size_t)
+                        .wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+                ) == 0
+            {
+                break;
+            }
+            j += 1;
+        }
+        if j < i {
+            (*h).quant4_bias[i as usize] = (*h).quant4_bias[j as usize];
+            (*h).quant4_bias0[i as usize] = (*h).quant4_bias0[j as usize];
+        } else {
+            (*h).quant4_bias[i as usize] = x264_malloc(
+                (((51 as ::core::ffi::c_int
+                    + 6 as ::core::ffi::c_int
+                        * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int) * size) as usize)
+                    .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize) as int64_t,
+            ) as *mut [udctcoef; 16];
+            if (*h).quant4_bias[i as usize].is_null() {
+                current_block = 4491644631990352080;
+                break;
+            }
+            (*h).quant4_bias0[i as usize] = x264_malloc(
+                (((51 as ::core::ffi::c_int
+                    + 6 as ::core::ffi::c_int
+                        * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int) * size) as usize)
+                    .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize) as int64_t,
+            ) as *mut [udctcoef; 16];
+            if (*h).quant4_bias0[i as usize].is_null() {
+                current_block = 4491644631990352080;
+                break;
+            }
+        }
+        i += 1;
     }
+    match current_block {
+        5529461102203738653 => {
+            let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            loop {
+                if !(i_0 < num_8x8_lists) {
+                    current_block = 7419121793134201633;
+                    break;
+                }
+                let mut size_0: ::core::ffi::c_int = 8 as ::core::ffi::c_int
+                    * 8 as ::core::ffi::c_int;
+                let mut start_0: ::core::ffi::c_int = if 8 as ::core::ffi::c_int
+                    == 8 as ::core::ffi::c_int
+                {
+                    4 as ::core::ffi::c_int
+                } else {
+                    0 as ::core::ffi::c_int
+                };
+                let mut j_0: ::core::ffi::c_int = 0;
+                j_0 = 0 as ::core::ffi::c_int;
+                while j_0 < i_0 {
+                    if memcmp(
+                        (*(*h).sps.as_mut_ptr()).scaling_list[(i_0 + start_0) as usize]
+                            as *const ::core::ffi::c_void,
+                        (*(*h).sps.as_mut_ptr()).scaling_list[(j_0 + start_0) as usize]
+                            as *const ::core::ffi::c_void,
+                        (size_0 as size_t)
+                            .wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+                    ) == 0
+                    {
+                        break;
+                    }
+                    j_0 += 1;
+                }
+                if j_0 < i_0 {
+                    (*h).quant8_mf[i_0 as usize] = (*h).quant8_mf[j_0 as usize];
+                    (*h).dequant8_mf[i_0 as usize] = (*h).dequant8_mf[j_0 as usize];
+                    (*h).unquant8_mf[i_0 as usize] = (*h).unquant8_mf[j_0 as usize];
+                } else {
+                    (*h).quant8_mf[i_0 as usize] = x264_malloc(
+                        (((51 as ::core::ffi::c_int
+                            + 6 as ::core::ffi::c_int
+                                * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                            + 1 as ::core::ffi::c_int) * size_0) as usize)
+                            .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
+                            as int64_t,
+                    ) as *mut [udctcoef; 64];
+                    if (*h).quant8_mf[i_0 as usize].is_null() {
+                        current_block = 4491644631990352080;
+                        break;
+                    }
+                    (*h).dequant8_mf[i_0 as usize] = x264_malloc(
+                        ((6 as ::core::ffi::c_int * size_0) as usize)
+                            .wrapping_mul(
+                                ::core::mem::size_of::<::core::ffi::c_int>() as usize,
+                            ) as int64_t,
+                    ) as *mut [::core::ffi::c_int; 64];
+                    if (*h).dequant8_mf[i_0 as usize].is_null() {
+                        current_block = 4491644631990352080;
+                        break;
+                    }
+                    (*h).unquant8_mf[i_0 as usize] = x264_malloc(
+                        (((51 as ::core::ffi::c_int
+                            + 6 as ::core::ffi::c_int
+                                * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                            + 1 as ::core::ffi::c_int) * size_0) as usize)
+                            .wrapping_mul(
+                                ::core::mem::size_of::<::core::ffi::c_int>() as usize,
+                            ) as int64_t,
+                    ) as *mut [::core::ffi::c_int; 64];
+                    if (*h).unquant8_mf[i_0 as usize].is_null() {
+                        current_block = 4491644631990352080;
+                        break;
+                    }
+                }
+                j_0 = 0 as ::core::ffi::c_int;
+                while j_0 < i_0 {
+                    if deadzone[j_0 as usize] == deadzone[i_0 as usize]
+                        && memcmp(
+                            (*(*h).sps.as_mut_ptr())
+                                .scaling_list[(i_0 + start_0) as usize]
+                                as *const ::core::ffi::c_void,
+                            (*(*h).sps.as_mut_ptr())
+                                .scaling_list[(j_0 + start_0) as usize]
+                                as *const ::core::ffi::c_void,
+                            (size_0 as size_t)
+                                .wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+                        ) == 0
+                    {
+                        break;
+                    }
+                    j_0 += 1;
+                }
+                if j_0 < i_0 {
+                    (*h).quant8_bias[i_0 as usize] = (*h).quant8_bias[j_0 as usize];
+                    (*h).quant8_bias0[i_0 as usize] = (*h).quant8_bias0[j_0 as usize];
+                } else {
+                    (*h).quant8_bias[i_0 as usize] = x264_malloc(
+                        (((51 as ::core::ffi::c_int
+                            + 6 as ::core::ffi::c_int
+                                * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                            + 1 as ::core::ffi::c_int) * size_0) as usize)
+                            .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
+                            as int64_t,
+                    ) as *mut [udctcoef; 64];
+                    if (*h).quant8_bias[i_0 as usize].is_null() {
+                        current_block = 4491644631990352080;
+                        break;
+                    }
+                    (*h).quant8_bias0[i_0 as usize] = x264_malloc(
+                        (((51 as ::core::ffi::c_int
+                            + 6 as ::core::ffi::c_int
+                                * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                            + 1 as ::core::ffi::c_int) * size_0) as usize)
+                            .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
+                            as int64_t,
+                    ) as *mut [udctcoef; 64];
+                    if (*h).quant8_bias0[i_0 as usize].is_null() {
+                        current_block = 4491644631990352080;
+                        break;
+                    }
+                }
+                i_0 += 1;
+            }
+            match current_block {
+                4491644631990352080 => {}
+                _ => {
+                    let mut q: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    while q < 6 as ::core::ffi::c_int {
+                        let mut i_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        while i_1 < 16 as ::core::ffi::c_int {
+                            let mut j_1: ::core::ffi::c_int = (i_1
+                                & 1 as ::core::ffi::c_int)
+                                + (i_1 >> 2 as ::core::ffi::c_int
+                                    & 1 as ::core::ffi::c_int);
+                            def_dequant4[q as usize][i_1 as usize] = dequant4_scale[q
+                                as usize][j_1 as usize] as ::core::ffi::c_int;
+                            def_quant4[q as usize][i_1 as usize] = quant4_scale[q
+                                as usize][j_1 as usize] as ::core::ffi::c_int;
+                            i_1 += 1;
+                        }
+                        let mut i_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        while i_2 < 64 as ::core::ffi::c_int {
+                            let mut j_2: ::core::ffi::c_int = quant8_scan[(i_2
+                                >> 1 as ::core::ffi::c_int & 12 as ::core::ffi::c_int
+                                | i_2 & 3 as ::core::ffi::c_int) as usize]
+                                as ::core::ffi::c_int;
+                            def_dequant8[q as usize][i_2 as usize] = dequant8_scale[q
+                                as usize][j_2 as usize] as ::core::ffi::c_int;
+                            def_quant8[q as usize][i_2 as usize] = quant8_scale[q
+                                as usize][j_2 as usize] as ::core::ffi::c_int;
+                            i_2 += 1;
+                        }
+                        q += 1;
+                    }
+                    let mut q_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    while q_0 < 6 as ::core::ffi::c_int {
+                        let mut i_list: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        while i_list < 4 as ::core::ffi::c_int {
+                            let mut i_3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                            while i_3 < 16 as ::core::ffi::c_int {
+                                (*(*h)
+                                    .dequant4_mf[i_list as usize]
+                                    .offset(q_0 as isize))[i_3 as usize] = def_dequant4[q_0
+                                    as usize][i_3 as usize]
+                                    * *(*(*h).sps.as_mut_ptr())
+                                        .scaling_list[i_list as usize]
+                                        .offset(i_3 as isize) as ::core::ffi::c_int;
+                                quant4_mf[i_list as usize][q_0 as usize][i_3 as usize] = (def_quant4[q_0
+                                    as usize][i_3 as usize] * 16 as ::core::ffi::c_int
+                                    + (*(*(*h).sps.as_mut_ptr())
+                                        .scaling_list[i_list as usize]
+                                        .offset(i_3 as isize) as ::core::ffi::c_int
+                                        >> 1 as ::core::ffi::c_int))
+                                    / *(*(*h).sps.as_mut_ptr())
+                                        .scaling_list[i_list as usize]
+                                        .offset(i_3 as isize) as ::core::ffi::c_int;
+                                i_3 += 1;
+                            }
+                            i_list += 1;
+                        }
+                        let mut i_list_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        while i_list_0 < num_8x8_lists {
+                            let mut i_4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                            while i_4 < 64 as ::core::ffi::c_int {
+                                (*(*h)
+                                    .dequant8_mf[i_list_0 as usize]
+                                    .offset(q_0 as isize))[i_4 as usize] = def_dequant8[q_0
+                                    as usize][i_4 as usize]
+                                    * *(*(*h).sps.as_mut_ptr())
+                                        .scaling_list[(4 as ::core::ffi::c_int + i_list_0) as usize]
+                                        .offset(i_4 as isize) as ::core::ffi::c_int;
+                                quant8_mf[i_list_0 as usize][q_0 as usize][i_4 as usize] = (def_quant8[q_0
+                                    as usize][i_4 as usize] * 16 as ::core::ffi::c_int
+                                    + (*(*(*h).sps.as_mut_ptr())
+                                        .scaling_list[(4 as ::core::ffi::c_int + i_list_0) as usize]
+                                        .offset(i_4 as isize) as ::core::ffi::c_int
+                                        >> 1 as ::core::ffi::c_int))
+                                    / *(*(*h).sps.as_mut_ptr())
+                                        .scaling_list[(4 as ::core::ffi::c_int + i_list_0) as usize]
+                                        .offset(i_4 as isize) as ::core::ffi::c_int;
+                                i_4 += 1;
+                            }
+                            i_list_0 += 1;
+                        }
+                        q_0 += 1;
+                    }
+                    let mut q_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    while q_1 <= QP_MAX_SPEC {
+                        let mut j_3: ::core::ffi::c_int = 0;
+                        let mut i_list_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        while i_list_1 < 4 as ::core::ffi::c_int {
+                            let mut i_5: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                            while i_5 < 16 as ::core::ffi::c_int {
+                                (*(*h)
+                                    .unquant4_mf[i_list_1 as usize]
+                                    .offset(q_1 as isize))[i_5 as usize] = ((1
+                                    as ::core::ffi::c_ulonglong)
+                                    << q_1 / 6 as ::core::ffi::c_int + 15 as ::core::ffi::c_int
+                                        + 8 as ::core::ffi::c_int)
+                                    .wrapping_div(
+                                        quant4_mf[i_list_1
+                                            as usize][(q_1 % 6 as ::core::ffi::c_int)
+                                            as usize][i_5 as usize] as ::core::ffi::c_ulonglong,
+                                    ) as ::core::ffi::c_int;
+                                j_3 = if q_1 / 6 as ::core::ffi::c_int
+                                    - 1 as ::core::ffi::c_int <= 0 as ::core::ffi::c_int
+                                {
+                                    quant4_mf[i_list_1
+                                        as usize][(q_1 % 6 as ::core::ffi::c_int)
+                                        as usize][i_5 as usize]
+                                        << -(q_1 / 6 as ::core::ffi::c_int
+                                            - 1 as ::core::ffi::c_int)
+                                } else {
+                                    quant4_mf[i_list_1
+                                        as usize][(q_1 % 6 as ::core::ffi::c_int)
+                                        as usize][i_5 as usize]
+                                        + ((1 as ::core::ffi::c_int)
+                                            << q_1 / 6 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                                - 1 as ::core::ffi::c_int)
+                                        >> q_1 / 6 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                };
+                                (*(*h)
+                                    .quant4_mf[i_list_1 as usize]
+                                    .offset(q_1 as isize))[i_5 as usize] = j_3 as uint16_t
+                                    as udctcoef;
+                                if j_3 == 0 {
+                                    min_qp_err = if min_qp_err < q_1 {
+                                        min_qp_err
+                                    } else {
+                                        q_1
+                                    };
+                                } else {
+                                    (*(*h)
+                                        .quant4_bias[i_list_1 as usize]
+                                        .offset(q_1 as isize))[i_5 as usize] = (if ((deadzone[i_list_1
+                                        as usize] << 10 as ::core::ffi::c_int)
+                                        + (j_3 >> 1 as ::core::ffi::c_int)) / j_3
+                                        < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                            / j_3
+                                    {
+                                        ((deadzone[i_list_1 as usize] << 10 as ::core::ffi::c_int)
+                                            + (j_3 >> 1 as ::core::ffi::c_int)) / j_3
+                                    } else {
+                                        ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                            / j_3
+                                    }) as udctcoef;
+                                    (*(*h)
+                                        .quant4_bias0[i_list_1 as usize]
+                                        .offset(q_1 as isize))[i_5 as usize] = (((1
+                                        as ::core::ffi::c_int) << 15 as ::core::ffi::c_int) / j_3)
+                                        as udctcoef;
+                                    if j_3
+                                        > (if (0xffff as ::core::ffi::c_int)
+                                            < ((1 as ::core::ffi::c_int)
+                                                << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                - 1 as ::core::ffi::c_int
+                                        {
+                                            0xffff as ::core::ffi::c_int
+                                        } else {
+                                            ((1 as ::core::ffi::c_int)
+                                                << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                - 1 as ::core::ffi::c_int
+                                        }) && q_1 > max_qp_err
+                                        && (i_list_1 == CQM_4IY as ::core::ffi::c_int
+                                            || i_list_1 == CQM_4PY as ::core::ffi::c_int)
+                                    {
+                                        max_qp_err = q_1;
+                                    }
+                                    if j_3
+                                        > (if (0xffff as ::core::ffi::c_int)
+                                            < ((1 as ::core::ffi::c_int)
+                                                << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                - 1 as ::core::ffi::c_int
+                                        {
+                                            0xffff as ::core::ffi::c_int
+                                        } else {
+                                            ((1 as ::core::ffi::c_int)
+                                                << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                - 1 as ::core::ffi::c_int
+                                        }) && q_1 > max_chroma_qp_err
+                                        && (i_list_1 == CQM_4IC as ::core::ffi::c_int
+                                            || i_list_1 == CQM_4PC as ::core::ffi::c_int)
+                                    {
+                                        max_chroma_qp_err = q_1;
+                                    }
+                                }
+                                i_5 += 1;
+                            }
+                            i_list_1 += 1;
+                        }
+                        if (*h).param.analyse.b_transform_8x8 != 0 {
+                            let mut i_list_2: ::core::ffi::c_int = 0
+                                as ::core::ffi::c_int;
+                            while i_list_2 < num_8x8_lists {
+                                let mut i_6: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                while i_6 < 64 as ::core::ffi::c_int {
+                                    (*(*h)
+                                        .unquant8_mf[i_list_2 as usize]
+                                        .offset(q_1 as isize))[i_6 as usize] = ((1
+                                        as ::core::ffi::c_ulonglong)
+                                        << q_1 / 6 as ::core::ffi::c_int + 16 as ::core::ffi::c_int
+                                            + 8 as ::core::ffi::c_int)
+                                        .wrapping_div(
+                                            quant8_mf[i_list_2
+                                                as usize][(q_1 % 6 as ::core::ffi::c_int)
+                                                as usize][i_6 as usize] as ::core::ffi::c_ulonglong,
+                                        ) as ::core::ffi::c_int;
+                                    j_3 = if q_1 / 6 as ::core::ffi::c_int
+                                        <= 0 as ::core::ffi::c_int
+                                    {
+                                        quant8_mf[i_list_2
+                                            as usize][(q_1 % 6 as ::core::ffi::c_int)
+                                            as usize][i_6 as usize] << -(q_1 / 6 as ::core::ffi::c_int)
+                                    } else {
+                                        quant8_mf[i_list_2
+                                            as usize][(q_1 % 6 as ::core::ffi::c_int)
+                                            as usize][i_6 as usize]
+                                            + ((1 as ::core::ffi::c_int)
+                                                << q_1 / 6 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                                            >> q_1 / 6 as ::core::ffi::c_int
+                                    };
+                                    (*(*h)
+                                        .quant8_mf[i_list_2 as usize]
+                                        .offset(q_1 as isize))[i_6 as usize] = j_3 as uint16_t
+                                        as udctcoef;
+                                    if j_3 == 0 {
+                                        min_qp_err = if min_qp_err < q_1 {
+                                            min_qp_err
+                                        } else {
+                                            q_1
+                                        };
+                                    } else {
+                                        (*(*h)
+                                            .quant8_bias[i_list_2 as usize]
+                                            .offset(q_1 as isize))[i_6 as usize] = (if ((deadzone[i_list_2
+                                            as usize] << 10 as ::core::ffi::c_int)
+                                            + (j_3 >> 1 as ::core::ffi::c_int)) / j_3
+                                            < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                                / j_3
+                                        {
+                                            ((deadzone[i_list_2 as usize] << 10 as ::core::ffi::c_int)
+                                                + (j_3 >> 1 as ::core::ffi::c_int)) / j_3
+                                        } else {
+                                            ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                                / j_3
+                                        }) as udctcoef;
+                                        (*(*h)
+                                            .quant8_bias0[i_list_2 as usize]
+                                            .offset(q_1 as isize))[i_6 as usize] = (((1
+                                            as ::core::ffi::c_int) << 15 as ::core::ffi::c_int) / j_3)
+                                            as udctcoef;
+                                        if j_3
+                                            > (if (0xffff as ::core::ffi::c_int)
+                                                < ((1 as ::core::ffi::c_int)
+                                                    << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                    - 1 as ::core::ffi::c_int
+                                            {
+                                                0xffff as ::core::ffi::c_int
+                                            } else {
+                                                ((1 as ::core::ffi::c_int)
+                                                    << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                    - 1 as ::core::ffi::c_int
+                                            }) && q_1 > max_qp_err
+                                            && (i_list_2 == CQM_8IY as ::core::ffi::c_int
+                                                || i_list_2 == CQM_8PY as ::core::ffi::c_int)
+                                        {
+                                            max_qp_err = q_1;
+                                        }
+                                        if j_3
+                                            > (if (0xffff as ::core::ffi::c_int)
+                                                < ((1 as ::core::ffi::c_int)
+                                                    << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                    - 1 as ::core::ffi::c_int
+                                            {
+                                                0xffff as ::core::ffi::c_int
+                                            } else {
+                                                ((1 as ::core::ffi::c_int)
+                                                    << 25 as ::core::ffi::c_int - 10 as ::core::ffi::c_int)
+                                                    - 1 as ::core::ffi::c_int
+                                            }) && q_1 > max_chroma_qp_err
+                                            && (i_list_2 == CQM_8IC as ::core::ffi::c_int
+                                                || i_list_2 == CQM_8PC as ::core::ffi::c_int)
+                                        {
+                                            max_chroma_qp_err = q_1;
+                                        }
+                                    }
+                                    i_6 += 1;
+                                }
+                                i_list_2 += 1;
+                            }
+                        }
+                        q_1 += 1;
+                    }
+                    (*h).nr_offset_emergency = x264_malloc(
+                        (::core::mem::size_of::<[[udctcoef; 64]; 4]>() as usize)
+                            .wrapping_mul(
+                                (51 as ::core::ffi::c_int
+                                    + 6 as ::core::ffi::c_int
+                                        * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                                    + 18 as ::core::ffi::c_int
+                                    - (51 as ::core::ffi::c_int
+                                        + 6 as ::core::ffi::c_int
+                                            * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)))
+                                    as usize,
+                            ) as int64_t,
+                    ) as *mut [[udctcoef; 64]; 4];
+                    if !(*h).nr_offset_emergency.is_null() {
+                        let mut q_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        while q_2 < QP_MAX - QP_MAX_SPEC {
+                            let mut cat: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                            while cat
+                                < 3 as ::core::ffi::c_int
+                                    + ((*(*h).sps.as_mut_ptr()).i_chroma_format_idc
+                                        == CHROMA_444 as ::core::ffi::c_int) as ::core::ffi::c_int
+                            {
+                                let mut dct8x8: ::core::ffi::c_int = cat
+                                    & 1 as ::core::ffi::c_int;
+                                if !((*h).param.analyse.b_transform_8x8 == 0 && dct8x8 != 0)
+                                {
+                                    let mut size_1: ::core::ffi::c_int = if dct8x8 != 0 {
+                                        64 as ::core::ffi::c_int
+                                    } else {
+                                        16 as ::core::ffi::c_int
+                                    };
+                                    let mut nr_offset: *mut udctcoef = (*(*(*h)
+                                        .nr_offset_emergency
+                                        .offset(q_2 as isize))
+                                        .as_mut_ptr()
+                                        .offset(cat as isize))
+                                        .as_mut_ptr();
+                                    let mut dc_threshold: ::core::ffi::c_int = (QP_MAX
+                                        - QP_MAX_SPEC) * 2 as ::core::ffi::c_int
+                                        / 3 as ::core::ffi::c_int;
+                                    let mut luma_threshold: ::core::ffi::c_int = (QP_MAX
+                                        - QP_MAX_SPEC) * 2 as ::core::ffi::c_int
+                                        / 3 as ::core::ffi::c_int;
+                                    let mut chroma_threshold: ::core::ffi::c_int = 0
+                                        as ::core::ffi::c_int;
+                                    let mut i_7: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                    while i_7 < size_1 {
+                                        let mut max: ::core::ffi::c_int = ((1 as ::core::ffi::c_int)
+                                            << 7 as ::core::ffi::c_int + BIT_DEPTH)
+                                            - 1 as ::core::ffi::c_int;
+                                        if q_2 == QP_MAX - QP_MAX_SPEC - 1 as ::core::ffi::c_int {
+                                            *nr_offset.offset(i_7 as isize) = max as udctcoef;
+                                        } else {
+                                            let mut thresh: ::core::ffi::c_int = if i_7
+                                                == 0 as ::core::ffi::c_int
+                                            {
+                                                dc_threshold
+                                            } else if cat >= 2 as ::core::ffi::c_int {
+                                                chroma_threshold
+                                            } else {
+                                                luma_threshold
+                                            };
+                                            if q_2 < thresh {
+                                                *nr_offset.offset(i_7 as isize) = 0 as udctcoef;
+                                            } else {
+                                                let mut pos: ::core::ffi::c_double = (q_2 - thresh
+                                                    + 1 as ::core::ffi::c_int) as ::core::ffi::c_double
+                                                    / (QP_MAX - QP_MAX_SPEC - thresh) as ::core::ffi::c_double;
+                                                let mut start_1: ::core::ffi::c_double = (if dct8x8 != 0 {
+                                                    (*(*h)
+                                                        .unquant8_mf[CQM_8PY as ::core::ffi::c_int as usize]
+                                                        .offset(QP_MAX_SPEC as isize))[i_7 as usize]
+                                                } else {
+                                                    (*(*h)
+                                                        .unquant4_mf[CQM_4PY as ::core::ffi::c_int as usize]
+                                                        .offset(QP_MAX_SPEC as isize))[i_7 as usize]
+                                                }) as ::core::ffi::c_double;
+                                                let mut bias: ::core::ffi::c_double = (pow(
+                                                    2 as ::core::ffi::c_int as ::core::ffi::c_double,
+                                                    pos * (QP_MAX - QP_MAX_SPEC) as ::core::ffi::c_double
+                                                        / 10.0f64,
+                                                ) * 0.003f64 - 0.003f64) * start_1;
+                                                *nr_offset.offset(i_7 as isize) = (if bias + 0.5f64
+                                                    < max as ::core::ffi::c_double
+                                                {
+                                                    bias + 0.5f64
+                                                } else {
+                                                    max as ::core::ffi::c_double
+                                                }) as udctcoef;
+                                            }
+                                        }
+                                        i_7 += 1;
+                                    }
+                                }
+                                cat += 1;
+                            }
+                            q_2 += 1;
+                        }
+                        if (*h).mb.b_lossless == 0 {
+                            while *(*h)
+                                .chroma_qp_table
+                                .offset(
+                                    (if (*h).param.rc.i_qp_min
+                                        < 51 as ::core::ffi::c_int
+                                            + 6 as ::core::ffi::c_int
+                                                * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                                    {
+                                        (*h).param.rc.i_qp_min
+                                    } else {
+                                        51 as ::core::ffi::c_int
+                                            + 6 as ::core::ffi::c_int
+                                                * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                                    }) as isize,
+                                ) as ::core::ffi::c_int <= max_chroma_qp_err
+                            {
+                                (*h).param.rc.i_qp_min += 1;
+                            }
+                            if min_qp_err <= (*h).param.rc.i_qp_max {
+                                (*h).param.rc.i_qp_max = min_qp_err
+                                    - 1 as ::core::ffi::c_int;
+                            }
+                            if max_qp_err >= (*h).param.rc.i_qp_min {
+                                (*h).param.rc.i_qp_min = max_qp_err
+                                    + 1 as ::core::ffi::c_int;
+                            }
+                            if (*h).param.b_cabac == 0
+                                && (*(*h).sps.as_mut_ptr()).i_profile_idc
+                                    < PROFILE_HIGH as ::core::ffi::c_int
+                            {
+                                while *(*h)
+                                    .chroma_qp_table
+                                    .offset(
+                                        (if (*h).param.rc.i_qp_max
+                                            < 51 as ::core::ffi::c_int
+                                                + 6 as ::core::ffi::c_int
+                                                    * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                                        {
+                                            (*h).param.rc.i_qp_max
+                                        } else {
+                                            51 as ::core::ffi::c_int
+                                                + 6 as ::core::ffi::c_int
+                                                    * (10 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+                                        }) as isize,
+                                    ) as ::core::ffi::c_int <= 12 as ::core::ffi::c_int
+                                    || (*h).param.rc.i_qp_max <= 12 as ::core::ffi::c_int
+                                {
+                                    (*h).param.rc.i_qp_max += 1;
+                                }
+                            }
+                            if (*h).param.rc.i_qp_min > (*h).param.rc.i_qp_max {
+                                x264_10_log(
+                                    h,
+                                    X264_LOG_ERROR,
+                                    b"Impossible QP constraints for CQM (min=%d, max=%d)\n\0"
+                                        as *const u8 as *const ::core::ffi::c_char,
+                                    (*h).param.rc.i_qp_min,
+                                    (*h).param.rc.i_qp_max,
+                                );
+                                return -(1 as ::core::ffi::c_int);
+                            }
+                        }
+                        return 0 as ::core::ffi::c_int;
+                    }
+                }
+            }
+        }
+        _ => {}
+    }
+    x264_10_cqm_delete(h);
+    return -(1 as ::core::ffi::c_int);
+}
+#[no_mangle]
+#[c2rust::src_loc = "300:1"]
+pub unsafe extern "C" fn x264_10_cqm_delete(mut h: *mut x264_t) {
+    let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    while i < 4 as ::core::ffi::c_int {
+        let mut j: ::core::ffi::c_int = 0;
+        j = 0 as ::core::ffi::c_int;
+        while j < i {
+            if (*h).quant4_mf[i as usize] == (*h).quant4_mf[j as usize] {
+                break;
+            }
+            j += 1;
+        }
+        if j == i {
+            x264_free((*h).quant4_mf[i as usize] as *mut ::core::ffi::c_void);
+            x264_free((*h).dequant4_mf[i as usize] as *mut ::core::ffi::c_void);
+            x264_free((*h).unquant4_mf[i as usize] as *mut ::core::ffi::c_void);
+        }
+        j = 0 as ::core::ffi::c_int;
+        while j < i {
+            if (*h).quant4_bias[i as usize] == (*h).quant4_bias[j as usize] {
+                break;
+            }
+            j += 1;
+        }
+        if j == i {
+            x264_free((*h).quant4_bias[i as usize] as *mut ::core::ffi::c_void);
+            x264_free((*h).quant4_bias0[i as usize] as *mut ::core::ffi::c_void);
+        }
+        i += 1;
+    }
+    let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    while i_0
+        < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
+            == CHROMA_444 as ::core::ffi::c_int
+        {
+            4 as ::core::ffi::c_int
+        } else {
+            2 as ::core::ffi::c_int
+        })
+    {
+        let mut j_0: ::core::ffi::c_int = 0;
+        j_0 = 0 as ::core::ffi::c_int;
+        while j_0 < i_0 {
+            if (*h).quant8_mf[i_0 as usize] == (*h).quant8_mf[j_0 as usize] {
+                break;
+            }
+            j_0 += 1;
+        }
+        if j_0 == i_0 {
+            x264_free((*h).quant8_mf[i_0 as usize] as *mut ::core::ffi::c_void);
+            x264_free((*h).dequant8_mf[i_0 as usize] as *mut ::core::ffi::c_void);
+            x264_free((*h).unquant8_mf[i_0 as usize] as *mut ::core::ffi::c_void);
+        }
+        j_0 = 0 as ::core::ffi::c_int;
+        while j_0 < i_0 {
+            if (*h).quant8_bias[i_0 as usize] == (*h).quant8_bias[j_0 as usize] {
+                break;
+            }
+            j_0 += 1;
+        }
+        if j_0 == i_0 {
+            x264_free((*h).quant8_bias[i_0 as usize] as *mut ::core::ffi::c_void);
+            x264_free((*h).quant8_bias0[i_0 as usize] as *mut ::core::ffi::c_void);
+        }
+        i_0 += 1;
+    }
+    x264_free((*h).nr_offset_emergency as *mut ::core::ffi::c_void);
+}
+#[c2rust::src_loc = "307:1"]
+unsafe extern "C" fn cqm_parse_jmlist(
+    mut h: *mut x264_t,
+    mut buf: *const ::core::ffi::c_char,
+    mut name: *const ::core::ffi::c_char,
+    mut cqm: *mut uint8_t,
+    mut jvt: *const uint8_t,
+    mut length: ::core::ffi::c_int,
+) -> ::core::ffi::c_int {
+    let mut i: ::core::ffi::c_int = 0;
+    let mut p: *mut ::core::ffi::c_char = strstr(buf, name);
+    if p.is_null() {
+        memset(
+            cqm as *mut ::core::ffi::c_void,
+            16 as ::core::ffi::c_int,
+            length as size_t,
+        );
+        return 0 as ::core::ffi::c_int;
+    }
+    p = p.offset(strlen(name) as isize);
+    if *p as ::core::ffi::c_int == 'U' as i32 || *p as ::core::ffi::c_int == 'V' as i32 {
+        p = p.offset(1);
+    }
+    let mut nextvar: *mut ::core::ffi::c_char = strstr(
+        p,
+        b"INT\0" as *const u8 as *const ::core::ffi::c_char,
+    );
+    i = 0 as ::core::ffi::c_int;
+    while i < length
+        && {
+            p = strpbrk(p, b" \t\n,\0" as *const u8 as *const ::core::ffi::c_char);
+            !p.is_null()
+        }
+        && {
+            p = strpbrk(p, b"0123456789\0" as *const u8 as *const ::core::ffi::c_char);
+            !p.is_null()
+        }
+    {
+        let mut coef: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
+        sscanf(
+            p,
+            b"%d\0" as *const u8 as *const ::core::ffi::c_char,
+            &mut coef as *mut ::core::ffi::c_int,
+        );
+        if i == 0 as ::core::ffi::c_int && coef == 0 as ::core::ffi::c_int {
+            memcpy(
+                cqm as *mut ::core::ffi::c_void,
+                jvt as *const ::core::ffi::c_void,
+                length as size_t,
+            );
+            return 0 as ::core::ffi::c_int;
+        }
+        if coef < 1 as ::core::ffi::c_int || coef > 255 as ::core::ffi::c_int {
+            x264_10_log(
+                h,
+                X264_LOG_ERROR,
+                b"bad coefficient in list '%s'\n\0" as *const u8
+                    as *const ::core::ffi::c_char,
+                name,
+            );
+            return -(1 as ::core::ffi::c_int);
+        }
+        *cqm.offset(i as isize) = coef as uint8_t;
+        i += 1;
+    }
+    if !nextvar.is_null() && p > nextvar || i != length {
+        x264_10_log(
+            h,
+            X264_LOG_ERROR,
+            b"not enough coefficients in list '%s'\n\0" as *const u8
+                as *const ::core::ffi::c_char,
+            name,
+        );
+        return -(1 as ::core::ffi::c_int);
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[no_mangle]
+#[c2rust::src_loc = "351:1"]
+pub unsafe extern "C" fn x264_10_cqm_parse_file(
+    mut h: *mut x264_t,
+    mut filename: *const ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    let mut p: *mut ::core::ffi::c_char = 0 as *mut ::core::ffi::c_char;
+    let mut b_error: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    (*h).param.i_cqm_preset = X264_CQM_CUSTOM;
+    let mut buf: *mut ::core::ffi::c_char = x264_slurp_file(filename);
+    if buf.is_null() {
+        x264_10_log(
+            h,
+            X264_LOG_ERROR,
+            b"can't open file '%s'\n\0" as *const u8 as *const ::core::ffi::c_char,
+            filename,
+        );
+        return -(1 as ::core::ffi::c_int);
+    }
+    loop {
+        p = strchr(buf, '#' as i32);
+        if p.is_null() {
+            break;
+        }
+        memset(
+            p as *mut ::core::ffi::c_void,
+            ' ' as i32,
+            strcspn(p, b"\n\0" as *const u8 as *const ::core::ffi::c_char) as size_t,
+        );
+    }
+    b_error
+        |= cqm_parse_jmlist(
+            h,
+            buf,
+            b"INTRA4X4_LUMA\0" as *const u8 as *const ::core::ffi::c_char,
+            (*h).param.cqm_4iy.as_mut_ptr(),
+            x264_cqm_jvt4i.as_ptr(),
+            16 as ::core::ffi::c_int,
+        );
+    b_error
+        |= cqm_parse_jmlist(
+            h,
+            buf,
+            b"INTER4X4_LUMA\0" as *const u8 as *const ::core::ffi::c_char,
+            (*h).param.cqm_4py.as_mut_ptr(),
+            x264_cqm_jvt4p.as_ptr(),
+            16 as ::core::ffi::c_int,
+        );
+    b_error
+        |= cqm_parse_jmlist(
+            h,
+            buf,
+            b"INTRA4X4_CHROMA\0" as *const u8 as *const ::core::ffi::c_char,
+            (*h).param.cqm_4ic.as_mut_ptr(),
+            x264_cqm_jvt4i.as_ptr(),
+            16 as ::core::ffi::c_int,
+        );
+    b_error
+        |= cqm_parse_jmlist(
+            h,
+            buf,
+            b"INTER4X4_CHROMA\0" as *const u8 as *const ::core::ffi::c_char,
+            (*h).param.cqm_4pc.as_mut_ptr(),
+            x264_cqm_jvt4p.as_ptr(),
+            16 as ::core::ffi::c_int,
+        );
+    b_error
+        |= cqm_parse_jmlist(
+            h,
+            buf,
+            b"INTRA8X8_LUMA\0" as *const u8 as *const ::core::ffi::c_char,
+            (*h).param.cqm_8iy.as_mut_ptr(),
+            x264_cqm_jvt8i.as_ptr(),
+            64 as ::core::ffi::c_int,
+        );
+    b_error
+        |= cqm_parse_jmlist(
+            h,
+            buf,
+            b"INTER8X8_LUMA\0" as *const u8 as *const ::core::ffi::c_char,
+            (*h).param.cqm_8py.as_mut_ptr(),
+            x264_cqm_jvt8p.as_ptr(),
+            64 as ::core::ffi::c_int,
+        );
+    if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as ::core::ffi::c_int {
+        b_error
+            |= cqm_parse_jmlist(
+                h,
+                buf,
+                b"INTRA8X8_CHROMA\0" as *const u8 as *const ::core::ffi::c_char,
+                (*h).param.cqm_8ic.as_mut_ptr(),
+                x264_cqm_jvt8i.as_ptr(),
+                64 as ::core::ffi::c_int,
+            );
+        b_error
+            |= cqm_parse_jmlist(
+                h,
+                buf,
+                b"INTER8X8_CHROMA\0" as *const u8 as *const ::core::ffi::c_char,
+                (*h).param.cqm_8pc.as_mut_ptr(),
+                x264_cqm_jvt8p.as_ptr(),
+                64 as ::core::ffi::c_int,
+            );
+    }
+    x264_free(buf as *mut ::core::ffi::c_void);
+    return b_error;
 }

@@ -1,7 +1,5 @@
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
-    pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "0:0"]
@@ -12,18 +10,12 @@ pub mod internal {
         pub reg_save_area: *mut ::core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:27"]
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:39"]
 pub mod __stddef_size_t_h {
     #[c2rust::src_loc = "18:1"]
     pub type size_t = usize;
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stdarg___gnuc_va_list.h:27"]
-pub mod __stdarg___gnuc_va_list_h {
-    #[c2rust::src_loc = "12:1"]
-    pub type __gnuc_va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/types.h:39"]
 pub mod types_h {
     #[c2rust::src_loc = "37:1"]
     pub type __int8_t = i8;
@@ -42,13 +34,7 @@ pub mod types_h {
     #[c2rust::src_loc = "45:1"]
     pub type __uint64_t = u64;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:27"]
-pub mod stdio_h {
-    #[c2rust::src_loc = "53:1"]
-    pub type va_list = __gnuc_va_list;
-    use super::__stdarg___gnuc_va_list_h::__gnuc_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:39"]
 pub mod stdint_intn_h {
     #[c2rust::src_loc = "24:1"]
     pub type int8_t = __int8_t;
@@ -60,7 +46,7 @@ pub mod stdint_intn_h {
     pub type int64_t = __int64_t;
     use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:39"]
 pub mod stdint_uintn_h {
     #[c2rust::src_loc = "24:1"]
     pub type uint8_t = __uint8_t;
@@ -72,14 +58,14 @@ pub mod stdint_uintn_h {
     pub type uint64_t = __uint64_t;
     use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
 }
-#[c2rust::header_src = "/usr/include/stdint.h:27"]
+#[c2rust::header_src = "/usr/include/stdint.h:39"]
 pub mod stdint_h {
     #[c2rust::src_loc = "76:1"]
     pub type intptr_t = isize;
     #[c2rust::src_loc = "79:1"]
     pub type uintptr_t = usize;
 }
-#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:27"]
+#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:39"]
 pub mod atomic_wide_counter_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -96,7 +82,7 @@ pub mod atomic_wide_counter_h {
         pub __high: ::core::ffi::c_uint,
     }
 }
-#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:39"]
 pub mod thread_shared_types_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -122,7 +108,7 @@ pub mod thread_shared_types_h {
     }
     use super::atomic_wide_counter_h::__atomic_wide_counter;
 }
-#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:27"]
+#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:39"]
 pub mod struct_mutex_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -139,10 +125,17 @@ pub mod struct_mutex_h {
     }
     use super::thread_shared_types_h::__pthread_list_t;
 }
-#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:27"]
+#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:39"]
 pub mod pthreadtypes_h {
     #[c2rust::src_loc = "27:1"]
     pub type pthread_t = ::core::ffi::c_ulong;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "56:7"]
+    pub union pthread_attr_t {
+        pub __size: [::core::ffi::c_char; 56],
+        pub __align: ::core::ffi::c_long,
+    }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "67:9"]
@@ -162,7 +155,7 @@ pub mod pthreadtypes_h {
     use super::struct_mutex_h::__pthread_mutex_s;
     use super::thread_shared_types_h::__pthread_cond_s;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:39"]
 pub mod common_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -635,7 +628,7 @@ pub mod common_h {
         pub type x264_ratecontrol_t;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:39"]
 pub mod frame_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -812,11 +805,34 @@ pub mod frame_h {
     use super::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
     use super::stdint_intn_h::{int64_t, int8_t, int16_t};
     use super::x264_h::{x264_param_t, x264_hrd_t, x264_sei_t};
-    use super::common_h::pixel;
+    use super::common_h::{pixel, x264_t};
     use super::mc_h::x264_weight_t;
     use super::stdint_h::intptr_t;
+    extern "C" {
+        #[c2rust::src_loc = "266:10"]
+        pub fn x264_10_frame_push(
+            list: *mut *mut x264_frame_t,
+            frame: *mut x264_frame_t,
+        );
+        #[c2rust::src_loc = "272:10"]
+        pub fn x264_10_frame_shift(list: *mut *mut x264_frame_t) -> *mut x264_frame_t;
+        #[c2rust::src_loc = "275:1"]
+        pub fn x264_10_frame_push_unused(h: *mut x264_t, frame: *mut x264_frame_t);
+        #[c2rust::src_loc = "289:1"]
+        pub fn x264_10_sync_frame_list_init(
+            slist: *mut x264_sync_frame_list_t,
+            nelem: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "291:1"]
+        pub fn x264_10_sync_frame_list_delete(slist: *mut x264_sync_frame_list_t);
+        #[c2rust::src_loc = "293:1"]
+        pub fn x264_10_sync_frame_list_push(
+            slist: *mut x264_sync_frame_list_t,
+            frame: *mut x264_frame_t,
+        );
+    }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:39"]
 pub mod x264_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1081,12 +1097,18 @@ pub mod x264_h {
         pub i_colmatrix: ::core::ffi::c_int,
         pub i_chroma_loc: ::core::ffi::c_int,
     }
+    #[c2rust::src_loc = "278:9"]
+    pub const X264_TYPE_IDR: ::core::ffi::c_int = 0x1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "279:9"]
+    pub const X264_TYPE_I: ::core::ffi::c_int = 0x2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "283:9"]
+    pub const X264_TYPE_KEYFRAME: ::core::ffi::c_int = 0x6 as ::core::ffi::c_int;
     use super::stdint_uintn_h::{uint8_t, uint32_t};
     use super::internal::__va_list_tag;
     use super::common_h::x264_t;
     use super::stdint_intn_h::int64_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:39"]
 pub mod mc_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1425,7 +1447,7 @@ pub mod mc_h {
     use super::stdint_uintn_h::{uint32_t, uint16_t};
     use super::__stddef_size_t_h::size_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:39"]
 pub mod bitstream_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1490,7 +1512,7 @@ pub mod bitstream_h {
     use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:39"]
 pub mod cabac_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1509,7 +1531,7 @@ pub mod cabac_h {
     }
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:39"]
 pub mod quant_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1740,7 +1762,7 @@ pub mod quant_h {
     use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:39"]
 pub mod dct_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1823,7 +1845,7 @@ pub mod dct_h {
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:39"]
 pub mod pixel_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2053,7 +2075,7 @@ pub mod pixel_h {
     use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:39"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
@@ -2072,7 +2094,7 @@ pub mod predict_h {
     >;
     use super::common_h::pixel;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:39"]
 pub mod set_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2191,39 +2213,126 @@ pub mod set_h {
     }
     use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:39"]
 pub mod threadpool_h {
     extern "C" {
         #[c2rust::src_loc = "29:16"]
         pub type x264_threadpool_t;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:27"]
-pub mod base_h {
-    use super::internal::__va_list_tag;
+#[c2rust::header_src = "/usr/include/pthread.h:39"]
+pub mod pthread_h {
+    use super::pthreadtypes_h::{
+        pthread_t, pthread_attr_t, pthread_mutex_t, pthread_cond_t,
+    };
     extern "C" {
-        #[c2rust::src_loc = "274:10"]
-        pub fn x264_log_default(
-            p_unused: *mut ::core::ffi::c_void,
-            i_level: ::core::ffi::c_int,
-            psz_fmt: *const ::core::ffi::c_char,
-            arg: ::core::ffi::VaList,
+        #[c2rust::src_loc = "202:1"]
+        pub fn pthread_create(
+            __newthread: *mut pthread_t,
+            __attr: *const pthread_attr_t,
+            __start_routine: Option<
+                unsafe extern "C" fn(
+                    *mut ::core::ffi::c_void,
+                ) -> *mut ::core::ffi::c_void,
+            >,
+            __arg: *mut ::core::ffi::c_void,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "219:1"]
+        pub fn pthread_join(
+            __th: pthread_t,
+            __thread_return: *mut *mut ::core::ffi::c_void,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "794:1"]
+        pub fn pthread_mutex_lock(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "835:1"]
+        pub fn pthread_mutex_unlock(__mutex: *mut pthread_mutex_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1125:1"]
+        pub fn pthread_cond_broadcast(__cond: *mut pthread_cond_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1133:1"]
+        pub fn pthread_cond_wait(
+            __cond: *mut pthread_cond_t,
+            __mutex: *mut pthread_mutex_t,
+        ) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/string.h:39"]
+pub mod string_h {
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "61:1"]
+        pub fn memset(
+            __s: *mut ::core::ffi::c_void,
+            __c: ::core::ffi::c_int,
+            __n: size_t,
+        ) -> *mut ::core::ffi::c_void;
+    }
+}
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:39"]
+pub mod base_h {
+    use super::stdint_intn_h::int64_t;
+    extern "C" {
+        #[c2rust::src_loc = "279:10"]
+        pub fn x264_malloc(_: int64_t) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "280:10"]
+        pub fn x264_free(_: *mut ::core::ffi::c_void);
+    }
+}
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/macroblock.h:39"]
+pub mod macroblock_h {
+    use super::common_h::x264_t;
+    extern "C" {
+        #[c2rust::src_loc = "303:1"]
+        pub fn x264_10_macroblock_cache_allocate(h: *mut x264_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "305:1"]
+        pub fn x264_10_macroblock_cache_free(h: *mut x264_t);
+        #[c2rust::src_loc = "309:1"]
+        pub fn x264_10_macroblock_thread_allocate(
+            h: *mut x264_t,
+            b_lookahead: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "311:1"]
+        pub fn x264_10_macroblock_thread_free(
+            h: *mut x264_t,
+            b_lookahead: ::core::ffi::c_int,
         );
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/encoder/analyse.h:39"]
+pub mod analyse_h {
+    use super::common_h::x264_t;
+    extern "C" {
+        #[c2rust::src_loc = "39:1"]
+        pub fn x264_10_slicetype_decide(h: *mut x264_t);
+        #[c2rust::src_loc = "42:1"]
+        pub fn x264_10_slicetype_analyse(
+            h: *mut x264_t,
+            intra_minigop: ::core::ffi::c_int,
+        );
+    }
+}
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:39"]
 pub mod __stddef_null_h {
     #[c2rust::src_loc = "26:9"]
     pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
 }
-pub use self::internal::{__builtin_va_list, __va_list_tag};
+#[c2rust::header_src = "/usr/include/assert.h:39"]
+pub mod assert_h {
+    extern "C" {
+        #[c2rust::src_loc = "67:1"]
+        pub fn __assert_fail(
+            __assertion: *const ::core::ffi::c_char,
+            __file: *const ::core::ffi::c_char,
+            __line: ::core::ffi::c_uint,
+            __function: *const ::core::ffi::c_char,
+        ) -> !;
+    }
+}
+pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::__stdarg___gnuc_va_list_h::__gnuc_va_list;
 pub use self::types_h::{
     __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
     __uint64_t,
 };
-pub use self::stdio_h::va_list;
 pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
 pub use self::stdint_h::{intptr_t, uintptr_t};
@@ -2232,7 +2341,9 @@ pub use self::thread_shared_types_h::{
     __pthread_internal_list, __pthread_list_t, __pthread_cond_s,
 };
 pub use self::struct_mutex_h::__pthread_mutex_s;
-pub use self::pthreadtypes_h::{pthread_t, pthread_mutex_t, pthread_cond_t};
+pub use self::pthreadtypes_h::{
+    pthread_t, pthread_attr_t, pthread_mutex_t, pthread_cond_t,
+};
 pub use self::common_h::{
     x264_t, x264_lookahead_t, pixel, dctcoef, udctcoef, C2RustUnnamed_6,
     x264_frame_stat_t, C2RustUnnamed_7, C2RustUnnamed_8, C2RustUnnamed_9,
@@ -2242,12 +2353,14 @@ pub use self::common_h::{
 };
 pub use self::frame_h::{
     x264_sync_frame_list_t, x264_frame_t, x264_frame, x264_deblock_function_t,
-    x264_deblock_intra_t, x264_deblock_inter_t,
+    x264_deblock_intra_t, x264_deblock_inter_t, x264_10_frame_push, x264_10_frame_shift,
+    x264_10_frame_push_unused, x264_10_sync_frame_list_init,
+    x264_10_sync_frame_list_delete, x264_10_sync_frame_list_push,
 };
 pub use self::x264_h::{
     x264_sei_t, x264_sei_payload_t, x264_hrd_t, x264_param_t, x264_nal_t,
     C2RustUnnamed_0, C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, x264_zone_t,
-    C2RustUnnamed_4, C2RustUnnamed_5,
+    C2RustUnnamed_4, C2RustUnnamed_5, X264_TYPE_IDR, X264_TYPE_I, X264_TYPE_KEYFRAME,
 };
 pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
 pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
@@ -2262,28 +2375,421 @@ pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
 use self::threadpool_h::x264_threadpool_t;
-use self::base_h::x264_log_default;
+use self::pthread_h::{
+    pthread_create, pthread_join, pthread_mutex_lock, pthread_mutex_unlock,
+    pthread_cond_broadcast, pthread_cond_wait,
+};
+use self::string_h::memset;
+use self::base_h::{x264_malloc, x264_free};
+use self::macroblock_h::{
+    x264_10_macroblock_cache_allocate, x264_10_macroblock_cache_free,
+    x264_10_macroblock_thread_allocate, x264_10_macroblock_thread_free,
+};
+use self::analyse_h::{x264_10_slicetype_decide, x264_10_slicetype_analyse};
 pub use self::__stddef_null_h::NULL;
-#[no_mangle]
-#[c2rust::src_loc = "32:1"]
-pub unsafe extern "C" fn x264_10_log(
-    mut h: *mut x264_t,
-    mut i_level: ::core::ffi::c_int,
-    mut psz_fmt: *const ::core::ffi::c_char,
-    mut args: ...
+use self::assert_h::__assert_fail;
+#[c2rust::src_loc = "42:1"]
+unsafe extern "C" fn lookahead_shift(
+    mut dst: *mut x264_sync_frame_list_t,
+    mut src: *mut x264_sync_frame_list_t,
+    mut count: ::core::ffi::c_int,
 ) {
-    if h.is_null() || i_level <= (*h).param.i_log_level {
-        let mut arg: ::core::ffi::VaListImpl;
-        arg = args.clone();
-        if h.is_null() {
-            x264_log_default(NULL, i_level, psz_fmt, arg.as_va_list());
+    let mut i: ::core::ffi::c_int = count;
+    loop {
+        let fresh0 = i;
+        i = i - 1;
+        if !(fresh0 != 0) {
+            break;
+        }
+        if (*dst).i_size < (*dst).i_max_size {} else {
+            __assert_fail(
+                b"dst->i_size < dst->i_max_size\0" as *const u8
+                    as *const ::core::ffi::c_char,
+                b"encoder/lookahead.c\0" as *const u8 as *const ::core::ffi::c_char,
+                47 as ::core::ffi::c_uint,
+                ::core::mem::transmute::<
+                    [u8; 78],
+                    [::core::ffi::c_char; 78],
+                >(
+                        *b"void lookahead_shift(x264_sync_frame_list_t *, x264_sync_frame_list_t *, int)\0",
+                    )
+                    .as_ptr(),
+            );
+        }
+        'c_28461: {
+            if (*dst).i_size < (*dst).i_max_size {} else {
+                __assert_fail(
+                    b"dst->i_size < dst->i_max_size\0" as *const u8
+                        as *const ::core::ffi::c_char,
+                    b"encoder/lookahead.c\0" as *const u8 as *const ::core::ffi::c_char,
+                    47 as ::core::ffi::c_uint,
+                    ::core::mem::transmute::<
+                        [u8; 78],
+                        [::core::ffi::c_char; 78],
+                    >(
+                            *b"void lookahead_shift(x264_sync_frame_list_t *, x264_sync_frame_list_t *, int)\0",
+                        )
+                        .as_ptr(),
+                );
+            }
+        };
+        if (*src).i_size != 0 {} else {
+            __assert_fail(
+                b"src->i_size\0" as *const u8 as *const ::core::ffi::c_char,
+                b"encoder/lookahead.c\0" as *const u8 as *const ::core::ffi::c_char,
+                48 as ::core::ffi::c_uint,
+                ::core::mem::transmute::<
+                    [u8; 78],
+                    [::core::ffi::c_char; 78],
+                >(
+                        *b"void lookahead_shift(x264_sync_frame_list_t *, x264_sync_frame_list_t *, int)\0",
+                    )
+                    .as_ptr(),
+            );
+        }
+        'c_28423: {
+            if (*src).i_size != 0 {} else {
+                __assert_fail(
+                    b"src->i_size\0" as *const u8 as *const ::core::ffi::c_char,
+                    b"encoder/lookahead.c\0" as *const u8 as *const ::core::ffi::c_char,
+                    48 as ::core::ffi::c_uint,
+                    ::core::mem::transmute::<
+                        [u8; 78],
+                        [::core::ffi::c_char; 78],
+                    >(
+                            *b"void lookahead_shift(x264_sync_frame_list_t *, x264_sync_frame_list_t *, int)\0",
+                        )
+                        .as_ptr(),
+                );
+            }
+        };
+        let fresh1 = (*dst).i_size;
+        (*dst).i_size = (*dst).i_size + 1;
+        let ref mut fresh2 = *(*dst).list.offset(fresh1 as isize);
+        *fresh2 = x264_10_frame_shift((*src).list);
+        (*src).i_size -= 1;
+    }
+    if count != 0 {
+        pthread_cond_broadcast(&mut (*dst).cv_fill);
+        pthread_cond_broadcast(&mut (*src).cv_empty);
+    }
+}
+#[c2rust::src_loc = "59:1"]
+unsafe extern "C" fn lookahead_update_last_nonb(
+    mut h: *mut x264_t,
+    mut new_nonb: *mut x264_frame_t,
+) {
+    if !(*(*h).lookahead).last_nonb.is_null() {
+        x264_10_frame_push_unused(h, (*(*h).lookahead).last_nonb);
+    }
+    (*(*h).lookahead).last_nonb = new_nonb;
+    (*new_nonb).i_reference_count += 1;
+}
+#[c2rust::src_loc = "68:1"]
+unsafe extern "C" fn lookahead_slicetype_decide(mut h: *mut x264_t) {
+    x264_10_slicetype_decide(h);
+    lookahead_update_last_nonb(
+        h,
+        *(*(*h).lookahead).next.list.offset(0 as ::core::ffi::c_int as isize),
+    );
+    let mut shift_frames: ::core::ffi::c_int = (**(*(*h).lookahead)
+        .next
+        .list
+        .offset(0 as ::core::ffi::c_int as isize))
+        .i_bframes as ::core::ffi::c_int + 1 as ::core::ffi::c_int;
+    pthread_mutex_lock(&mut (*(*h).lookahead).ofbuf.mutex);
+    while (*(*h).lookahead).ofbuf.i_size == (*(*h).lookahead).ofbuf.i_max_size {
+        pthread_cond_wait(
+            &mut (*(*h).lookahead).ofbuf.cv_empty,
+            &mut (*(*h).lookahead).ofbuf.mutex,
+        );
+    }
+    pthread_mutex_lock(&mut (*(*h).lookahead).next.mutex);
+    lookahead_shift(
+        &mut (*(*h).lookahead).ofbuf,
+        &mut (*(*h).lookahead).next,
+        shift_frames,
+    );
+    pthread_mutex_unlock(&mut (*(*h).lookahead).next.mutex);
+    if (*(*h).lookahead).b_analyse_keyframe as ::core::ffi::c_int != 0
+        && ((*(*(*h).lookahead).last_nonb).i_type == X264_TYPE_I
+            || (*(*(*h).lookahead).last_nonb).i_type == X264_TYPE_IDR
+            || (*(*(*h).lookahead).last_nonb).i_type == X264_TYPE_KEYFRAME)
+    {
+        x264_10_slicetype_analyse(h, shift_frames);
+    }
+    pthread_mutex_unlock(&mut (*(*h).lookahead).ofbuf.mutex);
+}
+#[c2rust::src_loc = "90:1"]
+unsafe extern "C" fn lookahead_thread(mut h: *mut x264_t) -> *mut ::core::ffi::c_void {
+    loop {
+        pthread_mutex_lock(&mut (*(*h).lookahead).ifbuf.mutex);
+        if (*(*h).lookahead).b_exit_thread != 0 {
+            pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
+            break;
         } else {
-            (*h)
-                .param
-                .pf_log
-                .expect(
-                    "non-null function pointer",
-                )((*h).param.p_log_private, i_level, psz_fmt, arg.as_va_list());
+            pthread_mutex_lock(&mut (*(*h).lookahead).next.mutex);
+            let mut shift: ::core::ffi::c_int = if (*(*h).lookahead).next.i_max_size
+                - (*(*h).lookahead).next.i_size < (*(*h).lookahead).ifbuf.i_size
+            {
+                (*(*h).lookahead).next.i_max_size - (*(*h).lookahead).next.i_size
+            } else {
+                (*(*h).lookahead).ifbuf.i_size
+            };
+            lookahead_shift(
+                &mut (*(*h).lookahead).next,
+                &mut (*(*h).lookahead).ifbuf,
+                shift,
+            );
+            pthread_mutex_unlock(&mut (*(*h).lookahead).next.mutex);
+            if (*(*h).lookahead).next.i_size
+                <= (*(*h).lookahead).i_slicetype_length + (*h).param.b_vfr_input
+            {
+                while (*(*h).lookahead).ifbuf.i_size == 0
+                    && (*(*h).lookahead).b_exit_thread == 0
+                {
+                    pthread_cond_wait(
+                        &mut (*(*h).lookahead).ifbuf.cv_fill,
+                        &mut (*(*h).lookahead).ifbuf.mutex,
+                    );
+                }
+                pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
+            } else {
+                pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
+                lookahead_slicetype_decide(h);
+            }
         }
     }
+    pthread_mutex_lock(&mut (*(*h).lookahead).ifbuf.mutex);
+    pthread_mutex_lock(&mut (*(*h).lookahead).next.mutex);
+    lookahead_shift(
+        &mut (*(*h).lookahead).next,
+        &mut (*(*h).lookahead).ifbuf,
+        (*(*h).lookahead).ifbuf.i_size,
+    );
+    pthread_mutex_unlock(&mut (*(*h).lookahead).next.mutex);
+    pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
+    while (*(*h).lookahead).next.i_size != 0 {
+        lookahead_slicetype_decide(h);
+    }
+    pthread_mutex_lock(&mut (*(*h).lookahead).ofbuf.mutex);
+    (*(*h).lookahead).b_thread_active = 0 as uint8_t;
+    pthread_cond_broadcast(&mut (*(*h).lookahead).ofbuf.cv_fill);
+    pthread_mutex_unlock(&mut (*(*h).lookahead).ofbuf.mutex);
+    return NULL;
+}
+#[no_mangle]
+#[c2rust::src_loc = "132:1"]
+pub unsafe extern "C" fn x264_10_lookahead_init(
+    mut h: *mut x264_t,
+    mut i_slicetype_length: ::core::ffi::c_int,
+) -> ::core::ffi::c_int {
+    let mut look_h: *mut x264_t = 0 as *mut x264_t;
+    let mut look: *mut x264_lookahead_t = 0 as *mut x264_lookahead_t;
+    look = x264_malloc(::core::mem::size_of::<x264_lookahead_t>() as int64_t)
+        as *mut x264_lookahead_t;
+    if !look.is_null() {
+        memset(
+            look as *mut ::core::ffi::c_void,
+            0 as ::core::ffi::c_int,
+            ::core::mem::size_of::<x264_lookahead_t>() as size_t,
+        );
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < (*h).param.i_threads {
+            (*(*h).thread[i as usize]).lookahead = look;
+            i += 1;
+        }
+        (*look).i_last_keyframe = -(*h).param.i_keyint_max;
+        (*look).b_analyse_keyframe = (((*h).param.rc.b_mb_tree != 0
+            || (*h).param.rc.i_vbv_buffer_size != 0 && (*h).param.rc.i_lookahead != 0)
+            && (*h).param.rc.b_stat_read == 0) as ::core::ffi::c_int as uint8_t;
+        (*look).i_slicetype_length = i_slicetype_length;
+        if !(x264_10_sync_frame_list_init(
+            &mut (*look).ifbuf,
+            (*h).param.i_sync_lookahead + 3 as ::core::ffi::c_int,
+        ) != 0
+            || x264_10_sync_frame_list_init(
+                &mut (*look).next,
+                (*h).frames.i_delay + 3 as ::core::ffi::c_int,
+            ) != 0
+            || x264_10_sync_frame_list_init(
+                &mut (*look).ofbuf,
+                (*h).frames.i_delay + 3 as ::core::ffi::c_int,
+            ) != 0)
+        {
+            if (*h).param.i_sync_lookahead == 0 {
+                return 0 as ::core::ffi::c_int;
+            }
+            look_h = (*h).thread[(*h).param.i_threads as usize];
+            *look_h = *h;
+            if !(x264_10_macroblock_cache_allocate(look_h) != 0) {
+                if !(x264_10_macroblock_thread_allocate(look_h, 1 as ::core::ffi::c_int)
+                    < 0 as ::core::ffi::c_int)
+                {
+                    if !(pthread_create(
+                        &mut (*look).thread_handle,
+                        0 as *const pthread_attr_t,
+                        ::core::mem::transmute::<
+                            *mut ::core::ffi::c_void,
+                            Option<
+                                unsafe extern "C" fn(
+                                    *mut ::core::ffi::c_void,
+                                ) -> *mut ::core::ffi::c_void,
+                            >,
+                        >(
+                            ::core::mem::transmute::<
+                                Option<
+                                    unsafe extern "C" fn(
+                                        *mut x264_t,
+                                    ) -> *mut ::core::ffi::c_void,
+                                >,
+                                *mut ::core::ffi::c_void,
+                            >(
+                                Some(
+                                    lookahead_thread
+                                        as unsafe extern "C" fn(
+                                            *mut x264_t,
+                                        ) -> *mut ::core::ffi::c_void,
+                                ),
+                            ),
+                        ),
+                        look_h as *mut ::core::ffi::c_void,
+                    ) != 0)
+                    {
+                        (*look).b_thread_active = 1 as uint8_t;
+                        return 0 as ::core::ffi::c_int;
+                    }
+                }
+            }
+        }
+    }
+    x264_free(look as *mut ::core::ffi::c_void);
+    return -(1 as ::core::ffi::c_int);
+}
+#[no_mangle]
+#[c2rust::src_loc = "171:1"]
+pub unsafe extern "C" fn x264_10_lookahead_delete(mut h: *mut x264_t) {
+    if (*h).param.i_sync_lookahead != 0 {
+        pthread_mutex_lock(&mut (*(*h).lookahead).ifbuf.mutex);
+        ::core::ptr::write_volatile(
+            &mut (*(*h).lookahead).b_exit_thread as *mut uint8_t,
+            1 as uint8_t,
+        );
+        pthread_cond_broadcast(&mut (*(*h).lookahead).ifbuf.cv_fill);
+        pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
+        pthread_join(
+            (*(*h).lookahead).thread_handle,
+            0 as *mut *mut ::core::ffi::c_void,
+        );
+        x264_10_macroblock_cache_free((*h).thread[(*h).param.i_threads as usize]);
+        x264_10_macroblock_thread_free(
+            (*h).thread[(*h).param.i_threads as usize],
+            1 as ::core::ffi::c_int,
+        );
+        x264_free(
+            (*h).thread[(*h).param.i_threads as usize] as *mut ::core::ffi::c_void,
+        );
+    }
+    x264_10_sync_frame_list_delete(&mut (*(*h).lookahead).ifbuf);
+    x264_10_sync_frame_list_delete(&mut (*(*h).lookahead).next);
+    if !(*(*h).lookahead).last_nonb.is_null() {
+        x264_10_frame_push_unused(h, (*(*h).lookahead).last_nonb);
+    }
+    x264_10_sync_frame_list_delete(&mut (*(*h).lookahead).ofbuf);
+    x264_free((*h).lookahead as *mut ::core::ffi::c_void);
+}
+#[no_mangle]
+#[c2rust::src_loc = "192:1"]
+pub unsafe extern "C" fn x264_10_lookahead_put_frame(
+    mut h: *mut x264_t,
+    mut frame: *mut x264_frame_t,
+) {
+    if (*h).param.i_sync_lookahead != 0 {
+        x264_10_sync_frame_list_push(&mut (*(*h).lookahead).ifbuf, frame);
+    } else {
+        x264_10_sync_frame_list_push(&mut (*(*h).lookahead).next, frame);
+    };
+}
+#[no_mangle]
+#[c2rust::src_loc = "200:1"]
+pub unsafe extern "C" fn x264_10_lookahead_is_empty(
+    mut h: *mut x264_t,
+) -> ::core::ffi::c_int {
+    pthread_mutex_lock(&mut (*(*h).lookahead).ofbuf.mutex);
+    pthread_mutex_lock(&mut (*(*h).lookahead).next.mutex);
+    let mut b_empty: ::core::ffi::c_int = ((*(*h).lookahead).next.i_size == 0
+        && (*(*h).lookahead).ofbuf.i_size == 0) as ::core::ffi::c_int;
+    pthread_mutex_unlock(&mut (*(*h).lookahead).next.mutex);
+    pthread_mutex_unlock(&mut (*(*h).lookahead).ofbuf.mutex);
+    return b_empty;
+}
+#[c2rust::src_loc = "210:1"]
+unsafe extern "C" fn lookahead_encoder_shift(mut h: *mut x264_t) {
+    if (*(*h).lookahead).ofbuf.i_size == 0 {
+        return;
+    }
+    let mut i_frames: ::core::ffi::c_int = (**(*(*h).lookahead)
+        .ofbuf
+        .list
+        .offset(0 as ::core::ffi::c_int as isize))
+        .i_bframes as ::core::ffi::c_int + 1 as ::core::ffi::c_int;
+    loop {
+        let fresh3 = i_frames;
+        i_frames = i_frames - 1;
+        if !(fresh3 != 0) {
+            break;
+        }
+        x264_10_frame_push(
+            (*h).frames.current,
+            x264_10_frame_shift((*(*h).lookahead).ofbuf.list),
+        );
+        (*(*h).lookahead).ofbuf.i_size -= 1;
+    }
+    pthread_cond_broadcast(&mut (*(*h).lookahead).ofbuf.cv_empty);
+}
+#[no_mangle]
+#[c2rust::src_loc = "223:1"]
+pub unsafe extern "C" fn x264_10_lookahead_get_frames(mut h: *mut x264_t) {
+    if (*h).param.i_sync_lookahead != 0 {
+        pthread_mutex_lock(&mut (*(*h).lookahead).ofbuf.mutex);
+        while (*(*h).lookahead).ofbuf.i_size == 0
+            && (*(*h).lookahead).b_thread_active as ::core::ffi::c_int != 0
+        {
+            pthread_cond_wait(
+                &mut (*(*h).lookahead).ofbuf.cv_fill,
+                &mut (*(*h).lookahead).ofbuf.mutex,
+            );
+        }
+        lookahead_encoder_shift(h);
+        pthread_mutex_unlock(&mut (*(*h).lookahead).ofbuf.mutex);
+    } else {
+        if !(*(*h).frames.current.offset(0 as ::core::ffi::c_int as isize)).is_null()
+            || (*(*h).lookahead).next.i_size == 0
+        {
+            return;
+        }
+        x264_10_slicetype_decide(h);
+        lookahead_update_last_nonb(
+            h,
+            *(*(*h).lookahead).next.list.offset(0 as ::core::ffi::c_int as isize),
+        );
+        let mut shift_frames: ::core::ffi::c_int = (**(*(*h).lookahead)
+            .next
+            .list
+            .offset(0 as ::core::ffi::c_int as isize))
+            .i_bframes as ::core::ffi::c_int + 1 as ::core::ffi::c_int;
+        lookahead_shift(
+            &mut (*(*h).lookahead).ofbuf,
+            &mut (*(*h).lookahead).next,
+            shift_frames,
+        );
+        if (*(*h).lookahead).b_analyse_keyframe as ::core::ffi::c_int != 0
+            && ((*(*(*h).lookahead).last_nonb).i_type == X264_TYPE_I
+                || (*(*(*h).lookahead).last_nonb).i_type == X264_TYPE_IDR
+                || (*(*(*h).lookahead).last_nonb).i_type == X264_TYPE_KEYFRAME)
+        {
+            x264_10_slicetype_analyse(h, shift_frames);
+        }
+        lookahead_encoder_shift(h);
+    };
 }

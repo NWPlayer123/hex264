@@ -1,608 +1,1160 @@
-use std::{io::Write as _, path::Path};
-
-use byteorder::{BigEndian, WriteBytesExt as _};
-use slab::Slab;
-use snafu::{Snafu, ensure};
-
-// TODO: support newer versions of mkv, such as 5-byte elem_id and 8-byte size
-
-#[derive(Debug, Snafu)]
-pub enum MuxerError {
-    /// Thrown if an error occurs when trying to read or write files.
-    #[snafu(transparent)]
-    FileError { source: std::io::Error },
-
-    #[snafu(display("Encountered invalid state!"))]
-    InvalidState,
-
-    #[snafu(display("Element ID {element_id:#X} exceeds 4-octet limit"))]
-    ElementIdTooLarge { element_id: u64 },
-
-    #[snafu(display("Element ID {size} exceeds 4-octet limit"))]
-    ElementSizeTooLarge { size: u64 },
+use ::c2rust_bitfields;
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:26"]
+pub mod __stddef_size_t_h {
+    #[c2rust::src_loc = "18:1"]
+    pub type size_t = usize;
 }
-
-/// Display unit for MKV/Matroska files.
-///
-/// Corresponds to the DisplayUnit element (ID: 0x54B2) in the MKV specification.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
-#[repr(u8)]
-pub enum DisplayUnit {
-    /// Display dimensions in pixels
-    Pixels = 0,
-
-    /// Display dimensions in centimeters
-    Centimeters = 1,
-
-    /// Display dimensions in inches
-    Inches = 2,
-
-    /// Display aspect ratio (width:height ratio)
-    DisplayAspectRatio = 3,
-
-    /// Unknown or unspecified unit
-    #[default]
-    Unknown = 4,
+#[c2rust::header_src = "/usr/include/bits/types.h:26"]
+pub mod types_h {
+    #[c2rust::src_loc = "37:1"]
+    pub type __int8_t = i8;
+    #[c2rust::src_loc = "38:1"]
+    pub type __uint8_t = u8;
+    #[c2rust::src_loc = "42:1"]
+    pub type __uint32_t = u32;
+    #[c2rust::src_loc = "44:1"]
+    pub type __int64_t = i64;
+    #[c2rust::src_loc = "45:1"]
+    pub type __uint64_t = u64;
+    #[c2rust::src_loc = "145:1"]
+    pub type __dev_t = ::core::ffi::c_ulong;
+    #[c2rust::src_loc = "146:1"]
+    pub type __uid_t = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "147:1"]
+    pub type __gid_t = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "148:1"]
+    pub type __ino_t = ::core::ffi::c_ulong;
+    #[c2rust::src_loc = "150:1"]
+    pub type __mode_t = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "151:1"]
+    pub type __nlink_t = ::core::ffi::c_ulong;
+    #[c2rust::src_loc = "152:1"]
+    pub type __off_t = ::core::ffi::c_long;
+    #[c2rust::src_loc = "153:1"]
+    pub type __off64_t = ::core::ffi::c_long;
+    #[c2rust::src_loc = "160:1"]
+    pub type __time_t = ::core::ffi::c_long;
+    #[c2rust::src_loc = "175:1"]
+    pub type __blksize_t = ::core::ffi::c_long;
+    #[c2rust::src_loc = "180:1"]
+    pub type __blkcnt_t = ::core::ffi::c_long;
+    #[c2rust::src_loc = "197:1"]
+    pub type __syscall_slong_t = ::core::ffi::c_long;
 }
-
-/// Stereo-3D video mode for MKV/Matroska files.
-///
-/// Corresponds to the StereoMode element (ID: 0x53B8) in the MKV specification.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
-#[repr(u8)]
-pub enum StereoMode {
-    /// Standard 2D video (no stereo)
-    #[default]
-    Mono = 0,
-
-    /// Side by side stereo with left eye first
-    SideBySideLeftFirst = 1,
-
-    /// Top-bottom stereo with right eye first  
-    TopBottomRightFirst = 2,
-
-    /// Top-bottom stereo with left eye first
-    TopBottomLeftFirst = 3,
-
-    /// Checkerboard pattern with right eye first
-    CheckboardRightFirst = 4,
-
-    /// Checkerboard pattern with left eye first
-    CheckboardLeftFirst = 5,
-
-    /// Row interleaved with right eye first
-    RowInterleavedRightFirst = 6,
-
-    /// Row interleaved with left eye first
-    RowInterleavedLeftFirst = 7,
-
-    /// Column interleaved with right eye first
-    ColumnInterleavedRightFirst = 8,
-
-    /// Column interleaved with left eye first
-    ColumnInterleavedLeftFirst = 9,
-
-    /// Anaglyph stereo (cyan/red)
-    AnaglyphCyanRed = 10,
-
-    /// Side by side stereo with right eye first
-    SideBySideRightFirst = 11,
-
-    /// Anaglyph stereo (green/magenta)
-    AnaglyphGreenMagenta = 12,
-
-    /// Both eyes laced in one block with left eye first
-    BothEyesLacedLeftFirst = 13,
-
-    /// Both eyes laced in one block with right eye first
-    BothEyesLacedRightFirst = 14,
-}
-
-/// Track type for MKV/Matroska files.
-///
-/// Corresponds to the TrackType element (ID: 0x83) in the MKV specification.
-#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
-#[repr(u8)]
-pub enum TrackType {
-    /// Video track containing visual content
-    #[default]
-    Video = 1,
-
-    /// Audio track containing audio content
-    Audio = 2,
-
-    /// Complex track (combination of different media types)
-    Complex = 3,
-
-    /// Logo track (overlay graphics)
-    Logo = 16,
-
-    /// Subtitle track containing text subtitles
-    Subtitle = 17,
-
-    /// Buttons track for menu navigation
-    Buttons = 18,
-
-    /// Control track for application control
-    Control = 32,
-
-    /// Metadata track containing additional information
-    Metadata = 33,
-}
-
-struct MkContext {
-    /// Matroska Element ID
-    element_id: usize,
-    /// Index for the parent object in the slab
-    parent_id: Option<usize>,
-    /// The data associated with the current context
-    data: Vec<u8>,
-}
-
-impl MkContext {
-    fn new(element_id: usize, parent_id: Option<usize>) -> Self {
-        Self { element_id, parent_id, data: Vec::new() }
+#[c2rust::header_src = "/usr/include/bits/types/struct_FILE.h:26"]
+pub mod struct_FILE_h {
+    #[derive(Copy, Clone, BitfieldStruct)]
+    #[repr(C)]
+    #[c2rust::src_loc = "51:8"]
+    pub struct _IO_FILE {
+        pub _flags: ::core::ffi::c_int,
+        pub _IO_read_ptr: *mut ::core::ffi::c_char,
+        pub _IO_read_end: *mut ::core::ffi::c_char,
+        pub _IO_read_base: *mut ::core::ffi::c_char,
+        pub _IO_write_base: *mut ::core::ffi::c_char,
+        pub _IO_write_ptr: *mut ::core::ffi::c_char,
+        pub _IO_write_end: *mut ::core::ffi::c_char,
+        pub _IO_buf_base: *mut ::core::ffi::c_char,
+        pub _IO_buf_end: *mut ::core::ffi::c_char,
+        pub _IO_save_base: *mut ::core::ffi::c_char,
+        pub _IO_backup_base: *mut ::core::ffi::c_char,
+        pub _IO_save_end: *mut ::core::ffi::c_char,
+        pub _markers: *mut _IO_marker,
+        pub _chain: *mut _IO_FILE,
+        pub _fileno: ::core::ffi::c_int,
+        #[bitfield(name = "_flags2", ty = "core::ffi::c_int", bits = "0..=23")]
+        pub _flags2: [u8; 3],
+        pub _short_backupbuf: [::core::ffi::c_char; 1],
+        pub _old_offset: __off_t,
+        pub _cur_column: ::core::ffi::c_ushort,
+        pub _vtable_offset: ::core::ffi::c_schar,
+        pub _shortbuf: [::core::ffi::c_char; 1],
+        pub _lock: *mut ::core::ffi::c_void,
+        pub _offset: __off64_t,
+        pub _codecvt: *mut _IO_codecvt,
+        pub _wide_data: *mut _IO_wide_data,
+        pub _freeres_list: *mut _IO_FILE,
+        pub _freeres_buf: *mut ::core::ffi::c_void,
+        pub _prevchain: *mut *mut _IO_FILE,
+        pub _mode: ::core::ffi::c_int,
+        pub _unused3: ::core::ffi::c_int,
+        pub _total_written: __uint64_t,
+        pub _unused2: [::core::ffi::c_char; 8],
     }
-
-    fn write_elem_id(&mut self, element_id: u64) -> Result<(), MuxerError> {
-        ensure!(element_id <= u32::MAX.into(), ElementIdTooLargeSnafu { element_id });
-
-        let index = element_id.leading_zeros();
-        match index {
-            0..=7 => self.data.write_u32::<BigEndian>(element_id as u32)?,
-            8..=15 => self.data.write_u24::<BigEndian>(element_id as u32)?,
-            16..=23 => self.data.write_u16::<BigEndian>(element_id as u16)?,
-            24..=31 => self.data.write_u8(element_id as u8)?,
-            _ => unreachable!(),
-        }
-        Ok(())
-    }
-
-    fn write_size(&mut self, size: u64) -> Result<(), MuxerError> {
-        ensure!(size <= u32::MAX.into(), ElementSizeTooLargeSnafu { size });
-
-        // Note that all-one-bit VINT_DATA values are reserved for "unknown size"
-        match size {
-            0..0x7F => {
-                // 1 byte: 1xxxxxxx
-                self.data.write_u8(size as u8 | (1 << 7))?
-            }
-            0x7F..0x3FFF => {
-                // 2 bytes: 01xxxxxx xxxxxxxx
-                self.data.write_u16::<BigEndian>(size as u16 | (1 << 14))?;
-            }
-            0x3FFF..0x1F_FFFF => {
-                // 3 bytes: 001xxxxx xxxxxxxx xxxxxxxx
-                self.data.write_u24::<BigEndian>(size as u32 | (1 << 31))?;
-            }
-            0x1F_FFFF..0x0FFF_FFFF => {
-                // 4 bytes: 0001xxxx xxxxxxxx xxxxxxxx xxxxxxxx
-                self.data.write_u32::<BigEndian>(size as u32 | (1 << 28))?;
-            }
-            0x0FFF_FFFF..=0xFFFF_FFFF => {
-                // 5 bytes: 00001000 xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx
-                self.data.write_uint::<BigEndian>(size | (1 << 35), 5)?;
-            }
-            _ => unreachable!(),
-        }
-
-        Ok(())
-    }
-
-    fn write_string(&mut self, element_id: u64, string: &str) -> Result<(), MuxerError> {
-        self.write_elem_id(element_id)?;
-        self.write_size(string.len() as u64)?;
-        self.data.write_all(string.as_bytes())?;
-        Ok(())
-    }
-
-    fn write_binary(&mut self, element_id: u64, data: &[u8]) -> Result<(), MuxerError> {
-        self.write_elem_id(element_id)?;
-        self.write_size(data.len() as u64)?;
-        self.data.write_all(data)?;
-        Ok(())
-    }
-
-    fn write_uint(&mut self, elem_id: u64, value: u64) -> Result<(), MuxerError> {
-        self.write_elem_id(elem_id)?;
-
-        // Find minimum bytes needed (EBML integers are big-endian, leading zeros trimmed)
-        let index = value.leading_zeros();
-        self.write_size(8 - (index / 8) as u64)?;
-
-        match index {
-            0..=7 => self.data.write_u8(value as u8)?,
-            8..=15 => self.data.write_u16::<BigEndian>(value as u16)?,
-            16..=23 => self.data.write_u24::<BigEndian>(value as u32)?,
-            24..=31 => self.data.write_u32::<BigEndian>(value as u32)?,
-            32..=39 => self.data.write_uint::<BigEndian>(value, 5)?,
-            40..=47 => self.data.write_uint::<BigEndian>(value, 6)?,
-            48..=55 => self.data.write_uint::<BigEndian>(value, 7)?,
-            56..=63 => self.data.write_u64::<BigEndian>(value)?,
-            _ => unreachable!(),
-        }
-        Ok(())
-    }
-
-    fn write_float_raw(&mut self, value: f32) -> Result<(), MuxerError> {
-        Ok(self.data.write_f32::<BigEndian>(value)?)
-    }
-
-    fn write_float(&mut self, element_id: u64, value: f32) -> Result<(), MuxerError> {
-        self.write_elem_id(element_id)?;
-        self.write_size(4)?;
-        self.write_float_raw(value)
+    #[c2rust::src_loc = "45:1"]
+    pub type _IO_lock_t = ();
+    use super::types_h::{__off_t, __off64_t, __uint64_t};
+    extern "C" {
+        #[c2rust::src_loc = "40:8"]
+        pub type _IO_wide_data;
+        #[c2rust::src_loc = "39:8"]
+        pub type _IO_codecvt;
+        #[c2rust::src_loc = "38:8"]
+        pub type _IO_marker;
     }
 }
-
-struct MkWriter {
-    /// The object we're writing all data to (stdout/file)
-    writer: Box<dyn std::io::Write>,
-
-    /// All active MKV context and its associated data and hierarchy.
-    contexts: Slab<MkContext>,
-
-    /// Slab ID for the root node, for easy lookup.
-    root_id: usize,
-
-    /// The lookup ID for the current cluster context when writing frames.
-    cluster_id: Option<usize>,
-
-    /// The lookup ID for the current frame context, if it exists.
-    frame_id: Option<usize>,
-
-    timescale: u64,
-    default_duration: u64,
-    wrote_header: bool,
-    /// Whether or not we're in the middle of constructing a frame.
-    in_frame: bool,
-    keyframe: bool,
-    skippable: bool,
-    duration_offset: usize,
-
-    /// The timestamp of the current frame being written out.
-    frame_time: u64,
-
-    /// The largest frame time we've seen thus far.
-    max_frame_time: u64,
-
-    /// The base timecode for the current cluster of frames, used for deltas on individual frames.
-    cluster_base_time: u64,
-
-    /// Flag to prevent the case that the user calls close() and `impl Drop` calls close() again.
-    closed: bool,
+#[c2rust::header_src = "/usr/include/bits/types/FILE.h:26"]
+pub mod FILE_h {
+    #[c2rust::src_loc = "7:1"]
+    pub type FILE = _IO_FILE;
+    use super::struct_FILE_h::_IO_FILE;
 }
-
-impl MkWriter {
-    fn new<P: AsRef<Path>>(filename: P) -> Result<Self, MuxerError> {
-        let mut mkv = Self {
-            writer: if filename.as_ref().as_os_str() == "-" {
-                Box::new(std::io::stdout())
-            } else {
-                Box::new(std::fs::File::create(filename)?)
-            },
-            contexts: Slab::new(),
-
-            root_id: 0,
-            cluster_id: None,
-            frame_id: None,
-
-            timescale: 0,
-            default_duration: 0,
-            wrote_header: false,
-            duration_offset: 0,
-            in_frame: false,
-            keyframe: false,
-            skippable: false,
-            frame_time: 0,
-            max_frame_time: 0,
-            cluster_base_time: 0,
-
-            closed: false,
+#[c2rust::header_src = "/usr/include/bits/types/struct_timespec.h:26"]
+pub mod struct_timespec_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "11:8"]
+    pub struct timespec {
+        pub tv_sec: __time_t,
+        pub tv_nsec: __syscall_slong_t,
+    }
+    use super::types_h::{__time_t, __syscall_slong_t};
+}
+#[c2rust::header_src = "/usr/include/bits/struct_stat.h:26"]
+pub mod struct_stat_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "26:8"]
+    pub struct stat {
+        pub st_dev: __dev_t,
+        pub st_ino: __ino_t,
+        pub st_nlink: __nlink_t,
+        pub st_mode: __mode_t,
+        pub st_uid: __uid_t,
+        pub st_gid: __gid_t,
+        pub __pad0: ::core::ffi::c_int,
+        pub st_rdev: __dev_t,
+        pub st_size: __off_t,
+        pub st_blksize: __blksize_t,
+        pub st_blocks: __blkcnt_t,
+        pub st_atim: timespec,
+        pub st_mtim: timespec,
+        pub st_ctim: timespec,
+        pub __glibc_reserved: [__syscall_slong_t; 3],
+    }
+    use super::types_h::{
+        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
+        __blkcnt_t, __syscall_slong_t,
+    };
+    use super::struct_timespec_h::timespec;
+}
+#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:26"]
+pub mod stdint_intn_h {
+    #[c2rust::src_loc = "24:1"]
+    pub type int8_t = __int8_t;
+    #[c2rust::src_loc = "27:1"]
+    pub type int64_t = __int64_t;
+    use super::types_h::{__int8_t, __int64_t};
+}
+#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:26"]
+pub mod stdint_uintn_h {
+    #[c2rust::src_loc = "24:1"]
+    pub type uint8_t = __uint8_t;
+    #[c2rust::src_loc = "26:1"]
+    pub type uint32_t = __uint32_t;
+    #[c2rust::src_loc = "27:1"]
+    pub type uint64_t = __uint64_t;
+    use super::types_h::{__uint8_t, __uint32_t, __uint64_t};
+}
+#[c2rust::header_src = "/usr/include/stdio.h:26"]
+pub mod stdio_h {
+    #[c2rust::src_loc = "110:9"]
+    pub const SEEK_SET: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    use super::FILE_h::FILE;
+    use super::__stddef_size_t_h::size_t;
+    use super::types_h::__off64_t;
+    extern "C" {
+        #[c2rust::src_loc = "150:14"]
+        pub static mut stdout: *mut FILE;
+        #[c2rust::src_loc = "187:1"]
+        pub fn fclose(__stream: *mut FILE) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "279:1"]
+        pub fn fopen(
+            __filename: *const ::core::ffi::c_char,
+            __modes: *const ::core::ffi::c_char,
+        ) -> *mut FILE;
+        #[c2rust::src_loc = "735:1"]
+        pub fn fwrite(
+            __ptr: *const ::core::ffi::c_void,
+            __size: size_t,
+            __n: size_t,
+            __s: *mut FILE,
+        ) -> ::core::ffi::c_ulong;
+        #[c2rust::src_loc = "802:1"]
+        pub fn fseeko(
+            __stream: *mut FILE,
+            __off: __off64_t,
+            __whence: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "873:1"]
+        pub fn fileno(__stream: *mut FILE) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/sys/stat.h:26"]
+pub mod stat_h {
+    use super::struct_stat_h::stat;
+    extern "C" {
+        #[c2rust::src_loc = "230:1"]
+        pub fn fstat(__fd: ::core::ffi::c_int, __buf: *mut stat) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/stdlib.h:26"]
+pub mod stdlib_h {
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "675:1"]
+        pub fn calloc(__nmemb: size_t, __size: size_t) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "683:1"]
+        pub fn realloc(
+            __ptr: *mut ::core::ffi::c_void,
+            __size: size_t,
+        ) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "687:1"]
+        pub fn free(__ptr: *mut ::core::ffi::c_void);
+    }
+}
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/osdep.h:26"]
+pub mod osdep_h {
+    #[inline]
+    #[c2rust::src_loc = "270:1"]
+    pub unsafe extern "C" fn x264_is_regular_file(
+        mut filehandle: *mut FILE,
+    ) -> ::core::ffi::c_int {
+        let mut file_stat: stat = stat {
+            st_dev: 0,
+            st_ino: 0,
+            st_nlink: 0,
+            st_mode: 0,
+            st_uid: 0,
+            st_gid: 0,
+            __pad0: 0,
+            st_rdev: 0,
+            st_size: 0,
+            st_blksize: 0,
+            st_blocks: 0,
+            st_atim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_mtim: timespec { tv_sec: 0, tv_nsec: 0 },
+            st_ctim: timespec { tv_sec: 0, tv_nsec: 0 },
+            __glibc_reserved: [0; 3],
         };
-
-        mkv.root_id = mkv.create_context(None, 0)?;
-        // The default timestamp scale is in milliseconds
-        mkv.timescale = 1000000;
-
-        Ok(mkv)
-    }
-
-    fn write_header(
-        &mut self, writing_app: &str, codec_id: &str, codec_private: &[u8], default_duration: u64,
-        timescale: u64, width: u64, height: u64, d_width: u64, d_height: u64, display_unit: DisplayUnit,
-        stereo_mode: Option<StereoMode>,
-    ) -> Result<(), MuxerError> {
-        ensure!(self.wrote_header == false, InvalidStateSnafu);
-        ensure!(default_duration != 0, InvalidStateSnafu);
-        ensure!(timescale != 0, InvalidStateSnafu);
-        ensure!(width != 0, InvalidStateSnafu);
-        ensure!(height != 0, InvalidStateSnafu);
-        ensure!(d_width != 0, InvalidStateSnafu);
-        ensure!(d_height != 0, InvalidStateSnafu);
-
-        self.timescale = timescale;
-        self.default_duration = default_duration;
-
-        let context_id = self.create_context(Some(self.root_id), 0x1A45DFA3)?; // EBML
-        {
-            let context = self.contexts.get_mut(context_id).unwrap();
-            context.write_uint(0x4286, 1)?; // EBMLVersion
-            context.write_uint(0x42F7, 1)?; // EMBLReadVersion
-            context.write_uint(0x42F2, 4)?; // EMBLMaxIDLength
-            context.write_uint(0x42F3, 8)?; // EMBLMaxSizeLength
-            context.write_string(0x4282, "matroska")?; // DocType
-            context.write_uint(0x4287, if stereo_mode.is_some() { 3 } else { 2 })?; // DocTypeVersion
-            context.write_uint(0x4285, 2)?; // DocTypeReadVersion
+        if fstat(fileno(filehandle), &mut file_stat) != 0 {
+            return 1 as ::core::ffi::c_int;
         }
-        self.close_context(context_id)?;
-
-        let context_id = self.create_context(Some(self.root_id), 0x18538067)?; // Segment
-        self.flush_context_id(context_id)?;
-        self.close_context(context_id)?;
-
-        let context_id = self.create_context(Some(self.root_id), 0x1549A966)?; // SegmentInfo
-        let context_length = {
-            let context = self.contexts.get_mut(context_id).unwrap();
-            // TODO: actually write out git rev
-            context.write_string(0x4D80, "hex264-0.1.0+00000000")?; // MuxingApp
-            context.write_string(0x5741, writing_app)?; // WritingApp
-            context.write_uint(0x2AD7B1, self.timescale)?; // TimestampScale
-            context.write_float(0x4489, 0.0)?; // Duration
-            context.data.len()
-        };
-        let parent_offset = self.close_context(context_id)?;
-        // The parent_offset is right before we flush the actual data of our context, and then we
-        // can "index" into the raw blob. Since we know the float is the last 4 bytes, we just grab
-        // context_length - 4.
-        self.duration_offset = parent_offset + context_length - size_of::<f32>();
-
-        let context_id = self.create_context(Some(self.root_id), 0x1654AE6B)?; // Tracks
-        let track_id = self.create_context(Some(context_id), 0xAE)?; // TrackEntry
-        {
-            let track = self.contexts.get_mut(track_id).unwrap();
-            track.write_uint(0xD7, 1)?; // TrackNumber
-            track.write_uint(0x73C5, 1)?; // TrackUID
-            track.write_uint(0x83, TrackType::Video as u64)?; // TrackType
-            track.write_uint(0x9C, 0)?; // FlagLacing
-            track.write_string(0x86, codec_id)?; // CodecID
-            if !codec_private.is_empty() {
-                track.write_binary(0x63A2, codec_private)?; // CodecPrivate
-            }
-            if default_duration != 0 {
-                track.write_uint(0x23E383, default_duration)?; // DefaultDuration
-            }
-
-            let video_id = self.create_context(Some(track_id), 0xE0)?; // Video
-            {
-                let video = self.contexts.get_mut(video_id).unwrap();
-                video.write_uint(0xB0, width)?; // PixelWidth
-                video.write_uint(0xBA, height)?; // PixelHeight
-                video.write_uint(0x54B2, display_unit as u64)?; // DisplayUnit
-                video.write_uint(0x54B0, d_width)?; // DisplayWidth
-                video.write_uint(0x54BA, d_height)?; // DisplayHeight
-                if let Some(stereo_mode) = stereo_mode {
-                    video.write_uint(0x53B8, stereo_mode as u64)?; // StereoMode
-                }
-            }
-            self.close_context(video_id)?;
+        return (file_stat.st_mode & __S_IFMT as __mode_t == 0o100000 as __mode_t)
+            as ::core::ffi::c_int;
+    }
+    use super::FILE_h::FILE;
+    use super::struct_stat_h::stat;
+    use super::types_h::{
+        __dev_t, __ino_t, __nlink_t, __mode_t, __uid_t, __gid_t, __off_t, __blksize_t,
+        __blkcnt_t, __syscall_slong_t, __time_t,
+    };
+    use super::struct_timespec_h::timespec;
+    use super::stat_h::fstat;
+    use super::stdio_h::fileno;
+    use super::bits_stat_h::__S_IFMT;
+}
+#[c2rust::header_src = "/usr/include/string.h:26"]
+pub mod string_h {
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "43:1"]
+        pub fn memcpy(
+            __dest: *mut ::core::ffi::c_void,
+            __src: *const ::core::ffi::c_void,
+            __n: size_t,
+        ) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "156:1"]
+        pub fn strcmp(
+            __s1: *const ::core::ffi::c_char,
+            __s2: *const ::core::ffi::c_char,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "407:1"]
+        pub fn strlen(__s: *const ::core::ffi::c_char) -> size_t;
+    }
+}
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:26"]
+pub mod __stddef_null_h {
+    #[c2rust::src_loc = "26:9"]
+    pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
+}
+#[c2rust::header_src = "/usr/include/bits/stat.h:26"]
+pub mod bits_stat_h {
+    #[c2rust::src_loc = "29:9"]
+    pub const __S_IFMT: ::core::ffi::c_int = 0o170000 as ::core::ffi::c_int;
+}
+pub use self::__stddef_size_t_h::size_t;
+pub use self::types_h::{
+    __int8_t, __uint8_t, __uint32_t, __int64_t, __uint64_t, __dev_t, __uid_t, __gid_t,
+    __ino_t, __mode_t, __nlink_t, __off_t, __off64_t, __time_t, __blksize_t, __blkcnt_t,
+    __syscall_slong_t,
+};
+pub use self::struct_FILE_h::{
+    _IO_FILE, _IO_lock_t, _IO_wide_data, _IO_codecvt, _IO_marker,
+};
+pub use self::FILE_h::FILE;
+pub use self::struct_timespec_h::timespec;
+pub use self::struct_stat_h::stat;
+pub use self::stdint_intn_h::{int8_t, int64_t};
+pub use self::stdint_uintn_h::{uint8_t, uint32_t, uint64_t};
+pub use self::stdio_h::{SEEK_SET, stdout, fclose, fopen, fwrite, fseeko, fileno};
+use self::stat_h::fstat;
+use self::stdlib_h::{calloc, realloc, free};
+pub use self::osdep_h::x264_is_regular_file;
+use self::string_h::{memcpy, strcmp, strlen};
+pub use self::__stddef_null_h::NULL;
+pub use self::bits_stat_h::__S_IFMT;
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "48:8"]
+pub struct mk_writer {
+    pub fp: *mut FILE,
+    pub duration_ptr: ::core::ffi::c_uint,
+    pub root: *mut mk_context,
+    pub cluster: *mut mk_context,
+    pub frame: *mut mk_context,
+    pub freelist: *mut mk_context,
+    pub actlist: *mut mk_context,
+    pub def_duration: int64_t,
+    pub timescale: int64_t,
+    pub cluster_tc_scaled: int64_t,
+    pub frame_tc: int64_t,
+    pub max_frame_tc: int64_t,
+    pub wrote_header: int8_t,
+    pub in_frame: int8_t,
+    pub keyframe: int8_t,
+    pub skippable: int8_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "36:8"]
+pub struct mk_context {
+    pub next: *mut mk_context,
+    pub prev: *mut *mut mk_context,
+    pub parent: *mut mk_context,
+    pub owner: *mut mk_writer,
+    pub id: ::core::ffi::c_uint,
+    pub data: *mut ::core::ffi::c_void,
+    pub d_cur: ::core::ffi::c_uint,
+    pub d_max: ::core::ffi::c_uint,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "267:5"]
+pub union C2RustUnnamed {
+    pub f: ::core::ffi::c_float,
+    pub u: uint32_t,
+}
+#[c2rust::src_loc = "29:9"]
+pub const CLSIZE: ::core::ffi::c_int = 1048576 as ::core::ffi::c_int;
+#[c2rust::src_loc = "66:1"]
+unsafe extern "C" fn mk_create_context(
+    mut w: *mut mk_writer,
+    mut parent: *mut mk_context,
+    mut id: ::core::ffi::c_uint,
+) -> *mut mk_context {
+    let mut c: *mut mk_context = 0 as *mut mk_context;
+    if !(*w).freelist.is_null() {
+        c = (*w).freelist;
+        (*w).freelist = (*(*w).freelist).next as *mut mk_context;
+    } else {
+        c = calloc(1 as size_t, ::core::mem::size_of::<mk_context>() as size_t)
+            as *mut mk_context;
+        if c.is_null() {
+            return 0 as *mut mk_context;
         }
-        self.close_context(track_id)?;
-        self.close_context(context_id)?;
-
-        self.flush_context_data(self.root_id)?;
-
-        self.wrote_header = true;
-
-        Ok(())
     }
-
-    fn create_context(&mut self, parent_id: Option<usize>, element_id: usize) -> Result<usize, MuxerError> {
-        let context = MkContext::new(element_id, parent_id);
-        let context_id = self.contexts.insert(context);
-        Ok(context_id)
+    (*c).parent = parent as *mut mk_context;
+    (*c).owner = w;
+    (*c).id = id;
+    if !(*(*c).owner).actlist.is_null() {
+        (*(*(*c).owner).actlist).prev = &mut (*c).next;
     }
-
-    fn flush_context_id(&mut self, context_id: usize) -> Result<(), MuxerError> {
-        let (id, parent_id) = {
-            let context = &self.contexts[context_id];
-            if context.element_id == 0 {
-                return Ok(());
-            }
-            (context.element_id, context.parent_id)
-        };
-
-        if let Some(parent_id) = parent_id {
-            self.contexts[parent_id].write_elem_id(id as u64)?;
-            self.contexts[parent_id].data.write_u8(0xFF)?;
-        }
-
-        self.contexts[context_id].element_id = 0;
-        Ok(())
-    }
-
-    fn flush_context_data(&mut self, context_id: usize) -> Result<(), MuxerError> {
-        let parent_id = {
-            let context = &self.contexts[context_id];
-            if context.data.is_empty() {
-                return Ok(());
-            }
-            context.parent_id
-        };
-
-        let data = core::mem::take(&mut self.contexts[context_id].data);
-
-        if let Some(parent_id) = parent_id {
-            self.contexts[parent_id].data.write_all(&data)?;
+    (*c).next = (*(*c).owner).actlist as *mut mk_context;
+    (*c).prev = &mut (*(*c).owner).actlist as *mut *mut mk_context;
+    (*(*c).owner).actlist = c;
+    return c;
+}
+#[c2rust::src_loc = "95:1"]
+unsafe extern "C" fn mk_append_context_data(
+    mut c: *mut mk_context,
+    mut data: *const ::core::ffi::c_void,
+    mut size: ::core::ffi::c_uint,
+) -> ::core::ffi::c_int {
+    let mut ns: ::core::ffi::c_uint = (*c).d_cur.wrapping_add(size);
+    if ns > (*c).d_max {
+        let mut dp: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
+        let mut dn: ::core::ffi::c_uint = if (*c).d_max != 0 {
+            (*c).d_max << 1 as ::core::ffi::c_int
         } else {
-            self.writer.write_all(&data)?;
-        }
-
-        Ok(())
-    }
-
-    fn close_context(&mut self, context_id: usize) -> Result<usize, MuxerError> {
-        let (element_id, parent_id, length) = {
-            let context = &self.contexts[context_id];
-            (context.element_id, context.parent_id, context.data.len())
+            16 as ::core::ffi::c_uint
         };
-
-        let length = if let Some(parent_id) = parent_id {
-            if element_id != 0 {
-                self.contexts[parent_id].write_elem_id(element_id as u64)?;
-                self.contexts[parent_id].write_size(length as u64)?;
-            }
-
-            self.contexts[parent_id].data.len()
-        } else {
-            0
-        };
-
-        self.flush_context_data(context_id)?;
-        self.contexts.remove(context_id);
-
-        Ok(length)
-    }
-
-    fn start_frame(&mut self) -> Result<(), MuxerError> {
-        self.flush_frame()?;
-        self.in_frame = true;
-        self.keyframe = false;
-        self.skippable = false;
-        Ok(())
-    }
-
-    fn set_frame_flags(&mut self, timestamp: u64, keyframe: bool, skippable: bool) -> Result<(), MuxerError> {
-        if self.in_frame {
-            self.frame_time = timestamp;
-            self.keyframe = keyframe;
-            self.skippable = skippable;
-
-            if self.max_frame_time < self.frame_time {
-                self.max_frame_time = self.frame_time;
-            }
+        while ns > dn {
+            dn <<= 1 as ::core::ffi::c_int;
         }
-
-        Ok(())
-    }
-
-    fn add_frame_data(&mut self, data: &[u8]) -> Result<(), MuxerError> {
-        if self.in_frame {
-            let frame_id = match self.frame_id {
-                Some(frame_id) => frame_id,
-                None => {
-                    let frame_id = self.create_context(None, 0)?;
-                    self.frame_id = Some(frame_id);
-                    frame_id
-                }
-            };
-            self.contexts[frame_id].data.write_all(data)?;
+        dp = realloc((*c).data, dn as size_t);
+        if dp.is_null() {
+            return -(1 as ::core::ffi::c_int);
         }
-        Ok(())
+        (*c).data = dp;
+        (*c).d_max = dn;
     }
-
-    fn flush_frame(&mut self) -> Result<(), MuxerError> {
-        if self.in_frame {
-            let frame_scaled = self.frame_time / self.timescale;
-            let cluster_scaled = self.cluster_base_time;
-
-            let mut delta = frame_scaled.wrapping_sub(cluster_scaled) as i64;
-            if delta > i16::MAX.into() || delta < i16::MIN.into() {
-                self.close_cluster()?;
-            }
-
-            // If we don't currently have a cluster (i.e. we just closed it), let's start a new one.
-            if self.cluster_id.is_none() {
-                self.cluster_base_time = self.frame_time / self.timescale;
-                let cluster_id = self.create_context(Some(self.root_id), 0x1F43B675)?; // Cluster
-                self.contexts[cluster_id].write_uint(0xE7, self.cluster_base_time)?;
-                self.cluster_id = Some(cluster_id);
-                delta = 0;
-            }
-
-            let frame_size = match self.frame_id {
-                Some(frame_id) => self.contexts[frame_id].data.len(),
-                None => 0,
-            };
-
-            // We have to do this weird destructuring due to Rust's borrow checker limitations.
-            let (cluster, frame) = match self.frame_id {
-                Some(frame_id) => {
-                    let (cluster, frame) =
-                        self.contexts.get2_mut(self.cluster_id.unwrap(), frame_id).unwrap();
-                    (cluster, Some(frame))
-                }
-                None => (self.contexts.get_mut(self.cluster_id.unwrap()).unwrap(), None),
-            };
-
-            cluster.write_elem_id(0xA3)?; // SimpleBlock
-            cluster.write_size((frame_size + 4) as u64)?; // Size
-            cluster.write_size(1)?; // TrackNumber
-
-            cluster.data.write_i16::<BigEndian>(delta as i16)?;
-            let keyframe = self.keyframe as u8;
-            let skippable = self.skippable as u8;
-            cluster.data.write_u8((keyframe << 7) | skippable)?;
-            if let Some(frame) = frame {
-                let frame_data = core::mem::take(&mut frame.data);
-                cluster.data.write_all(&frame_data)?;
-            }
-
-            self.in_frame = false;
-
-            if cluster.data.len() > 0x100000 {
-                self.close_cluster()?;
-            }
-        }
-
-        Ok(())
-    }
-
-    fn close_cluster(&mut self) -> Result<(), MuxerError> {
-        if let Some(cluster_id) = self.cluster_id {
-            self.close_context(cluster_id)?;
-        }
-
-        self.cluster_id = None;
-        self.flush_context_data(self.root_id)?;
-        Ok(())
-    }
-
-    pub fn close(mut self, last_delta: u64) -> Result<(), MuxerError> {
-        // We take `mut self` so that it implicitly drops
-        self.close_internal(Some(last_delta))
-    }
-
-    fn close_internal(&mut self, last_delta: Option<u64>) -> Result<(), MuxerError> {
-        if !self.closed {
-            self.flush_frame()?;
-            self.close_cluster()?;
-
-            if self.wrote_header {
-                let last_frametime = if self.default_duration != 0 {
-                    self.default_duration
-                } else if let Some(last_delta) = last_delta {
-                    last_delta
-                } else {
-                    // Fallback: assume 30fps, in the case we got implicitly dropped.
-                    self.timescale / 30
-                };
-                let total_duration = self.max_frame_time + last_frametime;
-                let root = &mut self.contexts[self.root_id];
-                let duration = (total_duration / self.timescale) as f32;
-                root.data[self.duration_offset..self.duration_offset + size_of::<f32>()]
-                    .copy_from_slice(&duration.to_be_bytes());
-                self.flush_context_data(self.root_id)?;
-            }
-
-            self.closed = true;
-        }
-        Ok(())
-    }
+    memcpy(
+        ((*c).data as *mut uint8_t).offset((*c).d_cur as isize)
+            as *mut ::core::ffi::c_void,
+        data,
+        size as size_t,
+    );
+    (*c).d_cur = ns;
+    return 0 as ::core::ffi::c_int;
 }
-
-impl Drop for MkWriter {
-    fn drop(&mut self) {
-        let _ = self.close_internal(None);
+#[c2rust::src_loc = "121:1"]
+unsafe extern "C" fn mk_write_id(
+    mut c: *mut mk_context,
+    mut id: ::core::ffi::c_uint,
+) -> ::core::ffi::c_int {
+    let mut c_id: [uint8_t; 4] = [
+        (id >> 24 as ::core::ffi::c_int) as uint8_t,
+        (id >> 16 as ::core::ffi::c_int) as uint8_t,
+        (id >> 8 as ::core::ffi::c_int) as uint8_t,
+        id as uint8_t,
+    ];
+    if c_id[0 as ::core::ffi::c_int as usize] != 0 {
+        return mk_append_context_data(
+            c,
+            c_id.as_mut_ptr() as *const ::core::ffi::c_void,
+            4 as ::core::ffi::c_uint,
+        );
     }
+    if c_id[1 as ::core::ffi::c_int as usize] != 0 {
+        return mk_append_context_data(
+            c,
+            c_id.as_mut_ptr().offset(1 as ::core::ffi::c_int as isize)
+                as *const ::core::ffi::c_void,
+            3 as ::core::ffi::c_uint,
+        );
+    }
+    if c_id[2 as ::core::ffi::c_int as usize] != 0 {
+        return mk_append_context_data(
+            c,
+            c_id.as_mut_ptr().offset(2 as ::core::ffi::c_int as isize)
+                as *const ::core::ffi::c_void,
+            2 as ::core::ffi::c_uint,
+        );
+    }
+    return mk_append_context_data(
+        c,
+        c_id.as_mut_ptr().offset(3 as ::core::ffi::c_int as isize)
+            as *const ::core::ffi::c_void,
+        1 as ::core::ffi::c_uint,
+    );
+}
+#[c2rust::src_loc = "134:1"]
+unsafe extern "C" fn mk_write_size(
+    mut c: *mut mk_context,
+    mut size: ::core::ffi::c_uint,
+) -> ::core::ffi::c_int {
+    let mut c_size: [uint8_t; 5] = [
+        0x8 as ::core::ffi::c_int as uint8_t,
+        (size >> 24 as ::core::ffi::c_int) as uint8_t,
+        (size >> 16 as ::core::ffi::c_int) as uint8_t,
+        (size >> 8 as ::core::ffi::c_int) as uint8_t,
+        size as uint8_t,
+    ];
+    if size < 0x7f as ::core::ffi::c_uint {
+        c_size[4 as ::core::ffi::c_int as usize] = (c_size[4 as ::core::ffi::c_int
+            as usize] as ::core::ffi::c_int | 0x80 as ::core::ffi::c_int) as uint8_t;
+        return mk_append_context_data(
+            c,
+            c_size.as_mut_ptr().offset(4 as ::core::ffi::c_int as isize)
+                as *const ::core::ffi::c_void,
+            1 as ::core::ffi::c_uint,
+        );
+    }
+    if size < 0x3fff as ::core::ffi::c_uint {
+        c_size[3 as ::core::ffi::c_int as usize] = (c_size[3 as ::core::ffi::c_int
+            as usize] as ::core::ffi::c_int | 0x40 as ::core::ffi::c_int) as uint8_t;
+        return mk_append_context_data(
+            c,
+            c_size.as_mut_ptr().offset(3 as ::core::ffi::c_int as isize)
+                as *const ::core::ffi::c_void,
+            2 as ::core::ffi::c_uint,
+        );
+    }
+    if size < 0x1fffff as ::core::ffi::c_uint {
+        c_size[2 as ::core::ffi::c_int as usize] = (c_size[2 as ::core::ffi::c_int
+            as usize] as ::core::ffi::c_int | 0x20 as ::core::ffi::c_int) as uint8_t;
+        return mk_append_context_data(
+            c,
+            c_size.as_mut_ptr().offset(2 as ::core::ffi::c_int as isize)
+                as *const ::core::ffi::c_void,
+            3 as ::core::ffi::c_uint,
+        );
+    }
+    if size < 0xfffffff as ::core::ffi::c_uint {
+        c_size[1 as ::core::ffi::c_int as usize] = (c_size[1 as ::core::ffi::c_int
+            as usize] as ::core::ffi::c_int | 0x10 as ::core::ffi::c_int) as uint8_t;
+        return mk_append_context_data(
+            c,
+            c_size.as_mut_ptr().offset(1 as ::core::ffi::c_int as isize)
+                as *const ::core::ffi::c_void,
+            4 as ::core::ffi::c_uint,
+        );
+    }
+    return mk_append_context_data(
+        c,
+        c_size.as_mut_ptr() as *const ::core::ffi::c_void,
+        5 as ::core::ffi::c_uint,
+    );
+}
+#[c2rust::src_loc = "161:1"]
+unsafe extern "C" fn mk_flush_context_id(mut c: *mut mk_context) -> ::core::ffi::c_int {
+    let mut ff: uint8_t = 0xff as uint8_t;
+    if (*c).id == 0 {
+        return 0 as ::core::ffi::c_int;
+    }
+    if mk_write_id((*c).parent as *mut mk_context, (*c).id) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_append_context_data(
+        (*c).parent as *mut mk_context,
+        &mut ff as *mut uint8_t as *const ::core::ffi::c_void,
+        1 as ::core::ffi::c_uint,
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    (*c).id = 0 as ::core::ffi::c_uint;
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "176:1"]
+unsafe extern "C" fn mk_flush_context_data(
+    mut c: *mut mk_context,
+) -> ::core::ffi::c_int {
+    if (*c).d_cur == 0 {
+        return 0 as ::core::ffi::c_int;
+    }
+    if !(*c).parent.is_null() {
+        if mk_append_context_data((*c).parent as *mut mk_context, (*c).data, (*c).d_cur)
+            < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+    } else if fwrite((*c).data, (*c).d_cur as size_t, 1 as size_t, (*(*c).owner).fp)
+        != 1 as ::core::ffi::c_ulong
+    {
+        return -(1 as ::core::ffi::c_int)
+    }
+    (*c).d_cur = 0 as ::core::ffi::c_uint;
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "191:1"]
+unsafe extern "C" fn mk_close_context(
+    mut c: *mut mk_context,
+    mut off: *mut ::core::ffi::c_uint,
+) -> ::core::ffi::c_int {
+    if (*c).id != 0 {
+        if mk_write_id((*c).parent as *mut mk_context, (*c).id) < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+        if mk_write_size((*c).parent as *mut mk_context, (*c).d_cur)
+            < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+    }
+    if !(*c).parent.is_null() && !off.is_null() {
+        *off = (*off).wrapping_add((*(*c).parent).d_cur);
+    }
+    if mk_flush_context_data(c) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if !(*c).next.is_null() {
+        (*(*c).next).prev = (*c).prev;
+    }
+    *(*c).prev = (*c).next;
+    (*c).next = (*(*c).owner).freelist as *mut mk_context;
+    (*(*c).owner).freelist = c;
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "213:1"]
+unsafe extern "C" fn mk_destroy_contexts(mut w: *mut mk_writer) {
+    let mut next: *mut mk_context = 0 as *mut mk_context;
+    let mut cur: *mut mk_context = (*w).freelist;
+    while !cur.is_null() {
+        next = (*cur).next as *mut mk_context;
+        free((*cur).data);
+        free(cur as *mut ::core::ffi::c_void);
+        cur = next;
+    }
+    let mut cur_0: *mut mk_context = (*w).actlist;
+    while !cur_0.is_null() {
+        next = (*cur_0).next as *mut mk_context;
+        free((*cur_0).data);
+        free(cur_0 as *mut ::core::ffi::c_void);
+        cur_0 = next;
+    }
+    (*w).root = 0 as *mut mk_context;
+    (*w).actlist = (*w).root;
+    (*w).freelist = (*w).actlist;
+}
+#[c2rust::src_loc = "234:1"]
+unsafe extern "C" fn mk_write_string(
+    mut c: *mut mk_context,
+    mut id: ::core::ffi::c_uint,
+    mut str: *const ::core::ffi::c_char,
+) -> ::core::ffi::c_int {
+    let mut len: size_t = strlen(str);
+    if mk_write_id(c, id) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_size(c, len as ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_append_context_data(
+        c,
+        str as *const ::core::ffi::c_void,
+        len as ::core::ffi::c_uint,
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "244:1"]
+unsafe extern "C" fn mk_write_bin(
+    mut c: *mut mk_context,
+    mut id: ::core::ffi::c_uint,
+    mut data: *const ::core::ffi::c_void,
+    mut size: ::core::ffi::c_uint,
+) -> ::core::ffi::c_int {
+    if mk_write_id(c, id) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_size(c, size) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_append_context_data(c, data, size) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "252:1"]
+unsafe extern "C" fn mk_write_uint(
+    mut c: *mut mk_context,
+    mut id: ::core::ffi::c_uint,
+    mut ui: uint64_t,
+) -> ::core::ffi::c_int {
+    let mut c_ui: [uint8_t; 8] = [
+        (ui >> 56 as ::core::ffi::c_int) as uint8_t,
+        (ui >> 48 as ::core::ffi::c_int) as uint8_t,
+        (ui >> 40 as ::core::ffi::c_int) as uint8_t,
+        (ui >> 32 as ::core::ffi::c_int) as uint8_t,
+        (ui >> 24 as ::core::ffi::c_int) as uint8_t,
+        (ui >> 16 as ::core::ffi::c_int) as uint8_t,
+        (ui >> 8 as ::core::ffi::c_int) as uint8_t,
+        ui as uint8_t,
+    ];
+    let mut i: ::core::ffi::c_uint = 0 as ::core::ffi::c_uint;
+    if mk_write_id(c, id) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    while i < 7 as ::core::ffi::c_uint && c_ui[i as usize] == 0 {
+        i = i.wrapping_add(1);
+    }
+    if mk_write_size(c, (8 as ::core::ffi::c_uint).wrapping_sub(i))
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_append_context_data(
+        c,
+        c_ui.as_mut_ptr().offset(i as isize) as *const ::core::ffi::c_void,
+        (8 as ::core::ffi::c_uint).wrapping_sub(i),
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "265:1"]
+unsafe extern "C" fn mk_write_float_raw(
+    mut c: *mut mk_context,
+    mut f: ::core::ffi::c_float,
+) -> ::core::ffi::c_int {
+    let mut u: C2RustUnnamed = C2RustUnnamed { f: 0. };
+    let mut c_f: [uint8_t; 4] = [0; 4];
+    u.f = f;
+    c_f[0 as ::core::ffi::c_int as usize] = (u.u >> 24 as ::core::ffi::c_int) as uint8_t;
+    c_f[1 as ::core::ffi::c_int as usize] = (u.u >> 16 as ::core::ffi::c_int) as uint8_t;
+    c_f[2 as ::core::ffi::c_int as usize] = (u.u >> 8 as ::core::ffi::c_int) as uint8_t;
+    c_f[3 as ::core::ffi::c_int as usize] = u.u as uint8_t;
+    return mk_append_context_data(
+        c,
+        c_f.as_mut_ptr() as *const ::core::ffi::c_void,
+        4 as ::core::ffi::c_uint,
+    );
+}
+#[c2rust::src_loc = "283:1"]
+unsafe extern "C" fn mk_write_float(
+    mut c: *mut mk_context,
+    mut id: ::core::ffi::c_uint,
+    mut f: ::core::ffi::c_float,
+) -> ::core::ffi::c_int {
+    if mk_write_id(c, id) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_size(c, 4 as ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_float_raw(c, f) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[no_mangle]
+#[c2rust::src_loc = "291:1"]
+pub unsafe extern "C" fn mk_create_writer(
+    mut filename: *const ::core::ffi::c_char,
+) -> *mut mk_writer {
+    let mut w: *mut mk_writer = calloc(
+        1 as size_t,
+        ::core::mem::size_of::<mk_writer>() as size_t,
+    ) as *mut mk_writer;
+    if w.is_null() {
+        return 0 as *mut mk_writer;
+    }
+    (*w).root = mk_create_context(w, 0 as *mut mk_context, 0 as ::core::ffi::c_uint);
+    if (*w).root.is_null() {
+        free(w as *mut ::core::ffi::c_void);
+        return 0 as *mut mk_writer;
+    }
+    if strcmp(filename, b"-\0" as *const u8 as *const ::core::ffi::c_char) == 0 {
+        (*w).fp = stdout;
+    } else {
+        (*w).fp = fopen(filename, b"wb\0" as *const u8 as *const ::core::ffi::c_char)
+            as *mut FILE;
+    }
+    if (*w).fp.is_null() {
+        mk_destroy_contexts(w);
+        free(w as *mut ::core::ffi::c_void);
+        return 0 as *mut mk_writer;
+    }
+    (*w).timescale = 1000000 as int64_t;
+    return w;
+}
+#[no_mangle]
+#[c2rust::src_loc = "320:1"]
+pub unsafe extern "C" fn mk_write_header(
+    mut w: *mut mk_writer,
+    mut writing_app: *const ::core::ffi::c_char,
+    mut codec_id: *const ::core::ffi::c_char,
+    mut codec_private: *const ::core::ffi::c_void,
+    mut codec_private_size: ::core::ffi::c_uint,
+    mut default_frame_duration: int64_t,
+    mut timescale: int64_t,
+    mut width: ::core::ffi::c_uint,
+    mut height: ::core::ffi::c_uint,
+    mut d_width: ::core::ffi::c_uint,
+    mut d_height: ::core::ffi::c_uint,
+    mut display_size_units: ::core::ffi::c_int,
+    mut stereo_mode: ::core::ffi::c_int,
+) -> ::core::ffi::c_int {
+    let mut c: *mut mk_context = 0 as *mut mk_context;
+    let mut ti: *mut mk_context = 0 as *mut mk_context;
+    let mut v: *mut mk_context = 0 as *mut mk_context;
+    if (*w).wrote_header != 0 {
+        return -(1 as ::core::ffi::c_int);
+    }
+    (*w).timescale = timescale;
+    (*w).def_duration = default_frame_duration;
+    c = mk_create_context(w, (*w).root, 0x1a45dfa3 as ::core::ffi::c_uint);
+    if c.is_null() {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(c, 0x4286 as ::core::ffi::c_uint, 1 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(c, 0x42f7 as ::core::ffi::c_uint, 1 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(c, 0x42f2 as ::core::ffi::c_uint, 4 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(c, 0x42f3 as ::core::ffi::c_uint, 8 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_string(
+        c,
+        0x4282 as ::core::ffi::c_uint,
+        b"matroska\0" as *const u8 as *const ::core::ffi::c_char,
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(
+        c,
+        0x4287 as ::core::ffi::c_uint,
+        (if stereo_mode >= 0 as ::core::ffi::c_int {
+            3 as ::core::ffi::c_int
+        } else {
+            2 as ::core::ffi::c_int
+        }) as uint64_t,
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(c, 0x4285 as ::core::ffi::c_uint, 2 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_close_context(c, 0 as *mut ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    c = mk_create_context(w, (*w).root, 0x18538067 as ::core::ffi::c_uint);
+    if c.is_null() {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_flush_context_id(c) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_close_context(c, 0 as *mut ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    c = mk_create_context(w, (*w).root, 0x1549a966 as ::core::ffi::c_uint);
+    if c.is_null() {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_string(
+        c,
+        0x4d80 as ::core::ffi::c_uint,
+        b"Haali Matroska Writer b0\0" as *const u8 as *const ::core::ffi::c_char,
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_string(c, 0x5741 as ::core::ffi::c_uint, writing_app)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(c, 0x2ad7b1 as ::core::ffi::c_uint, (*w).timescale as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_float(
+        c,
+        0x4489 as ::core::ffi::c_uint,
+        0 as ::core::ffi::c_int as ::core::ffi::c_float,
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    (*w).duration_ptr = (*c).d_cur.wrapping_sub(4 as ::core::ffi::c_uint);
+    if mk_close_context(c, &mut (*w).duration_ptr) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    c = mk_create_context(w, (*w).root, 0x1654ae6b as ::core::ffi::c_uint);
+    if c.is_null() {
+        return -(1 as ::core::ffi::c_int);
+    }
+    ti = mk_create_context(w, c, 0xae as ::core::ffi::c_uint);
+    if ti.is_null() {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(ti, 0xd7 as ::core::ffi::c_uint, 1 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(ti, 0x73c5 as ::core::ffi::c_uint, 1 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(ti, 0x83 as ::core::ffi::c_uint, 1 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(ti, 0x9c as ::core::ffi::c_uint, 0 as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_string(ti, 0x86 as ::core::ffi::c_uint, codec_id)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if codec_private_size != 0 {
+        if mk_write_bin(
+            ti,
+            0x63a2 as ::core::ffi::c_uint,
+            codec_private,
+            codec_private_size,
+        ) < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+    }
+    if default_frame_duration != 0 {
+        if mk_write_uint(
+            ti,
+            0x23e383 as ::core::ffi::c_uint,
+            default_frame_duration as uint64_t,
+        ) < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+    }
+    v = mk_create_context(w, ti, 0xe0 as ::core::ffi::c_uint);
+    if v.is_null() {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(v, 0xb0 as ::core::ffi::c_uint, width as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(v, 0xba as ::core::ffi::c_uint, height as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(v, 0x54b2 as ::core::ffi::c_uint, display_size_units as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(v, 0x54b0 as ::core::ffi::c_uint, d_width as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_uint(v, 0x54ba as ::core::ffi::c_uint, d_height as uint64_t)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if stereo_mode >= 0 as ::core::ffi::c_int {
+        if mk_write_uint(v, 0x53b8 as ::core::ffi::c_uint, stereo_mode as uint64_t)
+            < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+    }
+    if mk_close_context(v, 0 as *mut ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_close_context(ti, 0 as *mut ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_close_context(c, 0 as *mut ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_flush_context_data((*w).root) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    (*w).wrote_header = 1 as int8_t;
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "397:1"]
+unsafe extern "C" fn mk_close_cluster(mut w: *mut mk_writer) -> ::core::ffi::c_int {
+    if (*w).cluster.is_null() {
+        return 0 as ::core::ffi::c_int;
+    }
+    if mk_close_context((*w).cluster, 0 as *mut ::core::ffi::c_uint)
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    (*w).cluster = 0 as *mut mk_context;
+    if mk_flush_context_data((*w).root) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[c2rust::src_loc = "407:1"]
+unsafe extern "C" fn mk_flush_frame(mut w: *mut mk_writer) -> ::core::ffi::c_int {
+    let mut delta: int64_t = 0;
+    let mut fsize: ::core::ffi::c_uint = 0;
+    let mut c_delta_flags: [uint8_t; 3] = [0; 3];
+    if (*w).in_frame == 0 {
+        return 0 as ::core::ffi::c_int;
+    }
+    delta = (*w).frame_tc / (*w).timescale - (*w).cluster_tc_scaled;
+    if delta as ::core::ffi::c_longlong > 32767 as ::core::ffi::c_longlong
+        || (delta as ::core::ffi::c_longlong) < -(32768 as ::core::ffi::c_longlong)
+    {
+        if mk_close_cluster(w) < 0 as ::core::ffi::c_int {
+            return -(1 as ::core::ffi::c_int);
+        }
+    }
+    if (*w).cluster.is_null() {
+        (*w).cluster_tc_scaled = (*w).frame_tc / (*w).timescale;
+        (*w).cluster = mk_create_context(
+            w,
+            (*w).root,
+            0x1f43b675 as ::core::ffi::c_uint,
+        );
+        if (*w).cluster.is_null() {
+            return -(1 as ::core::ffi::c_int);
+        }
+        if mk_write_uint(
+            (*w).cluster,
+            0xe7 as ::core::ffi::c_uint,
+            (*w).cluster_tc_scaled as uint64_t,
+        ) < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+        delta = 0 as int64_t;
+    }
+    fsize = if !(*w).frame.is_null() {
+        (*(*w).frame).d_cur
+    } else {
+        0 as ::core::ffi::c_uint
+    };
+    if mk_write_id((*w).cluster, 0xa3 as ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_size((*w).cluster, fsize.wrapping_add(4 as ::core::ffi::c_uint))
+        < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if mk_write_size((*w).cluster, 1 as ::core::ffi::c_uint) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    c_delta_flags[0 as ::core::ffi::c_int as usize] = (delta >> 8 as ::core::ffi::c_int)
+        as uint8_t;
+    c_delta_flags[1 as ::core::ffi::c_int as usize] = delta as uint8_t;
+    c_delta_flags[2 as ::core::ffi::c_int as usize] = (((*w).keyframe
+        as ::core::ffi::c_int) << 7 as ::core::ffi::c_int
+        | (*w).skippable as ::core::ffi::c_int) as uint8_t;
+    if mk_append_context_data(
+        (*w).cluster,
+        c_delta_flags.as_mut_ptr() as *const ::core::ffi::c_void,
+        3 as ::core::ffi::c_uint,
+    ) < 0 as ::core::ffi::c_int
+    {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if !(*w).frame.is_null() {
+        if mk_append_context_data((*w).cluster, (*(*w).frame).data, (*(*w).frame).d_cur)
+            < 0 as ::core::ffi::c_int
+        {
+            return -(1 as ::core::ffi::c_int);
+        }
+        (*(*w).frame).d_cur = 0 as ::core::ffi::c_uint;
+    }
+    (*w).in_frame = 0 as int8_t;
+    if (*(*w).cluster).d_cur > CLSIZE as ::core::ffi::c_uint {
+        if mk_close_cluster(w) < 0 as ::core::ffi::c_int {
+            return -(1 as ::core::ffi::c_int);
+        }
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[no_mangle]
+#[c2rust::src_loc = "456:1"]
+pub unsafe extern "C" fn mk_start_frame(mut w: *mut mk_writer) -> ::core::ffi::c_int {
+    if mk_flush_frame(w) < 0 as ::core::ffi::c_int {
+        return -(1 as ::core::ffi::c_int);
+    }
+    (*w).in_frame = 1 as int8_t;
+    (*w).keyframe = 0 as int8_t;
+    (*w).skippable = 0 as int8_t;
+    return 0 as ::core::ffi::c_int;
+}
+#[no_mangle]
+#[c2rust::src_loc = "468:1"]
+pub unsafe extern "C" fn mk_set_frame_flags(
+    mut w: *mut mk_writer,
+    mut timestamp: int64_t,
+    mut keyframe: ::core::ffi::c_int,
+    mut skippable: ::core::ffi::c_int,
+) -> ::core::ffi::c_int {
+    if (*w).in_frame == 0 {
+        return -(1 as ::core::ffi::c_int);
+    }
+    (*w).frame_tc = timestamp;
+    (*w).keyframe = (keyframe != 0 as ::core::ffi::c_int) as ::core::ffi::c_int
+        as int8_t;
+    (*w).skippable = (skippable != 0 as ::core::ffi::c_int) as ::core::ffi::c_int
+        as int8_t;
+    if (*w).max_frame_tc < timestamp {
+        (*w).max_frame_tc = timestamp;
+    }
+    return 0 as ::core::ffi::c_int;
+}
+#[no_mangle]
+#[c2rust::src_loc = "483:1"]
+pub unsafe extern "C" fn mk_add_frame_data(
+    mut w: *mut mk_writer,
+    mut data: *const ::core::ffi::c_void,
+    mut size: ::core::ffi::c_uint,
+) -> ::core::ffi::c_int {
+    if (*w).in_frame == 0 {
+        return -(1 as ::core::ffi::c_int);
+    }
+    if (*w).frame.is_null() {
+        (*w).frame = mk_create_context(
+            w,
+            0 as *mut mk_context,
+            0 as ::core::ffi::c_uint,
+        );
+        if (*w).frame.is_null() {
+            return -(1 as ::core::ffi::c_int);
+        }
+    }
+    return mk_append_context_data((*w).frame, data, size);
+}
+#[no_mangle]
+#[c2rust::src_loc = "495:1"]
+pub unsafe extern "C" fn mk_close(
+    mut w: *mut mk_writer,
+    mut last_delta: int64_t,
+) -> ::core::ffi::c_int {
+    let mut ret: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    if mk_flush_frame(w) < 0 as ::core::ffi::c_int
+        || mk_close_cluster(w) < 0 as ::core::ffi::c_int
+    {
+        ret = -(1 as ::core::ffi::c_int);
+    }
+    if (*w).wrote_header as ::core::ffi::c_int != 0 && x264_is_regular_file((*w).fp) != 0
+    {
+        let mut last_frametime: int64_t = if (*w).def_duration != 0 {
+            (*w).def_duration
+        } else {
+            last_delta
+        };
+        let mut total_duration: int64_t = (*w).max_frame_tc + last_frametime;
+        if fseeko((*w).fp, (*w).duration_ptr as __off64_t, SEEK_SET) != 0
+            || mk_write_float_raw(
+                (*w).root,
+                (total_duration as ::core::ffi::c_double
+                    / (*w).timescale as ::core::ffi::c_double) as ::core::ffi::c_float,
+            ) < 0 as ::core::ffi::c_int
+            || mk_flush_context_data((*w).root) < 0 as ::core::ffi::c_int
+        {
+            ret = -(1 as ::core::ffi::c_int);
+        }
+    }
+    mk_destroy_contexts(w);
+    fclose((*w).fp);
+    free(w as *mut ::core::ffi::c_void);
+    return ret;
 }

@@ -1,7 +1,5 @@
 #[c2rust::header_src = "internal:0"]
 pub mod internal {
-    #[c2rust::src_loc = "0:0"]
-    pub type __builtin_va_list = [__va_list_tag; 1];
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "0:0"]
@@ -12,18 +10,12 @@ pub mod internal {
         pub reg_save_area: *mut ::core::ffi::c_void,
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:27"]
+#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:28"]
 pub mod __stddef_size_t_h {
     #[c2rust::src_loc = "18:1"]
     pub type size_t = usize;
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stdarg___gnuc_va_list.h:27"]
-pub mod __stdarg___gnuc_va_list_h {
-    #[c2rust::src_loc = "12:1"]
-    pub type __gnuc_va_list = __builtin_va_list;
-    use super::internal::__builtin_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/types.h:28"]
 pub mod types_h {
     #[c2rust::src_loc = "37:1"]
     pub type __int8_t = i8;
@@ -42,13 +34,7 @@ pub mod types_h {
     #[c2rust::src_loc = "45:1"]
     pub type __uint64_t = u64;
 }
-#[c2rust::header_src = "/usr/include/stdio.h:27"]
-pub mod stdio_h {
-    #[c2rust::src_loc = "53:1"]
-    pub type va_list = __gnuc_va_list;
-    use super::__stdarg___gnuc_va_list_h::__gnuc_va_list;
-}
-#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-intn.h:28"]
 pub mod stdint_intn_h {
     #[c2rust::src_loc = "24:1"]
     pub type int8_t = __int8_t;
@@ -60,7 +46,7 @@ pub mod stdint_intn_h {
     pub type int64_t = __int64_t;
     use super::types_h::{__int8_t, __int16_t, __int32_t, __int64_t};
 }
-#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:27"]
+#[c2rust::header_src = "/usr/include/bits/stdint-uintn.h:28"]
 pub mod stdint_uintn_h {
     #[c2rust::src_loc = "24:1"]
     pub type uint8_t = __uint8_t;
@@ -72,14 +58,14 @@ pub mod stdint_uintn_h {
     pub type uint64_t = __uint64_t;
     use super::types_h::{__uint8_t, __uint16_t, __uint32_t, __uint64_t};
 }
-#[c2rust::header_src = "/usr/include/stdint.h:27"]
+#[c2rust::header_src = "/usr/include/stdint.h:28"]
 pub mod stdint_h {
     #[c2rust::src_loc = "76:1"]
     pub type intptr_t = isize;
     #[c2rust::src_loc = "79:1"]
     pub type uintptr_t = usize;
 }
-#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:27"]
+#[c2rust::header_src = "/usr/include/bits/atomic_wide_counter.h:28"]
 pub mod atomic_wide_counter_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -96,7 +82,7 @@ pub mod atomic_wide_counter_h {
         pub __high: ::core::ffi::c_uint,
     }
 }
-#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:27"]
+#[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:28"]
 pub mod thread_shared_types_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -122,7 +108,7 @@ pub mod thread_shared_types_h {
     }
     use super::atomic_wide_counter_h::__atomic_wide_counter;
 }
-#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:27"]
+#[c2rust::header_src = "/usr/include/bits/struct_mutex.h:28"]
 pub mod struct_mutex_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -139,7 +125,7 @@ pub mod struct_mutex_h {
     }
     use super::thread_shared_types_h::__pthread_list_t;
 }
-#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:27"]
+#[c2rust::header_src = "/usr/include/bits/pthreadtypes.h:28"]
 pub mod pthreadtypes_h {
     #[c2rust::src_loc = "27:1"]
     pub type pthread_t = ::core::ffi::c_ulong;
@@ -162,7 +148,7 @@ pub mod pthreadtypes_h {
     use super::struct_mutex_h::__pthread_mutex_s;
     use super::thread_shared_types_h::__pthread_cond_s;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/common.h:28"]
 pub mod common_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -635,7 +621,7 @@ pub mod common_h {
         pub type x264_ratecontrol_t;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:28"]
 pub mod frame_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -816,7 +802,7 @@ pub mod frame_h {
     use super::mc_h::x264_weight_t;
     use super::stdint_h::intptr_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:28"]
 pub mod x264_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1086,7 +1072,7 @@ pub mod x264_h {
     use super::common_h::x264_t;
     use super::stdint_intn_h::int64_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:28"]
 pub mod mc_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1425,7 +1411,7 @@ pub mod mc_h {
     use super::stdint_uintn_h::{uint32_t, uint16_t};
     use super::__stddef_size_t_h::size_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/bitstream.h:28"]
 pub mod bitstream_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1484,13 +1470,23 @@ pub mod bitstream_h {
         pub i_left: ::core::ffi::c_int,
         pub i_bits_encoded: ::core::ffi::c_int,
     }
-    use super::stdint_uintn_h::uint8_t;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "31:9"]
+    pub struct vlc_large_t {
+        pub i_bits: uint16_t,
+        pub i_size: uint8_t,
+        pub i_next: uint8_t,
+    }
+    #[c2rust::src_loc = "76:9"]
+    pub const LEVEL_TABLE_SIZE: ::core::ffi::c_int = 128 as ::core::ffi::c_int;
+    use super::stdint_uintn_h::{uint8_t, uint16_t};
     use super::common_h::dctcoef;
     use super::stdint_h::{intptr_t, uintptr_t};
     use super::cabac_h::x264_cabac_t;
     use super::stdint_intn_h::int32_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cabac.h:28"]
 pub mod cabac_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1509,7 +1505,7 @@ pub mod cabac_h {
     }
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:28"]
 pub mod quant_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1740,7 +1736,7 @@ pub mod quant_h {
     use super::stdint_uintn_h::{uint32_t, uint8_t, uint64_t, uint16_t};
     use super::bitstream_h::x264_run_level_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:28"]
 pub mod dct_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -1823,7 +1819,7 @@ pub mod dct_h {
     use super::common_h::{dctcoef, pixel};
     use super::stdint_uintn_h::uint8_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/pixel.h:28"]
 pub mod pixel_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2053,7 +2049,7 @@ pub mod pixel_h {
     use super::stdint_uintn_h::{uint64_t, uint16_t};
     use super::stdint_intn_h::int16_t;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:28"]
 pub mod predict_h {
     #[c2rust::src_loc = "32:1"]
     pub type x264_predict_8x8_filter_t = Option<
@@ -2072,7 +2068,7 @@ pub mod predict_h {
     >;
     use super::common_h::pixel;
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:28"]
 pub mod set_h {
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2191,39 +2187,67 @@ pub mod set_h {
     }
     use super::stdint_uintn_h::{uint8_t, uint32_t};
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:27"]
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/threadpool.h:28"]
 pub mod threadpool_h {
     extern "C" {
         #[c2rust::src_loc = "29:16"]
         pub type x264_threadpool_t;
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/base.h:27"]
-pub mod base_h {
-    use super::internal::__va_list_tag;
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/tables.h:28"]
+pub mod tables_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "30:9"]
+    pub struct vlc_t {
+        pub i_bits: uint8_t,
+        pub i_size: uint8_t,
+    }
+    use super::stdint_uintn_h::uint8_t;
     extern "C" {
-        #[c2rust::src_loc = "274:10"]
-        pub fn x264_log_default(
-            p_unused: *mut ::core::ffi::c_void,
-            i_level: ::core::ffi::c_int,
-            psz_fmt: *const ::core::ffi::c_char,
-            arg: ::core::ffi::VaList,
-        );
+        #[c2rust::src_loc = "98:20"]
+        pub static x264_run_before_init: [[vlc_t; 16]; 7];
     }
 }
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:27"]
-pub mod __stddef_null_h {
-    #[c2rust::src_loc = "26:9"]
-    pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/macroblock.h:28"]
+pub mod macroblock_h {
+    #[c2rust::src_loc = "277:5"]
+    pub const DCT_LUMA_4x4: cabac_ctx_block_cat_e = 2;
+    #[c2rust::src_loc = "273:1"]
+    pub type cabac_ctx_block_cat_e = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "288:5"]
+    pub const DCT_CHROMAV_8x8: cabac_ctx_block_cat_e = 13;
+    #[c2rust::src_loc = "287:5"]
+    pub const DCT_CHROMAV_4x4: cabac_ctx_block_cat_e = 12;
+    #[c2rust::src_loc = "286:5"]
+    pub const DCT_CHROMAV_AC: cabac_ctx_block_cat_e = 11;
+    #[c2rust::src_loc = "285:5"]
+    pub const DCT_CHROMAV_DC: cabac_ctx_block_cat_e = 10;
+    #[c2rust::src_loc = "284:5"]
+    pub const DCT_CHROMAU_8x8: cabac_ctx_block_cat_e = 9;
+    #[c2rust::src_loc = "283:5"]
+    pub const DCT_CHROMAU_4x4: cabac_ctx_block_cat_e = 8;
+    #[c2rust::src_loc = "282:5"]
+    pub const DCT_CHROMAU_AC: cabac_ctx_block_cat_e = 7;
+    #[c2rust::src_loc = "281:5"]
+    pub const DCT_CHROMAU_DC: cabac_ctx_block_cat_e = 6;
+    #[c2rust::src_loc = "280:5"]
+    pub const DCT_LUMA_8x8: cabac_ctx_block_cat_e = 5;
+    #[c2rust::src_loc = "279:5"]
+    pub const DCT_CHROMA_AC: cabac_ctx_block_cat_e = 4;
+    #[c2rust::src_loc = "278:5"]
+    pub const DCT_CHROMA_DC: cabac_ctx_block_cat_e = 3;
+    #[c2rust::src_loc = "276:5"]
+    pub const DCT_LUMA_AC: cabac_ctx_block_cat_e = 1;
+    #[c2rust::src_loc = "275:5"]
+    pub const DCT_LUMA_DC: cabac_ctx_block_cat_e = 0;
 }
-pub use self::internal::{__builtin_va_list, __va_list_tag};
+pub use self::internal::__va_list_tag;
 pub use self::__stddef_size_t_h::size_t;
-pub use self::__stdarg___gnuc_va_list_h::__gnuc_va_list;
 pub use self::types_h::{
     __int8_t, __uint8_t, __int16_t, __uint16_t, __int32_t, __uint32_t, __int64_t,
     __uint64_t,
 };
-pub use self::stdio_h::va_list;
 pub use self::stdint_intn_h::{int8_t, int16_t, int32_t, int64_t};
 pub use self::stdint_uintn_h::{uint8_t, uint16_t, uint32_t, uint64_t};
 pub use self::stdint_h::{intptr_t, uintptr_t};
@@ -2250,7 +2274,10 @@ pub use self::x264_h::{
     C2RustUnnamed_4, C2RustUnnamed_5,
 };
 pub use self::mc_h::{x264_weight_t, weight_fn_t, x264_mc_functions_t};
-pub use self::bitstream_h::{x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s};
+pub use self::bitstream_h::{
+    x264_bitstream_function_t, x264_run_level_t, bs_t, bs_s, vlc_large_t,
+    LEVEL_TABLE_SIZE,
+};
 pub use self::cabac_h::x264_cabac_t;
 pub use self::quant_h::x264_quant_function_t;
 pub use self::dct_h::{x264_zigzag_function_t, x264_dct_function_t};
@@ -2262,28 +2289,140 @@ pub use self::set_h::{
     x264_pps_t, x264_sps_t, C2RustUnnamed_14, C2RustUnnamed_15, C2RustUnnamed_16,
 };
 use self::threadpool_h::x264_threadpool_t;
-use self::base_h::x264_log_default;
-pub use self::__stddef_null_h::NULL;
+pub use self::tables_h::{vlc_t, x264_run_before_init};
+pub use self::macroblock_h::{
+    DCT_LUMA_4x4, cabac_ctx_block_cat_e, DCT_CHROMAV_8x8, DCT_CHROMAV_4x4,
+    DCT_CHROMAV_AC, DCT_CHROMAV_DC, DCT_CHROMAU_8x8, DCT_CHROMAU_4x4, DCT_CHROMAU_AC,
+    DCT_CHROMAU_DC, DCT_LUMA_8x8, DCT_CHROMA_AC, DCT_CHROMA_DC, DCT_LUMA_AC, DCT_LUMA_DC,
+};
 #[no_mangle]
-#[c2rust::src_loc = "32:1"]
-pub unsafe extern "C" fn x264_10_log(
-    mut h: *mut x264_t,
-    mut i_level: ::core::ffi::c_int,
-    mut psz_fmt: *const ::core::ffi::c_char,
-    mut args: ...
-) {
-    if h.is_null() || i_level <= (*h).param.i_log_level {
-        let mut arg: ::core::ffi::VaListImpl;
-        arg = args.clone();
-        if h.is_null() {
-            x264_log_default(NULL, i_level, psz_fmt, arg.as_va_list());
-        } else {
-            (*h)
-                .param
-                .pf_log
-                .expect(
-                    "non-null function pointer",
-                )((*h).param.p_log_private, i_level, psz_fmt, arg.as_va_list());
+#[c2rust::src_loc = "30:13"]
+pub static mut x264_10_level_token: [[vlc_large_t; 128]; 7] = [[vlc_large_t {
+    i_bits: 0,
+    i_size: 0,
+    i_next: 0,
+}; 128]; 7];
+#[no_mangle]
+#[c2rust::src_loc = "31:10"]
+pub static mut x264_10_run_before: [uint32_t; 65536] = [0; 65536];
+#[no_mangle]
+#[c2rust::src_loc = "33:1"]
+pub unsafe extern "C" fn x264_10_cavlc_init(mut h: *mut x264_t) {
+    let mut i_suffix: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    while i_suffix < 7 as ::core::ffi::c_int {
+        let mut level: int16_t = (-LEVEL_TABLE_SIZE / 2 as ::core::ffi::c_int)
+            as int16_t;
+        while (level as ::core::ffi::c_int) < LEVEL_TABLE_SIZE / 2 as ::core::ffi::c_int
+        {
+            let mut mask: ::core::ffi::c_int = level as ::core::ffi::c_int
+                >> 15 as ::core::ffi::c_int;
+            let mut abs_level: ::core::ffi::c_int = (level as ::core::ffi::c_int ^ mask)
+                - mask;
+            let mut i_level_code: ::core::ffi::c_int = if abs_level != 0 {
+                abs_level * 2 as ::core::ffi::c_int - mask - 2 as ::core::ffi::c_int
+            } else {
+                0 as ::core::ffi::c_int
+            };
+            let mut i_next: ::core::ffi::c_int = i_suffix;
+            let mut vlc: *mut vlc_large_t = &mut *(*x264_10_level_token
+                .as_mut_ptr()
+                .offset(i_suffix as isize))
+                .as_mut_ptr()
+                .offset(
+                    (level as ::core::ffi::c_int
+                        + LEVEL_TABLE_SIZE / 2 as ::core::ffi::c_int) as isize,
+                ) as *mut vlc_large_t;
+            if i_level_code >> i_suffix < 14 as ::core::ffi::c_int {
+                (*vlc).i_size = ((i_level_code >> i_suffix) + 1 as ::core::ffi::c_int
+                    + i_suffix) as uint8_t;
+                (*vlc).i_bits = (((1 as ::core::ffi::c_int) << i_suffix)
+                    + (i_level_code
+                        & ((1 as ::core::ffi::c_int) << i_suffix)
+                            - 1 as ::core::ffi::c_int)) as uint16_t;
+            } else if i_suffix == 0 as ::core::ffi::c_int
+                && i_level_code < 30 as ::core::ffi::c_int
+            {
+                (*vlc).i_size = 19 as uint8_t;
+                (*vlc).i_bits = (((1 as ::core::ffi::c_int) << 4 as ::core::ffi::c_int)
+                    + (i_level_code - 14 as ::core::ffi::c_int)) as uint16_t;
+            } else if i_suffix > 0 as ::core::ffi::c_int
+                && i_level_code >> i_suffix == 14 as ::core::ffi::c_int
+            {
+                (*vlc).i_size = (15 as ::core::ffi::c_int + i_suffix) as uint8_t;
+                (*vlc).i_bits = (((1 as ::core::ffi::c_int) << i_suffix)
+                    + (i_level_code
+                        & ((1 as ::core::ffi::c_int) << i_suffix)
+                            - 1 as ::core::ffi::c_int)) as uint16_t;
+            } else {
+                i_level_code -= (15 as ::core::ffi::c_int) << i_suffix;
+                if i_suffix == 0 as ::core::ffi::c_int {
+                    i_level_code -= 15 as ::core::ffi::c_int;
+                }
+                (*vlc).i_size = 28 as uint8_t;
+                (*vlc).i_bits = (((1 as ::core::ffi::c_int) << 12 as ::core::ffi::c_int)
+                    + i_level_code) as uint16_t;
+            }
+            if i_next == 0 as ::core::ffi::c_int {
+                i_next += 1;
+            }
+            if abs_level > (3 as ::core::ffi::c_int) << i_next - 1 as ::core::ffi::c_int
+                && i_next < 6 as ::core::ffi::c_int
+            {
+                i_next += 1;
+            }
+            (*vlc).i_next = i_next as uint8_t;
+            level += 1;
         }
+        i_suffix += 1;
+    }
+    x264_10_run_before[0 as ::core::ffi::c_int as usize] = 0 as uint32_t;
+    x264_10_run_before[1 as ::core::ffi::c_int as usize] = 0 as uint32_t;
+    let mut i: uint32_t = 2 as uint32_t;
+    while i < ((1 as ::core::ffi::c_int) << 16 as ::core::ffi::c_int) as uint32_t {
+        let mut runlevel: x264_run_level_t = x264_run_level_t {
+            last: 0,
+            mask: 0,
+            level: [0; 18],
+        };
+        let mut dct: [dctcoef; 16] = [0; 16];
+        let mut size: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut bits: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while j < 16 as ::core::ffi::c_int {
+            dct[j as usize] = (i & ((1 as ::core::ffi::c_int) << j) as uint32_t)
+                as dctcoef;
+            j += 1;
+        }
+        let mut total: ::core::ffi::c_int = (*h)
+            .quantf
+            .coeff_level_run[DCT_LUMA_4x4 as ::core::ffi::c_int as usize]
+            .expect("non-null function pointer")(dct.as_mut_ptr(), &mut runlevel);
+        let mut zeros: ::core::ffi::c_int = runlevel.last as ::core::ffi::c_int
+            + 1 as ::core::ffi::c_int - total;
+        let mut mask_0: uint32_t = i
+            << i.leading_zeros() as i32 + 1 as ::core::ffi::c_int;
+        let mut j_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while j_0 < total - 1 as ::core::ffi::c_int && zeros > 0 as ::core::ffi::c_int {
+            let mut idx: ::core::ffi::c_int = (if zeros < 7 as ::core::ffi::c_int {
+                zeros
+            } else {
+                7 as ::core::ffi::c_int
+            }) - 1 as ::core::ffi::c_int;
+            let mut run: ::core::ffi::c_int = mask_0.leading_zeros() as i32;
+            let mut len: ::core::ffi::c_int = x264_run_before_init[idx
+                    as usize][run as usize]
+                .i_size as ::core::ffi::c_int;
+            size += len;
+            bits <<= len;
+            bits
+                |= x264_run_before_init[idx as usize][run as usize].i_bits
+                    as ::core::ffi::c_int;
+            zeros -= run;
+            mask_0 <<= run + 1 as ::core::ffi::c_int;
+            j_0 += 1;
+        }
+        x264_10_run_before[i as usize] = ((bits << 5 as ::core::ffi::c_int) + size)
+            as uint32_t;
+        i = i.wrapping_add(1);
     }
 }
