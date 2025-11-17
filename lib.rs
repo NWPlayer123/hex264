@@ -148,8 +148,12 @@ pub mod types_h {
     pub type __off_t = ::core::ffi::c_long;
     #[c2rust::src_loc = "153:1"]
     pub type __off64_t = ::core::ffi::c_long;
+    #[c2rust::src_loc = "154:1"]
+    pub type __pid_t = ::core::ffi::c_int;
     #[c2rust::src_loc = "160:1"]
     pub type __time_t = ::core::ffi::c_long;
+    #[c2rust::src_loc = "169:1"]
+    pub type __clockid_t = ::core::ffi::c_int;
     #[c2rust::src_loc = "175:1"]
     pub type __blksize_t = ::core::ffi::c_long;
     #[c2rust::src_loc = "180:1"]
@@ -302,6 +306,17 @@ pub mod stdio_h {
             __size: size_t,
             __n: size_t,
             __s: *mut FILE,
+        ) -> ::core::ffi::c_ulong;
+    }
+    #[c2rust::src_loc = "112:9"]
+    pub const SEEK_END: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    extern "C" {
+        #[c2rust::src_loc = "728:1"]
+        pub fn fread(
+            __ptr: *mut ::core::ffi::c_void,
+            __size: size_t,
+            __n: size_t,
+            __stream: *mut FILE,
         ) -> ::core::ffi::c_ulong;
     }
 }
@@ -1100,6 +1115,103 @@ pub mod x264_h {
     pub const X264_AVCINTRA_FLAVOR_SONY: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
     #[c2rust::src_loc = "299:9"]
     pub const X264_NAL_HRD_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+
+    #[c2rust::src_loc = "149:9"]
+    pub const X264_CPU_AVX: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 9 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "158:9"]
+    pub const X264_CPU_CACHELINE_32: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 17 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "258:9"]
+    pub const X264_CSP_YV12: ::core::ffi::c_int = 0x3 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "259:9"]
+    pub const X264_CSP_NV12: ::core::ffi::c_int = 0x4 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "260:9"]
+    pub const X264_CSP_NV21: ::core::ffi::c_int = 0x5 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "262:9"]
+    pub const X264_CSP_YV16: ::core::ffi::c_int = 0x7 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "263:9"]
+    pub const X264_CSP_NV16: ::core::ffi::c_int = 0x8 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "264:9"]
+    pub const X264_CSP_YUYV: ::core::ffi::c_int = 0x9 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "265:9"]
+    pub const X264_CSP_UYVY: ::core::ffi::c_int = 0xa as ::core::ffi::c_int;
+    #[c2rust::src_loc = "266:9"]
+    pub const X264_CSP_V210: ::core::ffi::c_int = 0xb as ::core::ffi::c_int;
+    #[c2rust::src_loc = "268:9"]
+    pub const X264_CSP_YV24: ::core::ffi::c_int = 0xd as ::core::ffi::c_int;
+    #[c2rust::src_loc = "270:9"]
+    pub const X264_CSP_BGRA: ::core::ffi::c_int = 0xf as ::core::ffi::c_int;
+    #[c2rust::src_loc = "273:9"]
+    pub const X264_CSP_VFLIP: ::core::ffi::c_int = 0x1000 as ::core::ffi::c_int;
+
+    #[c2rust::src_loc = "139:9"]
+    pub const X264_CPU_MMX: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "140:9"]
+    pub const X264_CPU_MMX2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "142:9"]
+    pub const X264_CPU_SSE: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "144:9"]
+    pub const X264_CPU_LZCNT: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 4 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "145:9"]
+    pub const X264_CPU_SSE3: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 5 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "147:9"]
+    pub const X264_CPU_SSE4: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 7 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "150:9"]
+    pub const X264_CPU_XOP: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 10 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "151:9"]
+    pub const X264_CPU_FMA4: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 11 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "155:9"]
+    pub const X264_CPU_AVX2: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 15 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "162:9"]
+    pub const X264_CPU_SLOW_SHUFFLE: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 21 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "163:9"]
+    pub const X264_CPU_STACK_MOD4: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 22 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "164:9"]
+    pub const X264_CPU_SLOW_ATOM: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 23 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "169:9"]
+    pub const X264_CPU_SLOW_PSHUFB: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 24 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "170:9"]
+    pub const X264_CPU_SLOW_PALIGNR: ::core::ffi::c_uint =
+        (1 as ::core::ffi::c_uint) << 25 as ::core::ffi::c_int;
+
+    #[c2rust::src_loc = "212:9"]
+    pub const X264_CQM_JVT: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "218:9"]
+    pub const X264_AQ_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "219:9"]
+    pub const X264_AQ_VARIANCE: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "220:9"]
+    pub const X264_AQ_AUTOVARIANCE: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "235:9"]
+    pub const X264_AVCINTRA_FLAVOR_PANASONIC: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "243:27"]
+    pub static mut x264_fullrange_names: [*const ::core::ffi::c_char; 3] = [
+        b"off\0" as *const u8 as *const ::core::ffi::c_char,
+        b"on\0" as *const u8 as *const ::core::ffi::c_char,
+        0 as *const ::core::ffi::c_char,
+    ];
+    #[c2rust::src_loc = "296:9"]
+    pub const X264_SYNC_LOOKAHEAD_AUTO: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
+    #[c2rust::src_loc = "669:9"]
+    pub const X264_PARAM_BAD_NAME: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
+    #[c2rust::src_loc = "670:9"]
+    pub const X264_PARAM_BAD_VALUE: ::core::ffi::c_int = -(2 as ::core::ffi::c_int);
+    #[c2rust::src_loc = "671:9"]
+    pub const X264_PARAM_ALLOC_FAILED: ::core::ffi::c_int = -(3 as ::core::ffi::c_int);
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264cli.h:37"]
 pub mod x264cli_h {
@@ -1999,6 +2111,13 @@ pub mod stdlib_h {
         #[c2rust::src_loc = "980:1"]
         pub fn abs(__x: ::core::ffi::c_int) -> ::core::ffi::c_int;
     }
+    extern "C" {
+        #[c2rust::src_loc = "118:1"]
+        pub fn strtod(
+            __nptr: *const ::core::ffi::c_char,
+            __endptr: *mut *mut ::core::ffi::c_char,
+        ) -> ::core::ffi::c_double;
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/osdep.h:37"]
 pub mod osdep_h {
@@ -2137,6 +2256,26 @@ pub mod osdep_h {
         };
     }
     use super::stdint_h::uintptr_t;
+    #[inline(always)]
+    #[c2rust::src_loc = "496:1"]
+    pub unsafe extern "C" fn endian_fix16(mut x: uint16_t) -> uint16_t {
+        return ((x as ::core::ffi::c_int) << 8 as ::core::ffi::c_int
+            | x as ::core::ffi::c_int >> 8 as ::core::ffi::c_int) as uint16_t;
+    }
+    use super::stdint_uintn_h::uint16_t;
+
+    #[c2rust::src_loc = "317:9"]
+    pub const NATIVE_ALIGN: ::core::ffi::c_int = 64 as ::core::ffi::c_int;
+    #[inline(always)]
+    #[c2rust::src_loc = "433:1"]
+    pub unsafe extern "C" fn x264_pthread_fetch_and_add(
+        mut val: *mut ::core::ffi::c_int,
+        mut add: ::core::ffi::c_int,
+        mut mutex: *mut pthread_mutex_t,
+    ) -> ::core::ffi::c_int {
+        return ::core::intrinsics::atomic_xadd_seqcst(val, add);
+    }
+    use super::pthreadtypes_h::pthread_mutex_t;
 }
 #[c2rust::header_src = "/usr/include/string.h:37"]
 pub mod string_h {
@@ -2209,6 +2348,21 @@ pub mod string_h {
         pub fn strstr(
             __haystack: *const ::core::ffi::c_char,
             __needle: *const ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_char;
+    }
+    extern "C" {
+        #[c2rust::src_loc = "187:1"]
+        pub fn strdup(__s: *const ::core::ffi::c_char) -> *mut ::core::ffi::c_char;
+        #[c2rust::src_loc = "297:1"]
+        pub fn strspn(
+            __s: *const ::core::ffi::c_char,
+            __accept: *const ::core::ffi::c_char,
+        ) -> ::core::ffi::c_ulong;
+        #[c2rust::src_loc = "366:1"]
+        pub fn strtok_r(
+            __s: *mut ::core::ffi::c_char,
+            __delim: *const ::core::ffi::c_char,
+            __save_ptr: *mut *mut ::core::ffi::c_char,
         ) -> *mut ::core::ffi::c_char;
     }
 }
@@ -2487,6 +2641,15 @@ pub mod base_h {
         #[c2rust::src_loc = "283:10"]
         pub fn x264_slurp_file(filename: *const ::core::ffi::c_char) -> *mut ::core::ffi::c_char;
     }
+    extern "C" {
+        #[c2rust::src_loc = "274:10"]
+        pub fn x264_log_default(
+            p_unused: *mut ::core::ffi::c_void,
+            i_level: ::core::ffi::c_int,
+            psz_fmt: *const ::core::ffi::c_char,
+            arg: ::core::ffi::VaList,
+        );
+    }
 }
 #[c2rust::header_src = "/usr/include/libavutil/pixdesc.h:58"]
 pub mod pixdesc_h {
@@ -2588,6 +2751,10 @@ pub mod cpu_h {
     extern "C" {
         #[c2rust::src_loc = "54:39"]
         pub static x264_cpu_names: [x264_cpu_name_t; 0];
+    }
+    extern "C" {
+        #[c2rust::src_loc = "29:10"]
+        pub fn x264_cpu_detect() -> uint32_t;
     }
 }
 #[c2rust::header_src = "/usr/include/bits/getopt_core.h:37"]
@@ -2830,10 +2997,19 @@ pub mod stdint_h {
     pub type intptr_t = isize;
     #[c2rust::src_loc = "79:1"]
     pub type uintptr_t = usize;
+    #[c2rust::src_loc = "106:10"]
+    pub const INT16_MIN: ::core::ffi::c_int =
+        -(32767 as ::core::ffi::c_int) - 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "111:10"]
+    pub const INT16_MAX: ::core::ffi::c_int = 32767 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "112:10"]
+    pub const INT32_MAX: ::core::ffi::c_int = 2147483647 as ::core::ffi::c_int;
     #[c2rust::src_loc = "117:10"]
     pub const UINT16_MAX: ::core::ffi::c_int = 65535 as ::core::ffi::c_int;
     #[c2rust::src_loc = "118:10"]
     pub const UINT32_MAX: ::core::ffi::c_uint = 4294967295 as ::core::ffi::c_uint;
+    #[c2rust::src_loc = "216:11"]
+    pub const SIZE_MAX: ::core::ffi::c_ulong = 18446744073709551615 as ::core::ffi::c_ulong;
 }
 #[c2rust::header_src = "/usr/include/bits/thread-shared-types.h:28"]
 pub mod thread_shared_types_h {
@@ -3444,6 +3620,14 @@ pub mod common_h {
             x
         }) as pixel;
     }
+
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "765:9"]
+    pub struct mvsad_t {
+        pub sad: ::core::ffi::c_int,
+        pub mv: [int16_t; 2],
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/frame.h:28"]
 pub mod frame_h {
@@ -3757,6 +3941,10 @@ pub mod frame_h {
         #[c2rust::src_loc = "295:1"]
         pub fn x264_10_sync_frame_list_pop(slist: *mut x264_sync_frame_list_t)
             -> *mut x264_frame_t;
+    }
+    extern "C" {
+        #[c2rust::src_loc = "232:1"]
+        pub fn x264_10_frame_expand_border_lowres(frame: *mut x264_frame_t);
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/mc.h:28"]
@@ -5378,6 +5566,33 @@ pub mod pixel_h {
             mb_y: ::core::ffi::c_int,
         ) -> ::core::ffi::c_int;
     }
+
+    #[c2rust::src_loc = "61:22"]
+    pub static mut x264_size2pixel: [[uint8_t; 5]; 5] = [
+        [0 as ::core::ffi::c_int as uint8_t, 0, 0, 0, 0],
+        [
+            0 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x4 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x4 as ::core::ffi::c_int as uint8_t,
+            0 as ::core::ffi::c_int as uint8_t,
+            0 as ::core::ffi::c_int as uint8_t,
+        ],
+        [
+            0 as ::core::ffi::c_int as uint8_t,
+            PIXEL_4x8 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x8 as ::core::ffi::c_int as uint8_t,
+            0 as ::core::ffi::c_int as uint8_t,
+            PIXEL_16x8 as ::core::ffi::c_int as uint8_t,
+        ],
+        [0 as ::core::ffi::c_int as uint8_t, 0, 0, 0, 0],
+        [
+            0 as ::core::ffi::c_int as uint8_t,
+            0 as ::core::ffi::c_int as uint8_t,
+            PIXEL_8x16 as ::core::ffi::c_int as uint8_t,
+            0 as ::core::ffi::c_int as uint8_t,
+            PIXEL_16x16 as ::core::ffi::c_int as uint8_t,
+        ],
+    ];
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/predict.h:28"]
 pub mod predict_h {
@@ -5529,6 +5744,38 @@ pub mod predict_h {
             pf: *mut x264_predict8x8_t,
             predict_filter: *mut x264_predict_8x8_filter_t,
         );
+    }
+    extern "C" {
+        #[c2rust::src_loc = "113:1"]
+        pub fn x264_10_predict_8x8_dc_c(src: *mut pixel, edge: *mut pixel);
+        #[c2rust::src_loc = "115:1"]
+        pub fn x264_10_predict_8x8_h_c(src: *mut pixel, edge: *mut pixel);
+        #[c2rust::src_loc = "117:1"]
+        pub fn x264_10_predict_8x8_v_c(src: *mut pixel, edge: *mut pixel);
+        #[c2rust::src_loc = "119:1"]
+        pub fn x264_10_predict_4x4_dc_c(src: *mut pixel);
+        #[c2rust::src_loc = "121:1"]
+        pub fn x264_10_predict_4x4_h_c(src: *mut pixel);
+        #[c2rust::src_loc = "123:1"]
+        pub fn x264_10_predict_4x4_v_c(src: *mut pixel);
+        #[c2rust::src_loc = "125:1"]
+        pub fn x264_10_predict_16x16_dc_c(src: *mut pixel);
+        #[c2rust::src_loc = "127:1"]
+        pub fn x264_10_predict_16x16_h_c(src: *mut pixel);
+        #[c2rust::src_loc = "129:1"]
+        pub fn x264_10_predict_16x16_v_c(src: *mut pixel);
+        #[c2rust::src_loc = "133:1"]
+        pub fn x264_10_predict_8x8c_dc_c(src: *mut pixel);
+        #[c2rust::src_loc = "135:1"]
+        pub fn x264_10_predict_8x8c_h_c(src: *mut pixel);
+        #[c2rust::src_loc = "137:1"]
+        pub fn x264_10_predict_8x8c_v_c(src: *mut pixel);
+        #[c2rust::src_loc = "141:1"]
+        pub fn x264_10_predict_8x16c_dc_c(src: *mut pixel);
+        #[c2rust::src_loc = "143:1"]
+        pub fn x264_10_predict_8x16c_h_c(src: *mut pixel);
+        #[c2rust::src_loc = "145:1"]
+        pub fn x264_10_predict_8x16c_v_c(src: *mut pixel);
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/set.h:28"]
@@ -5819,6 +6066,23 @@ pub mod tables_h {
         pub static x264_decimate_table4: [uint8_t; 16];
         #[c2rust::src_loc = "71:22"]
         pub static x264_decimate_table8: [uint8_t; 64];
+    }
+    extern "C" {
+        #[c2rust::src_loc = "49:22"]
+        pub static x264_hpel_ref0: [uint8_t; 16];
+        #[c2rust::src_loc = "50:22"]
+        pub static x264_hpel_ref1: [uint8_t; 16];
+    }
+    use super::stdint_intn_h::int8_t;
+    extern "C" {
+        #[c2rust::src_loc = "78:23"]
+        pub static x264_cabac_context_init_I: [[int8_t; 2]; 1024];
+        #[c2rust::src_loc = "79:23"]
+        pub static x264_cabac_context_init_PB: [[[int8_t; 2]; 1024]; 3];
+        #[c2rust::src_loc = "80:23"]
+        pub static x264_cabac_range_lps: [[uint8_t; 4]; 64];
+        #[c2rust::src_loc = "82:23"]
+        pub static x264_cabac_renorm_shift: [uint8_t; 64];
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/macroblock.h:28"]
@@ -6808,6 +7072,66 @@ pub mod macroblock_h {
         return (a as uint64_t).wrapping_add((b as uint64_t) << 32 as ::core::ffi::c_int);
     }
     use super::stdint_uintn_h::uint64_t;
+    #[inline(always)]
+    #[c2rust::src_loc = "395:1"]
+    pub unsafe extern "C" fn pack16to32_mask(
+        mut a: ::core::ffi::c_int,
+        mut b: ::core::ffi::c_int,
+    ) -> uint32_t {
+        return ((a & 0xffff as ::core::ffi::c_int) as uint32_t)
+            .wrapping_add((b as uint32_t) << 16 as ::core::ffi::c_int);
+    }
+
+    #[c2rust::src_loc = "90:22"]
+    pub static mut x264_mb_type_fix: [uint8_t; 19] = [
+        I_4x4 as ::core::ffi::c_int as uint8_t,
+        I_4x4 as ::core::ffi::c_int as uint8_t,
+        I_16x16 as ::core::ffi::c_int as uint8_t,
+        I_PCM as ::core::ffi::c_int as uint8_t,
+        P_L0 as ::core::ffi::c_int as uint8_t,
+        P_8x8 as ::core::ffi::c_int as uint8_t,
+        P_SKIP as ::core::ffi::c_int as uint8_t,
+        B_DIRECT as ::core::ffi::c_int as uint8_t,
+        B_L0_L0 as ::core::ffi::c_int as uint8_t,
+        B_L0_L1 as ::core::ffi::c_int as uint8_t,
+        B_L0_BI as ::core::ffi::c_int as uint8_t,
+        B_L1_L0 as ::core::ffi::c_int as uint8_t,
+        B_L1_L1 as ::core::ffi::c_int as uint8_t,
+        B_L1_BI as ::core::ffi::c_int as uint8_t,
+        B_BI_L0 as ::core::ffi::c_int as uint8_t,
+        B_BI_L1 as ::core::ffi::c_int as uint8_t,
+        B_BI_BI as ::core::ffi::c_int as uint8_t,
+        B_8x8 as ::core::ffi::c_int as uint8_t,
+        B_SKIP as ::core::ffi::c_int as uint8_t,
+    ];
+    #[inline(always)]
+    #[c2rust::src_loc = "387:1"]
+    pub unsafe extern "C" fn pack8to32(
+        mut a: uint32_t,
+        mut b: uint32_t,
+        mut c: uint32_t,
+        mut d: uint32_t,
+    ) -> uint32_t {
+        return a
+            .wrapping_add(b << 8 as ::core::ffi::c_int)
+            .wrapping_add(c << 16 as ::core::ffi::c_int)
+            .wrapping_add(d << 24 as ::core::ffi::c_int);
+    }
+    extern "C" {
+        #[c2rust::src_loc = "344:1"]
+        pub fn x264_10_mb_predict_mv_pskip(h: *mut x264_t, mv: *mut int16_t);
+    }
+
+    use super::frame_h::x264_frame_t;
+    extern "C" {
+        #[c2rust::src_loc = "330:1"]
+        pub fn x264_10_prefetch_fenc(
+            h: *mut x264_t,
+            fenc: *mut x264_frame_t,
+            i_mb_x: ::core::ffi::c_int,
+            i_mb_y: ::core::ffi::c_int,
+        );
+    }
 }
 #[c2rust::header_src = "/usr/lib/clang/21/include/xmmintrin.h:28"]
 pub mod xmmintrin_h {
@@ -22540,4 +22864,124 @@ pub mod pthread_h {
             __mutex: *mut pthread_mutex_t,
         ) -> ::core::ffi::c_int;
     }
+}
+
+#[c2rust::header_src = "/usr/include/bits/types/clockid_t.h:28"]
+pub mod clockid_t_h {
+    #[c2rust::src_loc = "7:1"]
+    pub type clockid_t = __clockid_t;
+    use super::types_h::__clockid_t;
+}
+#[c2rust::header_src = "/usr/include/time.h:28"]
+pub mod time_h {
+    use super::clockid_t_h::clockid_t;
+    use super::struct_timespec_h::timespec;
+    extern "C" {
+        #[c2rust::src_loc = "288:1"]
+        pub fn clock_gettime(__clock_id: clockid_t, __tp: *mut timespec) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/bits/time.h:28"]
+pub mod bits_time_h {
+    #[c2rust::src_loc = "48:10"]
+    pub const CLOCK_MONOTONIC: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+}
+
+#[c2rust::header_src = "/usr/include/bits/cpu-set.h:28"]
+pub mod cpu_set_h {
+    #[c2rust::src_loc = "32:1"]
+    pub type __cpu_mask = ::core::ffi::c_ulong;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "39:9"]
+    pub struct cpu_set_t {
+        pub __bits: [__cpu_mask; 16],
+    }
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "117:1"]
+        pub fn __sched_cpucount(__setsize: size_t, __setp: *const cpu_set_t) -> ::core::ffi::c_int;
+    }
+}
+
+#[c2rust::header_src = "/usr/include/sched.h:28"]
+pub mod sched_h {
+    use super::__stddef_size_t_h::size_t;
+    use super::cpu_set_h::cpu_set_t;
+    use super::types_h::__pid_t;
+    extern "C" {
+        #[c2rust::src_loc = "134:1"]
+        pub fn sched_getaffinity(
+            __pid: __pid_t,
+            __cpusetsize: size_t,
+            __cpuset: *mut cpu_set_t,
+        ) -> ::core::ffi::c_int;
+    }
+}
+
+#[c2rust::header_src = "/usr/include/ctype.h:27"]
+pub mod ctype_h {
+    #[c2rust::src_loc = "51:3"]
+    pub const _ISdigit: C2RustUnnamed_5 = 2048;
+    #[c2rust::src_loc = "46:1"]
+    pub type C2RustUnnamed_5 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "59:3"]
+    pub const _ISalnum: C2RustUnnamed_5 = 8;
+    #[c2rust::src_loc = "58:3"]
+    pub const _ISpunct: C2RustUnnamed_5 = 4;
+    #[c2rust::src_loc = "57:3"]
+    pub const _IScntrl: C2RustUnnamed_5 = 2;
+    #[c2rust::src_loc = "56:3"]
+    pub const _ISblank: C2RustUnnamed_5 = 1;
+    #[c2rust::src_loc = "55:3"]
+    pub const _ISgraph: C2RustUnnamed_5 = 32768;
+    #[c2rust::src_loc = "54:3"]
+    pub const _ISprint: C2RustUnnamed_5 = 16384;
+    #[c2rust::src_loc = "53:3"]
+    pub const _ISspace: C2RustUnnamed_5 = 8192;
+    #[c2rust::src_loc = "52:3"]
+    pub const _ISxdigit: C2RustUnnamed_5 = 4096;
+    #[c2rust::src_loc = "50:3"]
+    pub const _ISalpha: C2RustUnnamed_5 = 1024;
+    #[c2rust::src_loc = "49:3"]
+    pub const _ISlower: C2RustUnnamed_5 = 512;
+    #[c2rust::src_loc = "48:3"]
+    pub const _ISupper: C2RustUnnamed_5 = 256;
+    extern "C" {
+        #[c2rust::src_loc = "79:1"]
+        pub fn __ctype_b_loc() -> *mut *const ::core::ffi::c_ushort;
+    }
+}
+
+#[c2rust::header_src = "/usr/include/malloc.h:32"]
+pub mod malloc_h {
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "39:1"]
+        pub fn malloc(__size: size_t) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "51:1"]
+        pub fn realloc(__ptr: *mut ::core::ffi::c_void, __size: size_t)
+            -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "64:1"]
+        pub fn free(__ptr: *mut ::core::ffi::c_void);
+        #[c2rust::src_loc = "67:1"]
+        pub fn memalign(__alignment: size_t, __size: size_t) -> *mut ::core::ffi::c_void;
+    }
+}
+#[c2rust::header_src = "/usr/include/sys/mman.h:27"]
+pub mod mman_h {
+    use super::__stddef_size_t_h::size_t;
+    extern "C" {
+        #[c2rust::src_loc = "94:1"]
+        pub fn madvise(
+            __addr: *mut ::core::ffi::c_void,
+            __len: size_t,
+            __advice: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/bits/mman-linux.h:27"]
+pub mod mman_linux_h {
+    #[c2rust::src_loc = "99:10"]
+    pub const MADV_HUGEPAGE: ::core::ffi::c_int = 14 as ::core::ffi::c_int;
 }
