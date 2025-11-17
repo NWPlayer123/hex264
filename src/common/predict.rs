@@ -25,8 +25,7 @@ unsafe extern "C" fn x264_10_predict_16x16_dc_c(mut src: *mut pixel) {
         i += 1;
     }
     let mut dcsplat: pixel4 = ((dc + 16 as c_int >> 5 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut i_0: c_int = 0 as c_int;
     while i_0 < 16 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
@@ -46,8 +45,7 @@ unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut pixel) {
         i += 1;
     }
     let mut dcsplat: pixel4 = ((dc + 8 as c_int >> 4 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut i_0: c_int = 0 as c_int;
     while i_0 < 16 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
@@ -67,8 +65,7 @@ unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut pixel) {
         i += 1;
     }
     let mut dcsplat: pixel4 = ((dc + 8 as c_int >> 4 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut i_0: c_int = 0 as c_int;
     while i_0 < 16 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
@@ -105,8 +102,7 @@ unsafe extern "C" fn x264_10_predict_16x16_h_c(mut src: *mut pixel) {
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
         let v: pixel4 = (*src.offset(-(1 as c_int) as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as pixel4;
+            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
         (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
         (*(src.offset(8 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
@@ -200,11 +196,9 @@ unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut pixel) {
         y += 1;
     }
     let mut dc0splat: pixel4 = ((dc0 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc1splat: pixel4 = ((dc1 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y_0: c_int = 0 as c_int;
     while y_0 < 4 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0splat as uint64_t;
@@ -231,11 +225,9 @@ unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut pixel) {
         x += 1;
     }
     let mut dc0splat: pixel4 = ((dc0 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc1splat: pixel4 = ((dc1 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0splat as uint64_t;
@@ -260,17 +252,13 @@ unsafe extern "C" fn x264_10_predict_8x8c_dc_c(mut src: *mut pixel) {
         i += 1;
     }
     let mut dc0: pixel4 = ((s0 + s2 + 4 as c_int >> 3 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc1: pixel4 = ((s1 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc2: pixel4 = ((s3 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc3: pixel4 = ((s1 + s3 + 4 as c_int >> 3 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 4 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0 as uint64_t;
@@ -292,8 +280,7 @@ unsafe extern "C" fn x264_10_predict_8x8c_h_c(mut src: *mut pixel) {
     let mut i: c_int = 0 as c_int;
     while i < 8 as c_int {
         let mut v: pixel4 = (*src.offset(-(1 as c_int) as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as pixel4;
+            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
         (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
@@ -402,11 +389,9 @@ unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut pixel) {
         x += 1;
     }
     let mut dc0splat: pixel4 = ((dc0 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc1splat: pixel4 = ((dc1 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 16 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0splat as uint64_t;
@@ -435,29 +420,21 @@ unsafe extern "C" fn x264_10_predict_8x16c_dc_c(mut src: *mut pixel) {
         i += 1;
     }
     let mut dc0: pixel4 = ((s0 + s2 + 4 as c_int >> 3 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc1: pixel4 = ((s1 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc2: pixel4 = ((s3 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc3: pixel4 = ((s1 + s3 + 4 as c_int >> 3 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc4: pixel4 = ((s4 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc5: pixel4 = ((s1 + s4 + 4 as c_int >> 3 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc6: pixel4 = ((s5 + 2 as c_int >> 2 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut dc7: pixel4 = ((s1 + s5 + 4 as c_int >> 3 as c_int) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 4 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0 as uint64_t;
@@ -493,8 +470,7 @@ unsafe extern "C" fn x264_10_predict_8x16c_h_c(mut src: *mut pixel) {
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
         let mut v: pixel4 = (*src.offset(-(1 as c_int) as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as pixel4;
+            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
         (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
@@ -581,14 +557,14 @@ unsafe extern "C" fn predict_4x4_dc_128_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "485:1"]
 unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut pixel) {
-    let mut dc: pixel4 =
-        ((*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_int
-            + 2 as c_int
-            >> 2 as c_int) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
+    let mut dc: pixel4 = ((*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize)
+        as c_int
+        + *src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_int
+        + 2 as c_int
+        >> 2 as c_int) as c_ulonglong)
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let ref mut fresh53 = (*(&mut *src.offset((0 as c_int + 3 as c_int * 32 as c_int) as isize)
         as *mut pixel as *mut x264_union64_t))
         .i;
@@ -607,14 +583,14 @@ unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "490:1"]
 unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut pixel) {
-    let mut dc: pixel4 =
-        ((*src.offset((0 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + *src.offset((1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + *src.offset((2 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + *src.offset((3 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + 2 as c_int
-            >> 2 as c_int) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
+    let mut dc: pixel4 = ((*src.offset((0 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+        as c_int
+        + *src.offset((1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+        + *src.offset((2 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+        + *src.offset((3 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+        + 2 as c_int
+        >> 2 as c_int) as c_ulonglong)
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let ref mut fresh50 = (*(&mut *src.offset((0 as c_int + 3 as c_int * 32 as c_int) as isize)
         as *mut pixel as *mut x264_union64_t))
         .i;
@@ -634,18 +610,18 @@ unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut pixel) {
 #[no_mangle]
 #[c2rust::src_loc = "495:1"]
 unsafe extern "C" fn x264_10_predict_4x4_dc_c(mut src: *mut pixel) {
-    let mut dc: pixel4 =
-        ((*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((0 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + *src.offset((1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + *src.offset((2 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + *src.offset((3 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-            + 4 as c_int
-            >> 3 as c_int) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
+    let mut dc: pixel4 = ((*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize)
+        as c_int
+        + *src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((0 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+        + *src.offset((1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+        + *src.offset((2 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+        + *src.offset((3 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+        + 4 as c_int
+        >> 3 as c_int) as c_ulonglong)
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let ref mut fresh8 = (*(&mut *src.offset((0 as c_int + 3 as c_int * 32 as c_int) as isize)
         as *mut pixel as *mut x264_union64_t))
         .i;
@@ -667,23 +643,19 @@ unsafe extern "C" fn x264_10_predict_4x4_dc_c(mut src: *mut pixel) {
 unsafe extern "C" fn x264_10_predict_4x4_h_c(mut src: *mut pixel) {
     (*(&mut *src.offset((0 as c_int + 0 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize)
-        as c_ulonglong)
+        .i = (*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(&mut *src.offset((0 as c_int + 1 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize)
-        as c_ulonglong)
+        .i = (*src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(&mut *src.offset((0 as c_int + 2 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize)
-        as c_ulonglong)
+        .i = (*src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(&mut *src.offset((0 as c_int + 3 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize)
-        as c_ulonglong)
+        .i = (*src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
 }
 #[no_mangle]
@@ -1220,8 +1192,7 @@ unsafe extern "C" fn predict_8x8_dc_left_c(mut src: *mut pixel, mut edge: *mut p
     let mut l7: c_int = *edge.offset((14 as c_int - 7 as c_int) as isize) as c_int;
     let mut dc: pixel4 = ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + 4 as c_int >> 3 as c_int)
         as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
@@ -1242,8 +1213,7 @@ unsafe extern "C" fn predict_8x8_dc_top_c(mut src: *mut pixel, mut edge: *mut pi
     let mut t7: c_int = *edge.offset((16 as c_int + 7 as c_int) as isize) as c_int;
     let mut dc: pixel4 = ((t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 4 as c_int >> 3 as c_int)
         as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong)
-        as pixel4;
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
@@ -1271,25 +1241,25 @@ unsafe extern "C" fn x264_10_predict_8x8_dc_c(mut src: *mut pixel, mut edge: *mu
     let mut t5: c_int = *edge.offset((16 as c_int + 5 as c_int) as isize) as c_int;
     let mut t6: c_int = *edge.offset((16 as c_int + 6 as c_int) as isize) as c_int;
     let mut t7: c_int = *edge.offset((16 as c_int + 7 as c_int) as isize) as c_int;
-    let mut dc: pixel4 =
-        ((l0 + l1
-            + l2
-            + l3
-            + l4
-            + l5
-            + l6
-            + l7
-            + t0
-            + t1
-            + t2
-            + t3
-            + t4
-            + t5
-            + t6
-            + t7
-            + 8 as c_int
-            >> 4 as c_int) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
+    let mut dc: pixel4 = ((l0
+        + l1
+        + l2
+        + l3
+        + l4
+        + l5
+        + l6
+        + l7
+        + t0
+        + t1
+        + t2
+        + t3
+        + t4
+        + t5
+        + t6
+        + t7
+        + 8 as c_int
+        >> 4 as c_int) as c_ulonglong)
+        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
         (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
@@ -1313,8 +1283,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((0 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh0 = (l0 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh0 = (l0 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((0 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
@@ -1323,8 +1292,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((1 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh1 = (l1 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh1 = (l1 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((1 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
@@ -1333,8 +1301,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((2 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh2 = (l2 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh2 = (l2 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((2 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
@@ -1343,8 +1310,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((3 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh3 = (l3 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh3 = (l3 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((3 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
@@ -1353,8 +1319,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((4 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh4 = (l4 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh4 = (l4 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((4 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
@@ -1363,8 +1328,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((5 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh5 = (l5 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh5 = (l5 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((5 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
@@ -1373,8 +1337,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((6 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh6 = (l6 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh6 = (l6 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((6 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
@@ -1383,8 +1346,7 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
         .offset((7 as c_int * 32 as c_int) as isize)
         .offset(4 as c_int as isize) as *mut x264_union64_t))
         .i;
-    *fresh7 = (l7 as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+    *fresh7 = (l7 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(src
         .offset((7 as c_int * 32 as c_int) as isize)
         .offset(0 as c_int as isize) as *mut x264_union64_t))
