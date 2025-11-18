@@ -327,6 +327,24 @@ pub mod stdio_h {
             __new: *const ::core::ffi::c_char,
         ) -> ::core::ffi::c_int;
     }
+    extern "C" {
+        #[c2rust::src_loc = "149:14"]
+        pub static mut stdin: *mut FILE;
+    }
+
+    extern "C" {
+        #[c2rust::src_loc = "654:1"]
+        pub fn fgets(
+            __s: *mut ::core::ffi::c_char,
+            __n: ::core::ffi::c_int,
+            __stream: *mut FILE,
+        ) -> *mut ::core::ffi::c_char;
+    }
+
+    extern "C" {
+        #[c2rust::src_loc = "578:1"]
+        pub fn fgetc(__stream: *mut FILE) -> ::core::ffi::c_int;
+    }
 }
 #[c2rust::header_src = "/usr/include/bits/types/struct_timespec.h:37"]
 pub mod struct_timespec_h {
@@ -1289,6 +1307,30 @@ pub mod x264cli_h {
             ...
         );
     }
+    extern "C" {
+        #[c2rust::src_loc = "77:1"]
+        pub fn x264_cli_printf(i_level: ::core::ffi::c_int, fmt: *const ::core::ffi::c_char, ...);
+    }
+
+    #[inline]
+    #[c2rust::src_loc = "50:1"]
+    pub unsafe extern "C" fn gcd(mut a: uint64_t, mut b: uint64_t) -> uint64_t {
+        loop {
+            let mut c: int64_t = a.wrapping_rem(b) as int64_t;
+            if c == 0 {
+                return b;
+            }
+            a = b;
+            b = c as uint64_t;
+        }
+    }
+    #[inline]
+    #[c2rust::src_loc = "62:1"]
+    pub unsafe extern "C" fn lcm(mut a: uint64_t, mut b: uint64_t) -> uint64_t {
+        return a.wrapping_div(gcd(a, b)).wrapping_mul(b);
+    }
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint64_t;
 }
 #[c2rust::header_src = "/usr/include/signal.h:37"]
 pub mod signal_h {
@@ -1481,6 +1523,49 @@ pub mod input_h {
     extern "C" {
         #[c2rust::src_loc = "111:20"]
         pub static mut cli_input: cli_input_t;
+    }
+
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "139:9"]
+    pub struct cli_mmap_t {
+        pub file_size: int64_t,
+        pub align_mask: ::core::ffi::c_int,
+        pub fd: ::core::ffi::c_int,
+    }
+
+    use super::FILE_h::FILE;
+    extern "C" {
+        #[c2rust::src_loc = "133:1"]
+        pub fn x264_cli_pic_init_noalloc(
+            pic: *mut cli_pic_t,
+            csp: ::core::ffi::c_int,
+            width: ::core::ffi::c_int,
+            height: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "135:1"]
+        pub fn x264_cli_pic_plane_size(
+            csp: ::core::ffi::c_int,
+            width: ::core::ffi::c_int,
+            height: ::core::ffi::c_int,
+            plane: ::core::ffi::c_int,
+        ) -> int64_t;
+        #[c2rust::src_loc = "153:1"]
+        pub fn x264_cli_mmap_init(h: *mut cli_mmap_t, fh: *mut FILE) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "154:1"]
+        pub fn x264_cli_mmap(
+            h: *mut cli_mmap_t,
+            offset: int64_t,
+            size: int64_t,
+        ) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "155:1"]
+        pub fn x264_cli_munmap(
+            h: *mut cli_mmap_t,
+            addr: *mut ::core::ffi::c_void,
+            size: int64_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "156:1"]
+        pub fn x264_cli_mmap_close(h: *mut cli_mmap_t);
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/output/output.h:37"]
@@ -2123,6 +2208,159 @@ pub mod pixfmt_h {
     pub const AV_PIX_FMT_YUV420P: AVPixelFormat = 0;
     #[c2rust::src_loc = "72:5"]
     pub const AV_PIX_FMT_NONE: AVPixelFormat = -1;
+
+    #[c2rust::src_loc = "786:1"]
+    pub type AVChromaLocation = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "794:5"]
+    pub const AVCHROMA_LOC_NB: AVChromaLocation = 7;
+    #[c2rust::src_loc = "793:5"]
+    pub const AVCHROMA_LOC_BOTTOM: AVChromaLocation = 6;
+    #[c2rust::src_loc = "792:5"]
+    pub const AVCHROMA_LOC_BOTTOMLEFT: AVChromaLocation = 5;
+    #[c2rust::src_loc = "791:5"]
+    pub const AVCHROMA_LOC_TOP: AVChromaLocation = 4;
+    #[c2rust::src_loc = "790:5"]
+    pub const AVCHROMA_LOC_TOPLEFT: AVChromaLocation = 3;
+    #[c2rust::src_loc = "789:5"]
+    pub const AVCHROMA_LOC_CENTER: AVChromaLocation = 2;
+    #[c2rust::src_loc = "788:5"]
+    pub const AVCHROMA_LOC_LEFT: AVChromaLocation = 1;
+    #[c2rust::src_loc = "787:5"]
+    pub const AVCHROMA_LOC_UNSPECIFIED: AVChromaLocation = 0;
+    #[c2rust::src_loc = "690:1"]
+    pub type AVColorSpace = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "710:5"]
+    pub const AVCOL_SPC_NB: AVColorSpace = 18;
+    #[c2rust::src_loc = "709:5"]
+    pub const AVCOL_SPC_YCGCO_RO: AVColorSpace = 17;
+    #[c2rust::src_loc = "708:5"]
+    pub const AVCOL_SPC_YCGCO_RE: AVColorSpace = 16;
+    #[c2rust::src_loc = "707:5"]
+    pub const AVCOL_SPC_IPT_C2: AVColorSpace = 15;
+    #[c2rust::src_loc = "706:5"]
+    pub const AVCOL_SPC_ICTCP: AVColorSpace = 14;
+    #[c2rust::src_loc = "705:5"]
+    pub const AVCOL_SPC_CHROMA_DERIVED_CL: AVColorSpace = 13;
+    #[c2rust::src_loc = "704:5"]
+    pub const AVCOL_SPC_CHROMA_DERIVED_NCL: AVColorSpace = 12;
+    #[c2rust::src_loc = "703:5"]
+    pub const AVCOL_SPC_SMPTE2085: AVColorSpace = 11;
+    #[c2rust::src_loc = "702:5"]
+    pub const AVCOL_SPC_BT2020_CL: AVColorSpace = 10;
+    #[c2rust::src_loc = "701:5"]
+    pub const AVCOL_SPC_BT2020_NCL: AVColorSpace = 9;
+    #[c2rust::src_loc = "700:5"]
+    pub const AVCOL_SPC_YCOCG: AVColorSpace = 8;
+    #[c2rust::src_loc = "699:5"]
+    pub const AVCOL_SPC_YCGCO: AVColorSpace = 8;
+    #[c2rust::src_loc = "698:5"]
+    pub const AVCOL_SPC_SMPTE240M: AVColorSpace = 7;
+    #[c2rust::src_loc = "697:5"]
+    pub const AVCOL_SPC_SMPTE170M: AVColorSpace = 6;
+    #[c2rust::src_loc = "696:5"]
+    pub const AVCOL_SPC_BT470BG: AVColorSpace = 5;
+    #[c2rust::src_loc = "695:5"]
+    pub const AVCOL_SPC_FCC: AVColorSpace = 4;
+    #[c2rust::src_loc = "694:5"]
+    pub const AVCOL_SPC_RESERVED: AVColorSpace = 3;
+    #[c2rust::src_loc = "693:5"]
+    pub const AVCOL_SPC_UNSPECIFIED: AVColorSpace = 2;
+    #[c2rust::src_loc = "692:5"]
+    pub const AVCOL_SPC_BT709: AVColorSpace = 1;
+    #[c2rust::src_loc = "691:5"]
+    pub const AVCOL_SPC_RGB: AVColorSpace = 0;
+    #[c2rust::src_loc = "661:1"]
+    pub type AVColorTransferCharacteristic = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "683:5"]
+    pub const AVCOL_TRC_NB: AVColorTransferCharacteristic = 19;
+    #[c2rust::src_loc = "682:5"]
+    pub const AVCOL_TRC_ARIB_STD_B67: AVColorTransferCharacteristic = 18;
+    #[c2rust::src_loc = "681:5"]
+    pub const AVCOL_TRC_SMPTEST428_1: AVColorTransferCharacteristic = 17;
+    #[c2rust::src_loc = "680:5"]
+    pub const AVCOL_TRC_SMPTE428: AVColorTransferCharacteristic = 17;
+    #[c2rust::src_loc = "679:5"]
+    pub const AVCOL_TRC_SMPTEST2084: AVColorTransferCharacteristic = 16;
+    #[c2rust::src_loc = "678:5"]
+    pub const AVCOL_TRC_SMPTE2084: AVColorTransferCharacteristic = 16;
+    #[c2rust::src_loc = "677:5"]
+    pub const AVCOL_TRC_BT2020_12: AVColorTransferCharacteristic = 15;
+    #[c2rust::src_loc = "676:5"]
+    pub const AVCOL_TRC_BT2020_10: AVColorTransferCharacteristic = 14;
+    #[c2rust::src_loc = "675:5"]
+    pub const AVCOL_TRC_IEC61966_2_1: AVColorTransferCharacteristic = 13;
+    #[c2rust::src_loc = "674:5"]
+    pub const AVCOL_TRC_BT1361_ECG: AVColorTransferCharacteristic = 12;
+    #[c2rust::src_loc = "673:5"]
+    pub const AVCOL_TRC_IEC61966_2_4: AVColorTransferCharacteristic = 11;
+    #[c2rust::src_loc = "672:5"]
+    pub const AVCOL_TRC_LOG_SQRT: AVColorTransferCharacteristic = 10;
+    #[c2rust::src_loc = "671:5"]
+    pub const AVCOL_TRC_LOG: AVColorTransferCharacteristic = 9;
+    #[c2rust::src_loc = "670:5"]
+    pub const AVCOL_TRC_LINEAR: AVColorTransferCharacteristic = 8;
+    #[c2rust::src_loc = "669:5"]
+    pub const AVCOL_TRC_SMPTE240M: AVColorTransferCharacteristic = 7;
+    #[c2rust::src_loc = "668:5"]
+    pub const AVCOL_TRC_SMPTE170M: AVColorTransferCharacteristic = 6;
+    #[c2rust::src_loc = "667:5"]
+    pub const AVCOL_TRC_GAMMA28: AVColorTransferCharacteristic = 5;
+    #[c2rust::src_loc = "666:5"]
+    pub const AVCOL_TRC_GAMMA22: AVColorTransferCharacteristic = 4;
+    #[c2rust::src_loc = "665:5"]
+    pub const AVCOL_TRC_RESERVED: AVColorTransferCharacteristic = 3;
+    #[c2rust::src_loc = "664:5"]
+    pub const AVCOL_TRC_UNSPECIFIED: AVColorTransferCharacteristic = 2;
+    #[c2rust::src_loc = "663:5"]
+    pub const AVCOL_TRC_BT709: AVColorTransferCharacteristic = 1;
+    #[c2rust::src_loc = "662:5"]
+    pub const AVCOL_TRC_RESERVED0: AVColorTransferCharacteristic = 0;
+    #[c2rust::src_loc = "636:1"]
+    pub type AVColorPrimaries = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "654:5"]
+    pub const AVCOL_PRI_NB: AVColorPrimaries = 23;
+    #[c2rust::src_loc = "653:5"]
+    pub const AVCOL_PRI_JEDEC_P22: AVColorPrimaries = 22;
+    #[c2rust::src_loc = "652:5"]
+    pub const AVCOL_PRI_EBU3213: AVColorPrimaries = 22;
+    #[c2rust::src_loc = "651:5"]
+    pub const AVCOL_PRI_SMPTE432: AVColorPrimaries = 12;
+    #[c2rust::src_loc = "650:5"]
+    pub const AVCOL_PRI_SMPTE431: AVColorPrimaries = 11;
+    #[c2rust::src_loc = "649:5"]
+    pub const AVCOL_PRI_SMPTEST428_1: AVColorPrimaries = 10;
+    #[c2rust::src_loc = "648:5"]
+    pub const AVCOL_PRI_SMPTE428: AVColorPrimaries = 10;
+    #[c2rust::src_loc = "647:5"]
+    pub const AVCOL_PRI_BT2020: AVColorPrimaries = 9;
+    #[c2rust::src_loc = "646:5"]
+    pub const AVCOL_PRI_FILM: AVColorPrimaries = 8;
+    #[c2rust::src_loc = "645:5"]
+    pub const AVCOL_PRI_SMPTE240M: AVColorPrimaries = 7;
+    #[c2rust::src_loc = "644:5"]
+    pub const AVCOL_PRI_SMPTE170M: AVColorPrimaries = 6;
+    #[c2rust::src_loc = "643:5"]
+    pub const AVCOL_PRI_BT470BG: AVColorPrimaries = 5;
+    #[c2rust::src_loc = "641:5"]
+    pub const AVCOL_PRI_BT470M: AVColorPrimaries = 4;
+    #[c2rust::src_loc = "640:5"]
+    pub const AVCOL_PRI_RESERVED: AVColorPrimaries = 3;
+    #[c2rust::src_loc = "639:5"]
+    pub const AVCOL_PRI_UNSPECIFIED: AVColorPrimaries = 2;
+    #[c2rust::src_loc = "638:5"]
+    pub const AVCOL_PRI_BT709: AVColorPrimaries = 1;
+    #[c2rust::src_loc = "637:5"]
+    pub const AVCOL_PRI_RESERVED0: AVColorPrimaries = 0;
+    #[c2rust::src_loc = "732:1"]
+    pub type AVColorRange = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "768:5"]
+    pub const AVCOL_RANGE_NB: AVColorRange = 3;
+    #[c2rust::src_loc = "767:5"]
+    pub const AVCOL_RANGE_JPEG: AVColorRange = 2;
+    #[c2rust::src_loc = "750:5"]
+    pub const AVCOL_RANGE_MPEG: AVColorRange = 1;
+    #[c2rust::src_loc = "733:5"]
+    pub const AVCOL_RANGE_UNSPECIFIED: AVColorRange = 0;
 }
 #[c2rust::header_src = "/usr/include/sys/stat.h:37"]
 pub mod stat_h {
@@ -2875,6 +3113,10 @@ pub mod mathcalls_h {
         #[c2rust::src_loc = "177:1"]
         pub fn powf(__x: ::core::ffi::c_float, __y: ::core::ffi::c_float) -> ::core::ffi::c_float;
     }
+    extern "C" {
+        #[c2rust::src_loc = "219:1"]
+        pub fn floor(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
+    }
 }
 #[c2rust::header_src = "/usr/include/strings.h:37"]
 pub mod strings_h {
@@ -3176,6 +3418,285 @@ pub mod avformat_h {
         pub type AVCodecTag;
         #[c2rust::src_loc = "1959:1"]
         pub fn av_demuxer_iterate(opaque: *mut *mut ::core::ffi::c_void) -> *const AVInputFormat;
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1270:16"]
+    pub struct AVFormatContext {
+        pub av_class: *const AVClass,
+        pub iformat: *const AVInputFormat,
+        pub oformat: *const AVOutputFormat,
+        pub priv_data: *mut ::core::ffi::c_void,
+        pub pb: *mut AVIOContext,
+        pub ctx_flags: ::core::ffi::c_int,
+        pub nb_streams: ::core::ffi::c_uint,
+        pub streams: *mut *mut AVStream,
+        pub nb_stream_groups: ::core::ffi::c_uint,
+        pub stream_groups: *mut *mut AVStreamGroup,
+        pub nb_chapters: ::core::ffi::c_uint,
+        pub chapters: *mut *mut AVChapter,
+        pub url: *mut ::core::ffi::c_char,
+        pub start_time: int64_t,
+        pub duration: int64_t,
+        pub bit_rate: int64_t,
+        pub packet_size: ::core::ffi::c_uint,
+        pub max_delay: ::core::ffi::c_int,
+        pub flags: ::core::ffi::c_int,
+        pub probesize: int64_t,
+        pub max_analyze_duration: int64_t,
+        pub key: *const uint8_t,
+        pub keylen: ::core::ffi::c_int,
+        pub nb_programs: ::core::ffi::c_uint,
+        pub programs: *mut *mut AVProgram,
+        pub video_codec_id: AVCodecID,
+        pub audio_codec_id: AVCodecID,
+        pub subtitle_codec_id: AVCodecID,
+        pub data_codec_id: AVCodecID,
+        pub metadata: *mut AVDictionary,
+        pub start_time_realtime: int64_t,
+        pub fps_probe_size: ::core::ffi::c_int,
+        pub error_recognition: ::core::ffi::c_int,
+        pub interrupt_callback: AVIOInterruptCB,
+        pub debug: ::core::ffi::c_int,
+        pub max_streams: ::core::ffi::c_int,
+        pub max_index_size: ::core::ffi::c_uint,
+        pub max_picture_buffer: ::core::ffi::c_uint,
+        pub max_interleave_delta: int64_t,
+        pub max_ts_probe: ::core::ffi::c_int,
+        pub max_chunk_duration: ::core::ffi::c_int,
+        pub max_chunk_size: ::core::ffi::c_int,
+        pub max_probe_packets: ::core::ffi::c_int,
+        pub strict_std_compliance: ::core::ffi::c_int,
+        pub event_flags: ::core::ffi::c_int,
+        pub avoid_negative_ts: ::core::ffi::c_int,
+        pub audio_preload: ::core::ffi::c_int,
+        pub use_wallclock_as_timestamps: ::core::ffi::c_int,
+        pub skip_estimate_duration_from_pts: ::core::ffi::c_int,
+        pub avio_flags: ::core::ffi::c_int,
+        pub duration_estimation_method: AVDurationEstimationMethod,
+        pub skip_initial_bytes: int64_t,
+        pub correct_ts_overflow: ::core::ffi::c_uint,
+        pub seek2any: ::core::ffi::c_int,
+        pub flush_packets: ::core::ffi::c_int,
+        pub probe_score: ::core::ffi::c_int,
+        pub format_probesize: ::core::ffi::c_int,
+        pub codec_whitelist: *mut ::core::ffi::c_char,
+        pub format_whitelist: *mut ::core::ffi::c_char,
+        pub protocol_whitelist: *mut ::core::ffi::c_char,
+        pub protocol_blacklist: *mut ::core::ffi::c_char,
+        pub io_repositioned: ::core::ffi::c_int,
+        pub video_codec: *const AVCodec,
+        pub audio_codec: *const AVCodec,
+        pub subtitle_codec: *const AVCodec,
+        pub data_codec: *const AVCodec,
+        pub metadata_header_padding: ::core::ffi::c_int,
+        pub opaque: *mut ::core::ffi::c_void,
+        pub control_message_cb: av_format_control_message,
+        pub output_ts_offset: int64_t,
+        pub dump_separator: *mut uint8_t,
+        pub io_open: Option<
+            unsafe extern "C" fn(
+                *mut AVFormatContext,
+                *mut *mut AVIOContext,
+                *const ::core::ffi::c_char,
+                ::core::ffi::c_int,
+                *mut *mut AVDictionary,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub io_close2: Option<
+            unsafe extern "C" fn(*mut AVFormatContext, *mut AVIOContext) -> ::core::ffi::c_int,
+        >,
+        pub duration_probesize: int64_t,
+    }
+    #[c2rust::src_loc = "1240:1"]
+    pub type av_format_control_message = Option<
+        unsafe extern "C" fn(
+            *mut AVFormatContext,
+            ::core::ffi::c_int,
+            *mut ::core::ffi::c_void,
+            size_t,
+        ) -> ::core::ffi::c_int,
+    >;
+    #[c2rust::src_loc = "1250:1"]
+    pub type AVDurationEstimationMethod = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "1253:5"]
+    pub const AVFMT_DURATION_FROM_BITRATE: AVDurationEstimationMethod = 2;
+    #[c2rust::src_loc = "1252:5"]
+    pub const AVFMT_DURATION_FROM_STREAM: AVDurationEstimationMethod = 1;
+    #[c2rust::src_loc = "1251:5"]
+    pub const AVFMT_DURATION_FROM_PTS: AVDurationEstimationMethod = 0;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1194:16"]
+    pub struct AVProgram {
+        pub id: ::core::ffi::c_int,
+        pub flags: ::core::ffi::c_int,
+        pub discard: AVDiscard,
+        pub stream_index: *mut ::core::ffi::c_uint,
+        pub nb_stream_indexes: ::core::ffi::c_uint,
+        pub metadata: *mut AVDictionary,
+        pub program_num: ::core::ffi::c_int,
+        pub pmt_pid: ::core::ffi::c_int,
+        pub pcr_pid: ::core::ffi::c_int,
+        pub pmt_version: ::core::ffi::c_int,
+        pub start_time: int64_t,
+        pub end_time: int64_t,
+        pub pts_wrap_reference: int64_t,
+        pub pts_wrap_behavior: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1229:16"]
+    pub struct AVChapter {
+        pub id: int64_t,
+        pub time_base: AVRational,
+        pub start: int64_t,
+        pub end: int64_t,
+        pub metadata: *mut AVDictionary,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1100:16"]
+    pub struct AVStreamGroup {
+        pub av_class: *const AVClass,
+        pub priv_data: *mut ::core::ffi::c_void,
+        pub index: ::core::ffi::c_uint,
+        pub id: int64_t,
+        pub type_0: AVStreamGroupParamsType,
+        pub params: C2RustUnnamed_0,
+        pub metadata: *mut AVDictionary,
+        pub nb_streams: ::core::ffi::c_uint,
+        pub streams: *mut *mut AVStream,
+        pub disposition: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "746:16"]
+    pub struct AVStream {
+        pub av_class: *const AVClass,
+        pub index: ::core::ffi::c_int,
+        pub id: ::core::ffi::c_int,
+        pub codecpar: *mut AVCodecParameters,
+        pub priv_data: *mut ::core::ffi::c_void,
+        pub time_base: AVRational,
+        pub start_time: int64_t,
+        pub duration: int64_t,
+        pub nb_frames: int64_t,
+        pub disposition: ::core::ffi::c_int,
+        pub discard: AVDiscard,
+        pub sample_aspect_ratio: AVRational,
+        pub metadata: *mut AVDictionary,
+        pub avg_frame_rate: AVRational,
+        pub attached_pic: AVPacket,
+        pub event_flags: ::core::ffi::c_int,
+        pub r_frame_rate: AVRational,
+        pub pts_wrap_bits: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1132:5"]
+    pub union C2RustUnnamed_0 {
+        pub iamf_audio_element: *mut AVIAMFAudioElement,
+        pub iamf_mix_presentation: *mut AVIAMFMixPresentation,
+        pub tile_grid: *mut AVStreamGroupTileGrid,
+        pub lcevc: *mut AVStreamGroupLCEVC,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1072:16"]
+    pub struct AVStreamGroupLCEVC {
+        pub av_class: *const AVClass,
+        pub lcevc_index: ::core::ffi::c_uint,
+        pub width: ::core::ffi::c_int,
+        pub height: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "953:16"]
+    pub struct AVStreamGroupTileGrid {
+        pub av_class: *const AVClass,
+        pub nb_tiles: ::core::ffi::c_uint,
+        pub coded_width: ::core::ffi::c_int,
+        pub coded_height: ::core::ffi::c_int,
+        pub offsets: *mut C2RustUnnamed_1,
+        pub background: [uint8_t; 4],
+        pub horizontal_offset: ::core::ffi::c_int,
+        pub vertical_offset: ::core::ffi::c_int,
+        pub width: ::core::ffi::c_int,
+        pub height: ::core::ffi::c_int,
+        pub coded_side_data: *mut AVPacketSideData,
+        pub nb_coded_side_data: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "986:5"]
+    pub struct C2RustUnnamed_1 {
+        pub idx: ::core::ffi::c_uint,
+        pub horizontal: ::core::ffi::c_int,
+        pub vertical: ::core::ffi::c_int,
+    }
+    #[c2rust::src_loc = "1089:1"]
+    pub type AVStreamGroupParamsType = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "1094:5"]
+    pub const AV_STREAM_GROUP_PARAMS_LCEVC: AVStreamGroupParamsType = 4;
+    #[c2rust::src_loc = "1093:5"]
+    pub const AV_STREAM_GROUP_PARAMS_TILE_GRID: AVStreamGroupParamsType = 3;
+    #[c2rust::src_loc = "1092:5"]
+    pub const AV_STREAM_GROUP_PARAMS_IAMF_MIX_PRESENTATION: AVStreamGroupParamsType = 2;
+    #[c2rust::src_loc = "1091:5"]
+    pub const AV_STREAM_GROUP_PARAMS_IAMF_AUDIO_ELEMENT: AVStreamGroupParamsType = 1;
+    #[c2rust::src_loc = "1090:5"]
+    pub const AV_STREAM_GROUP_PARAMS_NONE: AVStreamGroupParamsType = 0;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "505:16"]
+    pub struct AVOutputFormat {
+        pub name: *const ::core::ffi::c_char,
+        pub long_name: *const ::core::ffi::c_char,
+        pub mime_type: *const ::core::ffi::c_char,
+        pub extensions: *const ::core::ffi::c_char,
+        pub audio_codec: AVCodecID,
+        pub video_codec: AVCodecID,
+        pub subtitle_codec: AVCodecID,
+        pub flags: ::core::ffi::c_int,
+        pub codec_tag: *const *const AVCodecTag,
+        pub priv_class: *const AVClass,
+    }
+    use super::__stddef_size_t_h::size_t;
+    use super::avio_h::{AVIOContext, AVIOInterruptCB};
+    use super::codec_h::AVCodec;
+    use super::codec_id_h::AVCodecID;
+    use super::codec_par_h::AVCodecParameters;
+    use super::defs_h::AVDiscard;
+    use super::dict_h::AVDictionary;
+    use super::packet_h::{AVPacket, AVPacketSideData};
+    use super::rational_h::AVRational;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "1098:8"]
+        pub type AVIAMFMixPresentation;
+        #[c2rust::src_loc = "1097:8"]
+        pub type AVIAMFAudioElement;
+        #[c2rust::src_loc = "2105:1"]
+        pub fn av_find_input_format(short_name: *const ::core::ffi::c_char)
+            -> *const AVInputFormat;
+        #[c2rust::src_loc = "2192:1"]
+        pub fn avformat_open_input(
+            ps: *mut *mut AVFormatContext,
+            url: *const ::core::ffi::c_char,
+            fmt: *const AVInputFormat,
+            options: *mut *mut AVDictionary,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2216:1"]
+        pub fn avformat_find_stream_info(
+            ic: *mut AVFormatContext,
+            options: *mut *mut AVDictionary,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2293:1"]
+        pub fn av_read_frame(s: *mut AVFormatContext, pkt: *mut AVPacket) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2375:1"]
+        pub fn avformat_close_input(s: *mut *mut AVFormatContext);
     }
 }
 #[c2rust::header_src = "/usr/include/libavutil/log.h:26"]
@@ -23618,9 +24139,34 @@ pub mod mman_h {
             __advice: ::core::ffi::c_int,
         ) -> ::core::ffi::c_int;
     }
+    #[c2rust::src_loc = "44:9"]
+    pub const MAP_FAILED: *mut ::core::ffi::c_void =
+        -(1 as ::core::ffi::c_int) as *mut ::core::ffi::c_void;
+    use super::types_h::__off64_t;
+    extern "C" {
+        #[c2rust::src_loc = "61:1"]
+        pub fn mmap(
+            __addr: *mut ::core::ffi::c_void,
+            __len: size_t,
+            __prot: ::core::ffi::c_int,
+            __flags: ::core::ffi::c_int,
+            __fd: ::core::ffi::c_int,
+            __offset: __off64_t,
+        ) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "76:1"]
+        pub fn munmap(__addr: *mut ::core::ffi::c_void, __len: size_t) -> ::core::ffi::c_int;
+    }
 }
 #[c2rust::header_src = "/usr/include/bits/mman-linux.h:27"]
 pub mod mman_linux_h {
+    #[c2rust::src_loc = "32:9"]
+    pub const PROT_READ: ::core::ffi::c_int = 0x1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "43:9"]
+    pub const MAP_PRIVATE: ::core::ffi::c_int = 0x2 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "50:9"]
+    pub const MAP_FIXED: ::core::ffi::c_int = 0x10 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "91:10"]
+    pub const MADV_WILLNEED: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
     #[c2rust::src_loc = "99:10"]
     pub const MADV_HUGEPAGE: ::core::ffi::c_int = 14 as ::core::ffi::c_int;
 }
@@ -23777,5 +24323,3251 @@ pub mod rational_h {
     pub struct AVRational {
         pub num: ::core::ffi::c_int,
         pub den: ::core::ffi::c_int,
+    }
+}
+
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/extras/avisynth_c.h:27"]
+pub mod avisynth_c_h {
+    #[c2rust::src_loc = "812:1"]
+    pub type avs_is_y_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "618:16"]
+    pub struct AVS_VideoInfo {
+        pub width: ::core::ffi::c_int,
+        pub height: ::core::ffi::c_int,
+        pub fps_numerator: ::core::ffi::c_uint,
+        pub fps_denominator: ::core::ffi::c_uint,
+        pub num_frames: ::core::ffi::c_int,
+        pub pixel_type: ::core::ffi::c_int,
+        pub audio_samples_per_second: ::core::ffi::c_int,
+        pub sample_type: ::core::ffi::c_int,
+        pub num_audio_samples: int64_t,
+        pub nchannels: ::core::ffi::c_int,
+        pub image_type: ::core::ffi::c_int,
+    }
+    #[c2rust::src_loc = "810:1"]
+    pub type avs_is_420_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "808:1"]
+    pub type avs_is_422_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "806:1"]
+    pub type avs_is_444_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "800:1"]
+    pub type avs_is_y16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "799:1"]
+    pub type avs_is_yuv420p16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "798:1"]
+    pub type avs_is_yuv422p16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "797:1"]
+    pub type avs_is_yuv444p16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "795:1"]
+    pub type avs_is_rgb64_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "793:1"]
+    pub type avs_is_rgb48_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "880:1"]
+    pub type avs_get_read_ptr_p_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoFrame, ::core::ffi::c_int) -> *const BYTE>;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "857:16"]
+    pub struct AVS_VideoFrame {
+        pub refcount: ::core::ffi::c_long,
+        pub vfb: *mut AVS_VideoFrameBuffer,
+        pub offset: ::core::ffi::c_int,
+        pub pitch: ::core::ffi::c_int,
+        pub row_size: ::core::ffi::c_int,
+        pub height: ::core::ffi::c_int,
+        pub offsetU: ::core::ffi::c_int,
+        pub offsetV: ::core::ffi::c_int,
+        pub pitchUV: ::core::ffi::c_int,
+        pub row_sizeUV: ::core::ffi::c_int,
+        pub heightUV: ::core::ffi::c_int,
+        pub offsetA: ::core::ffi::c_int,
+        pub pitchA: ::core::ffi::c_int,
+        pub row_sizeA: ::core::ffi::c_int,
+        pub properties: *mut ::core::ffi::c_void,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "841:16"]
+    pub struct AVS_VideoFrameBuffer {
+        pub data: *mut BYTE,
+        pub data_size: ::core::ffi::c_int,
+        pub sequence_number: ::core::ffi::c_long,
+        pub refcount: ::core::ffi::c_long,
+        pub device: *mut ::core::ffi::c_void,
+    }
+    #[c2rust::src_loc = "257:1"]
+    pub type BYTE = uint8_t;
+    #[c2rust::src_loc = "874:1"]
+    pub type avs_get_pitch_p_func = Option<
+        unsafe extern "C" fn(*const AVS_VideoFrame, ::core::ffi::c_int) -> ::core::ffi::c_int,
+    >;
+    #[c2rust::src_loc = "665:1"]
+    pub type avs_is_y8_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "663:1"]
+    pub type avs_is_yv411_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "661:1"]
+    pub type avs_is_yv12_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "659:1"]
+    pub type avs_is_yv16_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "657:1"]
+    pub type avs_is_yv24_func =
+        Option<unsafe extern "C" fn(*const AVS_VideoInfo) -> ::core::ffi::c_int>;
+    #[c2rust::src_loc = "1022:1"]
+    pub type avs_take_clip_func =
+        Option<unsafe extern "C" fn(AVS_Value, *mut AVS_ScriptEnvironment) -> *mut AVS_Clip>;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "994:8"]
+    pub struct AVS_Value {
+        pub type_0: ::core::ffi::c_short,
+        pub array_size: ::core::ffi::c_short,
+        pub d: C2RustUnnamed_0,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "998:3"]
+    pub union C2RustUnnamed_0 {
+        pub clip: *mut ::core::ffi::c_void,
+        pub boolean: ::core::ffi::c_char,
+        pub integer: ::core::ffi::c_int,
+        pub floating_pt: ::core::ffi::c_float,
+        pub string: *const ::core::ffi::c_char,
+        pub array: *const AVS_Value,
+        pub function: *mut ::core::ffi::c_void,
+        pub longlong: int64_t,
+        pub double_pt: ::core::ffi::c_double,
+    }
+    #[c2rust::src_loc = "937:1"]
+    pub type avs_release_video_frame_func = Option<unsafe extern "C" fn(*mut AVS_VideoFrame) -> ()>;
+    #[c2rust::src_loc = "1021:1"]
+    pub type avs_release_value_func = Option<unsafe extern "C" fn(AVS_Value) -> ()>;
+    #[c2rust::src_loc = "1079:1"]
+    pub type avs_release_clip_func = Option<unsafe extern "C" fn(*mut AVS_Clip) -> ()>;
+    #[c2rust::src_loc = "1199:1"]
+    pub type avs_invoke_func = Option<
+        unsafe extern "C" fn(
+            *mut AVS_ScriptEnvironment,
+            *const ::core::ffi::c_char,
+            AVS_Value,
+            *mut *const ::core::ffi::c_char,
+        ) -> AVS_Value,
+    >;
+    #[c2rust::src_loc = "1197:1"]
+    pub type avs_function_exists_func = Option<
+        unsafe extern "C" fn(
+            *mut AVS_ScriptEnvironment,
+            *const ::core::ffi::c_char,
+        ) -> ::core::ffi::c_int,
+    >;
+    #[c2rust::src_loc = "1084:1"]
+    pub type avs_get_video_info_func =
+        Option<unsafe extern "C" fn(*mut AVS_Clip) -> *const AVS_VideoInfo>;
+    #[c2rust::src_loc = "1088:1"]
+    pub type avs_get_frame_func =
+        Option<unsafe extern "C" fn(*mut AVS_Clip, ::core::ffi::c_int) -> *mut AVS_VideoFrame>;
+    #[c2rust::src_loc = "1183:1"]
+    pub type avs_get_error_func =
+        Option<unsafe extern "C" fn(*mut AVS_ScriptEnvironment) -> *const ::core::ffi::c_char>;
+    #[c2rust::src_loc = "1265:1"]
+    pub type avs_delete_script_environment_func =
+        Option<unsafe extern "C" fn(*mut AVS_ScriptEnvironment) -> ()>;
+    #[c2rust::src_loc = "1257:1"]
+    pub type avs_create_script_environment_func =
+        Option<unsafe extern "C" fn(::core::ffi::c_int) -> *mut AVS_ScriptEnvironment>;
+    #[c2rust::src_loc = "1082:1"]
+    pub type avs_clip_get_error_func =
+        Option<unsafe extern "C" fn(*mut AVS_Clip) -> *const ::core::ffi::c_char>;
+    #[c2rust::src_loc = "282:7"]
+    pub const AVS_PLANAR_V: C2RustUnnamed_1 = 4;
+    #[c2rust::src_loc = "281:7"]
+    pub const AVS_PLANAR_U: C2RustUnnamed_1 = 2;
+    #[c2rust::src_loc = "280:7"]
+    pub const AVS_PLANAR_Y: C2RustUnnamed_1 = 1;
+    #[c2rust::src_loc = "287:7"]
+    pub const AVS_PLANAR_A: C2RustUnnamed_1 = 16;
+    #[c2rust::src_loc = "288:7"]
+    pub const AVS_PLANAR_R: C2RustUnnamed_1 = 32;
+    #[c2rust::src_loc = "290:7"]
+    pub const AVS_PLANAR_B: C2RustUnnamed_1 = 128;
+    #[c2rust::src_loc = "330:5"]
+    pub const AVS_CS_PLANAR_FILTER: C2RustUnnamed_2 = -25;
+    #[c2rust::src_loc = "361:3"]
+    pub const AVS_CS_YV411: C2RustUnnamed_3 = -1610611959;
+    #[c2rust::src_loc = "329:5"]
+    pub const AVS_CS_PLANAR_MASK: C2RustUnnamed_2 = -133757177;
+    #[c2rust::src_loc = "351:3"]
+    pub const AVS_CS_YUY2: C2RustUnnamed_3 = 1610612740;
+    #[c2rust::src_loc = "363:3"]
+    pub const AVS_CS_Y8: C2RustUnnamed_3 = -536870912;
+    #[c2rust::src_loc = "358:3"]
+    pub const AVS_CS_YV12: C2RustUnnamed_3 = -1610612728;
+    #[c2rust::src_loc = "357:3"]
+    pub const AVS_CS_YV16: C2RustUnnamed_3 = -1610611960;
+    #[c2rust::src_loc = "356:3"]
+    pub const AVS_CS_YV24: C2RustUnnamed_3 = -1610611957;
+    #[c2rust::src_loc = "322:5"]
+    pub const AVS_CS_SAMPLE_BITS_8: C2RustUnnamed_2 = 0;
+    #[c2rust::src_loc = "321:5"]
+    pub const AVS_CS_SAMPLE_BITS_MASK: C2RustUnnamed_2 = 458752;
+    #[c2rust::src_loc = "349:3"]
+    pub const AVS_CS_BGR24: C2RustUnnamed_3 = 1342177281;
+    #[c2rust::src_loc = "350:3"]
+    pub const AVS_CS_BGR32: C2RustUnnamed_3 = 1342177282;
+    #[c2rust::src_loc = "444:3"]
+    pub const AVS_IT_TFF: C2RustUnnamed_4 = 2;
+    #[c2rust::src_loc = "445:3"]
+    pub const AVS_IT_FIELDBASED: C2RustUnnamed_4 = 4;
+    #[c2rust::src_loc = "280:1"]
+    pub type C2RustUnnamed_1 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "294:7"]
+    pub const AVS_PLANAR_B_ALIGNED: C2RustUnnamed_1 = 136;
+    #[c2rust::src_loc = "293:7"]
+    pub const AVS_PLANAR_G_ALIGNED: C2RustUnnamed_1 = 72;
+    #[c2rust::src_loc = "292:7"]
+    pub const AVS_PLANAR_R_ALIGNED: C2RustUnnamed_1 = 40;
+    #[c2rust::src_loc = "291:7"]
+    pub const AVS_PLANAR_A_ALIGNED: C2RustUnnamed_1 = 24;
+    #[c2rust::src_loc = "289:7"]
+    pub const AVS_PLANAR_G: C2RustUnnamed_1 = 64;
+    #[c2rust::src_loc = "286:7"]
+    pub const AVS_PLANAR_V_ALIGNED: C2RustUnnamed_1 = 12;
+    #[c2rust::src_loc = "285:7"]
+    pub const AVS_PLANAR_U_ALIGNED: C2RustUnnamed_1 = 10;
+    #[c2rust::src_loc = "284:7"]
+    pub const AVS_PLANAR_Y_ALIGNED: C2RustUnnamed_1 = 9;
+    #[c2rust::src_loc = "283:7"]
+    pub const AVS_PLANAR_ALIGNED: C2RustUnnamed_1 = 8;
+    #[c2rust::src_loc = "297:1"]
+    pub type C2RustUnnamed_2 = ::core::ffi::c_int;
+    #[c2rust::src_loc = "343:5"]
+    pub const AVS_CS_GENERIC_YUVA444: C2RustUnnamed_2 = -2013265141;
+    #[c2rust::src_loc = "342:5"]
+    pub const AVS_CS_GENERIC_YUVA422: C2RustUnnamed_2 = -2013265144;
+    #[c2rust::src_loc = "341:5"]
+    pub const AVS_CS_GENERIC_YUVA420: C2RustUnnamed_2 = -2013265912;
+    #[c2rust::src_loc = "340:5"]
+    pub const AVS_CS_GENERIC_RGBAP: C2RustUnnamed_2 = -1879048190;
+    #[c2rust::src_loc = "339:5"]
+    pub const AVS_CS_GENERIC_RGBP: C2RustUnnamed_2 = -1879048191;
+    #[c2rust::src_loc = "338:5"]
+    pub const AVS_CS_GENERIC_Y: C2RustUnnamed_2 = -536870912;
+    #[c2rust::src_loc = "337:5"]
+    pub const AVS_CS_GENERIC_YUV444: C2RustUnnamed_2 = -1610611957;
+    #[c2rust::src_loc = "336:5"]
+    pub const AVS_CS_GENERIC_YUV422: C2RustUnnamed_2 = -1610611960;
+    #[c2rust::src_loc = "335:5"]
+    pub const AVS_CS_GENERIC_YUV420: C2RustUnnamed_2 = -1610612728;
+    #[c2rust::src_loc = "333:5"]
+    pub const AVS_CS_RGBA_TYPE: C2RustUnnamed_2 = 2;
+    #[c2rust::src_loc = "332:5"]
+    pub const AVS_CS_RGB_TYPE: C2RustUnnamed_2 = 1;
+    #[c2rust::src_loc = "327:5"]
+    pub const AVS_CS_SAMPLE_BITS_32: C2RustUnnamed_2 = 131072;
+    #[c2rust::src_loc = "326:5"]
+    pub const AVS_CS_SAMPLE_BITS_16: C2RustUnnamed_2 = 65536;
+    #[c2rust::src_loc = "325:5"]
+    pub const AVS_CS_SAMPLE_BITS_14: C2RustUnnamed_2 = 458752;
+    #[c2rust::src_loc = "324:5"]
+    pub const AVS_CS_SAMPLE_BITS_12: C2RustUnnamed_2 = 393216;
+    #[c2rust::src_loc = "323:5"]
+    pub const AVS_CS_SAMPLE_BITS_10: C2RustUnnamed_2 = 327680;
+    #[c2rust::src_loc = "319:5"]
+    pub const AVS_CS_SUB_HEIGHT_4: C2RustUnnamed_2 = 256;
+    #[c2rust::src_loc = "318:5"]
+    pub const AVS_CS_SUB_HEIGHT_2: C2RustUnnamed_2 = 0;
+    #[c2rust::src_loc = "317:5"]
+    pub const AVS_CS_SUB_HEIGHT_1: C2RustUnnamed_2 = 768;
+    #[c2rust::src_loc = "316:5"]
+    pub const AVS_CS_SUB_HEIGHT_MASK: C2RustUnnamed_2 = 1792;
+    #[c2rust::src_loc = "314:5"]
+    pub const AVS_CS_UPLANEFIRST: C2RustUnnamed_2 = 16;
+    #[c2rust::src_loc = "313:5"]
+    pub const AVS_CS_VPLANEFIRST: C2RustUnnamed_2 = 8;
+    #[c2rust::src_loc = "311:5"]
+    pub const AVS_CS_SUB_WIDTH_4: C2RustUnnamed_2 = 1;
+    #[c2rust::src_loc = "310:5"]
+    pub const AVS_CS_SUB_WIDTH_2: C2RustUnnamed_2 = 0;
+    #[c2rust::src_loc = "309:5"]
+    pub const AVS_CS_SUB_WIDTH_1: C2RustUnnamed_2 = 3;
+    #[c2rust::src_loc = "308:5"]
+    pub const AVS_CS_SUB_WIDTH_MASK: C2RustUnnamed_2 = 7;
+    #[c2rust::src_loc = "306:5"]
+    pub const AVS_CS_SHIFT_SAMPLE_BITS: C2RustUnnamed_2 = 16;
+    #[c2rust::src_loc = "305:5"]
+    pub const AVS_CS_SHIFT_SUB_HEIGHT: C2RustUnnamed_2 = 8;
+    #[c2rust::src_loc = "304:5"]
+    pub const AVS_CS_SHIFT_SUB_WIDTH: C2RustUnnamed_2 = 0;
+    #[c2rust::src_loc = "302:5"]
+    pub const AVS_CS_PLANAR: C2RustUnnamed_2 = -2147483648;
+    #[c2rust::src_loc = "301:5"]
+    pub const AVS_CS_INTERLEAVED: C2RustUnnamed_2 = 1073741824;
+    #[c2rust::src_loc = "300:5"]
+    pub const AVS_CS_YUV: C2RustUnnamed_2 = 536870912;
+    #[c2rust::src_loc = "299:5"]
+    pub const AVS_CS_BGR: C2RustUnnamed_2 = 268435456;
+    #[c2rust::src_loc = "298:5"]
+    pub const AVS_CS_YUVA: C2RustUnnamed_2 = 134217728;
+    #[c2rust::src_loc = "347:1"]
+    pub type C2RustUnnamed_3 = ::core::ffi::c_int;
+    #[c2rust::src_loc = "438:3"]
+    pub const AVS_CS_YUVA420PS: C2RustUnnamed_3 = -2013134840;
+    #[c2rust::src_loc = "437:3"]
+    pub const AVS_CS_YUVA422PS: C2RustUnnamed_3 = -2013134072;
+    #[c2rust::src_loc = "436:3"]
+    pub const AVS_CS_YUVA444PS: C2RustUnnamed_3 = -2013134069;
+    #[c2rust::src_loc = "434:3"]
+    pub const AVS_CS_YUVA420P16: C2RustUnnamed_3 = -2013200376;
+    #[c2rust::src_loc = "433:3"]
+    pub const AVS_CS_YUVA422P16: C2RustUnnamed_3 = -2013199608;
+    #[c2rust::src_loc = "432:3"]
+    pub const AVS_CS_YUVA444P16: C2RustUnnamed_3 = -2013199605;
+    #[c2rust::src_loc = "430:3"]
+    pub const AVS_CS_YUVA420P14: C2RustUnnamed_3 = -2012807160;
+    #[c2rust::src_loc = "429:3"]
+    pub const AVS_CS_YUVA422P14: C2RustUnnamed_3 = -2012806392;
+    #[c2rust::src_loc = "428:3"]
+    pub const AVS_CS_YUVA444P14: C2RustUnnamed_3 = -2012806389;
+    #[c2rust::src_loc = "426:3"]
+    pub const AVS_CS_YUVA420P12: C2RustUnnamed_3 = -2012872696;
+    #[c2rust::src_loc = "425:3"]
+    pub const AVS_CS_YUVA422P12: C2RustUnnamed_3 = -2012871928;
+    #[c2rust::src_loc = "424:3"]
+    pub const AVS_CS_YUVA444P12: C2RustUnnamed_3 = -2012871925;
+    #[c2rust::src_loc = "422:3"]
+    pub const AVS_CS_YUVA420P10: C2RustUnnamed_3 = -2012938232;
+    #[c2rust::src_loc = "421:3"]
+    pub const AVS_CS_YUVA422P10: C2RustUnnamed_3 = -2012937464;
+    #[c2rust::src_loc = "420:3"]
+    pub const AVS_CS_YUVA444P10: C2RustUnnamed_3 = -2012937461;
+    #[c2rust::src_loc = "418:3"]
+    pub const AVS_CS_YUVA420: C2RustUnnamed_3 = -2013265912;
+    #[c2rust::src_loc = "417:3"]
+    pub const AVS_CS_YUVA422: C2RustUnnamed_3 = -2013265144;
+    #[c2rust::src_loc = "416:3"]
+    pub const AVS_CS_YUVA444: C2RustUnnamed_3 = -2013265141;
+    #[c2rust::src_loc = "413:3"]
+    pub const AVS_CS_RGBAPS: C2RustUnnamed_3 = -1878917118;
+    #[c2rust::src_loc = "412:3"]
+    pub const AVS_CS_RGBAP16: C2RustUnnamed_3 = -1878982654;
+    #[c2rust::src_loc = "411:3"]
+    pub const AVS_CS_RGBAP14: C2RustUnnamed_3 = -1878589438;
+    #[c2rust::src_loc = "410:3"]
+    pub const AVS_CS_RGBAP12: C2RustUnnamed_3 = -1878654974;
+    #[c2rust::src_loc = "409:3"]
+    pub const AVS_CS_RGBAP10: C2RustUnnamed_3 = -1878720510;
+    #[c2rust::src_loc = "408:3"]
+    pub const AVS_CS_RGBAP: C2RustUnnamed_3 = -1879048190;
+    #[c2rust::src_loc = "405:3"]
+    pub const AVS_CS_RGBPS: C2RustUnnamed_3 = -1878917119;
+    #[c2rust::src_loc = "404:3"]
+    pub const AVS_CS_RGBP16: C2RustUnnamed_3 = -1878982655;
+    #[c2rust::src_loc = "403:3"]
+    pub const AVS_CS_RGBP14: C2RustUnnamed_3 = -1878589439;
+    #[c2rust::src_loc = "402:3"]
+    pub const AVS_CS_RGBP12: C2RustUnnamed_3 = -1878654975;
+    #[c2rust::src_loc = "401:3"]
+    pub const AVS_CS_RGBP10: C2RustUnnamed_3 = -1878720511;
+    #[c2rust::src_loc = "400:3"]
+    pub const AVS_CS_RGBP: C2RustUnnamed_3 = -1879048191;
+    #[c2rust::src_loc = "396:3"]
+    pub const AVS_CS_BGR64: C2RustUnnamed_3 = 1342242818;
+    #[c2rust::src_loc = "395:3"]
+    pub const AVS_CS_BGR48: C2RustUnnamed_3 = 1342242817;
+    #[c2rust::src_loc = "392:3"]
+    pub const AVS_CS_Y32: C2RustUnnamed_3 = -536739840;
+    #[c2rust::src_loc = "391:3"]
+    pub const AVS_CS_YUV420PS: C2RustUnnamed_3 = -1610481656;
+    #[c2rust::src_loc = "390:3"]
+    pub const AVS_CS_YUV422PS: C2RustUnnamed_3 = -1610480888;
+    #[c2rust::src_loc = "389:3"]
+    pub const AVS_CS_YUV444PS: C2RustUnnamed_3 = -1610480885;
+    #[c2rust::src_loc = "386:3"]
+    pub const AVS_CS_Y16: C2RustUnnamed_3 = -536805376;
+    #[c2rust::src_loc = "385:3"]
+    pub const AVS_CS_YUV420P16: C2RustUnnamed_3 = -1610547192;
+    #[c2rust::src_loc = "384:3"]
+    pub const AVS_CS_YUV422P16: C2RustUnnamed_3 = -1610546424;
+    #[c2rust::src_loc = "383:3"]
+    pub const AVS_CS_YUV444P16: C2RustUnnamed_3 = -1610546421;
+    #[c2rust::src_loc = "381:3"]
+    pub const AVS_CS_Y14: C2RustUnnamed_3 = -536412160;
+    #[c2rust::src_loc = "380:3"]
+    pub const AVS_CS_YUV420P14: C2RustUnnamed_3 = -1610153976;
+    #[c2rust::src_loc = "379:3"]
+    pub const AVS_CS_YUV422P14: C2RustUnnamed_3 = -1610153208;
+    #[c2rust::src_loc = "378:3"]
+    pub const AVS_CS_YUV444P14: C2RustUnnamed_3 = -1610153205;
+    #[c2rust::src_loc = "376:3"]
+    pub const AVS_CS_Y12: C2RustUnnamed_3 = -536477696;
+    #[c2rust::src_loc = "375:3"]
+    pub const AVS_CS_YUV420P12: C2RustUnnamed_3 = -1610219512;
+    #[c2rust::src_loc = "374:3"]
+    pub const AVS_CS_YUV422P12: C2RustUnnamed_3 = -1610218744;
+    #[c2rust::src_loc = "373:3"]
+    pub const AVS_CS_YUV444P12: C2RustUnnamed_3 = -1610218741;
+    #[c2rust::src_loc = "371:3"]
+    pub const AVS_CS_Y10: C2RustUnnamed_3 = -536543232;
+    #[c2rust::src_loc = "370:3"]
+    pub const AVS_CS_YUV420P10: C2RustUnnamed_3 = -1610285048;
+    #[c2rust::src_loc = "369:3"]
+    pub const AVS_CS_YUV422P10: C2RustUnnamed_3 = -1610284280;
+    #[c2rust::src_loc = "368:3"]
+    pub const AVS_CS_YUV444P10: C2RustUnnamed_3 = -1610284277;
+    #[c2rust::src_loc = "362:3"]
+    pub const AVS_CS_YUV9: C2RustUnnamed_3 = -1610612471;
+    #[c2rust::src_loc = "360:3"]
+    pub const AVS_CS_IYUV: C2RustUnnamed_3 = -1610612720;
+    #[c2rust::src_loc = "359:3"]
+    pub const AVS_CS_I420: C2RustUnnamed_3 = -1610612720;
+    #[c2rust::src_loc = "354:3"]
+    pub const AVS_CS_RAW32: C2RustUnnamed_3 = 1073741856;
+    #[c2rust::src_loc = "348:3"]
+    pub const AVS_CS_UNKNOWN: C2RustUnnamed_3 = 0;
+    #[c2rust::src_loc = "442:1"]
+    pub type C2RustUnnamed_4 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "443:3"]
+    pub const AVS_IT_BFF: C2RustUnnamed_4 = 1;
+    #[inline]
+    #[c2rust::src_loc = "636:1"]
+    pub unsafe extern "C" fn avs_has_video(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).width != 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "645:1"]
+    pub unsafe extern "C" fn avs_is_rgb24(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_BGR24 as ::core::ffi::c_int
+            == AVS_CS_BGR24 as ::core::ffi::c_int
+            && (*p).pixel_type & AVS_CS_SAMPLE_BITS_MASK as ::core::ffi::c_int
+                == AVS_CS_SAMPLE_BITS_8 as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "648:1"]
+    pub unsafe extern "C" fn avs_is_rgb32(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_BGR32 as ::core::ffi::c_int
+            == AVS_CS_BGR32 as ::core::ffi::c_int
+            && (*p).pixel_type & AVS_CS_SAMPLE_BITS_MASK as ::core::ffi::c_int
+                == AVS_CS_SAMPLE_BITS_8 as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "654:1"]
+    pub unsafe extern "C" fn avs_is_yuy2(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_YUY2 as ::core::ffi::c_int
+            == AVS_CS_YUY2 as ::core::ffi::c_int) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "668:1"]
+    pub unsafe extern "C" fn avs_is_yv24(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
+            == AVS_CS_YV24 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "671:1"]
+    pub unsafe extern "C" fn avs_is_yv16(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
+            == AVS_CS_YV16 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "674:1"]
+    pub unsafe extern "C" fn avs_is_yv12(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
+            == AVS_CS_YV12 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "677:1"]
+    pub unsafe extern "C" fn avs_is_yv411(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
+            == AVS_CS_YV411 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "680:1"]
+    pub unsafe extern "C" fn avs_is_y8(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).pixel_type & AVS_CS_PLANAR_MASK as ::core::ffi::c_int
+            == AVS_CS_Y8 as ::core::ffi::c_int & AVS_CS_PLANAR_FILTER as ::core::ffi::c_int)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "709:1"]
+    pub unsafe extern "C" fn avs_is_field_based(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).image_type & AVS_IT_FIELDBASED as ::core::ffi::c_int != 0)
+            as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "724:1"]
+    pub unsafe extern "C" fn avs_is_tff(mut p: *const AVS_VideoInfo) -> ::core::ffi::c_int {
+        return ((*p).image_type & AVS_IT_TFF as ::core::ffi::c_int != 0) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "883:1"]
+    pub unsafe extern "C" fn avs_get_pitch_p(
+        mut p: *const AVS_VideoFrame,
+        mut plane: ::core::ffi::c_int,
+    ) -> ::core::ffi::c_int {
+        match plane {
+            2 | 4 => return (*p).pitchUV,
+            16 => return (*p).pitchA,
+            _ => {}
+        }
+        return (*p).pitch;
+    }
+    #[inline]
+    #[c2rust::src_loc = "916:1"]
+    pub unsafe extern "C" fn avs_get_read_ptr_p(
+        mut p: *const AVS_VideoFrame,
+        mut plane: ::core::ffi::c_int,
+    ) -> *const BYTE {
+        match plane {
+            2 | 128 => return (*(*p).vfb).data.offset((*p).offsetU as isize),
+            4 | 32 => return (*(*p).vfb).data.offset((*p).offsetV as isize),
+            16 => return (*(*p).vfb).data.offset((*p).offsetA as isize),
+            _ => {}
+        }
+        return (*(*p).vfb).data.offset((*p).offset as isize);
+    }
+    #[inline]
+    #[c2rust::src_loc = "1028:1"]
+    pub unsafe extern "C" fn avs_is_clip(mut v: AVS_Value) -> ::core::ffi::c_int {
+        return (v.type_0 as ::core::ffi::c_int == 'c' as i32) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1030:1"]
+    pub unsafe extern "C" fn avs_is_int(mut v: AVS_Value) -> ::core::ffi::c_int {
+        return (v.type_0 as ::core::ffi::c_int == 'i' as i32) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1031:1"]
+    pub unsafe extern "C" fn avs_is_float(mut v: AVS_Value) -> ::core::ffi::c_int {
+        return (v.type_0 as ::core::ffi::c_int == 'f' as i32
+            || v.type_0 as ::core::ffi::c_int == 'i' as i32) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1032:1"]
+    pub unsafe extern "C" fn avs_is_string(mut v: AVS_Value) -> ::core::ffi::c_int {
+        return (v.type_0 as ::core::ffi::c_int == 's' as i32) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1034:1"]
+    pub unsafe extern "C" fn avs_is_error(mut v: AVS_Value) -> ::core::ffi::c_int {
+        return (v.type_0 as ::core::ffi::c_int == 'e' as i32) as ::core::ffi::c_int;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1038:1"]
+    pub unsafe extern "C" fn avs_as_int(mut v: AVS_Value) -> ::core::ffi::c_int {
+        return v.d.integer;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1040:1"]
+    pub unsafe extern "C" fn avs_as_string(mut v: AVS_Value) -> *const ::core::ffi::c_char {
+        return if avs_is_error(v) != 0 || avs_is_string(v) != 0 {
+            v.d.string
+        } else {
+            0 as *const ::core::ffi::c_char
+        };
+    }
+    #[inline]
+    #[c2rust::src_loc = "1042:1"]
+    pub unsafe extern "C" fn avs_as_float(mut v: AVS_Value) -> ::core::ffi::c_double {
+        return (if avs_is_int(v) != 0 {
+            v.d.integer as ::core::ffi::c_float
+        } else {
+            v.d.floating_pt
+        }) as ::core::ffi::c_double;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1044:1"]
+    pub unsafe extern "C" fn avs_as_error(mut v: AVS_Value) -> *const ::core::ffi::c_char {
+        return if avs_is_error(v) != 0 {
+            v.d.string
+        } else {
+            0 as *const ::core::ffi::c_char
+        };
+    }
+    #[inline]
+    #[c2rust::src_loc = "1055:1"]
+    pub unsafe extern "C" fn avs_new_value_bool(mut v0: ::core::ffi::c_int) -> AVS_Value {
+        let mut v: AVS_Value = AVS_Value {
+            type_0: 0,
+            array_size: 0,
+            d: C2RustUnnamed_0 {
+                clip: 0 as *mut ::core::ffi::c_void,
+            },
+        };
+        v.type_0 = 'b' as i32 as ::core::ffi::c_short;
+        v.d.boolean = (if v0 == 0 as ::core::ffi::c_int {
+            0 as ::core::ffi::c_int
+        } else {
+            1 as ::core::ffi::c_int
+        }) as ::core::ffi::c_char;
+        return v;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1059:1"]
+    pub unsafe extern "C" fn avs_new_value_string(mut v0: *const ::core::ffi::c_char) -> AVS_Value {
+        let mut v: AVS_Value = AVS_Value {
+            type_0: 0,
+            array_size: 0,
+            d: C2RustUnnamed_0 {
+                clip: 0 as *mut ::core::ffi::c_void,
+            },
+        };
+        v.type_0 = 's' as i32 as ::core::ffi::c_short;
+        v.d.string = v0;
+        return v;
+    }
+    #[inline]
+    #[c2rust::src_loc = "1070:1"]
+    pub unsafe extern "C" fn avs_new_value_array(
+        mut v0: *mut AVS_Value,
+        mut size: ::core::ffi::c_int,
+    ) -> AVS_Value {
+        let mut v: AVS_Value = AVS_Value {
+            type_0: 0,
+            array_size: 0,
+            d: C2RustUnnamed_0 {
+                clip: 0 as *mut ::core::ffi::c_void,
+            },
+        };
+        v.type_0 = 'a' as i32 as ::core::ffi::c_short;
+        v.d.array = v0;
+        v.array_size = size as ::core::ffi::c_short;
+        return v;
+    }
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "610:16"]
+        pub type AVS_ScriptEnvironment;
+        #[c2rust::src_loc = "609:16"]
+        pub type AVS_Clip;
+    }
+}
+#[c2rust::header_src = "/usr/include/bits/dlfcn.h:27"]
+pub mod bits_dlfcn_h {
+    #[c2rust::src_loc = "25:9"]
+    pub const RTLD_NOW: ::core::ffi::c_int = 0x2 as ::core::ffi::c_int;
+}
+#[c2rust::header_src = "/usr/include/dlfcn.h:27"]
+pub mod dlfcn_h {
+    extern "C" {
+        #[c2rust::src_loc = "56:1"]
+        pub fn dlopen(
+            __file: *const ::core::ffi::c_char,
+            __mode: ::core::ffi::c_int,
+        ) -> *mut ::core::ffi::c_void;
+        #[c2rust::src_loc = "60:1"]
+        pub fn dlclose(__handle: *mut ::core::ffi::c_void) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "64:1"]
+        pub fn dlsym(
+            __handle: *mut ::core::ffi::c_void,
+            __name: *const ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_void;
+    }
+}
+#[c2rust::header_src = "/usr/include/bits/confname.h:27"]
+pub mod confname_h {
+    #[c2rust::src_loc = "133:5"]
+    pub const _SC_PAGESIZE: C2RustUnnamed = 30;
+    #[c2rust::src_loc = "71:1"]
+    pub type C2RustUnnamed = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "534:5"]
+    pub const _SC_SIGSTKSZ: C2RustUnnamed = 250;
+    #[c2rust::src_loc = "531:5"]
+    pub const _SC_MINSIGSTKSZ: C2RustUnnamed = 249;
+    #[c2rust::src_loc = "528:5"]
+    pub const _SC_THREAD_ROBUST_PRIO_PROTECT: C2RustUnnamed = 248;
+    #[c2rust::src_loc = "526:5"]
+    pub const _SC_THREAD_ROBUST_PRIO_INHERIT: C2RustUnnamed = 247;
+    #[c2rust::src_loc = "523:5"]
+    pub const _SC_XOPEN_STREAMS: C2RustUnnamed = 246;
+    #[c2rust::src_loc = "520:5"]
+    pub const _SC_TRACE_USER_EVENT_MAX: C2RustUnnamed = 245;
+    #[c2rust::src_loc = "518:5"]
+    pub const _SC_TRACE_SYS_MAX: C2RustUnnamed = 244;
+    #[c2rust::src_loc = "516:5"]
+    pub const _SC_TRACE_NAME_MAX: C2RustUnnamed = 243;
+    #[c2rust::src_loc = "514:5"]
+    pub const _SC_TRACE_EVENT_NAME_MAX: C2RustUnnamed = 242;
+    #[c2rust::src_loc = "511:5"]
+    pub const _SC_SS_REPL_MAX: C2RustUnnamed = 241;
+    #[c2rust::src_loc = "508:5"]
+    pub const _SC_V7_LPBIG_OFFBIG: C2RustUnnamed = 240;
+    #[c2rust::src_loc = "506:5"]
+    pub const _SC_V7_LP64_OFF64: C2RustUnnamed = 239;
+    #[c2rust::src_loc = "504:5"]
+    pub const _SC_V7_ILP32_OFFBIG: C2RustUnnamed = 238;
+    #[c2rust::src_loc = "502:5"]
+    pub const _SC_V7_ILP32_OFF32: C2RustUnnamed = 237;
+    #[c2rust::src_loc = "499:5"]
+    pub const _SC_RAW_SOCKETS: C2RustUnnamed = 236;
+    #[c2rust::src_loc = "497:5"]
+    pub const _SC_IPV6: C2RustUnnamed = 235;
+    #[c2rust::src_loc = "493:5"]
+    pub const _SC_LEVEL4_CACHE_LINESIZE: C2RustUnnamed = 199;
+    #[c2rust::src_loc = "491:5"]
+    pub const _SC_LEVEL4_CACHE_ASSOC: C2RustUnnamed = 198;
+    #[c2rust::src_loc = "489:5"]
+    pub const _SC_LEVEL4_CACHE_SIZE: C2RustUnnamed = 197;
+    #[c2rust::src_loc = "487:5"]
+    pub const _SC_LEVEL3_CACHE_LINESIZE: C2RustUnnamed = 196;
+    #[c2rust::src_loc = "485:5"]
+    pub const _SC_LEVEL3_CACHE_ASSOC: C2RustUnnamed = 195;
+    #[c2rust::src_loc = "483:5"]
+    pub const _SC_LEVEL3_CACHE_SIZE: C2RustUnnamed = 194;
+    #[c2rust::src_loc = "481:5"]
+    pub const _SC_LEVEL2_CACHE_LINESIZE: C2RustUnnamed = 193;
+    #[c2rust::src_loc = "479:5"]
+    pub const _SC_LEVEL2_CACHE_ASSOC: C2RustUnnamed = 192;
+    #[c2rust::src_loc = "477:5"]
+    pub const _SC_LEVEL2_CACHE_SIZE: C2RustUnnamed = 191;
+    #[c2rust::src_loc = "475:5"]
+    pub const _SC_LEVEL1_DCACHE_LINESIZE: C2RustUnnamed = 190;
+    #[c2rust::src_loc = "473:5"]
+    pub const _SC_LEVEL1_DCACHE_ASSOC: C2RustUnnamed = 189;
+    #[c2rust::src_loc = "471:5"]
+    pub const _SC_LEVEL1_DCACHE_SIZE: C2RustUnnamed = 188;
+    #[c2rust::src_loc = "469:5"]
+    pub const _SC_LEVEL1_ICACHE_LINESIZE: C2RustUnnamed = 187;
+    #[c2rust::src_loc = "467:5"]
+    pub const _SC_LEVEL1_ICACHE_ASSOC: C2RustUnnamed = 186;
+    #[c2rust::src_loc = "465:5"]
+    pub const _SC_LEVEL1_ICACHE_SIZE: C2RustUnnamed = 185;
+    #[c2rust::src_loc = "462:5"]
+    pub const _SC_TRACE_LOG: C2RustUnnamed = 184;
+    #[c2rust::src_loc = "460:5"]
+    pub const _SC_TRACE_INHERIT: C2RustUnnamed = 183;
+    #[c2rust::src_loc = "458:5"]
+    pub const _SC_TRACE_EVENT_FILTER: C2RustUnnamed = 182;
+    #[c2rust::src_loc = "456:5"]
+    pub const _SC_TRACE: C2RustUnnamed = 181;
+    #[c2rust::src_loc = "454:5"]
+    pub const _SC_HOST_NAME_MAX: C2RustUnnamed = 180;
+    #[c2rust::src_loc = "451:5"]
+    pub const _SC_V6_LPBIG_OFFBIG: C2RustUnnamed = 179;
+    #[c2rust::src_loc = "449:5"]
+    pub const _SC_V6_LP64_OFF64: C2RustUnnamed = 178;
+    #[c2rust::src_loc = "447:5"]
+    pub const _SC_V6_ILP32_OFFBIG: C2RustUnnamed = 177;
+    #[c2rust::src_loc = "445:5"]
+    pub const _SC_V6_ILP32_OFF32: C2RustUnnamed = 176;
+    #[c2rust::src_loc = "442:5"]
+    pub const _SC_2_PBS_CHECKPOINT: C2RustUnnamed = 175;
+    #[c2rust::src_loc = "440:5"]
+    pub const _SC_STREAMS: C2RustUnnamed = 174;
+    #[c2rust::src_loc = "438:5"]
+    pub const _SC_SYMLOOP_MAX: C2RustUnnamed = 173;
+    #[c2rust::src_loc = "436:5"]
+    pub const _SC_2_PBS_TRACK: C2RustUnnamed = 172;
+    #[c2rust::src_loc = "434:5"]
+    pub const _SC_2_PBS_MESSAGE: C2RustUnnamed = 171;
+    #[c2rust::src_loc = "432:5"]
+    pub const _SC_2_PBS_LOCATE: C2RustUnnamed = 170;
+    #[c2rust::src_loc = "430:5"]
+    pub const _SC_2_PBS_ACCOUNTING: C2RustUnnamed = 169;
+    #[c2rust::src_loc = "428:5"]
+    pub const _SC_2_PBS: C2RustUnnamed = 168;
+    #[c2rust::src_loc = "426:5"]
+    pub const _SC_USER_GROUPS_R: C2RustUnnamed = 167;
+    #[c2rust::src_loc = "424:5"]
+    pub const _SC_USER_GROUPS: C2RustUnnamed = 166;
+    #[c2rust::src_loc = "422:5"]
+    pub const _SC_TYPED_MEMORY_OBJECTS: C2RustUnnamed = 165;
+    #[c2rust::src_loc = "420:5"]
+    pub const _SC_TIMEOUTS: C2RustUnnamed = 164;
+    #[c2rust::src_loc = "418:5"]
+    pub const _SC_SYSTEM_DATABASE_R: C2RustUnnamed = 163;
+    #[c2rust::src_loc = "416:5"]
+    pub const _SC_SYSTEM_DATABASE: C2RustUnnamed = 162;
+    #[c2rust::src_loc = "414:5"]
+    pub const _SC_THREAD_SPORADIC_SERVER: C2RustUnnamed = 161;
+    #[c2rust::src_loc = "412:5"]
+    pub const _SC_SPORADIC_SERVER: C2RustUnnamed = 160;
+    #[c2rust::src_loc = "410:5"]
+    pub const _SC_SPAWN: C2RustUnnamed = 159;
+    #[c2rust::src_loc = "408:5"]
+    pub const _SC_SIGNALS: C2RustUnnamed = 158;
+    #[c2rust::src_loc = "406:5"]
+    pub const _SC_SHELL: C2RustUnnamed = 157;
+    #[c2rust::src_loc = "404:5"]
+    pub const _SC_REGEX_VERSION: C2RustUnnamed = 156;
+    #[c2rust::src_loc = "402:5"]
+    pub const _SC_REGEXP: C2RustUnnamed = 155;
+    #[c2rust::src_loc = "400:5"]
+    pub const _SC_SPIN_LOCKS: C2RustUnnamed = 154;
+    #[c2rust::src_loc = "398:5"]
+    pub const _SC_READER_WRITER_LOCKS: C2RustUnnamed = 153;
+    #[c2rust::src_loc = "396:5"]
+    pub const _SC_NETWORKING: C2RustUnnamed = 152;
+    #[c2rust::src_loc = "394:5"]
+    pub const _SC_SINGLE_PROCESS: C2RustUnnamed = 151;
+    #[c2rust::src_loc = "392:5"]
+    pub const _SC_MULTI_PROCESS: C2RustUnnamed = 150;
+    #[c2rust::src_loc = "390:5"]
+    pub const _SC_MONOTONIC_CLOCK: C2RustUnnamed = 149;
+    #[c2rust::src_loc = "388:5"]
+    pub const _SC_FILE_SYSTEM: C2RustUnnamed = 148;
+    #[c2rust::src_loc = "386:5"]
+    pub const _SC_FILE_LOCKING: C2RustUnnamed = 147;
+    #[c2rust::src_loc = "384:5"]
+    pub const _SC_FILE_ATTRIBUTES: C2RustUnnamed = 146;
+    #[c2rust::src_loc = "382:5"]
+    pub const _SC_PIPE: C2RustUnnamed = 145;
+    #[c2rust::src_loc = "380:5"]
+    pub const _SC_FIFO: C2RustUnnamed = 144;
+    #[c2rust::src_loc = "378:5"]
+    pub const _SC_FD_MGMT: C2RustUnnamed = 143;
+    #[c2rust::src_loc = "376:5"]
+    pub const _SC_DEVICE_SPECIFIC_R: C2RustUnnamed = 142;
+    #[c2rust::src_loc = "374:5"]
+    pub const _SC_DEVICE_SPECIFIC: C2RustUnnamed = 141;
+    #[c2rust::src_loc = "372:5"]
+    pub const _SC_DEVICE_IO: C2RustUnnamed = 140;
+    #[c2rust::src_loc = "370:5"]
+    pub const _SC_THREAD_CPUTIME: C2RustUnnamed = 139;
+    #[c2rust::src_loc = "368:5"]
+    pub const _SC_CPUTIME: C2RustUnnamed = 138;
+    #[c2rust::src_loc = "366:5"]
+    pub const _SC_CLOCK_SELECTION: C2RustUnnamed = 137;
+    #[c2rust::src_loc = "364:5"]
+    pub const _SC_C_LANG_SUPPORT_R: C2RustUnnamed = 136;
+    #[c2rust::src_loc = "362:5"]
+    pub const _SC_C_LANG_SUPPORT: C2RustUnnamed = 135;
+    #[c2rust::src_loc = "360:5"]
+    pub const _SC_BASE: C2RustUnnamed = 134;
+    #[c2rust::src_loc = "358:5"]
+    pub const _SC_BARRIERS: C2RustUnnamed = 133;
+    #[c2rust::src_loc = "356:5"]
+    pub const _SC_ADVISORY_INFO: C2RustUnnamed = 132;
+    #[c2rust::src_loc = "353:5"]
+    pub const _SC_XOPEN_REALTIME_THREADS: C2RustUnnamed = 131;
+    #[c2rust::src_loc = "351:5"]
+    pub const _SC_XOPEN_REALTIME: C2RustUnnamed = 130;
+    #[c2rust::src_loc = "349:5"]
+    pub const _SC_XOPEN_LEGACY: C2RustUnnamed = 129;
+    #[c2rust::src_loc = "346:5"]
+    pub const _SC_XBS5_LPBIG_OFFBIG: C2RustUnnamed = 128;
+    #[c2rust::src_loc = "344:5"]
+    pub const _SC_XBS5_LP64_OFF64: C2RustUnnamed = 127;
+    #[c2rust::src_loc = "342:5"]
+    pub const _SC_XBS5_ILP32_OFFBIG: C2RustUnnamed = 126;
+    #[c2rust::src_loc = "340:5"]
+    pub const _SC_XBS5_ILP32_OFF32: C2RustUnnamed = 125;
+    #[c2rust::src_loc = "337:5"]
+    pub const _SC_NL_TEXTMAX: C2RustUnnamed = 124;
+    #[c2rust::src_loc = "335:5"]
+    pub const _SC_NL_SETMAX: C2RustUnnamed = 123;
+    #[c2rust::src_loc = "333:5"]
+    pub const _SC_NL_NMAX: C2RustUnnamed = 122;
+    #[c2rust::src_loc = "331:5"]
+    pub const _SC_NL_MSGMAX: C2RustUnnamed = 121;
+    #[c2rust::src_loc = "329:5"]
+    pub const _SC_NL_LANGMAX: C2RustUnnamed = 120;
+    #[c2rust::src_loc = "327:5"]
+    pub const _SC_NL_ARGMAX: C2RustUnnamed = 119;
+    #[c2rust::src_loc = "324:5"]
+    pub const _SC_USHRT_MAX: C2RustUnnamed = 118;
+    #[c2rust::src_loc = "322:5"]
+    pub const _SC_ULONG_MAX: C2RustUnnamed = 117;
+    #[c2rust::src_loc = "320:5"]
+    pub const _SC_UINT_MAX: C2RustUnnamed = 116;
+    #[c2rust::src_loc = "318:5"]
+    pub const _SC_UCHAR_MAX: C2RustUnnamed = 115;
+    #[c2rust::src_loc = "316:5"]
+    pub const _SC_SHRT_MIN: C2RustUnnamed = 114;
+    #[c2rust::src_loc = "314:5"]
+    pub const _SC_SHRT_MAX: C2RustUnnamed = 113;
+    #[c2rust::src_loc = "312:5"]
+    pub const _SC_SCHAR_MIN: C2RustUnnamed = 112;
+    #[c2rust::src_loc = "310:5"]
+    pub const _SC_SCHAR_MAX: C2RustUnnamed = 111;
+    #[c2rust::src_loc = "308:5"]
+    pub const _SC_SSIZE_MAX: C2RustUnnamed = 110;
+    #[c2rust::src_loc = "306:5"]
+    pub const _SC_NZERO: C2RustUnnamed = 109;
+    #[c2rust::src_loc = "304:5"]
+    pub const _SC_MB_LEN_MAX: C2RustUnnamed = 108;
+    #[c2rust::src_loc = "302:5"]
+    pub const _SC_WORD_BIT: C2RustUnnamed = 107;
+    #[c2rust::src_loc = "300:5"]
+    pub const _SC_LONG_BIT: C2RustUnnamed = 106;
+    #[c2rust::src_loc = "298:5"]
+    pub const _SC_INT_MIN: C2RustUnnamed = 105;
+    #[c2rust::src_loc = "296:5"]
+    pub const _SC_INT_MAX: C2RustUnnamed = 104;
+    #[c2rust::src_loc = "294:5"]
+    pub const _SC_CHAR_MIN: C2RustUnnamed = 103;
+    #[c2rust::src_loc = "292:5"]
+    pub const _SC_CHAR_MAX: C2RustUnnamed = 102;
+    #[c2rust::src_loc = "290:5"]
+    pub const _SC_CHAR_BIT: C2RustUnnamed = 101;
+    #[c2rust::src_loc = "287:5"]
+    pub const _SC_XOPEN_XPG4: C2RustUnnamed = 100;
+    #[c2rust::src_loc = "285:5"]
+    pub const _SC_XOPEN_XPG3: C2RustUnnamed = 99;
+    #[c2rust::src_loc = "283:5"]
+    pub const _SC_XOPEN_XPG2: C2RustUnnamed = 98;
+    #[c2rust::src_loc = "280:5"]
+    pub const _SC_2_UPE: C2RustUnnamed = 97;
+    #[c2rust::src_loc = "278:5"]
+    pub const _SC_2_C_VERSION: C2RustUnnamed = 96;
+    #[c2rust::src_loc = "276:5"]
+    pub const _SC_2_CHAR_TERM: C2RustUnnamed = 95;
+    #[c2rust::src_loc = "273:5"]
+    pub const _SC_XOPEN_SHM: C2RustUnnamed = 94;
+    #[c2rust::src_loc = "271:5"]
+    pub const _SC_XOPEN_ENH_I18N: C2RustUnnamed = 93;
+    #[c2rust::src_loc = "269:5"]
+    pub const _SC_XOPEN_CRYPT: C2RustUnnamed = 92;
+    #[c2rust::src_loc = "267:5"]
+    pub const _SC_XOPEN_UNIX: C2RustUnnamed = 91;
+    #[c2rust::src_loc = "265:5"]
+    pub const _SC_XOPEN_XCU_VERSION: C2RustUnnamed = 90;
+    #[c2rust::src_loc = "263:5"]
+    pub const _SC_XOPEN_VERSION: C2RustUnnamed = 89;
+    #[c2rust::src_loc = "260:5"]
+    pub const _SC_PASS_MAX: C2RustUnnamed = 88;
+    #[c2rust::src_loc = "258:5"]
+    pub const _SC_ATEXIT_MAX: C2RustUnnamed = 87;
+    #[c2rust::src_loc = "256:5"]
+    pub const _SC_AVPHYS_PAGES: C2RustUnnamed = 86;
+    #[c2rust::src_loc = "254:5"]
+    pub const _SC_PHYS_PAGES: C2RustUnnamed = 85;
+    #[c2rust::src_loc = "252:5"]
+    pub const _SC_NPROCESSORS_ONLN: C2RustUnnamed = 84;
+    #[c2rust::src_loc = "250:5"]
+    pub const _SC_NPROCESSORS_CONF: C2RustUnnamed = 83;
+    #[c2rust::src_loc = "247:5"]
+    pub const _SC_THREAD_PROCESS_SHARED: C2RustUnnamed = 82;
+    #[c2rust::src_loc = "245:5"]
+    pub const _SC_THREAD_PRIO_PROTECT: C2RustUnnamed = 81;
+    #[c2rust::src_loc = "243:5"]
+    pub const _SC_THREAD_PRIO_INHERIT: C2RustUnnamed = 80;
+    #[c2rust::src_loc = "241:5"]
+    pub const _SC_THREAD_PRIORITY_SCHEDULING: C2RustUnnamed = 79;
+    #[c2rust::src_loc = "239:5"]
+    pub const _SC_THREAD_ATTR_STACKSIZE: C2RustUnnamed = 78;
+    #[c2rust::src_loc = "237:5"]
+    pub const _SC_THREAD_ATTR_STACKADDR: C2RustUnnamed = 77;
+    #[c2rust::src_loc = "235:5"]
+    pub const _SC_THREAD_THREADS_MAX: C2RustUnnamed = 76;
+    #[c2rust::src_loc = "233:5"]
+    pub const _SC_THREAD_STACK_MIN: C2RustUnnamed = 75;
+    #[c2rust::src_loc = "231:5"]
+    pub const _SC_THREAD_KEYS_MAX: C2RustUnnamed = 74;
+    #[c2rust::src_loc = "229:5"]
+    pub const _SC_THREAD_DESTRUCTOR_ITERATIONS: C2RustUnnamed = 73;
+    #[c2rust::src_loc = "227:5"]
+    pub const _SC_TTY_NAME_MAX: C2RustUnnamed = 72;
+    #[c2rust::src_loc = "225:5"]
+    pub const _SC_LOGIN_NAME_MAX: C2RustUnnamed = 71;
+    #[c2rust::src_loc = "223:5"]
+    pub const _SC_GETPW_R_SIZE_MAX: C2RustUnnamed = 70;
+    #[c2rust::src_loc = "221:5"]
+    pub const _SC_GETGR_R_SIZE_MAX: C2RustUnnamed = 69;
+    #[c2rust::src_loc = "219:5"]
+    pub const _SC_THREAD_SAFE_FUNCTIONS: C2RustUnnamed = 68;
+    #[c2rust::src_loc = "217:5"]
+    pub const _SC_THREADS: C2RustUnnamed = 67;
+    #[c2rust::src_loc = "213:5"]
+    pub const _SC_T_IOV_MAX: C2RustUnnamed = 66;
+    #[c2rust::src_loc = "211:5"]
+    pub const _SC_PII_OSI_M: C2RustUnnamed = 65;
+    #[c2rust::src_loc = "209:5"]
+    pub const _SC_PII_OSI_CLTS: C2RustUnnamed = 64;
+    #[c2rust::src_loc = "207:5"]
+    pub const _SC_PII_OSI_COTS: C2RustUnnamed = 63;
+    #[c2rust::src_loc = "205:5"]
+    pub const _SC_PII_INTERNET_DGRAM: C2RustUnnamed = 62;
+    #[c2rust::src_loc = "203:5"]
+    pub const _SC_PII_INTERNET_STREAM: C2RustUnnamed = 61;
+    #[c2rust::src_loc = "201:5"]
+    pub const _SC_IOV_MAX: C2RustUnnamed = 60;
+    #[c2rust::src_loc = "199:5"]
+    pub const _SC_UIO_MAXIOV: C2RustUnnamed = 60;
+    #[c2rust::src_loc = "197:5"]
+    pub const _SC_SELECT: C2RustUnnamed = 59;
+    #[c2rust::src_loc = "195:5"]
+    pub const _SC_POLL: C2RustUnnamed = 58;
+    #[c2rust::src_loc = "193:5"]
+    pub const _SC_PII_OSI: C2RustUnnamed = 57;
+    #[c2rust::src_loc = "191:5"]
+    pub const _SC_PII_INTERNET: C2RustUnnamed = 56;
+    #[c2rust::src_loc = "189:5"]
+    pub const _SC_PII_SOCKET: C2RustUnnamed = 55;
+    #[c2rust::src_loc = "187:5"]
+    pub const _SC_PII_XTI: C2RustUnnamed = 54;
+    #[c2rust::src_loc = "185:5"]
+    pub const _SC_PII: C2RustUnnamed = 53;
+    #[c2rust::src_loc = "182:5"]
+    pub const _SC_2_LOCALEDEF: C2RustUnnamed = 52;
+    #[c2rust::src_loc = "180:5"]
+    pub const _SC_2_SW_DEV: C2RustUnnamed = 51;
+    #[c2rust::src_loc = "178:5"]
+    pub const _SC_2_FORT_RUN: C2RustUnnamed = 50;
+    #[c2rust::src_loc = "176:5"]
+    pub const _SC_2_FORT_DEV: C2RustUnnamed = 49;
+    #[c2rust::src_loc = "174:5"]
+    pub const _SC_2_C_DEV: C2RustUnnamed = 48;
+    #[c2rust::src_loc = "172:5"]
+    pub const _SC_2_C_BIND: C2RustUnnamed = 47;
+    #[c2rust::src_loc = "170:5"]
+    pub const _SC_2_VERSION: C2RustUnnamed = 46;
+    #[c2rust::src_loc = "167:5"]
+    pub const _SC_CHARCLASS_NAME_MAX: C2RustUnnamed = 45;
+    #[c2rust::src_loc = "165:5"]
+    pub const _SC_RE_DUP_MAX: C2RustUnnamed = 44;
+    #[c2rust::src_loc = "163:5"]
+    pub const _SC_LINE_MAX: C2RustUnnamed = 43;
+    #[c2rust::src_loc = "161:5"]
+    pub const _SC_EXPR_NEST_MAX: C2RustUnnamed = 42;
+    #[c2rust::src_loc = "159:5"]
+    pub const _SC_EQUIV_CLASS_MAX: C2RustUnnamed = 41;
+    #[c2rust::src_loc = "157:5"]
+    pub const _SC_COLL_WEIGHTS_MAX: C2RustUnnamed = 40;
+    #[c2rust::src_loc = "155:5"]
+    pub const _SC_BC_STRING_MAX: C2RustUnnamed = 39;
+    #[c2rust::src_loc = "153:5"]
+    pub const _SC_BC_SCALE_MAX: C2RustUnnamed = 38;
+    #[c2rust::src_loc = "151:5"]
+    pub const _SC_BC_DIM_MAX: C2RustUnnamed = 37;
+    #[c2rust::src_loc = "149:5"]
+    pub const _SC_BC_BASE_MAX: C2RustUnnamed = 36;
+    #[c2rust::src_loc = "144:5"]
+    pub const _SC_TIMER_MAX: C2RustUnnamed = 35;
+    #[c2rust::src_loc = "142:5"]
+    pub const _SC_SIGQUEUE_MAX: C2RustUnnamed = 34;
+    #[c2rust::src_loc = "140:5"]
+    pub const _SC_SEM_VALUE_MAX: C2RustUnnamed = 33;
+    #[c2rust::src_loc = "138:5"]
+    pub const _SC_SEM_NSEMS_MAX: C2RustUnnamed = 32;
+    #[c2rust::src_loc = "136:5"]
+    pub const _SC_RTSIG_MAX: C2RustUnnamed = 31;
+    #[c2rust::src_loc = "131:5"]
+    pub const _SC_VERSION: C2RustUnnamed = 29;
+    #[c2rust::src_loc = "129:5"]
+    pub const _SC_MQ_PRIO_MAX: C2RustUnnamed = 28;
+    #[c2rust::src_loc = "127:5"]
+    pub const _SC_MQ_OPEN_MAX: C2RustUnnamed = 27;
+    #[c2rust::src_loc = "125:5"]
+    pub const _SC_DELAYTIMER_MAX: C2RustUnnamed = 26;
+    #[c2rust::src_loc = "123:5"]
+    pub const _SC_AIO_PRIO_DELTA_MAX: C2RustUnnamed = 25;
+    #[c2rust::src_loc = "121:5"]
+    pub const _SC_AIO_MAX: C2RustUnnamed = 24;
+    #[c2rust::src_loc = "119:5"]
+    pub const _SC_AIO_LISTIO_MAX: C2RustUnnamed = 23;
+    #[c2rust::src_loc = "117:5"]
+    pub const _SC_SHARED_MEMORY_OBJECTS: C2RustUnnamed = 22;
+    #[c2rust::src_loc = "115:5"]
+    pub const _SC_SEMAPHORES: C2RustUnnamed = 21;
+    #[c2rust::src_loc = "113:5"]
+    pub const _SC_MESSAGE_PASSING: C2RustUnnamed = 20;
+    #[c2rust::src_loc = "111:5"]
+    pub const _SC_MEMORY_PROTECTION: C2RustUnnamed = 19;
+    #[c2rust::src_loc = "109:5"]
+    pub const _SC_MEMLOCK_RANGE: C2RustUnnamed = 18;
+    #[c2rust::src_loc = "107:5"]
+    pub const _SC_MEMLOCK: C2RustUnnamed = 17;
+    #[c2rust::src_loc = "105:5"]
+    pub const _SC_MAPPED_FILES: C2RustUnnamed = 16;
+    #[c2rust::src_loc = "103:5"]
+    pub const _SC_FSYNC: C2RustUnnamed = 15;
+    #[c2rust::src_loc = "101:5"]
+    pub const _SC_SYNCHRONIZED_IO: C2RustUnnamed = 14;
+    #[c2rust::src_loc = "99:5"]
+    pub const _SC_PRIORITIZED_IO: C2RustUnnamed = 13;
+    #[c2rust::src_loc = "97:5"]
+    pub const _SC_ASYNCHRONOUS_IO: C2RustUnnamed = 12;
+    #[c2rust::src_loc = "95:5"]
+    pub const _SC_TIMERS: C2RustUnnamed = 11;
+    #[c2rust::src_loc = "93:5"]
+    pub const _SC_PRIORITY_SCHEDULING: C2RustUnnamed = 10;
+    #[c2rust::src_loc = "91:5"]
+    pub const _SC_REALTIME_SIGNALS: C2RustUnnamed = 9;
+    #[c2rust::src_loc = "89:5"]
+    pub const _SC_SAVED_IDS: C2RustUnnamed = 8;
+    #[c2rust::src_loc = "87:5"]
+    pub const _SC_JOB_CONTROL: C2RustUnnamed = 7;
+    #[c2rust::src_loc = "85:5"]
+    pub const _SC_TZNAME_MAX: C2RustUnnamed = 6;
+    #[c2rust::src_loc = "83:5"]
+    pub const _SC_STREAM_MAX: C2RustUnnamed = 5;
+    #[c2rust::src_loc = "81:5"]
+    pub const _SC_OPEN_MAX: C2RustUnnamed = 4;
+    #[c2rust::src_loc = "79:5"]
+    pub const _SC_NGROUPS_MAX: C2RustUnnamed = 3;
+    #[c2rust::src_loc = "77:5"]
+    pub const _SC_CLK_TCK: C2RustUnnamed = 2;
+    #[c2rust::src_loc = "75:5"]
+    pub const _SC_CHILD_MAX: C2RustUnnamed = 1;
+    #[c2rust::src_loc = "73:5"]
+    pub const _SC_ARG_MAX: C2RustUnnamed = 0;
+}
+
+#[c2rust::header_src = "/usr/include/unistd.h:27"]
+pub mod unistd_h {
+    extern "C" {
+        #[c2rust::src_loc = "640:1"]
+        pub fn sysconf(__name: ::core::ffi::c_int) -> ::core::ffi::c_long;
+    }
+}
+
+#[c2rust::header_src = "/usr/include/libavcodec/packet.h:27"]
+pub mod packet_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "529:16"]
+    pub struct AVPacket {
+        pub buf: *mut AVBufferRef,
+        pub pts: int64_t,
+        pub dts: int64_t,
+        pub data: *mut uint8_t,
+        pub size: ::core::ffi::c_int,
+        pub stream_index: ::core::ffi::c_int,
+        pub flags: ::core::ffi::c_int,
+        pub side_data: *mut AVPacketSideData,
+        pub side_data_elems: ::core::ffi::c_int,
+        pub duration: int64_t,
+        pub pos: int64_t,
+        pub opaque: *mut ::core::ffi::c_void,
+        pub opaque_ref: *mut AVBufferRef,
+        pub time_base: AVRational,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "403:16"]
+    pub struct AVPacketSideData {
+        pub data: *mut uint8_t,
+        pub size: size_t,
+        pub type_0: AVPacketSideDataType,
+    }
+    #[c2rust::src_loc = "41:1"]
+    pub type AVPacketSideDataType = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "373:5"]
+    pub const AV_PKT_DATA_NB: AVPacketSideDataType = 40;
+    #[c2rust::src_loc = "363:5"]
+    pub const AV_PKT_DATA_RTCP_SR: AVPacketSideDataType = 39;
+    #[c2rust::src_loc = "357:5"]
+    pub const AV_PKT_DATA_3D_REFERENCE_DISPLAYS: AVPacketSideDataType = 38;
+    #[c2rust::src_loc = "346:5"]
+    pub const AV_PKT_DATA_LCEVC: AVPacketSideDataType = 37;
+    #[c2rust::src_loc = "340:5"]
+    pub const AV_PKT_DATA_FRAME_CROPPING: AVPacketSideDataType = 36;
+    #[c2rust::src_loc = "327:5"]
+    pub const AV_PKT_DATA_AMBIENT_VIEWING_ENVIRONMENT: AVPacketSideDataType = 35;
+    #[c2rust::src_loc = "320:5"]
+    pub const AV_PKT_DATA_IAMF_RECON_GAIN_INFO_PARAM: AVPacketSideDataType = 34;
+    #[c2rust::src_loc = "312:5"]
+    pub const AV_PKT_DATA_IAMF_DEMIXING_INFO_PARAM: AVPacketSideDataType = 33;
+    #[c2rust::src_loc = "304:5"]
+    pub const AV_PKT_DATA_IAMF_MIX_GAIN_PARAM: AVPacketSideDataType = 32;
+    #[c2rust::src_loc = "296:5"]
+    pub const AV_PKT_DATA_DYNAMIC_HDR10_PLUS: AVPacketSideDataType = 31;
+    #[c2rust::src_loc = "288:5"]
+    pub const AV_PKT_DATA_S12M_TIMECODE: AVPacketSideDataType = 30;
+    #[c2rust::src_loc = "280:5"]
+    pub const AV_PKT_DATA_DOVI_CONF: AVPacketSideDataType = 29;
+    #[c2rust::src_loc = "271:5"]
+    pub const AV_PKT_DATA_ICC_PROFILE: AVPacketSideDataType = 28;
+    #[c2rust::src_loc = "265:5"]
+    pub const AV_PKT_DATA_PRFT: AVPacketSideDataType = 27;
+    #[c2rust::src_loc = "258:5"]
+    pub const AV_PKT_DATA_AFD: AVPacketSideDataType = 26;
+    #[c2rust::src_loc = "252:5"]
+    pub const AV_PKT_DATA_ENCRYPTION_INFO: AVPacketSideDataType = 25;
+    #[c2rust::src_loc = "246:5"]
+    pub const AV_PKT_DATA_ENCRYPTION_INIT_INFO: AVPacketSideDataType = 24;
+    #[c2rust::src_loc = "239:5"]
+    pub const AV_PKT_DATA_A53_CC: AVPacketSideDataType = 23;
+    #[c2rust::src_loc = "232:5"]
+    pub const AV_PKT_DATA_CONTENT_LIGHT_LEVEL: AVPacketSideDataType = 22;
+    #[c2rust::src_loc = "225:5"]
+    pub const AV_PKT_DATA_SPHERICAL: AVPacketSideDataType = 21;
+    #[c2rust::src_loc = "219:5"]
+    pub const AV_PKT_DATA_MASTERING_DISPLAY_METADATA: AVPacketSideDataType = 20;
+    #[c2rust::src_loc = "212:5"]
+    pub const AV_PKT_DATA_MPEGTS_STREAM_ID: AVPacketSideDataType = 19;
+    #[c2rust::src_loc = "206:5"]
+    pub const AV_PKT_DATA_METADATA_UPDATE: AVPacketSideDataType = 18;
+    #[c2rust::src_loc = "199:5"]
+    pub const AV_PKT_DATA_WEBVTT_SETTINGS: AVPacketSideDataType = 17;
+    #[c2rust::src_loc = "193:5"]
+    pub const AV_PKT_DATA_WEBVTT_IDENTIFIER: AVPacketSideDataType = 16;
+    #[c2rust::src_loc = "188:5"]
+    pub const AV_PKT_DATA_MATROSKA_BLOCKADDITIONAL: AVPacketSideDataType = 15;
+    #[c2rust::src_loc = "180:5"]
+    pub const AV_PKT_DATA_SUBTITLE_POSITION: AVPacketSideDataType = 14;
+    #[c2rust::src_loc = "169:5"]
+    pub const AV_PKT_DATA_STRINGS_METADATA: AVPacketSideDataType = 13;
+    #[c2rust::src_loc = "163:5"]
+    pub const AV_PKT_DATA_JP_DUALMONO: AVPacketSideDataType = 12;
+    #[c2rust::src_loc = "153:5"]
+    pub const AV_PKT_DATA_SKIP_SAMPLES: AVPacketSideDataType = 11;
+    #[c2rust::src_loc = "142:5"]
+    pub const AV_PKT_DATA_CPB_PROPERTIES: AVPacketSideDataType = 10;
+    #[c2rust::src_loc = "137:5"]
+    pub const AV_PKT_DATA_FALLBACK_TRACK: AVPacketSideDataType = 9;
+    #[c2rust::src_loc = "129:5"]
+    pub const AV_PKT_DATA_QUALITY_STATS: AVPacketSideDataType = 8;
+    #[c2rust::src_loc = "117:5"]
+    pub const AV_PKT_DATA_AUDIO_SERVICE_TYPE: AVPacketSideDataType = 7;
+    #[c2rust::src_loc = "111:5"]
+    pub const AV_PKT_DATA_STEREO3D: AVPacketSideDataType = 6;
+    #[c2rust::src_loc = "105:5"]
+    pub const AV_PKT_DATA_DISPLAYMATRIX: AVPacketSideDataType = 5;
+    #[c2rust::src_loc = "96:5"]
+    pub const AV_PKT_DATA_REPLAYGAIN: AVPacketSideDataType = 4;
+    #[c2rust::src_loc = "90:5"]
+    pub const AV_PKT_DATA_H263_MB_INFO: AVPacketSideDataType = 3;
+    #[c2rust::src_loc = "69:5"]
+    pub const AV_PKT_DATA_PARAM_CHANGE: AVPacketSideDataType = 2;
+    #[c2rust::src_loc = "56:5"]
+    pub const AV_PKT_DATA_NEW_EXTRADATA: AVPacketSideDataType = 1;
+    #[c2rust::src_loc = "47:5"]
+    pub const AV_PKT_DATA_PALETTE: AVPacketSideDataType = 0;
+    use super::__stddef_size_t_h::size_t;
+    use super::buffer_h::AVBufferRef;
+    use super::rational_h::AVRational;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "644:1"]
+        pub fn av_packet_alloc() -> *mut AVPacket;
+        #[c2rust::src_loc = "665:1"]
+        pub fn av_packet_free(pkt: *mut *mut AVPacket);
+        #[c2rust::src_loc = "831:1"]
+        pub fn av_packet_unref(pkt: *mut AVPacket);
+    }
+}
+#[c2rust::header_src = "/usr/include/libavutil/buffer.h:27"]
+pub mod buffer_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "82:16"]
+    pub struct AVBufferRef {
+        pub buffer: *mut AVBuffer,
+        pub data: *mut uint8_t,
+        pub size: size_t,
+    }
+    use super::__stddef_size_t_h::size_t;
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "74:16"]
+        pub type AVBuffer;
+    }
+}
+#[c2rust::header_src = "/usr/include/libavutil/channel_layout.h:27"]
+pub mod channel_layout_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "319:16"]
+    pub struct AVChannelLayout {
+        pub order: AVChannelOrder,
+        pub nb_channels: ::core::ffi::c_int,
+        pub u: C2RustUnnamed,
+        pub opaque: *mut ::core::ffi::c_void,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "336:5"]
+    pub union C2RustUnnamed {
+        pub mask: uint64_t,
+        pub map: *mut AVChannelCustom,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "283:16"]
+    pub struct AVChannelCustom {
+        pub id: AVChannel,
+        pub name: [::core::ffi::c_char; 16],
+        pub opaque: *mut ::core::ffi::c_void,
+    }
+    #[c2rust::src_loc = "47:1"]
+    pub type AVChannel = ::core::ffi::c_int;
+    #[c2rust::src_loc = "111:5"]
+    pub const AV_CHAN_AMBISONIC_END: AVChannel = 2047;
+    #[c2rust::src_loc = "108:5"]
+    pub const AV_CHAN_AMBISONIC_BASE: AVChannel = 1024;
+    #[c2rust::src_loc = "94:5"]
+    pub const AV_CHAN_UNKNOWN: AVChannel = 768;
+    #[c2rust::src_loc = "91:5"]
+    pub const AV_CHAN_UNUSED: AVChannel = 512;
+    #[c2rust::src_loc = "88:5"]
+    pub const AV_CHAN_BINAURAL_RIGHT: AVChannel = 62;
+    #[c2rust::src_loc = "87:5"]
+    pub const AV_CHAN_BINAURAL_LEFT: AVChannel = 61;
+    #[c2rust::src_loc = "85:5"]
+    pub const AV_CHAN_TOP_SURROUND_RIGHT: AVChannel = 44;
+    #[c2rust::src_loc = "84:5"]
+    pub const AV_CHAN_TOP_SURROUND_LEFT: AVChannel = 43;
+    #[c2rust::src_loc = "83:5"]
+    pub const AV_CHAN_SIDE_SURROUND_RIGHT: AVChannel = 42;
+    #[c2rust::src_loc = "82:5"]
+    pub const AV_CHAN_SIDE_SURROUND_LEFT: AVChannel = 41;
+    #[c2rust::src_loc = "81:5"]
+    pub const AV_CHAN_BOTTOM_FRONT_RIGHT: AVChannel = 40;
+    #[c2rust::src_loc = "80:5"]
+    pub const AV_CHAN_BOTTOM_FRONT_LEFT: AVChannel = 39;
+    #[c2rust::src_loc = "79:5"]
+    pub const AV_CHAN_BOTTOM_FRONT_CENTER: AVChannel = 38;
+    #[c2rust::src_loc = "78:5"]
+    pub const AV_CHAN_TOP_SIDE_RIGHT: AVChannel = 37;
+    #[c2rust::src_loc = "77:5"]
+    pub const AV_CHAN_TOP_SIDE_LEFT: AVChannel = 36;
+    #[c2rust::src_loc = "76:5"]
+    pub const AV_CHAN_LOW_FREQUENCY_2: AVChannel = 35;
+    #[c2rust::src_loc = "75:5"]
+    pub const AV_CHAN_SURROUND_DIRECT_RIGHT: AVChannel = 34;
+    #[c2rust::src_loc = "74:5"]
+    pub const AV_CHAN_SURROUND_DIRECT_LEFT: AVChannel = 33;
+    #[c2rust::src_loc = "73:5"]
+    pub const AV_CHAN_WIDE_RIGHT: AVChannel = 32;
+    #[c2rust::src_loc = "72:5"]
+    pub const AV_CHAN_WIDE_LEFT: AVChannel = 31;
+    #[c2rust::src_loc = "71:5"]
+    pub const AV_CHAN_STEREO_RIGHT: AVChannel = 30;
+    #[c2rust::src_loc = "69:5"]
+    pub const AV_CHAN_STEREO_LEFT: AVChannel = 29;
+    #[c2rust::src_loc = "67:5"]
+    pub const AV_CHAN_TOP_BACK_RIGHT: AVChannel = 17;
+    #[c2rust::src_loc = "66:5"]
+    pub const AV_CHAN_TOP_BACK_CENTER: AVChannel = 16;
+    #[c2rust::src_loc = "65:5"]
+    pub const AV_CHAN_TOP_BACK_LEFT: AVChannel = 15;
+    #[c2rust::src_loc = "64:5"]
+    pub const AV_CHAN_TOP_FRONT_RIGHT: AVChannel = 14;
+    #[c2rust::src_loc = "63:5"]
+    pub const AV_CHAN_TOP_FRONT_CENTER: AVChannel = 13;
+    #[c2rust::src_loc = "62:5"]
+    pub const AV_CHAN_TOP_FRONT_LEFT: AVChannel = 12;
+    #[c2rust::src_loc = "61:5"]
+    pub const AV_CHAN_TOP_CENTER: AVChannel = 11;
+    #[c2rust::src_loc = "60:5"]
+    pub const AV_CHAN_SIDE_RIGHT: AVChannel = 10;
+    #[c2rust::src_loc = "59:5"]
+    pub const AV_CHAN_SIDE_LEFT: AVChannel = 9;
+    #[c2rust::src_loc = "58:5"]
+    pub const AV_CHAN_BACK_CENTER: AVChannel = 8;
+    #[c2rust::src_loc = "57:5"]
+    pub const AV_CHAN_FRONT_RIGHT_OF_CENTER: AVChannel = 7;
+    #[c2rust::src_loc = "56:5"]
+    pub const AV_CHAN_FRONT_LEFT_OF_CENTER: AVChannel = 6;
+    #[c2rust::src_loc = "55:5"]
+    pub const AV_CHAN_BACK_RIGHT: AVChannel = 5;
+    #[c2rust::src_loc = "54:5"]
+    pub const AV_CHAN_BACK_LEFT: AVChannel = 4;
+    #[c2rust::src_loc = "53:5"]
+    pub const AV_CHAN_LOW_FREQUENCY: AVChannel = 3;
+    #[c2rust::src_loc = "52:5"]
+    pub const AV_CHAN_FRONT_CENTER: AVChannel = 2;
+    #[c2rust::src_loc = "51:5"]
+    pub const AV_CHAN_FRONT_RIGHT: AVChannel = 1;
+    #[c2rust::src_loc = "50:5"]
+    pub const AV_CHAN_FRONT_LEFT: AVChannel = 0;
+    #[c2rust::src_loc = "49:5"]
+    pub const AV_CHAN_NONE: AVChannel = -1;
+    #[c2rust::src_loc = "114:1"]
+    pub type AVChannelOrder = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "159:5"]
+    pub const FF_CHANNEL_ORDER_NB: AVChannelOrder = 4;
+    #[c2rust::src_loc = "155:5"]
+    pub const AV_CHANNEL_ORDER_AMBISONIC: AVChannelOrder = 3;
+    #[c2rust::src_loc = "132:5"]
+    pub const AV_CHANNEL_ORDER_CUSTOM: AVChannelOrder = 2;
+    #[c2rust::src_loc = "125:5"]
+    pub const AV_CHANNEL_ORDER_NATIVE: AVChannelOrder = 1;
+    #[c2rust::src_loc = "119:5"]
+    pub const AV_CHANNEL_ORDER_UNSPEC: AVChannelOrder = 0;
+    use super::stdint_uintn_h::uint64_t;
+}
+#[c2rust::header_src = "/usr/include/libavutil/dict.h:27"]
+pub mod dict_h {
+    extern "C" {
+        #[c2rust::src_loc = "95:16"]
+        pub type AVDictionary;
+        #[c2rust::src_loc = "166:1"]
+        pub fn av_dict_set(
+            pm: *mut *mut AVDictionary,
+            key: *const ::core::ffi::c_char,
+            value: *const ::core::ffi::c_char,
+            flags: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "216:1"]
+        pub fn av_dict_free(m: *mut *mut AVDictionary);
+    }
+}
+#[c2rust::header_src = "/usr/include/libavutil/avutil.h:27"]
+pub mod avutil_h {
+    #[c2rust::src_loc = "276:1"]
+    pub type AVPictureType = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "284:5"]
+    pub const AV_PICTURE_TYPE_BI: AVPictureType = 7;
+    #[c2rust::src_loc = "283:5"]
+    pub const AV_PICTURE_TYPE_SP: AVPictureType = 6;
+    #[c2rust::src_loc = "282:5"]
+    pub const AV_PICTURE_TYPE_SI: AVPictureType = 5;
+    #[c2rust::src_loc = "281:5"]
+    pub const AV_PICTURE_TYPE_S: AVPictureType = 4;
+    #[c2rust::src_loc = "280:5"]
+    pub const AV_PICTURE_TYPE_B: AVPictureType = 3;
+    #[c2rust::src_loc = "279:5"]
+    pub const AV_PICTURE_TYPE_P: AVPictureType = 2;
+    #[c2rust::src_loc = "278:5"]
+    pub const AV_PICTURE_TYPE_I: AVPictureType = 1;
+    #[c2rust::src_loc = "277:5"]
+    pub const AV_PICTURE_TYPE_NONE: AVPictureType = 0;
+    #[c2rust::src_loc = "198:1"]
+    pub type AVMediaType = ::core::ffi::c_int;
+    #[c2rust::src_loc = "205:5"]
+    pub const AVMEDIA_TYPE_NB: AVMediaType = 5;
+    #[c2rust::src_loc = "204:5"]
+    pub const AVMEDIA_TYPE_ATTACHMENT: AVMediaType = 4;
+    #[c2rust::src_loc = "203:5"]
+    pub const AVMEDIA_TYPE_SUBTITLE: AVMediaType = 3;
+    #[c2rust::src_loc = "202:5"]
+    pub const AVMEDIA_TYPE_DATA: AVMediaType = 2;
+    #[c2rust::src_loc = "201:5"]
+    pub const AVMEDIA_TYPE_AUDIO: AVMediaType = 1;
+    #[c2rust::src_loc = "200:5"]
+    pub const AVMEDIA_TYPE_VIDEO: AVMediaType = 0;
+    #[c2rust::src_loc = "199:5"]
+    pub const AVMEDIA_TYPE_UNKNOWN: AVMediaType = -1;
+    #[c2rust::src_loc = "247:9"]
+    pub const AV_NOPTS_VALUE: int64_t = 0x8000000000000000 as ::core::ffi::c_ulong as int64_t;
+    use super::stdint_intn_h::int64_t;
+}
+#[c2rust::header_src = "/usr/include/libavcodec/avcodec.h:30"]
+pub mod avcodec_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "431:16"]
+    pub struct AVCodecContext {
+        pub av_class: *const AVClass,
+        pub log_level_offset: ::core::ffi::c_int,
+        pub codec_type: AVMediaType,
+        pub codec: *const AVCodec,
+        pub codec_id: AVCodecID,
+        pub codec_tag: ::core::ffi::c_uint,
+        pub priv_data: *mut ::core::ffi::c_void,
+        pub internal: *mut AVCodecInternal,
+        pub opaque: *mut ::core::ffi::c_void,
+        pub bit_rate: int64_t,
+        pub flags: ::core::ffi::c_int,
+        pub flags2: ::core::ffi::c_int,
+        pub extradata: *mut uint8_t,
+        pub extradata_size: ::core::ffi::c_int,
+        pub time_base: AVRational,
+        pub pkt_timebase: AVRational,
+        pub framerate: AVRational,
+        pub delay: ::core::ffi::c_int,
+        pub width: ::core::ffi::c_int,
+        pub height: ::core::ffi::c_int,
+        pub coded_width: ::core::ffi::c_int,
+        pub coded_height: ::core::ffi::c_int,
+        pub sample_aspect_ratio: AVRational,
+        pub pix_fmt: AVPixelFormat,
+        pub sw_pix_fmt: AVPixelFormat,
+        pub color_primaries: AVColorPrimaries,
+        pub color_trc: AVColorTransferCharacteristic,
+        pub colorspace: AVColorSpace,
+        pub color_range: AVColorRange,
+        pub chroma_sample_location: AVChromaLocation,
+        pub field_order: AVFieldOrder,
+        pub refs: ::core::ffi::c_int,
+        pub has_b_frames: ::core::ffi::c_int,
+        pub slice_flags: ::core::ffi::c_int,
+        pub draw_horiz_band: Option<
+            unsafe extern "C" fn(
+                *mut AVCodecContext,
+                *const AVFrame,
+                *mut ::core::ffi::c_int,
+                ::core::ffi::c_int,
+                ::core::ffi::c_int,
+                ::core::ffi::c_int,
+            ) -> (),
+        >,
+        pub get_format: Option<
+            unsafe extern "C" fn(*mut AVCodecContext, *const AVPixelFormat) -> AVPixelFormat,
+        >,
+        pub max_b_frames: ::core::ffi::c_int,
+        pub b_quant_factor: ::core::ffi::c_float,
+        pub b_quant_offset: ::core::ffi::c_float,
+        pub i_quant_factor: ::core::ffi::c_float,
+        pub i_quant_offset: ::core::ffi::c_float,
+        pub lumi_masking: ::core::ffi::c_float,
+        pub temporal_cplx_masking: ::core::ffi::c_float,
+        pub spatial_cplx_masking: ::core::ffi::c_float,
+        pub p_masking: ::core::ffi::c_float,
+        pub dark_masking: ::core::ffi::c_float,
+        pub nsse_weight: ::core::ffi::c_int,
+        pub me_cmp: ::core::ffi::c_int,
+        pub me_sub_cmp: ::core::ffi::c_int,
+        pub mb_cmp: ::core::ffi::c_int,
+        pub ildct_cmp: ::core::ffi::c_int,
+        pub dia_size: ::core::ffi::c_int,
+        pub last_predictor_count: ::core::ffi::c_int,
+        pub me_pre_cmp: ::core::ffi::c_int,
+        pub pre_dia_size: ::core::ffi::c_int,
+        pub me_subpel_quality: ::core::ffi::c_int,
+        pub me_range: ::core::ffi::c_int,
+        pub mb_decision: ::core::ffi::c_int,
+        pub intra_matrix: *mut uint16_t,
+        pub inter_matrix: *mut uint16_t,
+        pub chroma_intra_matrix: *mut uint16_t,
+        pub intra_dc_precision: ::core::ffi::c_int,
+        pub mb_lmin: ::core::ffi::c_int,
+        pub mb_lmax: ::core::ffi::c_int,
+        pub bidir_refine: ::core::ffi::c_int,
+        pub keyint_min: ::core::ffi::c_int,
+        pub gop_size: ::core::ffi::c_int,
+        pub mv0_threshold: ::core::ffi::c_int,
+        pub slices: ::core::ffi::c_int,
+        pub sample_rate: ::core::ffi::c_int,
+        pub sample_fmt: AVSampleFormat,
+        pub ch_layout: AVChannelLayout,
+        pub frame_size: ::core::ffi::c_int,
+        pub block_align: ::core::ffi::c_int,
+        pub cutoff: ::core::ffi::c_int,
+        pub audio_service_type: AVAudioServiceType,
+        pub request_sample_fmt: AVSampleFormat,
+        pub initial_padding: ::core::ffi::c_int,
+        pub trailing_padding: ::core::ffi::c_int,
+        pub seek_preroll: ::core::ffi::c_int,
+        pub get_buffer2: Option<
+            unsafe extern "C" fn(
+                *mut AVCodecContext,
+                *mut AVFrame,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub bit_rate_tolerance: ::core::ffi::c_int,
+        pub global_quality: ::core::ffi::c_int,
+        pub compression_level: ::core::ffi::c_int,
+        pub qcompress: ::core::ffi::c_float,
+        pub qblur: ::core::ffi::c_float,
+        pub qmin: ::core::ffi::c_int,
+        pub qmax: ::core::ffi::c_int,
+        pub max_qdiff: ::core::ffi::c_int,
+        pub rc_buffer_size: ::core::ffi::c_int,
+        pub rc_override_count: ::core::ffi::c_int,
+        pub rc_override: *mut RcOverride,
+        pub rc_max_rate: int64_t,
+        pub rc_min_rate: int64_t,
+        pub rc_max_available_vbv_use: ::core::ffi::c_float,
+        pub rc_min_vbv_overflow_use: ::core::ffi::c_float,
+        pub rc_initial_buffer_occupancy: ::core::ffi::c_int,
+        pub trellis: ::core::ffi::c_int,
+        pub stats_out: *mut ::core::ffi::c_char,
+        pub stats_in: *mut ::core::ffi::c_char,
+        pub workaround_bugs: ::core::ffi::c_int,
+        pub strict_std_compliance: ::core::ffi::c_int,
+        pub error_concealment: ::core::ffi::c_int,
+        pub debug: ::core::ffi::c_int,
+        pub err_recognition: ::core::ffi::c_int,
+        pub hwaccel: *const AVHWAccel,
+        pub hwaccel_context: *mut ::core::ffi::c_void,
+        pub hw_frames_ctx: *mut AVBufferRef,
+        pub hw_device_ctx: *mut AVBufferRef,
+        pub hwaccel_flags: ::core::ffi::c_int,
+        pub extra_hw_frames: ::core::ffi::c_int,
+        pub error: [uint64_t; 8],
+        pub dct_algo: ::core::ffi::c_int,
+        pub idct_algo: ::core::ffi::c_int,
+        pub bits_per_coded_sample: ::core::ffi::c_int,
+        pub bits_per_raw_sample: ::core::ffi::c_int,
+        pub thread_count: ::core::ffi::c_int,
+        pub thread_type: ::core::ffi::c_int,
+        pub active_thread_type: ::core::ffi::c_int,
+        pub execute: Option<
+            unsafe extern "C" fn(
+                *mut AVCodecContext,
+                Option<
+                    unsafe extern "C" fn(
+                        *mut AVCodecContext,
+                        *mut ::core::ffi::c_void,
+                    ) -> ::core::ffi::c_int,
+                >,
+                *mut ::core::ffi::c_void,
+                *mut ::core::ffi::c_int,
+                ::core::ffi::c_int,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub execute2: Option<
+            unsafe extern "C" fn(
+                *mut AVCodecContext,
+                Option<
+                    unsafe extern "C" fn(
+                        *mut AVCodecContext,
+                        *mut ::core::ffi::c_void,
+                        ::core::ffi::c_int,
+                        ::core::ffi::c_int,
+                    ) -> ::core::ffi::c_int,
+                >,
+                *mut ::core::ffi::c_void,
+                *mut ::core::ffi::c_int,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub profile: ::core::ffi::c_int,
+        pub level: ::core::ffi::c_int,
+        pub properties: ::core::ffi::c_uint,
+        pub skip_loop_filter: AVDiscard,
+        pub skip_idct: AVDiscard,
+        pub skip_frame: AVDiscard,
+        pub skip_alpha: ::core::ffi::c_int,
+        pub skip_top: ::core::ffi::c_int,
+        pub skip_bottom: ::core::ffi::c_int,
+        pub lowres: ::core::ffi::c_int,
+        pub codec_descriptor: *const AVCodecDescriptor,
+        pub sub_charenc: *mut ::core::ffi::c_char,
+        pub sub_charenc_mode: ::core::ffi::c_int,
+        pub subtitle_header_size: ::core::ffi::c_int,
+        pub subtitle_header: *mut uint8_t,
+        pub dump_separator: *mut uint8_t,
+        pub codec_whitelist: *mut ::core::ffi::c_char,
+        pub coded_side_data: *mut AVPacketSideData,
+        pub nb_coded_side_data: ::core::ffi::c_int,
+        pub export_side_data: ::core::ffi::c_int,
+        pub max_pixels: int64_t,
+        pub apply_cropping: ::core::ffi::c_int,
+        pub discard_damaged_percentage: ::core::ffi::c_int,
+        pub max_samples: int64_t,
+        pub get_encode_buffer: Option<
+            unsafe extern "C" fn(
+                *mut AVCodecContext,
+                *mut AVPacket,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub frame_num: int64_t,
+        pub side_data_prefer_packet: *mut ::core::ffi::c_int,
+        pub nb_side_data_prefer_packet: ::core::ffi::c_uint,
+        pub decoded_side_data: *mut *mut AVFrameSideData,
+        pub nb_decoded_side_data: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1936:16"]
+    pub struct AVHWAccel {
+        pub name: *const ::core::ffi::c_char,
+        pub type_0: AVMediaType,
+        pub id: AVCodecID,
+        pub pix_fmt: AVPixelFormat,
+        pub capabilities: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "193:16"]
+    pub struct RcOverride {
+        pub start_frame: ::core::ffi::c_int,
+        pub end_frame: ::core::ffi::c_int,
+        pub qscale: ::core::ffi::c_int,
+        pub quality_factor: ::core::ffi::c_float,
+    }
+    use super::avutil_h::AVMediaType;
+    use super::buffer_h::AVBufferRef;
+    use super::channel_layout_h::AVChannelLayout;
+    use super::codec_desc_h::AVCodecDescriptor;
+    use super::codec_h::AVCodec;
+    use super::codec_id_h::AVCodecID;
+    use super::codec_par_h::AVCodecParameters;
+    use super::defs_h::{AVAudioServiceType, AVDiscard, AVFieldOrder};
+    use super::dict_h::AVDictionary;
+    use super::libav_frame_h::{AVFrame, AVFrameSideData};
+    use super::log_h::AVClass;
+    use super::packet_h::{AVPacket, AVPacketSideData};
+    use super::pixfmt_h::{
+        AVChromaLocation, AVColorPrimaries, AVColorRange, AVColorSpace,
+        AVColorTransferCharacteristic, AVPixelFormat,
+    };
+    use super::rational_h::AVRational;
+    use super::samplefmt_h::AVSampleFormat;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint16_t, uint64_t, uint8_t};
+    extern "C" {
+        #[c2rust::src_loc = "466:12"]
+        pub type AVCodecInternal;
+        #[c2rust::src_loc = "2112:1"]
+        pub fn avcodec_alloc_context3(codec: *const AVCodec) -> *mut AVCodecContext;
+        #[c2rust::src_loc = "2118:1"]
+        pub fn avcodec_free_context(avctx: *mut *mut AVCodecContext);
+        #[c2rust::src_loc = "2154:1"]
+        pub fn avcodec_parameters_to_context(
+            codec: *mut AVCodecContext,
+            par: *const AVCodecParameters,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2218:1"]
+        pub fn avcodec_open2(
+            avctx: *mut AVCodecContext,
+            codec: *const AVCodec,
+            options: *mut *mut AVDictionary,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2345:1"]
+        pub fn avcodec_send_packet(
+            avctx: *mut AVCodecContext,
+            avpkt: *const AVPacket,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2366:1"]
+        pub fn avcodec_receive_frame(
+            avctx: *mut AVCodecContext,
+            frame: *mut AVFrame,
+        ) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/libavcodec/codec_desc.h:30"]
+pub mod codec_desc_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "38:16"]
+    pub struct AVCodecDescriptor {
+        pub id: AVCodecID,
+        pub type_0: AVMediaType,
+        pub name: *const ::core::ffi::c_char,
+        pub long_name: *const ::core::ffi::c_char,
+        pub props: ::core::ffi::c_int,
+        pub mime_types: *const *const ::core::ffi::c_char,
+        pub profiles: *const AVProfile,
+    }
+    use super::avutil_h::AVMediaType;
+    use super::codec_h::AVProfile;
+    use super::codec_id_h::AVCodecID;
+}
+#[c2rust::header_src = "/usr/include/libavcodec/codec.h:30"]
+pub mod codec_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "164:16"]
+    pub struct AVProfile {
+        pub profile: ::core::ffi::c_int,
+        pub name: *const ::core::ffi::c_char,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "172:16"]
+    pub struct AVCodec {
+        pub name: *const ::core::ffi::c_char,
+        pub long_name: *const ::core::ffi::c_char,
+        pub type_0: AVMediaType,
+        pub id: AVCodecID,
+        pub capabilities: ::core::ffi::c_int,
+        pub max_lowres: uint8_t,
+        pub supported_framerates: *const AVRational,
+        pub pix_fmts: *const AVPixelFormat,
+        pub supported_samplerates: *const ::core::ffi::c_int,
+        pub sample_fmts: *const AVSampleFormat,
+        pub priv_class: *const AVClass,
+        pub profiles: *const AVProfile,
+        pub wrapper_name: *const ::core::ffi::c_char,
+        pub ch_layouts: *const AVChannelLayout,
+    }
+    use super::avutil_h::AVMediaType;
+    use super::channel_layout_h::AVChannelLayout;
+    use super::codec_id_h::{AVCodecID, AV_CODEC_ID_NONE};
+    use super::log_h::AVClass;
+    use super::pixfmt_h::AVPixelFormat;
+    use super::rational_h::AVRational;
+    use super::samplefmt_h::AVSampleFormat;
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "246:1"]
+        pub fn avcodec_find_decoder(id: AVCodecID) -> *const AVCodec;
+    }
+}
+#[c2rust::header_src = "/usr/include/libavcodec/codec_id.h:27"]
+pub mod codec_id_h {
+    #[c2rust::src_loc = "49:1"]
+    pub type AVCodecID = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "626:5"]
+    pub const AV_CODEC_ID_ANULL: AVCodecID = 135171;
+    #[c2rust::src_loc = "621:5"]
+    pub const AV_CODEC_ID_VNULL: AVCodecID = 135170;
+    #[c2rust::src_loc = "616:5"]
+    pub const AV_CODEC_ID_WRAPPED_AVFRAME: AVCodecID = 135169;
+    #[c2rust::src_loc = "615:5"]
+    pub const AV_CODEC_ID_FFMETADATA: AVCodecID = 135168;
+    #[c2rust::src_loc = "613:5"]
+    pub const AV_CODEC_ID_MPEG4SYSTEMS: AVCodecID = 131073;
+    #[c2rust::src_loc = "611:5"]
+    pub const AV_CODEC_ID_MPEG2TS: AVCodecID = 131072;
+    #[c2rust::src_loc = "609:5"]
+    pub const AV_CODEC_ID_PROBE: AVCodecID = 102400;
+    #[c2rust::src_loc = "606:5"]
+    pub const AV_CODEC_ID_SMPTE_436M_ANC: AVCodecID = 98317;
+    #[c2rust::src_loc = "605:5"]
+    pub const AV_CODEC_ID_LCEVC: AVCodecID = 98316;
+    #[c2rust::src_loc = "604:5"]
+    pub const AV_CODEC_ID_SMPTE_2038: AVCodecID = 98315;
+    #[c2rust::src_loc = "603:5"]
+    pub const AV_CODEC_ID_BIN_DATA: AVCodecID = 98314;
+    #[c2rust::src_loc = "602:5"]
+    pub const AV_CODEC_ID_TIMED_ID3: AVCodecID = 98313;
+    #[c2rust::src_loc = "601:5"]
+    pub const AV_CODEC_ID_DVD_NAV: AVCodecID = 98312;
+    #[c2rust::src_loc = "600:5"]
+    pub const AV_CODEC_ID_SMPTE_KLV: AVCodecID = 98311;
+    #[c2rust::src_loc = "599:5"]
+    pub const AV_CODEC_ID_OTF: AVCodecID = 98310;
+    #[c2rust::src_loc = "598:5"]
+    pub const AV_CODEC_ID_IDF: AVCodecID = 98309;
+    #[c2rust::src_loc = "597:5"]
+    pub const AV_CODEC_ID_XBIN: AVCodecID = 98308;
+    #[c2rust::src_loc = "596:5"]
+    pub const AV_CODEC_ID_BINTEXT: AVCodecID = 98307;
+    #[c2rust::src_loc = "595:5"]
+    pub const AV_CODEC_ID_EPG: AVCodecID = 98306;
+    #[c2rust::src_loc = "594:5"]
+    pub const AV_CODEC_ID_SCTE_35: AVCodecID = 98305;
+    #[c2rust::src_loc = "592:5"]
+    pub const AV_CODEC_ID_TTF: AVCodecID = 98304;
+    #[c2rust::src_loc = "591:5"]
+    pub const AV_CODEC_ID_FIRST_UNKNOWN: AVCodecID = 98304;
+    #[c2rust::src_loc = "588:5"]
+    pub const AV_CODEC_ID_IVTV_VBI: AVCodecID = 94234;
+    #[c2rust::src_loc = "587:5"]
+    pub const AV_CODEC_ID_ARIB_CAPTION: AVCodecID = 94233;
+    #[c2rust::src_loc = "586:5"]
+    pub const AV_CODEC_ID_TTML: AVCodecID = 94232;
+    #[c2rust::src_loc = "585:5"]
+    pub const AV_CODEC_ID_HDMV_TEXT_SUBTITLE: AVCodecID = 94231;
+    #[c2rust::src_loc = "584:5"]
+    pub const AV_CODEC_ID_ASS: AVCodecID = 94230;
+    #[c2rust::src_loc = "583:5"]
+    pub const AV_CODEC_ID_PJS: AVCodecID = 94229;
+    #[c2rust::src_loc = "582:5"]
+    pub const AV_CODEC_ID_VPLAYER: AVCodecID = 94228;
+    #[c2rust::src_loc = "581:5"]
+    pub const AV_CODEC_ID_MPL2: AVCodecID = 94227;
+    #[c2rust::src_loc = "580:5"]
+    pub const AV_CODEC_ID_WEBVTT: AVCodecID = 94226;
+    #[c2rust::src_loc = "579:5"]
+    pub const AV_CODEC_ID_SUBRIP: AVCodecID = 94225;
+    #[c2rust::src_loc = "578:5"]
+    pub const AV_CODEC_ID_SUBVIEWER: AVCodecID = 94224;
+    #[c2rust::src_loc = "577:5"]
+    pub const AV_CODEC_ID_SUBVIEWER1: AVCodecID = 94223;
+    #[c2rust::src_loc = "576:5"]
+    pub const AV_CODEC_ID_STL: AVCodecID = 94222;
+    #[c2rust::src_loc = "575:5"]
+    pub const AV_CODEC_ID_REALTEXT: AVCodecID = 94221;
+    #[c2rust::src_loc = "574:5"]
+    pub const AV_CODEC_ID_SAMI: AVCodecID = 94220;
+    #[c2rust::src_loc = "573:5"]
+    pub const AV_CODEC_ID_JACOSUB: AVCodecID = 94219;
+    #[c2rust::src_loc = "572:5"]
+    pub const AV_CODEC_ID_EIA_608: AVCodecID = 94218;
+    #[c2rust::src_loc = "571:5"]
+    pub const AV_CODEC_ID_MICRODVD: AVCodecID = 94217;
+    #[c2rust::src_loc = "570:5"]
+    pub const AV_CODEC_ID_SRT: AVCodecID = 94216;
+    #[c2rust::src_loc = "569:5"]
+    pub const AV_CODEC_ID_DVB_TELETEXT: AVCodecID = 94215;
+    #[c2rust::src_loc = "568:5"]
+    pub const AV_CODEC_ID_HDMV_PGS_SUBTITLE: AVCodecID = 94214;
+    #[c2rust::src_loc = "567:5"]
+    pub const AV_CODEC_ID_MOV_TEXT: AVCodecID = 94213;
+    #[c2rust::src_loc = "566:5"]
+    pub const AV_CODEC_ID_SSA: AVCodecID = 94212;
+    #[c2rust::src_loc = "565:5"]
+    pub const AV_CODEC_ID_XSUB: AVCodecID = 94211;
+    #[c2rust::src_loc = "564:5"]
+    pub const AV_CODEC_ID_TEXT: AVCodecID = 94210;
+    #[c2rust::src_loc = "563:5"]
+    pub const AV_CODEC_ID_DVB_SUBTITLE: AVCodecID = 94209;
+    #[c2rust::src_loc = "562:5"]
+    pub const AV_CODEC_ID_DVD_SUBTITLE: AVCodecID = 94208;
+    #[c2rust::src_loc = "561:5"]
+    pub const AV_CODEC_ID_FIRST_SUBTITLE: AVCodecID = 94208;
+    #[c2rust::src_loc = "558:5"]
+    pub const AV_CODEC_ID_G728: AVCodecID = 86123;
+    #[c2rust::src_loc = "557:5"]
+    pub const AV_CODEC_ID_LC3: AVCodecID = 86122;
+    #[c2rust::src_loc = "556:5"]
+    pub const AV_CODEC_ID_QOA: AVCodecID = 86121;
+    #[c2rust::src_loc = "555:5"]
+    pub const AV_CODEC_ID_OSQ: AVCodecID = 86120;
+    #[c2rust::src_loc = "554:5"]
+    pub const AV_CODEC_ID_AC4: AVCodecID = 86119;
+    #[c2rust::src_loc = "553:5"]
+    pub const AV_CODEC_ID_RKA: AVCodecID = 86118;
+    #[c2rust::src_loc = "552:5"]
+    pub const AV_CODEC_ID_WAVARC: AVCodecID = 86117;
+    #[c2rust::src_loc = "551:5"]
+    pub const AV_CODEC_ID_FTR: AVCodecID = 86116;
+    #[c2rust::src_loc = "550:5"]
+    pub const AV_CODEC_ID_APAC: AVCodecID = 86115;
+    #[c2rust::src_loc = "549:5"]
+    pub const AV_CODEC_ID_MISC4: AVCodecID = 86114;
+    #[c2rust::src_loc = "548:5"]
+    pub const AV_CODEC_ID_BONK: AVCodecID = 86113;
+    #[c2rust::src_loc = "547:5"]
+    pub const AV_CODEC_ID_DFPWM: AVCodecID = 86112;
+    #[c2rust::src_loc = "546:5"]
+    pub const AV_CODEC_ID_MSNSIREN: AVCodecID = 86111;
+    #[c2rust::src_loc = "545:5"]
+    pub const AV_CODEC_ID_FASTAUDIO: AVCodecID = 86110;
+    #[c2rust::src_loc = "544:5"]
+    pub const AV_CODEC_ID_HCA: AVCodecID = 86109;
+    #[c2rust::src_loc = "543:5"]
+    pub const AV_CODEC_ID_SIREN: AVCodecID = 86108;
+    #[c2rust::src_loc = "542:5"]
+    pub const AV_CODEC_ID_MPEGH_3D_AUDIO: AVCodecID = 86107;
+    #[c2rust::src_loc = "541:5"]
+    pub const AV_CODEC_ID_ACELP_KELVIN: AVCodecID = 86106;
+    #[c2rust::src_loc = "540:5"]
+    pub const AV_CODEC_ID_HCOM: AVCodecID = 86105;
+    #[c2rust::src_loc = "539:5"]
+    pub const AV_CODEC_ID_ATRAC9: AVCodecID = 86104;
+    #[c2rust::src_loc = "538:5"]
+    pub const AV_CODEC_ID_SBC: AVCodecID = 86103;
+    #[c2rust::src_loc = "537:5"]
+    pub const AV_CODEC_ID_APTX_HD: AVCodecID = 86102;
+    #[c2rust::src_loc = "536:5"]
+    pub const AV_CODEC_ID_APTX: AVCodecID = 86101;
+    #[c2rust::src_loc = "535:5"]
+    pub const AV_CODEC_ID_DOLBY_E: AVCodecID = 86100;
+    #[c2rust::src_loc = "534:5"]
+    pub const AV_CODEC_ID_ATRAC3PAL: AVCodecID = 86099;
+    #[c2rust::src_loc = "533:5"]
+    pub const AV_CODEC_ID_ATRAC3AL: AVCodecID = 86098;
+    #[c2rust::src_loc = "532:5"]
+    pub const AV_CODEC_ID_DST: AVCodecID = 86097;
+    #[c2rust::src_loc = "531:5"]
+    pub const AV_CODEC_ID_XMA2: AVCodecID = 86096;
+    #[c2rust::src_loc = "530:5"]
+    pub const AV_CODEC_ID_XMA1: AVCodecID = 86095;
+    #[c2rust::src_loc = "529:5"]
+    pub const AV_CODEC_ID_INTERPLAY_ACM: AVCodecID = 86094;
+    #[c2rust::src_loc = "528:5"]
+    pub const AV_CODEC_ID_4GV: AVCodecID = 86093;
+    #[c2rust::src_loc = "527:5"]
+    pub const AV_CODEC_ID_DSD_MSBF_PLANAR: AVCodecID = 86092;
+    #[c2rust::src_loc = "526:5"]
+    pub const AV_CODEC_ID_DSD_LSBF_PLANAR: AVCodecID = 86091;
+    #[c2rust::src_loc = "525:5"]
+    pub const AV_CODEC_ID_DSD_MSBF: AVCodecID = 86090;
+    #[c2rust::src_loc = "524:5"]
+    pub const AV_CODEC_ID_DSD_LSBF: AVCodecID = 86089;
+    #[c2rust::src_loc = "523:5"]
+    pub const AV_CODEC_ID_SMV: AVCodecID = 86088;
+    #[c2rust::src_loc = "522:5"]
+    pub const AV_CODEC_ID_EVRC: AVCodecID = 86087;
+    #[c2rust::src_loc = "521:5"]
+    pub const AV_CODEC_ID_SONIC_LS: AVCodecID = 86086;
+    #[c2rust::src_loc = "520:5"]
+    pub const AV_CODEC_ID_SONIC: AVCodecID = 86085;
+    #[c2rust::src_loc = "519:5"]
+    pub const AV_CODEC_ID_FFWAVESYNTH: AVCodecID = 86084;
+    #[c2rust::src_loc = "518:5"]
+    pub const AV_CODEC_ID_CODEC2: AVCodecID = 86083;
+    #[c2rust::src_loc = "517:5"]
+    pub const AV_CODEC_ID_DSS_SP: AVCodecID = 86082;
+    #[c2rust::src_loc = "516:5"]
+    pub const AV_CODEC_ID_ON2AVC: AVCodecID = 86081;
+    #[c2rust::src_loc = "515:5"]
+    pub const AV_CODEC_ID_PAF_AUDIO: AVCodecID = 86080;
+    #[c2rust::src_loc = "514:5"]
+    pub const AV_CODEC_ID_METASOUND: AVCodecID = 86079;
+    #[c2rust::src_loc = "513:5"]
+    pub const AV_CODEC_ID_TAK: AVCodecID = 86078;
+    #[c2rust::src_loc = "512:5"]
+    pub const AV_CODEC_ID_COMFORT_NOISE: AVCodecID = 86077;
+    #[c2rust::src_loc = "511:5"]
+    pub const AV_CODEC_ID_OPUS: AVCodecID = 86076;
+    #[c2rust::src_loc = "510:5"]
+    pub const AV_CODEC_ID_ILBC: AVCodecID = 86075;
+    #[c2rust::src_loc = "509:5"]
+    pub const AV_CODEC_ID_IAC: AVCodecID = 86074;
+    #[c2rust::src_loc = "508:5"]
+    pub const AV_CODEC_ID_RALF: AVCodecID = 86073;
+    #[c2rust::src_loc = "507:5"]
+    pub const AV_CODEC_ID_BMV_AUDIO: AVCodecID = 86072;
+    #[c2rust::src_loc = "506:5"]
+    pub const AV_CODEC_ID_8SVX_FIB: AVCodecID = 86071;
+    #[c2rust::src_loc = "505:5"]
+    pub const AV_CODEC_ID_8SVX_EXP: AVCodecID = 86070;
+    #[c2rust::src_loc = "504:5"]
+    pub const AV_CODEC_ID_G729: AVCodecID = 86069;
+    #[c2rust::src_loc = "503:5"]
+    pub const AV_CODEC_ID_G723_1: AVCodecID = 86068;
+    #[c2rust::src_loc = "502:5"]
+    pub const AV_CODEC_ID_CELT: AVCodecID = 86067;
+    #[c2rust::src_loc = "501:5"]
+    pub const AV_CODEC_ID_QDMC: AVCodecID = 86066;
+    #[c2rust::src_loc = "500:5"]
+    pub const AV_CODEC_ID_AAC_LATM: AVCodecID = 86065;
+    #[c2rust::src_loc = "499:5"]
+    pub const AV_CODEC_ID_BINKAUDIO_DCT: AVCodecID = 86064;
+    #[c2rust::src_loc = "498:5"]
+    pub const AV_CODEC_ID_BINKAUDIO_RDFT: AVCodecID = 86063;
+    #[c2rust::src_loc = "497:5"]
+    pub const AV_CODEC_ID_ATRAC1: AVCodecID = 86062;
+    #[c2rust::src_loc = "496:5"]
+    pub const AV_CODEC_ID_MP4ALS: AVCodecID = 86061;
+    #[c2rust::src_loc = "495:5"]
+    pub const AV_CODEC_ID_TRUEHD: AVCodecID = 86060;
+    #[c2rust::src_loc = "494:5"]
+    pub const AV_CODEC_ID_TWINVQ: AVCodecID = 86059;
+    #[c2rust::src_loc = "493:5"]
+    pub const AV_CODEC_ID_MP1: AVCodecID = 86058;
+    #[c2rust::src_loc = "492:5"]
+    pub const AV_CODEC_ID_SIPR: AVCodecID = 86057;
+    #[c2rust::src_loc = "491:5"]
+    pub const AV_CODEC_ID_EAC3: AVCodecID = 86056;
+    #[c2rust::src_loc = "490:5"]
+    pub const AV_CODEC_ID_ATRAC3P: AVCodecID = 86055;
+    #[c2rust::src_loc = "489:5"]
+    pub const AV_CODEC_ID_WMALOSSLESS: AVCodecID = 86054;
+    #[c2rust::src_loc = "488:5"]
+    pub const AV_CODEC_ID_WMAPRO: AVCodecID = 86053;
+    #[c2rust::src_loc = "487:5"]
+    pub const AV_CODEC_ID_WMAVOICE: AVCodecID = 86052;
+    #[c2rust::src_loc = "486:5"]
+    pub const AV_CODEC_ID_SPEEX: AVCodecID = 86051;
+    #[c2rust::src_loc = "485:5"]
+    pub const AV_CODEC_ID_MUSEPACK8: AVCodecID = 86050;
+    #[c2rust::src_loc = "484:5"]
+    pub const AV_CODEC_ID_NELLYMOSER: AVCodecID = 86049;
+    #[c2rust::src_loc = "483:5"]
+    pub const AV_CODEC_ID_APE: AVCodecID = 86048;
+    #[c2rust::src_loc = "482:5"]
+    pub const AV_CODEC_ID_ATRAC3: AVCodecID = 86047;
+    #[c2rust::src_loc = "481:5"]
+    pub const AV_CODEC_ID_GSM_MS: AVCodecID = 86046;
+    #[c2rust::src_loc = "480:5"]
+    pub const AV_CODEC_ID_MLP: AVCodecID = 86045;
+    #[c2rust::src_loc = "479:5"]
+    pub const AV_CODEC_ID_MUSEPACK7: AVCodecID = 86044;
+    #[c2rust::src_loc = "478:5"]
+    pub const AV_CODEC_ID_IMC: AVCodecID = 86043;
+    #[c2rust::src_loc = "477:5"]
+    pub const AV_CODEC_ID_DSICINAUDIO: AVCodecID = 86042;
+    #[c2rust::src_loc = "476:5"]
+    pub const AV_CODEC_ID_WAVPACK: AVCodecID = 86041;
+    #[c2rust::src_loc = "475:5"]
+    pub const AV_CODEC_ID_QCELP: AVCodecID = 86040;
+    #[c2rust::src_loc = "474:5"]
+    pub const AV_CODEC_ID_SMACKAUDIO: AVCodecID = 86039;
+    #[c2rust::src_loc = "473:5"]
+    pub const AV_CODEC_ID_TTA: AVCodecID = 86038;
+    #[c2rust::src_loc = "472:5"]
+    pub const AV_CODEC_ID_TRUESPEECH: AVCodecID = 86037;
+    #[c2rust::src_loc = "471:5"]
+    pub const AV_CODEC_ID_COOK: AVCodecID = 86036;
+    #[c2rust::src_loc = "470:5"]
+    pub const AV_CODEC_ID_QDM2: AVCodecID = 86035;
+    #[c2rust::src_loc = "469:5"]
+    pub const AV_CODEC_ID_GSM: AVCodecID = 86034;
+    #[c2rust::src_loc = "468:5"]
+    pub const AV_CODEC_ID_WESTWOOD_SND1: AVCodecID = 86033;
+    #[c2rust::src_loc = "467:5"]
+    pub const AV_CODEC_ID_ALAC: AVCodecID = 86032;
+    #[c2rust::src_loc = "466:5"]
+    pub const AV_CODEC_ID_SHORTEN: AVCodecID = 86031;
+    #[c2rust::src_loc = "465:5"]
+    pub const AV_CODEC_ID_MP3ON4: AVCodecID = 86030;
+    #[c2rust::src_loc = "464:5"]
+    pub const AV_CODEC_ID_MP3ADU: AVCodecID = 86029;
+    #[c2rust::src_loc = "463:5"]
+    pub const AV_CODEC_ID_FLAC: AVCodecID = 86028;
+    #[c2rust::src_loc = "462:5"]
+    pub const AV_CODEC_ID_VMDAUDIO: AVCodecID = 86027;
+    #[c2rust::src_loc = "461:5"]
+    pub const AV_CODEC_ID_MACE6: AVCodecID = 86026;
+    #[c2rust::src_loc = "460:5"]
+    pub const AV_CODEC_ID_MACE3: AVCodecID = 86025;
+    #[c2rust::src_loc = "459:5"]
+    pub const AV_CODEC_ID_WMAV2: AVCodecID = 86024;
+    #[c2rust::src_loc = "458:5"]
+    pub const AV_CODEC_ID_WMAV1: AVCodecID = 86023;
+    #[c2rust::src_loc = "457:5"]
+    pub const AV_CODEC_ID_DVAUDIO: AVCodecID = 86022;
+    #[c2rust::src_loc = "456:5"]
+    pub const AV_CODEC_ID_VORBIS: AVCodecID = 86021;
+    #[c2rust::src_loc = "455:5"]
+    pub const AV_CODEC_ID_DTS: AVCodecID = 86020;
+    #[c2rust::src_loc = "454:5"]
+    pub const AV_CODEC_ID_AC3: AVCodecID = 86019;
+    #[c2rust::src_loc = "453:5"]
+    pub const AV_CODEC_ID_AAC: AVCodecID = 86018;
+    #[c2rust::src_loc = "452:5"]
+    pub const AV_CODEC_ID_MP3: AVCodecID = 86017;
+    #[c2rust::src_loc = "451:5"]
+    pub const AV_CODEC_ID_MP2: AVCodecID = 86016;
+    #[c2rust::src_loc = "448:5"]
+    pub const AV_CODEC_ID_CBD2_DPCM: AVCodecID = 81928;
+    #[c2rust::src_loc = "447:5"]
+    pub const AV_CODEC_ID_WADY_DPCM: AVCodecID = 81927;
+    #[c2rust::src_loc = "446:5"]
+    pub const AV_CODEC_ID_DERF_DPCM: AVCodecID = 81926;
+    #[c2rust::src_loc = "445:5"]
+    pub const AV_CODEC_ID_GREMLIN_DPCM: AVCodecID = 81925;
+    #[c2rust::src_loc = "444:5"]
+    pub const AV_CODEC_ID_SDX2_DPCM: AVCodecID = 81924;
+    #[c2rust::src_loc = "443:5"]
+    pub const AV_CODEC_ID_SOL_DPCM: AVCodecID = 81923;
+    #[c2rust::src_loc = "442:5"]
+    pub const AV_CODEC_ID_XAN_DPCM: AVCodecID = 81922;
+    #[c2rust::src_loc = "441:5"]
+    pub const AV_CODEC_ID_INTERPLAY_DPCM: AVCodecID = 81921;
+    #[c2rust::src_loc = "440:5"]
+    pub const AV_CODEC_ID_ROQ_DPCM: AVCodecID = 81920;
+    #[c2rust::src_loc = "437:5"]
+    pub const AV_CODEC_ID_RA_288: AVCodecID = 77825;
+    #[c2rust::src_loc = "436:5"]
+    pub const AV_CODEC_ID_RA_144: AVCodecID = 77824;
+    #[c2rust::src_loc = "433:5"]
+    pub const AV_CODEC_ID_AMR_WB: AVCodecID = 73729;
+    #[c2rust::src_loc = "432:5"]
+    pub const AV_CODEC_ID_AMR_NB: AVCodecID = 73728;
+    #[c2rust::src_loc = "429:5"]
+    pub const AV_CODEC_ID_ADPCM_SANYO: AVCodecID = 69685;
+    #[c2rust::src_loc = "428:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_XBOX: AVCodecID = 69684;
+    #[c2rust::src_loc = "427:5"]
+    pub const AV_CODEC_ID_ADPCM_XMD: AVCodecID = 69683;
+    #[c2rust::src_loc = "426:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_ACORN: AVCodecID = 69682;
+    #[c2rust::src_loc = "425:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_MOFLEX: AVCodecID = 69681;
+    #[c2rust::src_loc = "424:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_CUNNING: AVCodecID = 69680;
+    #[c2rust::src_loc = "423:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_MTF: AVCodecID = 69679;
+    #[c2rust::src_loc = "422:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_ALP: AVCodecID = 69678;
+    #[c2rust::src_loc = "421:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_APM: AVCodecID = 69677;
+    #[c2rust::src_loc = "420:5"]
+    pub const AV_CODEC_ID_ADPCM_ZORK: AVCodecID = 69676;
+    #[c2rust::src_loc = "419:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_SSI: AVCodecID = 69675;
+    #[c2rust::src_loc = "418:5"]
+    pub const AV_CODEC_ID_ADPCM_ARGO: AVCodecID = 69674;
+    #[c2rust::src_loc = "417:5"]
+    pub const AV_CODEC_ID_ADPCM_AGM: AVCodecID = 69673;
+    #[c2rust::src_loc = "416:5"]
+    pub const AV_CODEC_ID_ADPCM_MTAF: AVCodecID = 69672;
+    #[c2rust::src_loc = "415:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_DAT4: AVCodecID = 69671;
+    #[c2rust::src_loc = "414:5"]
+    pub const AV_CODEC_ID_ADPCM_AICA: AVCodecID = 69670;
+    #[c2rust::src_loc = "413:5"]
+    pub const AV_CODEC_ID_ADPCM_PSX: AVCodecID = 69669;
+    #[c2rust::src_loc = "412:5"]
+    pub const AV_CODEC_ID_ADPCM_THP_LE: AVCodecID = 69668;
+    #[c2rust::src_loc = "411:5"]
+    pub const AV_CODEC_ID_ADPCM_G726LE: AVCodecID = 69667;
+    #[c2rust::src_loc = "410:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_RAD: AVCodecID = 69666;
+    #[c2rust::src_loc = "409:5"]
+    pub const AV_CODEC_ID_ADPCM_DTK: AVCodecID = 69665;
+    #[c2rust::src_loc = "408:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_OKI: AVCodecID = 69664;
+    #[c2rust::src_loc = "407:5"]
+    pub const AV_CODEC_ID_ADPCM_AFC: AVCodecID = 69663;
+    #[c2rust::src_loc = "406:5"]
+    pub const AV_CODEC_ID_ADPCM_VIMA: AVCodecID = 69662;
+    #[c2rust::src_loc = "405:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_APC: AVCodecID = 69661;
+    #[c2rust::src_loc = "404:5"]
+    pub const AV_CODEC_ID_ADPCM_G722: AVCodecID = 69660;
+    #[c2rust::src_loc = "403:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_ISS: AVCodecID = 69659;
+    #[c2rust::src_loc = "402:5"]
+    pub const AV_CODEC_ID_ADPCM_EA_MAXIS_XA: AVCodecID = 69658;
+    #[c2rust::src_loc = "401:5"]
+    pub const AV_CODEC_ID_ADPCM_EA_XAS: AVCodecID = 69657;
+    #[c2rust::src_loc = "400:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_EA_EACS: AVCodecID = 69656;
+    #[c2rust::src_loc = "399:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_EA_SEAD: AVCodecID = 69655;
+    #[c2rust::src_loc = "398:5"]
+    pub const AV_CODEC_ID_ADPCM_EA_R2: AVCodecID = 69654;
+    #[c2rust::src_loc = "397:5"]
+    pub const AV_CODEC_ID_ADPCM_EA_R3: AVCodecID = 69653;
+    #[c2rust::src_loc = "396:5"]
+    pub const AV_CODEC_ID_ADPCM_EA_R1: AVCodecID = 69652;
+    #[c2rust::src_loc = "395:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_AMV: AVCodecID = 69651;
+    #[c2rust::src_loc = "394:5"]
+    pub const AV_CODEC_ID_ADPCM_THP: AVCodecID = 69650;
+    #[c2rust::src_loc = "393:5"]
+    pub const AV_CODEC_ID_ADPCM_SBPRO_2: AVCodecID = 69649;
+    #[c2rust::src_loc = "392:5"]
+    pub const AV_CODEC_ID_ADPCM_SBPRO_3: AVCodecID = 69648;
+    #[c2rust::src_loc = "391:5"]
+    pub const AV_CODEC_ID_ADPCM_SBPRO_4: AVCodecID = 69647;
+    #[c2rust::src_loc = "390:5"]
+    pub const AV_CODEC_ID_ADPCM_YAMAHA: AVCodecID = 69646;
+    #[c2rust::src_loc = "389:5"]
+    pub const AV_CODEC_ID_ADPCM_SWF: AVCodecID = 69645;
+    #[c2rust::src_loc = "388:5"]
+    pub const AV_CODEC_ID_ADPCM_CT: AVCodecID = 69644;
+    #[c2rust::src_loc = "387:5"]
+    pub const AV_CODEC_ID_ADPCM_G726: AVCodecID = 69643;
+    #[c2rust::src_loc = "386:5"]
+    pub const AV_CODEC_ID_ADPCM_EA: AVCodecID = 69642;
+    #[c2rust::src_loc = "385:5"]
+    pub const AV_CODEC_ID_ADPCM_ADX: AVCodecID = 69641;
+    #[c2rust::src_loc = "384:5"]
+    pub const AV_CODEC_ID_ADPCM_XA: AVCodecID = 69640;
+    #[c2rust::src_loc = "383:5"]
+    pub const AV_CODEC_ID_ADPCM_4XM: AVCodecID = 69639;
+    #[c2rust::src_loc = "382:5"]
+    pub const AV_CODEC_ID_ADPCM_MS: AVCodecID = 69638;
+    #[c2rust::src_loc = "381:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_SMJPEG: AVCodecID = 69637;
+    #[c2rust::src_loc = "380:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_WS: AVCodecID = 69636;
+    #[c2rust::src_loc = "379:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_DK4: AVCodecID = 69635;
+    #[c2rust::src_loc = "378:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_DK3: AVCodecID = 69634;
+    #[c2rust::src_loc = "377:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_WAV: AVCodecID = 69633;
+    #[c2rust::src_loc = "376:5"]
+    pub const AV_CODEC_ID_ADPCM_IMA_QT: AVCodecID = 69632;
+    #[c2rust::src_loc = "373:5"]
+    pub const AV_CODEC_ID_PCM_SGA: AVCodecID = 65572;
+    #[c2rust::src_loc = "372:5"]
+    pub const AV_CODEC_ID_PCM_VIDC: AVCodecID = 65571;
+    #[c2rust::src_loc = "371:5"]
+    pub const AV_CODEC_ID_PCM_F24LE: AVCodecID = 65570;
+    #[c2rust::src_loc = "370:5"]
+    pub const AV_CODEC_ID_PCM_F16LE: AVCodecID = 65569;
+    #[c2rust::src_loc = "369:5"]
+    pub const AV_CODEC_ID_PCM_S64BE: AVCodecID = 65568;
+    #[c2rust::src_loc = "368:5"]
+    pub const AV_CODEC_ID_PCM_S64LE: AVCodecID = 65567;
+    #[c2rust::src_loc = "367:5"]
+    pub const AV_CODEC_ID_PCM_S16BE_PLANAR: AVCodecID = 65566;
+    #[c2rust::src_loc = "366:5"]
+    pub const AV_CODEC_ID_PCM_S32LE_PLANAR: AVCodecID = 65565;
+    #[c2rust::src_loc = "365:5"]
+    pub const AV_CODEC_ID_PCM_S24LE_PLANAR: AVCodecID = 65564;
+    #[c2rust::src_loc = "364:5"]
+    pub const AV_CODEC_ID_PCM_S8_PLANAR: AVCodecID = 65563;
+    #[c2rust::src_loc = "363:5"]
+    pub const AV_CODEC_ID_S302M: AVCodecID = 65562;
+    #[c2rust::src_loc = "362:5"]
+    pub const AV_CODEC_ID_PCM_LXF: AVCodecID = 65561;
+    #[c2rust::src_loc = "361:5"]
+    pub const AV_CODEC_ID_PCM_BLURAY: AVCodecID = 65560;
+    #[c2rust::src_loc = "360:5"]
+    pub const AV_CODEC_ID_PCM_F64LE: AVCodecID = 65559;
+    #[c2rust::src_loc = "359:5"]
+    pub const AV_CODEC_ID_PCM_F64BE: AVCodecID = 65558;
+    #[c2rust::src_loc = "358:5"]
+    pub const AV_CODEC_ID_PCM_F32LE: AVCodecID = 65557;
+    #[c2rust::src_loc = "357:5"]
+    pub const AV_CODEC_ID_PCM_F32BE: AVCodecID = 65556;
+    #[c2rust::src_loc = "356:5"]
+    pub const AV_CODEC_ID_PCM_DVD: AVCodecID = 65555;
+    #[c2rust::src_loc = "355:5"]
+    pub const AV_CODEC_ID_PCM_S16LE_PLANAR: AVCodecID = 65554;
+    #[c2rust::src_loc = "354:5"]
+    pub const AV_CODEC_ID_PCM_ZORK: AVCodecID = 65553;
+    #[c2rust::src_loc = "353:5"]
+    pub const AV_CODEC_ID_PCM_S24DAUD: AVCodecID = 65552;
+    #[c2rust::src_loc = "352:5"]
+    pub const AV_CODEC_ID_PCM_U24BE: AVCodecID = 65551;
+    #[c2rust::src_loc = "351:5"]
+    pub const AV_CODEC_ID_PCM_U24LE: AVCodecID = 65550;
+    #[c2rust::src_loc = "350:5"]
+    pub const AV_CODEC_ID_PCM_S24BE: AVCodecID = 65549;
+    #[c2rust::src_loc = "349:5"]
+    pub const AV_CODEC_ID_PCM_S24LE: AVCodecID = 65548;
+    #[c2rust::src_loc = "348:5"]
+    pub const AV_CODEC_ID_PCM_U32BE: AVCodecID = 65547;
+    #[c2rust::src_loc = "347:5"]
+    pub const AV_CODEC_ID_PCM_U32LE: AVCodecID = 65546;
+    #[c2rust::src_loc = "346:5"]
+    pub const AV_CODEC_ID_PCM_S32BE: AVCodecID = 65545;
+    #[c2rust::src_loc = "345:5"]
+    pub const AV_CODEC_ID_PCM_S32LE: AVCodecID = 65544;
+    #[c2rust::src_loc = "344:5"]
+    pub const AV_CODEC_ID_PCM_ALAW: AVCodecID = 65543;
+    #[c2rust::src_loc = "343:5"]
+    pub const AV_CODEC_ID_PCM_MULAW: AVCodecID = 65542;
+    #[c2rust::src_loc = "342:5"]
+    pub const AV_CODEC_ID_PCM_U8: AVCodecID = 65541;
+    #[c2rust::src_loc = "341:5"]
+    pub const AV_CODEC_ID_PCM_S8: AVCodecID = 65540;
+    #[c2rust::src_loc = "340:5"]
+    pub const AV_CODEC_ID_PCM_U16BE: AVCodecID = 65539;
+    #[c2rust::src_loc = "339:5"]
+    pub const AV_CODEC_ID_PCM_U16LE: AVCodecID = 65538;
+    #[c2rust::src_loc = "338:5"]
+    pub const AV_CODEC_ID_PCM_S16BE: AVCodecID = 65537;
+    #[c2rust::src_loc = "337:5"]
+    pub const AV_CODEC_ID_PCM_S16LE: AVCodecID = 65536;
+    #[c2rust::src_loc = "336:5"]
+    pub const AV_CODEC_ID_FIRST_AUDIO: AVCodecID = 65536;
+    #[c2rust::src_loc = "333:5"]
+    pub const AV_CODEC_ID_PRORES_RAW: AVCodecID = 274;
+    #[c2rust::src_loc = "332:5"]
+    pub const AV_CODEC_ID_APV: AVCodecID = 273;
+    #[c2rust::src_loc = "331:5"]
+    pub const AV_CODEC_ID_JPEGXL_ANIM: AVCodecID = 272;
+    #[c2rust::src_loc = "330:5"]
+    pub const AV_CODEC_ID_RV60: AVCodecID = 271;
+    #[c2rust::src_loc = "329:5"]
+    pub const AV_CODEC_ID_DNXUC: AVCodecID = 270;
+    #[c2rust::src_loc = "328:5"]
+    pub const AV_CODEC_ID_LEAD: AVCodecID = 269;
+    #[c2rust::src_loc = "327:5"]
+    pub const AV_CODEC_ID_VMIX: AVCodecID = 268;
+    #[c2rust::src_loc = "326:5"]
+    pub const AV_CODEC_ID_RTV1: AVCodecID = 267;
+    #[c2rust::src_loc = "325:5"]
+    pub const AV_CODEC_ID_EVC: AVCodecID = 266;
+    #[c2rust::src_loc = "324:5"]
+    pub const AV_CODEC_ID_PDV: AVCodecID = 265;
+    #[c2rust::src_loc = "323:5"]
+    pub const AV_CODEC_ID_VQC: AVCodecID = 264;
+    #[c2rust::src_loc = "322:5"]
+    pub const AV_CODEC_ID_MEDIA100: AVCodecID = 263;
+    #[c2rust::src_loc = "321:5"]
+    pub const AV_CODEC_ID_WBMP: AVCodecID = 262;
+    #[c2rust::src_loc = "320:5"]
+    pub const AV_CODEC_ID_RADIANCE_HDR: AVCodecID = 261;
+    #[c2rust::src_loc = "319:5"]
+    pub const AV_CODEC_ID_PHM: AVCodecID = 260;
+    #[c2rust::src_loc = "318:5"]
+    pub const AV_CODEC_ID_QOI: AVCodecID = 259;
+    #[c2rust::src_loc = "317:5"]
+    pub const AV_CODEC_ID_JPEGXL: AVCodecID = 258;
+    #[c2rust::src_loc = "316:5"]
+    pub const AV_CODEC_ID_VBN: AVCodecID = 257;
+    #[c2rust::src_loc = "315:5"]
+    pub const AV_CODEC_ID_GEM: AVCodecID = 256;
+    #[c2rust::src_loc = "314:5"]
+    pub const AV_CODEC_ID_SGA_VIDEO: AVCodecID = 255;
+    #[c2rust::src_loc = "313:5"]
+    pub const AV_CODEC_ID_SIMBIOSIS_IMX: AVCodecID = 254;
+    #[c2rust::src_loc = "312:5"]
+    pub const AV_CODEC_ID_CRI: AVCodecID = 253;
+    #[c2rust::src_loc = "311:5"]
+    pub const AV_CODEC_ID_ARGO: AVCodecID = 252;
+    #[c2rust::src_loc = "310:5"]
+    pub const AV_CODEC_ID_IPU: AVCodecID = 251;
+    #[c2rust::src_loc = "309:5"]
+    pub const AV_CODEC_ID_PHOTOCD: AVCodecID = 250;
+    #[c2rust::src_loc = "308:5"]
+    pub const AV_CODEC_ID_MOBICLIP: AVCodecID = 249;
+    #[c2rust::src_loc = "307:5"]
+    pub const AV_CODEC_ID_PFM: AVCodecID = 248;
+    #[c2rust::src_loc = "306:5"]
+    pub const AV_CODEC_ID_NOTCHLC: AVCodecID = 247;
+    #[c2rust::src_loc = "305:5"]
+    pub const AV_CODEC_ID_MV30: AVCodecID = 246;
+    #[c2rust::src_loc = "304:5"]
+    pub const AV_CODEC_ID_CDTOONS: AVCodecID = 245;
+    #[c2rust::src_loc = "303:5"]
+    pub const AV_CODEC_ID_MVHA: AVCodecID = 244;
+    #[c2rust::src_loc = "302:5"]
+    pub const AV_CODEC_ID_MVDV: AVCodecID = 243;
+    #[c2rust::src_loc = "301:5"]
+    pub const AV_CODEC_ID_IMM5: AVCodecID = 242;
+    #[c2rust::src_loc = "300:5"]
+    pub const AV_CODEC_ID_VP4: AVCodecID = 241;
+    #[c2rust::src_loc = "299:5"]
+    pub const AV_CODEC_ID_LSCR: AVCodecID = 240;
+    #[c2rust::src_loc = "298:5"]
+    pub const AV_CODEC_ID_AGM: AVCodecID = 239;
+    #[c2rust::src_loc = "297:5"]
+    pub const AV_CODEC_ID_ARBC: AVCodecID = 238;
+    #[c2rust::src_loc = "296:5"]
+    pub const AV_CODEC_ID_HYMT: AVCodecID = 237;
+    #[c2rust::src_loc = "295:5"]
+    pub const AV_CODEC_ID_RASC: AVCodecID = 236;
+    #[c2rust::src_loc = "294:5"]
+    pub const AV_CODEC_ID_WCMV: AVCodecID = 235;
+    #[c2rust::src_loc = "293:5"]
+    pub const AV_CODEC_ID_MWSC: AVCodecID = 234;
+    #[c2rust::src_loc = "292:5"]
+    pub const AV_CODEC_ID_PROSUMER: AVCodecID = 233;
+    #[c2rust::src_loc = "291:5"]
+    pub const AV_CODEC_ID_IMM4: AVCodecID = 232;
+    #[c2rust::src_loc = "290:5"]
+    pub const AV_CODEC_ID_FITS: AVCodecID = 231;
+    #[c2rust::src_loc = "289:5"]
+    pub const AV_CODEC_ID_GDV: AVCodecID = 230;
+    #[c2rust::src_loc = "288:5"]
+    pub const AV_CODEC_ID_SVG: AVCodecID = 229;
+    #[c2rust::src_loc = "287:5"]
+    pub const AV_CODEC_ID_SRGC: AVCodecID = 228;
+    #[c2rust::src_loc = "286:5"]
+    pub const AV_CODEC_ID_MSCC: AVCodecID = 227;
+    #[c2rust::src_loc = "285:5"]
+    pub const AV_CODEC_ID_BITPACKED: AVCodecID = 226;
+    #[c2rust::src_loc = "284:5"]
+    pub const AV_CODEC_ID_AV1: AVCodecID = 225;
+    #[c2rust::src_loc = "283:5"]
+    pub const AV_CODEC_ID_XPM: AVCodecID = 224;
+    #[c2rust::src_loc = "282:5"]
+    pub const AV_CODEC_ID_CLEARVIDEO: AVCodecID = 223;
+    #[c2rust::src_loc = "281:5"]
+    pub const AV_CODEC_ID_SCPR: AVCodecID = 222;
+    #[c2rust::src_loc = "280:5"]
+    pub const AV_CODEC_ID_FMVC: AVCodecID = 221;
+    #[c2rust::src_loc = "279:5"]
+    pub const AV_CODEC_ID_SPEEDHQ: AVCodecID = 220;
+    #[c2rust::src_loc = "278:5"]
+    pub const AV_CODEC_ID_PIXLET: AVCodecID = 219;
+    #[c2rust::src_loc = "277:5"]
+    pub const AV_CODEC_ID_PSD: AVCodecID = 218;
+    #[c2rust::src_loc = "276:5"]
+    pub const AV_CODEC_ID_YLC: AVCodecID = 217;
+    #[c2rust::src_loc = "275:5"]
+    pub const AV_CODEC_ID_SHEERVIDEO: AVCodecID = 216;
+    #[c2rust::src_loc = "274:5"]
+    pub const AV_CODEC_ID_MAGICYUV: AVCodecID = 215;
+    #[c2rust::src_loc = "273:5"]
+    pub const AV_CODEC_ID_M101: AVCodecID = 214;
+    #[c2rust::src_loc = "272:5"]
+    pub const AV_CODEC_ID_TRUEMOTION2RT: AVCodecID = 213;
+    #[c2rust::src_loc = "271:5"]
+    pub const AV_CODEC_ID_CFHD: AVCodecID = 212;
+    #[c2rust::src_loc = "270:5"]
+    pub const AV_CODEC_ID_DAALA: AVCodecID = 211;
+    #[c2rust::src_loc = "269:5"]
+    pub const AV_CODEC_ID_APNG: AVCodecID = 210;
+    #[c2rust::src_loc = "268:5"]
+    pub const AV_CODEC_ID_SMVJPEG: AVCodecID = 209;
+    #[c2rust::src_loc = "267:5"]
+    pub const AV_CODEC_ID_SNOW: AVCodecID = 208;
+    #[c2rust::src_loc = "266:5"]
+    pub const AV_CODEC_ID_XFACE: AVCodecID = 207;
+    #[c2rust::src_loc = "265:5"]
+    pub const AV_CODEC_ID_CPIA: AVCodecID = 206;
+    #[c2rust::src_loc = "264:5"]
+    pub const AV_CODEC_ID_AVRN: AVCodecID = 205;
+    #[c2rust::src_loc = "263:5"]
+    pub const AV_CODEC_ID_YUV4: AVCodecID = 204;
+    #[c2rust::src_loc = "261:5"]
+    pub const AV_CODEC_ID_V408: AVCodecID = 203;
+    #[c2rust::src_loc = "260:5"]
+    pub const AV_CODEC_ID_V308: AVCodecID = 202;
+    #[c2rust::src_loc = "258:5"]
+    pub const AV_CODEC_ID_TARGA_Y216: AVCodecID = 201;
+    #[c2rust::src_loc = "257:5"]
+    pub const AV_CODEC_ID_AVUI: AVCodecID = 200;
+    #[c2rust::src_loc = "256:5"]
+    pub const AV_CODEC_ID_012V: AVCodecID = 199;
+    #[c2rust::src_loc = "255:5"]
+    pub const AV_CODEC_ID_AVRP: AVCodecID = 198;
+    #[c2rust::src_loc = "254:5"]
+    pub const AV_CODEC_ID_Y41P: AVCodecID = 197;
+    #[c2rust::src_loc = "252:5"]
+    pub const AV_CODEC_ID_VVC: AVCodecID = 196;
+    #[c2rust::src_loc = "251:5"]
+    pub const AV_CODEC_ID_MSP2: AVCodecID = 195;
+    #[c2rust::src_loc = "250:5"]
+    pub const AV_CODEC_ID_AVS3: AVCodecID = 194;
+    #[c2rust::src_loc = "249:5"]
+    pub const AV_CODEC_ID_PGX: AVCodecID = 193;
+    #[c2rust::src_loc = "248:5"]
+    pub const AV_CODEC_ID_AVS2: AVCodecID = 192;
+    #[c2rust::src_loc = "247:5"]
+    pub const AV_CODEC_ID_RSCC: AVCodecID = 191;
+    #[c2rust::src_loc = "246:5"]
+    pub const AV_CODEC_ID_SCREENPRESSO: AVCodecID = 190;
+    #[c2rust::src_loc = "245:5"]
+    pub const AV_CODEC_ID_DXV: AVCodecID = 189;
+    #[c2rust::src_loc = "244:5"]
+    pub const AV_CODEC_ID_DDS: AVCodecID = 188;
+    #[c2rust::src_loc = "243:5"]
+    pub const AV_CODEC_ID_HAP: AVCodecID = 187;
+    #[c2rust::src_loc = "242:5"]
+    pub const AV_CODEC_ID_HQ_HQA: AVCodecID = 186;
+    #[c2rust::src_loc = "241:5"]
+    pub const AV_CODEC_ID_TDSC: AVCodecID = 185;
+    #[c2rust::src_loc = "240:5"]
+    pub const AV_CODEC_ID_HQX: AVCodecID = 184;
+    #[c2rust::src_loc = "239:5"]
+    pub const AV_CODEC_ID_MVC2: AVCodecID = 183;
+    #[c2rust::src_loc = "238:5"]
+    pub const AV_CODEC_ID_MVC1: AVCodecID = 182;
+    #[c2rust::src_loc = "237:5"]
+    pub const AV_CODEC_ID_SGIRLE: AVCodecID = 181;
+    #[c2rust::src_loc = "236:5"]
+    pub const AV_CODEC_ID_SANM: AVCodecID = 180;
+    #[c2rust::src_loc = "235:5"]
+    pub const AV_CODEC_ID_VP7: AVCodecID = 179;
+    #[c2rust::src_loc = "234:5"]
+    pub const AV_CODEC_ID_EXR: AVCodecID = 178;
+    #[c2rust::src_loc = "233:5"]
+    pub const AV_CODEC_ID_PAF_VIDEO: AVCodecID = 177;
+    #[c2rust::src_loc = "232:5"]
+    pub const AV_CODEC_ID_BRENDER_PIX: AVCodecID = 176;
+    #[c2rust::src_loc = "231:5"]
+    pub const AV_CODEC_ID_ALIAS_PIX: AVCodecID = 175;
+    #[c2rust::src_loc = "230:5"]
+    pub const AV_CODEC_ID_FIC: AVCodecID = 174;
+    #[c2rust::src_loc = "228:5"]
+    pub const AV_CODEC_ID_HEVC: AVCodecID = 173;
+    #[c2rust::src_loc = "227:5"]
+    pub const AV_CODEC_ID_HNM4_VIDEO: AVCodecID = 172;
+    #[c2rust::src_loc = "226:5"]
+    pub const AV_CODEC_ID_WEBP: AVCodecID = 171;
+    #[c2rust::src_loc = "225:5"]
+    pub const AV_CODEC_ID_G2M: AVCodecID = 170;
+    #[c2rust::src_loc = "224:5"]
+    pub const AV_CODEC_ID_ESCAPE130: AVCodecID = 169;
+    #[c2rust::src_loc = "223:5"]
+    pub const AV_CODEC_ID_AIC: AVCodecID = 168;
+    #[c2rust::src_loc = "222:5"]
+    pub const AV_CODEC_ID_VP9: AVCodecID = 167;
+    #[c2rust::src_loc = "221:5"]
+    pub const AV_CODEC_ID_MSS2: AVCodecID = 166;
+    #[c2rust::src_loc = "220:5"]
+    pub const AV_CODEC_ID_CLLC: AVCodecID = 165;
+    #[c2rust::src_loc = "219:5"]
+    pub const AV_CODEC_ID_MTS2: AVCodecID = 164;
+    #[c2rust::src_loc = "218:5"]
+    pub const AV_CODEC_ID_TSCC2: AVCodecID = 163;
+    #[c2rust::src_loc = "217:5"]
+    pub const AV_CODEC_ID_MSA1: AVCodecID = 162;
+    #[c2rust::src_loc = "216:5"]
+    pub const AV_CODEC_ID_MSS1: AVCodecID = 161;
+    #[c2rust::src_loc = "215:5"]
+    pub const AV_CODEC_ID_ZEROCODEC: AVCodecID = 160;
+    #[c2rust::src_loc = "214:5"]
+    pub const AV_CODEC_ID_XBM: AVCodecID = 159;
+    #[c2rust::src_loc = "213:5"]
+    pub const AV_CODEC_ID_CDXL: AVCodecID = 158;
+    #[c2rust::src_loc = "212:5"]
+    pub const AV_CODEC_ID_XWD: AVCodecID = 157;
+    #[c2rust::src_loc = "210:5"]
+    pub const AV_CODEC_ID_V410: AVCodecID = 156;
+    #[c2rust::src_loc = "208:5"]
+    pub const AV_CODEC_ID_DXTORY: AVCodecID = 155;
+    #[c2rust::src_loc = "207:5"]
+    pub const AV_CODEC_ID_VBLE: AVCodecID = 154;
+    #[c2rust::src_loc = "206:5"]
+    pub const AV_CODEC_ID_BMV_VIDEO: AVCodecID = 153;
+    #[c2rust::src_loc = "205:5"]
+    pub const AV_CODEC_ID_UTVIDEO: AVCodecID = 152;
+    #[c2rust::src_loc = "204:5"]
+    pub const AV_CODEC_ID_VC1IMAGE: AVCodecID = 151;
+    #[c2rust::src_loc = "203:5"]
+    pub const AV_CODEC_ID_WMV3IMAGE: AVCodecID = 150;
+    #[c2rust::src_loc = "202:5"]
+    pub const AV_CODEC_ID_DFA: AVCodecID = 149;
+    #[c2rust::src_loc = "201:5"]
+    pub const AV_CODEC_ID_JV: AVCodecID = 148;
+    #[c2rust::src_loc = "200:5"]
+    pub const AV_CODEC_ID_PRORES: AVCodecID = 147;
+    #[c2rust::src_loc = "199:5"]
+    pub const AV_CODEC_ID_LAGARITH: AVCodecID = 146;
+    #[c2rust::src_loc = "198:5"]
+    pub const AV_CODEC_ID_MXPEG: AVCodecID = 145;
+    #[c2rust::src_loc = "197:5"]
+    pub const AV_CODEC_ID_R10K: AVCodecID = 144;
+    #[c2rust::src_loc = "196:5"]
+    pub const AV_CODEC_ID_A64_MULTI5: AVCodecID = 143;
+    #[c2rust::src_loc = "195:5"]
+    pub const AV_CODEC_ID_A64_MULTI: AVCodecID = 142;
+    #[c2rust::src_loc = "194:5"]
+    pub const AV_CODEC_ID_ANSI: AVCodecID = 141;
+    #[c2rust::src_loc = "193:5"]
+    pub const AV_CODEC_ID_PICTOR: AVCodecID = 140;
+    #[c2rust::src_loc = "192:5"]
+    pub const AV_CODEC_ID_VP8: AVCodecID = 139;
+    #[c2rust::src_loc = "191:5"]
+    pub const AV_CODEC_ID_YOP: AVCodecID = 138;
+    #[c2rust::src_loc = "190:5"]
+    pub const AV_CODEC_ID_KGV1: AVCodecID = 137;
+    #[c2rust::src_loc = "188:5"]
+    pub const AV_CODEC_ID_IFF_ILBM: AVCodecID = 136;
+    #[c2rust::src_loc = "187:5"]
+    pub const AV_CODEC_ID_BINKVIDEO: AVCodecID = 135;
+    #[c2rust::src_loc = "186:5"]
+    pub const AV_CODEC_ID_ANM: AVCodecID = 134;
+    #[c2rust::src_loc = "185:5"]
+    pub const AV_CODEC_ID_R210: AVCodecID = 133;
+    #[c2rust::src_loc = "184:5"]
+    pub const AV_CODEC_ID_CDGRAPHICS: AVCodecID = 132;
+    #[c2rust::src_loc = "183:5"]
+    pub const AV_CODEC_ID_FLASHSV2: AVCodecID = 131;
+    #[c2rust::src_loc = "182:5"]
+    pub const AV_CODEC_ID_FRWU: AVCodecID = 130;
+    #[c2rust::src_loc = "181:5"]
+    pub const AV_CODEC_ID_MAD: AVCodecID = 129;
+    #[c2rust::src_loc = "180:5"]
+    pub const AV_CODEC_ID_DPX: AVCodecID = 128;
+    #[c2rust::src_loc = "179:5"]
+    pub const AV_CODEC_ID_V210: AVCodecID = 127;
+    #[c2rust::src_loc = "178:5"]
+    pub const AV_CODEC_ID_TMV: AVCodecID = 126;
+    #[c2rust::src_loc = "177:5"]
+    pub const AV_CODEC_ID_V210X: AVCodecID = 125;
+    #[c2rust::src_loc = "176:5"]
+    pub const AV_CODEC_ID_AURA2: AVCodecID = 124;
+    #[c2rust::src_loc = "175:5"]
+    pub const AV_CODEC_ID_AURA: AVCodecID = 123;
+    #[c2rust::src_loc = "174:5"]
+    pub const AV_CODEC_ID_TQI: AVCodecID = 122;
+    #[c2rust::src_loc = "173:5"]
+    pub const AV_CODEC_ID_TGQ: AVCodecID = 121;
+    #[c2rust::src_loc = "172:5"]
+    pub const AV_CODEC_ID_TGV: AVCodecID = 120;
+    #[c2rust::src_loc = "171:5"]
+    pub const AV_CODEC_ID_MOTIONPIXELS: AVCodecID = 119;
+    #[c2rust::src_loc = "170:5"]
+    pub const AV_CODEC_ID_CMV: AVCodecID = 118;
+    #[c2rust::src_loc = "169:5"]
+    pub const AV_CODEC_ID_BFI: AVCodecID = 117;
+    #[c2rust::src_loc = "168:5"]
+    pub const AV_CODEC_ID_DIRAC: AVCodecID = 116;
+    #[c2rust::src_loc = "167:5"]
+    pub const AV_CODEC_ID_ESCAPE124: AVCodecID = 115;
+    #[c2rust::src_loc = "166:5"]
+    pub const AV_CODEC_ID_RL2: AVCodecID = 114;
+    #[c2rust::src_loc = "165:5"]
+    pub const AV_CODEC_ID_MIMIC: AVCodecID = 113;
+    #[c2rust::src_loc = "164:5"]
+    pub const AV_CODEC_ID_INDEO5: AVCodecID = 112;
+    #[c2rust::src_loc = "163:5"]
+    pub const AV_CODEC_ID_INDEO4: AVCodecID = 111;
+    #[c2rust::src_loc = "162:5"]
+    pub const AV_CODEC_ID_SUNRAST: AVCodecID = 110;
+    #[c2rust::src_loc = "161:5"]
+    pub const AV_CODEC_ID_PCX: AVCodecID = 109;
+    #[c2rust::src_loc = "160:5"]
+    pub const AV_CODEC_ID_VB: AVCodecID = 108;
+    #[c2rust::src_loc = "159:5"]
+    pub const AV_CODEC_ID_AMV: AVCodecID = 107;
+    #[c2rust::src_loc = "158:5"]
+    pub const AV_CODEC_ID_VP6A: AVCodecID = 106;
+    #[c2rust::src_loc = "157:5"]
+    pub const AV_CODEC_ID_TXD: AVCodecID = 105;
+    #[c2rust::src_loc = "156:5"]
+    pub const AV_CODEC_ID_PTX: AVCodecID = 104;
+    #[c2rust::src_loc = "155:5"]
+    pub const AV_CODEC_ID_BETHSOFTVID: AVCodecID = 103;
+    #[c2rust::src_loc = "154:5"]
+    pub const AV_CODEC_ID_C93: AVCodecID = 102;
+    #[c2rust::src_loc = "153:5"]
+    pub const AV_CODEC_ID_SGI: AVCodecID = 101;
+    #[c2rust::src_loc = "152:5"]
+    pub const AV_CODEC_ID_THP: AVCodecID = 100;
+    #[c2rust::src_loc = "151:5"]
+    pub const AV_CODEC_ID_DNXHD: AVCodecID = 99;
+    #[c2rust::src_loc = "150:5"]
+    pub const AV_CODEC_ID_DXA: AVCodecID = 98;
+    #[c2rust::src_loc = "149:5"]
+    pub const AV_CODEC_ID_GIF: AVCodecID = 97;
+    #[c2rust::src_loc = "148:5"]
+    pub const AV_CODEC_ID_TIFF: AVCodecID = 96;
+    #[c2rust::src_loc = "147:5"]
+    pub const AV_CODEC_ID_TIERTEXSEQVIDEO: AVCodecID = 95;
+    #[c2rust::src_loc = "146:5"]
+    pub const AV_CODEC_ID_DSICINVIDEO: AVCodecID = 94;
+    #[c2rust::src_loc = "145:5"]
+    pub const AV_CODEC_ID_TARGA: AVCodecID = 93;
+    #[c2rust::src_loc = "144:5"]
+    pub const AV_CODEC_ID_VP6F: AVCodecID = 92;
+    #[c2rust::src_loc = "143:5"]
+    pub const AV_CODEC_ID_VP6: AVCodecID = 91;
+    #[c2rust::src_loc = "142:5"]
+    pub const AV_CODEC_ID_VP5: AVCodecID = 90;
+    #[c2rust::src_loc = "141:5"]
+    pub const AV_CODEC_ID_VMNC: AVCodecID = 89;
+    #[c2rust::src_loc = "140:5"]
+    pub const AV_CODEC_ID_JPEG2000: AVCodecID = 88;
+    #[c2rust::src_loc = "139:5"]
+    pub const AV_CODEC_ID_CAVS: AVCodecID = 87;
+    #[c2rust::src_loc = "138:5"]
+    pub const AV_CODEC_ID_FLASHSV: AVCodecID = 86;
+    #[c2rust::src_loc = "137:5"]
+    pub const AV_CODEC_ID_KMVC: AVCodecID = 85;
+    #[c2rust::src_loc = "136:5"]
+    pub const AV_CODEC_ID_NUV: AVCodecID = 84;
+    #[c2rust::src_loc = "135:5"]
+    pub const AV_CODEC_ID_SMACKVIDEO: AVCodecID = 83;
+    #[c2rust::src_loc = "134:5"]
+    pub const AV_CODEC_ID_AVS: AVCodecID = 82;
+    #[c2rust::src_loc = "133:5"]
+    pub const AV_CODEC_ID_ZMBV: AVCodecID = 81;
+    #[c2rust::src_loc = "132:5"]
+    pub const AV_CODEC_ID_MMVIDEO: AVCodecID = 80;
+    #[c2rust::src_loc = "131:5"]
+    pub const AV_CODEC_ID_CSCD: AVCodecID = 79;
+    #[c2rust::src_loc = "130:5"]
+    pub const AV_CODEC_ID_BMP: AVCodecID = 78;
+    #[c2rust::src_loc = "129:5"]
+    pub const AV_CODEC_ID_TRUEMOTION2: AVCodecID = 77;
+    #[c2rust::src_loc = "128:5"]
+    pub const AV_CODEC_ID_FRAPS: AVCodecID = 76;
+    #[c2rust::src_loc = "127:5"]
+    pub const AV_CODEC_ID_INDEO2: AVCodecID = 75;
+    #[c2rust::src_loc = "126:5"]
+    pub const AV_CODEC_ID_AASC: AVCodecID = 74;
+    #[c2rust::src_loc = "125:5"]
+    pub const AV_CODEC_ID_WNV1: AVCodecID = 73;
+    #[c2rust::src_loc = "124:5"]
+    pub const AV_CODEC_ID_LOCO: AVCodecID = 72;
+    #[c2rust::src_loc = "123:5"]
+    pub const AV_CODEC_ID_WMV3: AVCodecID = 71;
+    #[c2rust::src_loc = "122:5"]
+    pub const AV_CODEC_ID_VC1: AVCodecID = 70;
+    #[c2rust::src_loc = "121:5"]
+    pub const AV_CODEC_ID_RV40: AVCodecID = 69;
+    #[c2rust::src_loc = "120:5"]
+    pub const AV_CODEC_ID_RV30: AVCodecID = 68;
+    #[c2rust::src_loc = "119:5"]
+    pub const AV_CODEC_ID_FFVHUFF: AVCodecID = 67;
+    #[c2rust::src_loc = "118:5"]
+    pub const AV_CODEC_ID_PAM: AVCodecID = 66;
+    #[c2rust::src_loc = "117:5"]
+    pub const AV_CODEC_ID_PGMYUV: AVCodecID = 65;
+    #[c2rust::src_loc = "116:5"]
+    pub const AV_CODEC_ID_PGM: AVCodecID = 64;
+    #[c2rust::src_loc = "115:5"]
+    pub const AV_CODEC_ID_PBM: AVCodecID = 63;
+    #[c2rust::src_loc = "114:5"]
+    pub const AV_CODEC_ID_PPM: AVCodecID = 62;
+    #[c2rust::src_loc = "113:5"]
+    pub const AV_CODEC_ID_PNG: AVCodecID = 61;
+    #[c2rust::src_loc = "112:5"]
+    pub const AV_CODEC_ID_QPEG: AVCodecID = 60;
+    #[c2rust::src_loc = "111:5"]
+    pub const AV_CODEC_ID_VIXL: AVCodecID = 59;
+    #[c2rust::src_loc = "110:5"]
+    pub const AV_CODEC_ID_QDRAW: AVCodecID = 58;
+    #[c2rust::src_loc = "109:5"]
+    pub const AV_CODEC_ID_ULTI: AVCodecID = 57;
+    #[c2rust::src_loc = "108:5"]
+    pub const AV_CODEC_ID_TSCC: AVCodecID = 56;
+    #[c2rust::src_loc = "107:5"]
+    pub const AV_CODEC_ID_QTRLE: AVCodecID = 55;
+    #[c2rust::src_loc = "106:5"]
+    pub const AV_CODEC_ID_ZLIB: AVCodecID = 54;
+    #[c2rust::src_loc = "105:5"]
+    pub const AV_CODEC_ID_MSZH: AVCodecID = 53;
+    #[c2rust::src_loc = "104:5"]
+    pub const AV_CODEC_ID_VMDVIDEO: AVCodecID = 52;
+    #[c2rust::src_loc = "103:5"]
+    pub const AV_CODEC_ID_TRUEMOTION1: AVCodecID = 51;
+    #[c2rust::src_loc = "102:5"]
+    pub const AV_CODEC_ID_FLIC: AVCodecID = 50;
+    #[c2rust::src_loc = "101:5"]
+    pub const AV_CODEC_ID_SMC: AVCodecID = 49;
+    #[c2rust::src_loc = "100:5"]
+    pub const AV_CODEC_ID_8BPS: AVCodecID = 48;
+    #[c2rust::src_loc = "99:5"]
+    pub const AV_CODEC_ID_IDCIN: AVCodecID = 47;
+    #[c2rust::src_loc = "98:5"]
+    pub const AV_CODEC_ID_MSVIDEO1: AVCodecID = 46;
+    #[c2rust::src_loc = "97:5"]
+    pub const AV_CODEC_ID_MSRLE: AVCodecID = 45;
+    #[c2rust::src_loc = "96:5"]
+    pub const AV_CODEC_ID_WS_VQA: AVCodecID = 44;
+    #[c2rust::src_loc = "95:5"]
+    pub const AV_CODEC_ID_CINEPAK: AVCodecID = 43;
+    #[c2rust::src_loc = "94:5"]
+    pub const AV_CODEC_ID_RPZA: AVCodecID = 42;
+    #[c2rust::src_loc = "93:5"]
+    pub const AV_CODEC_ID_XAN_WC4: AVCodecID = 41;
+    #[c2rust::src_loc = "92:5"]
+    pub const AV_CODEC_ID_XAN_WC3: AVCodecID = 40;
+    #[c2rust::src_loc = "91:5"]
+    pub const AV_CODEC_ID_INTERPLAY_VIDEO: AVCodecID = 39;
+    #[c2rust::src_loc = "90:5"]
+    pub const AV_CODEC_ID_ROQ: AVCodecID = 38;
+    #[c2rust::src_loc = "89:5"]
+    pub const AV_CODEC_ID_MDEC: AVCodecID = 37;
+    #[c2rust::src_loc = "88:5"]
+    pub const AV_CODEC_ID_CLJR: AVCodecID = 36;
+    #[c2rust::src_loc = "87:5"]
+    pub const AV_CODEC_ID_VCR1: AVCodecID = 35;
+    #[c2rust::src_loc = "86:5"]
+    pub const AV_CODEC_ID_4XM: AVCodecID = 34;
+    #[c2rust::src_loc = "85:5"]
+    pub const AV_CODEC_ID_FFV1: AVCodecID = 33;
+    #[c2rust::src_loc = "84:5"]
+    pub const AV_CODEC_ID_ASV2: AVCodecID = 32;
+    #[c2rust::src_loc = "83:5"]
+    pub const AV_CODEC_ID_ASV1: AVCodecID = 31;
+    #[c2rust::src_loc = "82:5"]
+    pub const AV_CODEC_ID_THEORA: AVCodecID = 30;
+    #[c2rust::src_loc = "81:5"]
+    pub const AV_CODEC_ID_VP3: AVCodecID = 29;
+    #[c2rust::src_loc = "80:5"]
+    pub const AV_CODEC_ID_INDEO3: AVCodecID = 28;
+    #[c2rust::src_loc = "79:5"]
+    pub const AV_CODEC_ID_H264: AVCodecID = 27;
+    #[c2rust::src_loc = "78:5"]
+    pub const AV_CODEC_ID_CYUV: AVCodecID = 26;
+    #[c2rust::src_loc = "77:5"]
+    pub const AV_CODEC_ID_HUFFYUV: AVCodecID = 25;
+    #[c2rust::src_loc = "76:5"]
+    pub const AV_CODEC_ID_DVVIDEO: AVCodecID = 24;
+    #[c2rust::src_loc = "75:5"]
+    pub const AV_CODEC_ID_SVQ3: AVCodecID = 23;
+    #[c2rust::src_loc = "74:5"]
+    pub const AV_CODEC_ID_SVQ1: AVCodecID = 22;
+    #[c2rust::src_loc = "73:5"]
+    pub const AV_CODEC_ID_FLV1: AVCodecID = 21;
+    #[c2rust::src_loc = "72:5"]
+    pub const AV_CODEC_ID_H263I: AVCodecID = 20;
+    #[c2rust::src_loc = "71:5"]
+    pub const AV_CODEC_ID_H263P: AVCodecID = 19;
+    #[c2rust::src_loc = "70:5"]
+    pub const AV_CODEC_ID_WMV2: AVCodecID = 18;
+    #[c2rust::src_loc = "69:5"]
+    pub const AV_CODEC_ID_WMV1: AVCodecID = 17;
+    #[c2rust::src_loc = "68:5"]
+    pub const AV_CODEC_ID_MSMPEG4V3: AVCodecID = 16;
+    #[c2rust::src_loc = "67:5"]
+    pub const AV_CODEC_ID_MSMPEG4V2: AVCodecID = 15;
+    #[c2rust::src_loc = "66:5"]
+    pub const AV_CODEC_ID_MSMPEG4V1: AVCodecID = 14;
+    #[c2rust::src_loc = "65:5"]
+    pub const AV_CODEC_ID_RAWVIDEO: AVCodecID = 13;
+    #[c2rust::src_loc = "64:5"]
+    pub const AV_CODEC_ID_MPEG4: AVCodecID = 12;
+    #[c2rust::src_loc = "63:5"]
+    pub const AV_CODEC_ID_JPEGLS: AVCodecID = 11;
+    #[c2rust::src_loc = "62:5"]
+    pub const AV_CODEC_ID_SP5X: AVCodecID = 10;
+    #[c2rust::src_loc = "61:5"]
+    pub const AV_CODEC_ID_LJPEG: AVCodecID = 9;
+    #[c2rust::src_loc = "60:5"]
+    pub const AV_CODEC_ID_MJPEGB: AVCodecID = 8;
+    #[c2rust::src_loc = "59:5"]
+    pub const AV_CODEC_ID_MJPEG: AVCodecID = 7;
+    #[c2rust::src_loc = "58:5"]
+    pub const AV_CODEC_ID_RV20: AVCodecID = 6;
+    #[c2rust::src_loc = "57:5"]
+    pub const AV_CODEC_ID_RV10: AVCodecID = 5;
+    #[c2rust::src_loc = "56:5"]
+    pub const AV_CODEC_ID_H263: AVCodecID = 4;
+    #[c2rust::src_loc = "55:5"]
+    pub const AV_CODEC_ID_H261: AVCodecID = 3;
+    #[c2rust::src_loc = "54:5"]
+    pub const AV_CODEC_ID_MPEG2VIDEO: AVCodecID = 2;
+    #[c2rust::src_loc = "53:5"]
+    pub const AV_CODEC_ID_MPEG1VIDEO: AVCodecID = 1;
+    #[c2rust::src_loc = "50:5"]
+    pub const AV_CODEC_ID_NONE: AVCodecID = 0;
+}
+#[c2rust::header_src = "/usr/include/libavcodec/defs.h:27"]
+pub mod defs_h {
+    #[c2rust::src_loc = "223:1"]
+    pub type AVDiscard = ::core::ffi::c_int;
+    #[c2rust::src_loc = "232:5"]
+    pub const AVDISCARD_ALL: AVDiscard = 48;
+    #[c2rust::src_loc = "231:5"]
+    pub const AVDISCARD_NONKEY: AVDiscard = 32;
+    #[c2rust::src_loc = "230:5"]
+    pub const AVDISCARD_NONINTRA: AVDiscard = 24;
+    #[c2rust::src_loc = "229:5"]
+    pub const AVDISCARD_BIDIR: AVDiscard = 16;
+    #[c2rust::src_loc = "228:5"]
+    pub const AVDISCARD_NONREF: AVDiscard = 8;
+    #[c2rust::src_loc = "227:5"]
+    pub const AVDISCARD_DEFAULT: AVDiscard = 0;
+    #[c2rust::src_loc = "226:5"]
+    pub const AVDISCARD_NONE: AVDiscard = -16;
+    #[c2rust::src_loc = "235:1"]
+    pub type AVAudioServiceType = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "245:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_NB: AVAudioServiceType = 9;
+    #[c2rust::src_loc = "244:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_KARAOKE: AVAudioServiceType = 8;
+    #[c2rust::src_loc = "243:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_VOICE_OVER: AVAudioServiceType = 7;
+    #[c2rust::src_loc = "242:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_EMERGENCY: AVAudioServiceType = 6;
+    #[c2rust::src_loc = "241:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_COMMENTARY: AVAudioServiceType = 5;
+    #[c2rust::src_loc = "240:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_DIALOGUE: AVAudioServiceType = 4;
+    #[c2rust::src_loc = "239:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_HEARING_IMPAIRED: AVAudioServiceType = 3;
+    #[c2rust::src_loc = "238:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_VISUALLY_IMPAIRED: AVAudioServiceType = 2;
+    #[c2rust::src_loc = "237:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_EFFECTS: AVAudioServiceType = 1;
+    #[c2rust::src_loc = "236:5"]
+    pub const AV_AUDIO_SERVICE_TYPE_MAIN: AVAudioServiceType = 0;
+    #[c2rust::src_loc = "211:1"]
+    pub type AVFieldOrder = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "217:5"]
+    pub const AV_FIELD_BT: AVFieldOrder = 5;
+    #[c2rust::src_loc = "216:5"]
+    pub const AV_FIELD_TB: AVFieldOrder = 4;
+    #[c2rust::src_loc = "215:5"]
+    pub const AV_FIELD_BB: AVFieldOrder = 3;
+    #[c2rust::src_loc = "214:5"]
+    pub const AV_FIELD_TT: AVFieldOrder = 2;
+    #[c2rust::src_loc = "213:5"]
+    pub const AV_FIELD_PROGRESSIVE: AVFieldOrder = 1;
+    #[c2rust::src_loc = "212:5"]
+    pub const AV_FIELD_UNKNOWN: AVFieldOrder = 0;
+}
+#[c2rust::header_src = "/usr/include/libavutil/samplefmt.h:27"]
+pub mod samplefmt_h {
+    #[c2rust::src_loc = "55:1"]
+    pub type AVSampleFormat = ::core::ffi::c_int;
+    #[c2rust::src_loc = "71:5"]
+    pub const AV_SAMPLE_FMT_NB: AVSampleFormat = 12;
+    #[c2rust::src_loc = "69:5"]
+    pub const AV_SAMPLE_FMT_S64P: AVSampleFormat = 11;
+    #[c2rust::src_loc = "68:5"]
+    pub const AV_SAMPLE_FMT_S64: AVSampleFormat = 10;
+    #[c2rust::src_loc = "67:5"]
+    pub const AV_SAMPLE_FMT_DBLP: AVSampleFormat = 9;
+    #[c2rust::src_loc = "66:5"]
+    pub const AV_SAMPLE_FMT_FLTP: AVSampleFormat = 8;
+    #[c2rust::src_loc = "65:5"]
+    pub const AV_SAMPLE_FMT_S32P: AVSampleFormat = 7;
+    #[c2rust::src_loc = "64:5"]
+    pub const AV_SAMPLE_FMT_S16P: AVSampleFormat = 6;
+    #[c2rust::src_loc = "63:5"]
+    pub const AV_SAMPLE_FMT_U8P: AVSampleFormat = 5;
+    #[c2rust::src_loc = "61:5"]
+    pub const AV_SAMPLE_FMT_DBL: AVSampleFormat = 4;
+    #[c2rust::src_loc = "60:5"]
+    pub const AV_SAMPLE_FMT_FLT: AVSampleFormat = 3;
+    #[c2rust::src_loc = "59:5"]
+    pub const AV_SAMPLE_FMT_S32: AVSampleFormat = 2;
+    #[c2rust::src_loc = "58:5"]
+    pub const AV_SAMPLE_FMT_S16: AVSampleFormat = 1;
+    #[c2rust::src_loc = "57:5"]
+    pub const AV_SAMPLE_FMT_U8: AVSampleFormat = 0;
+    #[c2rust::src_loc = "56:5"]
+    pub const AV_SAMPLE_FMT_NONE: AVSampleFormat = -1;
+}
+#[c2rust::header_src = "/usr/include/libavformat/avio.h:27"]
+pub mod avio_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "160:16"]
+    pub struct AVIOContext {
+        pub av_class: *const AVClass,
+        pub buffer: *mut ::core::ffi::c_uchar,
+        pub buffer_size: ::core::ffi::c_int,
+        pub buf_ptr: *mut ::core::ffi::c_uchar,
+        pub buf_end: *mut ::core::ffi::c_uchar,
+        pub opaque: *mut ::core::ffi::c_void,
+        pub read_packet: Option<
+            unsafe extern "C" fn(
+                *mut ::core::ffi::c_void,
+                *mut uint8_t,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub write_packet: Option<
+            unsafe extern "C" fn(
+                *mut ::core::ffi::c_void,
+                *const uint8_t,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub seek: Option<
+            unsafe extern "C" fn(*mut ::core::ffi::c_void, int64_t, ::core::ffi::c_int) -> int64_t,
+        >,
+        pub pos: int64_t,
+        pub eof_reached: ::core::ffi::c_int,
+        pub error: ::core::ffi::c_int,
+        pub write_flag: ::core::ffi::c_int,
+        pub max_packet_size: ::core::ffi::c_int,
+        pub min_packet_size: ::core::ffi::c_int,
+        pub checksum: ::core::ffi::c_ulong,
+        pub checksum_ptr: *mut ::core::ffi::c_uchar,
+        pub update_checksum: Option<
+            unsafe extern "C" fn(
+                ::core::ffi::c_ulong,
+                *const uint8_t,
+                ::core::ffi::c_uint,
+            ) -> ::core::ffi::c_ulong,
+        >,
+        pub read_pause: Option<
+            unsafe extern "C" fn(
+                *mut ::core::ffi::c_void,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub read_seek: Option<
+            unsafe extern "C" fn(
+                *mut ::core::ffi::c_void,
+                ::core::ffi::c_int,
+                int64_t,
+                ::core::ffi::c_int,
+            ) -> int64_t,
+        >,
+        pub seekable: ::core::ffi::c_int,
+        pub direct: ::core::ffi::c_int,
+        pub protocol_whitelist: *const ::core::ffi::c_char,
+        pub protocol_blacklist: *const ::core::ffi::c_char,
+        pub write_data_type: Option<
+            unsafe extern "C" fn(
+                *mut ::core::ffi::c_void,
+                *const uint8_t,
+                ::core::ffi::c_int,
+                AVIODataMarkerType,
+                int64_t,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub ignore_boundary_point: ::core::ffi::c_int,
+        pub buf_ptr_max: *mut ::core::ffi::c_uchar,
+        pub bytes_read: int64_t,
+        pub bytes_written: int64_t,
+    }
+    #[c2rust::src_loc = "110:1"]
+    pub type AVIODataMarkerType = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "145:5"]
+    pub const AVIO_DATA_MARKER_FLUSH_POINT: AVIODataMarkerType = 5;
+    #[c2rust::src_loc = "139:5"]
+    pub const AVIO_DATA_MARKER_TRAILER: AVIODataMarkerType = 4;
+    #[c2rust::src_loc = "134:5"]
+    pub const AVIO_DATA_MARKER_UNKNOWN: AVIODataMarkerType = 3;
+    #[c2rust::src_loc = "127:5"]
+    pub const AVIO_DATA_MARKER_BOUNDARY_POINT: AVIODataMarkerType = 2;
+    #[c2rust::src_loc = "121:5"]
+    pub const AVIO_DATA_MARKER_SYNC_POINT: AVIODataMarkerType = 1;
+    #[c2rust::src_loc = "114:5"]
+    pub const AVIO_DATA_MARKER_HEADER: AVIODataMarkerType = 0;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "59:16"]
+    pub struct AVIOInterruptCB {
+        pub callback: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ::core::ffi::c_int>,
+        pub opaque: *mut ::core::ffi::c_void,
+    }
+    use super::log_h::AVClass;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+}
+#[c2rust::header_src = "/usr/include/libavcodec/codec_par.h:27"]
+pub mod codec_par_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "47:16"]
+    pub struct AVCodecParameters {
+        pub codec_type: AVMediaType,
+        pub codec_id: AVCodecID,
+        pub codec_tag: uint32_t,
+        pub extradata: *mut uint8_t,
+        pub extradata_size: ::core::ffi::c_int,
+        pub coded_side_data: *mut AVPacketSideData,
+        pub nb_coded_side_data: ::core::ffi::c_int,
+        pub format: ::core::ffi::c_int,
+        pub bit_rate: int64_t,
+        pub bits_per_coded_sample: ::core::ffi::c_int,
+        pub bits_per_raw_sample: ::core::ffi::c_int,
+        pub profile: ::core::ffi::c_int,
+        pub level: ::core::ffi::c_int,
+        pub width: ::core::ffi::c_int,
+        pub height: ::core::ffi::c_int,
+        pub sample_aspect_ratio: AVRational,
+        pub framerate: AVRational,
+        pub field_order: AVFieldOrder,
+        pub color_range: AVColorRange,
+        pub color_primaries: AVColorPrimaries,
+        pub color_trc: AVColorTransferCharacteristic,
+        pub color_space: AVColorSpace,
+        pub chroma_location: AVChromaLocation,
+        pub video_delay: ::core::ffi::c_int,
+        pub ch_layout: AVChannelLayout,
+        pub sample_rate: ::core::ffi::c_int,
+        pub block_align: ::core::ffi::c_int,
+        pub frame_size: ::core::ffi::c_int,
+        pub initial_padding: ::core::ffi::c_int,
+        pub trailing_padding: ::core::ffi::c_int,
+        pub seek_preroll: ::core::ffi::c_int,
+    }
+    use super::avutil_h::AVMediaType;
+    use super::channel_layout_h::AVChannelLayout;
+    use super::codec_id_h::AVCodecID;
+    use super::defs_h::AVFieldOrder;
+    use super::packet_h::AVPacketSideData;
+    use super::pixfmt_h::{
+        AVChromaLocation, AVColorPrimaries, AVColorRange, AVColorSpace,
+        AVColorTransferCharacteristic,
+    };
+    use super::rational_h::AVRational;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::{uint32_t, uint8_t};
+}
+#[c2rust::header_src = "/usr/include/libavutil/error.h:27"]
+pub mod error_h {
+    #[c2rust::src_loc = "57:9"]
+    pub const AVERROR_EOF: ::core::ffi::c_int = -((('E' as i32
+        | ('O' as i32) << 8 as ::core::ffi::c_int
+        | ('F' as i32) << 16 as ::core::ffi::c_int)
+        as ::core::ffi::c_uint
+        | (' ' as i32 as ::core::ffi::c_uint) << 24 as ::core::ffi::c_int)
+        as ::core::ffi::c_int);
+}
+
+#[c2rust::header_src = "/usr/include/libavutil/frame.h:27"]
+pub mod libav_frame_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "421:16"]
+    pub struct AVFrame {
+        pub data: [*mut uint8_t; 8],
+        pub linesize: [::core::ffi::c_int; 8],
+        pub extended_data: *mut *mut uint8_t,
+        pub width: ::core::ffi::c_int,
+        pub height: ::core::ffi::c_int,
+        pub nb_samples: ::core::ffi::c_int,
+        pub format: ::core::ffi::c_int,
+        pub pict_type: AVPictureType,
+        pub sample_aspect_ratio: AVRational,
+        pub pts: int64_t,
+        pub pkt_dts: int64_t,
+        pub time_base: AVRational,
+        pub quality: ::core::ffi::c_int,
+        pub opaque: *mut ::core::ffi::c_void,
+        pub repeat_pict: ::core::ffi::c_int,
+        pub sample_rate: ::core::ffi::c_int,
+        pub buf: [*mut AVBufferRef; 8],
+        pub extended_buf: *mut *mut AVBufferRef,
+        pub nb_extended_buf: ::core::ffi::c_int,
+        pub side_data: *mut *mut AVFrameSideData,
+        pub nb_side_data: ::core::ffi::c_int,
+        pub flags: ::core::ffi::c_int,
+        pub color_range: AVColorRange,
+        pub color_primaries: AVColorPrimaries,
+        pub color_trc: AVColorTransferCharacteristic,
+        pub colorspace: AVColorSpace,
+        pub chroma_location: AVChromaLocation,
+        pub best_effort_timestamp: int64_t,
+        pub metadata: *mut AVDictionary,
+        pub decode_error_flags: ::core::ffi::c_int,
+        pub hw_frames_ctx: *mut AVBufferRef,
+        pub opaque_ref: *mut AVBufferRef,
+        pub crop_top: size_t,
+        pub crop_bottom: size_t,
+        pub crop_left: size_t,
+        pub crop_right: size_t,
+        pub private_ref: *mut ::core::ffi::c_void,
+        pub ch_layout: AVChannelLayout,
+        pub duration: int64_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "276:16"]
+    pub struct AVFrameSideData {
+        pub type_0: AVFrameSideDataType,
+        pub data: *mut uint8_t,
+        pub size: size_t,
+        pub metadata: *mut AVDictionary,
+        pub buf: *mut AVBufferRef,
+    }
+    #[c2rust::src_loc = "49:1"]
+    pub type AVFrameSideDataType = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "256:5"]
+    pub const AV_FRAME_DATA_3D_REFERENCE_DISPLAYS: AVFrameSideDataType = 30;
+    #[c2rust::src_loc = "245:5"]
+    pub const AV_FRAME_DATA_VIEW_ID: AVFrameSideDataType = 29;
+    #[c2rust::src_loc = "236:5"]
+    pub const AV_FRAME_DATA_LCEVC: AVFrameSideDataType = 28;
+    #[c2rust::src_loc = "230:5"]
+    pub const AV_FRAME_DATA_VIDEO_HINT: AVFrameSideDataType = 27;
+    #[c2rust::src_loc = "220:5"]
+    pub const AV_FRAME_DATA_AMBIENT_VIEWING_ENVIRONMENT: AVFrameSideDataType = 26;
+    #[c2rust::src_loc = "215:5"]
+    pub const AV_FRAME_DATA_DYNAMIC_HDR_VIVID: AVFrameSideDataType = 25;
+    #[c2rust::src_loc = "208:5"]
+    pub const AV_FRAME_DATA_DOVI_METADATA: AVFrameSideDataType = 24;
+    #[c2rust::src_loc = "201:5"]
+    pub const AV_FRAME_DATA_DOVI_RPU_BUFFER: AVFrameSideDataType = 23;
+    #[c2rust::src_loc = "194:5"]
+    pub const AV_FRAME_DATA_DETECTION_BBOXES: AVFrameSideDataType = 22;
+    #[c2rust::src_loc = "188:5"]
+    pub const AV_FRAME_DATA_FILM_GRAIN_PARAMS: AVFrameSideDataType = 21;
+    #[c2rust::src_loc = "178:5"]
+    pub const AV_FRAME_DATA_SEI_UNREGISTERED: AVFrameSideDataType = 20;
+    #[c2rust::src_loc = "170:5"]
+    pub const AV_FRAME_DATA_VIDEO_ENC_PARAMS: AVFrameSideDataType = 19;
+    #[c2rust::src_loc = "165:5"]
+    pub const AV_FRAME_DATA_REGIONS_OF_INTEREST: AVFrameSideDataType = 18;
+    #[c2rust::src_loc = "159:5"]
+    pub const AV_FRAME_DATA_DYNAMIC_HDR_PLUS: AVFrameSideDataType = 17;
+    #[c2rust::src_loc = "152:5"]
+    pub const AV_FRAME_DATA_S12M_TIMECODE: AVFrameSideDataType = 16;
+    #[c2rust::src_loc = "144:5"]
+    pub const AV_FRAME_DATA_ICC_PROFILE: AVFrameSideDataType = 15;
+    #[c2rust::src_loc = "137:5"]
+    pub const AV_FRAME_DATA_CONTENT_LIGHT_LEVEL: AVFrameSideDataType = 14;
+    #[c2rust::src_loc = "131:5"]
+    pub const AV_FRAME_DATA_SPHERICAL: AVFrameSideDataType = 13;
+    #[c2rust::src_loc = "125:5"]
+    pub const AV_FRAME_DATA_GOP_TIMECODE: AVFrameSideDataType = 12;
+    #[c2rust::src_loc = "120:5"]
+    pub const AV_FRAME_DATA_MASTERING_DISPLAY_METADATA: AVFrameSideDataType = 11;
+    #[c2rust::src_loc = "114:5"]
+    pub const AV_FRAME_DATA_AUDIO_SERVICE_TYPE: AVFrameSideDataType = 10;
+    #[c2rust::src_loc = "109:5"]
+    pub const AV_FRAME_DATA_SKIP_SAMPLES: AVFrameSideDataType = 9;
+    #[c2rust::src_loc = "97:5"]
+    pub const AV_FRAME_DATA_MOTION_VECTORS: AVFrameSideDataType = 8;
+    #[c2rust::src_loc = "90:5"]
+    pub const AV_FRAME_DATA_AFD: AVFrameSideDataType = 7;
+    #[c2rust::src_loc = "85:5"]
+    pub const AV_FRAME_DATA_DISPLAYMATRIX: AVFrameSideDataType = 6;
+    #[c2rust::src_loc = "77:5"]
+    pub const AV_FRAME_DATA_REPLAYGAIN: AVFrameSideDataType = 5;
+    #[c2rust::src_loc = "73:5"]
+    pub const AV_FRAME_DATA_DOWNMIX_INFO: AVFrameSideDataType = 4;
+    #[c2rust::src_loc = "68:5"]
+    pub const AV_FRAME_DATA_MATRIXENCODING: AVFrameSideDataType = 3;
+    #[c2rust::src_loc = "64:5"]
+    pub const AV_FRAME_DATA_STEREO3D: AVFrameSideDataType = 2;
+    #[c2rust::src_loc = "59:5"]
+    pub const AV_FRAME_DATA_A53_CC: AVFrameSideDataType = 1;
+    #[c2rust::src_loc = "53:5"]
+    pub const AV_FRAME_DATA_PANSCAN: AVFrameSideDataType = 0;
+    #[c2rust::src_loc = "644:9"]
+    pub const AV_FRAME_FLAG_INTERLACED: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 3 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "649:9"]
+    pub const AV_FRAME_FLAG_TOP_FIELD_FIRST: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 4 as ::core::ffi::c_int;
+    use super::__stddef_size_t_h::size_t;
+    use super::avutil_h::AVPictureType;
+    use super::buffer_h::AVBufferRef;
+    use super::channel_layout_h::AVChannelLayout;
+    use super::dict_h::AVDictionary;
+    use super::pixfmt_h::{
+        AVChromaLocation, AVColorPrimaries, AVColorRange, AVColorSpace,
+        AVColorTransferCharacteristic,
+    };
+    use super::rational_h::AVRational;
+    use super::stdint_intn_h::int64_t;
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "783:1"]
+        pub fn av_frame_alloc() -> *mut AVFrame;
+        #[c2rust::src_loc = "792:1"]
+        pub fn av_frame_free(frame: *mut *mut AVFrame);
     }
 }
