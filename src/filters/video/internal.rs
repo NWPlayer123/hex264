@@ -1,10 +1,8 @@
-
 use core::ffi::{c_char, c_float, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
 use crate::input_h::{
-     cli_pic_t, x264_cli_csp_depth_factor, x264_cli_csp_is_invalid, 
-    x264_cli_csps,
+    cli_pic_t, x264_cli_csp_depth_factor, x264_cli_csp_is_invalid, x264_cli_csps,
 };
 use crate::stdint_uintn_h::uint8_t;
 use crate::string_h::memcpy;
@@ -26,21 +24,14 @@ unsafe extern "C" fn x264_cli_plane_copy(
         if !(fresh0 != 0) {
             break;
         }
-        memcpy(
-            dst as *mut c_void,
-            src as *const c_void,
-            w as size_t,
-        );
+        memcpy(dst as *mut c_void, src as *const c_void, w as size_t);
         dst = dst.offset(i_dst as isize);
         src = src.offset(i_src as isize);
     }
 }
 #[no_mangle]
 #[c2rust::src_loc = "40:1"]
-unsafe extern "C" fn x264_cli_pic_copy(
-    mut out: *mut cli_pic_t,
-    mut in_0: *mut cli_pic_t,
-) -> c_int {
+unsafe extern "C" fn x264_cli_pic_copy(mut out: *mut cli_pic_t, mut in_0: *mut cli_pic_t) -> c_int {
     let mut csp: c_int = (*in_0).img.csp & X264_CSP_MASK;
     if x264_cli_csp_is_invalid((*in_0).img.csp) != 0 {
         x264_cli_log(

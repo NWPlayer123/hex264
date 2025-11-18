@@ -47,10 +47,7 @@ struct lavf_hnd_t {
     first_pic: *mut cli_pic_t,
 }
 #[c2rust::src_loc = "53:1"]
-unsafe extern "C" fn handle_jpeg(
-    mut csp: c_int,
-    mut fullrange: *mut c_int,
-) -> c_int {
+unsafe extern "C" fn handle_jpeg(mut csp: c_int, mut fullrange: *mut c_int) -> c_int {
     match csp {
         12 => {
             *fullrange = 1 as c_int;
@@ -134,8 +131,7 @@ unsafe extern "C" fn read_frame_internal(
                 x264_cli_log(
                     b"lavf\0" as *const u8 as *const c_char,
                     X264_LOG_WARNING,
-                    b"video decoding failed on frame %d\n\0" as *const u8
-                        as *const c_char,
+                    b"video decoding failed on frame %d\n\0" as *const u8 as *const c_char,
                     (*h).next_frame,
                 );
                 return -(1 as c_int);
@@ -156,16 +152,12 @@ unsafe extern "C" fn read_frame_internal(
     let mut is_fullrange: c_int = 0 as c_int;
     (*p_pic).img.width = (*(*h).lavc).width;
     (*p_pic).img.height = (*(*h).lavc).height;
-    (*p_pic).img.csp = handle_jpeg(
-        (*(*h).lavc).pix_fmt as c_int,
-        &mut is_fullrange,
-    ) | X264_CSP_OTHER;
+    (*p_pic).img.csp =
+        handle_jpeg((*(*h).lavc).pix_fmt as c_int, &mut is_fullrange) | X264_CSP_OTHER;
     if !info.is_null() {
         (*info).fullrange = is_fullrange;
-        (*info).interlaced =
-            ((*(*h).frame).flags & AV_FRAME_FLAG_INTERLACED != 0) as c_int;
-        (*info).tff =
-            ((*(*h).frame).flags & AV_FRAME_FLAG_TOP_FIELD_FIRST != 0) as c_int;
+        (*info).interlaced = ((*(*h).frame).flags & AV_FRAME_FLAG_INTERLACED != 0) as c_int;
+        (*info).tff = ((*(*h).frame).flags & AV_FRAME_FLAG_TOP_FIELD_FIRST != 0) as c_int;
     }
     if (*h).vfr_input != 0 {
         (*p_pic).duration = 0 as int64_t;
@@ -194,13 +186,8 @@ unsafe extern "C" fn open_file(
     if h.is_null() {
         return -(1 as c_int);
     }
-    if strcmp(
-        psz_filename,
-        b"-\0" as *const u8 as *const c_char,
-    ) == 0
-    {
-        psz_filename =
-            b"pipe:\0" as *const u8 as *const c_char as *mut c_char;
+    if strcmp(psz_filename, b"-\0" as *const u8 as *const c_char) == 0 {
+        psz_filename = b"pipe:\0" as *const u8 as *const c_char as *mut c_char;
     }
     (*h).frame = av_frame_alloc();
     if (*h).frame.is_null() {
@@ -302,8 +289,7 @@ unsafe extern "C" fn open_file(
         x264_cli_log(
             b"lavf\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
-            b"could not find decoder for video stream\n\0" as *const u8
-                as *const c_char,
+            b"could not find decoder for video stream\n\0" as *const u8 as *const c_char,
         );
         return -(1 as c_int);
     }
@@ -330,13 +316,11 @@ unsafe extern "C" fn open_file(
     (*info).width = (*(*h).lavc).width;
     (*info).height = (*(*h).lavc).height;
     (*info).csp = (*(*h).first_pic).img.csp;
-    (*info).num_frames =
-        (**(*(*h).lavf).streams.offset(i as isize)).nb_frames as c_int;
+    (*info).num_frames = (**(*(*h).lavf).streams.offset(i as isize)).nb_frames as c_int;
     (*info).sar_height = (*(*h).lavc).sample_aspect_ratio.den as uint32_t;
     (*info).sar_width = (*(*h).lavc).sample_aspect_ratio.num as uint32_t;
-    (*info).fullrange |= ((*(*h).lavc).color_range as c_uint
-        == AVCOL_RANGE_JPEG as c_int as c_uint)
-        as c_int;
+    (*info).fullrange |=
+        ((*(*h).lavc).color_range as c_uint == AVCOL_RANGE_JPEG as c_int as c_uint) as c_int;
     if strcasecmp(
         get_filename_extension(psz_filename),
         b"avs\0" as *const u8 as *const c_char,
@@ -408,23 +392,9 @@ static mut lavf_input: cli_input_t = cli_input_t {
             ) -> c_int,
     ),
     picture_alloc: Some(
-        picture_alloc
-            as unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                c_int,
-                c_int,
-                c_int,
-            ) -> c_int,
+        picture_alloc as unsafe extern "C" fn(*mut cli_pic_t, hnd_t, c_int, c_int, c_int) -> c_int,
     ),
-    read_frame: Some(
-        read_frame
-            as unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                c_int,
-            ) -> c_int,
-    ),
+    read_frame: Some(read_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t, c_int) -> c_int),
     release_frame: None,
     picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
     close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> c_int),

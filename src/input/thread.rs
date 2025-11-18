@@ -131,10 +131,7 @@ unsafe extern "C" fn read_frame(
     return ret;
 }
 #[c2rust::src_loc = "111:1"]
-unsafe extern "C" fn release_frame(
-    mut pic: *mut cli_pic_t,
-    mut handle: hnd_t,
-) -> c_int {
+unsafe extern "C" fn release_frame(mut pic: *mut cli_pic_t, mut handle: hnd_t) -> c_int {
     let mut h: *mut thread_hnd_t = handle as *mut thread_hnd_t;
     if (*h).input.release_frame.is_some() {
         return (*h).input.release_frame.expect("non-null function pointer")(pic, (*h).p_handle);
@@ -186,26 +183,10 @@ static mut thread_10_input: cli_input_t = cli_input_t {
             ) -> c_int,
     ),
     picture_alloc: Some(
-        picture_alloc
-            as unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                c_int,
-                c_int,
-                c_int,
-            ) -> c_int,
+        picture_alloc as unsafe extern "C" fn(*mut cli_pic_t, hnd_t, c_int, c_int, c_int) -> c_int,
     ),
-    read_frame: Some(
-        read_frame
-            as unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                c_int,
-            ) -> c_int,
-    ),
-    release_frame: Some(
-        release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> c_int,
-    ),
+    read_frame: Some(read_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t, c_int) -> c_int),
+    release_frame: Some(release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> c_int),
     picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
     close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> c_int),
 };
