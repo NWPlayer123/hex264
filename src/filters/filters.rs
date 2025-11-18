@@ -1,3 +1,5 @@
+use core::ffi::{c_char, c_double, c_int, c_long, c_uint, c_ulong, c_void};
+
 use crate::__stddef_size_t_h::size_t;
 use crate::assert_h::{__assert_fail, __ASSERT_FUNCTION};
 use crate::stdlib_h::{calloc, strtod, strtol};
@@ -8,25 +10,24 @@ use crate::x264cli_h::x264_cli_log;
 #[no_mangle]
 #[c2rust::src_loc = "32:1"]
 unsafe extern "C" fn x264_split_options(
-    mut opt_str: *const ::core::ffi::c_char,
-    mut options: *const *const ::core::ffi::c_char,
-) -> *mut *mut ::core::ffi::c_char {
-    let mut opt_count: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    let mut options_count: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    let mut found_named: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    mut opt_str: *const c_char,
+    mut options: *const *const c_char,
+) -> *mut *mut c_char {
+    let mut opt_count: c_int = 0 as c_int;
+    let mut options_count: c_int = 0 as c_int;
+    let mut found_named: c_int = 0 as c_int;
     let mut size: size_t = 0 as size_t;
-    let mut opt: *const ::core::ffi::c_char = opt_str;
+    let mut opt: *const c_char = opt_str;
     if opt_str.is_null() {
-        return 0 as *mut *mut ::core::ffi::c_char;
+        return 0 as *mut *mut c_char;
     }
     while !(*options.offset(options_count as isize)).is_null() {
         options_count += 1;
     }
     loop {
-        let mut length: size_t =
-            strcspn(opt, b"=,\0" as *const u8 as *const ::core::ffi::c_char) as size_t;
-        if *opt.offset(length as isize) as ::core::ffi::c_int == '=' as i32 {
-            let mut option: *const *const ::core::ffi::c_char = options;
+        let mut length: size_t = strcspn(opt, b"=,\0" as *const u8 as *const c_char) as size_t;
+        if *opt.offset(length as isize) as c_int == '=' as i32 {
+            let mut option: *const *const c_char = options;
             while !(*option).is_null()
                 && (strlen(*option) != length || strncmp(opt, *option, length) != 0)
             {
@@ -34,36 +35,35 @@ unsafe extern "C" fn x264_split_options(
             }
             if (*option).is_null() {
                 x264_cli_log(
-                    b"options\0" as *const u8 as *const ::core::ffi::c_char,
+                    b"options\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
-                    b"Invalid option '%.*s'\n\0" as *const u8 as *const ::core::ffi::c_char,
+                    b"Invalid option '%.*s'\n\0" as *const u8 as *const c_char,
                     length,
                     opt,
                 );
-                return 0 as *mut *mut ::core::ffi::c_char;
+                return 0 as *mut *mut c_char;
             }
-            found_named = 1 as ::core::ffi::c_int;
-            length = (length as ::core::ffi::c_ulong).wrapping_add(strcspn(
+            found_named = 1 as c_int;
+            length = (length as c_ulong).wrapping_add(strcspn(
                 opt.offset(length as isize),
-                b",\0" as *const u8 as *const ::core::ffi::c_char,
+                b",\0" as *const u8 as *const c_char,
             )) as size_t as size_t;
         } else {
             if opt_count >= options_count {
                 x264_cli_log(
-                    b"options\0" as *const u8 as *const ::core::ffi::c_char,
+                    b"options\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
-                    b"Too many options given\n\0" as *const u8 as *const ::core::ffi::c_char,
+                    b"Too many options given\n\0" as *const u8 as *const c_char,
                 );
-                return 0 as *mut *mut ::core::ffi::c_char;
+                return 0 as *mut *mut c_char;
             }
             if found_named != 0 {
                 x264_cli_log(
-                    b"options\0" as *const u8 as *const ::core::ffi::c_char,
+                    b"options\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
-                    b"Ordered option given after named\n\0" as *const u8
-                        as *const ::core::ffi::c_char,
+                    b"Ordered option given after named\n\0" as *const u8 as *const c_char,
                 );
-                return 0 as *mut *mut ::core::ffi::c_char;
+                return 0 as *mut *mut c_char;
             }
             size = size.wrapping_add(
                 strlen(*options.offset(opt_count as isize)).wrapping_add(1 as size_t),
@@ -77,53 +77,45 @@ unsafe extern "C" fn x264_split_options(
             break;
         }
     }
-    let mut offset: size_t = ((2 as ::core::ffi::c_int * (opt_count + 1 as ::core::ffi::c_int))
-        as size_t)
-        .wrapping_mul(::core::mem::size_of::<*mut ::core::ffi::c_char>() as size_t);
-    size = size.wrapping_add(
-        offset.wrapping_add(opt.offset_from(opt_str) as ::core::ffi::c_long as size_t),
-    );
-    let mut opts: *mut *mut ::core::ffi::c_char =
-        calloc(1 as size_t, size) as *mut *mut ::core::ffi::c_char;
+    let mut offset: size_t = ((2 as c_int * (opt_count + 1 as c_int)) as size_t)
+        .wrapping_mul(::core::mem::size_of::<*mut c_char>() as size_t);
+    size = size.wrapping_add(offset.wrapping_add(opt.offset_from(opt_str) as c_long as size_t));
+    let mut opts: *mut *mut c_char = calloc(1 as size_t, size) as *mut *mut c_char;
     if opts.is_null() {
         x264_cli_log(
-            b"options\0" as *const u8 as *const ::core::ffi::c_char,
+            b"options\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
-            b"malloc failed\n\0" as *const u8 as *const ::core::ffi::c_char,
+            b"malloc failed\n\0" as *const u8 as *const c_char,
         );
-        return 0 as *mut *mut ::core::ffi::c_char;
+        return 0 as *mut *mut c_char;
     }
-    let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    while i < 2 as ::core::ffi::c_int * opt_count {
+    let mut i: c_int = 0 as c_int;
+    while i < 2 as c_int * opt_count {
         let mut length_0: size_t =
-            strcspn(opt_str, b"=,\0" as *const u8 as *const ::core::ffi::c_char) as size_t;
-        if *opt_str.offset(length_0 as isize) as ::core::ffi::c_int == '=' as i32 {
+            strcspn(opt_str, b"=,\0" as *const u8 as *const c_char) as size_t;
+        if *opt_str.offset(length_0 as isize) as c_int == '=' as i32 {
             let fresh1 = i;
             i = i + 1;
             let ref mut fresh2 = *opts.offset(fresh1 as isize);
             *fresh2 = memcpy(
-                (opts as *mut ::core::ffi::c_char).offset(offset as isize)
-                    as *mut ::core::ffi::c_void,
-                opt_str as *const ::core::ffi::c_void,
+                (opts as *mut c_char).offset(offset as isize) as *mut c_void,
+                opt_str as *const c_void,
                 length_0,
-            ) as *mut ::core::ffi::c_char;
+            ) as *mut c_char;
             offset = offset.wrapping_add(length_0.wrapping_add(1 as size_t));
             opt_str = opt_str.offset(length_0.wrapping_add(1 as size_t) as isize);
-            length_0 =
-                strcspn(opt_str, b",\0" as *const u8 as *const ::core::ffi::c_char) as size_t;
+            length_0 = strcspn(opt_str, b",\0" as *const u8 as *const c_char) as size_t;
         } else {
-            let mut option_0: *const ::core::ffi::c_char =
-                *options.offset((i / 2 as ::core::ffi::c_int) as isize);
+            let mut option_0: *const c_char = *options.offset((i / 2 as c_int) as isize);
             let mut option_length: size_t = strlen(option_0);
             let fresh3 = i;
             i = i + 1;
             let ref mut fresh4 = *opts.offset(fresh3 as isize);
             *fresh4 = memcpy(
-                (opts as *mut ::core::ffi::c_char).offset(offset as isize)
-                    as *mut ::core::ffi::c_void,
-                option_0 as *const ::core::ffi::c_void,
+                (opts as *mut c_char).offset(offset as isize) as *mut c_void,
+                option_0 as *const c_void,
                 option_length,
-            ) as *mut ::core::ffi::c_char;
+            ) as *mut c_char;
             offset = offset.wrapping_add(option_length.wrapping_add(1 as size_t));
             option_0 = option_0.offset(option_length.wrapping_add(1 as size_t) as isize);
         }
@@ -131,19 +123,19 @@ unsafe extern "C" fn x264_split_options(
         i = i + 1;
         let ref mut fresh6 = *opts.offset(fresh5 as isize);
         *fresh6 = memcpy(
-            (opts as *mut ::core::ffi::c_char).offset(offset as isize) as *mut ::core::ffi::c_void,
-            opt_str as *const ::core::ffi::c_void,
+            (opts as *mut c_char).offset(offset as isize) as *mut c_void,
+            opt_str as *const c_void,
             length_0,
-        ) as *mut ::core::ffi::c_char;
+        ) as *mut c_char;
         offset = offset.wrapping_add(length_0.wrapping_add(1 as size_t));
         opt_str = opt_str.offset(length_0.wrapping_add(1 as size_t) as isize);
     }
     if offset == size {
     } else {
         __assert_fail(
-            b"offset == size\0" as *const u8 as *const ::core::ffi::c_char,
-            b"filters/filters.c\0" as *const u8 as *const ::core::ffi::c_char,
-            96 as ::core::ffi::c_uint,
+            b"offset == size\0" as *const u8 as *const c_char,
+            b"filters/filters.c\0" as *const u8 as *const c_char,
+            96 as c_uint,
             __ASSERT_FUNCTION.as_ptr(),
         );
     }
@@ -152,53 +144,47 @@ unsafe extern "C" fn x264_split_options(
 #[no_mangle]
 #[c2rust::src_loc = "100:1"]
 unsafe extern "C" fn x264_get_option(
-    mut name: *const ::core::ffi::c_char,
-    mut split_options: *mut *mut ::core::ffi::c_char,
-) -> *mut ::core::ffi::c_char {
+    mut name: *const c_char,
+    mut split_options: *mut *mut c_char,
+) -> *mut c_char {
     if !split_options.is_null() {
-        let mut last_i: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut last_i: c_int = -(1 as c_int);
+        let mut i: c_int = 0 as c_int;
         while !(*split_options.offset(i as isize)).is_null() {
             if strcmp(*split_options.offset(i as isize), name) == 0 {
                 last_i = i;
             }
-            i += 2 as ::core::ffi::c_int;
+            i += 2 as c_int;
         }
-        if last_i >= 0 as ::core::ffi::c_int
-            && *(*split_options.offset((last_i + 1 as ::core::ffi::c_int) as isize))
-                .offset(0 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+        if last_i >= 0 as c_int
+            && *(*split_options.offset((last_i + 1 as c_int) as isize)).offset(0 as c_int as isize)
+                as c_int
                 != 0
         {
-            return *split_options.offset((last_i + 1 as ::core::ffi::c_int) as isize);
+            return *split_options.offset((last_i + 1 as c_int) as isize);
         }
     }
-    return 0 as *mut ::core::ffi::c_char;
+    return 0 as *mut c_char;
 }
 #[no_mangle]
 #[c2rust::src_loc = "114:1"]
-unsafe extern "C" fn x264_otob(
-    mut str: *const ::core::ffi::c_char,
-    mut def: ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn x264_otob(mut str: *const c_char, mut def: c_int) -> c_int {
     if !str.is_null() {
-        return (strcasecmp(str, b"true\0" as *const u8 as *const ::core::ffi::c_char) == 0
-            || strcmp(str, b"1\0" as *const u8 as *const ::core::ffi::c_char) == 0
-            || strcasecmp(str, b"yes\0" as *const u8 as *const ::core::ffi::c_char) == 0)
-            as ::core::ffi::c_int;
+        return (strcasecmp(str, b"true\0" as *const u8 as *const c_char) == 0
+            || strcmp(str, b"1\0" as *const u8 as *const c_char) == 0
+            || strcasecmp(str, b"yes\0" as *const u8 as *const c_char) == 0)
+            as c_int;
     }
     return def;
 }
 #[no_mangle]
 #[c2rust::src_loc = "121:1"]
-unsafe extern "C" fn x264_otof(
-    mut str: *const ::core::ffi::c_char,
-    mut def: ::core::ffi::c_double,
-) -> ::core::ffi::c_double {
-    let mut ret: ::core::ffi::c_double = def;
+unsafe extern "C" fn x264_otof(mut str: *const c_char, mut def: c_double) -> c_double {
+    let mut ret: c_double = def;
     if !str.is_null() {
-        let mut end: *mut ::core::ffi::c_char = 0 as *mut ::core::ffi::c_char;
+        let mut end: *mut c_char = 0 as *mut c_char;
         ret = strtod(str, &mut end);
-        if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
+        if end == str as *mut c_char || *end as c_int != '\0' as i32 {
             ret = def;
         }
     }
@@ -206,15 +192,12 @@ unsafe extern "C" fn x264_otof(
 }
 #[no_mangle]
 #[c2rust::src_loc = "134:1"]
-unsafe extern "C" fn x264_otoi(
-    mut str: *const ::core::ffi::c_char,
-    mut def: ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
-    let mut ret: ::core::ffi::c_int = def;
+unsafe extern "C" fn x264_otoi(mut str: *const c_char, mut def: c_int) -> c_int {
+    let mut ret: c_int = def;
     if !str.is_null() {
-        let mut end: *mut ::core::ffi::c_char = 0 as *mut ::core::ffi::c_char;
-        ret = strtol(str, &mut end, 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
-        if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
+        let mut end: *mut c_char = 0 as *mut c_char;
+        ret = strtol(str, &mut end, 0 as c_int) as c_int;
+        if end == str as *mut c_char || *end as c_int != '\0' as i32 {
             ret = def;
         }
     }
@@ -222,9 +205,6 @@ unsafe extern "C" fn x264_otoi(
 }
 #[no_mangle]
 #[c2rust::src_loc = "147:1"]
-unsafe extern "C" fn x264_otos(
-    mut str: *mut ::core::ffi::c_char,
-    mut def: *mut ::core::ffi::c_char,
-) -> *mut ::core::ffi::c_char {
+unsafe extern "C" fn x264_otos(mut str: *mut c_char, mut def: *mut c_char) -> *mut c_char {
     return if !str.is_null() { str } else { def };
 }
