@@ -114,17 +114,10 @@ unsafe extern "C" fn open_file(
     if (*h).bit_depth > 8 as c_int {
         (*info).csp |= X264_CSP_HIGH_DEPTH;
     }
-    if strcmp(
-        psz_filename,
-        b"-\0" as *const u8 as *const c_char,
-    ) == 0
-    {
+    if strcmp(psz_filename, b"-\0" as *const u8 as *const c_char) == 0 {
         (*h).fh = stdin;
     } else {
-        (*h).fh = fopen(
-            psz_filename,
-            b"rb\0" as *const u8 as *const c_char,
-        ) as *mut FILE;
+        (*h).fh = fopen(psz_filename, b"rb\0" as *const u8 as *const c_char) as *mut FILE;
     }
     if (*h).fh.is_null() {
         return -(1 as c_int);
@@ -155,8 +148,7 @@ unsafe extern "C" fn open_file(
             return -(1 as c_int);
         }
         if (*h).bit_depth & 7 as c_int == 0 {
-            (*h).use_mmap =
-                (x264_cli_mmap_init(&mut (*h).mmap, (*h).fh) == 0) as c_int;
+            (*h).use_mmap = (x264_cli_mmap_init(&mut (*h).mmap, (*h).fh) == 0) as c_int;
         }
     }
     *p_handle = h as hnd_t;
@@ -173,12 +165,9 @@ unsafe extern "C" fn read_frame_internal(
     while i < (*pic).img.planes {
         if (*h).use_mmap != 0 {
             if i != 0 {
-                (*pic).img.plane[i as usize] =
-                    (*pic).img.plane[(i - 1 as c_int) as usize].offset(
-                        (pixel_depth as int64_t
-                            * (*h).plane_size[(i - 1 as c_int) as usize])
-                            as isize,
-                    );
+                (*pic).img.plane[i as usize] = (*pic).img.plane[(i - 1 as c_int) as usize].offset(
+                    (pixel_depth as int64_t * (*h).plane_size[(i - 1 as c_int) as usize]) as isize,
+                );
             }
         } else if fread(
             (*pic).img.plane[i as usize] as *mut c_void,
@@ -244,10 +233,7 @@ unsafe extern "C" fn read_frame(
     return 0 as c_int;
 }
 #[c2rust::src_loc = "171:1"]
-unsafe extern "C" fn release_frame(
-    mut pic: *mut cli_pic_t,
-    mut handle: hnd_t,
-) -> c_int {
+unsafe extern "C" fn release_frame(mut pic: *mut cli_pic_t, mut handle: hnd_t) -> c_int {
     let mut h: *mut raw_hnd_t = handle as *mut raw_hnd_t;
     if (*h).use_mmap != 0 {
         return x264_cli_munmap(
@@ -270,22 +256,12 @@ unsafe extern "C" fn picture_alloc(
     return if (*h).use_mmap != 0 {
         Some(
             x264_cli_pic_init_noalloc
-                as unsafe extern "C" fn(
-                    *mut cli_pic_t,
-                    c_int,
-                    c_int,
-                    c_int,
-                ) -> c_int,
+                as unsafe extern "C" fn(*mut cli_pic_t, c_int, c_int, c_int) -> c_int,
         )
     } else {
         Some(
             x264_cli_pic_alloc
-                as unsafe extern "C" fn(
-                    *mut cli_pic_t,
-                    c_int,
-                    c_int,
-                    c_int,
-                ) -> c_int,
+                as unsafe extern "C" fn(*mut cli_pic_t, c_int, c_int, c_int) -> c_int,
         )
     }
     .expect("non-null function pointer")(pic, csp, width, height);
@@ -329,26 +305,10 @@ static mut raw_input: cli_input_t = cli_input_t {
             ) -> c_int,
     ),
     picture_alloc: Some(
-        picture_alloc
-            as unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                c_int,
-                c_int,
-                c_int,
-            ) -> c_int,
+        picture_alloc as unsafe extern "C" fn(*mut cli_pic_t, hnd_t, c_int, c_int, c_int) -> c_int,
     ),
-    read_frame: Some(
-        read_frame
-            as unsafe extern "C" fn(
-                *mut cli_pic_t,
-                hnd_t,
-                c_int,
-            ) -> c_int,
-    ),
-    release_frame: Some(
-        release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> c_int,
-    ),
+    read_frame: Some(read_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t, c_int) -> c_int),
+    release_frame: Some(release_frame as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> c_int),
     picture_clean: Some(picture_clean as unsafe extern "C" fn(*mut cli_pic_t, hnd_t) -> ()),
     close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> c_int),
 };

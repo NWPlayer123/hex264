@@ -2422,6 +2422,11 @@ pub mod stdlib_h {
         #[c2rust::src_loc = "672:1"]
         pub fn malloc(__size: size_t) -> *mut ::core::ffi::c_void;
     }
+    extern "C" {
+        #[c2rust::src_loc = "683:1"]
+        pub fn realloc(__ptr: *mut ::core::ffi::c_void, __size: size_t)
+            -> *mut ::core::ffi::c_void;
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/osdep.h:37"]
 pub mod osdep_h {
@@ -3336,6 +3341,850 @@ pub mod lsmash_h {
     pub const LSMASH_VERSION_MINOR: ::core::ffi::c_int = 14 as ::core::ffi::c_int;
     #[c2rust::src_loc = "51:9"]
     pub const LSMASH_VERSION_MICRO: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
+
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "204:9"]
+    pub struct lsmash_file_parameters_t {
+        pub mode: lsmash_file_mode,
+        pub opaque: *mut ::core::ffi::c_void,
+        pub read: Option<
+            unsafe extern "C" fn(
+                *mut ::core::ffi::c_void,
+                *mut uint8_t,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub write: Option<
+            unsafe extern "C" fn(
+                *mut ::core::ffi::c_void,
+                *mut uint8_t,
+                ::core::ffi::c_int,
+            ) -> ::core::ffi::c_int,
+        >,
+        pub seek: Option<
+            unsafe extern "C" fn(*mut ::core::ffi::c_void, int64_t, ::core::ffi::c_int) -> int64_t,
+        >,
+        pub major_brand: lsmash_brand_type,
+        pub brands: *mut lsmash_brand_type,
+        pub brand_count: uint32_t,
+        pub minor_version: uint32_t,
+        pub max_chunk_duration: ::core::ffi::c_double,
+        pub max_async_tolerance: ::core::ffi::c_double,
+        pub max_chunk_size: uint64_t,
+        pub max_read_size: uint64_t,
+    }
+    #[c2rust::src_loc = "114:9"]
+    pub type lsmash_brand_type = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "201:5"]
+    pub const ISOM_BRAND_TYPE_SSSS: lsmash_brand_type = 1936946035;
+    #[c2rust::src_loc = "200:5"]
+    pub const ISOM_BRAND_TYPE_SISX: lsmash_brand_type = 1936290680;
+    #[c2rust::src_loc = "199:5"]
+    pub const ISOM_BRAND_TYPE_SIMS: lsmash_brand_type = 1936289139;
+    #[c2rust::src_loc = "198:5"]
+    pub const ISOM_BRAND_TYPE_SDV: lsmash_brand_type = 1935963680;
+    #[c2rust::src_loc = "197:5"]
+    pub const ISOM_BRAND_TYPE_RISX: lsmash_brand_type = 1919513464;
+    #[c2rust::src_loc = "196:5"]
+    pub const ISOM_BRAND_TYPE_QT: lsmash_brand_type = 1903435808;
+    #[c2rust::src_loc = "195:5"]
+    pub const ISOM_BRAND_TYPE_PNVI: lsmash_brand_type = 1886287465;
+    #[c2rust::src_loc = "194:5"]
+    pub const ISOM_BRAND_TYPE_PIFF: lsmash_brand_type = 1885955686;
+    #[c2rust::src_loc = "193:5"]
+    pub const ISOM_BRAND_TYPE_PANA: lsmash_brand_type = 1885433441;
+    #[c2rust::src_loc = "192:5"]
+    pub const ISOM_BRAND_TYPE_OPX2: lsmash_brand_type = 1869641778;
+    #[c2rust::src_loc = "191:5"]
+    pub const ISOM_BRAND_TYPE_OPF2: lsmash_brand_type = 1869637170;
+    #[c2rust::src_loc = "190:5"]
+    pub const ISOM_BRAND_TYPE_ODCF: lsmash_brand_type = 1868850022;
+    #[c2rust::src_loc = "189:5"]
+    pub const ISOM_BRAND_TYPE_NIKO: lsmash_brand_type = 1852402543;
+    #[c2rust::src_loc = "188:5"]
+    pub const ISOM_BRAND_TYPE_MSIX: lsmash_brand_type = 1836280184;
+    #[c2rust::src_loc = "187:5"]
+    pub const ISOM_BRAND_TYPE_MSDH: lsmash_brand_type = 1836278888;
+    #[c2rust::src_loc = "186:5"]
+    pub const ISOM_BRAND_TYPE_MP71: lsmash_brand_type = 1836070705;
+    #[c2rust::src_loc = "185:5"]
+    pub const ISOM_BRAND_TYPE_MP42: lsmash_brand_type = 1836069938;
+    #[c2rust::src_loc = "184:5"]
+    pub const ISOM_BRAND_TYPE_MP41: lsmash_brand_type = 1836069937;
+    #[c2rust::src_loc = "183:5"]
+    pub const ISOM_BRAND_TYPE_MP21: lsmash_brand_type = 1836069425;
+    #[c2rust::src_loc = "182:5"]
+    pub const ISOM_BRAND_TYPE_MJP2: lsmash_brand_type = 1835692082;
+    #[c2rust::src_loc = "181:5"]
+    pub const ISOM_BRAND_TYPE_MJ2S: lsmash_brand_type = 1835676275;
+    #[c2rust::src_loc = "180:5"]
+    pub const ISOM_BRAND_TYPE_LMSG: lsmash_brand_type = 1819112295;
+    #[c2rust::src_loc = "179:5"]
+    pub const ISOM_BRAND_TYPE_JPSI: lsmash_brand_type = 1785754473;
+    #[c2rust::src_loc = "178:5"]
+    pub const ISOM_BRAND_TYPE_ISOM: lsmash_brand_type = 1769172845;
+    #[c2rust::src_loc = "177:5"]
+    pub const ISOM_BRAND_TYPE_ISO7: lsmash_brand_type = 1769172791;
+    #[c2rust::src_loc = "176:5"]
+    pub const ISOM_BRAND_TYPE_ISO6: lsmash_brand_type = 1769172790;
+    #[c2rust::src_loc = "175:5"]
+    pub const ISOM_BRAND_TYPE_ISO5: lsmash_brand_type = 1769172789;
+    #[c2rust::src_loc = "174:5"]
+    pub const ISOM_BRAND_TYPE_ISO4: lsmash_brand_type = 1769172788;
+    #[c2rust::src_loc = "173:5"]
+    pub const ISOM_BRAND_TYPE_ISO3: lsmash_brand_type = 1769172787;
+    #[c2rust::src_loc = "172:5"]
+    pub const ISOM_BRAND_TYPE_ISO2: lsmash_brand_type = 1769172786;
+    #[c2rust::src_loc = "171:5"]
+    pub const ISOM_BRAND_TYPE_ISC2: lsmash_brand_type = 1769169714;
+    #[c2rust::src_loc = "170:5"]
+    pub const ISOM_BRAND_TYPE_IFRM: lsmash_brand_type = 1768321645;
+    #[c2rust::src_loc = "169:5"]
+    pub const ISOM_BRAND_TYPE_DVT1: lsmash_brand_type = 1685484593;
+    #[c2rust::src_loc = "168:5"]
+    pub const ISOM_BRAND_TYPE_DVR1: lsmash_brand_type = 1685484081;
+    #[c2rust::src_loc = "167:5"]
+    pub const ISOM_BRAND_TYPE_DV3B: lsmash_brand_type = 1685468002;
+    #[c2rust::src_loc = "166:5"]
+    pub const ISOM_BRAND_TYPE_DV3A: lsmash_brand_type = 1685468001;
+    #[c2rust::src_loc = "165:5"]
+    pub const ISOM_BRAND_TYPE_DV2B: lsmash_brand_type = 1685467746;
+    #[c2rust::src_loc = "164:5"]
+    pub const ISOM_BRAND_TYPE_DV2A: lsmash_brand_type = 1685467745;
+    #[c2rust::src_loc = "163:5"]
+    pub const ISOM_BRAND_TYPE_DV1B: lsmash_brand_type = 1685467490;
+    #[c2rust::src_loc = "162:5"]
+    pub const ISOM_BRAND_TYPE_DV1A: lsmash_brand_type = 1685467489;
+    #[c2rust::src_loc = "161:5"]
+    pub const ISOM_BRAND_TYPE_DSMS: lsmash_brand_type = 1685286259;
+    #[c2rust::src_loc = "160:5"]
+    pub const ISOM_BRAND_TYPE_DMB1: lsmash_brand_type = 1684890161;
+    #[c2rust::src_loc = "159:5"]
+    pub const ISOM_BRAND_TYPE_DBY1: lsmash_brand_type = 1684175153;
+    #[c2rust::src_loc = "158:5"]
+    pub const ISOM_BRAND_TYPE_DASH: lsmash_brand_type = 1684108136;
+    #[c2rust::src_loc = "157:5"]
+    pub const ISOM_BRAND_TYPE_DA3B: lsmash_brand_type = 1684091746;
+    #[c2rust::src_loc = "156:5"]
+    pub const ISOM_BRAND_TYPE_DA3A: lsmash_brand_type = 1684091745;
+    #[c2rust::src_loc = "155:5"]
+    pub const ISOM_BRAND_TYPE_DA2B: lsmash_brand_type = 1684091490;
+    #[c2rust::src_loc = "154:5"]
+    pub const ISOM_BRAND_TYPE_DA2A: lsmash_brand_type = 1684091489;
+    #[c2rust::src_loc = "153:5"]
+    pub const ISOM_BRAND_TYPE_DA1B: lsmash_brand_type = 1684091234;
+    #[c2rust::src_loc = "152:5"]
+    pub const ISOM_BRAND_TYPE_DA1A: lsmash_brand_type = 1684091233;
+    #[c2rust::src_loc = "151:5"]
+    pub const ISOM_BRAND_TYPE_DA0B: lsmash_brand_type = 1684090978;
+    #[c2rust::src_loc = "150:5"]
+    pub const ISOM_BRAND_TYPE_DA0A: lsmash_brand_type = 1684090977;
+    #[c2rust::src_loc = "149:5"]
+    pub const ISOM_BRAND_TYPE_CCFF: lsmash_brand_type = 1667458662;
+    #[c2rust::src_loc = "148:5"]
+    pub const ISOM_BRAND_TYPE_CAQV: lsmash_brand_type = 1667330422;
+    #[c2rust::src_loc = "147:5"]
+    pub const ISOM_BRAND_TYPE_BBXM: lsmash_brand_type = 1650620525;
+    #[c2rust::src_loc = "146:5"]
+    pub const ISOM_BRAND_TYPE_AVC1: lsmash_brand_type = 1635148593;
+    #[c2rust::src_loc = "145:5"]
+    pub const ISOM_BRAND_TYPE_ROSS: lsmash_brand_type = 1380930387;
+    #[c2rust::src_loc = "144:5"]
+    pub const ISOM_BRAND_TYPE_MPPI: lsmash_brand_type = 1297109065;
+    #[c2rust::src_loc = "143:5"]
+    pub const ISOM_BRAND_TYPE_MFSM: lsmash_brand_type = 1296454477;
+    #[c2rust::src_loc = "142:5"]
+    pub const ISOM_BRAND_TYPE_M4V: lsmash_brand_type = 1295275552;
+    #[c2rust::src_loc = "141:5"]
+    pub const ISOM_BRAND_TYPE_M4P: lsmash_brand_type = 1295274016;
+    #[c2rust::src_loc = "140:5"]
+    pub const ISOM_BRAND_TYPE_M4B: lsmash_brand_type = 1295270432;
+    #[c2rust::src_loc = "139:5"]
+    pub const ISOM_BRAND_TYPE_M4A: lsmash_brand_type = 1295270176;
+    #[c2rust::src_loc = "138:5"]
+    pub const ISOM_BRAND_TYPE_LCAG: lsmash_brand_type = 1279476039;
+    #[c2rust::src_loc = "137:5"]
+    pub const ISOM_BRAND_TYPE_CDES: lsmash_brand_type = 1128555891;
+    #[c2rust::src_loc = "136:5"]
+    pub const ISOM_BRAND_TYPE_CAEP: lsmash_brand_type = 1128351056;
+    #[c2rust::src_loc = "135:5"]
+    pub const ISOM_BRAND_TYPE_ARRI: lsmash_brand_type = 1095914057;
+    #[c2rust::src_loc = "134:5"]
+    pub const ISOM_BRAND_TYPE_3GT9: lsmash_brand_type = 862417977;
+    #[c2rust::src_loc = "133:5"]
+    pub const ISOM_BRAND_TYPE_3GS9: lsmash_brand_type = 862417721;
+    #[c2rust::src_loc = "132:5"]
+    pub const ISOM_BRAND_TYPE_3GS6: lsmash_brand_type = 862417718;
+    #[c2rust::src_loc = "131:5"]
+    pub const ISOM_BRAND_TYPE_3GR9: lsmash_brand_type = 862417465;
+    #[c2rust::src_loc = "130:5"]
+    pub const ISOM_BRAND_TYPE_3GR6: lsmash_brand_type = 862417462;
+    #[c2rust::src_loc = "129:5"]
+    pub const ISOM_BRAND_TYPE_3GP9: lsmash_brand_type = 862416953;
+    #[c2rust::src_loc = "128:5"]
+    pub const ISOM_BRAND_TYPE_3GP8: lsmash_brand_type = 862416952;
+    #[c2rust::src_loc = "127:5"]
+    pub const ISOM_BRAND_TYPE_3GP7: lsmash_brand_type = 862416951;
+    #[c2rust::src_loc = "126:5"]
+    pub const ISOM_BRAND_TYPE_3GP6: lsmash_brand_type = 862416950;
+    #[c2rust::src_loc = "125:5"]
+    pub const ISOM_BRAND_TYPE_3GP5: lsmash_brand_type = 862416949;
+    #[c2rust::src_loc = "124:5"]
+    pub const ISOM_BRAND_TYPE_3GP4: lsmash_brand_type = 862416948;
+    #[c2rust::src_loc = "123:5"]
+    pub const ISOM_BRAND_TYPE_3GM9: lsmash_brand_type = 862416185;
+    #[c2rust::src_loc = "122:5"]
+    pub const ISOM_BRAND_TYPE_3GH9: lsmash_brand_type = 862414905;
+    #[c2rust::src_loc = "121:5"]
+    pub const ISOM_BRAND_TYPE_3GG9: lsmash_brand_type = 862414649;
+    #[c2rust::src_loc = "120:5"]
+    pub const ISOM_BRAND_TYPE_3GG6: lsmash_brand_type = 862414646;
+    #[c2rust::src_loc = "119:5"]
+    pub const ISOM_BRAND_TYPE_3GF9: lsmash_brand_type = 862414393;
+    #[c2rust::src_loc = "118:5"]
+    pub const ISOM_BRAND_TYPE_3GE9: lsmash_brand_type = 862414137;
+    #[c2rust::src_loc = "117:5"]
+    pub const ISOM_BRAND_TYPE_3GE6: lsmash_brand_type = 862414134;
+    #[c2rust::src_loc = "116:5"]
+    pub const ISOM_BRAND_TYPE_3G2A: lsmash_brand_type = 862401121;
+    #[c2rust::src_loc = "100:9"]
+    pub type lsmash_file_mode = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "111:5"]
+    pub const LSMASH_FILE_MODE_WRITE_FRAGMENTED: lsmash_file_mode = 5;
+    #[c2rust::src_loc = "110:5"]
+    pub const LSMASH_FILE_MODE_SEGMENT: lsmash_file_mode = 256;
+    #[c2rust::src_loc = "109:5"]
+    pub const LSMASH_FILE_MODE_INDEX: lsmash_file_mode = 128;
+    #[c2rust::src_loc = "108:5"]
+    pub const LSMASH_FILE_MODE_MEDIA: lsmash_file_mode = 64;
+    #[c2rust::src_loc = "107:5"]
+    pub const LSMASH_FILE_MODE_INITIALIZATION: lsmash_file_mode = 32;
+    #[c2rust::src_loc = "106:5"]
+    pub const LSMASH_FILE_MODE_BOX: lsmash_file_mode = 16;
+    #[c2rust::src_loc = "105:5"]
+    pub const LSMASH_FILE_MODE_DUMP: lsmash_file_mode = 8;
+    #[c2rust::src_loc = "104:5"]
+    pub const LSMASH_FILE_MODE_FRAGMENTED: lsmash_file_mode = 4;
+    #[c2rust::src_loc = "103:5"]
+    pub const LSMASH_FILE_MODE_READ: lsmash_file_mode = 2;
+    #[c2rust::src_loc = "102:5"]
+    pub const LSMASH_FILE_MODE_WRITE: lsmash_file_mode = 1;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1373:9"]
+    pub struct lsmash_video_summary_t {
+        pub summary_type: lsmash_summary_type,
+        pub sample_type: lsmash_codec_type_t,
+        pub opaque: *mut lsmash_codec_specific_list_t,
+        pub max_au_length: uint32_t,
+        pub data_ref_index: uint32_t,
+        pub timescale: uint32_t,
+        pub timebase: uint32_t,
+        pub vfr: uint8_t,
+        pub sample_per_field: uint8_t,
+        pub width: uint32_t,
+        pub height: uint32_t,
+        pub compressorname: [::core::ffi::c_char; 33],
+        pub depth: lsmash_video_depth,
+        pub clap: lsmash_clap_t,
+        pub par_h: uint32_t,
+        pub par_v: uint32_t,
+        pub color: C2RustUnnamed_5,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1392:5"]
+    pub struct C2RustUnnamed_5 {
+        pub primaries_index: uint16_t,
+        pub transfer_index: uint16_t,
+        pub matrix_index: uint16_t,
+        pub full_range: uint8_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1210:9"]
+    pub struct lsmash_clap_t {
+        pub width: lsmash_rational_u32_t,
+        pub height: lsmash_rational_u32_t,
+        pub horizontal_offset: lsmash_rational_s32_t,
+        pub vertical_offset: lsmash_rational_s32_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "374:9"]
+    pub struct lsmash_rational_s32_t {
+        pub n: int32_t,
+        pub d: uint32_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "368:9"]
+    pub struct lsmash_rational_u32_t {
+        pub n: uint32_t,
+        pub d: uint32_t,
+    }
+    #[c2rust::src_loc = "1227:9"]
+    pub type lsmash_video_depth = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "1253:5"]
+    pub const QT_VIDEO_DEPTH_32ARGB: lsmash_video_depth = 32;
+    #[c2rust::src_loc = "1252:5"]
+    pub const QT_VIDEO_DEPTH_24RGB: lsmash_video_depth = 24;
+    #[c2rust::src_loc = "1251:5"]
+    pub const QT_VIDEO_DEPTH_555RGB: lsmash_video_depth = 16;
+    #[c2rust::src_loc = "1248:5"]
+    pub const QT_VIDEO_DEPTH_GRAYSCALE_8: lsmash_video_depth = 40;
+    #[c2rust::src_loc = "1247:5"]
+    pub const QT_VIDEO_DEPTH_GRAYSCALE_4: lsmash_video_depth = 36;
+    #[c2rust::src_loc = "1246:5"]
+    pub const QT_VIDEO_DEPTH_GRAYSCALE_2: lsmash_video_depth = 34;
+    #[c2rust::src_loc = "1245:5"]
+    pub const QT_VIDEO_DEPTH_GRAYSCALE_1: lsmash_video_depth = 33;
+    #[c2rust::src_loc = "1244:5"]
+    pub const QT_VIDEO_DEPTH_COLOR_32: lsmash_video_depth = 32;
+    #[c2rust::src_loc = "1243:5"]
+    pub const QT_VIDEO_DEPTH_COLOR_24: lsmash_video_depth = 24;
+    #[c2rust::src_loc = "1242:5"]
+    pub const QT_VIDEO_DEPTH_COLOR_16: lsmash_video_depth = 16;
+    #[c2rust::src_loc = "1241:5"]
+    pub const QT_VIDEO_DEPTH_COLOR_8: lsmash_video_depth = 8;
+    #[c2rust::src_loc = "1240:5"]
+    pub const QT_VIDEO_DEPTH_COLOR_4: lsmash_video_depth = 4;
+    #[c2rust::src_loc = "1239:5"]
+    pub const QT_VIDEO_DEPTH_COLOR_2: lsmash_video_depth = 2;
+    #[c2rust::src_loc = "1238:5"]
+    pub const QT_VIDEO_DEPTH_COLOR_1: lsmash_video_depth = 1;
+    #[c2rust::src_loc = "1234:5"]
+    pub const AVC_DEPTH_WITH_ALPHA: lsmash_video_depth = 32;
+    #[c2rust::src_loc = "1233:5"]
+    pub const AVC_DEPTH_GRAYSCALE_WITH_NO_ALPHA: lsmash_video_depth = 40;
+    #[c2rust::src_loc = "1232:5"]
+    pub const AVC_DEPTH_COLOR_WITH_NO_ALPHA: lsmash_video_depth = 24;
+    #[c2rust::src_loc = "1229:5"]
+    pub const ISOM_DEPTH_TEMPLATE: lsmash_video_depth = 24;
+    #[c2rust::src_loc = "967:1"]
+    pub type lsmash_codec_specific_list_t = lsmash_codec_specific_list_tag;
+    #[c2rust::src_loc = "478:1"]
+    pub type lsmash_box_type_t = lsmash_codec_type_t;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "478:9"]
+    pub struct lsmash_codec_type_t {
+        pub fourcc: lsmash_compact_box_type_t,
+        pub user: lsmash_extended_box_type_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "465:9"]
+    pub struct lsmash_extended_box_type_t {
+        pub fourcc: uint32_t,
+        pub id: [uint8_t; 12],
+    }
+    #[c2rust::src_loc = "462:1"]
+    pub type lsmash_compact_box_type_t = uint32_t;
+    #[c2rust::src_loc = "903:9"]
+    pub type lsmash_summary_type = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "907:5"]
+    pub const LSMASH_SUMMARY_TYPE_AUDIO: lsmash_summary_type = 2;
+    #[c2rust::src_loc = "906:5"]
+    pub const LSMASH_SUMMARY_TYPE_VIDEO: lsmash_summary_type = 1;
+    #[c2rust::src_loc = "905:5"]
+    pub const LSMASH_SUMMARY_TYPE_UNKNOWN: lsmash_summary_type = 0;
+    #[c2rust::src_loc = "77:1"]
+    pub type lsmash_root_t = lsmash_root_tag;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "987:9"]
+    pub struct lsmash_summary_t {
+        pub summary_type: lsmash_summary_type,
+        pub sample_type: lsmash_codec_type_t,
+        pub opaque: *mut lsmash_codec_specific_list_t,
+        pub max_au_length: uint32_t,
+        pub data_ref_index: uint32_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "261:9"]
+    pub struct lsmash_adhoc_remux_t {
+        pub buffer_size: uint64_t,
+        pub func: lsmash_adhoc_remux_callback,
+        pub param: *mut ::core::ffi::c_void,
+    }
+    #[c2rust::src_loc = "260:1"]
+    pub type lsmash_adhoc_remux_callback = Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, uint64_t, uint64_t) -> ::core::ffi::c_int,
+    >;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "2044:9"]
+    pub struct lsmash_edit_t {
+        pub duration: uint64_t,
+        pub start_time: int64_t,
+        pub rate: int32_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1542:9"]
+    pub struct lsmash_sample_t {
+        pub length: uint32_t,
+        pub data: *mut uint8_t,
+        pub dts: uint64_t,
+        pub cts: uint64_t,
+        pub pos: uint64_t,
+        pub index: uint32_t,
+        pub prop: lsmash_sample_property_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1528:9"]
+    pub struct lsmash_sample_property_t {
+        pub ra_flags: lsmash_random_access_flag,
+        pub post_roll: lsmash_post_roll_t,
+        pub pre_roll: lsmash_pre_roll_t,
+        pub allow_earlier: uint8_t,
+        pub leading: uint8_t,
+        pub independent: uint8_t,
+        pub disposable: uint8_t,
+        pub redundant: uint8_t,
+        pub reserved: [uint8_t; 3],
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1513:9"]
+    pub struct lsmash_pre_roll_t {
+        pub distance: uint32_t,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1499:9"]
+    pub struct lsmash_post_roll_t {
+        pub identifier: uint32_t,
+        pub complete: uint32_t,
+    }
+    #[c2rust::src_loc = "1444:9"]
+    pub type lsmash_random_access_flag = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "1488:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_OPEN_RAP: lsmash_random_access_flag = 20;
+    #[c2rust::src_loc = "1485:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED_RAP: lsmash_random_access_flag = 12;
+    #[c2rust::src_loc = "1483:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_OPEN: lsmash_random_access_flag = 16;
+    #[c2rust::src_loc = "1482:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED: lsmash_random_access_flag = 8;
+    #[c2rust::src_loc = "1481:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_RAP: lsmash_random_access_flag = 4;
+    #[c2rust::src_loc = "1476:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_PARTIAL_SYNC: lsmash_random_access_flag = 2;
+    #[c2rust::src_loc = "1475:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_SYNC: lsmash_random_access_flag = 1;
+    #[c2rust::src_loc = "1474:5"]
+    pub const QT_SAMPLE_RANDOM_ACCESS_FLAG_NONE: lsmash_random_access_flag = 0;
+    #[c2rust::src_loc = "1469:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_PRE_ROLL_END: lsmash_random_access_flag = 160;
+    #[c2rust::src_loc = "1466:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_POST_ROLL_START: lsmash_random_access_flag = 96;
+    #[c2rust::src_loc = "1463:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_OPEN_RAP: lsmash_random_access_flag = 20;
+    #[c2rust::src_loc = "1460:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED_RAP: lsmash_random_access_flag = 12;
+    #[c2rust::src_loc = "1457:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_GDR_END: lsmash_random_access_flag = 128;
+    #[c2rust::src_loc = "1455:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_GDR_START: lsmash_random_access_flag = 64;
+    #[c2rust::src_loc = "1454:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_GDR: lsmash_random_access_flag = 32;
+    #[c2rust::src_loc = "1452:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_OPEN: lsmash_random_access_flag = 16;
+    #[c2rust::src_loc = "1450:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_CLOSED: lsmash_random_access_flag = 8;
+    #[c2rust::src_loc = "1449:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_RAP: lsmash_random_access_flag = 4;
+    #[c2rust::src_loc = "1448:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_SYNC: lsmash_random_access_flag = 1;
+    #[c2rust::src_loc = "1447:5"]
+    pub const ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE: lsmash_random_access_flag = 0;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "958:9"]
+    pub struct lsmash_codec_specific_t {
+        pub type_0: lsmash_codec_specific_data_type,
+        pub format: lsmash_codec_specific_format,
+        pub data: lsmash_codec_specific_data_t,
+        pub size: uint32_t,
+        pub destruct: lsmash_codec_specific_destructor_t,
+    }
+    #[c2rust::src_loc = "957:1"]
+    pub type lsmash_codec_specific_destructor_t =
+        Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "950:9"]
+    pub union lsmash_codec_specific_data_t {
+        pub always_null: *mut ::core::ffi::c_void,
+        pub structured: *mut ::core::ffi::c_void,
+        pub unstructured: *mut uint8_t,
+    }
+    #[c2rust::src_loc = "943:9"]
+    pub type lsmash_codec_specific_format = ::core::ffi::c_int;
+    #[c2rust::src_loc = "947:5"]
+    pub const LSMASH_CODEC_SPECIFIC_FORMAT_UNSTRUCTURED: lsmash_codec_specific_format = 1;
+    #[c2rust::src_loc = "946:5"]
+    pub const LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED: lsmash_codec_specific_format = 0;
+    #[c2rust::src_loc = "945:5"]
+    pub const LSMASH_CODEC_SPECIFIC_FORMAT_UNSPECIFIED: lsmash_codec_specific_format = -1;
+    #[c2rust::src_loc = "910:9"]
+    pub type lsmash_codec_specific_data_type = ::core::ffi::c_int;
+    #[c2rust::src_loc = "940:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_CODEC_GLOBAL_HEADER: lsmash_codec_specific_data_type =
+        20;
+    #[c2rust::src_loc = "938:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_CHANNEL_LAYOUT:
+        lsmash_codec_specific_data_type = 19;
+    #[c2rust::src_loc = "937:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_GAMMA_LEVEL:
+        lsmash_codec_specific_data_type = 18;
+    #[c2rust::src_loc = "936:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_SIGNIFICANT_BITS:
+        lsmash_codec_specific_data_type = 17;
+    #[c2rust::src_loc = "935:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_PIXEL_FORMAT:
+        lsmash_codec_specific_data_type = 16;
+    #[c2rust::src_loc = "934:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_FIELD_INFO: lsmash_codec_specific_data_type =
+        15;
+    #[c2rust::src_loc = "932:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_DECOMPRESSION_PARAMETERS:
+        lsmash_codec_specific_data_type = 14;
+    #[c2rust::src_loc = "931:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_FORMAT_SPECIFIC_FLAGS:
+        lsmash_codec_specific_data_type = 13;
+    #[c2rust::src_loc = "930:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_AUDIO_COMMON: lsmash_codec_specific_data_type = 12;
+    #[c2rust::src_loc = "929:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_QT_VIDEO_COMMON: lsmash_codec_specific_data_type = 11;
+    #[c2rust::src_loc = "927:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264_BITRATE:
+        lsmash_codec_specific_data_type = 10;
+    #[c2rust::src_loc = "926:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_SAMPLE_SCALE:
+        lsmash_codec_specific_data_type = 9;
+    #[c2rust::src_loc = "924:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_ALAC: lsmash_codec_specific_data_type = 8;
+    #[c2rust::src_loc = "923:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_DTS: lsmash_codec_specific_data_type = 7;
+    #[c2rust::src_loc = "922:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_EC_3: lsmash_codec_specific_data_type = 6;
+    #[c2rust::src_loc = "921:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_AUDIO_AC_3: lsmash_codec_specific_data_type = 5;
+    #[c2rust::src_loc = "920:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_VC_1: lsmash_codec_specific_data_type = 4;
+    #[c2rust::src_loc = "919:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_HEVC: lsmash_codec_specific_data_type = 3;
+    #[c2rust::src_loc = "918:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264: lsmash_codec_specific_data_type = 2;
+    #[c2rust::src_loc = "916:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_MP4SYS_DECODER_CONFIG:
+        lsmash_codec_specific_data_type = 1;
+    #[c2rust::src_loc = "914:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_UNKNOWN: lsmash_codec_specific_data_type = 0;
+    #[c2rust::src_loc = "912:5"]
+    pub const LSMASH_CODEC_SPECIFIC_DATA_TYPE_UNSPECIFIED: lsmash_codec_specific_data_type = -1;
+    #[c2rust::src_loc = "3069:9"]
+    pub type lsmash_h264_parameter_set_type = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "3075:5"]
+    pub const H264_PARAMETER_SET_TYPE_NUM: lsmash_h264_parameter_set_type = 3;
+    #[c2rust::src_loc = "3073:5"]
+    pub const H264_PARAMETER_SET_TYPE_SPSEXT: lsmash_h264_parameter_set_type = 2;
+    #[c2rust::src_loc = "3072:5"]
+    pub const H264_PARAMETER_SET_TYPE_PPS: lsmash_h264_parameter_set_type = 1;
+    #[c2rust::src_loc = "3071:5"]
+    pub const H264_PARAMETER_SET_TYPE_SPS: lsmash_h264_parameter_set_type = 0;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "3080:9"]
+    pub struct lsmash_h264_specific_parameters_t {
+        pub AVCProfileIndication: uint8_t,
+        pub profile_compatibility: uint8_t,
+        pub AVCLevelIndication: uint8_t,
+        pub lengthSizeMinusOne: uint8_t,
+        pub chroma_format: uint8_t,
+        pub bit_depth_luma_minus8: uint8_t,
+        pub bit_depth_chroma_minus8: uint8_t,
+        pub parameter_sets: *mut lsmash_h264_parameter_sets_t,
+    }
+    #[c2rust::src_loc = "3078:1"]
+    pub type lsmash_h264_parameter_sets_t = lsmash_h264_parameter_sets_tag;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1756:9"]
+    pub struct lsmash_media_parameters_t {
+        pub handler_type: lsmash_media_type,
+        pub timescale: uint32_t,
+        pub duration: uint64_t,
+        pub roll_grouping: uint8_t,
+        pub rap_grouping: uint8_t,
+        pub MAC_language: uint16_t,
+        pub ISO_language: uint16_t,
+        pub media_handler_name: *mut ::core::ffi::c_char,
+        pub data_handler_name: *mut ::core::ffi::c_char,
+        pub media_handler_name_shadow: [::core::ffi::c_char; 256],
+        pub data_handler_name_shadow: [::core::ffi::c_char; 256],
+        pub compact_sample_size_table: uint8_t,
+        pub no_sample_dependency_table: uint8_t,
+        pub reserved: [uint8_t; 2],
+    }
+    #[c2rust::src_loc = "1619:9"]
+    pub type lsmash_media_type = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "1645:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK: lsmash_media_type = 1986618469;
+    #[c2rust::src_loc = "1644:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_PROPRIETARY_DESCRIPTIVE_METADATA: lsmash_media_type =
+        1970432288;
+    #[c2rust::src_loc = "1643:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_TEXT_TRACK: lsmash_media_type = 1952807028;
+    #[c2rust::src_loc = "1642:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_AUDIO_TRACK: lsmash_media_type = 1936684398;
+    #[c2rust::src_loc = "1641:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_KEY_MANAGEMENT_MESSAGES: lsmash_media_type = 1936420205;
+    #[c2rust::src_loc = "1640:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_SCENE_DESCRIPTION_STREAM: lsmash_media_type = 1935962989;
+    #[c2rust::src_loc = "1639:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_OBJECT_DESCRIPTOR_STREAM: lsmash_media_type = 1868854125;
+    #[c2rust::src_loc = "1638:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_OBJECT_CONTENT_INFO_STREAM: lsmash_media_type = 1868788589;
+    #[c2rust::src_loc = "1637:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_MPEG21_DIGITAL_ITEM: lsmash_media_type = 1836069425;
+    #[c2rust::src_loc = "1636:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_MPEGJ_STREAM: lsmash_media_type = 1835692909;
+    #[c2rust::src_loc = "1635:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_TIMED_METADATA_TRACK: lsmash_media_type = 1835365473;
+    #[c2rust::src_loc = "1634:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_MPEG7_STREAM: lsmash_media_type = 1832350573;
+    #[c2rust::src_loc = "1633:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_IPMP_STREAM: lsmash_media_type = 1768977261;
+    #[c2rust::src_loc = "1632:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_IPDC_ELECTRONIC_SERVICE_GUIDE: lsmash_media_type = 1768973411;
+    #[c2rust::src_loc = "1631:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_HINT_TRACK: lsmash_media_type = 1751740020;
+    #[c2rust::src_loc = "1630:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_GENERAL_MPEG4_SYSTEM_STREAM: lsmash_media_type = 1734701933;
+    #[c2rust::src_loc = "1629:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_FONT_DATA_STREAM: lsmash_media_type = 1717859181;
+    #[c2rust::src_loc = "1628:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_BROADBAND_CONTENT_GUIDE: lsmash_media_type = 1685354081;
+    #[c2rust::src_loc = "1627:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_TV_ANYTIME: lsmash_media_type = 1685354081;
+    #[c2rust::src_loc = "1626:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_DVB_MANDATORY_BASIC_DESCRIPTION: lsmash_media_type =
+        1684890212;
+    #[c2rust::src_loc = "1625:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_CLOCK_REFERENCE_STREAM: lsmash_media_type = 1668445037;
+    #[c2rust::src_loc = "1624:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_CPCM_AUXILIARY_METADATA: lsmash_media_type = 1668309348;
+    #[c2rust::src_loc = "1623:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_AUXILIARY_VIDEO_TRACK: lsmash_media_type = 1635088502;
+    #[c2rust::src_loc = "1622:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_ID3_VERSION2_METADATA: lsmash_media_type = 1229206322;
+    #[c2rust::src_loc = "1621:5"]
+    pub const ISOM_MEDIA_HANDLER_TYPE_3GPP_SCENE_DESCRIPTION: lsmash_media_type = 862417764;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "1993:9"]
+    pub struct lsmash_track_parameters_t {
+        pub mode: lsmash_track_mode,
+        pub track_ID: uint32_t,
+        pub duration: uint64_t,
+        pub alternate_group: int16_t,
+        pub video_layer: int16_t,
+        pub audio_volume: int16_t,
+        pub matrix: [int32_t; 9],
+        pub display_width: uint32_t,
+        pub display_height: uint32_t,
+        pub aperture_modes: uint8_t,
+    }
+    #[c2rust::src_loc = "1981:9"]
+    pub type lsmash_track_mode = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "1990:5"]
+    pub const QT_TRACK_IN_POSTER: lsmash_track_mode = 8;
+    #[c2rust::src_loc = "1988:5"]
+    pub const ISOM_TRACK_IN_PREVIEW: lsmash_track_mode = 4;
+    #[c2rust::src_loc = "1987:5"]
+    pub const ISOM_TRACK_IN_MOVIE: lsmash_track_mode = 2;
+    #[c2rust::src_loc = "1985:5"]
+    pub const ISOM_TRACK_ENABLED: lsmash_track_mode = 1;
+    #[c2rust::src_loc = "1350:5"]
+    pub const ISOM_MATRIX_INDEX_UNSPECIFIED: C2RustUnnamed_6 = 2;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "2217:9"]
+    pub struct lsmash_movie_parameters_t {
+        pub timescale: uint32_t,
+        pub duration: uint64_t,
+        pub number_of_tracks: uint32_t,
+        pub playback_rate: int32_t,
+        pub playback_volume: int32_t,
+        pub preview_time: int32_t,
+        pub preview_duration: int32_t,
+        pub poster_time: int32_t,
+    }
+    #[c2rust::src_loc = "98:1"]
+    pub type lsmash_file_t = lsmash_file_tag;
+    #[c2rust::src_loc = "1340:1"]
+    pub type C2RustUnnamed_6 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "1370:5"]
+    pub const QT_MATRIX_INDEX_SMPTE_240M_1995: C2RustUnnamed_6 = 7;
+    #[c2rust::src_loc = "1369:5"]
+    pub const QT_MATRIX_INDEX_ITU_R_601_4: C2RustUnnamed_6 = 6;
+    #[c2rust::src_loc = "1368:5"]
+    pub const QT_MATRIX_INDEX_UNSPECIFIED: C2RustUnnamed_6 = 2;
+    #[c2rust::src_loc = "1367:5"]
+    pub const QT_MATRIX_INDEX_ITU_R_709_2: C2RustUnnamed_6 = 1;
+    #[c2rust::src_loc = "1364:5"]
+    pub const ISOM_MATRIX_INDEX_YCGCO: C2RustUnnamed_6 = 8;
+    #[c2rust::src_loc = "1362:5"]
+    pub const ISOM_MATRIX_INDEX_SMPTE_240M_1999: C2RustUnnamed_6 = 7;
+    #[c2rust::src_loc = "1357:5"]
+    pub const ISOM_MATRIX_INDEX_SMPTE_170M_2004: C2RustUnnamed_6 = 6;
+    #[c2rust::src_loc = "1353:5"]
+    pub const ISOM_MATRIX_INDEX_ITU_R470BG: C2RustUnnamed_6 = 5;
+    #[c2rust::src_loc = "1351:5"]
+    pub const ISOM_MATRIX_INDEX_USFCCT_47_CFR: C2RustUnnamed_6 = 4;
+    #[c2rust::src_loc = "1345:5"]
+    pub const ISOM_MATRIX_INDEX_ITU_R_709_5: C2RustUnnamed_6 = 1;
+    #[c2rust::src_loc = "1343:5"]
+    pub const ISOM_MATRIX_INDEX_NO_MATRIX: C2RustUnnamed_6 = 0;
+    #[c2rust::src_loc = "2037:9"]
+    pub const ISOM_EDIT_MODE_NORMAL: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 16 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "2040:9"]
+    pub const ISOM_EDIT_DURATION_UNKNOWN32: ::core::ffi::c_uint = 0xffffffff as ::core::ffi::c_uint;
+    use super::stdint_intn_h::{int16_t, int32_t, int64_t};
+    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
+    extern "C" {
+        #[c2rust::src_loc = "967:16"]
+        pub type lsmash_codec_specific_list_tag;
+        #[c2rust::src_loc = "77:16"]
+        pub type lsmash_root_tag;
+        #[c2rust::src_loc = "3078:16"]
+        pub type lsmash_h264_parameter_sets_tag;
+        #[c2rust::src_loc = "98:16"]
+        pub type lsmash_file_tag;
+        #[c2rust::src_loc = "84:1"]
+        pub fn lsmash_create_root() -> *mut lsmash_root_t;
+        #[c2rust::src_loc = "90:1"]
+        pub fn lsmash_destroy_root(root: *mut lsmash_root_t);
+        #[c2rust::src_loc = "291:1"]
+        pub fn lsmash_open_file(
+            filename: *const ::core::ffi::c_char,
+            open_mode: ::core::ffi::c_int,
+            param: *mut lsmash_file_parameters_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "302:1"]
+        pub fn lsmash_close_file(param: *mut lsmash_file_parameters_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "313:1"]
+        pub fn lsmash_set_file(
+            root: *mut lsmash_root_t,
+            param: *mut lsmash_file_parameters_t,
+        ) -> *mut lsmash_file_t;
+        #[c2rust::src_loc = "751:25"]
+        pub static ISOM_CODEC_TYPE_AVC1_VIDEO: lsmash_codec_type_t;
+        #[c2rust::src_loc = "997:1"]
+        pub fn lsmash_create_summary(summary_type: lsmash_summary_type) -> *mut lsmash_summary_t;
+        #[c2rust::src_loc = "1003:1"]
+        pub fn lsmash_cleanup_summary(summary: *mut lsmash_summary_t);
+        #[c2rust::src_loc = "1012:1"]
+        pub fn lsmash_add_sample_entry(
+            root: *mut lsmash_root_t,
+            track_ID: uint32_t,
+            summary: *mut ::core::ffi::c_void,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1046:1"]
+        pub fn lsmash_create_codec_specific_data(
+            type_0: lsmash_codec_specific_data_type,
+            format: lsmash_codec_specific_format,
+        ) -> *mut lsmash_codec_specific_t;
+        #[c2rust::src_loc = "1053:1"]
+        pub fn lsmash_destroy_codec_specific_data(specific: *mut lsmash_codec_specific_t);
+        #[c2rust::src_loc = "1062:1"]
+        pub fn lsmash_add_codec_specific_data(
+            summary: *mut lsmash_summary_t,
+            specific: *mut lsmash_codec_specific_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1579:1"]
+        pub fn lsmash_create_sample(size: uint32_t) -> *mut lsmash_sample_t;
+        #[c2rust::src_loc = "1608:1"]
+        pub fn lsmash_append_sample(
+            root: *mut lsmash_root_t,
+            track_ID: uint32_t,
+            sample: *mut lsmash_sample_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1792:1"]
+        pub fn lsmash_initialize_media_parameters(param: *mut lsmash_media_parameters_t);
+        #[c2rust::src_loc = "1801:1"]
+        pub fn lsmash_set_media_parameters(
+            root: *mut lsmash_root_t,
+            track_ID: uint32_t,
+            param: *mut lsmash_media_parameters_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1824:1"]
+        pub fn lsmash_flush_pooled_samples(
+            root: *mut lsmash_root_t,
+            track_ID: uint32_t,
+            last_sample_delta: uint32_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "1868:1"]
+        pub fn lsmash_get_media_timescale(root: *mut lsmash_root_t, track_ID: uint32_t)
+            -> uint32_t;
+        #[c2rust::src_loc = "2068:1"]
+        pub fn lsmash_create_track(
+            root: *mut lsmash_root_t,
+            media_type: lsmash_media_type,
+        ) -> uint32_t;
+        #[c2rust::src_loc = "2082:1"]
+        pub fn lsmash_initialize_track_parameters(param: *mut lsmash_track_parameters_t);
+        #[c2rust::src_loc = "2091:1"]
+        pub fn lsmash_set_track_parameters(
+            root: *mut lsmash_root_t,
+            track_ID: uint32_t,
+            param: *mut lsmash_track_parameters_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2159:1"]
+        pub fn lsmash_create_explicit_timeline_map(
+            root: *mut lsmash_root_t,
+            track_ID: uint32_t,
+            edit: lsmash_edit_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2206:1"]
+        pub fn lsmash_modify_explicit_timeline_map(
+            root: *mut lsmash_root_t,
+            track_ID: uint32_t,
+            edit_number: uint32_t,
+            edit: lsmash_edit_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2233:1"]
+        pub fn lsmash_initialize_movie_parameters(param: *mut lsmash_movie_parameters_t);
+        #[c2rust::src_loc = "2242:1"]
+        pub fn lsmash_set_movie_parameters(
+            root: *mut lsmash_root_t,
+            param: *mut lsmash_movie_parameters_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2256:1"]
+        pub fn lsmash_finish_movie(
+            root: *mut lsmash_root_t,
+            remux: *mut lsmash_adhoc_remux_t,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "2287:1"]
+        pub fn lsmash_get_movie_timescale(root: *mut lsmash_root_t) -> uint32_t;
+        #[c2rust::src_loc = "2365:1"]
+        pub fn lsmash_create_fragment_movie(root: *mut lsmash_root_t) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "3129:1"]
+        pub fn lsmash_append_h264_parameter_set(
+            param: *mut lsmash_h264_specific_parameters_t,
+            ps_type: lsmash_h264_parameter_set_type,
+            ps_data: *mut ::core::ffi::c_void,
+            ps_length: uint32_t,
+        ) -> ::core::ffi::c_int;
+    }
 }
 #[c2rust::header_src = "/usr/include/bits/stat.h:58"]
 pub mod bits_stat_h {
@@ -27569,5 +28418,153 @@ pub mod libav_frame_h {
         pub fn av_frame_alloc() -> *mut AVFrame;
         #[c2rust::src_loc = "792:1"]
         pub fn av_frame_free(frame: *mut *mut AVFrame);
+    }
+}
+
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/output/flv_bytestream.h:26"]
+pub mod flv_bytestream_h {
+    #[c2rust::src_loc = "97:9"]
+    pub type C2RustUnnamed = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "111:5"]
+    pub const AMF_DATA_TYPE_UNSUPPORTED: C2RustUnnamed = 13;
+    #[c2rust::src_loc = "110:5"]
+    pub const AMF_DATA_TYPE_LONG_STRING: C2RustUnnamed = 12;
+    #[c2rust::src_loc = "109:5"]
+    pub const AMF_DATA_TYPE_DATE: C2RustUnnamed = 11;
+    #[c2rust::src_loc = "108:5"]
+    pub const AMF_DATA_TYPE_ARRAY: C2RustUnnamed = 10;
+    #[c2rust::src_loc = "107:5"]
+    pub const AMF_DATA_TYPE_OBJECT_END: C2RustUnnamed = 9;
+    #[c2rust::src_loc = "106:5"]
+    pub const AMF_DATA_TYPE_MIXEDARRAY: C2RustUnnamed = 8;
+    #[c2rust::src_loc = "105:5"]
+    pub const AMF_DATA_TYPE_REFERENCE: C2RustUnnamed = 7;
+    #[c2rust::src_loc = "104:5"]
+    pub const AMF_DATA_TYPE_UNDEFINED: C2RustUnnamed = 6;
+    #[c2rust::src_loc = "103:5"]
+    pub const AMF_DATA_TYPE_NULL: C2RustUnnamed = 5;
+    #[c2rust::src_loc = "102:5"]
+    pub const AMF_DATA_TYPE_OBJECT: C2RustUnnamed = 3;
+    #[c2rust::src_loc = "101:5"]
+    pub const AMF_DATA_TYPE_STRING: C2RustUnnamed = 2;
+    #[c2rust::src_loc = "100:5"]
+    pub const AMF_DATA_TYPE_BOOL: C2RustUnnamed = 1;
+    #[c2rust::src_loc = "99:5"]
+    pub const AMF_DATA_TYPE_NUMBER: C2RustUnnamed = 0;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "114:16"]
+    pub struct flv_buffer {
+        pub data: *mut uint8_t,
+        pub d_cur: ::core::ffi::c_uint,
+        pub d_max: ::core::ffi::c_uint,
+        pub fp: *mut FILE,
+        pub d_total: uint64_t,
+    }
+    use super::stdint_uintn_h::{uint64_t, uint8_t};
+    use super::FILE_h::FILE;
+
+    #[c2rust::src_loc = "88:5"]
+    pub const FLV_CODECID_H264: C2RustUnnamed_6 = 7;
+    #[c2rust::src_loc = "94:5"]
+    pub const FLV_FRAME_INTER: C2RustUnnamed_7 = 32;
+    #[c2rust::src_loc = "93:5"]
+    pub const FLV_FRAME_KEY: C2RustUnnamed_7 = 16;
+    #[c2rust::src_loc = "56:5"]
+    pub const FLV_TAG_TYPE_VIDEO: C2RustUnnamed_5 = 9;
+    #[c2rust::src_loc = "57:5"]
+    pub const FLV_TAG_TYPE_META: C2RustUnnamed_5 = 18;
+    #[c2rust::src_loc = "53:1"]
+    pub type C2RustUnnamed_5 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "55:5"]
+    pub const FLV_TAG_TYPE_AUDIO: C2RustUnnamed_5 = 8;
+    #[c2rust::src_loc = "86:1"]
+    pub type C2RustUnnamed_6 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "91:1"]
+    pub type C2RustUnnamed_7 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "97:9"]
+    pub type C2RustUnnamed_8 = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "45:9"]
+    pub const AMF_END_OF_OBJECT: ::core::ffi::c_int = 0x9 as ::core::ffi::c_int;
+    use super::stdint_uintn_h::{uint16_t, uint32_t};
+    extern "C" {
+        #[c2rust::src_loc = "123:1"]
+        pub fn flv_create_writer(filename: *const ::core::ffi::c_char) -> *mut flv_buffer;
+        #[c2rust::src_loc = "124:1"]
+        pub fn flv_append_data(
+            c: *mut flv_buffer,
+            data: *mut uint8_t,
+            size: ::core::ffi::c_uint,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "126:1"]
+        pub fn flv_flush_data(c: *mut flv_buffer) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "127:1"]
+        pub fn flv_rewrite_amf_be24(
+            c: *mut flv_buffer,
+            length: ::core::ffi::c_uint,
+            start: ::core::ffi::c_uint,
+        );
+        #[c2rust::src_loc = "129:1"]
+        pub fn flv_dbl2int(value: ::core::ffi::c_double) -> uint64_t;
+        #[c2rust::src_loc = "130:1"]
+        pub fn flv_put_byte(c: *mut flv_buffer, b: uint8_t);
+        #[c2rust::src_loc = "131:1"]
+        pub fn flv_put_be32(c: *mut flv_buffer, val: uint32_t);
+        #[c2rust::src_loc = "133:1"]
+        pub fn flv_put_be16(c: *mut flv_buffer, val: uint16_t);
+        #[c2rust::src_loc = "134:1"]
+        pub fn flv_put_be24(c: *mut flv_buffer, val: uint32_t);
+        #[c2rust::src_loc = "135:1"]
+        pub fn flv_put_tag(c: *mut flv_buffer, tag: *const ::core::ffi::c_char);
+        #[c2rust::src_loc = "136:1"]
+        pub fn flv_put_amf_string(c: *mut flv_buffer, str: *const ::core::ffi::c_char);
+        #[c2rust::src_loc = "137:1"]
+        pub fn flv_put_amf_double(c: *mut flv_buffer, d: ::core::ffi::c_double);
+    }
+}
+
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/output/matroska_ebml.h:26"]
+pub mod matroska_ebml_h {
+    #[c2rust::src_loc = "30:9"]
+    pub const DS_PIXELS: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    use super::stdint_intn_h::int64_t;
+    extern "C" {
+        #[c2rust::src_loc = "35:16"]
+        pub type mk_writer;
+        #[c2rust::src_loc = "37:1"]
+        pub fn mk_create_writer(filename: *const ::core::ffi::c_char) -> *mut mk_writer;
+        #[c2rust::src_loc = "39:1"]
+        pub fn mk_write_header(
+            w: *mut mk_writer,
+            writing_app: *const ::core::ffi::c_char,
+            codec_id: *const ::core::ffi::c_char,
+            codec_private: *const ::core::ffi::c_void,
+            codec_private_size: ::core::ffi::c_uint,
+            default_frame_duration: int64_t,
+            timescale: int64_t,
+            width: ::core::ffi::c_uint,
+            height: ::core::ffi::c_uint,
+            d_width: ::core::ffi::c_uint,
+            d_height: ::core::ffi::c_uint,
+            display_size_units: ::core::ffi::c_int,
+            stereo_mode: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "47:1"]
+        pub fn mk_start_frame(w: *mut mk_writer) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "48:1"]
+        pub fn mk_add_frame_data(
+            w: *mut mk_writer,
+            data: *const ::core::ffi::c_void,
+            size: ::core::ffi::c_uint,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "49:1"]
+        pub fn mk_set_frame_flags(
+            w: *mut mk_writer,
+            timestamp: int64_t,
+            keyframe: ::core::ffi::c_int,
+            skippable: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "50:1"]
+        pub fn mk_close(w: *mut mk_writer, last_delta: int64_t) -> ::core::ffi::c_int;
     }
 }

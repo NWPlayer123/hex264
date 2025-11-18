@@ -97,21 +97,9 @@ static mut source_filter: cli_vid_filter_t = cli_vid_filter_t {
             *mut c_char,
         ) -> c_int,
     ),
-    get_frame: Some(
-        get_frame
-            as unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                c_int,
-            ) -> c_int,
-    ),
+    get_frame: Some(get_frame as unsafe extern "C" fn(hnd_t, *mut cli_pic_t, c_int) -> c_int),
     release_frame: Some(
-        release_frame
-            as unsafe extern "C" fn(
-                hnd_t,
-                *mut cli_pic_t,
-                c_int,
-            ) -> c_int,
+        release_frame as unsafe extern "C" fn(hnd_t, *mut cli_pic_t, c_int) -> c_int,
     ),
     free: Some(free_filter as unsafe extern "C" fn(hnd_t) -> ()),
     next: 0 as *const cli_vid_filter_t as *mut cli_vid_filter_t,
