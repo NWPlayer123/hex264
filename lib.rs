@@ -1280,6 +1280,15 @@ pub mod x264cli_h {
         #[c2rust::src_loc = "48:27"]
         pub static x264_muxer_names: [*const ::core::ffi::c_char; 0];
     }
+    extern "C" {
+        #[c2rust::src_loc = "76:1"]
+        pub fn x264_cli_log(
+            name: *const ::core::ffi::c_char,
+            i_level: ::core::ffi::c_int,
+            fmt: *const ::core::ffi::c_char,
+            ...
+        );
+    }
 }
 #[c2rust::header_src = "/usr/include/signal.h:37"]
 pub mod signal_h {
@@ -1437,6 +1446,41 @@ pub mod input_h {
         pub static timecode_input: cli_input_t;
         #[c2rust::src_loc = "127:29"]
         pub static x264_cli_csps: [x264_cli_csp_t; 0];
+    }
+    extern "C" {
+        #[c2rust::src_loc = "131:1"]
+        pub fn x264_cli_pic_alloc(
+            pic: *mut cli_pic_t,
+            csp: ::core::ffi::c_int,
+            width: ::core::ffi::c_int,
+            height: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "134:1"]
+        pub fn x264_cli_pic_clean(pic: *mut cli_pic_t);
+    }
+    extern "C" {
+        #[c2rust::src_loc = "129:1"]
+        pub fn x264_cli_csp_is_invalid(csp: ::core::ffi::c_int) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "130:1"]
+        pub fn x264_cli_csp_depth_factor(csp: ::core::ffi::c_int) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "137:1"]
+        pub fn x264_cli_get_csp(csp: ::core::ffi::c_int) -> *const x264_cli_csp_t;
+    }
+    #[c2rust::src_loc = "115:9"]
+    pub const X264_CSP_OTHER: ::core::ffi::c_int = 0x4000 as ::core::ffi::c_int;
+    extern "C" {
+        #[c2rust::src_loc = "132:1"]
+        pub fn x264_cli_pic_alloc_aligned(
+            pic: *mut cli_pic_t,
+            csp: ::core::ffi::c_int,
+            width: ::core::ffi::c_int,
+            height: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+    }
+
+    extern "C" {
+        #[c2rust::src_loc = "111:20"]
+        pub static mut cli_input: cli_input_t;
     }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/output/output.h:37"]
@@ -2136,6 +2180,10 @@ pub mod stdlib_h {
         #[c2rust::src_loc = "687:1"]
         pub fn free(__ptr: *mut ::core::ffi::c_void);
     }
+    extern "C" {
+        #[c2rust::src_loc = "672:1"]
+        pub fn malloc(__size: size_t) -> *mut ::core::ffi::c_void;
+    }
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/osdep.h:37"]
 pub mod osdep_h {
@@ -2773,6 +2821,16 @@ pub mod pixdesc_h {
         #[c2rust::src_loc = "195:1"]
         pub fn av_pix_fmt_desc_next(prev: *const AVPixFmtDescriptor) -> *const AVPixFmtDescriptor;
     }
+    #[c2rust::src_loc = "120:9"]
+    pub const AV_PIX_FMT_FLAG_PAL: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 1 as ::core::ffi::c_int;
+    #[c2rust::src_loc = "136:9"]
+    pub const AV_PIX_FMT_FLAG_RGB: ::core::ffi::c_int =
+        (1 as ::core::ffi::c_int) << 5 as ::core::ffi::c_int;
+    extern "C" {
+        #[c2rust::src_loc = "186:1"]
+        pub fn av_pix_fmt_desc_get(pix_fmt: AVPixelFormat) -> *const AVPixFmtDescriptor;
+    }
 }
 #[c2rust::header_src = "/usr/include/bits/mathcalls.h:37"]
 pub mod mathcalls_h {
@@ -2874,6 +2932,158 @@ pub mod swscale_h {
     extern "C" {
         #[c2rust::src_loc = "63:1"]
         pub fn swscale_license() -> *const ::core::ffi::c_char;
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "182:16"]
+    pub struct SwsContext {
+        pub av_class: *const AVClass,
+        pub opaque: *mut ::core::ffi::c_void,
+        pub flags: ::core::ffi::c_uint,
+        pub scaler_params: [::core::ffi::c_double; 2],
+        pub threads: ::core::ffi::c_int,
+        pub dither: SwsDither,
+        pub alpha_blend: SwsAlphaBlend,
+        pub gamma_flag: ::core::ffi::c_int,
+        pub src_w: ::core::ffi::c_int,
+        pub src_h: ::core::ffi::c_int,
+        pub dst_w: ::core::ffi::c_int,
+        pub dst_h: ::core::ffi::c_int,
+        pub src_format: ::core::ffi::c_int,
+        pub dst_format: ::core::ffi::c_int,
+        pub src_range: ::core::ffi::c_int,
+        pub dst_range: ::core::ffi::c_int,
+        pub src_v_chr_pos: ::core::ffi::c_int,
+        pub src_h_chr_pos: ::core::ffi::c_int,
+        pub dst_v_chr_pos: ::core::ffi::c_int,
+        pub dst_h_chr_pos: ::core::ffi::c_int,
+        pub intent: ::core::ffi::c_int,
+    }
+    #[c2rust::src_loc = "87:9"]
+    pub type SwsAlphaBlend = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "91:5"]
+    pub const SWS_ALPHA_BLEND_NB: SwsAlphaBlend = 3;
+    #[c2rust::src_loc = "90:5"]
+    pub const SWS_ALPHA_BLEND_CHECKERBOARD: SwsAlphaBlend = 2;
+    #[c2rust::src_loc = "89:5"]
+    pub const SWS_ALPHA_BLEND_UNIFORM: SwsAlphaBlend = 1;
+    #[c2rust::src_loc = "88:5"]
+    pub const SWS_ALPHA_BLEND_NONE: SwsAlphaBlend = 0;
+    #[c2rust::src_loc = "77:9"]
+    pub type SwsDither = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "84:5"]
+    pub const SWS_DITHER_NB: SwsDither = 6;
+    #[c2rust::src_loc = "83:5"]
+    pub const SWS_DITHER_X_DITHER: SwsDither = 5;
+    #[c2rust::src_loc = "82:5"]
+    pub const SWS_DITHER_A_DITHER: SwsDither = 4;
+    #[c2rust::src_loc = "81:5"]
+    pub const SWS_DITHER_ED: SwsDither = 3;
+    #[c2rust::src_loc = "80:5"]
+    pub const SWS_DITHER_BAYER: SwsDither = 2;
+    #[c2rust::src_loc = "79:5"]
+    pub const SWS_DITHER_AUTO: SwsDither = 1;
+    #[c2rust::src_loc = "78:5"]
+    pub const SWS_DITHER_NONE: SwsDither = 0;
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "395:16"]
+    pub struct SwsFilter {
+        pub lumH: *mut SwsVector,
+        pub lumV: *mut SwsVector,
+        pub chrH: *mut SwsVector,
+        pub chrV: *mut SwsVector,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "389:16"]
+    pub struct SwsVector {
+        pub coeff: *mut ::core::ffi::c_double,
+        pub length: ::core::ffi::c_int,
+    }
+    #[c2rust::src_loc = "155:5"]
+    pub const SWS_ACCURATE_RND: SwsFlags = 262144;
+    #[c2rust::src_loc = "145:5"]
+    pub const SWS_FULL_CHR_H_INP: SwsFlags = 16384;
+    #[c2rust::src_loc = "132:5"]
+    pub const SWS_FULL_CHR_H_INT: SwsFlags = 8192;
+    #[c2rust::src_loc = "98:5"]
+    pub const SWS_FAST_BILINEAR: SwsFlags = 1;
+    #[c2rust::src_loc = "100:5"]
+    pub const SWS_BICUBIC: SwsFlags = 4;
+    #[c2rust::src_loc = "108:5"]
+    pub const SWS_SPLINE: SwsFlags = 1024;
+    #[c2rust::src_loc = "107:5"]
+    pub const SWS_LANCZOS: SwsFlags = 512;
+    #[c2rust::src_loc = "106:5"]
+    pub const SWS_SINC: SwsFlags = 256;
+    #[c2rust::src_loc = "105:5"]
+    pub const SWS_GAUSS: SwsFlags = 128;
+    #[c2rust::src_loc = "104:5"]
+    pub const SWS_BICUBLIN: SwsFlags = 64;
+    #[c2rust::src_loc = "103:5"]
+    pub const SWS_AREA: SwsFlags = 32;
+    #[c2rust::src_loc = "102:5"]
+    pub const SWS_POINT: SwsFlags = 16;
+    #[c2rust::src_loc = "101:5"]
+    pub const SWS_X: SwsFlags = 8;
+    #[c2rust::src_loc = "99:5"]
+    pub const SWS_BILINEAR: SwsFlags = 2;
+    #[c2rust::src_loc = "94:9"]
+    pub type SwsFlags = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "162:5"]
+    pub const SWS_ERROR_DIFFUSION: SwsFlags = 8388608;
+    #[c2rust::src_loc = "161:5"]
+    pub const SWS_DIRECT_BGR: SwsFlags = 32768;
+    #[c2rust::src_loc = "156:5"]
+    pub const SWS_BITEXACT: SwsFlags = 524288;
+    #[c2rust::src_loc = "119:5"]
+    pub const SWS_PRINT_INFO: SwsFlags = 4096;
+    #[c2rust::src_loc = "114:5"]
+    pub const SWS_STRICT: SwsFlags = 2048;
+    #[c2rust::src_loc = "375:9"]
+    pub const SWS_CS_DEFAULT: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
+    use super::log_h::AVClass;
+    use super::pixfmt_h::AVPixelFormat;
+    use super::stdint_uintn_h::uint8_t;
+    extern "C" {
+        #[c2rust::src_loc = "248:1"]
+        pub fn sws_alloc_context() -> *mut SwsContext;
+        #[c2rust::src_loc = "385:1"]
+        pub fn sws_getCoefficients(colorspace: ::core::ffi::c_int) -> *const ::core::ffi::c_int;
+        #[c2rust::src_loc = "406:1"]
+        pub fn sws_isSupportedInput(pix_fmt: AVPixelFormat) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "412:1"]
+        pub fn sws_isSupportedOutput(pix_fmt: AVPixelFormat) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "432:1"]
+        pub fn sws_init_context(
+            sws_context: *mut SwsContext,
+            srcFilter: *mut SwsFilter,
+            dstFilter: *mut SwsFilter,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "439:1"]
+        pub fn sws_freeContext(swsContext: *mut SwsContext);
+        #[c2rust::src_loc = "494:1"]
+        pub fn sws_scale(
+            c: *mut SwsContext,
+            srcSlice: *const *const uint8_t,
+            srcStride: *const ::core::ffi::c_int,
+            srcSliceY: ::core::ffi::c_int,
+            srcSliceH: ::core::ffi::c_int,
+            dst: *const *mut uint8_t,
+            dstStride: *const ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "596:1"]
+        pub fn sws_setColorspaceDetails(
+            c: *mut SwsContext,
+            inv_table: *const ::core::ffi::c_int,
+            srcRange: ::core::ffi::c_int,
+            table: *const ::core::ffi::c_int,
+            dstRange: ::core::ffi::c_int,
+            brightness: ::core::ffi::c_int,
+            contrast: ::core::ffi::c_int,
+            saturation: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
     }
 }
 #[c2rust::header_src = "/usr/include/lsmash.h:58"]
@@ -23413,4 +23623,159 @@ pub mod mman_h {
 pub mod mman_linux_h {
     #[c2rust::src_loc = "99:10"]
     pub const MADV_HUGEPAGE: ::core::ffi::c_int = 14 as ::core::ffi::c_int;
+}
+
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/filters/video/internal.h:26"]
+pub mod internal_h {
+    use super::input_h::cli_pic_t;
+    extern "C" {
+        #[c2rust::src_loc = "32:1"]
+        pub fn x264_cli_pic_copy(out: *mut cli_pic_t, in_0: *mut cli_pic_t) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/filters/filters.h:27"]
+pub mod filters_h {
+    extern "C" {
+        #[c2rust::src_loc = "33:1"]
+        pub fn x264_split_options(
+            opt_str: *const ::core::ffi::c_char,
+            options: *const *const ::core::ffi::c_char,
+        ) -> *mut *mut ::core::ffi::c_char;
+        #[c2rust::src_loc = "34:1"]
+        pub fn x264_get_option(
+            name: *const ::core::ffi::c_char,
+            split_options: *mut *mut ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_char;
+        #[c2rust::src_loc = "37:1"]
+        pub fn x264_otoi(
+            str: *const ::core::ffi::c_char,
+            def: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+        #[c2rust::src_loc = "38:1"]
+        pub fn x264_otos(
+            str: *mut ::core::ffi::c_char,
+            def: *mut ::core::ffi::c_char,
+        ) -> *mut ::core::ffi::c_char;
+    }
+}
+
+#[c2rust::header_src = "/usr/include/libavutil/opt.h:26"]
+pub mod opt_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "508:16"]
+    pub struct AVOptionRanges {
+        pub range: *mut *mut AVOptionRange,
+        pub nb_ranges: ::core::ffi::c_int,
+        pub nb_components: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "485:16"]
+    pub struct AVOptionRange {
+        pub str_0: *const ::core::ffi::c_char,
+        pub value_min: ::core::ffi::c_double,
+        pub value_max: ::core::ffi::c_double,
+        pub component_min: ::core::ffi::c_double,
+        pub component_max: ::core::ffi::c_double,
+        pub is_range: ::core::ffi::c_int,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "429:16"]
+    pub struct AVOption {
+        pub name: *const ::core::ffi::c_char,
+        pub help: *const ::core::ffi::c_char,
+        pub offset: ::core::ffi::c_int,
+        pub type_0: AVOptionType,
+        pub default_val: C2RustUnnamed_5,
+        pub min: ::core::ffi::c_double,
+        pub max: ::core::ffi::c_double,
+        pub flags: ::core::ffi::c_int,
+        pub unit: *const ::core::ffi::c_char,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "451:5"]
+    pub union C2RustUnnamed_5 {
+        pub i64_0: int64_t,
+        pub dbl: ::core::ffi::c_double,
+        pub str_0: *const ::core::ffi::c_char,
+        pub q: AVRational,
+        pub arr: *const AVOptionArrayDef,
+    }
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "395:16"]
+    pub struct AVOptionArrayDef {
+        pub def: *const ::core::ffi::c_char,
+        pub size_min: ::core::ffi::c_uint,
+        pub size_max: ::core::ffi::c_uint,
+        pub sep: ::core::ffi::c_char,
+    }
+    #[c2rust::src_loc = "251:1"]
+    pub type AVOptionType = ::core::ffi::c_uint;
+    #[c2rust::src_loc = "346:5"]
+    pub const AV_OPT_TYPE_FLAG_ARRAY: AVOptionType = 65536;
+    #[c2rust::src_loc = "335:5"]
+    pub const AV_OPT_TYPE_UINT: AVOptionType = 20;
+    #[c2rust::src_loc = "331:5"]
+    pub const AV_OPT_TYPE_CHLAYOUT: AVOptionType = 19;
+    #[c2rust::src_loc = "327:5"]
+    pub const AV_OPT_TYPE_BOOL: AVOptionType = 18;
+    #[c2rust::src_loc = "323:5"]
+    pub const AV_OPT_TYPE_COLOR: AVOptionType = 17;
+    #[c2rust::src_loc = "319:5"]
+    pub const AV_OPT_TYPE_DURATION: AVOptionType = 16;
+    #[c2rust::src_loc = "315:5"]
+    pub const AV_OPT_TYPE_VIDEO_RATE: AVOptionType = 15;
+    #[c2rust::src_loc = "311:5"]
+    pub const AV_OPT_TYPE_SAMPLE_FMT: AVOptionType = 14;
+    #[c2rust::src_loc = "307:5"]
+    pub const AV_OPT_TYPE_PIXEL_FMT: AVOptionType = 13;
+    #[c2rust::src_loc = "303:5"]
+    pub const AV_OPT_TYPE_IMAGE_SIZE: AVOptionType = 12;
+    #[c2rust::src_loc = "299:5"]
+    pub const AV_OPT_TYPE_CONST: AVOptionType = 11;
+    #[c2rust::src_loc = "294:5"]
+    pub const AV_OPT_TYPE_UINT64: AVOptionType = 10;
+    #[c2rust::src_loc = "290:5"]
+    pub const AV_OPT_TYPE_DICT: AVOptionType = 9;
+    #[c2rust::src_loc = "286:5"]
+    pub const AV_OPT_TYPE_BINARY: AVOptionType = 8;
+    #[c2rust::src_loc = "280:5"]
+    pub const AV_OPT_TYPE_RATIONAL: AVOptionType = 7;
+    #[c2rust::src_loc = "276:5"]
+    pub const AV_OPT_TYPE_STRING: AVOptionType = 6;
+    #[c2rust::src_loc = "271:5"]
+    pub const AV_OPT_TYPE_FLOAT: AVOptionType = 5;
+    #[c2rust::src_loc = "267:5"]
+    pub const AV_OPT_TYPE_DOUBLE: AVOptionType = 4;
+    #[c2rust::src_loc = "263:5"]
+    pub const AV_OPT_TYPE_INT64: AVOptionType = 3;
+    #[c2rust::src_loc = "259:5"]
+    pub const AV_OPT_TYPE_INT: AVOptionType = 2;
+    #[c2rust::src_loc = "255:5"]
+    pub const AV_OPT_TYPE_FLAGS: AVOptionType = 1;
+    use super::rational_h::AVRational;
+    use super::stdint_intn_h::int64_t;
+    extern "C" {
+        #[c2rust::src_loc = "870:1"]
+        pub fn av_opt_set_int(
+            obj: *mut ::core::ffi::c_void,
+            name: *const ::core::ffi::c_char,
+            val: int64_t,
+            search_flags: ::core::ffi::c_int,
+        ) -> ::core::ffi::c_int;
+    }
+}
+#[c2rust::header_src = "/usr/include/libavutil/rational.h:26"]
+pub mod rational_h {
+    #[derive(Copy, Clone)]
+    #[repr(C)]
+    #[c2rust::src_loc = "58:16"]
+    pub struct AVRational {
+        pub num: ::core::ffi::c_int,
+        pub den: ::core::ffi::c_int,
+    }
 }

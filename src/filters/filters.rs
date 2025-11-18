@@ -1,118 +1,13 @@
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_size_t.h:28"]
-pub mod __stddef_size_t_h {
-    #[c2rust::src_loc = "18:1"]
-    pub type size_t = usize;
-}
-#[c2rust::header_src = "/usr/include/stdlib.h:28"]
-pub mod stdlib_h {
-    use super::__stddef_size_t_h::size_t;
-    extern "C" {
-        #[c2rust::src_loc = "118:1"]
-        pub fn strtod(
-            __nptr: *const ::core::ffi::c_char,
-            __endptr: *mut *mut ::core::ffi::c_char,
-        ) -> ::core::ffi::c_double;
-        #[c2rust::src_loc = "215:1"]
-        pub fn strtol(
-            __nptr: *const ::core::ffi::c_char,
-            __endptr: *mut *mut ::core::ffi::c_char,
-            __base: ::core::ffi::c_int,
-        ) -> ::core::ffi::c_long;
-        #[c2rust::src_loc = "675:1"]
-        pub fn calloc(__nmemb: size_t, __size: size_t) -> *mut ::core::ffi::c_void;
-    }
-}
-#[c2rust::header_src = "/usr/include/string.h:28"]
-pub mod string_h {
-    use super::__stddef_size_t_h::size_t;
-    extern "C" {
-        #[c2rust::src_loc = "43:1"]
-        pub fn memcpy(
-            __dest: *mut ::core::ffi::c_void,
-            __src: *const ::core::ffi::c_void,
-            __n: size_t,
-        ) -> *mut ::core::ffi::c_void;
-        #[c2rust::src_loc = "156:1"]
-        pub fn strcmp(
-            __s1: *const ::core::ffi::c_char,
-            __s2: *const ::core::ffi::c_char,
-        ) -> ::core::ffi::c_int;
-        #[c2rust::src_loc = "159:1"]
-        pub fn strncmp(
-            __s1: *const ::core::ffi::c_char,
-            __s2: *const ::core::ffi::c_char,
-            __n: size_t,
-        ) -> ::core::ffi::c_int;
-        #[c2rust::src_loc = "293:1"]
-        pub fn strcspn(
-            __s: *const ::core::ffi::c_char,
-            __reject: *const ::core::ffi::c_char,
-        ) -> ::core::ffi::c_ulong;
-        #[c2rust::src_loc = "407:1"]
-        pub fn strlen(__s: *const ::core::ffi::c_char) -> size_t;
-    }
-}
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264.h:28"]
-pub mod x264_h {
-    #[c2rust::src_loc = "289:9"]
-    pub const X264_LOG_ERROR: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-}
-#[c2rust::header_src = "/usr/include/strings.h:28"]
-pub mod strings_h {
-    extern "C" {
-        #[c2rust::src_loc = "116:1"]
-        pub fn strcasecmp(
-            __s1: *const ::core::ffi::c_char,
-            __s2: *const ::core::ffi::c_char,
-        ) -> ::core::ffi::c_int;
-    }
-}
-#[c2rust::header_src = "/usr/include/assert.h:28"]
-pub mod assert_h {
-    #[c2rust::src_loc = "137:12"]
-    pub const __ASSERT_FUNCTION: [::core::ffi::c_char; 61] = unsafe {
-        ::core::mem::transmute::<[u8; 61], [::core::ffi::c_char; 61]>(
-            *b"char **x264_split_options(const char *, const char *const *)\0",
-        )
-    };
-    extern "C" {
-        #[c2rust::src_loc = "67:1"]
-        pub fn __assert_fail(
-            __assertion: *const ::core::ffi::c_char,
-            __file: *const ::core::ffi::c_char,
-            __line: ::core::ffi::c_uint,
-            __function: *const ::core::ffi::c_char,
-        ) -> !;
-    }
-}
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/x264cli.h:28"]
-pub mod x264cli_h {
-    extern "C" {
-        #[c2rust::src_loc = "76:1"]
-        pub fn x264_cli_log(
-            name: *const ::core::ffi::c_char,
-            i_level: ::core::ffi::c_int,
-            fmt: *const ::core::ffi::c_char,
-            ...
-        );
-    }
-}
-#[c2rust::header_src = "/usr/lib/clang/21/include/__stddef_null.h:28"]
-pub mod __stddef_null_h {
-    #[c2rust::src_loc = "26:9"]
-    pub const NULL: *mut ::core::ffi::c_void = 0 as *mut ::core::ffi::c_void;
-}
-pub use self::__stddef_null_h::NULL;
-pub use self::__stddef_size_t_h::size_t;
-pub use self::assert_h::{__assert_fail, __ASSERT_FUNCTION};
-use self::stdlib_h::{calloc, strtod, strtol};
-use self::string_h::{memcpy, strcmp, strcspn, strlen, strncmp};
-use self::strings_h::strcasecmp;
-pub use self::x264_h::X264_LOG_ERROR;
-use self::x264cli_h::x264_cli_log;
+use crate::__stddef_size_t_h::size_t;
+use crate::assert_h::{__assert_fail, __ASSERT_FUNCTION};
+use crate::stdlib_h::{calloc, strtod, strtol};
+use crate::string_h::{memcpy, strcmp, strcspn, strlen, strncmp};
+use crate::strings_h::strcasecmp;
+use crate::x264_h::X264_LOG_ERROR;
+use crate::x264cli_h::x264_cli_log;
 #[no_mangle]
 #[c2rust::src_loc = "32:1"]
-pub unsafe extern "C" fn x264_split_options(
+unsafe extern "C" fn x264_split_options(
     mut opt_str: *const ::core::ffi::c_char,
     mut options: *const *const ::core::ffi::c_char,
 ) -> *mut *mut ::core::ffi::c_char {
@@ -252,22 +147,11 @@ pub unsafe extern "C" fn x264_split_options(
             __ASSERT_FUNCTION.as_ptr(),
         );
     }
-    'c_11546: {
-        if offset == size {
-        } else {
-            __assert_fail(
-                b"offset == size\0" as *const u8 as *const ::core::ffi::c_char,
-                b"filters/filters.c\0" as *const u8 as *const ::core::ffi::c_char,
-                96 as ::core::ffi::c_uint,
-                __ASSERT_FUNCTION.as_ptr(),
-            );
-        }
-    };
     return opts;
 }
 #[no_mangle]
 #[c2rust::src_loc = "100:1"]
-pub unsafe extern "C" fn x264_get_option(
+unsafe extern "C" fn x264_get_option(
     mut name: *const ::core::ffi::c_char,
     mut split_options: *mut *mut ::core::ffi::c_char,
 ) -> *mut ::core::ffi::c_char {
@@ -292,7 +176,7 @@ pub unsafe extern "C" fn x264_get_option(
 }
 #[no_mangle]
 #[c2rust::src_loc = "114:1"]
-pub unsafe extern "C" fn x264_otob(
+unsafe extern "C" fn x264_otob(
     mut str: *const ::core::ffi::c_char,
     mut def: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
@@ -306,7 +190,7 @@ pub unsafe extern "C" fn x264_otob(
 }
 #[no_mangle]
 #[c2rust::src_loc = "121:1"]
-pub unsafe extern "C" fn x264_otof(
+unsafe extern "C" fn x264_otof(
     mut str: *const ::core::ffi::c_char,
     mut def: ::core::ffi::c_double,
 ) -> ::core::ffi::c_double {
@@ -322,7 +206,7 @@ pub unsafe extern "C" fn x264_otof(
 }
 #[no_mangle]
 #[c2rust::src_loc = "134:1"]
-pub unsafe extern "C" fn x264_otoi(
+unsafe extern "C" fn x264_otoi(
     mut str: *const ::core::ffi::c_char,
     mut def: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
@@ -338,7 +222,7 @@ pub unsafe extern "C" fn x264_otoi(
 }
 #[no_mangle]
 #[c2rust::src_loc = "147:1"]
-pub unsafe extern "C" fn x264_otos(
+unsafe extern "C" fn x264_otos(
     mut str: *mut ::core::ffi::c_char,
     mut def: *mut ::core::ffi::c_char,
 ) -> *mut ::core::ffi::c_char {
