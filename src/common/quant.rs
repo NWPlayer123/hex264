@@ -7,10 +7,147 @@ use crate::macroblock_h::{
     DCT_CHROMAU_AC, DCT_CHROMAU_DC, DCT_CHROMAV_AC, DCT_CHROMAV_DC, DCT_CHROMA_AC, DCT_LUMA_AC,
     DCT_LUMA_DC,
 };
-use crate::quant_h::x264_quant_function_t;
 use crate::stdint_intn_h::int32_t;
-use crate::stdint_uintn_h::{uint32_t, uint8_t};
+use crate::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use crate::tables_h::{x264_decimate_table4, x264_decimate_table8};
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+#[c2rust::src_loc = "30:9"]
+pub struct x264_quant_function_t {
+    pub quant_8x8:
+        Option<unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> c_int>,
+    pub quant_4x4:
+        Option<unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> c_int>,
+    pub quant_4x4x4:
+        Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut udctcoef, *mut udctcoef) -> c_int>,
+    pub quant_4x4_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int, c_int) -> c_int>,
+    pub quant_2x2_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int, c_int) -> c_int>,
+    pub dequant_8x8: Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 64], c_int) -> ()>,
+    pub dequant_4x4: Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 16], c_int) -> ()>,
+    pub dequant_4x4_dc: Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 16], c_int) -> ()>,
+    pub idct_dequant_2x4_dc: Option<
+        unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16], *mut [c_int; 16], c_int) -> (),
+    >,
+    pub idct_dequant_2x4_dconly:
+        Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 16], c_int) -> ()>,
+    pub optimize_chroma_2x2_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int) -> c_int>,
+    pub optimize_chroma_2x4_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int) -> c_int>,
+    pub denoise_dct:
+        Option<unsafe extern "C" fn(*mut dctcoef, *mut uint32_t, *mut udctcoef, c_int) -> ()>,
+    pub decimate_score15: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
+    pub decimate_score16: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
+    pub decimate_score64: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
+    pub coeff_last: [Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>; 14],
+    pub coeff_last4: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
+    pub coeff_last8: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
+    pub coeff_level_run:
+        [Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> c_int>; 13],
+    pub coeff_level_run4:
+        Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> c_int>,
+    pub coeff_level_run8:
+        Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> c_int>,
+    pub trellis_cabac_4x4: Option<
+        unsafe extern "C" fn(
+            *const c_int,
+            *const uint8_t,
+            c_int,
+            c_int,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut uint8_t,
+            *mut uint8_t,
+            uint64_t,
+            uint16_t,
+            c_int,
+        ) -> c_int,
+    >,
+    pub trellis_cabac_8x8: Option<
+        unsafe extern "C" fn(
+            *const c_int,
+            *const uint8_t,
+            c_int,
+            c_int,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut uint8_t,
+            *mut uint8_t,
+            uint64_t,
+            uint16_t,
+            c_int,
+        ) -> c_int,
+    >,
+    pub trellis_cabac_4x4_psy: Option<
+        unsafe extern "C" fn(
+            *const c_int,
+            *const uint8_t,
+            c_int,
+            c_int,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut uint8_t,
+            *mut uint8_t,
+            uint64_t,
+            uint16_t,
+            c_int,
+            *mut dctcoef,
+            c_int,
+        ) -> c_int,
+    >,
+    pub trellis_cabac_8x8_psy: Option<
+        unsafe extern "C" fn(
+            *const c_int,
+            *const uint8_t,
+            c_int,
+            c_int,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut uint8_t,
+            *mut uint8_t,
+            uint64_t,
+            uint16_t,
+            c_int,
+            *mut dctcoef,
+            c_int,
+        ) -> c_int,
+    >,
+    pub trellis_cabac_dc: Option<
+        unsafe extern "C" fn(
+            *const c_int,
+            *const uint8_t,
+            c_int,
+            c_int,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut uint8_t,
+            *mut uint8_t,
+            uint64_t,
+            uint16_t,
+            c_int,
+        ) -> c_int,
+    >,
+    pub trellis_cabac_chroma_422_dc: Option<
+        unsafe extern "C" fn(
+            *const c_int,
+            *const uint8_t,
+            c_int,
+            c_int,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut dctcoef,
+            *mut uint8_t,
+            *mut uint8_t,
+            uint64_t,
+            uint16_t,
+        ) -> c_int,
+    >,
+}
+
 #[c2rust::src_loc = "59:1"]
 unsafe extern "C" fn quant_8x8(
     mut dct: *mut dctcoef,
@@ -678,7 +815,7 @@ unsafe extern "C" fn coeff_level_run16(
 }
 #[no_mangle]
 #[c2rust::src_loc = "414:1"]
-unsafe extern "C" fn x264_10_quant_init(
+pub unsafe extern "C" fn x264_quant_init(
     mut _h: *mut x264_t,
     mut _cpu: uint32_t,
     mut pf: *mut x264_quant_function_t,

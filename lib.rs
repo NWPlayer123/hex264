@@ -10,8 +10,12 @@
 #![feature(extern_types)]
 #![feature(lint_reasons)]
 #![feature(register_tool)]
+// TODO: migrate to newer Rust version and remove this.
+#![feature(let_chains)]
 //#![feature(stdsimd)]
 #![register_tool(c2rust)]
+// This is meant to be pure Rust, eventually, shut up all complaints about Option<T>.
+#![allow(improper_ctypes)]
 
 #[macro_use]
 extern crate c2rust_bitfields;
@@ -466,9 +470,12 @@ pub mod x264_h {
         pub analyse: C2RustUnnamed_3,
         pub rc: C2RustUnnamed_2,
         pub crop_rect: C2RustUnnamed_1,
-        pub i_frame_packing: c_int,
-        pub mastering_display: C2RustUnnamed_0,
-        pub content_light_level: C2RustUnnamed,
+        /// Frame Packing Arrangement SEI metadata.
+        pub frame_packing: Option<FramePacking>,
+        /// Mastering Display Color Volume SEI metadata.
+        pub mastering_display: Option<MasteringDisplay>,
+        /// Content Light Level SEI metadata.
+        pub content_light_level: Option<ContentLightLevel>,
         pub i_alternative_transfer: c_int,
         pub b_aud: c_int,
         pub b_repeat_headers: c_int,
@@ -498,30 +505,181 @@ pub mod x264_h {
             Option<unsafe extern "C" fn(*mut x264_t, *mut x264_nal_t, *mut c_void) -> ()>,
         pub opaque: *mut c_void,
     }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "517:5"]
-    pub struct C2RustUnnamed {
-        pub b_cll: c_int,
-        pub i_max_cll: c_int,
-        pub i_max_fall: c_int,
+
+    impl x264_param_t {
+        fn new() -> Self {
+            Self {
+                cpu: 0,
+                i_threads: 0,
+                i_lookahead_threads: 0,
+                b_sliced_threads: 0,
+                b_deterministic: 0,
+                b_cpu_independent: 0,
+                i_sync_lookahead: 0,
+                i_width: 0,
+                i_height: 0,
+                i_csp: 0,
+                i_bitdepth: 0,
+                i_level_idc: 0,
+                i_frame_total: 0,
+                i_nal_hrd: 0,
+                vui: C2RustUnnamed_4::new(),
+                i_frame_reference: 0,
+                i_dpb_size: 0,
+                i_keyint_max: 0,
+                i_keyint_min: 0,
+                i_scenecut_threshold: 0,
+                b_intra_refresh: 0,
+                i_bframe: 0,
+                i_bframe_adaptive: 0,
+                i_bframe_bias: 0,
+                i_bframe_pyramid: 0,
+                b_open_gop: 0,
+                b_bluray_compat: 0,
+                i_avcintra_class: 0,
+                i_avcintra_flavor: 0,
+                b_deblocking_filter: 0,
+                i_deblocking_filter_alphac0: 0,
+                i_deblocking_filter_beta: 0,
+                b_cabac: 0,
+                i_cabac_init_idc: 0,
+                b_interlaced: 0,
+                b_constrained_intra: 0,
+                i_cqm_preset: 0,
+                psz_cqm_file: core::ptr::null_mut(),
+                cqm_4iy: [0; 16],
+                cqm_4py: [0; 16],
+                cqm_4ic: [0; 16],
+                cqm_4pc: [0; 16],
+                cqm_8iy: [0; 64],
+                cqm_8py: [0; 64],
+                cqm_8ic: [0; 64],
+                cqm_8pc: [0; 64],
+                pf_log: None,
+                p_log_private: core::ptr::null_mut(),
+                i_log_level: 0,
+                b_full_recon: 0,
+                psz_dump_yuv: core::ptr::null_mut(),
+                analyse: C2RustUnnamed_3::new(),
+                rc: C2RustUnnamed_2::new(),
+                crop_rect: C2RustUnnamed_1::new(),
+                frame_packing: None,
+                mastering_display: None,
+                content_light_level: None,
+                i_alternative_transfer: 0,
+                b_aud: 0,
+                b_repeat_headers: 0,
+                b_annexb: 0,
+                i_sps_id: 0,
+                b_vfr_input: 0,
+                b_pulldown: 0,
+                i_fps_num: 0,
+                i_fps_den: 0,
+                i_timebase_num: 0,
+                i_timebase_den: 0,
+                b_tff: 0,
+                b_pic_struct: 0,
+                b_fake_interlaced: 0,
+                b_stitchable: 0,
+                b_opencl: 0,
+                i_opencl_device: 0,
+                opencl_device_id: core::ptr::null_mut(),
+                psz_clbin_file: core::ptr::null_mut(),
+                i_slice_max_size: 0,
+                i_slice_max_mbs: 0,
+                i_slice_min_mbs: 0,
+                i_slice_count: 0,
+                i_slice_count_max: 0,
+                param_free: None,
+                nalu_process: None,
+                opaque: core::ptr::null_mut(),
+            }
+        }
     }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "501:5"]
-    pub struct C2RustUnnamed_0 {
-        pub b_mastering_display: c_int,
-        pub i_green_x: c_int,
-        pub i_green_y: c_int,
-        pub i_blue_x: c_int,
-        pub i_blue_y: c_int,
-        pub i_red_x: c_int,
-        pub i_red_y: c_int,
-        pub i_white_x: c_int,
-        pub i_white_y: c_int,
-        pub i_display_max: int64_t,
-        pub i_display_min: int64_t,
+
+    /// HDR metadata used for tonemapping.
+    #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+    pub struct ContentLightLevel {
+        /// Maximum Content Light Level, peak brightness for any single pixel.
+        pub max_cll: u16,
+        /// Maximum Frame Average Light Level, peak average brightness for any single frame.
+        pub max_fall: u16,
     }
+
+    /// HDR metadata used for tonemapping.
+    ///
+    /// Defines the Mastering Display Color Volume used to grade/master the video. These include the
+    /// Red, Green, and Blue (x, y) coordinates that define the color gamut, as well as the white
+    /// point, in 0.00002 increments. Additionally, this includes the maximum/minimum brightness for
+    /// the display, in 0.0001 cd/m^2 increments.
+    #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+    pub struct MasteringDisplay {
+        pub green: (u16, u16),
+        pub blue: (u16, u16),
+        pub red: (u16, u16),
+        pub white: (u16, u16),
+        pub display_max: u32,
+        pub display_min: u32,
+    }
+
+    /// Frame packing arrangement SEI metadata.
+    ///
+    /// Table D-9 in the H.264 specification.
+    // TODO: migrate the frame_packing f64 cast nonsense into a function?
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+    pub enum FramePacking {
+        /// Checkerboard-based interleaving (quincunx sampling).
+        Checkerboard = 0,
+        /// Column-based interleaving of two constituent frames.
+        ColumnInterleaved = 1,
+        /// Row-based interleaving of two constituent frames.
+        RowInterleaved = 2,
+        /// Side-by-side packing arrangement.
+        SideBySide = 3,
+        /// Top-bottom packing arrangement.
+        TopBottom = 4,
+        /// Temporal interleaving of alternating first and second frames
+        /// (frames alternate in output order)
+        TemporalInterleaved = 5,
+        /// Complete 3D frame without any frame packing (used for compatibility)
+        Packing2D = 6,
+        /// File format packing arrangement (3x3 tiles for autostereoscopic displays)
+        TileFormat = 7,
+        // Values 8-255 are reserved for future use by ITU-T | ISO/IEC.
+    }
+
+    impl FramePacking {
+        pub fn from_i32(value: i32) -> Option<Self> {
+            match value {
+                0 => Some(Self::Checkerboard),
+                1 => Some(Self::ColumnInterleaved),
+                2 => Some(Self::RowInterleaved),
+                3 => Some(Self::SideBySide),
+                4 => Some(Self::TopBottom),
+                5 => Some(Self::TemporalInterleaved),
+                6 => Some(Self::Packing2D),
+                7 => Some(Self::TileFormat),
+                _ => None,
+            }
+        }
+
+        /// Base frame duration for ratecontrol curve centering (0.04s = 25fps).
+        /// Halved for temporal interleaving to compensate for doubled framerate.
+        pub fn base_frame_duration(packing: Option<Self>) -> f64 {
+            0.04 / (matches!(packing, Some(Self::TemporalInterleaved)) as u8 + 1) as f64
+        }
+
+        /// Maximum frame duration sanity check (1.0s = 1fps minimum).
+        pub fn max_frame_duration(packing: Option<Self>) -> f64 {
+            1.00 / (matches!(packing, Some(Self::TemporalInterleaved)) as u8 + 1) as f64
+        }
+
+        /// Minimum frame duration sanity check (0.01s = 100fps maximum).
+        pub fn min_frame_duration(packing: Option<Self>) -> f64 {
+            0.01 / (matches!(packing, Some(Self::TemporalInterleaved)) as u8 + 1) as f64
+        }
+    }
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "488:5"]
@@ -531,6 +689,18 @@ pub mod x264_h {
         pub i_right: c_int,
         pub i_bottom: c_int,
     }
+
+    impl C2RustUnnamed_1 {
+        fn new() -> Self {
+            Self {
+                i_left: 0,
+                i_top: 0,
+                i_right: 0,
+                i_bottom: 0,
+            }
+        }
+    }
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "443:5"]
@@ -565,6 +735,43 @@ pub mod x264_h {
         pub i_zones: c_int,
         pub psz_zones: *mut c_char,
     }
+
+    impl C2RustUnnamed_2 {
+        fn new() -> Self {
+            Self {
+                i_rc_method: 0,
+                i_qp_constant: 0,
+                i_qp_min: 0,
+                i_qp_max: 0,
+                i_qp_step: 0,
+                i_bitrate: 0,
+                f_rf_constant: 0.0,
+                f_rf_constant_max: 0.0,
+                f_rate_tolerance: 0.0,
+                i_vbv_max_bitrate: 0,
+                i_vbv_buffer_size: 0,
+                f_vbv_buffer_init: 0.0,
+                f_ip_factor: 0.0,
+                f_pb_factor: 0.0,
+                b_filler: 0,
+                i_aq_mode: 0,
+                f_aq_strength: 0.0,
+                b_mb_tree: 0,
+                i_lookahead: 0,
+                b_stat_write: 0,
+                psz_stat_out: core::ptr::null_mut(),
+                b_stat_read: 0,
+                psz_stat_in: core::ptr::null_mut(),
+                f_qcompress: 0.0,
+                f_qblur: 0.0,
+                f_complexity_blur: 0.0,
+                zones: core::ptr::null_mut(),
+                i_zones: 0,
+                psz_zones: core::ptr::null_mut(),
+            }
+        }
+    }
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "406:5"]
@@ -596,7 +803,41 @@ pub mod x264_h {
         pub b_psnr: c_int,
         pub b_ssim: c_int,
     }
-    #[derive(Copy, Clone)]
+
+    impl C2RustUnnamed_3 {
+        fn new() -> Self {
+            Self {
+                intra: 0,
+                inter: 0,
+                b_transform_8x8: 0,
+                i_weighted_pred: 0,
+                b_weighted_bipred: 0,
+                i_direct_mv_pred: 0,
+                i_chroma_qp_offset: 0,
+                i_me_method: 0,
+                i_me_range: 0,
+                i_mv_range: 0,
+                i_mv_range_thread: 0,
+                i_subpel_refine: 0,
+                b_chroma_me: 0,
+                b_mixed_references: 0,
+                i_trellis: 0,
+                b_fast_pskip: 0,
+                b_dct_decimate: 0,
+                i_noise_reduction: 0,
+                f_psy_rd: 0.0f32,
+                f_psy_trellis: 0.0f32,
+                b_psy: 0,
+                b_mb_info: 0,
+                b_mb_info_update: 0,
+                i_luma_deadzone: [0; 2],
+                b_psnr: 0,
+                b_ssim: 0,
+            }
+        }
+    }
+
+    #[derive(Default, Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "342:5"]
     pub struct C2RustUnnamed_4 {
@@ -610,6 +851,23 @@ pub mod x264_h {
         pub i_colmatrix: c_int,
         pub i_chroma_loc: c_int,
     }
+
+    impl C2RustUnnamed_4 {
+        fn new() -> Self {
+            Self {
+                i_sar_height: 0,
+                i_sar_width: 0,
+                i_overscan: 0,
+                i_vidformat: 0,
+                b_fullrange: 0,
+                i_colorprim: 0,
+                i_transfer: 0,
+                i_colmatrix: 0,
+                i_chroma_loc: 0,
+            }
+        }
+    }
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "633:16"]
@@ -5080,6 +5338,8 @@ pub mod common_h {
     pub const FDEC_STRIDE: c_int = 32 as c_int;
     use ::core::ffi::{c_char, c_double, c_int, c_uint, c_void};
 
+    use crate::src::common::quant::x264_quant_function_t;
+
     use super::bitstream_h::{bs_t, x264_bitstream_function_t};
     use super::cabac_h::x264_cabac_t;
     use super::dct_h::{x264_dct_function_t, x264_zigzag_function_t};
@@ -5089,7 +5349,6 @@ pub mod common_h {
     use super::pixel_h::x264_pixel_function_t;
     use super::predict_h::{x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t};
     use super::pthreadtypes_h::{pthread_cond_t, pthread_mutex_t, pthread_t};
-    use super::quant_h::x264_quant_function_t;
     use super::set_h::{x264_pps_t, x264_sps_t};
     use super::stdint_intn_h::{int16_t, int32_t, int64_t, int8_t};
     use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
@@ -6412,157 +6671,6 @@ pub mod cabac_h {
         pub fn x264_10_cabac_encode_ue_bypass(cb: *mut x264_cabac_t, exp_bits: c_int, val: c_int);
     }
 }
-#[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/quant.h:28"]
-pub mod quant_h {
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "30:9"]
-    pub struct x264_quant_function_t {
-        pub quant_8x8:
-            Option<unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> c_int>,
-        pub quant_4x4:
-            Option<unsafe extern "C" fn(*mut dctcoef, *mut udctcoef, *mut udctcoef) -> c_int>,
-        pub quant_4x4x4:
-            Option<unsafe extern "C" fn(*mut [dctcoef; 16], *mut udctcoef, *mut udctcoef) -> c_int>,
-        pub quant_4x4_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int, c_int) -> c_int>,
-        pub quant_2x2_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int, c_int) -> c_int>,
-        pub dequant_8x8: Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 64], c_int) -> ()>,
-        pub dequant_4x4: Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 16], c_int) -> ()>,
-        pub dequant_4x4_dc:
-            Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 16], c_int) -> ()>,
-        pub idct_dequant_2x4_dc: Option<
-            unsafe extern "C" fn(*mut dctcoef, *mut [dctcoef; 16], *mut [c_int; 16], c_int) -> (),
-        >,
-        pub idct_dequant_2x4_dconly:
-            Option<unsafe extern "C" fn(*mut dctcoef, *mut [c_int; 16], c_int) -> ()>,
-        pub optimize_chroma_2x2_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int) -> c_int>,
-        pub optimize_chroma_2x4_dc: Option<unsafe extern "C" fn(*mut dctcoef, c_int) -> c_int>,
-        pub denoise_dct:
-            Option<unsafe extern "C" fn(*mut dctcoef, *mut uint32_t, *mut udctcoef, c_int) -> ()>,
-        pub decimate_score15: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
-        pub decimate_score16: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
-        pub decimate_score64: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
-        pub coeff_last: [Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>; 14],
-        pub coeff_last4: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
-        pub coeff_last8: Option<unsafe extern "C" fn(*mut dctcoef) -> c_int>,
-        pub coeff_level_run:
-            [Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> c_int>; 13],
-        pub coeff_level_run4:
-            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> c_int>,
-        pub coeff_level_run8:
-            Option<unsafe extern "C" fn(*mut dctcoef, *mut x264_run_level_t) -> c_int>,
-        pub trellis_cabac_4x4: Option<
-            unsafe extern "C" fn(
-                *const c_int,
-                *const uint8_t,
-                c_int,
-                c_int,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut uint8_t,
-                *mut uint8_t,
-                uint64_t,
-                uint16_t,
-                c_int,
-            ) -> c_int,
-        >,
-        pub trellis_cabac_8x8: Option<
-            unsafe extern "C" fn(
-                *const c_int,
-                *const uint8_t,
-                c_int,
-                c_int,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut uint8_t,
-                *mut uint8_t,
-                uint64_t,
-                uint16_t,
-                c_int,
-            ) -> c_int,
-        >,
-        pub trellis_cabac_4x4_psy: Option<
-            unsafe extern "C" fn(
-                *const c_int,
-                *const uint8_t,
-                c_int,
-                c_int,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut uint8_t,
-                *mut uint8_t,
-                uint64_t,
-                uint16_t,
-                c_int,
-                *mut dctcoef,
-                c_int,
-            ) -> c_int,
-        >,
-        pub trellis_cabac_8x8_psy: Option<
-            unsafe extern "C" fn(
-                *const c_int,
-                *const uint8_t,
-                c_int,
-                c_int,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut uint8_t,
-                *mut uint8_t,
-                uint64_t,
-                uint16_t,
-                c_int,
-                *mut dctcoef,
-                c_int,
-            ) -> c_int,
-        >,
-        pub trellis_cabac_dc: Option<
-            unsafe extern "C" fn(
-                *const c_int,
-                *const uint8_t,
-                c_int,
-                c_int,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut uint8_t,
-                *mut uint8_t,
-                uint64_t,
-                uint16_t,
-                c_int,
-            ) -> c_int,
-        >,
-        pub trellis_cabac_chroma_422_dc: Option<
-            unsafe extern "C" fn(
-                *const c_int,
-                *const uint8_t,
-                c_int,
-                c_int,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut dctcoef,
-                *mut uint8_t,
-                *mut uint8_t,
-                uint64_t,
-                uint16_t,
-            ) -> c_int,
-        >,
-    }
-    use ::core::ffi::c_int;
-
-    use super::bitstream_h::x264_run_level_t;
-    use super::common_h::{dctcoef, udctcoef};
-    use super::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
-
-    use super::common_h::x264_t;
-    extern "C" {
-        #[c2rust::src_loc = "73:1"]
-        pub fn x264_10_quant_init(h: *mut x264_t, cpu: uint32_t, pf: *mut x264_quant_function_t);
-    }
-}
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/dct.h:28"]
 pub mod dct_h {
     #[derive(Copy, Clone)]
@@ -7156,12 +7264,6 @@ pub mod predict_h {
         pub fn x264_10_predict_8x16c_init(cpu: uint32_t, pf: *mut x264_predict_t);
         #[c2rust::src_loc = "156:1"]
         pub fn x264_10_predict_4x4_init(cpu: uint32_t, pf: *mut x264_predict_t);
-        #[c2rust::src_loc = "158:1"]
-        pub fn x264_10_predict_8x8_init(
-            cpu: uint32_t,
-            pf: *mut x264_predict8x8_t,
-            predict_filter: *mut x264_predict_8x8_filter_t,
-        );
     }
     extern "C" {
         #[c2rust::src_loc = "113:1"]
@@ -13874,23 +13976,16 @@ pub mod slicetype_c {
         mut average_duration: c_float,
         mut ref0_distance: c_int,
     ) {
+        let frame_packing = (*h).param.frame_packing;
         let mut fps_factor: c_int = round(
             x264_clip3f(
                 average_duration as c_double,
-                (0.01f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
-                (1.00f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
+                FramePacking::min_frame_duration(frame_packing),
+                FramePacking::max_frame_duration(frame_packing),
             ) / x264_clip3f(
                 (*frame).f_duration as c_double,
-                (0.01f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
-                (1.00f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
+                FramePacking::min_frame_duration(frame_packing),
+                FramePacking::max_frame_duration(frame_packing),
             ) * 256 as c_int as c_double
                 / MBTREE_PRECISION as c_double,
         ) as c_int;
@@ -13964,22 +14059,16 @@ pub mod slicetype_c {
         let mut propagate_cost: *mut uint16_t = (**frames.offset(b as isize)).i_propagate_cost;
         let mut lowres_costs: *mut uint16_t =
             (**frames.offset(b as isize)).lowres_costs[(b - p0) as usize][(p1 - b) as usize];
+
+        let frame_packing = (*h).param.frame_packing;
         let mut fps_factor: c_float = (x264_clip3f(
             (**frames.offset(b as isize)).f_duration as c_double,
-            (0.01f32
-                / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                as c_double,
-            (1.00f32
-                / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                as c_double,
+            FramePacking::min_frame_duration(frame_packing),
+            FramePacking::max_frame_duration(frame_packing),
         ) / (x264_clip3f(
             average_duration as c_double,
-            (0.01f32
-                / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                as c_double,
-            (1.00f32
-                / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                as c_double,
+            FramePacking::min_frame_duration(frame_packing),
+            FramePacking::max_frame_duration(frame_packing),
         ) * 256.0f64)
             * MBTREE_PRECISION as c_double) as c_float;
         if referenced == 0 {
@@ -14560,7 +14649,7 @@ pub mod slicetype_c {
     ) -> c_int {
         let mut frame: *mut x264_frame_t = *frames.offset(p1 as isize);
         if real_scenecut != 0
-            && (*h).param.i_frame_packing == 5 as c_int
+            && (*h).param.frame_packing == Some(FramePacking::TemporalInterleaved)
             && (*frame).i_frame & 1 as c_int != 0
         {
             return 0 as c_int;
@@ -15681,6 +15770,7 @@ pub mod slicetype_c {
     use ::core::ffi::{c_char, c_double, c_float, c_int, c_uint, c_ulonglong, c_void};
 
     use crate::src::encoder::analyse::x264_mb_analysis_list_t;
+    use crate::x264_h::FramePacking;
     #[no_mangle]
     #[c2rust::src_loc = "1745:1"]
     pub unsafe extern "C" fn x264_10_slicetype_decide(mut h: *mut x264_t) {
@@ -22089,12 +22179,6 @@ pub mod encoder_set_h {
         pub fn x264_10_sei_pic_timing_write(h: *mut x264_t, s: *mut bs_t);
         #[c2rust::src_loc = "53:1"]
         pub fn x264_10_sei_dec_ref_pic_marking_write(h: *mut x264_t, s: *mut bs_t);
-        #[c2rust::src_loc = "55:1"]
-        pub fn x264_10_sei_frame_packing_write(h: *mut x264_t, s: *mut bs_t);
-        #[c2rust::src_loc = "57:1"]
-        pub fn x264_10_sei_mastering_display_write(h: *mut x264_t, s: *mut bs_t);
-        #[c2rust::src_loc = "59:1"]
-        pub fn x264_10_sei_content_light_level_write(h: *mut x264_t, s: *mut bs_t);
         #[c2rust::src_loc = "61:1"]
         pub fn x264_10_sei_alternative_transfer_write(h: *mut x264_t, s: *mut bs_t);
         #[c2rust::src_loc = "63:1"]

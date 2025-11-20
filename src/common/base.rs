@@ -31,15 +31,16 @@ use crate::x264_h::{
     x264_avcintra_flavor_names, x264_b_pyramid_names, x264_colmatrix_names, x264_colorprim_names,
     x264_direct_pred_names, x264_fullrange_names, x264_motion_est_names, x264_nal_hrd_names,
     x264_overscan_names, x264_param_t, x264_picture_t, x264_preset_names, x264_transfer_names,
-    x264_vidformat_names, X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8,
-    X264_ANALYSE_PSUB16x16, X264_ANALYSE_PSUB8x8, PIC_STRUCT_AUTO, X264_AQ_AUTOVARIANCE,
-    X264_AQ_NONE, X264_AQ_VARIANCE, X264_AVCINTRA_FLAVOR_PANASONIC, X264_B_ADAPT_FAST,
-    X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_B_PYRAMID_NORMAL, X264_CPU_SSE2_IS_FAST,
-    X264_CPU_SSE2_IS_SLOW, X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT,
-    X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK,
-    X264_CSP_MAX, X264_CSP_NONE, X264_CSP_V210, X264_DIRECT_PRED_AUTO, X264_DIRECT_PRED_SPATIAL,
-    X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO,
-    X264_LOG_WARNING, X264_ME_DIA, X264_ME_HEX, X264_ME_TESA, X264_ME_UMH, X264_NAL_HRD_NONE,
+    x264_vidformat_names, ContentLightLevel, FramePacking, MasteringDisplay,
+    X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16,
+    X264_ANALYSE_PSUB8x8, PIC_STRUCT_AUTO, X264_AQ_AUTOVARIANCE, X264_AQ_NONE, X264_AQ_VARIANCE,
+    X264_AVCINTRA_FLAVOR_PANASONIC, X264_B_ADAPT_FAST, X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS,
+    X264_B_PYRAMID_NORMAL, X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW, X264_CPU_SSSE3,
+    X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_CSP_HIGH_DEPTH, X264_CSP_I400,
+    X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE,
+    X264_CSP_V210, X264_DIRECT_PRED_AUTO, X264_DIRECT_PRED_SPATIAL, X264_KEYINT_MAX_INFINITE,
+    X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING,
+    X264_ME_DIA, X264_ME_HEX, X264_ME_TESA, X264_ME_UMH, X264_NAL_HRD_NONE,
     X264_PARAM_ALLOC_FAILED, X264_PARAM_BAD_NAME, X264_PARAM_BAD_VALUE, X264_QP_AUTO, X264_RC_ABR,
     X264_RC_CQP, X264_RC_CRF, X264_SYNC_LOOKAHEAD_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO,
     X264_WEIGHTP_NONE, X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
@@ -720,7 +721,7 @@ unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     (*param).b_tff = 1 as c_int;
     (*param).b_pic_struct = 0 as c_int;
     (*param).b_fake_interlaced = 0 as c_int;
-    (*param).i_frame_packing = -(1 as c_int);
+    (*param).frame_packing = None;
     (*param).i_alternative_transfer = 2 as c_int;
     (*param).b_opencl = 0 as c_int;
     (*param).i_opencl_device = 0 as c_int;
@@ -1480,35 +1481,79 @@ unsafe extern "C" fn x264_param_parse(
             ((*p).vui.i_chroma_loc < 0 as c_int || (*p).vui.i_chroma_loc > 5 as c_int) as c_int;
     } else if strcmp(name, b"mastering-display\0" as *const u8 as *const c_char) == 0 {
         if strcasecmp(value, b"undef\0" as *const u8 as *const c_char) != 0 {
-            b_error |= (sscanf(
+            let mut green_x: i32 = 0;
+            let mut green_y: i32 = 0;
+            let mut blue_x: i32 = 0;
+            let mut blue_y: i32 = 0;
+            let mut red_x: i32 = 0;
+            let mut red_y: i32 = 0;
+            let mut white_x: i32 = 0;
+            let mut white_y: i32 = 0;
+            let mut display_max: i64 = 0;
+            let mut display_min: i64 = 0;
+
+            let num_values = sscanf(
                 value,
-                b"G(%d,%d)B(%d,%d)R(%d,%d)WP(%d,%d)L(%ld,%ld)\0" as *const u8 as *const c_char,
-                &mut (*p).mastering_display.i_green_x as *mut c_int,
-                &mut (*p).mastering_display.i_green_y as *mut c_int,
-                &mut (*p).mastering_display.i_blue_x as *mut c_int,
-                &mut (*p).mastering_display.i_blue_y as *mut c_int,
-                &mut (*p).mastering_display.i_red_x as *mut c_int,
-                &mut (*p).mastering_display.i_red_y as *mut c_int,
-                &mut (*p).mastering_display.i_white_x as *mut c_int,
-                &mut (*p).mastering_display.i_white_y as *mut c_int,
-                &mut (*p).mastering_display.i_display_max as *mut int64_t,
-                &mut (*p).mastering_display.i_display_min as *mut int64_t,
-            ) != 10 as c_int) as c_int;
-            (*p).mastering_display.b_mastering_display = (b_error == 0) as c_int;
+                c"G(%d,%d)B(%d,%d)R(%d,%d)WP(%d,%d)L(%ld,%ld)".as_ptr(),
+                &mut green_x,
+                &mut green_y,
+                &mut blue_x,
+                &mut blue_y,
+                &mut red_x,
+                &mut red_y,
+                &mut white_x,
+                &mut white_y,
+                &mut display_max,
+                &mut display_min,
+            );
+
+            b_error |= (num_values != 10) as i32;
+
+            (*p).mastering_display = if num_values == 10
+                && let Ok(green_x) = u16::try_from(green_x)
+                && let Ok(green_y) = u16::try_from(green_y)
+                && let Ok(blue_x) = u16::try_from(blue_x)
+                && let Ok(blue_y) = u16::try_from(blue_y)
+                && let Ok(red_x) = u16::try_from(red_x)
+                && let Ok(red_y) = u16::try_from(red_y)
+                && let Ok(white_x) = u16::try_from(white_x)
+                && let Ok(white_y) = u16::try_from(white_y)
+                && let Ok(display_max) = u32::try_from(display_max)
+                && let Ok(display_min) = u32::try_from(display_min)
+            {
+                Some(MasteringDisplay {
+                    green: (green_x, green_y),
+                    blue: (blue_x, blue_y),
+                    red: (red_x, red_y),
+                    white: (white_x, white_y),
+                    display_max,
+                    display_min,
+                })
+            } else {
+                None
+            };
         } else {
-            (*p).mastering_display.b_mastering_display = 0 as c_int;
+            (*p).mastering_display = None;
         }
     } else if strcmp(name, b"cll\0" as *const u8 as *const c_char) == 0 {
         if strcasecmp(value, b"undef\0" as *const u8 as *const c_char) != 0 {
-            b_error |= (sscanf(
-                value,
-                b"%d,%d\0" as *const u8 as *const c_char,
-                &mut (*p).content_light_level.i_max_cll as *mut c_int,
-                &mut (*p).content_light_level.i_max_fall as *mut c_int,
-            ) != 2 as c_int) as c_int;
-            (*p).content_light_level.b_cll = (b_error == 0) as c_int;
+            let mut max_cll: i32 = 0;
+            let mut max_fall: i32 = 0;
+
+            let num_values = sscanf(value, c"%d,%d".as_ptr(), &mut max_cll, &mut max_fall);
+
+            b_error |= (num_values != 2) as i32;
+
+            (*p).content_light_level = if num_values == 2
+                && let Ok(max_cll) = u16::try_from(max_cll)
+                && let Ok(max_fall) = u16::try_from(max_fall)
+            {
+                Some(ContentLightLevel { max_cll, max_fall })
+            } else {
+                None
+            };
         } else {
-            (*p).content_light_level.b_cll = 0 as c_int;
+            (*p).content_light_level = None;
         }
     } else if strcmp(
         name,
@@ -1984,7 +2029,7 @@ unsafe extern "C" fn x264_param_parse(
         name_was_bool = 1 as c_int;
         (*p).b_fake_interlaced = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"frame-packing\0" as *const u8 as *const c_char) == 0 {
-        (*p).i_frame_packing = atoi_internal(value, &mut b_error);
+        (*p).frame_packing = FramePacking::from_i32(atoi_internal(value, &mut b_error));
     } else if strcmp(name, b"stitchable\0" as *const u8 as *const c_char) == 0 {
         name_was_bool = 1 as c_int;
         (*p).b_stitchable = atobool_internal(value, &mut b_error);
@@ -2379,36 +2424,35 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
             (*p).crop_rect.i_bottom,
         ) as isize);
     }
-    if (*p).mastering_display.b_mastering_display != 0 {
+    if let Some(mastering_display) = (*p).mastering_display {
         s = s.offset(sprintf(
             s,
-            b" mastering-display=G(%d,%d)B(%d,%d)R(%d,%d)WP(%d,%d)L(%ld,%ld)\0" as *const u8
-                as *const c_char,
-            (*p).mastering_display.i_green_x,
-            (*p).mastering_display.i_green_y,
-            (*p).mastering_display.i_blue_x,
-            (*p).mastering_display.i_blue_y,
-            (*p).mastering_display.i_red_x,
-            (*p).mastering_display.i_red_y,
-            (*p).mastering_display.i_white_x,
-            (*p).mastering_display.i_white_y,
-            (*p).mastering_display.i_display_max,
-            (*p).mastering_display.i_display_min,
+            c" mastering-display=G(%d,%d)B(%d,%d)R(%d,%d)WP(%d,%d)L(%ld,%ld)".as_ptr(),
+            mastering_display.green.0 as i32,
+            mastering_display.green.1 as i32,
+            mastering_display.blue.0 as i32,
+            mastering_display.blue.1 as i32,
+            mastering_display.red.0 as i32,
+            mastering_display.red.1 as i32,
+            mastering_display.white.0 as i32,
+            mastering_display.white.1 as i32,
+            mastering_display.display_max as i64,
+            mastering_display.display_min as i64,
         ) as isize);
     }
-    if (*p).content_light_level.b_cll != 0 {
+    if let Some(light_level) = (*p).content_light_level {
         s = s.offset(sprintf(
             s,
-            b" cll=%d,%d\0" as *const u8 as *const c_char,
-            (*p).content_light_level.i_max_cll,
-            (*p).content_light_level.i_max_fall,
+            c" cll=%d,%d".as_ptr(),
+            light_level.max_cll as i32,
+            light_level.max_fall as i32,
         ) as isize);
     }
-    if (*p).i_frame_packing >= 0 as c_int {
+    if let Some(frame_packing) = (*p).frame_packing {
         s = s.offset(sprintf(
             s,
-            b" frame-packing=%d\0" as *const u8 as *const c_char,
-            (*p).i_frame_packing,
+            c" frame-packing=%d".as_ptr(),
+            frame_packing as i32,
         ) as isize);
     }
     if !((*p).rc.i_rc_method == X264_RC_CQP && (*p).rc.i_qp_constant == 0 as c_int) {

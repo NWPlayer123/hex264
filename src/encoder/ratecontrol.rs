@@ -31,11 +31,12 @@ use crate::string_h::{
 };
 use crate::x264_h::{
     x264_level_t, x264_levels, x264_param_cleanup, x264_param_parse, x264_param_t, x264_zone_t,
-    X264_AQ_AUTOVARIANCE, X264_AQ_AUTOVARIANCE_BIASED, X264_AQ_NONE, X264_B_ADAPT_NONE,
-    X264_B_ADAPT_TRELLIS, X264_DIRECT_PRED_AUTO, X264_KEYINT_MAX_INFINITE, X264_LOG_DEBUG,
-    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_QP_AUTO, X264_RC_ABR,
-    X264_RC_CQP, X264_RC_CRF, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I,
-    X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_SIMPLE,
+    FramePacking, X264_AQ_AUTOVARIANCE, X264_AQ_AUTOVARIANCE_BIASED, X264_AQ_NONE,
+    X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_DIRECT_PRED_AUTO, X264_KEYINT_MAX_INFINITE,
+    X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR,
+    X264_QP_AUTO, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF, X264_TYPE_AUTO, X264_TYPE_B,
+    X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
+    X264_WEIGHTP_SIMPLE,
 };
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
@@ -3605,18 +3606,13 @@ unsafe extern "C" fn get_qscale(
     if (*h).param.rc.b_mb_tree != 0 {
         let mut timescale: c_double = (*(*h).sps.as_mut_ptr()).vui.i_num_units_in_tick as c_double
             / (*(*h).sps.as_mut_ptr()).vui.i_time_scale as c_double;
+        let frame_packing = (*h).param.frame_packing;
         q = pow(
-            (0.04f32
-                / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                as c_double
+            FramePacking::base_frame_duration(frame_packing)
                 / x264_clip3f(
                     (*rce).i_duration as c_double * timescale,
-                    (0.01f32
-                        / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int)
-                            as c_float) as c_double,
-                    (1.00f32
-                        / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int)
-                            as c_float) as c_double,
+                    FramePacking::min_frame_duration(frame_packing),
+                    FramePacking::max_frame_duration(frame_packing),
                 ),
             (1 as c_int as c_float - (*h).param.rc.f_qcompress) as c_double,
         );
@@ -4372,21 +4368,16 @@ unsafe extern "C" fn rate_estimate_qscale(mut h: *mut x264_t) -> c_float {
         } else {
             let mut wanted_bits: c_double = 0.;
             let mut overflow: c_double = 1 as c_int as c_double;
+            let frame_packing = (*h).param.frame_packing;
             (*rcc).last_satd = x264_10_rc_analyse_slice(h);
             (*rcc).short_term_cplxsum *= 0.5f64;
             (*rcc).short_term_cplxcount *= 0.5f64;
             (*rcc).short_term_cplxsum += (*rcc).last_satd as c_double
                 / (x264_clip3f(
                     (*(*h).fenc).f_duration as c_double,
-                    (0.01f32
-                        / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int)
-                            as c_float) as c_double,
-                    (1.00f32
-                        / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int)
-                            as c_float) as c_double,
-                ) / (0.04f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double);
+                    FramePacking::min_frame_duration(frame_packing),
+                    FramePacking::max_frame_duration(frame_packing),
+                ) / FramePacking::base_frame_duration(frame_packing));
             (*rcc).short_term_cplxcount += 1.;
             rce.tex_bits = (*rcc).last_satd;
             rce.blurred_complexity =
@@ -4989,17 +4980,12 @@ unsafe extern "C" fn init_pass2(mut h: *mut x264_t) -> c_int {
         while (j as c_double) < cplxblur * 2 as c_int as c_double && j < (*rcc).num_entries - i_1 {
             let mut rcj: *mut ratecontrol_entry_t =
                 &mut *(*rcc).entry.offset((i_1 + j) as isize) as *mut ratecontrol_entry_t;
+            let frame_packing = (*h).param.frame_packing;
             let mut frame_duration: c_double = x264_clip3f(
                 (*rcj).i_duration as c_double * timescale,
-                (0.01f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
-                (1.00f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
-            ) / (0.04f32
-                / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                as c_double;
+                FramePacking::min_frame_duration(frame_packing),
+                FramePacking::max_frame_duration(frame_packing),
+            ) / FramePacking::base_frame_duration(frame_packing);
             weight *= 1 as c_int as c_double
                 - pow(
                     ((*rcj).i_count as c_float / (*rcc).nmb as c_float) as c_double,
@@ -5020,17 +5006,12 @@ unsafe extern "C" fn init_pass2(mut h: *mut x264_t) -> c_int {
         while j_0 as c_double <= cplxblur * 2 as c_int as c_double && j_0 <= i_1 {
             let mut rcj_0: *mut ratecontrol_entry_t =
                 &mut *(*rcc).entry.offset((i_1 - j_0) as isize) as *mut ratecontrol_entry_t;
+            let frame_packing = (*h).param.frame_packing;
             let mut frame_duration_0: c_double = x264_clip3f(
                 (*rcj_0).i_duration as c_double * timescale,
-                (0.01f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
-                (1.00f32
-                    / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                    as c_double,
-            ) / (0.04f32
-                / (((*h).param.i_frame_packing == 5 as c_int) as c_int + 1 as c_int) as c_float)
-                as c_double;
+                FramePacking::min_frame_duration(frame_packing),
+                FramePacking::max_frame_duration(frame_packing),
+            ) / FramePacking::base_frame_duration(frame_packing);
             gaussian_weight = weight * exp((-j_0 * j_0) as c_double / 200.0f64);
             weight_sum += gaussian_weight;
             cplx_sum += gaussian_weight
