@@ -98,10 +98,10 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     dh = (*p_mkv).height as int64_t;
     (*p_mkv).display_size_units = DS_PIXELS;
     (*p_mkv).stereo_mode = -(1 as c_int);
-    if (*p_param).i_frame_packing >= 0 as c_int && (*p_param).i_frame_packing < STEREO_COUNT {
-        (*p_mkv).stereo_mode = stereo_modes[(*p_param).i_frame_packing as usize] as c_int;
-        dw /= stereo_w_div[(*p_param).i_frame_packing as usize] as int64_t;
-        dh /= stereo_h_div[(*p_param).i_frame_packing as usize] as int64_t;
+    if let Some(frame_packing) = (*p_param).frame_packing {
+        (*p_mkv).stereo_mode = stereo_modes[frame_packing as usize] as c_int;
+        dw /= stereo_w_div[frame_packing as usize] as int64_t;
+        dh /= stereo_h_div[frame_packing as usize] as int64_t;
     }
     if (*p_param).vui.i_sar_width != 0
         && (*p_param).vui.i_sar_height != 0

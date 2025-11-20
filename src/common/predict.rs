@@ -8,12 +8,30 @@ use crate::predict_h::{
     I_PRED_16x16_DC_128, I_PRED_16x16_DC_LEFT, I_PRED_16x16_DC_TOP, I_PRED_16x16_H, I_PRED_16x16_P,
     I_PRED_16x16_V, I_PRED_4x4_DC, I_PRED_4x4_DC_128, I_PRED_4x4_DC_LEFT, I_PRED_4x4_DC_TOP,
     I_PRED_4x4_DDL, I_PRED_4x4_DDR, I_PRED_4x4_H, I_PRED_4x4_HD, I_PRED_4x4_HU, I_PRED_4x4_V,
-    I_PRED_4x4_VL, I_PRED_4x4_VR, I_PRED_8x8_DC, I_PRED_8x8_DC_128, I_PRED_8x8_DC_LEFT,
-    I_PRED_8x8_DC_TOP, I_PRED_8x8_DDL, I_PRED_8x8_DDR, I_PRED_8x8_H, I_PRED_8x8_HD, I_PRED_8x8_HU,
-    I_PRED_8x8_V, I_PRED_8x8_VL, I_PRED_8x8_VR, I_PRED_CHROMA_DC, I_PRED_CHROMA_DC_128,
+    I_PRED_4x4_VL, I_PRED_4x4_VR, I_PRED_CHROMA_DC, I_PRED_CHROMA_DC_128,
     I_PRED_CHROMA_DC_LEFT, I_PRED_CHROMA_DC_TOP, I_PRED_CHROMA_H, I_PRED_CHROMA_P, I_PRED_CHROMA_V,
 };
 use crate::stdint_uintn_h::{uint32_t, uint64_t};
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[repr(usize)]
+pub enum Intra8x8Pred {
+    Vertical = 0,
+    Horizontal = 1,
+    Dc = 2,
+    DiagonalDownLeft = 3,
+    DiagonalDownRight = 4,
+    VerticalRight = 5,
+    HorizontalDown = 6,
+    VerticalLeft = 7,
+    HorizontalUp = 8,
+    
+    // Fallback modes when certain neighbors are unavailable
+    DcLeft = 9,
+    DcTop = 10,
+    Dc128 = 11,
+}
+
 #[no_mangle]
 #[c2rust::src_loc = "67:1"]
 unsafe extern "C" fn x264_10_predict_16x16_dc_c(mut src: *mut pixel) {
@@ -2189,53 +2207,27 @@ unsafe extern "C" fn x264_10_predict_8x16c_init(mut _cpu: uint32_t, mut pf: *mut
     *fresh34 =
         Some(predict_8x16c_dc_128_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
 }
-#[no_mangle]
-#[c2rust::src_loc = "1000:1"]
-unsafe extern "C" fn x264_10_predict_8x8_init(
+
+pub fn x264_predict_8x8_init(
     mut _cpu: uint32_t,
-    mut pf: *mut x264_predict8x8_t,
-    mut predict_filter: *mut x264_predict_8x8_filter_t,
+    mut pf: &mut [x264_predict8x8_t; 12],
+    mut predict_filter: &mut x264_predict_8x8_filter_t,
 ) {
-    let ref mut fresh101 = *pf.offset(I_PRED_8x8_V as c_int as isize);
-    *fresh101 = Some(x264_10_predict_8x8_v_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh102 = *pf.offset(I_PRED_8x8_H as c_int as isize);
-    *fresh102 = Some(x264_10_predict_8x8_h_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh103 = *pf.offset(I_PRED_8x8_DC as c_int as isize);
-    *fresh103 = Some(x264_10_predict_8x8_dc_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh104 = *pf.offset(I_PRED_8x8_DDL as c_int as isize);
-    *fresh104 = Some(predict_8x8_ddl_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh105 = *pf.offset(I_PRED_8x8_DDR as c_int as isize);
-    *fresh105 = Some(predict_8x8_ddr_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh106 = *pf.offset(I_PRED_8x8_VR as c_int as isize);
-    *fresh106 = Some(predict_8x8_vr_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh107 = *pf.offset(I_PRED_8x8_HD as c_int as isize);
-    *fresh107 = Some(predict_8x8_hd_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh108 = *pf.offset(I_PRED_8x8_VL as c_int as isize);
-    *fresh108 = Some(predict_8x8_vl_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh109 = *pf.offset(I_PRED_8x8_HU as c_int as isize);
-    *fresh109 = Some(predict_8x8_hu_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh110 = *pf.offset(I_PRED_8x8_DC_LEFT as c_int as isize);
-    *fresh110 = Some(predict_8x8_dc_left_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh111 = *pf.offset(I_PRED_8x8_DC_TOP as c_int as isize);
-    *fresh111 = Some(predict_8x8_dc_top_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    let ref mut fresh112 = *pf.offset(I_PRED_8x8_DC_128 as c_int as isize);
-    *fresh112 = Some(predict_8x8_dc_128_c as unsafe extern "C" fn(*mut pixel, *mut pixel) -> ())
-        as x264_predict8x8_t;
-    *predict_filter = Some(
-        predict_8x8_filter_c as unsafe extern "C" fn(*mut pixel, *mut pixel, c_int, c_int) -> (),
-    ) as x264_predict_8x8_filter_t;
+    pf[Intra8x8Pred::Vertical as usize] = Some(x264_10_predict_8x8_v_c);
+    pf[Intra8x8Pred::Horizontal as usize] = Some(x264_10_predict_8x8_h_c);
+    pf[Intra8x8Pred::Dc as usize] = Some(x264_10_predict_8x8_dc_c);
+    pf[Intra8x8Pred::DiagonalDownLeft as usize] = Some(predict_8x8_ddl_c);
+    pf[Intra8x8Pred::DiagonalDownRight as usize] = Some(predict_8x8_ddr_c);
+    pf[Intra8x8Pred::VerticalRight as usize] = Some(predict_8x8_vr_c);
+    pf[Intra8x8Pred::HorizontalDown as usize] = Some(predict_8x8_hd_c);
+    pf[Intra8x8Pred::VerticalLeft as usize] = Some(predict_8x8_vl_c);
+    pf[Intra8x8Pred::HorizontalUp as usize] = Some(predict_8x8_hu_c);
+    pf[Intra8x8Pred::DcLeft as usize] = Some(predict_8x8_dc_left_c);
+    pf[Intra8x8Pred::DcTop as usize] = Some(predict_8x8_dc_top_c);
+    pf[Intra8x8Pred::Dc128 as usize] = Some(predict_8x8_dc_128_c);
+    *predict_filter = Some(predict_8x8_filter_c);
 }
+
 #[no_mangle]
 #[c2rust::src_loc = "1042:1"]
 unsafe extern "C" fn x264_10_predict_4x4_init(mut _cpu: uint32_t, mut pf: *mut x264_predict_t) {

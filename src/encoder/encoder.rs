@@ -38,11 +38,10 @@ use crate::encoder_set_h::{
     x264_10_filler_write, x264_10_pps_init, x264_10_pps_write,
     x264_10_sei_alternative_transfer_write, x264_10_sei_avcintra_umid_write,
     x264_10_sei_avcintra_vanc_write, x264_10_sei_buffering_period_write,
-    x264_10_sei_content_light_level_write, x264_10_sei_dec_ref_pic_marking_write,
-    x264_10_sei_frame_packing_write, x264_10_sei_mastering_display_write,
-    x264_10_sei_pic_timing_write, x264_10_sei_recovery_point_write, x264_10_sei_version_write,
-    x264_10_sei_write, x264_10_sps_init, x264_10_sps_init_reconfigurable,
-    x264_10_sps_init_scaling_list, x264_10_sps_write, x264_10_validate_levels,
+    x264_10_sei_dec_ref_pic_marking_write, x264_10_sei_pic_timing_write,
+    x264_10_sei_recovery_point_write, x264_10_sei_version_write, x264_10_sei_write,
+    x264_10_sps_init, x264_10_sps_init_reconfigurable, x264_10_sps_init_scaling_list,
+    x264_10_sps_write, x264_10_validate_levels,
 };
 use crate::frame_h::{
     x264_10_deblock_init, x264_10_expand_border_mbpair, x264_10_frame_cond_broadcast,
@@ -77,16 +76,15 @@ use crate::pixel_h::{
 };
 use crate::predict_h::{
     x264_10_predict_16x16_init, x264_10_predict_4x4_init, x264_10_predict_8x16c_init,
-    x264_10_predict_8x8_init, x264_10_predict_8x8c_init, x264_mb_chroma_pred_mode_fix,
-    x264_mb_pred_mode16x16_fix, x264_mb_pred_mode4x4_fix, x264_predict_t, I_PRED_16x16_DC_128,
-    I_PRED_8x8_DC_128, I_PRED_CHROMA_DC_128,
+    x264_10_predict_8x8c_init, x264_mb_chroma_pred_mode_fix, x264_mb_pred_mode16x16_fix,
+    x264_mb_pred_mode4x4_fix, x264_predict_t, I_PRED_16x16_DC_128, I_PRED_8x8_DC_128,
+    I_PRED_CHROMA_DC_128,
 };
 use crate::pthread_h::{
     pthread_cond_broadcast, pthread_cond_destroy, pthread_cond_init, pthread_mutex_destroy,
     pthread_mutex_init, pthread_mutex_lock, pthread_mutex_unlock,
 };
 use crate::pthreadtypes_h::{pthread_condattr_t, pthread_mutexattr_t};
-use crate::quant_h::x264_10_quant_init;
 use crate::ratecontrol_h::{
     x264_10_adaptive_quant_frame, x264_10_hrd_fullness, x264_10_macroblock_tree_read,
     x264_10_ratecontrol_delete, x264_10_ratecontrol_end, x264_10_ratecontrol_init_reconfigurable,
@@ -99,7 +97,13 @@ use crate::ratecontrol_h::{
 use crate::set_h::{
     x264_10_cqm_delete, x264_10_cqm_init, x264_10_cqm_parse_file, x264_pps_t, x264_sps_t,
 };
-use crate::stdint_h::{intptr_t, UINT16_MAX, UINT32_MAX};
+use crate::src::common::predict::x264_predict_8x8_init;
+use crate::src::common::quant::x264_quant_init;
+use crate::src::encoder::set::{
+    x264_sei_content_light_level_write, x264_sei_frame_packing_write,
+    x264_sei_mastering_display_write,
+};
+use crate::stdint_h::{intptr_t, UINT32_MAX};
 use crate::stdint_intn_h::{int32_t, int64_t};
 use crate::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use crate::stdio_h::{fclose, fopen, fseeko, fwrite, snprintf, sprintf, SEEK_SET};
@@ -116,6 +120,7 @@ use crate::threadpool_h::{
     x264_10_threadpool_wait,
 };
 use crate::types_h::__off64_t;
+use crate::x264_h::FramePacking;
 use crate::x264_h::{
     x264_level_t, x264_levels, x264_nal_t, x264_param_cleanup, x264_param_t, x264_picture_t,
     x264_sei_payload_t, X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8,
@@ -857,15 +862,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         (*h).param.i_frame_reference = 1 as c_int;
         (*h).param.i_dpb_size = 1 as c_int;
     }
-    if (*h).param.i_frame_packing < -(1 as c_int) || (*h).param.i_frame_packing > 7 as c_int {
-        x264_10_log(
-            h,
-            X264_LOG_WARNING,
-            b"ignoring unknown frame packing value\n\0" as *const u8 as *const c_char,
-        );
-        (*h).param.i_frame_packing = -(1 as c_int);
-    }
-    if (*h).param.i_frame_packing == 7 as c_int
+    if (*h).param.frame_packing == Some(FramePacking::TileFormat)
         && (((*h).param.i_width - (*h).param.crop_rect.i_left - (*h).param.crop_rect.i_right)
             % 3 as c_int
             != 0
@@ -883,50 +880,8 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         );
         return -(1 as c_int);
     }
-    if (*h).param.mastering_display.b_mastering_display != 0 {
-        if (*h).param.mastering_display.i_green_x > UINT16_MAX
-            || (*h).param.mastering_display.i_green_x < 0 as c_int
-            || (*h).param.mastering_display.i_green_y > UINT16_MAX
-            || (*h).param.mastering_display.i_green_y < 0 as c_int
-            || (*h).param.mastering_display.i_blue_x > UINT16_MAX
-            || (*h).param.mastering_display.i_blue_x < 0 as c_int
-            || (*h).param.mastering_display.i_blue_y > UINT16_MAX
-            || (*h).param.mastering_display.i_blue_y < 0 as c_int
-            || (*h).param.mastering_display.i_red_x > UINT16_MAX
-            || (*h).param.mastering_display.i_red_x < 0 as c_int
-            || (*h).param.mastering_display.i_red_y > UINT16_MAX
-            || (*h).param.mastering_display.i_red_y < 0 as c_int
-            || (*h).param.mastering_display.i_white_x > UINT16_MAX
-            || (*h).param.mastering_display.i_white_x < 0 as c_int
-            || (*h).param.mastering_display.i_white_y > UINT16_MAX
-            || (*h).param.mastering_display.i_white_y < 0 as c_int
-        {
-            x264_10_log(
-                h,
-                X264_LOG_ERROR,
-                b"mastering display xy coordinates out of range [0,%u]\n\0" as *const u8
-                    as *const c_char,
-                UINT16_MAX,
-            );
-            return -(1 as c_int);
-        }
-        if (*h).param.mastering_display.i_display_max > UINT32_MAX as int64_t
-            || (*h).param.mastering_display.i_display_max < 0 as int64_t
-            || (*h).param.mastering_display.i_display_min > UINT32_MAX as int64_t
-            || (*h).param.mastering_display.i_display_min < 0 as int64_t
-        {
-            x264_10_log(
-                h,
-                X264_LOG_ERROR,
-                b"mastering display brightness out of range [0,%u]\n\0" as *const u8
-                    as *const c_char,
-                UINT32_MAX,
-            );
-            return -(1 as c_int);
-        }
-        if (*h).param.mastering_display.i_display_min == 50000 as int64_t
-            && (*h).param.mastering_display.i_display_max == 50000 as int64_t
-        {
+    if let Some(mastering_display) = (*h).param.mastering_display {
+        if mastering_display.display_min == 50000 && mastering_display.display_max == 50000 {
             x264_10_log(
                 h,
                 X264_LOG_ERROR,
@@ -935,20 +890,6 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             );
             return -(1 as c_int);
         }
-    }
-    if (*h).param.content_light_level.b_cll != 0
-        && ((*h).param.content_light_level.i_max_cll > UINT16_MAX
-            || (*h).param.content_light_level.i_max_cll < 0 as c_int
-            || (*h).param.content_light_level.i_max_fall > UINT16_MAX
-            || (*h).param.content_light_level.i_max_fall < 0 as c_int)
-    {
-        x264_10_log(
-            h,
-            X264_LOG_ERROR,
-            b"content light levels out of range [0,%u]\n\0" as *const u8 as *const c_char,
-            UINT16_MAX,
-        );
-        return -(1 as c_int);
     }
     if b_open != 0 {
         let mut score: c_int = 0 as c_int;
@@ -3471,9 +3412,9 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                         (*h).param.cpu,
                                                                                                         (*h).predict_8x16c.as_mut_ptr(),
                                                                                                     );
-                                                                                                    x264_10_predict_8x8_init(
+                                                                                                    x264_predict_8x8_init(
                                                                                                         (*h).param.cpu,
-                                                                                                        (*h).predict_8x8.as_mut_ptr(),
+                                                                                                        &mut (*h).predict_8x8,
                                                                                                         &mut (*h).predict_8x8_filter,
                                                                                                     );
                                                                                                     x264_10_predict_4x4_init(
@@ -3502,7 +3443,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                         &mut (*h).mc,
                                                                                                         (*h).param.b_cpu_independent,
                                                                                                     );
-                                                                                                    x264_10_quant_init(h, (*h).param.cpu, &mut (*h).quantf);
+                                                                                                    x264_quant_init(h, (*h).param.cpu, &mut (*h).quantf);
                                                                                                     x264_10_deblock_init(
                                                                                                         (*h).param.cpu,
                                                                                                         &mut (*h).loopf,
@@ -4019,7 +3960,7 @@ unsafe extern "C" fn encoder_try_reconfig(
     (*h).param.b_deblocking_filter = (*param).b_deblocking_filter;
     (*h).param.i_deblocking_filter_alphac0 = (*param).i_deblocking_filter_alphac0;
     (*h).param.i_deblocking_filter_beta = (*param).i_deblocking_filter_beta;
-    (*h).param.i_frame_packing = (*param).i_frame_packing;
+    (*h).param.frame_packing = (*param).frame_packing;
     (*h).param.mastering_display = (*param).mastering_display;
     (*h).param.content_light_level = (*param).content_light_level;
     (*h).param.i_alternative_transfer = (*param).i_alternative_transfer;
@@ -4593,7 +4534,7 @@ unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
 #[inline]
 #[c2rust::src_loc = "2286:1"]
 unsafe extern "C" fn reference_distance(mut h: *mut x264_t, mut frame: *mut x264_frame_t) -> c_int {
-    if (*h).param.i_frame_packing == 5 as c_int {
+    if (*h).param.frame_packing == Some(FramePacking::TemporalInterleaved) {
         return abs(((*(*h).fenc).i_frame & !(1 as c_int)) - ((*frame).i_frame & !(1 as c_int)))
             + ((*(*h).fenc).i_frame & 1 as c_int != (*frame).i_frame & 1 as c_int) as c_int;
     } else {
@@ -6535,9 +6476,9 @@ unsafe extern "C" fn x264_10_encoder_encode(
                         && (*h).param.i_avcintra_class == 0
                         && (*h).out.i_nal - 1 as c_int != 0) as c_int);
         }
-        if (*h).param.mastering_display.b_mastering_display != 0 {
+        if let Some(mastering_display) = (*h).param.mastering_display {
             nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
-            x264_10_sei_mastering_display_write(h, &mut (*h).out.bs);
+            x264_sei_mastering_display_write(&mastering_display, &mut (*h).out.bs);
             if nal_end(h) != 0 {
                 return -(1 as c_int);
             }
@@ -6547,9 +6488,9 @@ unsafe extern "C" fn x264_10_encoder_encode(
                         && (*h).param.i_avcintra_class == 0
                         && (*h).out.i_nal - 1 as c_int != 0) as c_int);
         }
-        if (*h).param.content_light_level.b_cll != 0 {
+        if let Some(light_level) = (*h).param.content_light_level {
             nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
-            x264_10_sei_content_light_level_write(h, &mut (*h).out.bs);
+            x264_sei_content_light_level_write(&light_level, &mut (*h).out.bs);
             if nal_end(h) != 0 {
                 return -(1 as c_int);
             }
@@ -6572,19 +6513,19 @@ unsafe extern "C" fn x264_10_encoder_encode(
                         && (*h).out.i_nal - 1 as c_int != 0) as c_int);
         }
     }
-    if (*h).param.i_frame_packing >= 0 as c_int
-        && ((*(*h).fenc).b_keyframe != 0 || (*h).param.i_frame_packing == 5 as c_int)
-    {
-        nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
-        x264_10_sei_frame_packing_write(h, &mut (*h).out.bs);
-        if nal_end(h) != 0 {
-            return -(1 as c_int);
+    if let Some(frame_packing) = (*h).param.frame_packing {
+        if (*(*h).fenc).b_keyframe != 0 || frame_packing == FramePacking::TemporalInterleaved {
+            nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
+            x264_sei_frame_packing_write(frame_packing, (*(*h).fenc).i_frame, &mut (*h).out.bs);
+            if nal_end(h) != 0 {
+                return -(1 as c_int);
+            }
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+                + (NALU_OVERHEAD
+                    - ((*h).param.b_annexb != 0
+                        && (*h).param.i_avcintra_class == 0
+                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
         }
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
-            + (NALU_OVERHEAD
-                - ((*h).param.b_annexb != 0
-                    && (*h).param.i_avcintra_class == 0
-                    && (*h).out.i_nal - 1 as c_int != 0) as c_int);
     }
     if (*(*h).sps.as_mut_ptr()).vui.b_pic_struct_present != 0
         || (*(*h).sps.as_mut_ptr()).vui.b_nal_hrd_parameters_present != 0
