@@ -55,7 +55,7 @@ unsafe extern "C" fn correct_fps(mut fps: c_double, mut h: *mut timecode_hnd_t) 
                 b"tcfile fps correction failed.\n                  Specify an appropriate timebase manually or remake tcfile.\n\0"
                     as *const u8 as *const c_char,
             );
-            return -(1 as c_int) as c_double;
+            return -1 as c_double;
         }
         if fabs(fps_num as c_double / fps_den as c_double / exponent - fps_sig) < DOUBLE_EPSILON {
             break;
@@ -100,7 +100,7 @@ unsafe extern "C" fn try_mkv_timebase_den(
                 b"automatic timebase generation failed.\n                  Specify timebase manually.\n\0"
                     as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         num += 1;
     }
@@ -143,16 +143,16 @@ unsafe extern "C" fn parse_tcfile(
             X264_LOG_ERROR,
             b"unsupported timecode format\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if tcfv == 1 as c_int {
         let mut file_pos: int64_t = 0;
         let mut assume_fps: c_double = 0.;
         let mut seq_fps: c_double = 0.;
         let mut start: c_int = 0;
-        let mut end: c_int = -(1 as c_int);
-        let mut prev_start: c_int = -(1 as c_int);
-        let mut prev_end: c_int = -(1 as c_int);
+        let mut end: c_int = -1;
+        let mut prev_start: c_int = -1;
+        let mut prev_end: c_int = -1;
         (*h).assume_fps = 0 as c_int as c_double;
         num = 2 as c_int;
         while !fgets(
@@ -162,9 +162,9 @@ unsafe extern "C" fn parse_tcfile(
         )
         .is_null()
         {
-            if buff[0 as c_int as usize] as c_int == '#' as i32
-                || buff[0 as c_int as usize] as c_int == '\n' as i32
-                || buff[0 as c_int as usize] as c_int == '\r' as i32
+            if buff[0] as c_int == '#' as i32
+                || buff[0] as c_int == '\n' as i32
+                || buff[0] as c_int == '\r' as i32
             {
                 num += 1;
             } else {
@@ -185,7 +185,7 @@ unsafe extern "C" fn parse_tcfile(
                         b"tcfile parsing error: assumed fps not found\n\0" as *const u8
                             as *const c_char,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 break;
             }
@@ -197,7 +197,7 @@ unsafe extern "C" fn parse_tcfile(
                 b"invalid assumed fps %.6f\n\0" as *const u8 as *const c_char,
                 (*h).assume_fps,
             );
-            return -(1 as c_int);
+            return -1;
         }
         file_pos = ftello(tcfile_in) as int64_t;
         (*h).stored_pts_num = 0 as c_int;
@@ -209,9 +209,9 @@ unsafe extern "C" fn parse_tcfile(
         )
         .is_null()
         {
-            if buff[0 as c_int as usize] as c_int == '#' as i32
-                || buff[0 as c_int as usize] as c_int == '\n' as i32
-                || buff[0 as c_int as usize] as c_int == '\r' as i32
+            if buff[0] as c_int == '#' as i32
+                || buff[0] as c_int == '\n' as i32
+                || buff[0] as c_int == '\r' as i32
             {
                 if sscanf(
                     buff.as_mut_ptr(),
@@ -229,13 +229,13 @@ unsafe extern "C" fn parse_tcfile(
                     &mut end as *mut c_int,
                     &mut seq_fps as *mut c_double,
                 );
-                if ret != 3 as c_int && ret != -(1 as c_int) {
+                if ret != 3 as c_int && ret != -1 {
                     x264_cli_log(
                         b"timecode\0" as *const u8 as *const c_char,
                         X264_LOG_ERROR,
                         b"invalid input tcfile\n\0" as *const u8 as *const c_char,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 if start > end
                     || start <= prev_start
@@ -249,7 +249,7 @@ unsafe extern "C" fn parse_tcfile(
                         num,
                         buff.as_mut_ptr(),
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 prev_start = start;
                 prev_end = end;
@@ -268,7 +268,7 @@ unsafe extern "C" fn parse_tcfile(
             (timecodes_num as size_t).wrapping_mul(::core::mem::size_of::<c_double>() as size_t),
         ) as *mut c_double;
         if timecodes.is_null() {
-            return -(1 as c_int);
+            return -1;
         }
         if (*h).auto_timebase_den != 0 || (*h).auto_timebase_num != 0 {
             fpss = malloc(
@@ -290,7 +290,7 @@ unsafe extern "C" fn parse_tcfile(
                 if assume_fps < 0 as c_int as c_double {
                     current_block = 15792084957793291482;
                 } else {
-                    *timecodes.offset(0 as c_int as isize) = 0 as c_int as c_double;
+                    *timecodes.offset(0) = 0 as c_int as c_double;
                     seq_num = 0 as c_int;
                     num = seq_num;
                     loop {
@@ -305,9 +305,9 @@ unsafe extern "C" fn parse_tcfile(
                             current_block = 13660591889533726445;
                             break;
                         }
-                        if buff[0 as c_int as usize] as c_int == '#' as i32
-                            || buff[0 as c_int as usize] as c_int == '\n' as i32
-                            || buff[0 as c_int as usize] as c_int == '\r' as i32
+                        if buff[0] as c_int == '#' as i32
+                            || buff[0] as c_int == '\n' as i32
+                            || buff[0] as c_int == '\r' as i32
                         {
                             continue;
                         }
@@ -382,9 +382,9 @@ unsafe extern "C" fn parse_tcfile(
                                         )
                                         .is_null()
                                     {
-                                        if buff[0 as c_int as usize] as c_int == '#' as i32
-                                            || buff[0 as c_int as usize] as c_int == '\n' as i32
-                                            || buff[0 as c_int as usize] as c_int == '\r' as i32
+                                        if buff[0] as c_int == '#' as i32
+                                            || buff[0] as c_int == '\n' as i32
+                                            || buff[0] as c_int == '\r' as i32
                                         {
                                             continue;
                                         }
@@ -456,9 +456,9 @@ unsafe extern "C" fn parse_tcfile(
         )
         .is_null()
         {
-            if buff[0 as c_int as usize] as c_int == '#' as i32
-                || buff[0 as c_int as usize] as c_int == '\n' as i32
-                || buff[0 as c_int as usize] as c_int == '\r' as i32
+            if buff[0] as c_int == '#' as i32
+                || buff[0] as c_int == '\n' as i32
+                || buff[0] as c_int == '\r' as i32
             {
                 if (*h).stored_pts_num == 0 {
                     file_pos_0 = ftello(tcfile_in) as int64_t;
@@ -474,14 +474,14 @@ unsafe extern "C" fn parse_tcfile(
                 X264_LOG_ERROR,
                 b"input tcfile doesn't have any timecodes!\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         fseeko(tcfile_in, file_pos_0 as __off64_t, SEEK_SET);
         timecodes = malloc(
             (timecodes_num as size_t).wrapping_mul(::core::mem::size_of::<c_double>() as size_t),
         ) as *mut c_double;
         if timecodes.is_null() {
-            return -(1 as c_int);
+            return -1;
         }
         num = 0 as c_int;
         if !fgets(
@@ -494,16 +494,16 @@ unsafe extern "C" fn parse_tcfile(
             ret = sscanf(
                 buff.as_mut_ptr(),
                 b"%lf\0" as *const u8 as *const c_char,
-                &mut *timecodes.offset(0 as c_int as isize) as *mut c_double,
+                &mut *timecodes.offset(0) as *mut c_double,
             );
-            *timecodes.offset(0 as c_int as isize) *= 1e-3f64;
+            *timecodes.offset(0) *= 1e-3f64;
             if ret != 1 as c_int {
                 x264_cli_log(
                     b"timecode\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
                     b"invalid input tcfile for frame 0\n\0" as *const u8 as *const c_char,
                 );
-                return -(1 as c_int);
+                return -1;
             }
             num = 1 as c_int;
             while num < timecodes_num
@@ -514,9 +514,9 @@ unsafe extern "C" fn parse_tcfile(
                 )
                 .is_null()
             {
-                if buff[0 as c_int as usize] as c_int == '#' as i32
-                    || buff[0 as c_int as usize] as c_int == '\n' as i32
-                    || buff[0 as c_int as usize] as c_int == '\r' as i32
+                if buff[0] as c_int == '#' as i32
+                    || buff[0] as c_int == '\n' as i32
+                    || buff[0] as c_int == '\r' as i32
                 {
                     continue;
                 }
@@ -536,7 +536,7 @@ unsafe extern "C" fn parse_tcfile(
                         b"invalid input tcfile for frame %d\n\0" as *const u8 as *const c_char,
                         num,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 num += 1;
             }
@@ -548,7 +548,7 @@ unsafe extern "C" fn parse_tcfile(
                 b"failed to read input tcfile for frame %d\0" as *const u8 as *const c_char,
                 num,
             );
-            return -(1 as c_int);
+            return -1;
         }
         if timecodes_num == 1 as c_int {
             (*h).timebase_den = (*info).fps_num as uint64_t;
@@ -654,7 +654,7 @@ unsafe extern "C" fn parse_tcfile(
                     b"automatic timebase generation failed.\n                  Specify an appropriate timebase manually.\n\0"
                         as *const u8 as *const c_char,
                 );
-                return -(1 as c_int);
+                return -1;
             }
             (*h).pts = malloc(
                 ((*h).stored_pts_num as size_t)
@@ -677,7 +677,7 @@ unsafe extern "C" fn parse_tcfile(
                                 as *const c_char,
                             num,
                         );
-                        return -(1 as c_int);
+                        return -1;
                     }
                     num += 1;
                 }
@@ -693,7 +693,7 @@ unsafe extern "C" fn parse_tcfile(
     if !fpss.is_null() {
         free(fpss as *mut c_void);
     }
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "344:1"]
 unsafe extern "C" fn open_file(
@@ -712,7 +712,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"malloc failed\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*h).input = cli_input;
     (*h).p_handle = *p_handle;
@@ -736,7 +736,7 @@ unsafe extern "C" fn open_file(
                 X264_LOG_ERROR,
                 b"timebase you specified exceeds H.264 maximum\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     (*h).auto_timebase_num = (ret == 0) as c_int;
@@ -755,7 +755,7 @@ unsafe extern "C" fn open_file(
             b"can't open `%s'\n\0" as *const u8 as *const c_char,
             psz_filename,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if x264_is_regular_file(tcfile_in) == 0 {
         x264_cli_log(
@@ -766,14 +766,14 @@ unsafe extern "C" fn open_file(
             psz_filename,
         );
         fclose(tcfile_in);
-        return -(1 as c_int);
+        return -1;
     }
     if parse_tcfile(tcfile_in, h, info) < 0 as c_int {
         if !(*h).pts.is_null() {
             free((*h).pts as *mut c_void);
         }
         fclose(tcfile_in);
-        return -(1 as c_int);
+        return -1;
     }
     fclose(tcfile_in);
     (*info).timebase_num = (*h).timebase_num as uint32_t;
@@ -819,7 +819,7 @@ unsafe extern "C" fn read_frame(
 ) -> c_int {
     let mut h: *mut timecode_hnd_t = handle as *mut timecode_hnd_t;
     if (*h).input.read_frame.expect("non-null function pointer")(pic, (*h).p_handle, frame) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*pic).pts = get_frame_pts(h, frame, 1 as c_int);
     (*pic).duration = get_frame_pts(h, frame + 1 as c_int, 0 as c_int) - (*pic).pts;

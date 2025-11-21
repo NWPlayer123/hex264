@@ -78,7 +78,7 @@ unsafe extern "C" fn open_file(
         free(p_flv as *mut c_void);
     }
     *p_handle = NULL as hnd_t;
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "103:1"]
 unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t) -> c_int {
@@ -151,22 +151,20 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
 unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t) -> c_int {
     let mut p_flv: *mut flv_hnd_t = handle as *mut flv_hnd_t;
     let mut c: *mut flv_buffer = (*p_flv).c;
-    let mut sps_size: c_int = (*p_nal.offset(0 as c_int as isize)).i_payload;
-    let mut pps_size: c_int = (*p_nal.offset(1 as c_int as isize)).i_payload;
-    let mut sei_size: c_int = (*p_nal.offset(2 as c_int as isize)).i_payload;
+    let mut sps_size: c_int = (*p_nal.offset(0)).i_payload;
+    let mut pps_size: c_int = (*p_nal.offset(1)).i_payload;
+    let mut sei_size: c_int = (*p_nal.offset(2)).i_payload;
     (*p_flv).sei = malloc(sei_size as size_t) as *mut uint8_t;
     if (*p_flv).sei.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*p_flv).sei_len = sei_size;
     memcpy(
         (*p_flv).sei as *mut c_void,
-        (*p_nal.offset(2 as c_int as isize)).p_payload as *const c_void,
+        (*p_nal.offset(2)).p_payload as *const c_void,
         sei_size as size_t,
     );
-    let mut sps: *mut uint8_t = (*p_nal.offset(0 as c_int as isize))
-        .p_payload
-        .offset(4 as c_int as isize);
+    let mut sps: *mut uint8_t = (*p_nal.offset(0)).p_payload.offset(4);
     flv_put_byte(c, FLV_TAG_TYPE_VIDEO as c_int as uint8_t);
     flv_put_be24(c, 0 as uint32_t);
     flv_put_be24(c, 0 as uint32_t);
@@ -180,9 +178,9 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
     flv_put_byte(c, 0 as uint8_t);
     flv_put_be24(c, 0 as uint32_t);
     flv_put_byte(c, 1 as uint8_t);
-    flv_put_byte(c, *sps.offset(1 as c_int as isize));
-    flv_put_byte(c, *sps.offset(2 as c_int as isize));
-    flv_put_byte(c, *sps.offset(3 as c_int as isize));
+    flv_put_byte(c, *sps.offset(1));
+    flv_put_byte(c, *sps.offset(2));
+    flv_put_byte(c, *sps.offset(3));
     flv_put_byte(c, 0xff as uint8_t);
     flv_put_byte(c, 0xe1 as uint8_t);
     flv_put_be16(c, (sps_size - 4 as c_int) as uint16_t);
@@ -191,16 +189,14 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
     flv_put_be16(c, (pps_size - 4 as c_int) as uint16_t);
     flv_append_data(
         c,
-        (*p_nal.offset(1 as c_int as isize))
-            .p_payload
-            .offset(4 as c_int as isize),
+        (*p_nal.offset(1)).p_payload.offset(4),
         (pps_size - 4 as c_int) as c_uint,
     );
     let mut length: c_uint = (*c).d_cur.wrapping_sub((*p_flv).start);
     flv_rewrite_amf_be24(c, length, (*p_flv).start.wrapping_sub(10 as c_uint));
     flv_put_be32(c, (length as uint32_t).wrapping_add(11 as uint32_t));
     if flv_flush_data(c) < 0 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     return sei_size + sps_size + pps_size;
 }
@@ -214,7 +210,7 @@ unsafe extern "C" fn write_frame(
     let mut p_flv: *mut flv_hnd_t = handle as *mut flv_hnd_t;
     let mut c: *mut flv_buffer = (*p_flv).c;
     if (*p_flv).i_framenum == 0 {
-        (*p_flv).i_delay_time = (*p_picture).i_dts * -(1 as c_int) as int64_t;
+        (*p_flv).i_delay_time = (*p_picture).i_dts * -1 as int64_t;
         if (*p_flv).b_dts_compress == 0 && (*p_flv).i_delay_time != 0 {
             x264_cli_log(
                 b"flv\0" as *const u8 as *const c_char,
@@ -305,7 +301,7 @@ unsafe extern "C" fn write_frame(
     flv_rewrite_amf_be24(c, length, (*p_flv).start.wrapping_sub(10 as c_uint));
     flv_put_be32(c, (11 as uint32_t).wrapping_add(length as uint32_t));
     if flv_flush_data(c) < 0 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     (*p_flv).i_framenum += 1;
     return i_size;
@@ -327,7 +323,7 @@ unsafe extern "C" fn rewrite_amf_double(
     {
         0 as c_int
     } else {
-        -(1 as c_int)
+        -1
     };
 }
 #[c2rust::src_loc = "317:1"]
@@ -338,7 +334,7 @@ unsafe extern "C" fn close_file(
 ) -> c_int {
     let mut total_duration: c_double = 0.;
     let mut current_block: u64;
-    let mut ret: c_int = -(1 as c_int);
+    let mut ret: c_int = -1;
     let mut p_flv: *mut flv_hnd_t = handle as *mut flv_hnd_t;
     let mut c: *mut flv_buffer = (*p_flv).c;
     if !(flv_flush_data(c) < 0 as c_int) {

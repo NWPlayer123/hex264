@@ -79,12 +79,12 @@ pub unsafe extern "C" fn x264_init_vid_filter(
             b"invalid filter `%s'\n\0" as *const u8 as *const c_char,
             name,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*filter_i).init.expect("non-null function pointer")(handle, filter, info, param, opt_string)
         != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     return 0 as c_int;
 }

@@ -64,10 +64,10 @@ unsafe extern "C" fn x264_10_threadpool_init(
 ) -> c_int {
     let mut current_block: u64;
     if threads <= 0 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     if (0 as c_int) < 0 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     let mut pool: *mut x264_threadpool_t = 0 as *mut x264_threadpool_t;
     pool = x264_malloc(::core::mem::size_of::<x264_threadpool_t>() as int64_t)
@@ -154,7 +154,7 @@ unsafe extern "C" fn x264_10_threadpool_init(
             }
         }
     }
-    return -(1 as c_int);
+    return -1;
 }
 #[no_mangle]
 #[c2rust::src_loc = "106:1"]

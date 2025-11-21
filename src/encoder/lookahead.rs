@@ -93,9 +93,9 @@ unsafe extern "C" fn lookahead_update_last_nonb(
 #[c2rust::src_loc = "68:1"]
 unsafe extern "C" fn lookahead_slicetype_decide(mut h: *mut x264_t) {
     x264_10_slicetype_decide(h);
-    lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0 as c_int as isize));
+    lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0));
     let mut shift_frames: c_int =
-        (**(*(*h).lookahead).next.list.offset(0 as c_int as isize)).i_bframes as c_int + 1 as c_int;
+        (**(*(*h).lookahead).next.list.offset(0)).i_bframes as c_int + 1 as c_int;
     pthread_mutex_lock(&mut (*(*h).lookahead).ofbuf.mutex);
     while (*(*h).lookahead).ofbuf.i_size == (*(*h).lookahead).ofbuf.i_max_size {
         pthread_cond_wait(
@@ -242,7 +242,7 @@ unsafe extern "C" fn x264_10_lookahead_init(
         }
     }
     x264_free(look as *mut c_void);
-    return -(1 as c_int);
+    return -1;
 }
 #[no_mangle]
 #[c2rust::src_loc = "171:1"]
@@ -293,9 +293,8 @@ unsafe extern "C" fn lookahead_encoder_shift(mut h: *mut x264_t) {
     if (*(*h).lookahead).ofbuf.i_size == 0 {
         return;
     }
-    let mut i_frames: c_int = (**(*(*h).lookahead).ofbuf.list.offset(0 as c_int as isize)).i_bframes
-        as c_int
-        + 1 as c_int;
+    let mut i_frames: c_int =
+        (**(*(*h).lookahead).ofbuf.list.offset(0)).i_bframes as c_int + 1 as c_int;
     loop {
         let fresh3 = i_frames;
         i_frames = i_frames - 1;
@@ -325,16 +324,13 @@ unsafe extern "C" fn x264_10_lookahead_get_frames(mut h: *mut x264_t) {
         lookahead_encoder_shift(h);
         pthread_mutex_unlock(&mut (*(*h).lookahead).ofbuf.mutex);
     } else {
-        if !(*(*h).frames.current.offset(0 as c_int as isize)).is_null()
-            || (*(*h).lookahead).next.i_size == 0
-        {
+        if !(*(*h).frames.current.offset(0)).is_null() || (*(*h).lookahead).next.i_size == 0 {
             return;
         }
         x264_10_slicetype_decide(h);
-        lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0 as c_int as isize));
-        let mut shift_frames: c_int = (**(*(*h).lookahead).next.list.offset(0 as c_int as isize))
-            .i_bframes as c_int
-            + 1 as c_int;
+        lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0));
+        let mut shift_frames: c_int =
+            (**(*(*h).lookahead).next.list.offset(0)).i_bframes as c_int + 1 as c_int;
         lookahead_shift(
             &mut (*(*h).lookahead).ofbuf,
             &mut (*(*h).lookahead).next,

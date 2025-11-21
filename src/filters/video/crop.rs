@@ -51,9 +51,10 @@ unsafe extern "C" fn handle_opts(
                 b"%s crop value not specified\n\0" as *const u8 as *const c_char,
                 *optlist.offset(i as isize),
             );
-            return -(1 as c_int);
+            return -1;
         }
-        (*h).dims[i as usize] = x264_otoi(opt, -(1 as c_int)) as u32;
+        // TODO: fix otoi
+        (*h).dims[i as usize] = x264_otoi(opt, -1) as u32;
         if (*h).dims[i as usize] < 0 {
             x264_cli_log(
                 b"crop\0" as *const u8 as *const c_char,
@@ -62,7 +63,7 @@ unsafe extern "C" fn handle_opts(
                 *optlist.offset(i as isize),
                 opt,
             );
-            return -(1 as c_int);
+            return -1;
         }
         let mut dim_mod: c_int = if i & 1 as c_int != 0 {
             (*(*h).csp).mod_height << (*info).interlaced
@@ -78,7 +79,7 @@ unsafe extern "C" fn handle_opts(
                 opt,
                 dim_mod,
             );
-            return -(1 as c_int);
+            return -1;
         }
         i += 1;
     }
@@ -99,12 +100,12 @@ unsafe extern "C" fn init(
             b"invalid csp %d\n\0" as *const u8 as *const c_char,
             (*info).csp,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut h: *mut crop_hnd_t =
         calloc(1 as size_t, ::core::mem::size_of::<crop_hnd_t>() as size_t) as *mut crop_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).csp = x264_cli_get_csp((*info).csp);
     static mut optlist: [*const c_char; 5] = [
@@ -116,12 +117,12 @@ unsafe extern "C" fn init(
     ];
     let mut opts: *mut *mut c_char = x264_split_options(opt_string, optlist.as_ptr());
     if opts.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     let mut err: c_int = handle_opts(h, info, opts, optlist.as_ptr());
     free(opts as *mut c_void);
     if err != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).dims[2] = (*info).width - (*h).dims[0] - (*h).dims[2];
     (*h).dims[3] = (*info).height - (*h).dims[1] - (*h).dims[3];
@@ -133,7 +134,7 @@ unsafe extern "C" fn init(
             (*h).dims[2],
             (*h).dims[3],
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*info).width != (*h).dims[2] || (*info).height != (*h).dims[3] {
         x264_cli_log(
@@ -168,7 +169,7 @@ unsafe extern "C" fn get_frame(
         .expect("non-null function pointer")((*h).prev_hnd, output, frame)
         != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     (*output).img.width = (*h).dims[2] as c_int;
     (*output).img.height = (*h).dims[3] as c_int;

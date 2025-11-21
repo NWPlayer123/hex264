@@ -27,9 +27,9 @@ unsafe extern "C" fn nal_escape_c(
         *fresh3 = *fresh2;
     }
     while src < end {
-        if *src.offset(0 as c_int as isize) as c_int <= 0x3 as c_int
+        if *src.offset(0) as c_int <= 0x3 as c_int
             && *dst.offset(-(2 as c_int) as isize) == 0
-            && *dst.offset(-(1 as c_int) as isize) == 0
+            && *dst.offset(-1 as isize) == 0
         {
             let fresh4 = dst;
             dst = dst.offset(1);
@@ -69,7 +69,7 @@ unsafe extern "C" fn x264_10_nal_encode(
         dst = dst.offset(1);
         *fresh10 = 0x1 as uint8_t;
     } else {
-        dst = dst.offset(4 as c_int as isize);
+        dst = dst.offset(4);
     }
     let fresh11 = dst;
     dst = dst.offset(1);
@@ -91,10 +91,10 @@ unsafe extern "C" fn x264_10_nal_encode(
     }
     if (*h).param.b_annexb == 0 {
         let mut chunk_size: c_int = size - 4 as c_int;
-        *orig_dst.offset(0 as c_int as isize) = (chunk_size >> 24 as c_int) as uint8_t;
-        *orig_dst.offset(1 as c_int as isize) = (chunk_size >> 16 as c_int) as uint8_t;
-        *orig_dst.offset(2 as c_int as isize) = (chunk_size >> 8 as c_int) as uint8_t;
-        *orig_dst.offset(3 as c_int as isize) = (chunk_size >> 0 as c_int) as uint8_t;
+        *orig_dst.offset(0) = (chunk_size >> 24 as c_int) as uint8_t;
+        *orig_dst.offset(1) = (chunk_size >> 16 as c_int) as uint8_t;
+        *orig_dst.offset(2) = (chunk_size >> 8 as c_int) as uint8_t;
+        *orig_dst.offset(3) = (chunk_size >> 0 as c_int) as uint8_t;
     }
     (*nal).i_payload = size;
     (*nal).p_payload = orig_dst;

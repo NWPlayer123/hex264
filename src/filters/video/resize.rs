@@ -303,13 +303,13 @@ unsafe extern "C" fn handle_opts(
 ) -> c_int {
     let mut out_sar_w: uint32_t = 0;
     let mut out_sar_h: uint32_t = 0;
-    let mut str_width: *mut c_char = x264_get_option(*optlist.offset(0 as c_int as isize), opts);
-    let mut str_height: *mut c_char = x264_get_option(*optlist.offset(1 as c_int as isize), opts);
-    let mut str_sar: *mut c_char = x264_get_option(*optlist.offset(2 as c_int as isize), opts);
-    let mut fittobox: *mut c_char = x264_get_option(*optlist.offset(3 as c_int as isize), opts);
-    let mut str_csp: *mut c_char = x264_get_option(*optlist.offset(4 as c_int as isize), opts);
-    let mut width: c_int = x264_otoi(str_width, -(1 as c_int));
-    let mut height: c_int = x264_otoi(str_height, -(1 as c_int));
+    let mut str_width: *mut c_char = x264_get_option(*optlist.offset(0), opts);
+    let mut str_height: *mut c_char = x264_get_option(*optlist.offset(1), opts);
+    let mut str_sar: *mut c_char = x264_get_option(*optlist.offset(2), opts);
+    let mut fittobox: *mut c_char = x264_get_option(*optlist.offset(3), opts);
+    let mut str_csp: *mut c_char = x264_get_option(*optlist.offset(4), opts);
+    let mut width: c_int = x264_otoi(str_width, -1);
+    let mut height: c_int = x264_otoi(str_height, -1);
     let mut csp_only: c_int = 0 as c_int;
     let mut in_sar_w: uint32_t = (*info).sar_width;
     let mut in_sar_h: uint32_t = (*info).sar_height;
@@ -320,7 +320,7 @@ unsafe extern "C" fn handle_opts(
             let fresh0 = str_depth;
             str_depth = str_depth.offset(1);
             *fresh0 = '\0' as i32 as c_char;
-            depth = x264_otoi(str_depth, -(1 as c_int));
+            depth = x264_otoi(str_depth, -1);
             if depth != 8 as c_int && depth != 16 as c_int {
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const c_char,
@@ -328,7 +328,7 @@ unsafe extern "C" fn handle_opts(
                     b"unsupported bit depth %d\n\0" as *const u8 as *const c_char,
                     depth,
                 );
-                return -(1 as c_int);
+                return -1;
             }
         }
         let mut csp: c_int = 0;
@@ -354,7 +354,7 @@ unsafe extern "C" fn handle_opts(
                 b"unsupported colorspace `%s'\n\0" as *const u8 as *const c_char,
                 str_csp,
             );
-            return -(1 as c_int);
+            return -1;
         }
         (*h).dst_csp = csp;
         if depth == 16 as c_int {
@@ -387,7 +387,7 @@ unsafe extern "C" fn handle_opts(
                 b"invalid sar `%s'\n\0" as *const u8 as *const c_char,
                 str_sar,
             );
-            return -(1 as c_int);
+            return -1;
         }
     } else {
         out_sar_h = 1 as uint32_t;
@@ -409,7 +409,7 @@ unsafe extern "C" fn handle_opts(
                         b"<unset>\0" as *const u8 as *const c_char as *mut c_char,
                     ),
                 );
-                return -(1 as c_int);
+                return -1;
             }
         } else if strcasecmp(fittobox, b"width\0" as *const u8 as *const c_char) == 0 {
             if width <= 0 as c_int {
@@ -422,7 +422,7 @@ unsafe extern "C" fn handle_opts(
                         b"<unset>\0" as *const u8 as *const c_char as *mut c_char,
                     ),
                 );
-                return -(1 as c_int);
+                return -1;
             }
             height = INT_MAX;
         } else if strcasecmp(fittobox, b"height\0" as *const u8 as *const c_char) == 0 {
@@ -436,7 +436,7 @@ unsafe extern "C" fn handle_opts(
                         b"<unset>\0" as *const u8 as *const c_char as *mut c_char,
                     ),
                 );
-                return -(1 as c_int);
+                return -1;
             }
             width = INT_MAX;
         } else {
@@ -446,7 +446,7 @@ unsafe extern "C" fn handle_opts(
                 b"invalid fittobox mode `%s'\n\0" as *const u8 as *const c_char,
                 fittobox,
             );
-            return -(1 as c_int);
+            return -1;
         }
         let mut csp_0: *const x264_cli_csp_t = x264_cli_get_csp((*h).dst_csp);
         let mut width_units: c_double =
@@ -487,7 +487,7 @@ unsafe extern "C" fn handle_opts(
                     b"<unset>\0" as *const u8 as *const c_char as *mut c_char,
                 ),
             );
-            return -(1 as c_int);
+            return -1;
         }
         if str_sar.is_null() {
             let mut num: uint64_t = ((*info).width as uint64_t).wrapping_mul(height as uint64_t);
@@ -536,7 +536,7 @@ unsafe extern "C" fn init_sws_context(mut h: *mut resizer_hnd_t) -> c_int {
     }
     (*h).ctx = sws_alloc_context() as *mut SwsContext;
     if (*h).ctx.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     av_opt_set_int(
         (*h).ctx as *mut c_void,
@@ -645,7 +645,7 @@ unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli
             (*h).dst.height,
         ) != 0
         {
-            return -(1 as c_int);
+            return -1;
         }
         (*h).buffer_allocated = 1 as c_int;
     }
@@ -655,7 +655,7 @@ unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli
             X264_LOG_ERROR,
             b"swscale init failed\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     return 0 as c_int;
 }
@@ -687,17 +687,17 @@ unsafe extern "C" fn init(
     ];
     let mut opts: *mut *mut c_char = x264_split_options(opt_string, optlist.as_ptr());
     if opts.is_null() && !opt_string.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     let mut h: *mut resizer_hnd_t = calloc(
         1 as size_t,
         ::core::mem::size_of::<resizer_hnd_t>() as size_t,
     ) as *mut resizer_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).ctx_flags = convert_method_to_flag(x264_otos(
-        x264_get_option(optlist[5 as c_int as usize], opts),
+        x264_get_option(optlist[5], opts),
         b"\0" as *const u8 as *const c_char as *mut c_char,
     ));
     if !opts.is_null() {
@@ -718,13 +718,13 @@ unsafe extern "C" fn init(
                     convert_csp_to_pix_fmt((*info).csp),
                     (*info).csp,
                 );
-                return -(1 as c_int);
+                return -1;
             }
         } else {
             let mut err: c_int = handle_opts(optlist.as_ptr(), opts, info, h);
             free(opts as *mut c_void);
             if err != 0 {
-                return -(1 as c_int);
+                return -1;
             }
         }
     } else {
@@ -762,7 +762,7 @@ unsafe extern "C" fn init(
             (*h).dst.width,
             (*h).dst.height,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if src_pix_fmt == AV_PIX_FMT_NONE as c_int && src_pix_fmt_inv != AV_PIX_FMT_NONE as c_int {
         x264_cli_log(
@@ -777,7 +777,7 @@ unsafe extern "C" fn init(
                 8 as c_int
             },
         );
-        return -(1 as c_int);
+        return -1;
     }
     if sws_isSupportedInput(src_pix_fmt as AVPixelFormat) == 0 {
         x264_cli_log(
@@ -786,7 +786,7 @@ unsafe extern "C" fn init(
             b"input colorspace %s is not supported\n\0" as *const u8 as *const c_char,
             av_get_pix_fmt_name(src_pix_fmt as AVPixelFormat),
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).dst.pix_fmt == AV_PIX_FMT_NONE as c_int && dst_pix_fmt_inv != AV_PIX_FMT_NONE as c_int {
         x264_cli_log(
@@ -801,7 +801,7 @@ unsafe extern "C" fn init(
                 8 as c_int
             },
         );
-        return -(1 as c_int);
+        return -1;
     }
     if sws_isSupportedOutput((*h).dst.pix_fmt as AVPixelFormat) == 0 {
         x264_cli_log(
@@ -810,7 +810,7 @@ unsafe extern "C" fn init(
             b"output colorspace %s is not supported\n\0" as *const u8 as *const c_char,
             av_get_pix_fmt_name((*h).dst.pix_fmt as AVPixelFormat),
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).dst.height != (*info).height as c_int && (*info).interlaced != 0 {
         x264_cli_log(
@@ -819,7 +819,7 @@ unsafe extern "C" fn init(
             b"swscale is not compatible with interlaced vertical resizing\n\0" as *const u8
                 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut csp: *const x264_cli_csp_t = x264_cli_get_csp((*h).dst_csp);
     if (*h).dst.width % (*csp).mod_width != 0 || (*h).dst.height % (*csp).mod_height != 0 {
@@ -832,7 +832,7 @@ unsafe extern "C" fn init(
             (*h).dst.height,
             (*csp).name,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).dst.width != (*info).width as c_int || (*h).dst.height != (*info).height as c_int {
         x264_cli_log(
@@ -900,7 +900,7 @@ unsafe extern "C" fn init(
             init
         };
         if check_resizer(h, &mut input_pic) != 0 {
-            return -(1 as c_int);
+            return -1;
         }
     }
     (*info).csp = (*h).dst_csp;
@@ -926,16 +926,16 @@ unsafe extern "C" fn get_frame(
         .expect("non-null function pointer")((*h).prev_hnd, output, frame)
         != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).variable_input != 0 && check_resizer(h, output) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).working = 1 as c_int;
     if (*h).pre_swap_chroma != 0 {
-        let mut t: *mut uint8_t = (*output).img.plane[1 as c_int as usize];
-        (*output).img.plane[1 as c_int as usize] = (*output).img.plane[2 as c_int as usize];
-        (*output).img.plane[2 as c_int as usize] = t;
+        let mut t: *mut uint8_t = (*output).img.plane[1];
+        (*output).img.plane[1] = (*output).img.plane[2];
+        (*output).img.plane[2] = t;
     }
     if !(*h).ctx.is_null() && (*h).fast_mono == 0 {
         sws_scale(
@@ -952,9 +952,9 @@ unsafe extern "C" fn get_frame(
         (*output).img.csp = (*h).dst_csp;
     }
     if (*h).post_swap_chroma != 0 {
-        let mut t_0: *mut uint8_t = (*output).img.plane[1 as c_int as usize];
-        (*output).img.plane[1 as c_int as usize] = (*output).img.plane[2 as c_int as usize];
-        (*output).img.plane[2 as c_int as usize] = t_0;
+        let mut t_0: *mut uint8_t = (*output).img.plane[1];
+        (*output).img.plane[1] = (*output).img.plane[2];
+        (*output).img.plane[2] = t_0;
     }
     return 0 as c_int;
 }

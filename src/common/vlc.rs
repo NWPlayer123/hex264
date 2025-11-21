@@ -69,8 +69,8 @@ unsafe extern "C" fn x264_10_cavlc_init(mut h: *mut x264_t) {
         }
         i_suffix += 1;
     }
-    x264_10_run_before[0 as c_int as usize] = 0 as uint32_t;
-    x264_10_run_before[1 as c_int as usize] = 0 as uint32_t;
+    x264_10_run_before[0] = 0 as uint32_t;
+    x264_10_run_before[1] = 0 as uint32_t;
     let mut i: uint32_t = 2 as uint32_t;
     while i < ((1 as c_int) << 16 as c_int) as uint32_t {
         let mut runlevel: x264_run_level_t = x264_run_level_t {

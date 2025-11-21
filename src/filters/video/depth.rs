@@ -258,36 +258,36 @@ unsafe extern "C" fn dither_image(
             / num_interleaved as c_float) as c_int;
         if num_interleaved == 4 as c_int {
             dither_plane_4(
-                ((*out).plane[i as usize] as *mut pixel).offset(0 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(0 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(0),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
                 error_buf,
             );
             dither_plane_4(
-                ((*out).plane[i as usize] as *mut pixel).offset(1 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(1),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(1 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(1),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
                 error_buf,
             );
             dither_plane_4(
-                ((*out).plane[i as usize] as *mut pixel).offset(2 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(2),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(2 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(2),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
                 error_buf,
             );
             dither_plane_4(
-                ((*out).plane[i as usize] as *mut pixel).offset(3 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(3),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(3 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(3),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
@@ -295,27 +295,27 @@ unsafe extern "C" fn dither_image(
             );
         } else if num_interleaved == 3 as c_int {
             dither_plane_3(
-                ((*out).plane[i as usize] as *mut pixel).offset(0 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(0 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(0),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
                 error_buf,
             );
             dither_plane_3(
-                ((*out).plane[i as usize] as *mut pixel).offset(1 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(1),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(1 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(1),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
                 error_buf,
             );
             dither_plane_3(
-                ((*out).plane[i as usize] as *mut pixel).offset(2 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(2),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(2 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(2),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
@@ -323,18 +323,18 @@ unsafe extern "C" fn dither_image(
             );
         } else if num_interleaved == 2 as c_int {
             dither_plane_2(
-                ((*out).plane[i as usize] as *mut pixel).offset(0 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(0 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(0),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
                 error_buf,
             );
             dither_plane_2(
-                ((*out).plane[i as usize] as *mut pixel).offset(1 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(1),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(1 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(1),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
@@ -342,9 +342,9 @@ unsafe extern "C" fn dither_image(
             );
         } else {
             dither_plane_1(
-                ((*out).plane[i as usize] as *mut pixel).offset(0 as c_int as isize),
+                ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
-                ((*img).plane[i as usize] as *mut uint16_t).offset(0 as c_int as isize),
+                ((*img).plane[i as usize] as *mut uint16_t).offset(0),
                 (*img).stride[i as usize] / 2 as c_int,
                 width,
                 height,
@@ -395,7 +395,7 @@ unsafe extern "C" fn get_frame(
         .expect("non-null function pointer")((*h).prev_hnd, output, frame)
         != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).bit_depth < 16 as c_int && (*output).img.csp & X264_CSP_HIGH_DEPTH != 0 {
         dither_image(&mut (*h).buffer.img, &mut (*output).img, (*h).error_buf);
@@ -446,7 +446,7 @@ unsafe extern "C" fn init(
         if !opts.is_null() {
             let mut str_bit_depth: *mut c_char =
                 x264_get_option(b"bit_depth\0" as *const u8 as *const c_char, opts);
-            bit_depth = x264_otoi(str_bit_depth, -(1 as c_int));
+            bit_depth = x264_otoi(str_bit_depth, -1);
             ret = (bit_depth < 8 as c_int || bit_depth > 16 as c_int) as c_int;
             csp = if bit_depth > 8 as c_int {
                 csp | X264_CSP_HIGH_DEPTH
@@ -466,7 +466,7 @@ unsafe extern "C" fn init(
             b"this filter supports only bit depth %d\n\0" as *const u8 as *const c_char,
             10 as c_int,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if ret != 0 {
         x264_cli_log(
@@ -474,7 +474,7 @@ unsafe extern "C" fn init(
             X264_LOG_ERROR,
             b"unsupported bit depth conversion.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if change_fmt != 0 || bit_depth != 8 as c_int * x264_cli_csp_depth_factor(csp) {
         if depth_filter_csp_is_supported(csp) == 0 {
@@ -483,15 +483,15 @@ unsafe extern "C" fn init(
                 X264_LOG_ERROR,
                 b"unsupported colorspace.\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         let mut h: *mut depth_hnd_t = x264_malloc((size_of::<depth_hnd_t>() as usize).wrapping_add(
             (((*info).width + 1) as usize).wrapping_mul(size_of::<int16_t>() as usize),
         ) as int64_t) as *mut depth_hnd_t;
         if h.is_null() {
-            return -(1 as c_int);
+            return -1;
         }
-        (*h).error_buf = h.offset(1 as c_int as isize) as *mut int16_t;
+        (*h).error_buf = h.offset(1) as *mut int16_t;
         (*h).dst_csp = csp;
         (*h).bit_depth = bit_depth;
         (*h).prev_hnd = *handle;
@@ -504,7 +504,7 @@ unsafe extern "C" fn init(
         ) != 0
         {
             x264_free(h as *mut c_void);
-            return -(1 as c_int);
+            return -1;
         }
         *handle = h as hnd_t;
         *filter = depth_10_filter;

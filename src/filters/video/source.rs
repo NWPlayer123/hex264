@@ -27,9 +27,9 @@ unsafe extern "C" fn init(
         ::core::mem::size_of::<source_hnd_t>() as size_t,
     ) as *mut source_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
-    (*h).cur_frame = -(1 as c_int);
+    (*h).cur_frame = -1;
     if cli_input.picture_alloc.expect("non-null function pointer")(
         &mut (*h).pic,
         *handle,
@@ -38,7 +38,7 @@ unsafe extern "C" fn init(
         (*info).height as c_int,
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).hin = *handle;
     *handle = h as hnd_t;
@@ -56,7 +56,7 @@ unsafe extern "C" fn get_frame(
         || cli_input.read_frame.expect("non-null function pointer")(&mut (*h).pic, (*h).hin, frame)
             != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).cur_frame = frame;
     *output = (*h).pic;
@@ -72,7 +72,7 @@ unsafe extern "C" fn release_frame(
     if cli_input.release_frame.is_some()
         && cli_input.release_frame.expect("non-null function pointer")(&mut (*h).pic, (*h).hin) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     return 0 as c_int;
 }

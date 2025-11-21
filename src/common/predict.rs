@@ -38,7 +38,7 @@ unsafe extern "C" fn x264_10_predict_16x16_dc_c(mut src: *mut pixel) {
     let mut dc: c_int = 0 as c_int;
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
-        dc += *src.offset((-(1 as c_int) + i * FDEC_STRIDE) as isize) as c_int;
+        dc += *src.offset((-1 + i * FDEC_STRIDE) as isize) as c_int;
         dc += *src.offset((i - FDEC_STRIDE) as isize) as c_int;
         i += 1;
     }
@@ -46,9 +46,9 @@ unsafe extern "C" fn x264_10_predict_16x16_dc_c(mut src: *mut pixel) {
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut i_0: c_int = 0 as c_int;
     while i_0 < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(8 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(8) as *mut x264_union64_t)).i = dcsplat as uint64_t;
         (*(src.offset(12 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i_0 += 1;
@@ -59,16 +59,16 @@ unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut pixel) {
     let mut dc: c_int = 0 as c_int;
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
-        dc += *src.offset((-(1 as c_int) + i * FDEC_STRIDE) as isize) as c_int;
+        dc += *src.offset((-1 + i * FDEC_STRIDE) as isize) as c_int;
         i += 1;
     }
     let mut dcsplat: pixel4 = ((dc + 8 as c_int >> 4 as c_int) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut i_0: c_int = 0 as c_int;
     while i_0 < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(8 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(8) as *mut x264_union64_t)).i = dcsplat as uint64_t;
         (*(src.offset(12 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i_0 += 1;
@@ -86,9 +86,9 @@ unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut pixel) {
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut i_0: c_int = 0 as c_int;
     while i_0 < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(8 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+        (*(src.offset(8) as *mut x264_union64_t)).i = dcsplat as uint64_t;
         (*(src.offset(12 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i_0 += 1;
@@ -98,13 +98,13 @@ unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut pixel) {
 unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut pixel) {
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(0) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(4) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-        (*(src.offset(8 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(8) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
         (*(src.offset(12 as c_int as isize) as *mut x264_union64_t)).i =
@@ -119,11 +119,11 @@ unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut pixel) {
 unsafe extern "C" fn x264_10_predict_16x16_h_c(mut src: *mut pixel) {
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
-        let v: pixel4 = (*src.offset(-(1 as c_int) as isize) as c_ulonglong)
+        let v: pixel4 = (*src.offset(-1 as isize) as c_ulonglong)
             .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(8 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = v as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = v as uint64_t;
+        (*(src.offset(8) as *mut x264_union64_t)).i = v as uint64_t;
         (*(src.offset(12 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i += 1;
@@ -146,9 +146,9 @@ unsafe extern "C" fn x264_10_predict_16x16_v_c(mut src: *mut pixel) {
         .i as pixel4;
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v0 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v1 as uint64_t;
-        (*(src.offset(8 as c_int as isize) as *mut x264_union64_t)).i = v2 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = v0 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = v1 as uint64_t;
+        (*(src.offset(8) as *mut x264_union64_t)).i = v2 as uint64_t;
         (*(src.offset(12 as c_int as isize) as *mut x264_union64_t)).i = v3 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i += 1;
@@ -165,12 +165,12 @@ unsafe extern "C" fn x264_10_predict_16x16_p_c(mut src: *mut pixel) {
             * (*src.offset((8 as c_int + i - FDEC_STRIDE) as isize) as c_int
                 - *src.offset((6 as c_int - i - FDEC_STRIDE) as isize) as c_int);
         V += (i + 1 as c_int)
-            * (*src.offset((-(1 as c_int) + (8 as c_int + i) * FDEC_STRIDE) as isize) as c_int
-                - *src.offset((-(1 as c_int) + (6 as c_int - i) * FDEC_STRIDE) as isize) as c_int);
+            * (*src.offset((-1 + (8 as c_int + i) * FDEC_STRIDE) as isize) as c_int
+                - *src.offset((-1 + (6 as c_int - i) * FDEC_STRIDE) as isize) as c_int);
         i += 1;
     }
     let mut a: c_int = 16 as c_int
-        * (*src.offset((-(1 as c_int) + 15 as c_int * FDEC_STRIDE) as isize) as c_int
+        * (*src.offset((-1 + 15 as c_int * FDEC_STRIDE) as isize) as c_int
             + *src.offset((15 as c_int - FDEC_STRIDE) as isize) as c_int);
     let mut b: c_int = 5 as c_int * H + 32 as c_int >> 6 as c_int;
     let mut c: c_int = 5 as c_int * V + 32 as c_int >> 6 as c_int;
@@ -193,10 +193,10 @@ unsafe extern "C" fn x264_10_predict_16x16_p_c(mut src: *mut pixel) {
 unsafe extern "C" fn predict_8x8c_dc_128_c(mut src: *mut pixel) {
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(0) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(4) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
@@ -219,15 +219,15 @@ unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut pixel) {
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y_0: c_int = 0 as c_int;
     while y_0 < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0splat as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc0splat as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc0splat as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc0splat as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y_0 += 1;
     }
     let mut y_1: c_int = 0 as c_int;
     while y_1 < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc1splat as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc1splat as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc1splat as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc1splat as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y_1 += 1;
     }
@@ -248,8 +248,8 @@ unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut pixel) {
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0splat as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc1splat as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc0splat as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc1splat as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y += 1;
     }
@@ -265,8 +265,8 @@ unsafe extern "C" fn x264_10_predict_8x8c_dc_c(mut src: *mut pixel) {
     while i < 4 as c_int {
         s0 += *src.offset((i - FDEC_STRIDE) as isize) as c_int;
         s1 += *src.offset((i + 4 as c_int - FDEC_STRIDE) as isize) as c_int;
-        s2 += *src.offset((-(1 as c_int) + i * FDEC_STRIDE) as isize) as c_int;
-        s3 += *src.offset((-(1 as c_int) + (i + 4 as c_int) * FDEC_STRIDE) as isize) as c_int;
+        s2 += *src.offset((-1 + i * FDEC_STRIDE) as isize) as c_int;
+        s3 += *src.offset((-1 + (i + 4 as c_int) * FDEC_STRIDE) as isize) as c_int;
         i += 1;
     }
     let mut dc0: pixel4 = ((s0 + s2 + 4 as c_int >> 3 as c_int) as c_ulonglong)
@@ -279,15 +279,15 @@ unsafe extern "C" fn x264_10_predict_8x8c_dc_c(mut src: *mut pixel) {
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc1 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc0 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc1 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y += 1;
     }
     let mut y_0: c_int = 0 as c_int;
     while y_0 < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc2 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc3 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc2 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc3 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y_0 += 1;
     }
@@ -297,10 +297,10 @@ unsafe extern "C" fn x264_10_predict_8x8c_dc_c(mut src: *mut pixel) {
 unsafe extern "C" fn x264_10_predict_8x8c_h_c(mut src: *mut pixel) {
     let mut i: c_int = 0 as c_int;
     while i < 8 as c_int {
-        let mut v: pixel4 = (*src.offset(-(1 as c_int) as isize) as c_ulonglong)
+        let mut v: pixel4 = (*src.offset(-1 as isize) as c_ulonglong)
             .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = v as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = v as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i += 1;
     }
@@ -308,18 +308,14 @@ unsafe extern "C" fn x264_10_predict_8x8c_h_c(mut src: *mut pixel) {
 #[no_mangle]
 #[c2rust::src_loc = "270:1"]
 unsafe extern "C" fn x264_10_predict_8x8c_v_c(mut src: *mut pixel) {
-    let mut v0: pixel4 = (*(src
-        .offset(0 as c_int as isize)
-        .offset(-(32 as c_int as isize)) as *mut x264_union64_t))
-        .i as pixel4;
-    let mut v1: pixel4 = (*(src
-        .offset(4 as c_int as isize)
-        .offset(-(32 as c_int as isize)) as *mut x264_union64_t))
-        .i as pixel4;
+    let mut v0: pixel4 =
+        (*(src.offset(0).offset(-(32 as c_int as isize)) as *mut x264_union64_t)).i as pixel4;
+    let mut v1: pixel4 =
+        (*(src.offset(4).offset(-(32 as c_int as isize)) as *mut x264_union64_t)).i as pixel4;
     let mut i: c_int = 0 as c_int;
     while i < 8 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v0 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v1 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = v0 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = v1 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i += 1;
     }
@@ -335,12 +331,12 @@ unsafe extern "C" fn x264_10_predict_8x8c_p_c(mut src: *mut pixel) {
             * (*src.offset((4 as c_int + i - FDEC_STRIDE) as isize) as c_int
                 - *src.offset((2 as c_int - i - FDEC_STRIDE) as isize) as c_int);
         V += (i + 1 as c_int)
-            * (*src.offset((-(1 as c_int) + (i + 4 as c_int) * FDEC_STRIDE) as isize) as c_int
-                - *src.offset((-(1 as c_int) + (2 as c_int - i) * FDEC_STRIDE) as isize) as c_int);
+            * (*src.offset((-1 + (i + 4 as c_int) * FDEC_STRIDE) as isize) as c_int
+                - *src.offset((-1 + (2 as c_int - i) * FDEC_STRIDE) as isize) as c_int);
         i += 1;
     }
     let mut a: c_int = 16 as c_int
-        * (*src.offset((-(1 as c_int) + 7 as c_int * FDEC_STRIDE) as isize) as c_int
+        * (*src.offset((-1 + 7 as c_int * FDEC_STRIDE) as isize) as c_int
             + *src.offset((7 as c_int - FDEC_STRIDE) as isize) as c_int);
     let mut b: c_int = 17 as c_int * H + 16 as c_int >> 5 as c_int;
     let mut c: c_int = 17 as c_int * V + 16 as c_int >> 5 as c_int;
@@ -363,10 +359,10 @@ unsafe extern "C" fn x264_10_predict_8x8c_p_c(mut src: *mut pixel) {
 unsafe extern "C" fn predict_8x16c_dc_128_c(mut src: *mut pixel) {
     let mut y: c_int = 0 as c_int;
     while y < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(0) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(4) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
@@ -388,8 +384,8 @@ unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut pixel) {
             as pixel4;
         let mut y_0: c_int = 0 as c_int;
         while y_0 < 4 as c_int {
-            (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-            (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+            (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
+            (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
             src = src.offset(FDEC_STRIDE as isize);
             y_0 += 1;
         }
@@ -412,8 +408,8 @@ unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut pixel) {
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0splat as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc1splat as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc0splat as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc1splat as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y += 1;
     }
@@ -431,10 +427,10 @@ unsafe extern "C" fn x264_10_predict_8x16c_dc_c(mut src: *mut pixel) {
     while i < 4 as c_int {
         s0 += *src.offset((i + 0 as c_int - FDEC_STRIDE) as isize) as c_int;
         s1 += *src.offset((i + 4 as c_int - FDEC_STRIDE) as isize) as c_int;
-        s2 += *src.offset((-(1 as c_int) + (i + 0 as c_int) * FDEC_STRIDE) as isize) as c_int;
-        s3 += *src.offset((-(1 as c_int) + (i + 4 as c_int) * FDEC_STRIDE) as isize) as c_int;
-        s4 += *src.offset((-(1 as c_int) + (i + 8 as c_int) * FDEC_STRIDE) as isize) as c_int;
-        s5 += *src.offset((-(1 as c_int) + (i + 12 as c_int) * FDEC_STRIDE) as isize) as c_int;
+        s2 += *src.offset((-1 + (i + 0 as c_int) * FDEC_STRIDE) as isize) as c_int;
+        s3 += *src.offset((-1 + (i + 4 as c_int) * FDEC_STRIDE) as isize) as c_int;
+        s4 += *src.offset((-1 + (i + 8 as c_int) * FDEC_STRIDE) as isize) as c_int;
+        s5 += *src.offset((-1 + (i + 12 as c_int) * FDEC_STRIDE) as isize) as c_int;
         i += 1;
     }
     let mut dc0: pixel4 = ((s0 + s2 + 4 as c_int >> 3 as c_int) as c_ulonglong)
@@ -455,29 +451,29 @@ unsafe extern "C" fn x264_10_predict_8x16c_dc_c(mut src: *mut pixel) {
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc0 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc1 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc0 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc1 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y += 1;
     }
     let mut y_0: c_int = 0 as c_int;
     while y_0 < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc2 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc3 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc2 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc3 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y_0 += 1;
     }
     let mut y_1: c_int = 0 as c_int;
     while y_1 < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc4 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc5 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc4 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc5 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y_1 += 1;
     }
     let mut y_2: c_int = 0 as c_int;
     while y_2 < 4 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc6 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc7 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc6 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc7 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y_2 += 1;
     }
@@ -487,10 +483,10 @@ unsafe extern "C" fn x264_10_predict_8x16c_dc_c(mut src: *mut pixel) {
 unsafe extern "C" fn x264_10_predict_8x16c_h_c(mut src: *mut pixel) {
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
-        let mut v: pixel4 = (*src.offset(-(1 as c_int) as isize) as c_ulonglong)
+        let mut v: pixel4 = (*src.offset(-1 as isize) as c_ulonglong)
             .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = v as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = v as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i += 1;
     }
@@ -498,18 +494,14 @@ unsafe extern "C" fn x264_10_predict_8x16c_h_c(mut src: *mut pixel) {
 #[no_mangle]
 #[c2rust::src_loc = "431:1"]
 unsafe extern "C" fn x264_10_predict_8x16c_v_c(mut src: *mut pixel) {
-    let mut v0: pixel4 = (*(src
-        .offset(0 as c_int as isize)
-        .offset(-(32 as c_int as isize)) as *mut x264_union64_t))
-        .i as pixel4;
-    let mut v1: pixel4 = (*(src
-        .offset(4 as c_int as isize)
-        .offset(-(32 as c_int as isize)) as *mut x264_union64_t))
-        .i as pixel4;
+    let mut v0: pixel4 =
+        (*(src.offset(0).offset(-(32 as c_int as isize)) as *mut x264_union64_t)).i as pixel4;
+    let mut v1: pixel4 =
+        (*(src.offset(4).offset(-(32 as c_int as isize)) as *mut x264_union64_t)).i as pixel4;
     let mut i: c_int = 0 as c_int;
     while i < 16 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = v0 as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = v1 as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = v0 as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = v1 as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         i += 1;
     }
@@ -529,13 +521,12 @@ unsafe extern "C" fn x264_10_predict_8x16c_p_c(mut src: *mut pixel) {
     let mut i_0: c_int = 0 as c_int;
     while i_0 < 8 as c_int {
         V += (i_0 + 1 as c_int)
-            * (*src.offset((-(1 as c_int) + (i_0 + 8 as c_int) * FDEC_STRIDE) as isize) as c_int
-                - *src.offset((-(1 as c_int) + (6 as c_int - i_0) * FDEC_STRIDE) as isize)
-                    as c_int);
+            * (*src.offset((-1 + (i_0 + 8 as c_int) * FDEC_STRIDE) as isize) as c_int
+                - *src.offset((-1 + (6 as c_int - i_0) * FDEC_STRIDE) as isize) as c_int);
         i_0 += 1;
     }
     let mut a: c_int = 16 as c_int
-        * (*src.offset((-(1 as c_int) + 15 as c_int * FDEC_STRIDE) as isize) as c_int
+        * (*src.offset((-1 + 15 as c_int * FDEC_STRIDE) as isize) as c_int
             + *src.offset((7 as c_int - FDEC_STRIDE) as isize) as c_int);
     let mut b: c_int = 17 as c_int * H + 16 as c_int >> 5 as c_int;
     let mut c: c_int = 5 as c_int * V + 32 as c_int >> 6 as c_int;
@@ -575,11 +566,10 @@ unsafe extern "C" fn predict_4x4_dc_128_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "485:1"]
 unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut pixel) {
-    let mut dc: pixel4 = ((*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize)
-        as c_int
-        + *src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_int
-        + *src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_int
-        + *src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_int
+    let mut dc: pixel4 = ((*src.offset((-1 + 0 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-1 + 1 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-1 + 2 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-1 + 3 as c_int * 32 as c_int) as isize) as c_int
         + 2 as c_int
         >> 2 as c_int) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
@@ -601,11 +591,10 @@ unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "490:1"]
 unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut pixel) {
-    let mut dc: pixel4 = ((*src.offset((0 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-        as c_int
-        + *src.offset((1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-        + *src.offset((2 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-        + *src.offset((3 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+    let mut dc: pixel4 = ((*src.offset((0 as c_int + -1 * 32 as c_int) as isize) as c_int
+        + *src.offset((1 as c_int + -1 * 32 as c_int) as isize) as c_int
+        + *src.offset((2 as c_int + -1 * 32 as c_int) as isize) as c_int
+        + *src.offset((3 as c_int + -1 * 32 as c_int) as isize) as c_int
         + 2 as c_int
         >> 2 as c_int) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
@@ -628,15 +617,14 @@ unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut pixel) {
 #[no_mangle]
 #[c2rust::src_loc = "495:1"]
 unsafe extern "C" fn x264_10_predict_4x4_dc_c(mut src: *mut pixel) {
-    let mut dc: pixel4 = ((*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize)
-        as c_int
-        + *src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_int
-        + *src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_int
-        + *src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_int
-        + *src.offset((0 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-        + *src.offset((1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-        + *src.offset((2 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-        + *src.offset((3 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
+    let mut dc: pixel4 = ((*src.offset((-1 + 0 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-1 + 1 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-1 + 2 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((-1 + 3 as c_int * 32 as c_int) as isize) as c_int
+        + *src.offset((0 as c_int + -1 * 32 as c_int) as isize) as c_int
+        + *src.offset((1 as c_int + -1 * 32 as c_int) as isize) as c_int
+        + *src.offset((2 as c_int + -1 * 32 as c_int) as isize) as c_int
+        + *src.offset((3 as c_int + -1 * 32 as c_int) as isize) as c_int
         + 4 as c_int
         >> 3 as c_int) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
@@ -661,19 +649,19 @@ unsafe extern "C" fn x264_10_predict_4x4_dc_c(mut src: *mut pixel) {
 unsafe extern "C" fn x264_10_predict_4x4_h_c(mut src: *mut pixel) {
     (*(&mut *src.offset((0 as c_int + 0 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 0 as c_int * 32 as c_int) as isize) as c_ulonglong)
+        .i = (*src.offset((-1 + 0 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(&mut *src.offset((0 as c_int + 1 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_ulonglong)
+        .i = (*src.offset((-1 + 1 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(&mut *src.offset((0 as c_int + 2 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_ulonglong)
+        .i = (*src.offset((-1 + 2 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
     (*(&mut *src.offset((0 as c_int + 3 as c_int * 32 as c_int) as isize) as *mut pixel
         as *mut x264_union64_t))
-        .i = (*src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_ulonglong)
+        .i = (*src.offset((-1 + 3 as c_int * 32 as c_int) as isize) as c_ulonglong)
         .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
 }
 #[no_mangle]
@@ -682,8 +670,8 @@ unsafe extern "C" fn x264_10_predict_4x4_v_c(mut src: *mut pixel) {
     let ref mut fresh11 = (*(&mut *src.offset((0 as c_int + 3 as c_int * 32 as c_int) as isize)
         as *mut pixel as *mut x264_union64_t))
         .i;
-    *fresh11 = (*(&mut *src.offset((0 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-        as *mut pixel as *mut x264_union64_t))
+    *fresh11 = (*(&mut *src.offset((0 as c_int + -1 * 32 as c_int) as isize) as *mut pixel
+        as *mut x264_union64_t))
         .i;
     let ref mut fresh12 = (*(&mut *src.offset((0 as c_int + 2 as c_int * 32 as c_int) as isize)
         as *mut pixel as *mut x264_union64_t))
@@ -699,14 +687,14 @@ unsafe extern "C" fn x264_10_predict_4x4_v_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "534:1"]
 unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut pixel) {
-    let mut t0: c_int = *src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t4: c_int = *src.offset((4 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t5: c_int = *src.offset((5 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t6: c_int = *src.offset((6 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t7: c_int = *src.offset((7 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
+    let mut t0: c_int = *src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t1: c_int = *src.offset((1 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t2: c_int = *src.offset((2 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t3: c_int = *src.offset((3 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t4: c_int = *src.offset((4 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t5: c_int = *src.offset((5 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t6: c_int = *src.offset((6 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t7: c_int = *src.offset((7 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
     *src.offset((0 as c_int + 0 as c_int * FDEC_STRIDE) as isize) =
         (t0 + 2 as c_int * t1 + t2 + 2 as c_int >> 2 as c_int) as pixel;
     let ref mut fresh92 = *src.offset((0 as c_int + 1 as c_int * FDEC_STRIDE) as isize);
@@ -737,16 +725,15 @@ unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "546:1"]
 unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut pixel) {
-    let mut lt: c_int =
-        *src.offset((-(1 as c_int) + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut l0: c_int = *src.offset((-(1 as c_int) + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-(1 as c_int) + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-(1 as c_int) + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l3: c_int = *src.offset((-(1 as c_int) + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut t0: c_int = *src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
+    let mut lt: c_int = *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut l0: c_int = *src.offset((-1 + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l1: c_int = *src.offset((-1 + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l2: c_int = *src.offset((-1 + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l3: c_int = *src.offset((-1 + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut t0: c_int = *src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t1: c_int = *src.offset((1 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t2: c_int = *src.offset((2 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t3: c_int = *src.offset((3 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
     *src.offset((3 as c_int + 0 as c_int * FDEC_STRIDE) as isize) =
         (t3 + 2 as c_int * t2 + t1 + 2 as c_int >> 2 as c_int) as pixel;
     let ref mut fresh83 = *src.offset((3 as c_int + 1 as c_int * FDEC_STRIDE) as isize);
@@ -777,16 +764,15 @@ unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "560:1"]
 unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut pixel) {
-    let mut lt: c_int =
-        *src.offset((-(1 as c_int) + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut l0: c_int = *src.offset((-(1 as c_int) + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-(1 as c_int) + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-(1 as c_int) + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut _l3: c_int = *src.offset((-(1 as c_int) + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut t0: c_int = *src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
+    let mut lt: c_int = *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut l0: c_int = *src.offset((-1 + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l1: c_int = *src.offset((-1 + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l2: c_int = *src.offset((-1 + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut _l3: c_int = *src.offset((-1 + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut t0: c_int = *src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t1: c_int = *src.offset((1 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t2: c_int = *src.offset((2 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t3: c_int = *src.offset((3 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
     *src.offset((0 as c_int + 3 as c_int * FDEC_STRIDE) as isize) =
         (l2 + 2 as c_int * l1 + l0 + 2 as c_int >> 2 as c_int) as pixel;
     *src.offset((0 as c_int + 2 as c_int * FDEC_STRIDE) as isize) =
@@ -816,16 +802,15 @@ unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "577:1"]
 unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut pixel) {
-    let mut lt: c_int =
-        *src.offset((-(1 as c_int) + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut l0: c_int = *src.offset((-(1 as c_int) + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-(1 as c_int) + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-(1 as c_int) + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l3: c_int = *src.offset((-(1 as c_int) + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut t0: c_int = *src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut _t3: c_int = *src.offset((3 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
+    let mut lt: c_int = *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut l0: c_int = *src.offset((-1 + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l1: c_int = *src.offset((-1 + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l2: c_int = *src.offset((-1 + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l3: c_int = *src.offset((-1 + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut t0: c_int = *src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t1: c_int = *src.offset((1 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t2: c_int = *src.offset((2 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut _t3: c_int = *src.offset((3 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
     *src.offset((0 as c_int + 3 as c_int * FDEC_STRIDE) as isize) =
         (l2 + l3 + 1 as c_int >> 1 as c_int) as pixel;
     *src.offset((1 as c_int + 3 as c_int * FDEC_STRIDE) as isize) =
@@ -855,14 +840,14 @@ unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "594:1"]
 unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut pixel) {
-    let mut t0: c_int = *src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t4: c_int = *src.offset((4 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t5: c_int = *src.offset((5 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut t6: c_int = *src.offset((6 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
-    let mut _t7: c_int = *src.offset((7 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int;
+    let mut t0: c_int = *src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t1: c_int = *src.offset((1 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t2: c_int = *src.offset((2 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t3: c_int = *src.offset((3 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t4: c_int = *src.offset((4 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t5: c_int = *src.offset((5 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut t6: c_int = *src.offset((6 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
+    let mut _t7: c_int = *src.offset((7 as c_int + -1 * FDEC_STRIDE) as isize) as c_int;
     *src.offset((0 as c_int + 0 as c_int * FDEC_STRIDE) as isize) =
         (t0 + t1 + 1 as c_int >> 1 as c_int) as pixel;
     *src.offset((0 as c_int + 1 as c_int * FDEC_STRIDE) as isize) =
@@ -892,10 +877,10 @@ unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut pixel) {
 }
 #[c2rust::src_loc = "610:1"]
 unsafe extern "C" fn predict_4x4_hu_c(mut src: *mut pixel) {
-    let mut l0: c_int = *src.offset((-(1 as c_int) + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-(1 as c_int) + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-(1 as c_int) + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
-    let mut l3: c_int = *src.offset((-(1 as c_int) + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l0: c_int = *src.offset((-1 + 0 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l1: c_int = *src.offset((-1 + 1 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l2: c_int = *src.offset((-1 + 2 as c_int * FDEC_STRIDE) as isize) as c_int;
+    let mut l3: c_int = *src.offset((-1 + 3 as c_int * FDEC_STRIDE) as isize) as c_int;
     *src.offset((0 as c_int + 0 as c_int * FDEC_STRIDE) as isize) =
         (l0 + l1 + 1 as c_int >> 1 as c_int) as pixel;
     *src.offset((1 as c_int + 0 as c_int * FDEC_STRIDE) as isize) =
@@ -933,253 +918,196 @@ unsafe extern "C" fn predict_8x8_filter_c(
 ) {
     let mut have_lt: c_int = i_neighbor & MB_TOPLEFT as c_int;
     if i_filters & MB_LEFT as c_int != 0 {
-        *edge.offset(15 as c_int as isize) =
-            (*src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((-(1 as c_int) + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-                + *src.offset((-(1 as c_int) + 0 as c_int * FDEC_STRIDE) as isize) as c_int
+        *edge.offset(15 as c_int as isize) = (*src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize)
+            as c_int
+            + 2 as c_int * *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int
+            + *src.offset((-1 + 0 as c_int * FDEC_STRIDE) as isize) as c_int
+            + 2 as c_int
+            >> 2 as c_int) as pixel;
+        *edge.offset(14 as c_int as isize) = ((if have_lt != 0 {
+            *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int
+        } else {
+            *src.offset((-1 + 0 as c_int * FDEC_STRIDE) as isize) as c_int
+        }) + 2 as c_int
+            * *src.offset((-1 + 0 as c_int * FDEC_STRIDE) as isize) as c_int
+            + *src.offset((-1 + 1 as c_int * FDEC_STRIDE) as isize) as c_int
+            + 2 as c_int
+            >> 2 as c_int) as pixel;
+        *edge.offset((14 as c_int - 1 as c_int) as isize) =
+            (*src.offset((-1 + (1 as c_int - 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((-1 + 1 as c_int * 32 as c_int) as isize) as c_int
+                + *src.offset((-1 + (1 as c_int + 1 as c_int) * 32 as c_int) as isize) as c_int
                 + 2 as c_int
                 >> 2 as c_int) as pixel;
-        *edge.offset(14 as c_int as isize) = ((if have_lt != 0 {
-            *src.offset((-(1 as c_int) + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-        } else {
-            *src.offset((-(1 as c_int) + 0 as c_int * FDEC_STRIDE) as isize) as c_int
-        }) + 2 as c_int
-            * *src.offset((-(1 as c_int) + 0 as c_int * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((-(1 as c_int) + 1 as c_int * FDEC_STRIDE) as isize) as c_int
+        *edge.offset((14 as c_int - 2 as c_int) as isize) =
+            (*src.offset((-1 + (2 as c_int - 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((-1 + 2 as c_int * 32 as c_int) as isize) as c_int
+                + *src.offset((-1 + (2 as c_int + 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int
+                >> 2 as c_int) as pixel;
+        *edge.offset((14 as c_int - 3 as c_int) as isize) =
+            (*src.offset((-1 + (3 as c_int - 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((-1 + 3 as c_int * 32 as c_int) as isize) as c_int
+                + *src.offset((-1 + (3 as c_int + 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int
+                >> 2 as c_int) as pixel;
+        *edge.offset((14 as c_int - 4 as c_int) as isize) =
+            (*src.offset((-1 + (4 as c_int - 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((-1 + 4 as c_int * 32 as c_int) as isize) as c_int
+                + *src.offset((-1 + (4 as c_int + 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int
+                >> 2 as c_int) as pixel;
+        *edge.offset((14 as c_int - 5 as c_int) as isize) =
+            (*src.offset((-1 + (5 as c_int - 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((-1 + 5 as c_int * 32 as c_int) as isize) as c_int
+                + *src.offset((-1 + (5 as c_int + 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int
+                >> 2 as c_int) as pixel;
+        *edge.offset((14 as c_int - 6 as c_int) as isize) =
+            (*src.offset((-1 + (6 as c_int - 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((-1 + 6 as c_int * 32 as c_int) as isize) as c_int
+                + *src.offset((-1 + (6 as c_int + 1 as c_int) * 32 as c_int) as isize) as c_int
+                + 2 as c_int
+                >> 2 as c_int) as pixel;
+        let ref mut fresh113 = *edge.offset(7);
+        *fresh113 = (*src.offset((-1 + 6 as c_int * FDEC_STRIDE) as isize) as c_int
+            + 3 as c_int * *src.offset((-1 + 7 as c_int * FDEC_STRIDE) as isize) as c_int
             + 2 as c_int
             >> 2 as c_int) as pixel;
-        *edge.offset((14 as c_int - 1 as c_int) as isize) = (*src
-            .offset((-(1 as c_int) + (1 as c_int - 1 as c_int) * 32 as c_int) as isize)
-            as c_int
-            + 2 as c_int
-                * *src.offset((-(1 as c_int) + 1 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + (1 as c_int + 1 as c_int) * 32 as c_int) as isize)
-                as c_int
-            + 2 as c_int
-            >> 2 as c_int) as pixel;
-        *edge.offset((14 as c_int - 2 as c_int) as isize) = (*src
-            .offset((-(1 as c_int) + (2 as c_int - 1 as c_int) * 32 as c_int) as isize)
-            as c_int
-            + 2 as c_int
-                * *src.offset((-(1 as c_int) + 2 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + (2 as c_int + 1 as c_int) * 32 as c_int) as isize)
-                as c_int
-            + 2 as c_int
-            >> 2 as c_int) as pixel;
-        *edge.offset((14 as c_int - 3 as c_int) as isize) = (*src
-            .offset((-(1 as c_int) + (3 as c_int - 1 as c_int) * 32 as c_int) as isize)
-            as c_int
-            + 2 as c_int
-                * *src.offset((-(1 as c_int) + 3 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + (3 as c_int + 1 as c_int) * 32 as c_int) as isize)
-                as c_int
-            + 2 as c_int
-            >> 2 as c_int) as pixel;
-        *edge.offset((14 as c_int - 4 as c_int) as isize) = (*src
-            .offset((-(1 as c_int) + (4 as c_int - 1 as c_int) * 32 as c_int) as isize)
-            as c_int
-            + 2 as c_int
-                * *src.offset((-(1 as c_int) + 4 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + (4 as c_int + 1 as c_int) * 32 as c_int) as isize)
-                as c_int
-            + 2 as c_int
-            >> 2 as c_int) as pixel;
-        *edge.offset((14 as c_int - 5 as c_int) as isize) = (*src
-            .offset((-(1 as c_int) + (5 as c_int - 1 as c_int) * 32 as c_int) as isize)
-            as c_int
-            + 2 as c_int
-                * *src.offset((-(1 as c_int) + 5 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + (5 as c_int + 1 as c_int) * 32 as c_int) as isize)
-                as c_int
-            + 2 as c_int
-            >> 2 as c_int) as pixel;
-        *edge.offset((14 as c_int - 6 as c_int) as isize) = (*src
-            .offset((-(1 as c_int) + (6 as c_int - 1 as c_int) * 32 as c_int) as isize)
-            as c_int
-            + 2 as c_int
-                * *src.offset((-(1 as c_int) + 6 as c_int * 32 as c_int) as isize) as c_int
-            + *src.offset((-(1 as c_int) + (6 as c_int + 1 as c_int) * 32 as c_int) as isize)
-                as c_int
-            + 2 as c_int
-            >> 2 as c_int) as pixel;
-        let ref mut fresh113 = *edge.offset(7 as c_int as isize);
-        *fresh113 = (*src.offset((-(1 as c_int) + 6 as c_int * FDEC_STRIDE) as isize) as c_int
-            + 3 as c_int
-                * *src.offset((-(1 as c_int) + 7 as c_int * FDEC_STRIDE) as isize) as c_int
-            + 2 as c_int
-            >> 2 as c_int) as pixel;
-        *edge.offset(6 as c_int as isize) = *fresh113;
+        *edge.offset(6) = *fresh113;
     }
     if i_filters & MB_TOP as c_int != 0 {
         let mut have_tr: c_int = i_neighbor & MB_TOPRIGHT as c_int;
         *edge.offset(16 as c_int as isize) = ((if have_lt != 0 {
-            *src.offset((-(1 as c_int) + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
+            *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int
         } else {
-            *src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
+            *src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
         }) + 2 as c_int
-            * *src.offset((0 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((1 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
+            * *src.offset((0 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
+            + *src.offset((1 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
             + 2 as c_int
             >> 2 as c_int) as pixel;
         *edge.offset((16 as c_int + 1 as c_int) as isize) =
-            (*src.offset((1 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + *src.offset((1 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_int
+            (*src.offset((1 as c_int - 1 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((1 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + *src.offset((1 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                 + 2 as c_int
                 >> 2 as c_int) as pixel;
         *edge.offset((16 as c_int + 2 as c_int) as isize) =
-            (*src.offset((2 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((2 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + *src.offset((2 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_int
+            (*src.offset((2 as c_int - 1 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((2 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + *src.offset((2 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                 + 2 as c_int
                 >> 2 as c_int) as pixel;
         *edge.offset((16 as c_int + 3 as c_int) as isize) =
-            (*src.offset((3 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((3 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + *src.offset((3 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_int
+            (*src.offset((3 as c_int - 1 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((3 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + *src.offset((3 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                 + 2 as c_int
                 >> 2 as c_int) as pixel;
         *edge.offset((16 as c_int + 4 as c_int) as isize) =
-            (*src.offset((4 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((4 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + *src.offset((4 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_int
+            (*src.offset((4 as c_int - 1 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((4 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + *src.offset((4 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                 + 2 as c_int
                 >> 2 as c_int) as pixel;
         *edge.offset((16 as c_int + 5 as c_int) as isize) =
-            (*src.offset((5 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((5 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + *src.offset((5 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_int
+            (*src.offset((5 as c_int - 1 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((5 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + *src.offset((5 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                 + 2 as c_int
                 >> 2 as c_int) as pixel;
         *edge.offset((16 as c_int + 6 as c_int) as isize) =
-            (*src.offset((6 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((6 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                + *src.offset((6 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_int
+            (*src.offset((6 as c_int - 1 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + 2 as c_int * *src.offset((6 as c_int + -1 * 32 as c_int) as isize) as c_int
+                + *src.offset((6 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                 + 2 as c_int
                 >> 2 as c_int) as pixel;
-        *edge.offset(23 as c_int as isize) =
-            (*src.offset((6 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-                + 2 as c_int
-                    * *src.offset((7 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-                + (if have_tr != 0 {
-                    *src.offset((8 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-                } else {
-                    *src.offset((7 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize) as c_int
-                })
-                + 2 as c_int
-                >> 2 as c_int) as pixel;
+        *edge.offset(23 as c_int as isize) = (*src.offset((6 as c_int + -1 * FDEC_STRIDE) as isize)
+            as c_int
+            + 2 as c_int * *src.offset((7 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
+            + (if have_tr != 0 {
+                *src.offset((8 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
+            } else {
+                *src.offset((7 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
+            })
+            + 2 as c_int
+            >> 2 as c_int) as pixel;
         if i_filters & MB_TOPRIGHT as c_int != 0 {
             if have_tr != 0 {
                 *edge.offset((16 as c_int + 8 as c_int) as isize) = (*src
-                    .offset((8 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+                    .offset((8 as c_int - 1 as c_int + -1 * 32 as c_int) as isize)
                     as c_int
-                    + 2 as c_int
-                        * *src.offset((8 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                    + *src.offset((8 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                        as c_int
+                    + 2 as c_int * *src.offset((8 as c_int + -1 * 32 as c_int) as isize) as c_int
+                    + *src.offset((8 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int)
                     as pixel;
                 *edge.offset((16 as c_int + 9 as c_int) as isize) = (*src
-                    .offset((9 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+                    .offset((9 as c_int - 1 as c_int + -1 * 32 as c_int) as isize)
                     as c_int
-                    + 2 as c_int
-                        * *src.offset((9 as c_int + -(1 as c_int) * 32 as c_int) as isize) as c_int
-                    + *src.offset((9 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                        as c_int
+                    + 2 as c_int * *src.offset((9 as c_int + -1 * 32 as c_int) as isize) as c_int
+                    + *src.offset((9 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int)
                     as pixel;
                 *edge.offset((16 as c_int + 10 as c_int) as isize) = (*src
-                    .offset((10 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+                    .offset((10 as c_int - 1 as c_int + -1 * 32 as c_int) as isize)
                     as c_int
-                    + 2 as c_int
-                        * *src.offset((10 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                            as c_int
-                    + *src.offset((10 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                        as c_int
+                    + 2 as c_int * *src.offset((10 as c_int + -1 * 32 as c_int) as isize) as c_int
+                    + *src.offset((10 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int)
                     as pixel;
                 *edge.offset((16 as c_int + 11 as c_int) as isize) = (*src
-                    .offset((11 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+                    .offset((11 as c_int - 1 as c_int + -1 * 32 as c_int) as isize)
                     as c_int
-                    + 2 as c_int
-                        * *src.offset((11 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                            as c_int
-                    + *src.offset((11 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                        as c_int
+                    + 2 as c_int * *src.offset((11 as c_int + -1 * 32 as c_int) as isize) as c_int
+                    + *src.offset((11 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int)
                     as pixel;
                 *edge.offset((16 as c_int + 12 as c_int) as isize) = (*src
-                    .offset((12 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+                    .offset((12 as c_int - 1 as c_int + -1 * 32 as c_int) as isize)
                     as c_int
-                    + 2 as c_int
-                        * *src.offset((12 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                            as c_int
-                    + *src.offset((12 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                        as c_int
+                    + 2 as c_int * *src.offset((12 as c_int + -1 * 32 as c_int) as isize) as c_int
+                    + *src.offset((12 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int)
                     as pixel;
                 *edge.offset((16 as c_int + 13 as c_int) as isize) = (*src
-                    .offset((13 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+                    .offset((13 as c_int - 1 as c_int + -1 * 32 as c_int) as isize)
                     as c_int
-                    + 2 as c_int
-                        * *src.offset((13 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                            as c_int
-                    + *src.offset((13 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                        as c_int
+                    + 2 as c_int * *src.offset((13 as c_int + -1 * 32 as c_int) as isize) as c_int
+                    + *src.offset((13 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int)
                     as pixel;
                 *edge.offset((16 as c_int + 14 as c_int) as isize) = (*src
-                    .offset((14 as c_int - 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
+                    .offset((14 as c_int - 1 as c_int + -1 * 32 as c_int) as isize)
                     as c_int
-                    + 2 as c_int
-                        * *src.offset((14 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                            as c_int
-                    + *src.offset((14 as c_int + 1 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                        as c_int
+                    + 2 as c_int * *src.offset((14 as c_int + -1 * 32 as c_int) as isize) as c_int
+                    + *src.offset((14 as c_int + 1 as c_int + -1 * 32 as c_int) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int)
                     as pixel;
                 let ref mut fresh114 = *edge.offset(32 as c_int as isize);
-                *fresh114 = (*src.offset((14 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize)
-                    as c_int
-                    + 3 as c_int
-                        * *src.offset((15 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize)
-                            as c_int
+                *fresh114 = (*src.offset((14 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
+                    + 3 as c_int * *src.offset((15 as c_int + -1 * FDEC_STRIDE) as isize) as c_int
                     + 2 as c_int
                     >> 2 as c_int) as pixel;
                 *edge.offset(31 as c_int as isize) = *fresh114;
             } else {
-                (*(edge.offset(24 as c_int as isize) as *mut x264_union64_t)).i = (*src
-                    .offset((7 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_ulonglong)
-                    .wrapping_mul(0x1000100010001 as c_ulonglong)
-                    as uint64_t;
-                (*(edge.offset(28 as c_int as isize) as *mut x264_union64_t)).i = (*src
-                    .offset((7 as c_int + -(1 as c_int) * 32 as c_int) as isize)
-                    as c_ulonglong)
-                    .wrapping_mul(0x1000100010001 as c_ulonglong)
-                    as uint64_t;
+                (*(edge.offset(24 as c_int as isize) as *mut x264_union64_t)).i =
+                    (*src.offset((7 as c_int + -1 * 32 as c_int) as isize) as c_ulonglong)
+                        .wrapping_mul(0x1000100010001 as c_ulonglong)
+                        as uint64_t;
+                (*(edge.offset(28 as c_int as isize) as *mut x264_union64_t)).i =
+                    (*src.offset((7 as c_int + -1 * 32 as c_int) as isize) as c_ulonglong)
+                        .wrapping_mul(0x1000100010001 as c_ulonglong)
+                        as uint64_t;
                 *edge.offset(32 as c_int as isize) =
-                    *src.offset((7 as c_int + -(1 as c_int) * FDEC_STRIDE) as isize);
+                    *src.offset((7 as c_int + -1 * FDEC_STRIDE) as isize);
             }
         }
     }
@@ -1188,10 +1116,10 @@ unsafe extern "C" fn predict_8x8_filter_c(
 unsafe extern "C" fn predict_8x8_dc_128_c(mut src: *mut pixel, mut _edge: *mut pixel) {
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(0) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i =
+        (*(src.offset(4) as *mut x264_union64_t)).i =
             (((1 as c_int) << 10 as c_int - 1 as c_int) as c_ulonglong)
                 .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
@@ -1213,8 +1141,8 @@ unsafe extern "C" fn predict_8x8_dc_left_c(mut src: *mut pixel, mut edge: *mut p
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y += 1;
     }
@@ -1234,8 +1162,8 @@ unsafe extern "C" fn predict_8x8_dc_top_c(mut src: *mut pixel, mut edge: *mut pi
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y += 1;
     }
@@ -1280,8 +1208,8 @@ unsafe extern "C" fn x264_10_predict_8x8_dc_c(mut src: *mut pixel, mut edge: *mu
         .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
-        (*(src.offset(0 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
-        (*(src.offset(4 as c_int as isize) as *mut x264_union64_t)).i = dc as uint64_t;
+        (*(src.offset(0) as *mut x264_union64_t)).i = dc as uint64_t;
+        (*(src.offset(4) as *mut x264_union64_t)).i = dc as uint64_t;
         src = src.offset(FDEC_STRIDE as isize);
         y += 1;
     }
@@ -1297,78 +1225,46 @@ unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut
     let mut l5: c_int = *edge.offset((14 as c_int - 5 as c_int) as isize) as c_int;
     let mut l6: c_int = *edge.offset((14 as c_int - 6 as c_int) as isize) as c_int;
     let mut l7: c_int = *edge.offset((14 as c_int - 7 as c_int) as isize) as c_int;
-    let ref mut fresh0 = (*(src
-        .offset((0 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    let ref mut fresh0 =
+        (*(src.offset((0 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh0 = (l0 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((0 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh0;
-    let ref mut fresh1 = (*(src
-        .offset((1 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    (*(src.offset((0 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh0;
+    let ref mut fresh1 =
+        (*(src.offset((1 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh1 = (l1 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((1 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh1;
-    let ref mut fresh2 = (*(src
-        .offset((2 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    (*(src.offset((1 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh1;
+    let ref mut fresh2 =
+        (*(src.offset((2 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh2 = (l2 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((2 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh2;
-    let ref mut fresh3 = (*(src
-        .offset((3 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    (*(src.offset((2 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh2;
+    let ref mut fresh3 =
+        (*(src.offset((3 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh3 = (l3 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((3 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh3;
-    let ref mut fresh4 = (*(src
-        .offset((4 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    (*(src.offset((3 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh3;
+    let ref mut fresh4 =
+        (*(src.offset((4 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh4 = (l4 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((4 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh4;
-    let ref mut fresh5 = (*(src
-        .offset((5 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    (*(src.offset((4 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh4;
+    let ref mut fresh5 =
+        (*(src.offset((5 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh5 = (l5 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((5 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh5;
-    let ref mut fresh6 = (*(src
-        .offset((6 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    (*(src.offset((5 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh5;
+    let ref mut fresh6 =
+        (*(src.offset((6 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh6 = (l6 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((6 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh6;
-    let ref mut fresh7 = (*(src
-        .offset((7 as c_int * 32 as c_int) as isize)
-        .offset(4 as c_int as isize) as *mut x264_union64_t))
-        .i;
+    (*(src.offset((6 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh6;
+    let ref mut fresh7 =
+        (*(src.offset((7 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
     *fresh7 = (l7 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src
-        .offset((7 as c_int * 32 as c_int) as isize)
-        .offset(0 as c_int as isize) as *mut x264_union64_t))
-        .i = *fresh7;
+    (*(src.offset((7 as c_int * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+        *fresh7;
 }
 #[no_mangle]
 #[c2rust::src_loc = "731:1"]
@@ -1379,14 +1275,10 @@ unsafe extern "C" fn x264_10_predict_8x8_v_c(mut src: *mut pixel, mut edge: *mut
     ];
     let mut y: c_int = 0 as c_int;
     while y < 8 as c_int {
-        (*(src
-            .offset((y * 32 as c_int) as isize)
-            .offset(0 as c_int as isize) as *mut x264_union64_t))
-            .i = top[0 as c_int as usize] as uint64_t;
-        (*(src
-            .offset((y * 32 as c_int) as isize)
-            .offset(4 as c_int as isize) as *mut x264_union64_t))
-            .i = top[1 as c_int as usize] as uint64_t;
+        (*(src.offset((y * 32 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+            top[0] as uint64_t;
+        (*(src.offset((y * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
+            top[1] as uint64_t;
         y += 1;
     }
 }

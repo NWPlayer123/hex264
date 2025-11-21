@@ -260,13 +260,13 @@ static mut mb_type_b_to_golomb: [[uint8_t; 9]; 3] = [
     ],
     [
         1 as c_int as uint8_t,
-        -(1 as c_int) as uint8_t,
-        -(1 as c_int) as uint8_t,
-        -(1 as c_int) as uint8_t,
+        u8::MAX,
+        u8::MAX,
+        u8::MAX,
         2 as c_int as uint8_t,
-        -(1 as c_int) as uint8_t,
-        -(1 as c_int) as uint8_t,
-        -(1 as c_int) as uint8_t,
+        u8::MAX,
+        u8::MAX,
+        u8::MAX,
         3 as c_int as uint8_t,
     ],
 ];
@@ -404,22 +404,17 @@ unsafe extern "C" fn cavlc_block_residual_internal(
     i_total_zero = (runlevel.last + 1 as int32_t - i_total as int32_t) as c_int;
     runlevel.level[(i_total + 0 as c_int) as usize] = 2 as c_int as dctcoef;
     runlevel.level[(i_total + 1 as c_int) as usize] = 2 as c_int as dctcoef;
-    i_trailing = ((runlevel.level[0 as c_int as usize] + 1 as dctcoef
-        | 1 as dctcoef - runlevel.level[0 as c_int as usize])
+    i_trailing = ((runlevel.level[0] + 1 as dctcoef | 1 as dctcoef - runlevel.level[0])
         >> 31 as c_int
         & 1 as dctcoef
-        | (runlevel.level[1 as c_int as usize] + 1 as dctcoef
-            | 1 as dctcoef - runlevel.level[1 as c_int as usize])
-            >> 31 as c_int
+        | (runlevel.level[1] + 1 as dctcoef | 1 as dctcoef - runlevel.level[1]) >> 31 as c_int
             & 2 as dctcoef
-        | (runlevel.level[2 as c_int as usize] + 1 as dctcoef
-            | 1 as dctcoef - runlevel.level[2 as c_int as usize])
-            >> 31 as c_int
+        | (runlevel.level[2] + 1 as dctcoef | 1 as dctcoef - runlevel.level[2]) >> 31 as c_int
             & 4 as dctcoef) as c_int;
     i_trailing = ctz_index[i_trailing as usize] as c_int;
-    i_sign = (runlevel.level[2 as c_int as usize] >> 31 as c_int & 1 as dctcoef
-        | runlevel.level[1 as c_int as usize] >> 31 as c_int & 2 as dctcoef
-        | runlevel.level[0 as c_int as usize] >> 31 as c_int & 4 as dctcoef) as c_uint;
+    i_sign = (runlevel.level[2] >> 31 as c_int & 1 as dctcoef
+        | runlevel.level[1] >> 31 as c_int & 2 as dctcoef
+        | runlevel.level[0] >> 31 as c_int & 4 as dctcoef) as c_uint;
     i_sign >>= 3 as c_int - i_trailing;
     bs_write(
         s,
@@ -559,15 +554,13 @@ unsafe extern "C" fn cavlc_mvd(
     x264_10_mb_predict_mv(h, i_list, idx, width, mvp.as_mut_ptr());
     bs_write_se(
         s,
-        (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0 as c_int as usize]
-            as c_int
-            - mvp[0 as c_int as usize] as c_int,
+        (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0] as c_int
+            - mvp[0] as c_int,
     );
     bs_write_se(
         s,
-        (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1 as c_int as usize]
-            as c_int
-            - mvp[1 as c_int as usize] as c_int,
+        (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1] as c_int
+            - mvp[1] as c_int,
     );
 }
 #[inline]
@@ -759,47 +752,42 @@ unsafe extern "C" fn cavlc_mb_header_p(
     if i_mb_type == P_L0 as c_int {
         if (*h).mb.i_partition == D_16x16 as c_int {
             bs_write1(s, 1 as uint32_t);
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 bs_write_te(
                     s,
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                 );
             }
             cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
         } else if (*h).mb.i_partition == D_16x8 as c_int {
             bs_write_ue(s, 1 as c_int);
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 bs_write_te(
                     s,
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                 );
                 bs_write_te(
                     s,
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[8 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[8] as usize] as c_int,
                 );
             }
             cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
             cavlc_mvd(h, 0 as c_int, 8 as c_int, 4 as c_int);
         } else if (*h).mb.i_partition == D_8x16 as c_int {
             bs_write_ue(s, 2 as c_int);
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 bs_write_te(
                     s,
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                 );
                 bs_write_te(
                     s,
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[4 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[4] as usize] as c_int,
                 );
             }
             cavlc_mvd(h, 0 as c_int, 0 as c_int, 2 as c_int);
@@ -807,14 +795,10 @@ unsafe extern "C" fn cavlc_mb_header_p(
         }
     } else if i_mb_type == P_8x8 as c_int {
         let mut b_sub_ref: c_int = 0;
-        if (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[0 as c_int as usize] as usize]
-            as c_int
-            | (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[4 as c_int as usize] as usize]
-                as c_int
-            | (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[8 as c_int as usize] as usize]
-                as c_int
-            | (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[12 as c_int as usize] as usize]
-                as c_int
+        if (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int
+            | (*h).mb.cache.ref_0[0][x264_scan8[4] as usize] as c_int
+            | (*h).mb.cache.ref_0[0][x264_scan8[8] as usize] as c_int
+            | (*h).mb.cache.ref_0[0][x264_scan8[12] as usize] as c_int
             == 0 as c_int
         {
             bs_write_ue(s, 4 as c_int);
@@ -838,27 +822,23 @@ unsafe extern "C" fn cavlc_mb_header_p(
         if b_sub_ref != 0 {
             bs_write_te(
                 s,
-                (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[0 as c_int as usize] as usize]
-                    as c_int,
+                (*h).mb.pic.i_fref[0] - 1 as c_int,
+                (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
             );
             bs_write_te(
                 s,
-                (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[4 as c_int as usize] as usize]
-                    as c_int,
+                (*h).mb.pic.i_fref[0] - 1 as c_int,
+                (*h).mb.cache.ref_0[0][x264_scan8[4] as usize] as c_int,
             );
             bs_write_te(
                 s,
-                (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[8 as c_int as usize] as usize]
-                    as c_int,
+                (*h).mb.pic.i_fref[0] - 1 as c_int,
+                (*h).mb.cache.ref_0[0][x264_scan8[8] as usize] as c_int,
             );
             bs_write_te(
                 s,
-                (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[12 as c_int as usize] as usize]
-                    as c_int,
+                (*h).mb.pic.i_fref[0] - 1 as c_int,
+                (*h).mb.cache.ref_0[0][x264_scan8[12] as usize] as c_int,
             );
         }
         let mut i_0: c_int = 0 as c_int;
@@ -888,36 +868,32 @@ unsafe extern "C" fn cavlc_mb_header_b(
             );
             i += 1;
         }
-        if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+        if (*h).mb.pic.i_fref[0] > 1 as c_int {
             let mut i_0: c_int = 0 as c_int;
             while i_0 < 4 as c_int {
-                if x264_mb_partition_listX_table[0 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_0 as usize] as usize]
+                if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i_0 as usize] as usize]
                     != 0
                 {
                     bs_write_te(
                         s,
-                        (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[(i_0 * 4 as c_int) as usize] as usize]
+                        (*h).mb.pic.i_fref[0] - 1 as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[(i_0 * 4 as c_int) as usize] as usize]
                             as c_int,
                     );
                 }
                 i_0 += 1;
             }
         }
-        if (*h).mb.pic.i_fref[1 as c_int as usize] > 1 as c_int {
+        if (*h).mb.pic.i_fref[1] > 1 as c_int {
             let mut i_1: c_int = 0 as c_int;
             while i_1 < 4 as c_int {
-                if x264_mb_partition_listX_table[1 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_1 as usize] as usize]
+                if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i_1 as usize] as usize]
                     != 0
                 {
                     bs_write_te(
                         s,
-                        (*h).mb.pic.i_fref[1 as c_int as usize] - 1 as c_int,
-                        (*h).mb.cache.ref_0[1 as c_int as usize]
-                            [x264_scan8[(i_1 * 4 as c_int) as usize] as usize]
+                        (*h).mb.pic.i_fref[1] - 1 as c_int,
+                        (*h).mb.cache.ref_0[1][x264_scan8[(i_1 * 4 as c_int) as usize] as usize]
                             as c_int,
                     );
                 }
@@ -926,9 +902,7 @@ unsafe extern "C" fn cavlc_mb_header_b(
         }
         let mut i_2: c_int = 0 as c_int;
         while i_2 < 4 as c_int {
-            if x264_mb_partition_listX_table[0 as c_int as usize]
-                [(*h).mb.i_sub_partition[i_2 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i_2 as usize] as usize] != 0
             {
                 cavlc_mvd(h, 0 as c_int, 4 as c_int * i_2, 2 as c_int);
             }
@@ -936,9 +910,7 @@ unsafe extern "C" fn cavlc_mb_header_b(
         }
         let mut i_3: c_int = 0 as c_int;
         while i_3 < 4 as c_int {
-            if x264_mb_partition_listX_table[1 as c_int as usize]
-                [(*h).mb.i_sub_partition[i_3 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i_3 as usize] as usize] != 0
             {
                 cavlc_mvd(h, 1 as c_int, 4 as c_int * i_3, 2 as c_int);
             }
@@ -948,105 +920,87 @@ unsafe extern "C" fn cavlc_mb_header_b(
         let mut b_list: *const [uint8_t; 2] =
             (*x264_mb_type_list_table.as_ptr().offset(i_mb_type as isize)).as_ptr()
                 as *const [uint8_t; 2];
-        let i_ref0_max: c_int = (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int;
-        let i_ref1_max: c_int = (*h).mb.pic.i_fref[1 as c_int as usize] - 1 as c_int;
+        let i_ref0_max: c_int = (*h).mb.pic.i_fref[0] - 1 as c_int;
+        let i_ref1_max: c_int = (*h).mb.pic.i_fref[1] - 1 as c_int;
         bs_write_ue(
             s,
             mb_type_b_to_golomb[((*h).mb.i_partition - D_16x8 as c_int) as usize]
                 [(i_mb_type - B_L0_L0 as c_int) as usize] as c_int,
         );
         if (*h).mb.i_partition == D_16x16 as c_int {
-            if i_ref0_max != 0
-                && (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] as c_int != 0
-            {
+            if i_ref0_max != 0 && (*b_list.offset(0))[0] as c_int != 0 {
                 bs_write_te(
                     s,
                     i_ref0_max,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                 );
             }
-            if i_ref1_max != 0
-                && (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] as c_int != 0
-            {
+            if i_ref1_max != 0 && (*b_list.offset(1))[0] as c_int != 0 {
                 bs_write_te(
                     s,
                     i_ref1_max,
-                    (*h).mb.cache.ref_0[1 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.cache.ref_0[1][x264_scan8[0] as usize] as c_int,
                 );
             }
-            if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+            if (*b_list.offset(0))[0] != 0 {
                 cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
             }
-            if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+            if (*b_list.offset(1))[0] != 0 {
                 cavlc_mvd(h, 1 as c_int, 0 as c_int, 4 as c_int);
             }
         } else {
-            if i_ref0_max != 0
-                && (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] as c_int != 0
-            {
+            if i_ref0_max != 0 && (*b_list.offset(0))[0] as c_int != 0 {
                 bs_write_te(
                     s,
                     i_ref0_max,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                 );
             }
-            if i_ref0_max != 0
-                && (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] as c_int != 0
-            {
+            if i_ref0_max != 0 && (*b_list.offset(0))[1] as c_int != 0 {
                 bs_write_te(
                     s,
                     i_ref0_max,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[12 as c_int as usize] as usize] as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[12] as usize] as c_int,
                 );
             }
-            if i_ref1_max != 0
-                && (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] as c_int != 0
-            {
+            if i_ref1_max != 0 && (*b_list.offset(1))[0] as c_int != 0 {
                 bs_write_te(
                     s,
                     i_ref1_max,
-                    (*h).mb.cache.ref_0[1 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.cache.ref_0[1][x264_scan8[0] as usize] as c_int,
                 );
             }
-            if i_ref1_max != 0
-                && (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] as c_int != 0
-            {
+            if i_ref1_max != 0 && (*b_list.offset(1))[1] as c_int != 0 {
                 bs_write_te(
                     s,
                     i_ref1_max,
-                    (*h).mb.cache.ref_0[1 as c_int as usize]
-                        [x264_scan8[12 as c_int as usize] as usize] as c_int,
+                    (*h).mb.cache.ref_0[1][x264_scan8[12] as usize] as c_int,
                 );
             }
             if (*h).mb.i_partition == D_16x8 as c_int {
-                if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(0))[0] != 0 {
                     cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
                 }
-                if (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] != 0 {
+                if (*b_list.offset(0))[1] != 0 {
                     cavlc_mvd(h, 0 as c_int, 8 as c_int, 4 as c_int);
                 }
-                if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(1))[0] != 0 {
                     cavlc_mvd(h, 1 as c_int, 0 as c_int, 4 as c_int);
                 }
-                if (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] != 0 {
+                if (*b_list.offset(1))[1] != 0 {
                     cavlc_mvd(h, 1 as c_int, 8 as c_int, 4 as c_int);
                 }
             } else {
-                if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(0))[0] != 0 {
                     cavlc_mvd(h, 0 as c_int, 0 as c_int, 2 as c_int);
                 }
-                if (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] != 0 {
+                if (*b_list.offset(0))[1] != 0 {
                     cavlc_mvd(h, 0 as c_int, 4 as c_int, 2 as c_int);
                 }
-                if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(1))[0] != 0 {
                     cavlc_mvd(h, 1 as c_int, 0 as c_int, 2 as c_int);
                 }
-                if (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] != 0 {
+                if (*b_list.offset(1))[1] != 0 {
                     cavlc_mvd(h, 1 as c_int, 4 as c_int, 2 as c_int);
                 }
             }
@@ -1238,7 +1192,7 @@ unsafe extern "C" fn x264_10_macroblock_write_cavlc(mut h: *mut x264_t) {
                             DCT_LUMA_AC as c_int,
                             (*(*h).dct.luma4x4.as_mut_ptr().offset(i_1 as isize))
                                 .as_mut_ptr()
-                                .offset(1 as c_int as isize),
+                                .offset(1),
                             nC_0,
                         ) as uint8_t;
                     }
@@ -1279,7 +1233,7 @@ unsafe extern "C" fn x264_10_macroblock_write_cavlc(mut h: *mut x264_t) {
             *nnz_1 = cavlc_block_residual_internal(
                 h,
                 DCT_CHROMA_DC as c_int,
-                (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
+                (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                 nC_1,
             ) as uint8_t;
         }
@@ -1310,7 +1264,7 @@ unsafe extern "C" fn x264_10_macroblock_write_cavlc(mut h: *mut x264_t) {
             *nnz_2 = cavlc_block_residual_internal(
                 h,
                 DCT_CHROMA_DC as c_int,
-                (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
+                (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                 nC_2,
             ) as uint8_t;
         }
@@ -1351,7 +1305,7 @@ unsafe extern "C" fn x264_10_macroblock_write_cavlc(mut h: *mut x264_t) {
                             DCT_CHROMA_AC as c_int,
                             (*(*h).dct.luma4x4.as_mut_ptr().offset(j_0 as isize))
                                 .as_mut_ptr()
-                                .offset(1 as c_int as isize),
+                                .offset(1),
                             nC_3,
                         ) as uint8_t;
                     }
