@@ -44,8 +44,8 @@ unsafe extern "C" fn open_file(
             &mut (*h).pic,
             *p_handle,
             (*info).csp,
-            (*info).width,
-            (*info).height,
+            (*info).width as c_int,
+            (*info).height as c_int,
         ) != 0
     {
         x264_cli_log(

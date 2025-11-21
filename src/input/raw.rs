@@ -49,9 +49,9 @@ unsafe extern "C" fn open_file(
                 && *p as c_int <= '9' as i32
                 && sscanf(
                     p,
-                    b"%dx%d\0" as *const u8 as *const c_char,
-                    &mut (*info).width as *mut c_int,
-                    &mut (*info).height as *mut c_int,
+                    c"%dx%d".as_ptr(),
+                    &mut (*info).width,
+                    &mut (*info).height,
                 ) == 2 as c_int
             {
                 break;
@@ -61,9 +61,9 @@ unsafe extern "C" fn open_file(
     } else {
         sscanf(
             (*opt).resolution,
-            b"%dx%d\0" as *const u8 as *const c_char,
-            &mut (*info).width as *mut c_int,
-            &mut (*info).height as *mut c_int,
+            c"%dx%d".as_ptr(),
+            &mut (*info).width,
+            &mut (*info).height,
         );
     }
     if (*info).width == 0 || (*info).height == 0 {
@@ -128,8 +128,12 @@ unsafe extern "C" fn open_file(
     let mut csp: *const x264_cli_csp_t = x264_cli_get_csp((*info).csp);
     let mut i: c_int = 0 as c_int;
     while i < (*csp).planes {
-        (*h).plane_size[i as usize] =
-            x264_cli_pic_plane_size((*info).csp, (*info).width, (*info).height, i);
+        (*h).plane_size[i as usize] = x264_cli_pic_plane_size(
+            (*info).csp,
+            (*info).width as c_int,
+            (*info).height as c_int,
+            i,
+        );
         (*h).frame_size += (*h).plane_size[i as usize];
         (*h).plane_size[i as usize] /= x264_cli_csp_depth_factor((*info).csp) as int64_t;
         i += 1;

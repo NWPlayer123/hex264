@@ -31,7 +31,7 @@ use crate::x264_h::{
     x264_avcintra_flavor_names, x264_b_pyramid_names, x264_colmatrix_names, x264_colorprim_names,
     x264_direct_pred_names, x264_fullrange_names, x264_motion_est_names, x264_nal_hrd_names,
     x264_overscan_names, x264_param_t, x264_picture_t, x264_preset_names, x264_transfer_names,
-    x264_vidformat_names, ContentLightLevel, FramePacking, MasteringDisplay,
+    x264_vidformat_names, ContentLightLevel, CropRectangle, FramePacking, MasteringDisplay,
     X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16,
     X264_ANALYSE_PSUB8x8, PIC_STRUCT_AUTO, X264_AQ_AUTOVARIANCE, X264_AQ_NONE, X264_AQ_VARIANCE,
     X264_AVCINTRA_FLAVOR_PANASONIC, X264_B_ADAPT_FAST, X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS,
@@ -580,8 +580,8 @@ unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     } else {
         X264_CSP_I420
     };
-    (*param).i_width = 0 as c_int;
-    (*param).i_height = 0 as c_int;
+    (*param).width = 0;
+    (*param).height = 0;
     (*param).vui.i_sar_width = 0 as c_int;
     (*param).vui.i_sar_height = 0 as c_int;
     (*param).vui.i_overscan = 0 as c_int;
@@ -1986,14 +1986,35 @@ unsafe extern "C" fn x264_param_parse(
             errortype = X264_PARAM_ALLOC_FAILED;
         }
     } else if strcmp(name, b"crop-rect\0" as *const u8 as *const c_char) == 0 {
-        b_error |= (sscanf(
+        let mut crop_left: c_int = 0;
+        let mut crop_top: c_int = 0;
+        let mut crop_right: c_int = 0;
+        let mut crop_bottom: c_int = 0;
+
+        let num_values = sscanf(
             value,
-            b"%d,%d,%d,%d\0" as *const u8 as *const c_char,
-            &mut (*p).crop_rect.i_left as *mut c_int,
-            &mut (*p).crop_rect.i_top as *mut c_int,
-            &mut (*p).crop_rect.i_right as *mut c_int,
-            &mut (*p).crop_rect.i_bottom as *mut c_int,
-        ) != 4 as c_int) as c_int;
+            c"%d,%d,%d,%d".as_ptr(),
+            &mut crop_left,
+            &mut crop_top,
+            &mut crop_right,
+            &mut crop_bottom,
+        );
+
+        b_error |= (num_values != 4) as i32;
+
+        if num_values == 4
+            && let Ok(left) = u32::try_from(crop_left)
+            && let Ok(top) = u32::try_from(crop_top)
+            && let Ok(right) = u32::try_from(crop_right)
+            && let Ok(bottom) = u32::try_from(crop_bottom)
+        {
+            (*p).crop_rect = CropRectangle {
+                left,
+                top,
+                right,
+                bottom,
+            };
+        }
     } else if strcmp(name, b"psnr\0" as *const u8 as *const c_char) == 0 {
         name_was_bool = 1 as c_int;
         (*p).analyse.b_psnr = atobool_internal(value, &mut b_error);
@@ -2072,8 +2093,8 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
         s = s.offset(sprintf(
             s,
             b"%dx%d \0" as *const u8 as *const c_char,
-            (*p).i_width,
-            (*p).i_height,
+            (*p).width,
+            (*p).height,
         ) as isize);
         s = s.offset(sprintf(
             s,
@@ -2409,19 +2430,15 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
             (*p).rc.b_filler,
         ) as isize);
     }
-    if (*p).crop_rect.i_left
-        | (*p).crop_rect.i_top
-        | (*p).crop_rect.i_right
-        | (*p).crop_rect.i_bottom
-        != 0
+    if (*p).crop_rect.left | (*p).crop_rect.top | (*p).crop_rect.right | (*p).crop_rect.bottom != 0
     {
         s = s.offset(sprintf(
             s,
             b" crop_rect=%d,%d,%d,%d\0" as *const u8 as *const c_char,
-            (*p).crop_rect.i_left,
-            (*p).crop_rect.i_top,
-            (*p).crop_rect.i_right,
-            (*p).crop_rect.i_bottom,
+            (*p).crop_rect.left,
+            (*p).crop_rect.top,
+            (*p).crop_rect.right,
+            (*p).crop_rect.bottom,
         ) as isize);
     }
     if let Some(mastering_display) = (*p).mastering_display {
@@ -2449,11 +2466,7 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
         ) as isize);
     }
     if let Some(frame_packing) = (*p).frame_packing {
-        s = s.offset(sprintf(
-            s,
-            c" frame-packing=%d".as_ptr(),
-            frame_packing as i32,
-        ) as isize);
+        s = s.offset(sprintf(s, c" frame-packing=%d".as_ptr(), frame_packing as i32) as isize);
     }
     if !((*p).rc.i_rc_method == X264_RC_CQP && (*p).rc.i_qp_constant == 0 as c_int) {
         s = s.offset(sprintf(

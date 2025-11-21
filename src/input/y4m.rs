@@ -174,11 +174,11 @@ unsafe extern "C" fn open_file(
             tokstart = tokstart.offset(1);
             match *fresh0 as c_int {
                 87 => {
-                    (*info).width = strtol(tokstart, &mut tokend, 10 as c_int) as c_int;
+                    (*info).width = strtol(tokstart, &mut tokend, 10 as c_int) as u32;
                     tokstart = tokend;
                 }
                 72 => {
-                    (*info).height = strtol(tokstart, &mut tokend, 10 as c_int) as c_int;
+                    (*info).height = strtol(tokstart, &mut tokend, 10 as c_int) as u32;
                     tokstart = tokend;
                 }
                 67 => {
@@ -308,8 +308,12 @@ unsafe extern "C" fn open_file(
     let mut csp: *const x264_cli_csp_t = x264_cli_get_csp((*info).csp);
     i = 0 as c_int;
     while i < (*csp).planes {
-        (*h).plane_size[i as usize] =
-            x264_cli_pic_plane_size((*info).csp, (*info).width, (*info).height, i);
+        (*h).plane_size[i as usize] = x264_cli_pic_plane_size(
+            (*info).csp,
+            (*info).width as c_int,
+            (*info).height as c_int,
+            i,
+        );
         (*h).frame_size += (*h).plane_size[i as usize];
         (*h).plane_size[i as usize] /= x264_cli_csp_depth_factor((*info).csp) as int64_t;
         i += 1;

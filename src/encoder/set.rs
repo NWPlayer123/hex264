@@ -27,7 +27,10 @@ use crate::string_h::{memcmp, memcpy, memset, strlen};
 use crate::tables_h::{x264_cqm_flat16, x264_cqm_jvt};
 use crate::x264_config_h::X264_VERSION;
 use crate::x264_h::{
-    ContentLightLevel, FramePacking, MasteringDisplay, X264_B_PYRAMID_STRICT, X264_BUILD, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_CSP_BGR, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_LOG_ERROR, X264_LOG_WARNING, X264_RC_ABR, X264_RC_CQP, x264_level_t, x264_levels, x264_param_t
+    x264_level_t, x264_levels, x264_param_t, ContentLightLevel, FramePacking, MasteringDisplay,
+    X264_BUILD, X264_B_PYRAMID_STRICT, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_CSP_BGR,
+    X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_LOG_ERROR, X264_LOG_WARNING,
+    X264_RC_ABR, X264_RC_CQP,
 };
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -207,8 +210,8 @@ unsafe extern "C" fn x264_10_sps_init(
 ) {
     let mut csp: c_int = (*param).i_csp & X264_CSP_MASK;
     (*sps).i_id = i_id;
-    (*sps).i_mb_width = ((*param).i_width + 15 as c_int) / 16 as c_int;
-    (*sps).i_mb_height = ((*param).i_height + 15 as c_int) / 16 as c_int;
+    (*sps).i_mb_width = ((*param).width as c_int + 15 as c_int) / 16 as c_int;
+    (*sps).i_mb_height = ((*param).height as c_int + 15 as c_int) / 16 as c_int;
     (*sps).b_frame_mbs_only =
         !((*param).b_interlaced != 0 || (*param).b_fake_interlaced != 0) as c_int;
     if (*sps).b_frame_mbs_only == 0 {
@@ -560,12 +563,12 @@ unsafe extern "C" fn x264_10_sps_init_reconfigurable(
     mut sps: *mut x264_sps_t,
     mut param: *mut x264_param_t,
 ) {
-    (*sps).crop.i_left = (*param).crop_rect.i_left;
-    (*sps).crop.i_top = (*param).crop_rect.i_top;
+    (*sps).crop.i_left = (*param).crop_rect.left as c_int;
+    (*sps).crop.i_top = (*param).crop_rect.top as c_int;
     (*sps).crop.i_right =
-        (*param).crop_rect.i_right + (*sps).i_mb_width * 16 as c_int - (*param).i_width;
+        (*param).crop_rect.right as c_int + (*sps).i_mb_width * 16 - (*param).width as c_int;
     (*sps).crop.i_bottom =
-        (*param).crop_rect.i_bottom + (*sps).i_mb_height * 16 as c_int - (*param).i_height;
+        (*param).crop_rect.bottom as c_int + (*sps).i_mb_height * 16 - (*param).height as c_int;
     (*sps).b_crop = ((*sps).crop.i_left != 0
         || (*sps).crop.i_top != 0
         || (*sps).crop.i_right != 0
@@ -1232,7 +1235,11 @@ unsafe extern "C" fn x264_10_sei_pic_timing_write(mut h: *mut x264_t, mut s: *mu
     );
 }
 
-pub unsafe fn x264_sei_frame_packing_write(frame_packing: FramePacking, i_frame: c_int, mut s: *mut bs_t) {
+pub unsafe fn x264_sei_frame_packing_write(
+    frame_packing: FramePacking,
+    i_frame: c_int,
+    mut s: *mut bs_t,
+) {
     let mut quincunx_sampling_flag: c_int = (frame_packing == FramePacking::Checkerboard) as c_int;
     let mut q: bs_t = bs_s {
         p_start: 0 as *mut uint8_t,
@@ -1260,8 +1267,8 @@ pub unsafe fn x264_sei_frame_packing_write(frame_packing: FramePacking, i_frame:
     bs_write1(&mut q, 0 as uint32_t);
     bs_write1(
         &mut q,
-        (frame_packing == FramePacking::TemporalInterleaved && i_frame & 1 as c_int == 0)
-            as c_int as uint32_t,
+        (frame_packing == FramePacking::TemporalInterleaved && i_frame & 1 as c_int == 0) as c_int
+            as uint32_t,
     );
     bs_write1(&mut q, 0 as uint32_t);
     bs_write1(&mut q, 0 as uint32_t);
@@ -1287,7 +1294,10 @@ pub unsafe fn x264_sei_frame_packing_write(frame_packing: FramePacking, i_frame:
 }
 #[no_mangle]
 #[c2rust::src_loc = "720:1"]
-pub unsafe fn x264_sei_mastering_display_write(mastering_display: &MasteringDisplay, mut s: *mut bs_t) {
+pub unsafe fn x264_sei_mastering_display_write(
+    mastering_display: &MasteringDisplay,
+    mut s: *mut bs_t,
+) {
     let mut q: bs_t = bs_s {
         p_start: 0 as *mut uint8_t,
         p: 0 as *mut uint8_t,
@@ -1300,54 +1310,16 @@ pub unsafe fn x264_sei_mastering_display_write(mastering_display: &MasteringDisp
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
     bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
     bs_realign(&mut q);
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.green.0.into(),
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.green.1.into(),
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.blue.0.into(),
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.blue.1.into(),
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.red.0.into(),
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.red.1.into(),
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.white.0.into(),
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        mastering_display.white.1.into(),
-    );
-    bs_write32(
-        &mut q,
-        mastering_display.display_max,
-    );
-    bs_write32(
-        &mut q,
-        mastering_display.display_min,
-    );
+    bs_write(&mut q, 16 as c_int, mastering_display.green.0.into());
+    bs_write(&mut q, 16 as c_int, mastering_display.green.1.into());
+    bs_write(&mut q, 16 as c_int, mastering_display.blue.0.into());
+    bs_write(&mut q, 16 as c_int, mastering_display.blue.1.into());
+    bs_write(&mut q, 16 as c_int, mastering_display.red.0.into());
+    bs_write(&mut q, 16 as c_int, mastering_display.red.1.into());
+    bs_write(&mut q, 16 as c_int, mastering_display.white.0.into());
+    bs_write(&mut q, 16 as c_int, mastering_display.white.1.into());
+    bs_write32(&mut q, mastering_display.display_max);
+    bs_write32(&mut q, mastering_display.display_min);
     bs_align_10(&mut q);
     x264_10_sei_write(
         s,
@@ -1359,7 +1331,10 @@ pub unsafe fn x264_sei_mastering_display_write(mastering_display: &MasteringDisp
 
 #[no_mangle]
 #[c2rust::src_loc = "745:1"]
-pub unsafe extern "C" fn x264_sei_content_light_level_write(light_level: &ContentLightLevel, mut s: *mut bs_t) {
+pub unsafe extern "C" fn x264_sei_content_light_level_write(
+    light_level: &ContentLightLevel,
+    mut s: *mut bs_t,
+) {
     let mut q: bs_t = bs_s {
         p_start: 0 as *mut uint8_t,
         p: 0 as *mut uint8_t,
@@ -1372,16 +1347,8 @@ pub unsafe extern "C" fn x264_sei_content_light_level_write(light_level: &Conten
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
     bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
     bs_realign(&mut q);
-    bs_write(
-        &mut q,
-        16 as c_int,
-        light_level.max_cll as uint32_t,
-    );
-    bs_write(
-        &mut q,
-        16 as c_int,
-        light_level.max_fall as uint32_t,
-    );
+    bs_write(&mut q, 16 as c_int, light_level.max_cll as uint32_t);
+    bs_write(&mut q, 16 as c_int, light_level.max_fall as uint32_t);
     bs_align_10(&mut q);
     x264_10_sei_write(
         s,

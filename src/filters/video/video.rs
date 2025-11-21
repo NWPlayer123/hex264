@@ -60,7 +60,7 @@ unsafe extern "C" fn x264_register_vid_filters() {
 }
 #[no_mangle]
 #[c2rust::src_loc = "65:1"]
-unsafe extern "C" fn x264_init_vid_filter(
+pub unsafe extern "C" fn x264_init_vid_filter(
     mut name: *const c_char,
     mut handle: *mut hnd_t,
     mut filter: *mut cli_vid_filter_t,

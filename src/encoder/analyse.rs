@@ -9813,7 +9813,7 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
                         as c_int;
                     if HAVE_INTERLACED != 0
                         && (*h).mb.b_interlaced == 0
-                        && (*h).mb.i_mb_y * 16 as c_int >= (*h).param.i_height
+                        && (*h).mb.i_mb_y * 16 as c_int >= (*h).param.height as c_int
                         && skip_invalid == 0
                     {
                         b_skip = 1 as c_int;
@@ -10649,7 +10649,7 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
                 }
                 if HAVE_INTERLACED != 0
                     && (*h).mb.b_interlaced == 0
-                    && (*h).mb.i_mb_y * 16 as c_int >= (*h).param.i_height
+                    && (*h).mb.i_mb_y * 16 as c_int >= (*h).param.height as c_int
                 {
                     b_skip_0 = 1 as c_int;
                 } else if analysis.i_mbrd != 0 {

@@ -421,8 +421,8 @@ pub mod x264_h {
         pub b_deterministic: c_int,
         pub b_cpu_independent: c_int,
         pub i_sync_lookahead: c_int,
-        pub i_width: c_int,
-        pub i_height: c_int,
+        pub width: u32,
+        pub height: u32,
         pub i_csp: c_int,
         pub i_bitdepth: c_int,
         pub i_level_idc: c_int,
@@ -469,7 +469,7 @@ pub mod x264_h {
         pub psz_dump_yuv: *mut c_char,
         pub analyse: C2RustUnnamed_3,
         pub rc: C2RustUnnamed_2,
-        pub crop_rect: C2RustUnnamed_1,
+        pub crop_rect: CropRectangle,
         /// Frame Packing Arrangement SEI metadata.
         pub frame_packing: Option<FramePacking>,
         /// Mastering Display Color Volume SEI metadata.
@@ -516,8 +516,8 @@ pub mod x264_h {
                 b_deterministic: 0,
                 b_cpu_independent: 0,
                 i_sync_lookahead: 0,
-                i_width: 0,
-                i_height: 0,
+                width: 0,
+                height: 0,
                 i_csp: 0,
                 i_bitdepth: 0,
                 i_level_idc: 0,
@@ -562,7 +562,7 @@ pub mod x264_h {
                 psz_dump_yuv: core::ptr::null_mut(),
                 analyse: C2RustUnnamed_3::new(),
                 rc: C2RustUnnamed_2::new(),
-                crop_rect: C2RustUnnamed_1::new(),
+                crop_rect: CropRectangle::default(),
                 frame_packing: None,
                 mastering_display: None,
                 content_light_level: None,
@@ -625,7 +625,6 @@ pub mod x264_h {
     /// Frame packing arrangement SEI metadata.
     ///
     /// Table D-9 in the H.264 specification.
-    // TODO: migrate the frame_packing f64 cast nonsense into a function?
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub enum FramePacking {
         /// Checkerboard-based interleaving (quincunx sampling).
@@ -680,25 +679,20 @@ pub mod x264_h {
         }
     }
 
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    #[c2rust::src_loc = "488:5"]
-    pub struct C2RustUnnamed_1 {
-        pub i_left: c_int,
-        pub i_top: c_int,
-        pub i_right: c_int,
-        pub i_bottom: c_int,
-    }
-
-    impl C2RustUnnamed_1 {
-        fn new() -> Self {
-            Self {
-                i_left: 0,
-                i_top: 0,
-                i_right: 0,
-                i_bottom: 0,
-            }
-        }
+    /// Frame cropping offsets added to automatic mod16 padding compensation.
+    ///
+    /// Encoded in SPS as `frame_crop_{left,right,top,bottom}_offset` (H.264 §7.4.2.1).
+    /// Values are scaled by chroma subsampling factors before being applied to the decoded picture.
+    #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+    pub struct CropRectangle {
+        /// Samples to crop from left edge
+        pub left: u32,
+        /// Samples to crop from top edge
+        pub top: u32,
+        /// Samples to crop from right edge
+        pub right: u32,
+        /// Samples to crop from bottom edge
+        pub bottom: u32,
     }
 
     #[derive(Copy, Clone)]
@@ -1583,8 +1577,8 @@ pub mod input_h {
         pub fps_num: uint32_t,
         pub fps_den: uint32_t,
         pub fullrange: c_int,
-        pub width: c_int,
-        pub height: c_int,
+        pub width: u32,
+        pub height: u32,
         pub interlaced: c_int,
         pub num_frames: c_int,
         pub sar_width: uint32_t,
@@ -1811,15 +1805,6 @@ pub mod video_h {
         pub fn x264_register_vid_filters();
         #[c2rust::src_loc = "59:1"]
         pub fn x264_vid_filter_help(longhelp: c_int);
-        #[c2rust::src_loc = "60:1"]
-        pub fn x264_init_vid_filter(
-            name: *const c_char,
-            handle: *mut hnd_t,
-            filter_0: *mut cli_vid_filter_t,
-            info: *mut video_info_t,
-            param: *mut x264_param_t,
-            opt_string: *mut c_char,
-        ) -> c_int;
     }
 }
 #[c2rust::header_src = "/usr/include/libavutil/pixfmt.h:45"]
@@ -22415,11 +22400,6 @@ pub mod filters_h {
     use ::core::ffi::{c_char, c_int};
 
     extern "C" {
-        #[c2rust::src_loc = "33:1"]
-        pub fn x264_split_options(
-            opt_str: *const c_char,
-            options: *const *const c_char,
-        ) -> *mut *mut c_char;
         #[c2rust::src_loc = "34:1"]
         pub fn x264_get_option(name: *const c_char, split_options: *mut *mut c_char)
             -> *mut c_char;

@@ -555,8 +555,8 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
         (*rc).mbtree.srcdim[1 as c_int as usize] as c_float / 16.0f32,
     ];
     let mut dstdim: [c_float; 2] = [
-        (*h).param.i_width as c_float / 16.0f32,
-        (*h).param.i_height as c_float / 16.0f32,
+        (*h).param.width as c_float / 16.0f32,
+        (*h).param.height as c_float / 16.0f32,
     ];
     let mut srcdimi: [c_int; 2] = [
         ceil(srcdim[0 as c_int as usize] as c_double) as c_int,
@@ -1460,7 +1460,7 @@ unsafe extern "C" fn x264_10_ratecontrol_new(mut h: *mut x264_t) -> c_int {
                         (*rc).mbtree.srcdim[0 as c_int as usize] = i_0;
                         (*rc).mbtree.srcdim[1 as c_int as usize] = j_1;
                     }
-                    res_factor = (*h).param.i_width as c_float * (*h).param.i_height as c_float
+                    res_factor = (*h).param.width as c_float * (*h).param.height as c_float
                         / (i_0 * j_1) as c_float;
                     res_factor_bits = powf(res_factor, 0.7f32);
                     p = strstr(opts, b"timebase=\0" as *const u8 as *const c_char);
@@ -2179,8 +2179,8 @@ unsafe extern "C" fn x264_10_ratecontrol_new(mut h: *mut x264_t) -> c_int {
                             && ((*h).param.rc.b_stat_read != 0 || (*h).param.rc.b_stat_write != 0)
                         {
                             if (*h).param.rc.b_stat_read == 0 {
-                                (*rc).mbtree.srcdim[0 as c_int as usize] = (*h).param.i_width;
-                                (*rc).mbtree.srcdim[1 as c_int as usize] = (*h).param.i_height;
+                                (*rc).mbtree.srcdim[0] = (*h).param.width as c_int;
+                                (*rc).mbtree.srcdim[1] = (*h).param.height as c_int;
                             }
                             if macroblock_tree_rescale_init(h, rc) < 0 as c_int {
                                 return -(1 as c_int);
@@ -5007,11 +5007,12 @@ unsafe extern "C" fn init_pass2(mut h: *mut x264_t) -> c_int {
             let mut rcj_0: *mut ratecontrol_entry_t =
                 &mut *(*rcc).entry.offset((i_1 - j_0) as isize) as *mut ratecontrol_entry_t;
             let frame_packing = (*h).param.frame_packing;
-            let mut frame_duration_0: c_double = x264_clip3f(
-                (*rcj_0).i_duration as c_double * timescale,
-                FramePacking::min_frame_duration(frame_packing),
-                FramePacking::max_frame_duration(frame_packing),
-            ) / FramePacking::base_frame_duration(frame_packing);
+            let mut frame_duration_0: c_double =
+                x264_clip3f(
+                    (*rcj_0).i_duration as c_double * timescale,
+                    FramePacking::min_frame_duration(frame_packing),
+                    FramePacking::max_frame_duration(frame_packing),
+                ) / FramePacking::base_frame_duration(frame_packing);
             gaussian_weight = weight * exp((-j_0 * j_0) as c_double / 200.0f64);
             weight_sum += gaussian_weight;
             cplx_sum += gaussian_weight

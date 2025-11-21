@@ -94,9 +94,9 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     flv_put_byte(c, AMF_DATA_TYPE_MIXEDARRAY as c_int as uint8_t);
     flv_put_be32(c, 7 as uint32_t);
     flv_put_amf_string(c, b"width\0" as *const u8 as *const c_char);
-    flv_put_amf_double(c, (*p_param).i_width as c_double);
+    flv_put_amf_double(c, (*p_param).width as c_double);
     flv_put_amf_string(c, b"height\0" as *const u8 as *const c_char);
-    flv_put_amf_double(c, (*p_param).i_height as c_double);
+    flv_put_amf_double(c, (*p_param).height as c_double);
     flv_put_amf_string(c, b"framerate\0" as *const u8 as *const c_char);
     if (*p_param).b_vfr_input == 0 {
         flv_put_amf_double(

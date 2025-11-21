@@ -299,8 +299,8 @@ unsafe extern "C" fn open_file(
             (*h).first_pic,
             h as hnd_t,
             0x4000 as c_int,
-            (*info).width,
-            (*info).height,
+            (*info).width as c_int,
+            (*info).height as c_int,
         ) != 0
     {
         x264_cli_log(
@@ -313,8 +313,8 @@ unsafe extern "C" fn open_file(
     if read_frame_internal((*h).first_pic, h, 0 as c_int, info) != 0 {
         return -(1 as c_int);
     }
-    (*info).width = (*(*h).lavc).width;
-    (*info).height = (*(*h).lavc).height;
+    (*info).width = (*(*h).lavc).width as u32;
+    (*info).height = (*(*h).lavc).height as u32;
     (*info).csp = (*(*h).first_pic).img.csp;
     (*info).num_frames = (**(*(*h).lavf).streams.offset(i as isize)).nb_frames as c_int;
     (*info).sar_height = (*(*h).lavc).sample_aspect_ratio.den as uint32_t;

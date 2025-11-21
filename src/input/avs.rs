@@ -26,7 +26,7 @@ use crate::input_h::{
 };
 use crate::osdep_h::x264_is_regular_file;
 use crate::pixfmt_h::AV_PIX_FMT_YUV411P;
-use crate::stdint_uintn_h::{uint32_t, uint8_t};
+use crate::stdint_uintn_h::uint8_t;
 use crate::stdio_h::{fclose, fflush, fopen, stderr};
 use crate::stdlib_h::{calloc, free};
 use crate::string_h::memset;
@@ -805,10 +805,10 @@ unsafe extern "C" fn open_file(
     (*h).func
         .avs_release_value
         .expect("non-null function pointer")(res);
-    (*info).width = (*vi).width;
-    (*info).height = (*vi).height;
-    (*info).fps_num = (*vi).fps_numerator as uint32_t;
-    (*info).fps_den = (*vi).fps_denominator as uint32_t;
+    (*info).width = (*vi).width as u32;
+    (*info).height = (*vi).height as u32;
+    (*info).fps_num = (*vi).fps_numerator;
+    (*info).fps_den = (*vi).fps_denominator;
     (*info).num_frames = (*vi).num_frames;
     (*h).num_frames = (*info).num_frames;
     (*info).thread_safe = 1 as c_int;

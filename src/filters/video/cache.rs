@@ -59,8 +59,8 @@ unsafe extern "C" fn init(
             || x264_cli_pic_alloc(
                 *(*h).cache.offset(i as isize),
                 (*info).csp,
-                (*info).width,
-                (*info).height,
+                (*info).width as c_int,
+                (*info).height as c_int,
             ) != 0
         {
             return -(1 as c_int);

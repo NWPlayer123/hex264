@@ -9,7 +9,7 @@ use crate::x264_h::X264_LOG_ERROR;
 use crate::x264cli_h::x264_cli_log;
 #[no_mangle]
 #[c2rust::src_loc = "32:1"]
-unsafe extern "C" fn x264_split_options(
+pub unsafe extern "C" fn x264_split_options(
     mut opt_str: *const c_char,
     mut options: *const *const c_char,
 ) -> *mut *mut c_char {

@@ -1,11 +1,12 @@
 use core::ffi::{c_char, c_float, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
-use crate::filters_h::{x264_get_option, x264_otoi, x264_split_options};
+use crate::filters_h::{x264_get_option, x264_otoi};
 use crate::input_h::{
     cli_pic_t, video_info_t, x264_cli_csp_depth_factor, x264_cli_csp_is_invalid, x264_cli_csp_t,
     x264_cli_get_csp,
 };
+use crate::src::filters::filters::x264_split_options;
 use crate::stdint_h::intptr_t;
 use crate::stdio_h::printf;
 use crate::stdlib_h::{calloc, free};
@@ -18,7 +19,7 @@ use crate::x264cli_h::{hnd_t, x264_cli_log};
 struct crop_hnd_t {
     prev_hnd: hnd_t,
     prev_filter: cli_vid_filter_t,
-    dims: [c_int; 4],
+    dims: [u32; 4],
     csp: *const x264_cli_csp_t,
 }
 #[c2rust::src_loc = "29:9"]
@@ -52,8 +53,8 @@ unsafe extern "C" fn handle_opts(
             );
             return -(1 as c_int);
         }
-        (*h).dims[i as usize] = x264_otoi(opt, -(1 as c_int));
-        if (*h).dims[i as usize] < 0 as c_int {
+        (*h).dims[i as usize] = x264_otoi(opt, -(1 as c_int)) as u32;
+        if (*h).dims[i as usize] < 0 {
             x264_cli_log(
                 b"crop\0" as *const u8 as *const c_char,
                 X264_LOG_ERROR,
@@ -68,7 +69,7 @@ unsafe extern "C" fn handle_opts(
         } else {
             (*(*h).csp).mod_width
         };
-        if (*h).dims[i as usize] % dim_mod != 0 {
+        if (*h).dims[i as usize] as c_int % dim_mod != 0 {
             x264_cli_log(
                 b"crop\0" as *const u8 as *const c_char,
                 X264_LOG_ERROR,
@@ -122,37 +123,32 @@ unsafe extern "C" fn init(
     if err != 0 {
         return -(1 as c_int);
     }
-    (*h).dims[2 as c_int as usize] =
-        (*info).width - (*h).dims[0 as c_int as usize] - (*h).dims[2 as c_int as usize];
-    (*h).dims[3 as c_int as usize] =
-        (*info).height - (*h).dims[1 as c_int as usize] - (*h).dims[3 as c_int as usize];
-    if (*h).dims[2 as c_int as usize] <= 0 as c_int || (*h).dims[3 as c_int as usize] <= 0 as c_int
-    {
+    (*h).dims[2] = (*info).width - (*h).dims[0] - (*h).dims[2];
+    (*h).dims[3] = (*info).height - (*h).dims[1] - (*h).dims[3];
+    if (*h).dims[2] <= 0 || (*h).dims[3] <= 0 {
         x264_cli_log(
             b"crop\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
             b"invalid output resolution %dx%d\n\0" as *const u8 as *const c_char,
-            (*h).dims[2 as c_int as usize],
-            (*h).dims[3 as c_int as usize],
+            (*h).dims[2],
+            (*h).dims[3],
         );
         return -(1 as c_int);
     }
-    if (*info).width != (*h).dims[2 as c_int as usize]
-        || (*info).height != (*h).dims[3 as c_int as usize]
-    {
+    if (*info).width != (*h).dims[2] || (*info).height != (*h).dims[3] {
         x264_cli_log(
             NAME.as_ptr(),
             X264_LOG_INFO,
             b"cropping to %dx%d\n\0" as *const u8 as *const c_char,
-            (*h).dims[2 as c_int as usize],
-            (*h).dims[3 as c_int as usize],
+            (*h).dims[2],
+            (*h).dims[3],
         );
     } else {
         free(h as *mut c_void);
         return 0 as c_int;
     }
-    (*info).width = (*h).dims[2 as c_int as usize];
-    (*info).height = (*h).dims[3 as c_int as usize];
+    (*info).width = (*h).dims[2];
+    (*info).height = (*h).dims[3];
     (*h).prev_filter = *filter;
     (*h).prev_hnd = *handle;
     *handle = h as hnd_t;
@@ -174,15 +170,15 @@ unsafe extern "C" fn get_frame(
     {
         return -(1 as c_int);
     }
-    (*output).img.width = (*h).dims[2 as c_int as usize];
-    (*output).img.height = (*h).dims[3 as c_int as usize];
+    (*output).img.width = (*h).dims[2] as c_int;
+    (*output).img.height = (*h).dims[3] as c_int;
     let mut i: c_int = 0 as c_int;
     while i < (*output).img.planes {
-        let mut offset: intptr_t = (((*output).img.stride[i as usize]
-            * (*h).dims[1 as c_int as usize]) as c_float
+        let mut offset: intptr_t = (((*output).img.stride[i as usize] as u32 * (*h).dims[1])
+            as c_float
             * (*(*h).csp).height[i as usize]) as intptr_t;
         offset = (offset as c_float
-            + (*h).dims[0 as c_int as usize] as c_float
+            + (*h).dims[0] as c_float
                 * (*(*h).csp).width[i as usize]
                 * x264_cli_csp_depth_factor((*output).img.csp) as c_float)
             as intptr_t;

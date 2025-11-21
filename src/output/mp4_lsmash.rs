@@ -352,10 +352,10 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
         );
         return -(1 as c_int);
     }
-    (*(*p_mp4).summary).width = (*p_param).i_width as uint32_t;
-    (*(*p_mp4).summary).height = (*p_param).i_height as uint32_t;
-    let mut i_display_width: uint32_t = ((*p_param).i_width << 16 as c_int) as uint32_t;
-    let mut i_display_height: uint32_t = ((*p_param).i_height << 16 as c_int) as uint32_t;
+    (*(*p_mp4).summary).width = (*p_param).width as uint32_t;
+    (*(*p_mp4).summary).height = (*p_param).height as uint32_t;
+    let mut i_display_width: uint32_t = ((*p_param).width << 16 as c_int) as uint32_t;
+    let mut i_display_height: uint32_t = ((*p_param).height << 16 as c_int) as uint32_t;
     if (*p_param).vui.i_sar_width != 0 && (*p_param).vui.i_sar_height != 0 {
         let mut sar: c_double =
             (*p_param).vui.i_sar_width as c_double / (*p_param).vui.i_sar_height as c_double;

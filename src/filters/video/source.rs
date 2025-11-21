@@ -34,8 +34,8 @@ unsafe extern "C" fn init(
         &mut (*h).pic,
         *handle,
         (*info).csp,
-        (*info).width,
-        (*info).height,
+        (*info).width as c_int,
+        (*info).height as c_int,
     ) != 0
     {
         return -(1 as c_int);

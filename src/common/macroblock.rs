@@ -983,7 +983,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                     as c_int;
                 let mut buf_ssim: c_int = (((*h).param.analyse.b_ssim
                     * 8 as c_int
-                    * ((*h).param.i_width / 4 as c_int + 3 as c_int))
+                    * ((*h).param.width as c_int / 4 as c_int + 3 as c_int))
                     as usize)
                     .wrapping_mul(::core::mem::size_of::<c_int>() as usize)
                     as c_int;
