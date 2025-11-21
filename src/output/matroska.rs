@@ -92,9 +92,9 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     } else {
         (*p_mkv).frame_duration = 0 as int64_t;
     }
-    (*p_mkv).width = (*p_param).i_width;
+    (*p_mkv).width = (*p_param).width as c_int;
     dw = (*p_mkv).width as int64_t;
-    (*p_mkv).height = (*p_param).i_height;
+    (*p_mkv).height = (*p_param).height as c_int;
     dh = (*p_mkv).height as int64_t;
     (*p_mkv).display_size_units = DS_PIXELS;
     (*p_mkv).stereo_mode = -(1 as c_int);

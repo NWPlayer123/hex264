@@ -8,8 +8,8 @@ use crate::predict_h::{
     I_PRED_16x16_DC_128, I_PRED_16x16_DC_LEFT, I_PRED_16x16_DC_TOP, I_PRED_16x16_H, I_PRED_16x16_P,
     I_PRED_16x16_V, I_PRED_4x4_DC, I_PRED_4x4_DC_128, I_PRED_4x4_DC_LEFT, I_PRED_4x4_DC_TOP,
     I_PRED_4x4_DDL, I_PRED_4x4_DDR, I_PRED_4x4_H, I_PRED_4x4_HD, I_PRED_4x4_HU, I_PRED_4x4_V,
-    I_PRED_4x4_VL, I_PRED_4x4_VR, I_PRED_CHROMA_DC, I_PRED_CHROMA_DC_128,
-    I_PRED_CHROMA_DC_LEFT, I_PRED_CHROMA_DC_TOP, I_PRED_CHROMA_H, I_PRED_CHROMA_P, I_PRED_CHROMA_V,
+    I_PRED_4x4_VL, I_PRED_4x4_VR, I_PRED_CHROMA_DC, I_PRED_CHROMA_DC_128, I_PRED_CHROMA_DC_LEFT,
+    I_PRED_CHROMA_DC_TOP, I_PRED_CHROMA_H, I_PRED_CHROMA_P, I_PRED_CHROMA_V,
 };
 use crate::stdint_uintn_h::{uint32_t, uint64_t};
 
@@ -25,7 +25,7 @@ pub enum Intra8x8Pred {
     HorizontalDown = 6,
     VerticalLeft = 7,
     HorizontalUp = 8,
-    
+
     // Fallback modes when certain neighbors are unavailable
     DcLeft = 9,
     DcTop = 10,

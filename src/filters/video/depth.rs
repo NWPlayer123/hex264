@@ -1,14 +1,16 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_float, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
 use crate::base_h::{x264_clip3, x264_free, x264_malloc};
 use crate::common_h::{pixel, SIZEOF_PIXEL};
-use crate::filters_h::{x264_get_option, x264_otoi, x264_split_options};
+use crate::filters_h::{x264_get_option, x264_otoi};
 use crate::input_h::{
     cli_image_t, cli_pic_t, video_info_t, x264_cli_csp_depth_factor, x264_cli_csps,
     x264_cli_pic_alloc, x264_cli_pic_clean,
 };
 use crate::internal::BIT_DEPTH;
+use crate::src::filters::filters::x264_split_options;
 use crate::stdint_intn_h::{int16_t, int64_t};
 use crate::stdint_uintn_h::{uint16_t, uint8_t};
 use crate::stdlib_h::free;
@@ -82,7 +84,7 @@ unsafe extern "C" fn dither_plane_1(
     memset(
         errors as *mut c_void,
         0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(::core::mem::size_of::<int16_t>() as size_t),
+        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
     let mut y: c_int = 0 as c_int;
     while y < height {
@@ -125,7 +127,7 @@ unsafe extern "C" fn dither_plane_2(
     memset(
         errors as *mut c_void,
         0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(::core::mem::size_of::<int16_t>() as size_t),
+        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
     let mut y: c_int = 0 as c_int;
     while y < height {
@@ -168,7 +170,7 @@ unsafe extern "C" fn dither_plane_3(
     memset(
         errors as *mut c_void,
         0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(::core::mem::size_of::<int16_t>() as size_t),
+        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
     let mut y: c_int = 0 as c_int;
     while y < height {
@@ -211,7 +213,7 @@ unsafe extern "C" fn dither_plane_4(
     memset(
         errors as *mut c_void,
         0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(::core::mem::size_of::<int16_t>() as size_t),
+        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
     let mut y: c_int = 0 as c_int;
     while y < height {
@@ -483,12 +485,9 @@ unsafe extern "C" fn init(
             );
             return -(1 as c_int);
         }
-        let mut h: *mut depth_hnd_t = x264_malloc(
-            (::core::mem::size_of::<depth_hnd_t>() as usize).wrapping_add(
-                (((*info).width + 1 as c_int) as usize)
-                    .wrapping_mul(::core::mem::size_of::<int16_t>() as usize),
-            ) as int64_t,
-        ) as *mut depth_hnd_t;
+        let mut h: *mut depth_hnd_t = x264_malloc((size_of::<depth_hnd_t>() as usize).wrapping_add(
+            (((*info).width + 1) as usize).wrapping_mul(size_of::<int16_t>() as usize),
+        ) as int64_t) as *mut depth_hnd_t;
         if h.is_null() {
             return -(1 as c_int);
         }
@@ -500,8 +499,8 @@ unsafe extern "C" fn init(
         if x264_cli_pic_alloc(
             &mut (*h).buffer,
             (*h).dst_csp,
-            (*info).width,
-            (*info).height,
+            (*info).width as c_int,
+            (*info).height as c_int,
         ) != 0
         {
             x264_free(h as *mut c_void);

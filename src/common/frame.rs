@@ -828,7 +828,7 @@ unsafe extern "C" fn x264_10_frame_delete(mut frame: *mut x264_frame_t) {
     x264_free(frame as *mut c_void);
 }
 #[c2rust::src_loc = "342:1"]
-unsafe extern "C" fn get_plane_ptr(
+unsafe fn get_plane_ptr(
     mut h: *mut x264_t,
     mut src: *mut x264_picture_t,
     mut pix: *mut *mut uint8_t,
@@ -837,8 +837,8 @@ unsafe extern "C" fn get_plane_ptr(
     mut xshift: c_int,
     mut yshift: c_int,
 ) -> c_int {
-    let mut width: c_int = (*h).param.i_width >> xshift;
-    let mut height: c_int = (*h).param.i_height >> yshift;
+    let mut width: c_int = (*h).param.width as c_int >> xshift;
+    let mut height: c_int = (*h).param.height as c_int >> yshift;
     *pix = (*src).img.plane[plane as usize];
     *stride = (*src).img.i_stride[plane as usize];
     if (*src).img.i_csp & X264_CSP_VFLIP != 0 {
@@ -935,8 +935,8 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
             (*dst).i_stride[(p ^ 1 as c_int) as usize] as intptr_t,
             (*src).img.plane[0 as c_int as usize] as *mut pixel,
             ((*src).img.i_stride[0 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
-            (*h).param.i_width,
-            (*h).param.i_height,
+            (*h).param.width as c_int,
+            (*h).param.height as c_int,
         );
     } else if i_csp == X264_CSP_V210 {
         stride[0 as c_int as usize] = (*src).img.i_stride[0 as c_int as usize];
@@ -950,15 +950,15 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
             (*dst).i_stride[1 as c_int as usize] as intptr_t,
             pix[0 as c_int as usize] as *mut uint32_t,
             (stride[0 as c_int as usize] / ::core::mem::size_of::<uint32_t>() as c_int) as intptr_t,
-            (*h).param.i_width,
-            (*h).param.i_height,
+            (*h).param.width as c_int,
+            (*h).param.height as c_int,
         );
     } else if i_csp >= X264_CSP_BGR {
         stride[0 as c_int as usize] = (*src).img.i_stride[0 as c_int as usize];
         pix[0 as c_int as usize] = (*src).img.plane[0 as c_int as usize];
         if (*src).img.i_csp & X264_CSP_VFLIP != 0 {
             pix[0 as c_int as usize] = pix[0 as c_int as usize].offset(
-                (((*h).param.i_height - 1 as c_int) * stride[0 as c_int as usize]) as isize,
+                (((*h).param.height as c_int - 1 as c_int) * stride[0 as c_int as usize]) as isize,
             );
             stride[0 as c_int as usize] = -stride[0 as c_int as usize];
         }
@@ -979,8 +979,8 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
             } else {
                 3 as c_int
             },
-            (*h).param.i_width,
-            (*h).param.i_height,
+            (*h).param.width as c_int,
+            (*h).param.height as c_int,
         );
     } else {
         let mut v_shift: c_int = (*h).mb.chroma_v_shift;
@@ -1001,8 +1001,8 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
             (*dst).i_stride[0 as c_int as usize] as intptr_t,
             pix[0 as c_int as usize] as *mut pixel,
             (stride[0 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
-            (*h).param.i_width,
-            (*h).param.i_height,
+            (*h).param.width as c_int,
+            (*h).param.height as c_int,
         );
         if i_csp == X264_CSP_NV12 || i_csp == X264_CSP_NV16 {
             if get_plane_ptr(
@@ -1022,8 +1022,8 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
                 (*dst).i_stride[1 as c_int as usize] as intptr_t,
                 pix[1 as c_int as usize] as *mut pixel,
                 (stride[1 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
-                (*h).param.i_width,
-                (*h).param.i_height >> v_shift,
+                (*h).param.width as c_int,
+                (*h).param.height as c_int >> v_shift,
             );
         } else if i_csp == X264_CSP_NV21 {
             if get_plane_ptr(
@@ -1043,8 +1043,8 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
                 (*dst).i_stride[1 as c_int as usize] as intptr_t,
                 pix[1 as c_int as usize] as *mut pixel,
                 (stride[1 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
-                (*h).param.i_width >> 1 as c_int,
-                (*h).param.i_height >> v_shift,
+                (*h).param.width as c_int >> 1,
+                (*h).param.height as c_int >> v_shift,
             );
         } else if i_csp == X264_CSP_I420
             || i_csp == X264_CSP_I422
@@ -1085,8 +1085,8 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
                 (stride[1 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
                 pix[2 as c_int as usize] as *mut pixel,
                 (stride[2 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
-                (*h).param.i_width >> 1 as c_int,
-                (*h).param.i_height >> v_shift,
+                (*h).param.width as c_int >> 1,
+                (*h).param.height as c_int >> v_shift,
             );
         } else if i_csp == X264_CSP_I444 || i_csp == X264_CSP_YV24 {
             if get_plane_ptr(
@@ -1126,16 +1126,16 @@ unsafe extern "C" fn x264_10_frame_copy_picture(
                 (*dst).i_stride[1 as c_int as usize] as intptr_t,
                 pix[1 as c_int as usize] as *mut pixel,
                 (stride[1 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
-                (*h).param.i_width,
-                (*h).param.i_height,
+                (*h).param.width as c_int,
+                (*h).param.height as c_int,
             );
             (*h).mc.plane_copy.expect("non-null function pointer")(
                 (*dst).plane[2 as c_int as usize],
                 (*dst).i_stride[2 as c_int as usize] as intptr_t,
                 pix[2 as c_int as usize] as *mut pixel,
                 (stride[2 as c_int as usize] / SIZEOF_PIXEL) as intptr_t,
-                (*h).param.i_width,
-                (*h).param.i_height,
+                (*h).param.width as c_int,
+                (*h).param.height as c_int,
             );
         }
     }
@@ -1462,12 +1462,12 @@ unsafe extern "C" fn x264_10_frame_expand_border_mod16(
 ) {
     let mut i: c_int = 0 as c_int;
     while i < (*frame).i_plane {
-        let mut i_width: c_int = (*h).param.i_width;
+        let mut i_width: c_int = (*h).param.width as c_int;
         let mut h_shift: c_int = (i != 0 && (*h).mb.chroma_h_shift != 0) as c_int;
         let mut v_shift: c_int = (i != 0 && (*h).mb.chroma_v_shift != 0) as c_int;
-        let mut i_height: c_int = (*h).param.i_height >> v_shift;
-        let mut i_padx: c_int = (*h).mb.i_mb_width * 16 as c_int - (*h).param.i_width;
-        let mut i_pady: c_int = (*h).mb.i_mb_height * 16 as c_int - (*h).param.i_height >> v_shift;
+        let mut i_height: c_int = (*h).param.height as c_int >> v_shift;
+        let mut i_padx: c_int = (*h).mb.i_mb_width * 16 - (*h).param.width as c_int;
+        let mut i_pady: c_int = (*h).mb.i_mb_height * 16 - (*h).param.height as c_int >> v_shift;
         if i_padx != 0 {
             let mut y: c_int = 0 as c_int;
             while y < i_height {
@@ -1517,10 +1517,9 @@ unsafe extern "C" fn x264_10_expand_border_mbpair(
     while i < (*(*h).fenc).i_plane {
         let mut v_shift: c_int = (i != 0 && (*h).mb.chroma_v_shift != 0) as c_int;
         let mut stride: c_int = (*(*h).fenc).i_stride[i as usize];
-        let mut height: c_int = (*h).param.i_height >> v_shift;
-        let mut pady: c_int = (*h).mb.i_mb_height * 16 as c_int - (*h).param.i_height >> v_shift;
-        let mut fenc: *mut pixel =
-            (*(*h).fenc).plane[i as usize].offset((16 as c_int * mb_x) as isize);
+        let mut height: c_int = (*h).param.height as c_int >> v_shift;
+        let mut pady: c_int = (*h).mb.i_mb_height * 16 - (*h).param.height as c_int >> v_shift;
+        let mut fenc: *mut pixel = (*(*h).fenc).plane[i as usize].offset((16 * mb_x) as isize);
         let mut y: c_int = height;
         while y < height + pady {
             memcpy(

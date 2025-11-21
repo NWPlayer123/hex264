@@ -2397,10 +2397,10 @@ unsafe extern "C" fn x264_10_field_vsad(
     let mut fenc: *mut pixel = (*(*h).fenc).plane[0 as c_int as usize]
         .offset((16 as c_int * (mb_x + mb_y * stride)) as isize);
     let mut mb_xy: c_int = mb_x + mb_y * mb_stride;
-    let mut mbpair_height: c_int = if ((*h).param.i_height - mb_y * 16 as c_int) < 32 as c_int {
-        (*h).param.i_height - mb_y * 16 as c_int
+    let mut mbpair_height: c_int = if ((*h).param.height as c_int - mb_y * 16) < 32 {
+        (*h).param.height as c_int - mb_y * 16
     } else {
-        32 as c_int
+        32
     };
     score_frame =
         (*h).pixf.vsad.expect("non-null function pointer")(fenc, stride as intptr_t, mbpair_height);

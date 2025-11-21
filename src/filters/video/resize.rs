@@ -2,7 +2,7 @@ use core::ffi::{c_char, c_double, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
 use crate::base_h::{x264_reduce_fraction, x264_reduce_fraction64};
-use crate::filters_h::{x264_get_option, x264_otoi, x264_otos, x264_split_options};
+use crate::filters_h::{x264_get_option, x264_otoi, x264_otos};
 use crate::input_h::{
     cli_image_t, cli_pic_t, video_info_t, x264_cli_csp_depth_factor, x264_cli_csp_t, x264_cli_csps,
     x264_cli_get_csp, x264_cli_pic_alloc_aligned, x264_cli_pic_clean, X264_CSP_CLI_MAX,
@@ -22,6 +22,7 @@ use crate::pixfmt_h::{
     AV_PIX_FMT_YUV420P16LE, AV_PIX_FMT_YUV422P, AV_PIX_FMT_YUV422P16LE, AV_PIX_FMT_YUV444P,
     AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUYV422,
 };
+use crate::src::filters::filters::x264_split_options;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
 use crate::stdio_h::{printf, sscanf};
@@ -81,8 +82,8 @@ unsafe extern "C" fn full_check(
 ) -> c_int {
     let mut required: c_int = 0 as c_int;
     required |= ((*info).csp != (*param).i_csp) as c_int;
-    required |= ((*info).width != (*param).i_width) as c_int;
-    required |= ((*info).height != (*param).i_height) as c_int;
+    required |= ((*info).width != (*param).width) as c_int;
+    required |= ((*info).height != (*param).height) as c_int;
     required |= ((*info).fullrange != (*param).vui.b_fullrange) as c_int;
     return required;
 }
@@ -500,8 +501,8 @@ unsafe extern "C" fn handle_opts(
         let mut csp_1: *const x264_cli_csp_t = x264_cli_get_csp((*h).dst_csp);
         let mut width_units_0: c_double = in_sar_h as c_double * out_sar_w as c_double;
         let mut height_units_0: c_double = in_sar_w as c_double * out_sar_h as c_double;
-        width = (*info).width;
-        height = (*info).height;
+        width = (*info).width as c_int;
+        height = (*info).height as c_int;
         if width_units_0 > height_units_0 {
             width = round(
                 (*info).width as c_double * height_units_0
@@ -516,9 +517,9 @@ unsafe extern "C" fn handle_opts(
             height *= (*csp_1).mod_height;
         }
     } else {
-        (*h).dst.width = (*info).width;
-        (*h).dst.height = (*info).height;
-        csp_only = 1 as c_int;
+        (*h).dst.width = (*info).width as c_int;
+        (*h).dst.height = (*info).height as c_int;
+        csp_only = 1;
     }
     if csp_only == 0 {
         (*info).sar_width = out_sar_w;
@@ -701,8 +702,8 @@ unsafe extern "C" fn init(
     ));
     if !opts.is_null() {
         (*h).dst_csp = (*info).csp;
-        (*h).dst.width = (*info).width;
-        (*h).dst.height = (*info).height;
+        (*h).dst.width = (*info).width as c_int;
+        (*h).dst.height = (*info).height as c_int;
         (*h).dst.range = (*info).fullrange;
         if strcmp(opt_string, b"normcsp\0" as *const u8 as *const c_char) == 0 {
             free(opts as *mut c_void);
@@ -728,8 +729,8 @@ unsafe extern "C" fn init(
         }
     } else {
         (*h).dst_csp = (*param).i_csp;
-        (*h).dst.width = (*param).i_width;
-        (*h).dst.height = (*param).i_height;
+        (*h).dst.width = (*param).width as c_int;
+        (*h).dst.height = (*param).height as c_int;
         (*h).dst.range = (*param).vui.b_fullrange;
     }
     if (*h).ctx_flags != SWS_FAST_BILINEAR as c_int as uint32_t {
@@ -811,7 +812,7 @@ unsafe extern "C" fn init(
         );
         return -(1 as c_int);
     }
-    if (*h).dst.height != (*info).height && (*info).interlaced != 0 {
+    if (*h).dst.height != (*info).height as c_int && (*info).interlaced != 0 {
         x264_cli_log(
             b"resize\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
@@ -833,7 +834,7 @@ unsafe extern "C" fn init(
         );
         return -(1 as c_int);
     }
-    if (*h).dst.width != (*info).width || (*h).dst.height != (*info).height {
+    if (*h).dst.width != (*info).width as c_int || (*h).dst.height != (*info).height as c_int {
         x264_cli_log(
             NAME.as_ptr(),
             X264_LOG_INFO,
@@ -872,8 +873,8 @@ unsafe extern "C" fn init(
         && (src_csp >= X264_CSP_I420 && src_csp <= X264_CSP_NV16
             || src_csp == X264_CSP_I444
             || src_csp == X264_CSP_YV24)
-        && (*h).dst.width == (*info).width
-        && (*h).dst.height == (*info).height
+        && (*h).dst.width == (*info).width as c_int
+        && (*h).dst.height == (*info).height as c_int
         && (*h).dst.range == (*h).input_range
     {
         (*h).fast_mono = 1 as c_int;
@@ -884,8 +885,8 @@ unsafe extern "C" fn init(
                 img: {
                     let mut init = cli_image_t {
                         csp: (*info).csp,
-                        width: (*info).width,
-                        height: (*info).height,
+                        width: (*info).width as c_int,
+                        height: (*info).height as c_int,
                         planes: 0 as c_int,
                         plane: [0 as *mut uint8_t; 4],
                         stride: [0; 4],
@@ -903,8 +904,8 @@ unsafe extern "C" fn init(
         }
     }
     (*info).csp = (*h).dst_csp;
-    (*info).width = (*h).dst.width;
-    (*info).height = (*h).dst.height;
+    (*info).width = (*h).dst.width as u32;
+    (*info).height = (*h).dst.height as u32;
     (*info).fullrange = (*h).dst.range;
     (*h).prev_filter = *filter;
     (*h).prev_hnd = *handle;

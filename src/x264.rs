@@ -26,6 +26,7 @@ use crate::pixdesc_h::av_get_pix_fmt_name;
 use crate::pixfmt_h::{AVPixelFormat, AV_PIX_FMT_NB, AV_PIX_FMT_NONE};
 use crate::signal_h::signal;
 use crate::signum_generic_h::SIGINT;
+use crate::src::filters::video::video::x264_init_vid_filter;
 use crate::stdint_intn_h::{int32_t, int64_t};
 use crate::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
 use crate::stdio_h::{
@@ -39,9 +40,7 @@ use crate::swscale_h::swscale_license;
 use crate::types_h::__off64_t;
 use crate::version_h::{LIBSWSCALE_VERSION_MICRO, LIBSWSCALE_VERSION_MINOR};
 use crate::version_major_h::LIBSWSCALE_VERSION_MAJOR;
-use crate::video_h::{
-    cli_vid_filter_t, x264_init_vid_filter, x264_register_vid_filters, x264_vid_filter_help,
-};
+use crate::video_h::{cli_vid_filter_t, x264_register_vid_filters, x264_vid_filter_help};
 use crate::x264_config_h::{X264_CHROMA_FORMAT, X264_VERSION};
 use crate::x264_h::{
     x264_avcintra_flavor_names, x264_b_pyramid_names, x264_chroma_format, x264_colmatrix_names,
@@ -51,14 +50,14 @@ use crate::x264_h::{
     x264_nal_t, x264_overscan_names, x264_param_apply_fastfirstpass, x264_param_apply_profile,
     x264_param_cleanup, x264_param_default, x264_param_default_preset, x264_param_parse,
     x264_param_t, x264_picture_init, x264_picture_t, x264_sei_payload_t, x264_sei_t, x264_t,
-    x264_transfer_names, x264_vidformat_names, x264_zone_t,
-    C2RustUnnamed_1, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, PIC_STRUCT_BOTTOM_TOP,
-    PIC_STRUCT_BOTTOM_TOP_BOTTOM, PIC_STRUCT_DOUBLE, PIC_STRUCT_TOP_BOTTOM,
-    PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_TRIPLE, X264_BUILD, X264_CSP_BGR, X264_CSP_HIGH_DEPTH,
-    X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE,
-    X264_CSP_RGB, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_NONE, X264_LOG_WARNING,
-    X264_NAL_HRD_CBR, X264_NAL_HRD_VBR, X264_QP_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO,
-    X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
+    x264_transfer_names, x264_vidformat_names, x264_zone_t, C2RustUnnamed_2, C2RustUnnamed_3,
+    C2RustUnnamed_4, CropRectangle, PIC_STRUCT_BOTTOM_TOP, PIC_STRUCT_BOTTOM_TOP_BOTTOM,
+    PIC_STRUCT_DOUBLE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_TRIPLE,
+    X264_BUILD, X264_CSP_BGR, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422,
+    X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE, X264_CSP_RGB, X264_LOG_DEBUG, X264_LOG_ERROR,
+    X264_LOG_INFO, X264_LOG_NONE, X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_NAL_HRD_VBR,
+    X264_QP_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I,
+    X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
 };
 use crate::x264cli_h::{
     get_filename_extension, hnd_t, x264_cli_autocomplete, RANGE_AUTO, RANGE_PC, UPDATE_INTERVAL,
@@ -661,8 +660,8 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
         b_deterministic: 0,
         b_cpu_independent: 0,
         i_sync_lookahead: 0,
-        i_width: 0,
-        i_height: 0,
+        width: 0,
+        height: 0,
         i_csp: 0,
         i_bitdepth: 0,
         i_level_idc: 0,
@@ -774,12 +773,7 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
             i_zones: 0,
             psz_zones: 0 as *mut c_char,
         },
-        crop_rect: C2RustUnnamed_1 {
-            i_left: 0,
-            i_top: 0,
-            i_right: 0,
-            i_bottom: 0,
-        },
+        crop_rect: CropRectangle::default(),
         frame_packing: None,
         mastering_display: None,
         content_light_level: None,
@@ -3750,9 +3744,9 @@ unsafe extern "C" fn init_vid_filters(
             }) as isize,
         );
     }
-    if (*param).i_width == 0 && (*param).i_height == 0 {
-        (*param).i_height = (*info).height;
-        (*param).i_width = (*info).width;
+    if (*param).width == 0 && (*param).height == 0 {
+        (*param).height = (*info).height as u32;
+        (*param).width = (*info).width as u32;
     }
     (*param).i_csp = (*info).csp;
     let mut csp: c_int = (*info).csp & X264_CSP_MASK;
@@ -3871,8 +3865,8 @@ unsafe extern "C" fn parse(
         b_deterministic: 0,
         b_cpu_independent: 0,
         i_sync_lookahead: 0,
-        i_width: 0,
-        i_height: 0,
+        width: 0,
+        height: 0,
         i_csp: 0,
         i_bitdepth: 0,
         i_level_idc: 0,
@@ -3984,12 +3978,7 @@ unsafe extern "C" fn parse(
             i_zones: 0,
             psz_zones: 0 as *mut c_char,
         },
-        crop_rect: C2RustUnnamed_1 {
-            i_left: 0,
-            i_top: 0,
-            i_right: 0,
-            i_bottom: 0,
-        },
+        crop_rect: CropRectangle::default(),
         frame_packing: None,
         mastering_display: None,
         content_light_level: None,
@@ -4535,11 +4524,7 @@ unsafe extern "C" fn parse(
             'c' as i32
         },
     );
-    if info.width <= 0 as c_int
-        || info.height <= 0 as c_int
-        || info.width > 16384 as c_int
-        || info.height > 16384 as c_int
-    {
+    if info.width == 0 || info.height == 0 || info.width > 16384 || info.height > 16384 {
         x264_cli_log(
             b"x264\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
@@ -4547,7 +4532,7 @@ unsafe extern "C" fn parse(
             info.width,
             info.height,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if !tcfile_name.is_null() {
         if b_user_fps != 0 {
@@ -4719,9 +4704,8 @@ unsafe extern "C" fn parse(
         }
     }
     if b_user_ref == 0 {
-        let mut mbs: c_int = ((*param).i_width + 15 as c_int >> 4 as c_int)
-            * ((*param).i_height + 15 as c_int >> 4 as c_int);
-        let mut i_0: c_int = 0 as c_int;
+        let mut mbs: c_int = (((*param).width + 15 >> 4) * ((*param).height + 15 >> 4)) as c_int;
+        let mut i_0: c_int = 0;
         while (*x264_levels.as_ptr().offset(i_0 as isize)).level_idc as c_int != 0 as c_int {
             if (*param).i_level_idc
                 == (*x264_levels.as_ptr().offset(i_0 as isize)).level_idc as c_int
