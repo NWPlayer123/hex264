@@ -98,9 +98,9 @@ unsafe extern "C" fn scaling_list_write(
         64 as c_int
     };
     let mut zigzag: *const uint8_t = if idx < 4 as c_int {
-        (*x264_zigzag_scan4.as_ptr().offset(0 as c_int as isize)).as_ptr()
+        (*x264_zigzag_scan4.as_ptr().offset(0)).as_ptr()
     } else {
-        (*x264_zigzag_scan8.as_ptr().offset(0 as c_int as isize)).as_ptr()
+        (*x264_zigzag_scan8.as_ptr().offset(0)).as_ptr()
     };
     let mut list: *const uint8_t = (*sps).scaling_list[idx as usize];
     let mut def_list: *const uint8_t = if idx == CQM_4IC as c_int {
@@ -1111,12 +1111,12 @@ unsafe extern "C" fn x264_10_sei_version_write(mut h: *mut x264_t, mut s: *mut b
     let mut payload: *mut c_char = 0 as *mut c_char;
     let mut length: c_int = 0;
     if opts.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     payload = x264_malloc((200 as size_t).wrapping_add(strlen(opts)) as int64_t) as *mut c_char;
     if payload.is_null() {
         x264_free(opts as *mut c_void);
-        return -(1 as c_int);
+        return -1;
     } else {
         memcpy(
             payload as *mut c_void,
@@ -1478,15 +1478,15 @@ unsafe extern "C" fn x264_10_sei_avcintra_umid_write(
     data[28 as c_int as usize] = 0x14 as uint8_t;
     data[34 as c_int as usize] = 0 as uint8_t;
     data[33 as c_int as usize] = data[34 as c_int as usize];
-    data[31 as c_int as usize] = data[33 as c_int as usize];
-    data[30 as c_int as usize] = data[31 as c_int as usize];
+    data[31] = data[33 as c_int as usize];
+    data[30 as c_int as usize] = data[31];
     data[36 as c_int as usize] = 0x60 as uint8_t;
     data[41 as c_int as usize] = 0x22 as uint8_t;
     data[60 as c_int as usize] = 0x62 as uint8_t;
     data[66 as c_int as usize] = 0 as uint8_t;
-    data[65 as c_int as usize] = data[66 as c_int as usize];
-    data[63 as c_int as usize] = data[65 as c_int as usize];
-    data[62 as c_int as usize] = data[63 as c_int as usize];
+    data[65] = data[66 as c_int as usize];
+    data[63] = data[65];
+    data[62 as c_int as usize] = data[63];
     data[68 as c_int as usize] = 0x63 as uint8_t;
     data[74 as c_int as usize] = 0 as uint8_t;
     data[73 as c_int as usize] = data[74 as c_int as usize];
@@ -1518,7 +1518,7 @@ unsafe extern "C" fn x264_10_sei_avcintra_vanc_write(
             b"AVC-Intra SEI is too large (%d)\n\0" as *const u8 as *const c_char,
             len,
         );
-        return -(1 as c_int);
+        return -1;
     }
     memset(
         data.as_mut_ptr() as *mut c_void,

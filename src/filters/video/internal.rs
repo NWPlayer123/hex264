@@ -40,7 +40,7 @@ unsafe extern "C" fn x264_cli_pic_copy(mut out: *mut cli_pic_t, mut in_0: *mut c
             b"invalid colorspace arg %d\n\0" as *const u8 as *const c_char,
             (*in_0).img.csp,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*in_0).img.csp != (*out).img.csp
         || (*in_0).img.height != (*out).img.height
@@ -51,7 +51,7 @@ unsafe extern "C" fn x264_cli_pic_copy(mut out: *mut cli_pic_t, mut in_0: *mut c
             X264_LOG_ERROR,
             b"incompatible frame properties\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*out).duration = (*in_0).duration;
     (*out).pts = (*in_0).pts;

@@ -90,7 +90,7 @@ const AVS_MAX_SEQUENCE: c_int = 5 as c_int;
 unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
     (*h).library = dlopen(b"libavisynth.so\0" as *const u8 as *const c_char, RTLD_NOW);
     if (*h).library.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).func.avs_clip_get_error =
         ::core::mem::transmute::<*mut c_void, avs_clip_get_error_func>(dlsym(
@@ -482,7 +482,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
     }
     dlclose((*h).library);
     (*h).library = NULL;
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "185:1"]
 unsafe extern "C" fn avs_build_filter_sequence(
@@ -538,7 +538,7 @@ unsafe extern "C" fn get_avs_version(mut h: *mut avs_hnd_t) -> c_float {
             X264_LOG_ERROR,
             b"VersionNumber does not exist\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int) as c_float;
+        return -1 as c_float;
     }
     let mut ver: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
         (*h).env,
@@ -553,7 +553,7 @@ unsafe extern "C" fn get_avs_version(mut h: *mut avs_hnd_t) -> c_float {
             b"unable to determine avisynth version: %s\n\0" as *const u8 as *const c_char,
             avs_as_error(ver),
         );
-        return -(1 as c_int) as c_float;
+        return -1 as c_float;
     }
     if avs_is_float(ver) == 0 {
         x264_cli_log(
@@ -561,7 +561,7 @@ unsafe extern "C" fn get_avs_version(mut h: *mut avs_hnd_t) -> c_float {
             X264_LOG_ERROR,
             b"VersionNumber did not return a float value\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int) as c_float;
+        return -1 as c_float;
     }
     let mut ret: c_float = avs_as_float(ver) as c_float;
     (*h).func
@@ -578,7 +578,7 @@ unsafe extern "C" fn open_file(
 ) -> c_int {
     let mut fh: *mut FILE = fopen(psz_filename, b"r\0" as *const u8 as *const c_char) as *mut FILE;
     if fh.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     let mut b_regular: c_int = x264_is_regular_file(fh);
     fclose(fh);
@@ -590,12 +590,12 @@ unsafe extern "C" fn open_file(
                 as *const c_char,
             psz_filename,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut h: *mut avs_hnd_t =
         calloc(1 as size_t, ::core::mem::size_of::<avs_hnd_t>() as size_t) as *mut avs_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     if custom_avs_load_library(h) != 0 {
         x264_cli_log(
@@ -603,7 +603,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"failed to load avisynth\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*h).env = (*h)
         .func
@@ -619,12 +619,12 @@ unsafe extern "C" fn open_file(
                 b"%s\n\0" as *const u8 as *const c_char,
                 error,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     let mut avs_version: c_float = get_avs_version(h);
     if avs_version <= 0 as c_int as c_float {
-        return -(1 as c_int);
+        return -1;
     }
     x264_cli_log(
         b"avs\0" as *const u8 as *const c_char,
@@ -655,7 +655,7 @@ unsafe extern "C" fn open_file(
                 b"%s\n\0" as *const u8 as *const c_char,
                 avs_as_error(res),
             );
-            return -(1 as c_int);
+            return -1;
         }
         let mut mt_test: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
             (*h).env,
@@ -750,7 +750,7 @@ unsafe extern "C" fn open_file(
                 b"unable to find source filter to open `%s'\n\0" as *const u8 as *const c_char,
                 psz_filename,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     if avs_is_clip(res) == 0 {
@@ -760,7 +760,7 @@ unsafe extern "C" fn open_file(
             b"`%s' didn't return a video clip\n\0" as *const u8 as *const c_char,
             psz_filename,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*h).clip = (*h).func.avs_take_clip.expect("non-null function pointer")(res, (*h).env);
     let mut vi: *const AVS_VideoInfo = (*h)
@@ -774,7 +774,7 @@ unsafe extern "C" fn open_file(
             b"`%s' has no video data\n\0" as *const u8 as *const c_char,
             psz_filename,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if avs_is_field_based(vi) != 0 {
         x264_cli_log(
@@ -796,7 +796,7 @@ unsafe extern "C" fn open_file(
                 b"couldn't weave fields into frames: %s\n\0" as *const u8 as *const c_char,
                 avs_as_error(tmp),
             );
-            return -(1 as c_int);
+            return -1;
         }
         res = update_clip(h, &mut vi, tmp, res);
         (*info).interlaced = 1 as c_int;
@@ -907,7 +907,7 @@ unsafe extern "C" fn open_file(
             b"not supported pixel type: %s\n\0" as *const u8 as *const c_char,
             pixel_type_name,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*info).vfr = 0 as c_int;
     *p_handle = h as hnd_t;
@@ -922,7 +922,7 @@ unsafe extern "C" fn picture_alloc(
     mut height: c_int,
 ) -> c_int {
     if x264_cli_pic_alloc(pic, X264_CSP_NONE, width, height) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*pic).img.csp = csp;
     let mut cli_csp: *const x264_cli_csp_t = x264_cli_get_csp(csp);
@@ -948,7 +948,7 @@ unsafe extern "C" fn read_frame(
     ];
     let mut h: *mut avs_hnd_t = handle as *mut avs_hnd_t;
     if i_frame >= (*h).num_frames {
-        return -(1 as c_int);
+        return -1;
     }
     (*pic).opaque = (*h).func.avs_get_frame.expect("non-null function pointer")((*h).clip, i_frame)
         as *mut c_void;
@@ -965,7 +965,7 @@ unsafe extern "C" fn read_frame(
             err,
             i_frame,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut i: c_int = 0 as c_int;
     while i < (*pic).img.planes {

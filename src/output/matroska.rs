@@ -39,12 +39,12 @@ unsafe extern "C" fn open_file(
     let mut p_mkv: *mut mkv_hnd_t =
         calloc(1 as size_t, ::core::mem::size_of::<mkv_hnd_t>() as size_t) as *mut mkv_hnd_t;
     if p_mkv.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*p_mkv).w = mk_create_writer(psz_filename);
     if (*p_mkv).w.is_null() {
         free(p_mkv as *mut c_void);
-        return -(1 as c_int);
+        return -1;
     }
     *p_handle = p_mkv as hnd_t;
     return 0 as c_int;
@@ -97,7 +97,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     (*p_mkv).height = (*p_param).height as c_int;
     dh = (*p_mkv).height as int64_t;
     (*p_mkv).display_size_units = DS_PIXELS;
-    (*p_mkv).stereo_mode = -(1 as c_int);
+    (*p_mkv).stereo_mode = -1;
     if let Some(frame_packing) = (*p_param).frame_packing {
         (*p_mkv).stereo_mode = stereo_modes[frame_packing as usize] as c_int;
         dw /= stereo_w_div[frame_packing as usize] as int64_t;
@@ -124,16 +124,12 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
 #[c2rust::src_loc = "116:1"]
 unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t) -> c_int {
     let mut p_mkv: *mut mkv_hnd_t = handle as *mut mkv_hnd_t;
-    let mut sps_size: c_int = (*p_nal.offset(0 as c_int as isize)).i_payload - 4 as c_int;
-    let mut pps_size: c_int = (*p_nal.offset(1 as c_int as isize)).i_payload - 4 as c_int;
-    let mut sei_size: c_int = (*p_nal.offset(2 as c_int as isize)).i_payload;
-    let mut sps: *mut uint8_t = (*p_nal.offset(0 as c_int as isize))
-        .p_payload
-        .offset(4 as c_int as isize);
-    let mut pps: *mut uint8_t = (*p_nal.offset(1 as c_int as isize))
-        .p_payload
-        .offset(4 as c_int as isize);
-    let mut sei: *mut uint8_t = (*p_nal.offset(2 as c_int as isize)).p_payload;
+    let mut sps_size: c_int = (*p_nal.offset(0)).i_payload - 4 as c_int;
+    let mut pps_size: c_int = (*p_nal.offset(1)).i_payload - 4 as c_int;
+    let mut sei_size: c_int = (*p_nal.offset(2)).i_payload;
+    let mut sps: *mut uint8_t = (*p_nal.offset(0)).p_payload.offset(4);
+    let mut pps: *mut uint8_t = (*p_nal.offset(1)).p_payload.offset(4);
+    let mut sei: *mut uint8_t = (*p_nal.offset(2)).p_payload;
     let mut ret: c_int = 0;
     let mut avcC: *mut uint8_t = 0 as *mut uint8_t;
     let mut avcC_len: c_int = 0;
@@ -142,23 +138,23 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
         || (*p_mkv).d_width == 0
         || (*p_mkv).d_height == 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     avcC_len = 5 as c_int + 1 as c_int + 2 as c_int + sps_size + 1 as c_int + 2 as c_int + pps_size;
     avcC = malloc(avcC_len as size_t) as *mut uint8_t;
     if avcC.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
-    *avcC.offset(0 as c_int as isize) = 1 as uint8_t;
-    *avcC.offset(1 as c_int as isize) = *sps.offset(1 as c_int as isize);
-    *avcC.offset(2 as c_int as isize) = *sps.offset(2 as c_int as isize);
-    *avcC.offset(3 as c_int as isize) = *sps.offset(3 as c_int as isize);
-    *avcC.offset(4 as c_int as isize) = 0xff as uint8_t;
-    *avcC.offset(5 as c_int as isize) = 0xe1 as uint8_t;
-    *avcC.offset(6 as c_int as isize) = (sps_size >> 8 as c_int) as uint8_t;
-    *avcC.offset(7 as c_int as isize) = sps_size as uint8_t;
+    *avcC.offset(0) = 1 as uint8_t;
+    *avcC.offset(1) = *sps.offset(1);
+    *avcC.offset(2) = *sps.offset(2);
+    *avcC.offset(3) = *sps.offset(3);
+    *avcC.offset(4) = 0xff as uint8_t;
+    *avcC.offset(5) = 0xe1 as uint8_t;
+    *avcC.offset(6) = (sps_size >> 8 as c_int) as uint8_t;
+    *avcC.offset(7) = sps_size as uint8_t;
     memcpy(
-        avcC.offset(8 as c_int as isize) as *mut c_void,
+        avcC.offset(8) as *mut c_void,
         sps as *const c_void,
         sps_size as size_t,
     );
@@ -191,12 +187,12 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
     }
     if (*p_mkv).b_writing_frame == 0 {
         if mk_start_frame((*p_mkv).w) < 0 as c_int {
-            return -(1 as c_int);
+            return -1;
         }
         (*p_mkv).b_writing_frame = 1 as c_char;
     }
     if mk_add_frame_data((*p_mkv).w, sei as *const c_void, sei_size as c_uint) < 0 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     return sei_size + sps_size + pps_size;
 }
@@ -210,12 +206,12 @@ unsafe extern "C" fn write_frame(
     let mut p_mkv: *mut mkv_hnd_t = handle as *mut mkv_hnd_t;
     if (*p_mkv).b_writing_frame == 0 {
         if mk_start_frame((*p_mkv).w) < 0 as c_int {
-            return -(1 as c_int);
+            return -1;
         }
         (*p_mkv).b_writing_frame = 1 as c_char;
     }
     if mk_add_frame_data((*p_mkv).w, p_nalu as *const c_void, i_size as c_uint) < 0 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     let mut i_stamp: int64_t =
         ((*p_picture).i_pts as c_double * 1e9f64 * (*p_mkv).i_timebase_num as c_double
@@ -229,7 +225,7 @@ unsafe extern "C" fn write_frame(
         ((*p_picture).i_type == X264_TYPE_B) as c_int,
     ) < 0 as c_int
     {
-        return -(1 as c_int);
+        return -1;
     }
     return i_size;
 }

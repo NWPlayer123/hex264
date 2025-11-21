@@ -148,7 +148,7 @@ unsafe extern "C" fn x264_get_option(
     mut split_options: *mut *mut c_char,
 ) -> *mut c_char {
     if !split_options.is_null() {
-        let mut last_i: c_int = -(1 as c_int);
+        let mut last_i: c_int = -1;
         let mut i: c_int = 0 as c_int;
         while !(*split_options.offset(i as isize)).is_null() {
             if strcmp(*split_options.offset(i as isize), name) == 0 {
@@ -157,9 +157,7 @@ unsafe extern "C" fn x264_get_option(
             i += 2 as c_int;
         }
         if last_i >= 0 as c_int
-            && *(*split_options.offset((last_i + 1 as c_int) as isize)).offset(0 as c_int as isize)
-                as c_int
-                != 0
+            && *(*split_options.offset((last_i + 1 as c_int) as isize)).offset(0) as c_int != 0
         {
             return *split_options.offset((last_i + 1 as c_int) as isize);
         }

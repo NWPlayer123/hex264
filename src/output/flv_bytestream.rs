@@ -107,7 +107,7 @@ unsafe extern "C" fn flv_append_data(
         }
         dp = realloc((*c).data as *mut c_void, dn as size_t);
         if dp.is_null() {
-            return -(1 as c_int);
+            return -1;
         }
         (*c).data = dp as *mut uint8_t;
         (*c).d_max = dn;
@@ -127,12 +127,9 @@ unsafe extern "C" fn flv_rewrite_amf_be24(
     mut length: c_uint,
     mut start: c_uint,
 ) {
-    *(*c).data.offset(start as isize).offset(0 as c_int as isize) =
-        (length >> 16 as c_int) as uint8_t;
-    *(*c).data.offset(start as isize).offset(1 as c_int as isize) =
-        (length >> 8 as c_int) as uint8_t;
-    *(*c).data.offset(start as isize).offset(2 as c_int as isize) =
-        (length >> 0 as c_int) as uint8_t;
+    *(*c).data.offset(start as isize).offset(0) = (length >> 16 as c_int) as uint8_t;
+    *(*c).data.offset(start as isize).offset(1) = (length >> 8 as c_int) as uint8_t;
+    *(*c).data.offset(start as isize).offset(2) = (length >> 0 as c_int) as uint8_t;
 }
 #[no_mangle]
 #[c2rust::src_loc = "140:1"]
@@ -147,7 +144,7 @@ unsafe extern "C" fn flv_flush_data(mut c: *mut flv_buffer) -> c_int {
         (*c).fp,
     ) != 1 as c_ulong
     {
-        return -(1 as c_int);
+        return -1;
     }
     (*c).d_total = (*c).d_total.wrapping_add((*c).d_cur as uint64_t);
     (*c).d_cur = 0 as c_uint;

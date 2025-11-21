@@ -200,529 +200,529 @@ static mut i_beta_table: [uint8_t; 88] = [
 #[c2rust::src_loc = "56:21"]
 static mut i_tc0_table: [[int8_t; 4]; 88] = [
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         0 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         0 as c_int as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        2 as c_int as int8_t,
-    ],
-    [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
         2 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
         2 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         1 as c_int as int8_t,
         2 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
+        1 as c_int as int8_t,
         1 as c_int as int8_t,
         2 as c_int as int8_t,
-        3 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         1 as c_int as int8_t,
         2 as c_int as int8_t,
         3 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
+        1 as c_int as int8_t,
+        2 as c_int as int8_t,
+        3 as c_int as int8_t,
+    ],
+    [
+        -1 as int8_t,
         2 as c_int as int8_t,
         2 as c_int as int8_t,
         3 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         2 as c_int as int8_t,
         2 as c_int as int8_t,
         4 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         2 as c_int as int8_t,
         3 as c_int as int8_t,
         4 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         2 as c_int as int8_t,
         3 as c_int as int8_t,
         4 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         3 as c_int as int8_t,
         3 as c_int as int8_t,
         5 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         3 as c_int as int8_t,
         4 as c_int as int8_t,
         6 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         3 as c_int as int8_t,
         4 as c_int as int8_t,
         6 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         4 as c_int as int8_t,
         5 as c_int as int8_t,
         7 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         4 as c_int as int8_t,
         5 as c_int as int8_t,
         8 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         4 as c_int as int8_t,
         6 as c_int as int8_t,
         9 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         5 as c_int as int8_t,
         7 as c_int as int8_t,
         10 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         6 as c_int as int8_t,
         8 as c_int as int8_t,
         11 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         6 as c_int as int8_t,
         8 as c_int as int8_t,
         13 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         7 as c_int as int8_t,
         10 as c_int as int8_t,
         14 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         8 as c_int as int8_t,
         11 as c_int as int8_t,
         16 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         9 as c_int as int8_t,
         12 as c_int as int8_t,
         18 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         10 as c_int as int8_t,
         13 as c_int as int8_t,
         20 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         11 as c_int as int8_t,
         15 as c_int as int8_t,
         23 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
     ],
     [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         13 as c_int as int8_t,
         17 as c_int as int8_t,
         25 as c_int as int8_t,
@@ -739,7 +739,7 @@ unsafe extern "C" fn deblock_edge_luma_c(
 ) {
     let mut p2: c_int = *pix.offset((-(3 as c_int) as intptr_t * xstride) as isize) as c_int;
     let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
-    let mut p0: c_int = *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
     let mut q2: c_int = *pix.offset((2 as intptr_t * xstride) as isize) as c_int;
@@ -773,7 +773,7 @@ unsafe extern "C" fn deblock_edge_luma_c(
             -tc,
             tc,
         );
-        *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) = x264_clip_pixel(p0 + delta);
+        *pix.offset((-1 as intptr_t * xstride) as isize) = x264_clip_pixel(p0 + delta);
         *pix.offset((0 as intptr_t * xstride) as isize) = x264_clip_pixel(q0 - delta);
     }
 }
@@ -853,7 +853,7 @@ unsafe extern "C" fn deblock_edge_chroma_c(
     mut tc: int8_t,
 ) {
     let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
-    let mut p0: c_int = *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
@@ -862,7 +862,7 @@ unsafe extern "C" fn deblock_edge_chroma_c(
             -(tc as c_int),
             tc as c_int,
         );
-        *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) = x264_clip_pixel(p0 + delta);
+        *pix.offset((-1 as intptr_t * xstride) as isize) = x264_clip_pixel(p0 + delta);
         *pix.offset((0 as intptr_t * xstride) as isize) = x264_clip_pixel(q0 - delta);
     }
 }
@@ -948,7 +948,7 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
 ) {
     let mut p2: c_int = *pix.offset((-(3 as c_int) as intptr_t * xstride) as isize) as c_int;
     let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
-    let mut p0: c_int = *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
     let mut q2: c_int = *pix.offset((2 as intptr_t * xstride) as isize) as c_int;
@@ -957,7 +957,7 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
             if abs(p2 - p0) < beta {
                 let p3: c_int =
                     *pix.offset((-(4 as c_int) as intptr_t * xstride) as isize) as c_int;
-                *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) =
+                *pix.offset((-1 as intptr_t * xstride) as isize) =
                     (p2 + 2 as c_int * p1 + 2 as c_int * p0 + 2 as c_int * q0 + q1 + 4 as c_int
                         >> 3 as c_int) as pixel;
                 *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) =
@@ -966,7 +966,7 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
                     (2 as c_int * p3 + 3 as c_int * p2 + p1 + p0 + q0 + 4 as c_int >> 3 as c_int)
                         as pixel;
             } else {
-                *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) =
+                *pix.offset((-1 as intptr_t * xstride) as isize) =
                     (2 as c_int * p1 + p0 + q1 + 2 as c_int >> 2 as c_int) as pixel;
             }
             if abs(q2 - q0) < beta {
@@ -984,7 +984,7 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
                     (2 as c_int * q1 + q0 + p1 + 2 as c_int >> 2 as c_int) as pixel;
             }
         } else {
-            *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) =
+            *pix.offset((-1 as intptr_t * xstride) as isize) =
                 (2 as c_int * p1 + p0 + q1 + 2 as c_int >> 2 as c_int) as pixel;
             *pix.offset((0 as intptr_t * xstride) as isize) =
                 (2 as c_int * q1 + q0 + p1 + 2 as c_int >> 2 as c_int) as pixel;
@@ -1048,11 +1048,11 @@ unsafe extern "C" fn deblock_edge_chroma_intra_c(
     mut beta: c_int,
 ) {
     let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
-    let mut p0: c_int = *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
-        *pix.offset((-(1 as c_int) as intptr_t * xstride) as isize) =
+        *pix.offset((-1 as intptr_t * xstride) as isize) =
             (2 as c_int * p1 + p0 + q1 + 2 as c_int >> 2 as c_int) as pixel;
         *pix.offset((0 as intptr_t * xstride) as isize) =
             (2 as c_int * q1 + q0 + p1 + 2 as c_int >> 2 as c_int) as pixel;
@@ -1172,34 +1172,22 @@ unsafe extern "C" fn deblock_strength_c(
                     || *nnz.offset(locn as isize) as c_int != 0
                 {
                     (*bs.offset(dir as isize))[edge as usize][i as usize] = 2 as uint8_t;
-                } else if (*ref_0.offset(0 as c_int as isize))[loc as usize] as c_int
-                    != (*ref_0.offset(0 as c_int as isize))[locn as usize] as c_int
-                    || abs(
-                        (*mv.offset(0 as c_int as isize))[loc as usize][0 as c_int as usize]
-                            as c_int
-                            - (*mv.offset(0 as c_int as isize))[locn as usize][0 as c_int as usize]
-                                as c_int,
-                    ) >= 4 as c_int
-                    || abs(
-                        (*mv.offset(0 as c_int as isize))[loc as usize][1 as c_int as usize]
-                            as c_int
-                            - (*mv.offset(0 as c_int as isize))[locn as usize][1 as c_int as usize]
-                                as c_int,
-                    ) >= mvy_limit
+                } else if (*ref_0.offset(0))[loc as usize] as c_int
+                    != (*ref_0.offset(0))[locn as usize] as c_int
+                    || abs((*mv.offset(0))[loc as usize][0] as c_int
+                        - (*mv.offset(0))[locn as usize][0] as c_int)
+                        >= 4 as c_int
+                    || abs((*mv.offset(0))[loc as usize][1] as c_int
+                        - (*mv.offset(0))[locn as usize][1] as c_int)
+                        >= mvy_limit
                     || bframe != 0
-                        && ((*ref_0.offset(1 as c_int as isize))[loc as usize] as c_int
-                            != (*ref_0.offset(1 as c_int as isize))[locn as usize] as c_int
-                            || abs((*mv.offset(1 as c_int as isize))[loc as usize]
-                                [0 as c_int as usize] as c_int
-                                - (*mv.offset(1 as c_int as isize))[locn as usize]
-                                    [0 as c_int as usize]
-                                    as c_int)
+                        && ((*ref_0.offset(1))[loc as usize] as c_int
+                            != (*ref_0.offset(1))[locn as usize] as c_int
+                            || abs((*mv.offset(1))[loc as usize][0] as c_int
+                                - (*mv.offset(1))[locn as usize][0] as c_int)
                                 >= 4 as c_int
-                            || abs((*mv.offset(1 as c_int as isize))[loc as usize]
-                                [1 as c_int as usize] as c_int
-                                - (*mv.offset(1 as c_int as isize))[locn as usize]
-                                    [1 as c_int as usize]
-                                    as c_int)
+                            || abs((*mv.offset(1))[loc as usize][1] as c_int
+                                - (*mv.offset(1))[locn as usize][1] as c_int)
                                 >= mvy_limit)
                 {
                     (*bs.offset(dir as isize))[edge as usize][i as usize] = 1 as uint8_t;
@@ -1237,20 +1225,16 @@ unsafe extern "C" fn deblock_edge(
     if (*(bS as *mut x264_union32_t)).i == 0 || alpha == 0 || beta == 0 {
         return;
     }
-    tc[0 as c_int as usize] = (i_tc0_table[(index_a + 24 as c_int) as usize]
-        [*bS.offset(0 as c_int as isize) as usize] as c_int
+    tc[0] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(0) as usize] as c_int
         * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
         + b_chroma) as int8_t;
-    tc[1 as c_int as usize] = (i_tc0_table[(index_a + 24 as c_int) as usize]
-        [*bS.offset(1 as c_int as isize) as usize] as c_int
+    tc[1] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(1) as usize] as c_int
         * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
         + b_chroma) as int8_t;
-    tc[2 as c_int as usize] = (i_tc0_table[(index_a + 24 as c_int) as usize]
-        [*bS.offset(2 as c_int as isize) as usize] as c_int
+    tc[2] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(2) as usize] as c_int
         * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
         + b_chroma) as int8_t;
-    tc[3 as c_int as usize] = (i_tc0_table[(index_a + 24 as c_int) as usize]
-        [*bS.offset(3 as c_int as isize) as usize] as c_int
+    tc[3] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(3) as usize] as c_int
         * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
         + b_chroma) as int8_t;
     pf_inter.expect("non-null function pointer")(pix, i_stride, alpha, beta, tc.as_mut_ptr());
@@ -1295,8 +1279,8 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
         as c_int;
     (*h).mb.i_mb_top_y = mb_y - ((1 as c_int) << (*h).mb.b_interlaced);
     (*h).mb.i_mb_top_xy = mb_x + (*h).mb.i_mb_stride * (*h).mb.i_mb_top_y;
-    (*h).mb.i_mb_left_xy[0 as c_int as usize] = (*h).mb.i_mb_xy - 1 as c_int;
-    (*h).mb.i_mb_left_xy[1 as c_int as usize] = (*h).mb.i_mb_left_xy[0 as c_int as usize];
+    (*h).mb.i_mb_left_xy[0] = (*h).mb.i_mb_xy - 1 as c_int;
+    (*h).mb.i_mb_left_xy[1] = (*h).mb.i_mb_left_xy[0];
     if (*h).sh.b_mbaff != 0 {
         if mb_y & 1 as c_int != 0 {
             if mb_x != 0
@@ -1306,7 +1290,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
                     .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize) as c_int
                     != (*h).mb.b_interlaced
             {
-                (*h).mb.i_mb_left_xy[0 as c_int as usize] -= (*h).mb.i_mb_stride;
+                (*h).mb.i_mb_left_xy[0] -= (*h).mb.i_mb_stride;
             }
         } else {
             if (*h).mb.i_mb_top_xy >= 0 as c_int
@@ -1323,16 +1307,13 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
                     .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize) as c_int
                     != (*h).mb.b_interlaced
             {
-                (*h).mb.i_mb_left_xy[1 as c_int as usize] += (*h).mb.i_mb_stride;
+                (*h).mb.i_mb_left_xy[1] += (*h).mb.i_mb_stride;
             }
         }
     }
     if mb_x > 0 as c_int
         && (deblock_on_slice_edges != 0
-            || *(*h)
-                .mb
-                .slice_table
-                .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
+            || *(*h).mb.slice_table.offset((*h).mb.i_mb_left_xy[0] as isize)
                 == *(*h).mb.slice_table.offset((*h).mb.i_mb_xy as isize))
     {
         (*h).mb.i_neighbour |= MB_LEFT as c_int as c_uint;
@@ -1358,15 +1339,14 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
         } else {
             (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset
         });
-    let mut stridey: c_int = (*(*h).fdec).i_stride[0 as c_int as usize];
-    let mut strideuv: c_int = (*(*h).fdec).i_stride[1 as c_int as usize];
+    let mut stridey: c_int = (*(*h).fdec).i_stride[0];
+    let mut strideuv: c_int = (*(*h).fdec).i_stride[1];
     let mut chroma_format: c_int = (*(*h).sps.as_mut_ptr()).i_chroma_format_idc;
     let mut chroma444: c_int =
         ((*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int) as c_int;
     let mut chroma_height: c_int = 16 as c_int >> (*h).mb.chroma_v_shift;
     let mut uvdiff: intptr_t = if chroma444 != 0 {
-        (*(*h).fdec).plane[2 as c_int as usize].offset_from((*(*h).fdec).plane[1 as c_int as usize])
-            as intptr_t
+        (*(*h).fdec).plane[2].offset_from((*(*h).fdec).plane[1]) as intptr_t
     } else {
         1 as intptr_t
     };
@@ -1394,11 +1374,11 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
             }) as isize,
         ))
         .as_mut_ptr() as *mut [[uint8_t; 4]; 8];
-        let mut pixy: *mut pixel = (*(*h).fdec).plane[0 as c_int as usize]
+        let mut pixy: *mut pixel = (*(*h).fdec).plane[0]
             .offset((16 as c_int * mb_y * stridey) as isize)
             .offset((16 as c_int * mb_x) as isize);
         let mut pixuv: *mut pixel = if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
-            (*(*h).fdec).plane[1 as c_int as usize]
+            (*(*h).fdec).plane[1]
                 .offset((chroma_height * mb_y * strideuv) as isize)
                 .offset((16 as c_int * mb_x) as isize)
         } else {
@@ -1421,11 +1401,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
             || qp <= qp_thresh) as c_int;
         if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0 {
             if b_interlaced != 0
-                && *(*h)
-                    .mb
-                    .field
-                    .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                    as c_int
+                && *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                     != (*h).mb.b_interlaced
             {
                 let mut luma_qp: [c_int; 2] = [0; 2];
@@ -1442,55 +1418,27 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                 } else {
                     1 as c_int
                 };
-                left_qp[0 as c_int as usize] = *(*h)
-                    .mb
-                    .qp
-                    .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                    as c_int;
-                luma_qp[0 as c_int as usize] =
-                    qp + left_qp[0 as c_int as usize] + 1 as c_int >> 1 as c_int;
-                chroma_qp[0 as c_int as usize] = qpc
-                    + *(*h)
-                        .chroma_qp_table
-                        .offset(left_qp[0 as c_int as usize] as isize)
-                        as c_int
-                    + 1 as c_int
-                    >> 1 as c_int;
+                left_qp[0] = *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int;
+                luma_qp[0] = qp + left_qp[0] + 1 as c_int >> 1 as c_int;
+                chroma_qp[0] =
+                    qpc + *(*h).chroma_qp_table.offset(left_qp[0] as isize) as c_int + 1 as c_int
+                        >> 1 as c_int;
                 if intra_cur != 0
-                    || (*(*h)
-                        .mb
-                        .type_0
-                        .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                        as c_int
+                    || (*(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                         == I_4x4 as c_int
-                        || *(*h)
-                            .mb
-                            .type_0
-                            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                            as c_int
+                        || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                             == I_8x8 as c_int
-                        || *(*h)
-                            .mb
-                            .type_0
-                            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                            as c_int
+                        || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                             == I_16x16 as c_int
-                        || *(*h)
-                            .mb
-                            .type_0
-                            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                            as c_int
+                        || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                             == I_PCM as c_int)
                 {
                     deblock_edge_intra(
                         h,
                         pixy,
                         (2 as c_int * stridey) as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(0 as c_int as isize))
-                        .as_mut_ptr(),
-                        luma_qp[0 as c_int as usize],
+                        (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
+                        luma_qp[0],
                         a,
                         b,
                         0 as c_int,
@@ -1501,11 +1449,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             h,
                             pixuv,
                             (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
-                            chroma_qp[0 as c_int as usize],
+                            (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
+                            chroma_qp[0],
                             a,
                             b,
                             c,
@@ -1516,11 +1461,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 h,
                                 pixuv.offset(uvdiff as isize),
                                 (2 as c_int * strideuv) as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
-                                chroma_qp[0 as c_int as usize],
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
+                                chroma_qp[0],
                                 a,
                                 b,
                                 c,
@@ -1533,11 +1475,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         h,
                         pixy,
                         (2 as c_int * stridey) as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(0 as c_int as isize))
-                        .as_mut_ptr(),
-                        luma_qp[0 as c_int as usize],
+                        (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
+                        luma_qp[0],
                         a,
                         b,
                         0 as c_int,
@@ -1548,11 +1487,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             h,
                             pixuv,
                             (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
-                            chroma_qp[0 as c_int as usize],
+                            (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
+                            chroma_qp[0],
                             a,
                             b,
                             c,
@@ -1563,11 +1499,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 h,
                                 pixuv.offset(uvdiff as isize),
                                 (2 as c_int * strideuv) as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
-                                chroma_qp[0 as c_int as usize],
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
+                                chroma_qp[0],
                                 a,
                                 b,
                                 c,
@@ -1586,55 +1519,27 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                 } else {
                     0 as c_int
                 };
-                left_qp[1 as c_int as usize] = *(*h)
-                    .mb
-                    .qp
-                    .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                    as c_int;
-                luma_qp[1 as c_int as usize] =
-                    qp + left_qp[1 as c_int as usize] + 1 as c_int >> 1 as c_int;
-                chroma_qp[1 as c_int as usize] = qpc
-                    + *(*h)
-                        .chroma_qp_table
-                        .offset(left_qp[1 as c_int as usize] as isize)
-                        as c_int
-                    + 1 as c_int
-                    >> 1 as c_int;
+                left_qp[1] = *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int;
+                luma_qp[1] = qp + left_qp[1] + 1 as c_int >> 1 as c_int;
+                chroma_qp[1] =
+                    qpc + *(*h).chroma_qp_table.offset(left_qp[1] as isize) as c_int + 1 as c_int
+                        >> 1 as c_int;
                 if intra_cur != 0
-                    || (*(*h)
-                        .mb
-                        .type_0
-                        .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                        as c_int
+                    || (*(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                         == I_4x4 as c_int
-                        || *(*h)
-                            .mb
-                            .type_0
-                            .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                            as c_int
+                        || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                             == I_8x8 as c_int
-                        || *(*h)
-                            .mb
-                            .type_0
-                            .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                            as c_int
+                        || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                             == I_16x16 as c_int
-                        || *(*h)
-                            .mb
-                            .type_0
-                            .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                            as c_int
+                        || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                             == I_PCM as c_int)
                 {
                     deblock_edge_intra(
                         h,
                         pixy.offset((stridey << offy) as isize),
                         (2 as c_int * stridey) as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize))
-                        .as_mut_ptr(),
-                        luma_qp[1 as c_int as usize],
+                        (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
+                        luma_qp[1],
                         a,
                         b,
                         0 as c_int,
@@ -1645,11 +1550,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             h,
                             pixuv.offset((strideuv << offuv) as isize),
                             (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(4 as c_int as isize))
-                            .as_mut_ptr(),
-                            chroma_qp[1 as c_int as usize],
+                            (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
+                            chroma_qp[1],
                             a,
                             b,
                             c,
@@ -1662,11 +1564,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     .offset(uvdiff as isize)
                                     .offset((strideuv << offuv) as isize),
                                 (2 as c_int * strideuv) as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(4 as c_int as isize))
-                                .as_mut_ptr(),
-                                chroma_qp[1 as c_int as usize],
+                                (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
+                                chroma_qp[1],
                                 a,
                                 b,
                                 c,
@@ -1679,11 +1578,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         h,
                         pixy.offset((stridey << offy) as isize),
                         (2 as c_int * stridey) as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize))
-                        .as_mut_ptr(),
-                        luma_qp[1 as c_int as usize],
+                        (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
+                        luma_qp[1],
                         a,
                         b,
                         0 as c_int,
@@ -1694,11 +1590,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             h,
                             pixuv.offset((strideuv << offuv) as isize),
                             (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(4 as c_int as isize))
-                            .as_mut_ptr(),
-                            chroma_qp[1 as c_int as usize],
+                            (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
+                            chroma_qp[1],
                             a,
                             b,
                             c,
@@ -1711,11 +1604,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     .offset(uvdiff as isize)
                                     .offset((strideuv << offuv) as isize),
                                 (2 as c_int * strideuv) as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(4 as c_int as isize))
-                                .as_mut_ptr(),
-                                chroma_qp[1 as c_int as usize],
+                                (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
+                                chroma_qp[1],
                                 a,
                                 b,
                                 c,
@@ -1757,10 +1647,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         == I_PCM as c_int) as c_int;
                 let mut intra_deblock: c_int = (intra_cur != 0 || intra_left != 0) as c_int;
                 if !(*(*h).fdec).mb_info.is_null()
-                    && (*((*(*bs.offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(0 as c_int as isize))
-                    .as_mut_ptr() as *mut x264_union32_t))
+                    && (*((*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr()
+                        as *mut x264_union32_t))
                         .i
                         != 0
                 {
@@ -1772,12 +1660,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 != 0) as c_int) as uint8_t;
                     let ref mut fresh1 = *(*(*h).fdec)
                         .effective_qp
-                        .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize);
+                        .offset((*h).mb.i_mb_left_xy[0] as isize);
                     *fresh1 = (*fresh1 as c_int
                         | 0xff as c_int
                             * (*(*(*h).fdec)
                                 .mb_info
-                                .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
+                                .offset((*h).mb.i_mb_left_xy[0] as isize)
                                 as c_uint
                                 & X264_MBINFO_CONSTANT
                                 != 0) as c_int) as uint8_t;
@@ -1796,15 +1684,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2y as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_left,
                             a,
                             b,
                             0 as c_int,
-                            (*h).loopf.deblock_luma_intra[0 as c_int as usize],
+                            (*h).loopf.deblock_luma_intra[0],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge_intra(
@@ -1819,15 +1704,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma_intra[0 as c_int as usize],
+                                (*h).loopf.deblock_luma_intra[0],
                             );
                             deblock_edge_intra(
                                 h,
@@ -1841,15 +1723,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma_intra[0 as c_int as usize],
+                                (*h).loopf.deblock_luma_intra[0],
                             );
                         } else if chroma_format == CHROMA_420 as c_int
                             && 0 as c_int & 1 as c_int == 0
@@ -1865,15 +1744,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 1 as c_int,
-                                (*h).loopf.deblock_chroma_intra[0 as c_int as usize],
+                                (*h).loopf.deblock_chroma_intra[0],
                             );
                         }
                     }
@@ -1891,15 +1767,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2uv as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_left,
                             a,
                             b,
                             1 as c_int,
-                            (*h).loopf.deblock_chroma_intra[0 as c_int as usize],
+                            (*h).loopf.deblock_chroma_intra[0],
                         );
                     }
                 } else {
@@ -1916,15 +1789,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2y as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_left,
                             a,
                             b,
                             0 as c_int,
-                            (*h).loopf.deblock_luma[0 as c_int as usize],
+                            (*h).loopf.deblock_luma[0],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge(
@@ -1939,15 +1809,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma[0 as c_int as usize],
+                                (*h).loopf.deblock_luma[0],
                             );
                             deblock_edge(
                                 h,
@@ -1961,15 +1828,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma[0 as c_int as usize],
+                                (*h).loopf.deblock_luma[0],
                             );
                         } else if chroma_format == CHROMA_420 as c_int
                             && 0 as c_int & 1 as c_int == 0
@@ -1985,15 +1849,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(0 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
                                 1 as c_int,
-                                (*h).loopf.deblock_chroma[0 as c_int as usize],
+                                (*h).loopf.deblock_chroma[0],
                             );
                         }
                     }
@@ -2011,15 +1872,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2uv as intptr_t,
-                            (*(*bs.offset(0 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_left,
                             a,
                             b,
                             1 as c_int,
-                            (*h).loopf.deblock_chroma[0 as c_int as usize],
+                            (*h).loopf.deblock_chroma[0],
                         );
                     }
                 }
@@ -2039,15 +1897,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2y as intptr_t,
-                    (*(*bs.offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(1 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qp,
                     a,
                     b,
                     0 as c_int,
-                    (*h).loopf.deblock_luma[0 as c_int as usize],
+                    (*h).loopf.deblock_luma[0],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
@@ -2062,15 +1917,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(1 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[0 as c_int as usize],
+                        (*h).loopf.deblock_luma[0],
                     );
                     deblock_edge(
                         h,
@@ -2084,15 +1936,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(1 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[0 as c_int as usize],
+                        (*h).loopf.deblock_luma[0],
                     );
                 } else if chroma_format == CHROMA_420 as c_int && 1 as c_int & 1 as c_int == 0 {
                     deblock_edge(
@@ -2106,15 +1955,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(1 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         1 as c_int,
-                        (*h).loopf.deblock_chroma[0 as c_int as usize],
+                        (*h).loopf.deblock_chroma[0],
                     );
                 }
             }
@@ -2132,15 +1978,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2uv as intptr_t,
-                    (*(*bs.offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(1 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
                     1 as c_int,
-                    (*h).loopf.deblock_chroma[0 as c_int as usize],
+                    (*h).loopf.deblock_chroma[0],
                 );
             }
             if 2 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
@@ -2156,15 +1999,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2y as intptr_t,
-                    (*(*bs.offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(2 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qp,
                     a,
                     b,
                     0 as c_int,
-                    (*h).loopf.deblock_luma[0 as c_int as usize],
+                    (*h).loopf.deblock_luma[0],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
@@ -2179,15 +2019,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(2 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[0 as c_int as usize],
+                        (*h).loopf.deblock_luma[0],
                     );
                     deblock_edge(
                         h,
@@ -2201,15 +2038,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(2 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[0 as c_int as usize],
+                        (*h).loopf.deblock_luma[0],
                     );
                 } else if chroma_format == CHROMA_420 as c_int && 2 as c_int & 1 as c_int == 0 {
                     deblock_edge(
@@ -2223,15 +2057,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(2 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         1 as c_int,
-                        (*h).loopf.deblock_chroma[0 as c_int as usize],
+                        (*h).loopf.deblock_chroma[0],
                     );
                 }
             }
@@ -2249,15 +2080,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2uv as intptr_t,
-                    (*(*bs.offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(2 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
                     1 as c_int,
-                    (*h).loopf.deblock_chroma[0 as c_int as usize],
+                    (*h).loopf.deblock_chroma[0],
                 );
             }
             if 3 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
@@ -2273,15 +2101,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2y as intptr_t,
-                    (*(*bs.offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(3 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qp,
                     a,
                     b,
                     0 as c_int,
-                    (*h).loopf.deblock_luma[0 as c_int as usize],
+                    (*h).loopf.deblock_luma[0],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
@@ -2296,15 +2121,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(3 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[0 as c_int as usize],
+                        (*h).loopf.deblock_luma[0],
                     );
                     deblock_edge(
                         h,
@@ -2318,15 +2140,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(3 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[0 as c_int as usize],
+                        (*h).loopf.deblock_luma[0],
                     );
                 } else if chroma_format == CHROMA_420 as c_int && 3 as c_int & 1 as c_int == 0 {
                     deblock_edge(
@@ -2340,15 +2159,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(3 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         1 as c_int,
-                        (*h).loopf.deblock_chroma[0 as c_int as usize],
+                        (*h).loopf.deblock_chroma[0],
                     );
                 }
             }
@@ -2366,15 +2182,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2uv as intptr_t,
-                    (*(*bs.offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(3 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
                     1 as c_int,
-                    (*h).loopf.deblock_chroma[0 as c_int as usize],
+                    (*h).loopf.deblock_chroma[0],
                 );
             }
         }
@@ -2399,7 +2212,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         || *(*h).mb.type_0.offset(mbn_xy as isize) as c_int == I_PCM as c_int)
                         as c_int;
                     if intra_cur != 0 || intra_top != 0 {
-                        (*((*(*bs.offset(1 as c_int as isize))
+                        (*((*(*bs.offset(1))
                             .as_mut_ptr()
                             .offset((4 as c_int * j) as isize))
                         .as_mut_ptr() as *mut x264_union32_t))
@@ -2409,7 +2222,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         h,
                         pixy.offset((j * stridey) as isize),
                         (2 as c_int * stridey) as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
+                        (*(*bs.offset(1))
                             .as_mut_ptr()
                             .offset((4 as c_int * j) as isize))
                         .as_mut_ptr(),
@@ -2417,14 +2230,14 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[1 as c_int as usize],
+                        (*h).loopf.deblock_luma[1],
                     );
                     if chroma444 != 0 {
                         deblock_edge(
                             h,
                             pixuv.offset((j * strideuv) as isize),
                             (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(1 as c_int as isize))
+                            (*(*bs.offset(1))
                                 .as_mut_ptr()
                                 .offset((4 as c_int * j) as isize))
                             .as_mut_ptr(),
@@ -2432,7 +2245,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             a,
                             b,
                             0 as c_int,
-                            (*h).loopf.deblock_luma[1 as c_int as usize],
+                            (*h).loopf.deblock_luma[1],
                         );
                         deblock_edge(
                             h,
@@ -2440,7 +2253,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 .offset(uvdiff as isize)
                                 .offset((j * strideuv) as isize),
                             (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(1 as c_int as isize))
+                            (*(*bs.offset(1))
                                 .as_mut_ptr()
                                 .offset((4 as c_int * j) as isize))
                             .as_mut_ptr(),
@@ -2448,14 +2261,14 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             a,
                             b,
                             0 as c_int,
-                            (*h).loopf.deblock_luma[1 as c_int as usize],
+                            (*h).loopf.deblock_luma[1],
                         );
                     } else if chroma_format != 0 {
                         deblock_edge(
                             h,
                             pixuv.offset((j * strideuv) as isize),
                             (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(1 as c_int as isize))
+                            (*(*bs.offset(1))
                                 .as_mut_ptr()
                                 .offset((4 as c_int * j) as isize))
                             .as_mut_ptr(),
@@ -2463,7 +2276,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             a,
                             b,
                             1 as c_int,
-                            (*h).loopf.deblock_chroma[1 as c_int as usize],
+                            (*h).loopf.deblock_chroma[1],
                         );
                     }
                     j += 1;
@@ -2486,10 +2299,8 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         == I_PCM as c_int) as c_int;
                 let mut intra_deblock_0: c_int = (intra_cur != 0 || intra_top_0 != 0) as c_int;
                 if !(*(*h).fdec).mb_info.is_null()
-                    && (*((*(*bs.offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(0 as c_int as isize))
-                    .as_mut_ptr() as *mut x264_union32_t))
+                    && (*((*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr()
+                        as *mut x264_union32_t))
                         .i
                         != 0
                 {
@@ -2526,15 +2337,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2y as intptr_t,
-                            (*(*bs.offset(1 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_top_0,
                             a,
                             b,
                             0 as c_int,
-                            (*h).loopf.deblock_luma_intra[1 as c_int as usize],
+                            (*h).loopf.deblock_luma_intra[1],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge_intra(
@@ -2549,15 +2357,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(1 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma_intra[1 as c_int as usize],
+                                (*h).loopf.deblock_luma_intra[1],
                             );
                             deblock_edge_intra(
                                 h,
@@ -2571,15 +2376,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(1 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma_intra[1 as c_int as usize],
+                                (*h).loopf.deblock_luma_intra[1],
                             );
                         } else if chroma_format == CHROMA_420 as c_int
                             && 0 as c_int & 1 as c_int == 0
@@ -2595,15 +2397,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(1 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 1 as c_int,
-                                (*h).loopf.deblock_chroma_intra[1 as c_int as usize],
+                                (*h).loopf.deblock_chroma_intra[1],
                             );
                         }
                     }
@@ -2621,23 +2420,18 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2uv as intptr_t,
-                            (*(*bs.offset(1 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_top_0,
                             a,
                             b,
                             1 as c_int,
-                            (*h).loopf.deblock_chroma_intra[1 as c_int as usize],
+                            (*h).loopf.deblock_chroma_intra[1],
                         );
                     }
                 } else {
                     if intra_deblock_0 != 0 {
-                        (*((*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(0 as c_int as isize))
-                        .as_mut_ptr() as *mut x264_union32_t))
+                        (*((*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr()
+                            as *mut x264_union32_t))
                             .i = 0x3030303 as uint32_t;
                     }
                     if 0 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
@@ -2653,15 +2447,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2y as intptr_t,
-                            (*(*bs.offset(1 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_top_0,
                             a,
                             b,
                             0 as c_int,
-                            (*h).loopf.deblock_luma[1 as c_int as usize],
+                            (*h).loopf.deblock_luma[1],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge(
@@ -2676,15 +2467,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(1 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma[1 as c_int as usize],
+                                (*h).loopf.deblock_luma[1],
                             );
                             deblock_edge(
                                 h,
@@ -2698,15 +2486,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(1 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 0 as c_int,
-                                (*h).loopf.deblock_luma[1 as c_int as usize],
+                                (*h).loopf.deblock_luma[1],
                             );
                         } else if chroma_format == CHROMA_420 as c_int
                             && 0 as c_int & 1 as c_int == 0
@@ -2722,15 +2507,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                         })) as isize,
                                 ),
                                 stride2uv as intptr_t,
-                                (*(*bs.offset(1 as c_int as isize))
-                                    .as_mut_ptr()
-                                    .offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                                (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
                                 1 as c_int,
-                                (*h).loopf.deblock_chroma[1 as c_int as usize],
+                                (*h).loopf.deblock_chroma[1],
                             );
                         }
                     }
@@ -2748,15 +2530,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                     })) as isize,
                             ),
                             stride2uv as intptr_t,
-                            (*(*bs.offset(1 as c_int as isize))
-                                .as_mut_ptr()
-                                .offset(0 as c_int as isize))
-                            .as_mut_ptr(),
+                            (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_top_0,
                             a,
                             b,
                             1 as c_int,
-                            (*h).loopf.deblock_chroma[1 as c_int as usize],
+                            (*h).loopf.deblock_chroma[1],
                         );
                     }
                 }
@@ -2776,15 +2555,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2y as intptr_t,
-                    (*(*bs.offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(1 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qp,
                     a,
                     b,
                     0 as c_int,
-                    (*h).loopf.deblock_luma[1 as c_int as usize],
+                    (*h).loopf.deblock_luma[1],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
@@ -2799,15 +2575,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(1 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[1 as c_int as usize],
+                        (*h).loopf.deblock_luma[1],
                     );
                     deblock_edge(
                         h,
@@ -2821,15 +2594,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(1 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[1 as c_int as usize],
+                        (*h).loopf.deblock_luma[1],
                     );
                 } else if chroma_format == CHROMA_420 as c_int && 1 as c_int & 1 as c_int == 0 {
                     deblock_edge(
@@ -2843,15 +2613,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(1 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         1 as c_int,
-                        (*h).loopf.deblock_chroma[1 as c_int as usize],
+                        (*h).loopf.deblock_chroma[1],
                     );
                 }
             }
@@ -2869,15 +2636,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2uv as intptr_t,
-                    (*(*bs.offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(1 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
                     1 as c_int,
-                    (*h).loopf.deblock_chroma[1 as c_int as usize],
+                    (*h).loopf.deblock_chroma[1],
                 );
             }
             if 2 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
@@ -2893,15 +2657,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2y as intptr_t,
-                    (*(*bs.offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(2 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qp,
                     a,
                     b,
                     0 as c_int,
-                    (*h).loopf.deblock_luma[1 as c_int as usize],
+                    (*h).loopf.deblock_luma[1],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
@@ -2916,15 +2677,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(2 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[1 as c_int as usize],
+                        (*h).loopf.deblock_luma[1],
                     );
                     deblock_edge(
                         h,
@@ -2938,15 +2696,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(2 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[1 as c_int as usize],
+                        (*h).loopf.deblock_luma[1],
                     );
                 } else if chroma_format == CHROMA_420 as c_int && 2 as c_int & 1 as c_int == 0 {
                     deblock_edge(
@@ -2960,15 +2715,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(2 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         1 as c_int,
-                        (*h).loopf.deblock_chroma[1 as c_int as usize],
+                        (*h).loopf.deblock_chroma[1],
                     );
                 }
             }
@@ -2986,15 +2738,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2uv as intptr_t,
-                    (*(*bs.offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(2 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
                     1 as c_int,
-                    (*h).loopf.deblock_chroma[1 as c_int as usize],
+                    (*h).loopf.deblock_chroma[1],
                 );
             }
             if 3 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
@@ -3010,15 +2759,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2y as intptr_t,
-                    (*(*bs.offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(3 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qp,
                     a,
                     b,
                     0 as c_int,
-                    (*h).loopf.deblock_luma[1 as c_int as usize],
+                    (*h).loopf.deblock_luma[1],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
@@ -3033,15 +2779,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(3 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[1 as c_int as usize],
+                        (*h).loopf.deblock_luma[1],
                     );
                     deblock_edge(
                         h,
@@ -3055,15 +2798,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(3 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         0 as c_int,
-                        (*h).loopf.deblock_luma[1 as c_int as usize],
+                        (*h).loopf.deblock_luma[1],
                     );
                 } else if chroma_format == CHROMA_420 as c_int && 3 as c_int & 1 as c_int == 0 {
                     deblock_edge(
@@ -3077,15 +2817,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 })) as isize,
                         ),
                         stride2uv as intptr_t,
-                        (*(*bs.offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(3 as c_int as isize))
-                        .as_mut_ptr(),
+                        (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
                         1 as c_int,
-                        (*h).loopf.deblock_chroma[1 as c_int as usize],
+                        (*h).loopf.deblock_chroma[1],
                     );
                 }
             }
@@ -3103,15 +2840,12 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             })) as isize,
                     ),
                     stride2uv as intptr_t,
-                    (*(*bs.offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(3 as c_int as isize))
-                    .as_mut_ptr(),
+                    (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
                     1 as c_int,
-                    (*h).loopf.deblock_chroma[1 as c_int as usize],
+                    (*h).loopf.deblock_chroma[1],
                 );
             }
         }
@@ -3144,26 +2878,14 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     }
     let mut bs: *mut [[uint8_t; 4]; 8] = (*h).mb.cache.deblock_strength;
     if intra_cur != 0 {
-        (*((*(*bs.offset(0 as c_int as isize))
-            .as_mut_ptr()
-            .offset(1 as c_int as isize))
-        .as_mut_ptr() as *mut x264_union32_t))
-            .i = 0x3030303 as uint32_t;
-        (*((*(*bs.offset(0 as c_int as isize))
-            .as_mut_ptr()
-            .offset(2 as c_int as isize))
-        .as_mut_ptr() as *mut x264_union64_t))
-            .i = 0x303030303030303 as uint64_t;
-        (*((*(*bs.offset(1 as c_int as isize))
-            .as_mut_ptr()
-            .offset(1 as c_int as isize))
-        .as_mut_ptr() as *mut x264_union32_t))
-            .i = 0x3030303 as uint32_t;
-        (*((*(*bs.offset(1 as c_int as isize))
-            .as_mut_ptr()
-            .offset(2 as c_int as isize))
-        .as_mut_ptr() as *mut x264_union64_t))
-            .i = 0x303030303030303 as uint64_t;
+        (*((*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr() as *mut x264_union32_t)).i =
+            0x3030303 as uint32_t;
+        (*((*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr() as *mut x264_union64_t)).i =
+            0x303030303030303 as uint64_t;
+        (*((*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr() as *mut x264_union32_t)).i =
+            0x3030303 as uint32_t;
+        (*((*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr() as *mut x264_union64_t)).i =
+            0x303030303030303 as uint64_t;
     } else {
         (*h).loopf
             .deblock_strength
@@ -3180,7 +2902,7 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[0].offset(
                 (4 as c_int
                     * 1 as c_int
                     * (if 0 as c_int != 0 {
@@ -3190,20 +2912,17 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(0 as c_int as isize))
-                .as_mut_ptr()
-                .offset(1 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
             qp,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[0 as c_int as usize],
+            (*h).loopf.deblock_luma[0],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[1].offset(
                     (4 as c_int
                         * 1 as c_int
                         * (if 0 as c_int != 0 {
@@ -3213,19 +2932,16 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(0 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(1 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[0 as c_int as usize],
+                (*h).loopf.deblock_luma[0],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[2].offset(
                     (4 as c_int
                         * 1 as c_int
                         * (if 0 as c_int != 0 {
@@ -3235,21 +2951,18 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(0 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(1 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[0 as c_int as usize],
+                (*h).loopf.deblock_luma[0],
             );
         }
     }
     deblock_edge(
         h,
-        (*h).mb.pic.p_fdec[0 as c_int as usize].offset(
+        (*h).mb.pic.p_fdec[0].offset(
             (4 as c_int
                 * 2 as c_int
                 * (if 0 as c_int != 0 {
@@ -3259,20 +2972,17 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                 })) as isize,
         ),
         FDEC_STRIDE as intptr_t,
-        (*(*bs.offset(0 as c_int as isize))
-            .as_mut_ptr()
-            .offset(2 as c_int as isize))
-        .as_mut_ptr(),
+        (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
         qp,
         a,
         b,
         0 as c_int,
-        (*h).loopf.deblock_luma[0 as c_int as usize],
+        (*h).loopf.deblock_luma[0],
     );
     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[1 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[1].offset(
                 (4 as c_int
                     * 2 as c_int
                     * (if 0 as c_int != 0 {
@@ -3282,19 +2992,16 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(0 as c_int as isize))
-                .as_mut_ptr()
-                .offset(2 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[0 as c_int as usize],
+            (*h).loopf.deblock_luma[0],
         );
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[2 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[2].offset(
                 (4 as c_int
                     * 2 as c_int
                     * (if 0 as c_int != 0 {
@@ -3304,21 +3011,18 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(0 as c_int as isize))
-                .as_mut_ptr()
-                .offset(2 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[0 as c_int as usize],
+            (*h).loopf.deblock_luma[0],
         );
     }
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[0].offset(
                 (4 as c_int
                     * 3 as c_int
                     * (if 0 as c_int != 0 {
@@ -3328,20 +3032,17 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(0 as c_int as isize))
-                .as_mut_ptr()
-                .offset(3 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
             qp,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[0 as c_int as usize],
+            (*h).loopf.deblock_luma[0],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[1].offset(
                     (4 as c_int
                         * 3 as c_int
                         * (if 0 as c_int != 0 {
@@ -3351,19 +3052,16 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(0 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(3 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[0 as c_int as usize],
+                (*h).loopf.deblock_luma[0],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[2].offset(
                     (4 as c_int
                         * 3 as c_int
                         * (if 0 as c_int != 0 {
@@ -3373,22 +3071,19 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(0 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(3 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[0 as c_int as usize],
+                (*h).loopf.deblock_luma[0],
             );
         }
     }
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[0].offset(
                 (4 as c_int
                     * 1 as c_int
                     * (if 1 as c_int != 0 {
@@ -3398,20 +3093,17 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(1 as c_int as isize))
-                .as_mut_ptr()
-                .offset(1 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
             qp,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[1 as c_int as usize],
+            (*h).loopf.deblock_luma[1],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[1].offset(
                     (4 as c_int
                         * 1 as c_int
                         * (if 1 as c_int != 0 {
@@ -3421,19 +3113,16 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(1 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(1 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[1 as c_int as usize],
+                (*h).loopf.deblock_luma[1],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[2].offset(
                     (4 as c_int
                         * 1 as c_int
                         * (if 1 as c_int != 0 {
@@ -3443,21 +3132,18 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(1 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(1 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[1 as c_int as usize],
+                (*h).loopf.deblock_luma[1],
             );
         }
     }
     deblock_edge(
         h,
-        (*h).mb.pic.p_fdec[0 as c_int as usize].offset(
+        (*h).mb.pic.p_fdec[0].offset(
             (4 as c_int
                 * 2 as c_int
                 * (if 1 as c_int != 0 {
@@ -3467,20 +3153,17 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                 })) as isize,
         ),
         FDEC_STRIDE as intptr_t,
-        (*(*bs.offset(1 as c_int as isize))
-            .as_mut_ptr()
-            .offset(2 as c_int as isize))
-        .as_mut_ptr(),
+        (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
         qp,
         a,
         b,
         0 as c_int,
-        (*h).loopf.deblock_luma[1 as c_int as usize],
+        (*h).loopf.deblock_luma[1],
     );
     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[1 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[1].offset(
                 (4 as c_int
                     * 2 as c_int
                     * (if 1 as c_int != 0 {
@@ -3490,19 +3173,16 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(1 as c_int as isize))
-                .as_mut_ptr()
-                .offset(2 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[1 as c_int as usize],
+            (*h).loopf.deblock_luma[1],
         );
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[2 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[2].offset(
                 (4 as c_int
                     * 2 as c_int
                     * (if 1 as c_int != 0 {
@@ -3512,21 +3192,18 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(1 as c_int as isize))
-                .as_mut_ptr()
-                .offset(2 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[1 as c_int as usize],
+            (*h).loopf.deblock_luma[1],
         );
     }
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0 as c_int as usize].offset(
+            (*h).mb.pic.p_fdec[0].offset(
                 (4 as c_int
                     * 3 as c_int
                     * (if 1 as c_int != 0 {
@@ -3536,20 +3213,17 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                     })) as isize,
             ),
             FDEC_STRIDE as intptr_t,
-            (*(*bs.offset(1 as c_int as isize))
-                .as_mut_ptr()
-                .offset(3 as c_int as isize))
-            .as_mut_ptr(),
+            (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
             qp,
             a,
             b,
             0 as c_int,
-            (*h).loopf.deblock_luma[1 as c_int as usize],
+            (*h).loopf.deblock_luma[1],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[1].offset(
                     (4 as c_int
                         * 3 as c_int
                         * (if 1 as c_int != 0 {
@@ -3559,19 +3233,16 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(1 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(3 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[1 as c_int as usize],
+                (*h).loopf.deblock_luma[1],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2 as c_int as usize].offset(
+                (*h).mb.pic.p_fdec[2].offset(
                     (4 as c_int
                         * 3 as c_int
                         * (if 1 as c_int != 0 {
@@ -3581,15 +3252,12 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
                         })) as isize,
                 ),
                 FDEC_STRIDE as intptr_t,
-                (*(*bs.offset(1 as c_int as isize))
-                    .as_mut_ptr()
-                    .offset(3 as c_int as isize))
-                .as_mut_ptr(),
+                (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
                 0 as c_int,
-                (*h).loopf.deblock_luma[1 as c_int as usize],
+                (*h).loopf.deblock_luma[1],
             );
         }
     }
@@ -3601,15 +3269,15 @@ unsafe extern "C" fn x264_10_deblock_init(
     mut pf: *mut x264_deblock_function_t,
     mut _b_mbaff: c_int,
 ) {
-    (*pf).deblock_luma[1 as c_int as usize] = Some(
+    (*pf).deblock_luma[1] = Some(
         deblock_v_luma_c
             as unsafe extern "C" fn(*mut pixel, intptr_t, c_int, c_int, *mut int8_t) -> (),
     ) as x264_deblock_inter_t;
-    (*pf).deblock_luma[0 as c_int as usize] = Some(
+    (*pf).deblock_luma[0] = Some(
         deblock_h_luma_c
             as unsafe extern "C" fn(*mut pixel, intptr_t, c_int, c_int, *mut int8_t) -> (),
     ) as x264_deblock_inter_t;
-    (*pf).deblock_chroma[1 as c_int as usize] = Some(
+    (*pf).deblock_chroma[1] = Some(
         deblock_v_chroma_c
             as unsafe extern "C" fn(*mut pixel, intptr_t, c_int, c_int, *mut int8_t) -> (),
     ) as x264_deblock_inter_t;
@@ -3621,13 +3289,13 @@ unsafe extern "C" fn x264_10_deblock_init(
         deblock_h_chroma_422_c
             as unsafe extern "C" fn(*mut pixel, intptr_t, c_int, c_int, *mut int8_t) -> (),
     ) as x264_deblock_inter_t;
-    (*pf).deblock_luma_intra[1 as c_int as usize] = Some(
+    (*pf).deblock_luma_intra[1] = Some(
         deblock_v_luma_intra_c as unsafe extern "C" fn(*mut pixel, intptr_t, c_int, c_int) -> (),
     ) as x264_deblock_intra_t;
-    (*pf).deblock_luma_intra[0 as c_int as usize] = Some(
+    (*pf).deblock_luma_intra[0] = Some(
         deblock_h_luma_intra_c as unsafe extern "C" fn(*mut pixel, intptr_t, c_int, c_int) -> (),
     ) as x264_deblock_intra_t;
-    (*pf).deblock_chroma_intra[1 as c_int as usize] = Some(
+    (*pf).deblock_chroma_intra[1] = Some(
         deblock_v_chroma_intra_c as unsafe extern "C" fn(*mut pixel, intptr_t, c_int, c_int) -> (),
     ) as x264_deblock_intra_t;
     (*pf).deblock_h_chroma_420_intra = Some(

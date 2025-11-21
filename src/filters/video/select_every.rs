@@ -51,7 +51,7 @@ unsafe extern "C" fn init(
     let mut h: *mut selvry_hnd_t =
         malloc(::core::mem::size_of::<selvry_hnd_t>() as size_t) as *mut selvry_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).pattern_len = 0 as c_int;
     (*h).step_size = 0 as c_int;
@@ -64,7 +64,7 @@ unsafe extern "C" fn init(
         if tok.is_null() {
             break;
         }
-        let mut val: c_int = x264_otoi(tok, -(1 as c_int));
+        let mut val: c_int = x264_otoi(tok, -1);
         if !p.is_null() {
             if val <= 0 as c_int {
                 x264_cli_log(
@@ -73,7 +73,7 @@ unsafe extern "C" fn init(
                     b"invalid step `%s'\n\0" as *const u8 as *const c_char,
                     tok,
                 );
-                return -(1 as c_int);
+                return -1;
             }
             (*h).step_size = val;
         } else {
@@ -84,7 +84,7 @@ unsafe extern "C" fn init(
                     b"invalid offset `%s'\n\0" as *const u8 as *const c_char,
                     tok,
                 );
-                return -(1 as c_int);
+                return -1;
             }
             if (*h).pattern_len >= 100 as c_int {
                 x264_cli_log(
@@ -93,7 +93,7 @@ unsafe extern "C" fn init(
                     b"max pattern size %d reached\n\0" as *const u8 as *const c_char,
                     100 as c_int,
                 );
-                return -(1 as c_int);
+                return -1;
             }
             let fresh0 = (*h).pattern_len;
             (*h).pattern_len = (*h).pattern_len + 1;
@@ -107,7 +107,7 @@ unsafe extern "C" fn init(
             X264_LOG_ERROR,
             b"no step size provided\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).pattern_len == 0 {
         x264_cli_log(
@@ -115,13 +115,13 @@ unsafe extern "C" fn init(
             X264_LOG_ERROR,
             b"no offsets supplied\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*h).pattern = malloc(
         ((*h).pattern_len as size_t).wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
     ) as *mut c_int;
     if (*h).pattern.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     memcpy(
         (*h).pattern as *mut c_void,
@@ -166,7 +166,7 @@ unsafe extern "C" fn init(
         max_rewind as *mut c_void as *mut c_char,
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).step_size != (*h).pattern_len {
         (*info).num_frames = ((*info).num_frames as uint64_t)
@@ -208,7 +208,7 @@ unsafe extern "C" fn get_frame(
         .expect("non-null function pointer")((*h).prev_hnd, output, pat_frame)
         != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).vfr != 0 {
         (*output).pts = (*h).pts;

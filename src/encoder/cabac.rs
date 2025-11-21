@@ -110,7 +110,7 @@ unsafe extern "C" fn cabac_intra_chroma_pred_mode(mut h: *mut x264_t, mut cb: *m
         && *(*h)
             .mb
             .chroma_pred_mode
-            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize) as c_int
+            .offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
             != 0 as c_int
     {
         ctx += 1;
@@ -171,10 +171,10 @@ unsafe extern "C" fn cabac_cbp_chroma(mut h: *mut x264_t, mut cb: *mut x264_caba
     let mut cbp_a: c_int = (*h).mb.cache.i_cbp_left & 0x30 as c_int;
     let mut cbp_b: c_int = (*h).mb.cache.i_cbp_top & 0x30 as c_int;
     let mut ctx: c_int = 0 as c_int;
-    if cbp_a != 0 && (*h).mb.cache.i_cbp_left != -(1 as c_int) {
+    if cbp_a != 0 && (*h).mb.cache.i_cbp_left != -1 {
         ctx += 1;
     }
-    if cbp_b != 0 && (*h).mb.cache.i_cbp_top != -(1 as c_int) {
+    if cbp_b != 0 && (*h).mb.cache.i_cbp_top != -1 {
         ctx += 2 as c_int;
     }
     if (*h).mb.i_cbp_chroma == 0 as c_int {
@@ -392,12 +392,10 @@ unsafe extern "C" fn cabac_mvd(
     let mut mdx: c_int = 0;
     let mut mdy: c_int = 0;
     x264_10_mb_predict_mv(h, i_list, idx, width, mvp.as_mut_ptr());
-    mdx = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0 as c_int as usize]
-        as c_int
-        - mvp[0 as c_int as usize] as c_int;
-    mdy = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1 as c_int as usize]
-        as c_int
-        - mvp[1 as c_int as usize] as c_int;
+    mdx = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0] as c_int
+        - mvp[0] as c_int;
+    mdy = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1] as c_int
+        - mvp[1] as c_int;
     let mut amvd: uint16_t = x264_cabac_mvd_sum(
         (*(*(*h).mb.cache.mvd.as_mut_ptr().offset(i_list as isize))
             .as_mut_ptr()
@@ -563,7 +561,7 @@ unsafe extern "C" fn cabac_mb_header_i(
     if slice_type == SLICE_TYPE_I as c_int {
         let mut ctx: c_int = 0 as c_int;
         if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
-            && (*h).mb.i_mb_type_left[0 as c_int as usize] != I_4x4 as c_int
+            && (*h).mb.i_mb_type_left[0] != I_4x4 as c_int
         {
             ctx += 1;
         }
@@ -654,14 +652,14 @@ unsafe extern "C" fn cabac_mb_header_p(
         if (*h).mb.i_partition == D_16x16 as c_int {
             x264_10_cabac_encode_decision_c(cb, 15 as c_int, 0 as c_int);
             x264_10_cabac_encode_decision_c(cb, 16 as c_int, 0 as c_int);
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 cabac_ref_p(h, cb, 0 as c_int);
             }
             let mut mvd: uint16_t = cabac_mvd(h, cb, 0 as c_int, 0 as c_int, 4 as c_int);
             x264_macroblock_cache_mvd(
                 h,
-                block_idx_x[0 as c_int as usize] as c_int,
-                block_idx_y[0 as c_int as usize] as c_int,
+                block_idx_x[0] as c_int,
+                block_idx_y[0] as c_int,
                 4 as c_int,
                 4 as c_int,
                 0 as c_int,
@@ -670,15 +668,15 @@ unsafe extern "C" fn cabac_mb_header_p(
         } else if (*h).mb.i_partition == D_16x8 as c_int {
             x264_10_cabac_encode_decision_c(cb, 15 as c_int, 1 as c_int);
             x264_10_cabac_encode_decision_c(cb, 17 as c_int, 1 as c_int);
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 cabac_ref_p(h, cb, 0 as c_int);
                 cabac_ref_p(h, cb, 8 as c_int);
             }
             let mut mvd_0: uint16_t = cabac_mvd(h, cb, 0 as c_int, 0 as c_int, 4 as c_int);
             x264_macroblock_cache_mvd(
                 h,
-                block_idx_x[0 as c_int as usize] as c_int,
-                block_idx_y[0 as c_int as usize] as c_int,
+                block_idx_x[0] as c_int,
+                block_idx_y[0] as c_int,
                 4 as c_int,
                 2 as c_int,
                 0 as c_int,
@@ -687,8 +685,8 @@ unsafe extern "C" fn cabac_mb_header_p(
             let mut mvd_1: uint16_t = cabac_mvd(h, cb, 0 as c_int, 8 as c_int, 4 as c_int);
             x264_macroblock_cache_mvd(
                 h,
-                block_idx_x[8 as c_int as usize] as c_int,
-                block_idx_y[8 as c_int as usize] as c_int,
+                block_idx_x[8] as c_int,
+                block_idx_y[8] as c_int,
                 4 as c_int,
                 2 as c_int,
                 0 as c_int,
@@ -697,15 +695,15 @@ unsafe extern "C" fn cabac_mb_header_p(
         } else {
             x264_10_cabac_encode_decision_c(cb, 15 as c_int, 1 as c_int);
             x264_10_cabac_encode_decision_c(cb, 17 as c_int, 0 as c_int);
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 cabac_ref_p(h, cb, 0 as c_int);
                 cabac_ref_p(h, cb, 4 as c_int);
             }
             let mut mvd_2: uint16_t = cabac_mvd(h, cb, 0 as c_int, 0 as c_int, 2 as c_int);
             x264_macroblock_cache_mvd(
                 h,
-                block_idx_x[0 as c_int as usize] as c_int,
-                block_idx_y[0 as c_int as usize] as c_int,
+                block_idx_x[0] as c_int,
+                block_idx_y[0] as c_int,
                 2 as c_int,
                 4 as c_int,
                 0 as c_int,
@@ -714,8 +712,8 @@ unsafe extern "C" fn cabac_mb_header_p(
             let mut mvd_3: uint16_t = cabac_mvd(h, cb, 0 as c_int, 4 as c_int, 2 as c_int);
             x264_macroblock_cache_mvd(
                 h,
-                block_idx_x[4 as c_int as usize] as c_int,
-                block_idx_y[4 as c_int as usize] as c_int,
+                block_idx_x[4] as c_int,
+                block_idx_y[4] as c_int,
                 2 as c_int,
                 4 as c_int,
                 0 as c_int,
@@ -731,7 +729,7 @@ unsafe extern "C" fn cabac_mb_header_p(
             cabac_subpartition_p(cb, (*h).mb.i_sub_partition[i as usize] as c_int);
             i += 1;
         }
-        if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+        if (*h).mb.pic.i_fref[0] > 1 as c_int {
             cabac_ref_p(h, cb, 0 as c_int);
             cabac_ref_p(h, cb, 4 as c_int);
             cabac_ref_p(h, cb, 8 as c_int);
@@ -756,8 +754,8 @@ unsafe extern "C" fn cabac_mb_header_b(
 ) {
     let mut ctx: c_int = 0 as c_int;
     if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
-        && (*h).mb.i_mb_type_left[0 as c_int as usize] != B_SKIP as c_int
-        && (*h).mb.i_mb_type_left[0 as c_int as usize] != B_DIRECT as c_int
+        && (*h).mb.i_mb_type_left[0] != B_SKIP as c_int
+        && (*h).mb.i_mb_type_left[0] != B_DIRECT as c_int
     {
         ctx += 1;
     }
@@ -783,11 +781,10 @@ unsafe extern "C" fn cabac_mb_header_b(
             cabac_subpartition_b(cb, (*h).mb.i_sub_partition[i as usize] as c_int);
             i += 1;
         }
-        if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+        if (*h).mb.pic.i_fref[0] > 1 as c_int {
             let mut i_0: c_int = 0 as c_int;
             while i_0 < 4 as c_int {
-                if x264_mb_partition_listX_table[0 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_0 as usize] as usize]
+                if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i_0 as usize] as usize]
                     != 0
                 {
                     cabac_ref_b(h, cb, 0 as c_int, 4 as c_int * i_0);
@@ -795,11 +792,10 @@ unsafe extern "C" fn cabac_mb_header_b(
                 i_0 += 1;
             }
         }
-        if (*h).mb.pic.i_fref[1 as c_int as usize] > 1 as c_int {
+        if (*h).mb.pic.i_fref[1] > 1 as c_int {
             let mut i_1: c_int = 0 as c_int;
             while i_1 < 4 as c_int {
-                if x264_mb_partition_listX_table[1 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_1 as usize] as usize]
+                if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i_1 as usize] as usize]
                     != 0
                 {
                     cabac_ref_b(h, cb, 1 as c_int, 4 as c_int * i_1);
@@ -809,9 +805,7 @@ unsafe extern "C" fn cabac_mb_header_b(
         }
         let mut i_2: c_int = 0 as c_int;
         while i_2 < 4 as c_int {
-            if x264_mb_partition_listX_table[0 as c_int as usize]
-                [(*h).mb.i_sub_partition[i_2 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i_2 as usize] as usize] != 0
             {
                 let mut mvd: uint16_t = cabac_mvd(h, cb, 0 as c_int, 4 as c_int * i_2, 2 as c_int);
                 x264_macroblock_cache_mvd(
@@ -828,9 +822,7 @@ unsafe extern "C" fn cabac_mb_header_b(
         }
         let mut i_3: c_int = 0 as c_int;
         while i_3 < 4 as c_int {
-            if x264_mb_partition_listX_table[1 as c_int as usize]
-                [(*h).mb.i_sub_partition[i_3 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i_3 as usize] as usize] != 0
             {
                 let mut mvd_0: uint16_t =
                     cabac_mvd(h, cb, 1 as c_int, 4 as c_int * i_3, 2 as c_int);
@@ -900,13 +892,11 @@ unsafe extern "C" fn cabac_mb_header_b(
         let mut b_list: *const [uint8_t; 2] =
             (*x264_mb_type_list_table.as_ptr().offset(i_mb_type as isize)).as_ptr()
                 as *const [uint8_t; 2];
-        if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
-            if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+        if (*h).mb.pic.i_fref[0] > 1 as c_int {
+            if (*b_list.offset(0))[0] != 0 {
                 cabac_ref_b(h, cb, 0 as c_int, 0 as c_int);
             }
-            if (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] as c_int != 0
-                && (*h).mb.i_partition != D_16x16 as c_int
-            {
+            if (*b_list.offset(0))[1] as c_int != 0 && (*h).mb.i_partition != D_16x16 as c_int {
                 cabac_ref_b(
                     h,
                     cb,
@@ -915,13 +905,11 @@ unsafe extern "C" fn cabac_mb_header_b(
                 );
             }
         }
-        if (*h).mb.pic.i_fref[1 as c_int as usize] > 1 as c_int {
-            if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+        if (*h).mb.pic.i_fref[1] > 1 as c_int {
+            if (*b_list.offset(1))[0] != 0 {
                 cabac_ref_b(h, cb, 1 as c_int, 0 as c_int);
             }
-            if (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] as c_int != 0
-                && (*h).mb.i_partition != D_16x16 as c_int
-            {
+            if (*b_list.offset(1))[1] as c_int != 0 && (*h).mb.i_partition != D_16x16 as c_int {
                 cabac_ref_b(
                     h,
                     cb,
@@ -933,12 +921,12 @@ unsafe extern "C" fn cabac_mb_header_b(
         let mut i_list: c_int = 0 as c_int;
         while i_list < 2 as c_int {
             if (*h).mb.i_partition == D_16x16 as c_int {
-                if (*b_list.offset(i_list as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(i_list as isize))[0] != 0 {
                     let mut mvd_1: uint16_t = cabac_mvd(h, cb, i_list, 0 as c_int, 4 as c_int);
                     x264_macroblock_cache_mvd(
                         h,
-                        block_idx_x[0 as c_int as usize] as c_int,
-                        block_idx_y[0 as c_int as usize] as c_int,
+                        block_idx_x[0] as c_int,
+                        block_idx_y[0] as c_int,
                         4 as c_int,
                         4 as c_int,
                         i_list,
@@ -946,24 +934,24 @@ unsafe extern "C" fn cabac_mb_header_b(
                     );
                 }
             } else if (*h).mb.i_partition == D_16x8 as c_int {
-                if (*b_list.offset(i_list as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(i_list as isize))[0] != 0 {
                     let mut mvd_2: uint16_t = cabac_mvd(h, cb, i_list, 0 as c_int, 4 as c_int);
                     x264_macroblock_cache_mvd(
                         h,
-                        block_idx_x[0 as c_int as usize] as c_int,
-                        block_idx_y[0 as c_int as usize] as c_int,
+                        block_idx_x[0] as c_int,
+                        block_idx_y[0] as c_int,
                         4 as c_int,
                         2 as c_int,
                         i_list,
                         mvd_2,
                     );
                 }
-                if (*b_list.offset(i_list as isize))[1 as c_int as usize] != 0 {
+                if (*b_list.offset(i_list as isize))[1] != 0 {
                     let mut mvd_3: uint16_t = cabac_mvd(h, cb, i_list, 8 as c_int, 4 as c_int);
                     x264_macroblock_cache_mvd(
                         h,
-                        block_idx_x[8 as c_int as usize] as c_int,
-                        block_idx_y[8 as c_int as usize] as c_int,
+                        block_idx_x[8] as c_int,
+                        block_idx_y[8] as c_int,
                         4 as c_int,
                         2 as c_int,
                         i_list,
@@ -971,24 +959,24 @@ unsafe extern "C" fn cabac_mb_header_b(
                     );
                 }
             } else {
-                if (*b_list.offset(i_list as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(i_list as isize))[0] != 0 {
                     let mut mvd_4: uint16_t = cabac_mvd(h, cb, i_list, 0 as c_int, 2 as c_int);
                     x264_macroblock_cache_mvd(
                         h,
-                        block_idx_x[0 as c_int as usize] as c_int,
-                        block_idx_y[0 as c_int as usize] as c_int,
+                        block_idx_x[0] as c_int,
+                        block_idx_y[0] as c_int,
                         2 as c_int,
                         4 as c_int,
                         i_list,
                         mvd_4,
                     );
                 }
-                if (*b_list.offset(i_list as isize))[1 as c_int as usize] != 0 {
+                if (*b_list.offset(i_list as isize))[1] != 0 {
                     let mut mvd_5: uint16_t = cabac_mvd(h, cb, i_list, 4 as c_int, 2 as c_int);
                     x264_macroblock_cache_mvd(
                         h,
-                        block_idx_x[4 as c_int as usize] as c_int,
-                        block_idx_y[4 as c_int as usize] as c_int,
+                        block_idx_x[4] as c_int,
+                        block_idx_y[4] as c_int,
                         2 as c_int,
                         4 as c_int,
                         i_list,
@@ -1030,12 +1018,12 @@ unsafe extern "C" fn cabac_cbf_ctxidxinc(
     if b_dc != 0 {
         i_idx -= LUMA_DC;
         if i_cat == DCT_CHROMA_DC as c_int {
-            let mut i_nza: c_int = if (*h).mb.cache.i_cbp_left != -(1 as c_int) {
+            let mut i_nza: c_int = if (*h).mb.cache.i_cbp_left != -1 {
                 (*h).mb.cache.i_cbp_left >> 8 as c_int + i_idx & 1 as c_int
             } else {
                 b_intra
             };
-            let mut i_nzb: c_int = if (*h).mb.cache.i_cbp_top != -(1 as c_int) {
+            let mut i_nzb: c_int = if (*h).mb.cache.i_cbp_top != -1 {
                 (*h).mb.cache.i_cbp_top >> 8 as c_int + i_idx & 1 as c_int
             } else {
                 b_intra
@@ -1135,7 +1123,7 @@ unsafe extern "C" fn cabac_block_residual_internal(
     let mut ctx_last: c_int =
         x264_last_coeff_flag_offset[(*h).mb.b_interlaced as usize][ctx_block_cat as usize] as c_int;
     let mut ctx_level: c_int = x264_coeff_abs_level_m1_offset[ctx_block_cat as usize] as c_int;
-    let mut coeff_idx: c_int = -(1 as c_int);
+    let mut coeff_idx: c_int = -1;
     let mut node_ctx: c_int = 0 as c_int;
     let mut last: c_int =
         (*h).quantf.coeff_last[ctx_block_cat as usize].expect("non-null function pointer")(l);
@@ -1280,10 +1268,10 @@ unsafe extern "C" fn cabac_block_residual_internal(
             } else {
                 x264_10_cabac_encode_ue_bypass(cb, 0 as c_int, abs_coeff - 15 as c_int);
             }
-            node_ctx = coeff_abs_level_transition[1 as c_int as usize][node_ctx as usize] as c_int;
+            node_ctx = coeff_abs_level_transition[1][node_ctx as usize] as c_int;
         } else {
             x264_10_cabac_encode_decision_c(cb, ctx, 0 as c_int);
-            node_ctx = coeff_abs_level_transition[0 as c_int as usize][node_ctx as usize] as c_int;
+            node_ctx = coeff_abs_level_transition[0][node_ctx as usize] as c_int;
         }
         x264_10_cabac_encode_bypass_c(cb, coeff_sign);
         coeff_idx -= 1;
@@ -1470,7 +1458,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                                 ctx_cat_plane[DCT_LUMA_AC as c_int as usize][p_0 as usize] as c_int,
                                 (*(*h).dct.luma4x4.as_mut_ptr().offset(i_1 as isize))
                                     .as_mut_ptr()
-                                    .offset(1 as c_int as isize),
+                                    .offset(1),
                             );
                         } else {
                             x264_10_cabac_encode_decision_c(cb, ctxidxinc_0, 0 as c_int);
@@ -1487,54 +1475,62 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                     && *(*h)
                         .mb
                         .mb_transform_size
-                        .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
+                        .offset((*h).mb.i_mb_left_xy[0] as isize)
                         == 0
-                    && *(*h)
-                        .mb
-                        .cbp
-                        .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                        as c_int
+                    && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                         & 0x1000 as c_int
                         == 0
                 {
-                    nnzbak[0 as c_int as usize][0 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 0 as c_int + 0 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[0][0] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 0 as c_int + 0 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 0 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[0 as c_int as usize][1 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 0 as c_int + 2 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[0][1] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 0 as c_int + 2 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 2 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[1 as c_int as usize][0 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 1 as c_int + 0 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[1][0] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 1 as c_int + 0 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 0 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[1 as c_int as usize][1 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 1 as c_int + 2 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[1][1] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 1 as c_int + 2 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 2 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[2 as c_int as usize][0 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 2 as c_int + 0 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[2][0] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 2 as c_int + 0 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 0 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[2 as c_int as usize][1 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 2 as c_int + 2 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[2][1] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 2 as c_int + 2 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 2 as c_int) as usize]
                         as c_int
@@ -1544,54 +1540,62 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                     && *(*h)
                         .mb
                         .mb_transform_size
-                        .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
+                        .offset((*h).mb.i_mb_left_xy[1] as isize)
                         == 0
-                    && *(*h)
-                        .mb
-                        .cbp
-                        .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                        as c_int
+                    && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                         & 0x1000 as c_int
                         == 0
                 {
-                    nnzbak[0 as c_int as usize][2 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 0 as c_int + 8 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[0][2] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 0 as c_int + 8 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 8 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[0 as c_int as usize][3 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 0 as c_int + 10 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[0][3] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 0 as c_int + 10 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 10 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[1 as c_int as usize][2 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 1 as c_int + 8 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[1][2] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 1 as c_int + 8 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 8 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[1 as c_int as usize][3 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 1 as c_int + 10 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[1][3] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 1 as c_int + 10 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 10 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[2 as c_int as usize][2 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 2 as c_int + 8 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[2][2] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 2 as c_int + 8 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 8 as c_int) as usize]
                         as c_int
                         - 1 as c_int) as usize] = 0 as uint8_t;
-                    nnzbak[2 as c_int as usize][3 as c_int as usize] = (*h).mb.cache.non_zero_count
-                        [(x264_scan8[(16 as c_int * 2 as c_int + 10 as c_int) as usize] as c_int
-                            - 1 as c_int) as usize];
+                    nnzbak[2][3] = (*h).mb.cache.non_zero_count[(x264_scan8
+                        [(16 as c_int * 2 as c_int + 10 as c_int) as usize]
+                        as c_int
+                        - 1 as c_int)
+                        as usize];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 10 as c_int) as usize]
                         as c_int
@@ -1606,9 +1610,9 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                     && *(*h).mb.cbp.offset((*h).mb.i_mb_top_xy as isize) as c_int & 0x1000 as c_int
                         == 0
                 {
-                    (*(&mut *(*nnzbak.as_mut_ptr().offset(0 as c_int as isize))
+                    (*(&mut *(*nnzbak.as_mut_ptr().offset(0))
                         .as_mut_ptr()
-                        .offset(4 as c_int as isize) as *mut uint8_t
+                        .offset(4) as *mut uint8_t
                         as *mut x264_union32_t))
                         .i = (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                         (*x264_scan8
@@ -1626,9 +1630,9 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                             - 8 as c_int) as isize,
                     ) as *mut uint8_t as *mut x264_union32_t))
                         .i = 0 as c_uint as uint32_t;
-                    (*(&mut *(*nnzbak.as_mut_ptr().offset(1 as c_int as isize))
+                    (*(&mut *(*nnzbak.as_mut_ptr().offset(1))
                         .as_mut_ptr()
-                        .offset(4 as c_int as isize) as *mut uint8_t
+                        .offset(4) as *mut uint8_t
                         as *mut x264_union32_t))
                         .i = (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                         (*x264_scan8
@@ -1646,9 +1650,9 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                             - 8 as c_int) as isize,
                     ) as *mut uint8_t as *mut x264_union32_t))
                         .i = 0 as c_uint as uint32_t;
-                    (*(&mut *(*nnzbak.as_mut_ptr().offset(2 as c_int as isize))
+                    (*(&mut *(*nnzbak.as_mut_ptr().offset(2))
                         .as_mut_ptr()
-                        .offset(4 as c_int as isize) as *mut uint8_t
+                        .offset(4) as *mut uint8_t
                         as *mut x264_union32_t))
                         .i = (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                         (*x264_scan8
@@ -1713,79 +1717,71 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                     && *(*h)
                         .mb
                         .mb_transform_size
-                        .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
+                        .offset((*h).mb.i_mb_left_xy[0] as isize)
                         == 0
-                    && *(*h)
-                        .mb
-                        .cbp
-                        .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                        as c_int
+                    && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                         & 0x1000 as c_int
                         == 0
                 {
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 0 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[0 as c_int as usize][0 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[0][0];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 2 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[0 as c_int as usize][1 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[0][1];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 0 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[1 as c_int as usize][0 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[1][0];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 2 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[1 as c_int as usize][1 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[1][1];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 0 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[2 as c_int as usize][0 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[2][0];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 2 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[2 as c_int as usize][1 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[2][1];
                 }
                 if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
                     && *(*h)
                         .mb
                         .mb_transform_size
-                        .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
+                        .offset((*h).mb.i_mb_left_xy[1] as isize)
                         == 0
-                    && *(*h)
-                        .mb
-                        .cbp
-                        .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                        as c_int
+                    && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                         & 0x1000 as c_int
                         == 0
                 {
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 8 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[0 as c_int as usize][2 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[0][2];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 0 as c_int + 10 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[0 as c_int as usize][3 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[0][3];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 8 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[1 as c_int as usize][2 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[1][2];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 1 as c_int + 10 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[1 as c_int as usize][3 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[1][3];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 8 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[2 as c_int as usize][2 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[2][2];
                     (*h).mb.cache.non_zero_count[(x264_scan8
                         [(16 as c_int * 2 as c_int + 10 as c_int) as usize]
                         as c_int
-                        - 1 as c_int) as usize] = nnzbak[2 as c_int as usize][3 as c_int as usize];
+                        - 1 as c_int) as usize] = nnzbak[2][3];
                 }
                 if (*h).mb.i_neighbour & MB_TOP as c_int as c_uint != 0
                     && *(*h)
@@ -1803,10 +1799,8 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                             as c_int
                             - 8 as c_int) as isize,
                     ) as *mut uint8_t as *mut x264_union32_t))
-                        .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(0 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(4 as c_int as isize) as *mut uint8_t
-                        as *mut x264_union32_t))
+                        .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(0)).as_mut_ptr().offset(4)
+                        as *mut uint8_t as *mut x264_union32_t))
                         .i;
                     (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                         (*x264_scan8
@@ -1815,10 +1809,8 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                             as c_int
                             - 8 as c_int) as isize,
                     ) as *mut uint8_t as *mut x264_union32_t))
-                        .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(1 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(4 as c_int as isize) as *mut uint8_t
-                        as *mut x264_union32_t))
+                        .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(1)).as_mut_ptr().offset(4)
+                        as *mut uint8_t as *mut x264_union32_t))
                         .i;
                     (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                         (*x264_scan8
@@ -1827,10 +1819,8 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                             as c_int
                             - 8 as c_int) as isize,
                     ) as *mut uint8_t as *mut x264_union32_t))
-                        .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(2 as c_int as isize))
-                        .as_mut_ptr()
-                        .offset(4 as c_int as isize) as *mut uint8_t
-                        as *mut x264_union32_t))
+                        .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(2)).as_mut_ptr().offset(4)
+                        as *mut uint8_t as *mut x264_union32_t))
                         .i;
                 }
             } else {
@@ -1917,7 +1907,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                     );
                 } else {
                     x264_10_cabac_encode_decision_c(cb, ctxidxinc_3, 0 as c_int);
@@ -1938,7 +1928,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                     );
                 } else {
                     x264_10_cabac_encode_decision_c(cb, ctxidxinc_4, 0 as c_int);
@@ -1960,7 +1950,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                     );
                 } else {
                     x264_10_cabac_encode_decision_c(cb, ctxidxinc_5, 0 as c_int);
@@ -1981,7 +1971,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                     );
                 } else {
                     x264_10_cabac_encode_decision_c(cb, ctxidxinc_6, 0 as c_int);
@@ -2008,7 +1998,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                                 DCT_CHROMA_AC as c_int,
                                 (*(*h).dct.luma4x4.as_mut_ptr().offset(j_0 as isize))
                                     .as_mut_ptr()
-                                    .offset(1 as c_int as isize),
+                                    .offset(1),
                             );
                         } else {
                             x264_10_cabac_encode_decision_c(cb, ctxidxinc_7, 0 as c_int);

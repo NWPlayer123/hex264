@@ -53,21 +53,21 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"malloc failed\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*h).input = cli_input;
     (*h).p_handle = *p_handle;
-    (*h).next_frame = -(1 as c_int);
+    (*h).next_frame = -1;
     (*h).next_args =
         malloc(::core::mem::size_of::<thread_input_arg_t>() as size_t) as *mut thread_input_arg_t;
     if (*h).next_args.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*(*h).next_args).h = h;
     (*(*h).next_args).status = 0 as c_int;
     (*h).frame_total = (*info).num_frames;
     if x264_10_threadpool_init(&mut (*h).pool, 1 as c_int) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     *p_handle = h as hnd_t;
     return 0 as c_int;
@@ -126,7 +126,7 @@ unsafe extern "C" fn read_frame(
             (*h).next_args as *mut c_void,
         );
     } else {
-        (*h).next_frame = -(1 as c_int);
+        (*h).next_frame = -1;
     }
     return ret;
 }

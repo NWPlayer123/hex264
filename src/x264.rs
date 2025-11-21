@@ -643,14 +643,11 @@ unsafe extern "C" fn print_version_info() {
 unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
     if argc == 4 as c_int
         && strcmp(
-            *argv.offset(1 as c_int as isize),
+            *argv.offset(1),
             b"--autocomplete\0" as *const u8 as *const c_char,
         ) == 0
     {
-        return x264_cli_autocomplete(
-            *argv.offset(2 as c_int as isize),
-            *argv.offset(3 as c_int as isize),
-        );
+        return x264_cli_autocomplete(*argv.offset(2), *argv.offset(3));
     }
     let mut param: x264_param_t = x264_param_t {
         cpu: 0,
@@ -821,7 +818,7 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
     let mut ret: c_int = 0 as c_int;
     x264_param_default(&mut param);
     if parse(argc, argv, &mut param, &mut opt) < 0 as c_int {
-        ret = -(1 as c_int);
+        ret = -1;
     }
     signal(
         SIGINT,
@@ -873,7 +870,7 @@ unsafe extern "C" fn stringify_names(
 ) -> *mut c_char {
     let mut i: c_int = 0 as c_int;
     let mut p: *mut c_char = buf;
-    *p.offset(0 as c_int as isize) = 0 as c_char;
+    *p.offset(0) = 0 as c_char;
     while !(*names.offset(i as isize)).is_null() {
         if **names.offset(i as isize) != 0 {
             if p != buf {
@@ -1557,14 +1554,14 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         printf(
             b"      --deadzone-inter <int>  Set the size of the inter luma quantization deadzone [%d]\n\0"
                 as *const u8 as *const c_char,
-            (*defaults).analyse.i_luma_deadzone[0 as c_int as usize],
+            (*defaults).analyse.i_luma_deadzone[0],
         );
     }
     if longhelp == 2 as c_int {
         printf(
             b"      --deadzone-intra <int>  Set the size of the intra luma quantization deadzone [%d]\n\0"
                 as *const u8 as *const c_char,
-            (*defaults).analyse.i_luma_deadzone[1 as c_int as usize],
+            (*defaults).analyse.i_luma_deadzone[1],
         );
     }
     if longhelp == 2 as c_int {
@@ -1577,7 +1574,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         printf(
             b"      --cqm <string>          Preset quant matrices [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
-            x264_cqm_names[0 as c_int as usize],
+            x264_cqm_names[0],
             stringify_names(buf.as_mut_ptr(), x264_cqm_names.as_ptr()),
         );
     }
@@ -1656,7 +1653,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         printf(
             b"      --range <string>        Specify color range [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
-            x264_range_names[0 as c_int as usize],
+            x264_range_names[0],
             stringify_names(buf.as_mut_ptr(), x264_range_names.as_ptr()),
         );
     }
@@ -1742,7 +1739,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         printf(
             b"      --muxer <string>        Specify output container format [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
-            x264_muxer_names[0 as c_int as usize],
+            x264_muxer_names[0],
             stringify_names(buf.as_mut_ptr(), x264_muxer_names.as_ptr()),
         );
     }
@@ -1750,7 +1747,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         printf(
             b"      --demuxer <string>      Specify input container format [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
-            x264_demuxer_names[0 as c_int as usize],
+            x264_demuxer_names[0],
             stringify_names(buf.as_mut_ptr(), x264_demuxer_names.as_ptr()),
         );
     }
@@ -1791,7 +1788,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         printf(
             b"      --input-range <string>  Specify input color range [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
-            x264_range_names[0 as c_int as usize],
+            x264_range_names[0],
             stringify_names(buf.as_mut_ptr(), x264_range_names.as_ptr()),
         );
     }
@@ -1840,7 +1837,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         printf(
             b"      --avcintra-flavor <string> AVC-Intra flavor [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
-            x264_avcintra_flavor_names[0 as c_int as usize],
+            x264_avcintra_flavor_names[0],
             stringify_names(buf.as_mut_ptr(), x264_avcintra_flavor_names.as_ptr()),
         );
     }
@@ -3669,7 +3666,7 @@ unsafe extern "C" fn select_input(
                 b"could not open input file `%s' via any method!\n\0" as *const u8 as *const c_char,
                 filename,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     strcpy(used_demuxer, module);
@@ -3693,7 +3690,7 @@ unsafe extern "C" fn init_vid_filters(
         0 as *mut c_char,
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     if x264_init_vid_filter(
         b"resize\0" as *const u8 as *const c_char,
@@ -3704,7 +3701,7 @@ unsafe extern "C" fn init_vid_filters(
         b"normcsp\0" as *const u8 as *const c_char as *mut c_char,
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     if x264_init_vid_filter(
         b"fix_vfr_pts\0" as *const u8 as *const c_char,
@@ -3715,7 +3712,7 @@ unsafe extern "C" fn init_vid_filters(
         0 as *mut c_char,
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     let mut p: *mut c_char = sequence;
     while !p.is_null() && *p as c_int != 0 {
@@ -3734,7 +3731,7 @@ unsafe extern "C" fn init_vid_filters(
             p.offset(name_len as isize),
         ) != 0
         {
-            return -(1 as c_int);
+            return -1;
         }
         p = p.offset(
             (if (tok_len + 1 as c_int) < p_len {
@@ -3774,7 +3771,7 @@ unsafe extern "C" fn init_vid_filters(
         0 as *mut c_char,
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     let mut args: [c_char; 20] = [0; 20];
     let mut name: [c_char; 20] = [0; 20];
@@ -3797,7 +3794,7 @@ unsafe extern "C" fn init_vid_filters(
         args.as_mut_ptr(),
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     return 0 as c_int;
 }
@@ -3817,7 +3814,7 @@ unsafe extern "C" fn parse_enum_name(
         }
         i += 1;
     }
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "1379:1"]
 unsafe extern "C" fn parse_enum_value(
@@ -3835,7 +3832,7 @@ unsafe extern "C" fn parse_enum_value(
         }
         i += 1;
     }
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "1390:1"]
 unsafe extern "C" fn parse(
@@ -3853,9 +3850,9 @@ unsafe extern "C" fn parse(
     ];
     let mut current_block: u64;
     let mut input_filename: *mut c_char = 0 as *mut c_char;
-    let mut demuxer: *const c_char = x264_demuxer_names[0 as c_int as usize];
+    let mut demuxer: *const c_char = x264_demuxer_names[0];
     let mut output_filename: *mut c_char = 0 as *mut c_char;
-    let mut muxer: *const c_char = x264_muxer_names[0 as c_int as usize];
+    let mut muxer: *const c_char = x264_muxer_names[0];
     let mut tcfile_name: *mut c_char = 0 as *mut c_char;
     let mut defaults: x264_param_t = x264_param_t {
         cpu: 0,
@@ -4044,7 +4041,7 @@ unsafe extern "C" fn parse(
             long_options.as_mut_ptr(),
             0 as *mut c_int,
         );
-        if c == -(1 as c_int) {
+        if c == -1 {
             break;
         }
         if c == OPT_PRESET as c_int {
@@ -4053,7 +4050,7 @@ unsafe extern "C" fn parse(
         if c == OPT_TUNE as c_int {
             tune = optarg;
         } else if c == '?' as i32 {
-            return -(1 as c_int);
+            return -1;
         }
     }
     if !preset.is_null() && strcasecmp(preset, b"placebo\0" as *const u8 as *const c_char) == 0 {
@@ -4062,7 +4059,7 @@ unsafe extern "C" fn parse(
     if (!preset.is_null() || !tune.is_null())
         && x264_param_default_preset(param, preset, tune) < 0 as c_int
     {
-        return -(1 as c_int);
+        return -1;
     }
     x264_param_default(&mut defaults);
     cli_log_level = defaults.i_log_level;
@@ -4085,7 +4082,7 @@ unsafe extern "C" fn parse(
     optind = 0 as c_int;
     loop {
         let mut b_error: c_int = 0 as c_int;
-        let mut long_options_index: c_int = -(1 as c_int);
+        let mut long_options_index: c_int = -1;
         let mut c_0: c_int = getopt_long(
             argc,
             argv,
@@ -4093,7 +4090,7 @@ unsafe extern "C" fn parse(
             long_options.as_mut_ptr(),
             &mut long_options_index,
         );
-        if c_0 == -(1 as c_int) {
+        if c_0 == -1 {
             break;
         }
         match c_0 {
@@ -4141,7 +4138,7 @@ unsafe extern "C" fn parse(
                         b"Unknown muxer `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 current_block = 11702799181856929651;
             }
@@ -4153,7 +4150,7 @@ unsafe extern "C" fn parse(
                         b"Unknown demuxer `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 current_block = 11702799181856929651;
             }
@@ -4170,7 +4167,7 @@ unsafe extern "C" fn parse(
                         b"can't open qpfile `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 if x264_is_regular_file((*opt).qpfile) == 0 {
                     x264_cli_log(
@@ -4181,7 +4178,7 @@ unsafe extern "C" fn parse(
                         optarg,
                     );
                     fclose((*opt).qpfile);
-                    return -(1 as c_int);
+                    return -1;
                 }
                 current_block = 11702799181856929651;
             }
@@ -4255,7 +4252,7 @@ unsafe extern "C" fn parse(
                         b"can't open `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 current_block = 11702799181856929651;
             }
@@ -4273,7 +4270,7 @@ unsafe extern "C" fn parse(
                         b"Unknown pulldown `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 current_block = 11702799181856929651;
             }
@@ -4313,7 +4310,7 @@ unsafe extern "C" fn parse(
                         b"Unknown output csp `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 output_csp = output_csp_fix[output_csp as usize] as c_int;
                 (*param).i_csp = output_csp;
@@ -4332,7 +4329,7 @@ unsafe extern "C" fn parse(
                         b"Unknown input range `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 input_opt.input_range += RANGE_AUTO as c_int;
                 current_block = 11702799181856929651;
@@ -4350,7 +4347,7 @@ unsafe extern "C" fn parse(
                         b"Unknown range `%s'\n\0" as *const u8 as *const c_char,
                         optarg,
                     );
-                    return -(1 as c_int);
+                    return -1;
                 }
                 (*param).vui.b_fullrange += RANGE_AUTO as c_int;
                 input_opt.output_range = (*param).vui.b_fullrange;
@@ -4373,7 +4370,7 @@ unsafe extern "C" fn parse(
                         }
                     }
                     if long_options_index < 0 as c_int {
-                        return -(1 as c_int);
+                        return -1;
                     }
                 }
                 b_error |= x264_param_parse(
@@ -4397,14 +4394,14 @@ unsafe extern "C" fn parse(
                 name,
                 optarg,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     if b_turbo != 0 {
         x264_param_apply_fastfirstpass(param);
     }
     if x264_param_apply_profile(param, profile) < 0 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     if optind > argc - 1 as c_int || output_filename.is_null() {
         x264_cli_log(
@@ -4417,10 +4414,10 @@ unsafe extern "C" fn parse(
                 b"output\0" as *const u8 as *const c_char
             },
         );
-        return -(1 as c_int);
+        return -1;
     }
     if select_output(muxer, output_filename, param) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     if cli_output.open_file.expect("non-null function pointer")(
         output_filename,
@@ -4434,7 +4431,7 @@ unsafe extern "C" fn parse(
             b"could not open output file `%s'\n\0" as *const u8 as *const c_char,
             output_filename,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let fresh0 = optind;
     optind = optind + 1;
@@ -4483,7 +4480,7 @@ unsafe extern "C" fn parse(
         &mut input_opt,
     ) != 0
     {
-        return -(1 as c_int);
+        return -1;
     }
     if (*opt).hin.is_null()
         && cli_input.open_file.expect("non-null function pointer")(
@@ -4499,7 +4496,7 @@ unsafe extern "C" fn parse(
             b"could not open input file `%s'\n\0" as *const u8 as *const c_char,
             input_filename,
         );
-        return -(1 as c_int);
+        return -1;
     }
     x264_reduce_fraction(&mut info.sar_width, &mut info.sar_height);
     x264_reduce_fraction(&mut info.fps_num, &mut info.fps_den);
@@ -4541,7 +4538,7 @@ unsafe extern "C" fn parse(
                 X264_LOG_ERROR,
                 b"--fps + --tcfile-in is incompatible.\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         if timecode_input.open_file.expect("non-null function pointer")(
             tcfile_name,
@@ -4555,7 +4552,7 @@ unsafe extern "C" fn parse(
                 X264_LOG_ERROR,
                 b"timecode input failed\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         cli_input = timecode_input;
     } else if info.vfr == 0 && !input_opt.timebase.is_null() {
@@ -4564,7 +4561,7 @@ unsafe extern "C" fn parse(
             X264_LOG_ERROR,
             b"--timebase is incompatible with cfr input\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut thread_input: *const cli_input_t = 0 as *const cli_input_t;
     if (*param).i_bitdepth == 8 as c_int {
@@ -4593,7 +4590,7 @@ unsafe extern "C" fn parse(
                 stderr,
                 b"x264 [error]: threaded input failed\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         cli_input = *thread_input;
     }
@@ -4625,7 +4622,7 @@ unsafe extern "C" fn parse(
                 b"invalid argument: timebase = %s\n\0" as *const u8 as *const c_char,
                 input_opt.timebase,
             );
-            return -(1 as c_int);
+            return -1;
         }
         if ret == 1 as c_int {
             i_user_timebase_num = info.timebase_num as uint64_t;
@@ -4640,7 +4637,7 @@ unsafe extern "C" fn parse(
                 X264_LOG_ERROR,
                 b"timebase you specified exceeds H.264 maximum\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         (*opt).timebase_convert_multiplier = i_user_timebase_den as c_double
             / info.timebase_den as c_double
@@ -4657,7 +4654,7 @@ unsafe extern "C" fn parse(
         info.fullrange = input_opt.input_range;
     }
     if init_vid_filters(vid_filters, &mut (*opt).hin, &mut info, param, output_csp) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*param).b_vfr_input = info.vfr;
     (*param).i_fps_num = info.fps_num;
@@ -4700,7 +4697,7 @@ unsafe extern "C" fn parse(
                 X264_LOG_ERROR,
                 b"RGB must be PC range\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     if b_user_ref == 0 {
@@ -4730,12 +4727,12 @@ unsafe extern "C" fn parse_qpfile(
     mut pic: *mut x264_picture_t,
     mut i_frame: c_int,
 ) {
-    let mut num: c_int = -(1 as c_int);
+    let mut num: c_int = -1;
     let mut type_0: c_char = 0;
     let mut buf: [c_char; 100] = [0; 100];
     while num < i_frame {
         let mut file_pos: int64_t = ftello((*opt).qpfile) as int64_t;
-        let mut qp: c_int = -(1 as c_int);
+        let mut qp: c_int = -1;
         let mut ret: c_int = fscanf(
             (*opt).qpfile,
             b" %99[^\n]\n\0" as *const u8 as *const c_char,
@@ -4790,7 +4787,7 @@ unsafe extern "C" fn parse_qpfile(
             } else {
                 ret = 0 as c_int;
             }
-            if ret < 2 as c_int || qp < -(1 as c_int) || qp > QP_MAX {
+            if ret < 2 as c_int || qp < -1 || qp > QP_MAX {
                 x264_cli_log(
                     b"x264\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -4860,12 +4857,12 @@ unsafe extern "C" fn encode_frame(
             X264_LOG_ERROR,
             b"x264_encoder_encode failed\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if i_frame_size != 0 {
         i_frame_size = cli_output.write_frame.expect("non-null function pointer")(
             hout,
-            (*nal.offset(0 as c_int as isize)).p_payload,
+            (*nal.offset(0)).p_payload,
             i_frame_size,
             &mut pic_out,
         );
@@ -4934,7 +4931,7 @@ unsafe extern "C" fn print_status(
     fprintf(
         stderr,
         b"%s  \r\0" as *const u8 as *const c_char,
-        buf.as_mut_ptr().offset(5 as c_int as isize),
+        buf.as_mut_ptr().offset(5),
     );
     fflush(stderr);
     return i_time;
@@ -5021,8 +5018,8 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
     let mut prev_dts: int64_t = 0 as int64_t;
     let mut first_dts: int64_t = 0 as int64_t;
     let mut pts_warning_cnt: c_int = 0 as c_int;
-    let mut largest_pts: int64_t = -(1 as c_int) as int64_t;
-    let mut second_largest_pts: int64_t = -(1 as c_int) as int64_t;
+    let mut largest_pts: int64_t = -1 as int64_t;
+    let mut second_largest_pts: int64_t = -1 as int64_t;
     let mut ticks_per_frame: int64_t = 0;
     let mut duration: c_double = 0.;
     let mut pulldown_pts: c_double = 0 as c_int as c_double;
@@ -5044,7 +5041,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                 X264_LOG_ERROR,
                 b"unsupported framerate for chosen pulldown\n\0" as *const u8 as *const c_char,
             );
-            retval = -(1 as c_int);
+            retval = -1;
             current_block = 846296099062599131;
         } else {
             (*param).i_timebase_den =
@@ -5063,7 +5060,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                     X264_LOG_ERROR,
                     b"x264_encoder_open failed\n\0" as *const u8 as *const c_char,
                 );
-                retval = -(1 as c_int);
+                retval = -1;
             } else {
                 x264_encoder_parameters(h, param);
                 if cli_output.set_param.expect("non-null function pointer")((*opt).hout, param) != 0
@@ -5073,7 +5070,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                         X264_LOG_ERROR,
                         b"can't set outfile param\n\0" as *const u8 as *const c_char,
                     );
-                    retval = -(1 as c_int);
+                    retval = -1;
                 } else {
                     i_start = x264_mdate();
                     ticks_per_frame = (*param).i_timebase_den as int64_t
@@ -5087,7 +5084,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                             b"ticks_per_frame invalid: %ld\n\0" as *const u8 as *const c_char,
                             ticks_per_frame,
                         );
-                        retval = -(1 as c_int);
+                        retval = -1;
                     } else {
                         ticks_per_frame = if ticks_per_frame > 1 as int64_t {
                             ticks_per_frame
@@ -5104,7 +5101,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                     b"x264_encoder_headers failed\n\0" as *const u8
                                         as *const c_char,
                                 );
-                                retval = -(1 as c_int);
+                                retval = -1;
                                 current_block = 846296099062599131;
                             } else {
                                 i_file = cli_output
@@ -5119,7 +5116,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                         b"error writing headers to output file\n\0" as *const u8
                                             as *const c_char,
                                     );
-                                    retval = -(1 as c_int);
+                                    retval = -1;
                                     current_block = 846296099062599131;
                                 } else {
                                     current_block = 10758786907990354186;
@@ -5215,7 +5212,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                             addr_of_mut!(b_ctrl_c) as *mut c_int,
                                             1 as c_int,
                                         );
-                                        retval = -(1 as c_int);
+                                        retval = -1;
                                     } else if i_frame_size != 0 {
                                         i_file += i_frame_size as int64_t;
                                         i_frame_output += 1;
@@ -5258,7 +5255,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                             addr_of_mut!(b_ctrl_c) as *mut c_int,
                                             1 as c_int,
                                         );
-                                        retval = -(1 as c_int);
+                                        retval = -1;
                                     } else if i_frame_size != 0 {
                                         i_file += i_frame_size as int64_t;
                                         i_frame_output += 1;

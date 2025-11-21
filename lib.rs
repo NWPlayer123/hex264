@@ -234,7 +234,7 @@ pub mod stdio_h {
     #[c2rust::src_loc = "53:1"]
     pub type va_list = __gnuc_va_list;
     #[c2rust::src_loc = "105:9"]
-    pub const EOF: c_int = -(1 as c_int);
+    pub const EOF: c_int = -1;
     #[c2rust::src_loc = "110:9"]
     pub const SEEK_SET: c_int = 0 as c_int;
     use ::core::ffi::{c_char, c_int, c_ulong, c_void};
@@ -1107,7 +1107,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "283:9"]
     pub const X264_TYPE_KEYFRAME: c_int = 0x6 as c_int;
     #[c2rust::src_loc = "288:9"]
-    pub const X264_LOG_NONE: c_int = -(1 as c_int);
+    pub const X264_LOG_NONE: c_int = -1;
     #[c2rust::src_loc = "289:9"]
     pub const X264_LOG_ERROR: c_int = 0;
     #[c2rust::src_loc = "290:9"]
@@ -1419,9 +1419,9 @@ pub mod x264_h {
         0 as *const c_char,
     ];
     #[c2rust::src_loc = "296:9"]
-    pub const X264_SYNC_LOOKAHEAD_AUTO: c_int = -(1 as c_int);
+    pub const X264_SYNC_LOOKAHEAD_AUTO: c_int = -1;
     #[c2rust::src_loc = "669:9"]
-    pub const X264_PARAM_BAD_NAME: c_int = -(1 as c_int);
+    pub const X264_PARAM_BAD_NAME: c_int = -1;
     #[c2rust::src_loc = "670:9"]
     pub const X264_PARAM_BAD_VALUE: c_int = -(2 as c_int);
     #[c2rust::src_loc = "671:9"]
@@ -2902,15 +2902,15 @@ pub mod base_h {
         mut b: *mut int16_t,
         mut c: *mut int16_t,
     ) {
-        *dst.offset(0 as c_int as isize) = x264_median(
-            *a.offset(0 as c_int as isize) as c_int,
-            *b.offset(0 as c_int as isize) as c_int,
-            *c.offset(0 as c_int as isize) as c_int,
+        *dst.offset(0) = x264_median(
+            *a.offset(0) as c_int,
+            *b.offset(0) as c_int,
+            *c.offset(0) as c_int,
         ) as int16_t;
-        *dst.offset(1 as c_int as isize) = x264_median(
-            *a.offset(1 as c_int as isize) as c_int,
-            *b.offset(1 as c_int as isize) as c_int,
-            *c.offset(1 as c_int as isize) as c_int,
+        *dst.offset(1) = x264_median(
+            *a.offset(1) as c_int,
+            *b.offset(1) as c_int,
+            *c.offset(1) as c_int,
         ) as int16_t;
     }
     use super::stdint_intn_h::int16_t;
@@ -2943,7 +2943,7 @@ pub mod base_h {
     #[c2rust::src_loc = "136:9"]
     pub const X264_BFRAME_MAX: c_int = 16 as c_int;
     #[c2rust::src_loc = "151:9"]
-    pub const X264_WEIGHTP_FAKE: c_int = -(1 as c_int);
+    pub const X264_WEIGHTP_FAKE: c_int = -1;
     #[c2rust::src_loc = "177:9"]
     pub const LUMA_DC: c_int = 48 as c_int;
     #[c2rust::src_loc = "178:9"]
@@ -2990,10 +2990,8 @@ pub mod base_h {
         mut mvdleft: *mut uint8_t,
         mut mvdtop: *mut uint8_t,
     ) -> uint16_t {
-        let mut amvd0: c_int = *mvdleft.offset(0 as c_int as isize) as c_int
-            + *mvdtop.offset(0 as c_int as isize) as c_int;
-        let mut amvd1: c_int = *mvdleft.offset(1 as c_int as isize) as c_int
-            + *mvdtop.offset(1 as c_int as isize) as c_int;
+        let mut amvd0: c_int = *mvdleft.offset(0) as c_int + *mvdtop.offset(0) as c_int;
+        let mut amvd1: c_int = *mvdleft.offset(1) as c_int + *mvdtop.offset(1) as c_int;
         amvd0 = (amvd0 > 2 as c_int) as c_int + (amvd0 > 32 as c_int) as c_int;
         amvd1 = (amvd1 > 2 as c_int) as c_int + (amvd1 > 32 as c_int) as c_int;
         return (amvd0 + (amvd1 << 8 as c_int)) as uint16_t;
@@ -3051,10 +3049,10 @@ pub mod base_h {
         let mut sum: c_int = 0 as c_int;
         let mut i: c_int = 0 as c_int;
         while (i as intptr_t) < i_mvc - 1 as intptr_t {
-            sum += abs((*mvc.offset(i as isize))[0 as c_int as usize] as c_int
-                - (*mvc.offset((i + 1 as c_int) as isize))[0 as c_int as usize] as c_int)
-                + abs((*mvc.offset(i as isize))[1 as c_int as usize] as c_int
-                    - (*mvc.offset((i + 1 as c_int) as isize))[1 as c_int as usize] as c_int);
+            sum += abs((*mvc.offset(i as isize))[0] as c_int
+                - (*mvc.offset((i + 1 as c_int) as isize))[0] as c_int)
+                + abs((*mvc.offset(i as isize))[1] as c_int
+                    - (*mvc.offset((i + 1 as c_int) as isize))[1] as c_int);
             i += 1;
         }
         return sum;
@@ -5386,21 +5384,19 @@ pub mod common_h {
         let mut cnt: c_int = 0 as c_int;
         let mut i: c_int = 0 as c_int;
         while i < i_mvc {
-            let mut mx: c_int =
-                (*mvc.offset(i as isize))[0 as c_int as usize] as c_int + 2 as c_int >> 2 as c_int;
-            let mut my: c_int =
-                (*mvc.offset(i as isize))[1 as c_int as usize] as c_int + 2 as c_int >> 2 as c_int;
+            let mut mx: c_int = (*mvc.offset(i as isize))[0] as c_int + 2 as c_int >> 2 as c_int;
+            let mut my: c_int = (*mvc.offset(i as isize))[1] as c_int + 2 as c_int >> 2 as c_int;
             let mut mv: uint32_t = pack16to32_mask(mx, my);
             if !(mv == 0 || mv == pmv) {
-                (*dst.offset(cnt as isize))[0 as c_int as usize] = x264_clip3(
+                (*dst.offset(cnt as isize))[0] = x264_clip3(
                     mx,
-                    (*mv_limit.offset(0 as c_int as isize))[0 as c_int as usize] as c_int,
-                    (*mv_limit.offset(1 as c_int as isize))[0 as c_int as usize] as c_int,
+                    (*mv_limit.offset(0))[0] as c_int,
+                    (*mv_limit.offset(1))[0] as c_int,
                 ) as int16_t;
-                (*dst.offset(cnt as isize))[1 as c_int as usize] = x264_clip3(
+                (*dst.offset(cnt as isize))[1] = x264_clip3(
                     my,
-                    (*mv_limit.offset(0 as c_int as isize))[1 as c_int as usize] as c_int,
-                    (*mv_limit.offset(1 as c_int as isize))[1 as c_int as usize] as c_int,
+                    (*mv_limit.offset(0))[1] as c_int,
+                    (*mv_limit.offset(1))[1] as c_int,
                 ) as int16_t;
                 cnt += 1;
             }
@@ -5419,28 +5415,22 @@ pub mod common_h {
     ) -> c_int {
         let mut cnt: c_int = 0 as c_int;
         let mut qpel_limit: [c_int; 4] = [
-            ((*mv_limit.offset(0 as c_int as isize))[0 as c_int as usize] as c_int) << 2 as c_int,
-            ((*mv_limit.offset(0 as c_int as isize))[1 as c_int as usize] as c_int) << 2 as c_int,
-            ((*mv_limit.offset(1 as c_int as isize))[0 as c_int as usize] as c_int) << 2 as c_int,
-            ((*mv_limit.offset(1 as c_int as isize))[1 as c_int as usize] as c_int) << 2 as c_int,
+            ((*mv_limit.offset(0))[0] as c_int) << 2 as c_int,
+            ((*mv_limit.offset(0))[1] as c_int) << 2 as c_int,
+            ((*mv_limit.offset(1))[0] as c_int) << 2 as c_int,
+            ((*mv_limit.offset(1))[1] as c_int) << 2 as c_int,
         ];
         let mut i: c_int = 0 as c_int;
         while i < i_mvc {
             let mut mv: uint32_t =
                 (*((*mvc.offset(i as isize)).as_mut_ptr() as *mut x264_union32_t)).i;
-            let mut mx: c_int = (*mvc.offset(i as isize))[0 as c_int as usize] as c_int;
-            let mut my: c_int = (*mvc.offset(i as isize))[1 as c_int as usize] as c_int;
+            let mut mx: c_int = (*mvc.offset(i as isize))[0] as c_int;
+            let mut my: c_int = (*mvc.offset(i as isize))[1] as c_int;
             if !(mv == 0 || mv == pmv) {
-                (*dst.offset(cnt as isize))[0 as c_int as usize] = x264_clip3(
-                    mx,
-                    qpel_limit[0 as c_int as usize],
-                    qpel_limit[2 as c_int as usize],
-                ) as int16_t;
-                (*dst.offset(cnt as isize))[1 as c_int as usize] = x264_clip3(
-                    my,
-                    qpel_limit[1 as c_int as usize],
-                    qpel_limit[3 as c_int as usize],
-                ) as int16_t;
+                (*dst.offset(cnt as isize))[0] =
+                    x264_clip3(mx, qpel_limit[0], qpel_limit[2]) as int16_t;
+                (*dst.offset(cnt as isize))[1] =
+                    x264_clip3(my, qpel_limit[1], qpel_limit[3]) as int16_t;
                 cnt += 1;
             }
             i += 1;
@@ -6422,7 +6412,7 @@ pub mod bitstream_h {
                 (*((*s).p as *mut x264_union32_t)).i =
                     endian_fix((*s).cur_bits << (*s).i_left) as uint32_t;
                 (*s).i_left += 32 as c_int;
-                (*s).p = (*s).p.offset(4 as c_int as isize);
+                (*s).p = (*s).p.offset(4);
             }
         } else if i_count < (*s).i_left {
             (*s).cur_bits = (*s).cur_bits << i_count | i_bits as uintptr_t;
@@ -6431,7 +6421,7 @@ pub mod bitstream_h {
             i_count -= (*s).i_left;
             (*s).cur_bits = (*s).cur_bits << (*s).i_left | (i_bits >> i_count) as uintptr_t;
             (*((*s).p as *mut x264_union32_t)).i = endian_fix((*s).cur_bits) as uint32_t;
-            (*s).p = (*s).p.offset(4 as c_int as isize);
+            (*s).p = (*s).p.offset(4);
             (*s).cur_bits = i_bits as uintptr_t;
             (*s).i_left = 32 as c_int - i_count;
         };
@@ -6448,7 +6438,7 @@ pub mod bitstream_h {
                 .wrapping_sub(32 as uint64_t)
         {
             (*((*s).p as *mut x264_union32_t)).i = endian_fix32((*s).cur_bits as uint32_t);
-            (*s).p = (*s).p.offset(4 as c_int as isize);
+            (*s).p = (*s).p.offset(4);
             (*s).i_left = WORD_SIZE.wrapping_mul(8 as uint64_t) as c_int;
         }
     }
@@ -7192,7 +7182,7 @@ pub mod predict_h {
     ];
     #[c2rust::src_loc = "84:21"]
     pub static mut x264_mb_pred_mode4x4_fix: [int8_t; 13] = [
-        -(1 as c_int) as int8_t,
+        -1 as int8_t,
         I_PRED_4x4_V as c_int as int8_t,
         I_PRED_4x4_H as c_int as int8_t,
         I_PRED_4x4_DC as c_int as int8_t,
@@ -8312,7 +8302,7 @@ pub mod macroblock_h {
         (-(4 as c_int) + QP_BD_OFFSET) as uint8_t,
         (-(3 as c_int) + QP_BD_OFFSET) as uint8_t,
         (-(2 as c_int) + QP_BD_OFFSET) as uint8_t,
-        (-(1 as c_int) + QP_BD_OFFSET) as uint8_t,
+        (-1 + QP_BD_OFFSET) as uint8_t,
         (0 as c_int + QP_BD_OFFSET) as uint8_t,
         (1 as c_int + QP_BD_OFFSET) as uint8_t,
         (2 as c_int + QP_BD_OFFSET) as uint8_t,
@@ -8620,7 +8610,7 @@ pub mod rdo_c {
         if res != 0 {
             return res.wrapping_sub(1 as uint64_t);
         } else {
-            let mut fenc: *mut pixel = (*h).mb.pic.p_fenc[0 as c_int as usize]
+            let mut fenc: *mut pixel = (*h).mb.pic.p_fenc[0]
                 .offset(x as isize)
                 .offset((y * FENC_STRIDE) as isize);
             res = (*h).pixf.hadamard_ac[size as usize].expect("non-null function pointer")(
@@ -8662,7 +8652,7 @@ pub mod rdo_c {
         if res != 0 {
             return res - 1 as c_int;
         } else {
-            let mut fenc: *mut pixel = (*h).mb.pic.p_fenc[0 as c_int as usize]
+            let mut fenc: *mut pixel = (*h).mb.pic.p_fenc[0]
                 .offset(x as isize)
                 .offset((y * FENC_STRIDE) as isize);
             let mut dc: c_int = (*h).pixf.sad[size as usize].expect("non-null function pointer")(
@@ -9290,12 +9280,11 @@ pub mod rdo_c {
                     14 as c_int
                 };
                 f8_bits = f8_bits.wrapping_add(x264_cabac_size_decision_noup2(
-                    cabac_state.offset(1 as c_int as isize),
+                    cabac_state.offset(1),
                     (prefix > 0 as c_int) as c_int as c_long,
                 ) as c_uint);
                 f8_bits = f8_bits.wrapping_add(
-                    x264_10_cabac_size_unary[prefix as usize]
-                        [*cabac_state.offset(5 as c_int as isize) as usize]
+                    x264_10_cabac_size_unary[prefix as usize][*cabac_state.offset(5) as usize]
                         as c_uint,
                 );
                 if abs_level >= 15 as c_int {
@@ -9429,11 +9418,8 @@ pub mod rdo_c {
         mut level_tree: *mut trellis_level_t,
         mut levels_used: c_int,
     ) -> c_int {
-        (*nodes_cur.offset(0 as c_int as isize)).score = (*nodes_prev.offset(0 as c_int as isize))
-            .score
-            .wrapping_add(ssd0);
-        (*nodes_cur.offset(0 as c_int as isize)).level_idx =
-            (*nodes_prev.offset(0 as c_int as isize)).level_idx;
+        (*nodes_cur.offset(0)).score = (*nodes_prev.offset(0)).score.wrapping_add(ssd0);
+        (*nodes_cur.offset(0)).level_idx = (*nodes_prev.offset(0)).level_idx;
         let mut j: c_int = 1 as c_int;
         while j < 4 as c_int && (*nodes_prev.offset(j as isize)).score as int64_t >= 0 as int64_t {
             (*nodes_cur.offset(j as isize)).score = (*nodes_prev.offset(j as isize)).score;
@@ -9529,9 +9515,7 @@ pub mod rdo_c {
         let mut abs_level: c_int = 1 as c_int;
         let mut prefix: c_int = 1 as c_int;
         let mut suffix_cost: c_int = 0 as c_int;
-        if 0 as c_int == 0
-            || (*nodes_prev.offset(0 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 0 as c_int == 0 || (*nodes_prev.offset(0)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 0 as c_int,
                 1 as c_int,
@@ -9553,9 +9537,7 @@ pub mod rdo_c {
         } else if 0 as c_int == 0 {
             return levels_used;
         }
-        if 1 as c_int == 0
-            || (*nodes_prev.offset(1 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 1 as c_int == 0 || (*nodes_prev.offset(1)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 1 as c_int,
                 1 as c_int,
@@ -9577,9 +9559,7 @@ pub mod rdo_c {
         } else if 0 as c_int == 0 {
             return levels_used;
         }
-        if 2 as c_int == 0
-            || (*nodes_prev.offset(2 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 2 as c_int == 0 || (*nodes_prev.offset(2)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 2 as c_int,
                 1 as c_int,
@@ -9601,9 +9581,7 @@ pub mod rdo_c {
         } else if 0 as c_int == 0 {
             return levels_used;
         }
-        if 3 as c_int == 0
-            || (*nodes_prev.offset(3 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 3 as c_int == 0 || (*nodes_prev.offset(3)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 3 as c_int,
                 1 as c_int,
@@ -9643,9 +9621,7 @@ pub mod rdo_c {
         let mut abs_level: c_int = 1 as c_int;
         let mut prefix: c_int = 1 as c_int;
         let mut suffix_cost: c_int = 0 as c_int;
-        if 1 as c_int == 0
-            || (*nodes_prev.offset(1 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 1 as c_int == 0 || (*nodes_prev.offset(1)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 1 as c_int,
                 1 as c_int,
@@ -9667,9 +9643,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 2 as c_int == 0
-            || (*nodes_prev.offset(2 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 2 as c_int == 0 || (*nodes_prev.offset(2)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 2 as c_int,
                 1 as c_int,
@@ -9691,9 +9665,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 3 as c_int == 0
-            || (*nodes_prev.offset(3 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 3 as c_int == 0 || (*nodes_prev.offset(3)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 3 as c_int,
                 1 as c_int,
@@ -9715,9 +9687,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 4 as c_int == 0
-            || (*nodes_prev.offset(4 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 4 as c_int == 0 || (*nodes_prev.offset(4)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 4 as c_int,
                 1 as c_int,
@@ -9739,9 +9709,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 5 as c_int == 0
-            || (*nodes_prev.offset(5 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 5 as c_int == 0 || (*nodes_prev.offset(5)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 5 as c_int,
                 1 as c_int,
@@ -9763,9 +9731,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 6 as c_int == 0
-            || (*nodes_prev.offset(6 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 6 as c_int == 0 || (*nodes_prev.offset(6)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 6 as c_int,
                 1 as c_int,
@@ -9787,9 +9753,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 7 as c_int == 0
-            || (*nodes_prev.offset(7 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 7 as c_int == 0 || (*nodes_prev.offset(7)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 7 as c_int,
                 1 as c_int,
@@ -9838,9 +9802,7 @@ pub mod rdo_c {
         } else {
             0 as c_int
         };
-        if 0 as c_int == 0
-            || (*nodes_prev.offset(0 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 0 as c_int == 0 || (*nodes_prev.offset(0)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 0 as c_int,
                 2 as c_int,
@@ -9862,9 +9824,7 @@ pub mod rdo_c {
         } else if 0 as c_int == 0 {
             return levels_used;
         }
-        if 1 as c_int == 0
-            || (*nodes_prev.offset(1 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 1 as c_int == 0 || (*nodes_prev.offset(1)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 1 as c_int,
                 2 as c_int,
@@ -9886,9 +9846,7 @@ pub mod rdo_c {
         } else if 0 as c_int == 0 {
             return levels_used;
         }
-        if 2 as c_int == 0
-            || (*nodes_prev.offset(2 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 2 as c_int == 0 || (*nodes_prev.offset(2)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 2 as c_int,
                 2 as c_int,
@@ -9910,9 +9868,7 @@ pub mod rdo_c {
         } else if 0 as c_int == 0 {
             return levels_used;
         }
-        if 3 as c_int == 0
-            || (*nodes_prev.offset(3 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 3 as c_int == 0 || (*nodes_prev.offset(3)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 3 as c_int,
                 2 as c_int,
@@ -9961,9 +9917,7 @@ pub mod rdo_c {
         } else {
             0 as c_int
         };
-        if 1 as c_int == 0
-            || (*nodes_prev.offset(1 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 1 as c_int == 0 || (*nodes_prev.offset(1)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 1 as c_int,
                 2 as c_int,
@@ -9985,9 +9939,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 2 as c_int == 0
-            || (*nodes_prev.offset(2 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 2 as c_int == 0 || (*nodes_prev.offset(2)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 2 as c_int,
                 2 as c_int,
@@ -10009,9 +9961,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 3 as c_int == 0
-            || (*nodes_prev.offset(3 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 3 as c_int == 0 || (*nodes_prev.offset(3)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 3 as c_int,
                 2 as c_int,
@@ -10033,9 +9983,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 4 as c_int == 0
-            || (*nodes_prev.offset(4 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 4 as c_int == 0 || (*nodes_prev.offset(4)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 4 as c_int,
                 2 as c_int,
@@ -10057,9 +10005,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 5 as c_int == 0
-            || (*nodes_prev.offset(5 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 5 as c_int == 0 || (*nodes_prev.offset(5)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 5 as c_int,
                 2 as c_int,
@@ -10081,9 +10027,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 6 as c_int == 0
-            || (*nodes_prev.offset(6 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 6 as c_int == 0 || (*nodes_prev.offset(6)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 6 as c_int,
                 2 as c_int,
@@ -10105,9 +10049,7 @@ pub mod rdo_c {
         } else if 1 as c_int == 0 {
             return levels_used;
         }
-        if 7 as c_int == 0
-            || (*nodes_prev.offset(7 as c_int as isize)).score as int64_t >= 0 as int64_t
-        {
+        if 7 as c_int == 0 || (*nodes_prev.offset(7)).score as int64_t >= 0 as int64_t {
             levels_used = trellis_coef(
                 7 as c_int,
                 2 as c_int,
@@ -10190,8 +10132,8 @@ pub mod rdo_c {
                 );
                 if (*h).quantf.quant_4x4_dc.expect("non-null function pointer")(
                     dct as *mut dctcoef,
-                    (*quant_mf.offset(0 as c_int as isize) >> 1 as c_int) as c_int,
-                    (*quant_bias.offset(0 as c_int as isize) << 1 as c_int) as c_int,
+                    (*quant_mf.offset(0) >> 1 as c_int) as c_int,
+                    (*quant_bias.offset(0) << 1 as c_int) as c_int,
                 ) == 0
                 {
                     return 0 as c_int;
@@ -10207,15 +10149,15 @@ pub mod rdo_c {
                     (::core::mem::size_of::<dctcoef>() as size_t).wrapping_mul(num_coefs as size_t),
                 );
                 let mut nz: c_int = (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
-                    &mut *dct.offset(0 as c_int as isize),
-                    (*quant_mf.offset(0 as c_int as isize) >> 1 as c_int) as c_int,
-                    (*quant_bias.offset(0 as c_int as isize) << 1 as c_int) as c_int,
+                    &mut *dct.offset(0),
+                    (*quant_mf.offset(0) >> 1 as c_int) as c_int,
+                    (*quant_bias.offset(0) << 1 as c_int) as c_int,
                 );
                 if num_coefs == 8 as c_int {
                     nz |= (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
-                        &mut *dct.offset(4 as c_int as isize),
-                        (*quant_mf.offset(0 as c_int as isize) >> 1 as c_int) as c_int,
-                        (*quant_bias.offset(0 as c_int as isize) << 1 as c_int) as c_int,
+                        &mut *dct.offset(4),
+                        (*quant_mf.offset(0) >> 1 as c_int) as c_int,
+                        (*quant_bias.offset(0) << 1 as c_int) as c_int,
                     );
                 }
                 if nz == 0 {
@@ -10274,23 +10216,19 @@ pub mod rdo_c {
                 .offset(ctx_block_cat as isize) as isize,
         ) as *mut uint8_t;
         if last_nnz == 0 as c_int && dc == 0 {
-            let mut cost_sig: c_int = x264_cabac_size_decision_noup2(
-                &mut *cabac_state_sig.offset(0 as c_int as isize),
-                1 as c_long,
-            ) + x264_cabac_size_decision_noup2(
-                &mut *cabac_state_last.offset(0 as c_int as isize),
-                1 as c_long,
-            );
-            *dct.offset(0 as c_int as isize) = trellis_dc_shortcut(
-                orig_coefs[0 as c_int as usize],
-                quant_coefs[0 as c_int as usize],
-                *unquant_mf.offset(0 as c_int as isize),
-                *coef_weight2.offset(0 as c_int as isize) as c_int,
+            let mut cost_sig: c_int =
+                x264_cabac_size_decision_noup2(&mut *cabac_state_sig.offset(0), 1 as c_long)
+                    + x264_cabac_size_decision_noup2(&mut *cabac_state_last.offset(0), 1 as c_long);
+            *dct.offset(0) = trellis_dc_shortcut(
+                orig_coefs[0],
+                quant_coefs[0],
+                *unquant_mf.offset(0),
+                *coef_weight2.offset(0) as c_int,
                 lambda2,
                 cabac_state,
                 cost_sig,
             ) as dctcoef;
-            return (*dct.offset(0 as c_int as isize) != 0) as c_int;
+            return (*dct.offset(0) != 0) as c_int;
         }
         let mut level_tree: [trellis_level_t; 1024] = [trellis_level_t {
             next: 0,
@@ -10349,30 +10287,28 @@ pub mod rdo_c {
                 cabac_state: [0; 4],
             }; 8],
         ];
-        let mut nodes_cur: *mut trellis_node_t =
-            (*nodes.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr();
-        let mut nodes_prev: *mut trellis_node_t =
-            (*nodes.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr();
+        let mut nodes_cur: *mut trellis_node_t = (*nodes.as_mut_ptr().offset(0)).as_mut_ptr();
+        let mut nodes_prev: *mut trellis_node_t = (*nodes.as_mut_ptr().offset(1)).as_mut_ptr();
         let mut bnode: *mut trellis_node_t = 0 as *mut trellis_node_t;
         let mut j: c_int = 1 as c_int;
         while j < 8 as c_int {
             (*nodes_cur.offset(j as isize)).score = TRELLIS_SCORE_MAX as uint64_t;
             j += 1;
         }
-        (*nodes_cur.offset(0 as c_int as isize)).score = TRELLIS_SCORE_BIAS as uint64_t;
-        (*nodes_cur.offset(0 as c_int as isize)).level_idx = 0 as c_int;
-        level_tree[0 as c_int as usize].abs_level = 0 as uint16_t;
-        level_tree[0 as c_int as usize].next = 0 as uint16_t;
+        (*nodes_cur.offset(0)).score = TRELLIS_SCORE_BIAS as uint64_t;
+        (*nodes_cur.offset(0)).level_idx = 0 as c_int;
+        level_tree[0].abs_level = 0 as uint16_t;
+        level_tree[0].next = 0 as uint16_t;
         let mut level_state: [uint8_t; 16] = [0; 16];
         memcpy(
             level_state.as_mut_ptr() as *mut c_void,
             cabac_state as *const c_void,
             10 as size_t,
         );
-        level_state[12 as c_int as usize] = *cabac_state.offset(0 as c_int as isize);
-        level_state[13 as c_int as usize] = *cabac_state.offset(4 as c_int as isize);
-        level_state[14 as c_int as usize] = *cabac_state.offset(8 as c_int as isize);
-        level_state[15 as c_int as usize] = *cabac_state.offset(9 as c_int as isize);
+        level_state[12] = *cabac_state.offset(0);
+        level_state[13] = *cabac_state.offset(4);
+        level_state[14] = *cabac_state.offset(8);
+        level_state[15] = *cabac_state.offset(9 as c_int as isize);
         idx &= if num_coefs == 64 as c_int {
             3 as c_int
         } else {
@@ -10400,7 +10336,7 @@ pub mod rdo_c {
                     ) as uint64_t)
                         .wrapping_mul(lambda2 as uint64_t)
                         >> CABAC_SIZE_BITS - LAMBDA_BITS;
-                    let ref mut fresh0 = (*nodes_cur.offset(0 as c_int as isize)).score;
+                    let ref mut fresh0 = (*nodes_cur.offset(0)).score;
                     *fresh0 = (*fresh0).wrapping_sub(cost_sig0);
                 }
                 let mut j_0: c_int = 1 as c_int;
@@ -10463,7 +10399,7 @@ pub mod rdo_c {
                     } else {
                         i_0
                     };
-                    cost_siglast[0 as c_int as usize] = x264_cabac_size_decision_noup2(
+                    cost_siglast[0] = x264_cabac_size_decision_noup2(
                         &mut *cabac_state_sig.offset(sigindex_0 as isize),
                         0 as c_long,
                     );
@@ -10471,20 +10407,20 @@ pub mod rdo_c {
                         &mut *cabac_state_sig.offset(sigindex_0 as isize),
                         1 as c_long,
                     );
-                    cost_siglast[1 as c_int as usize] = x264_cabac_size_decision_noup2(
+                    cost_siglast[1] = x264_cabac_size_decision_noup2(
                         &mut *cabac_state_last.offset(lastindex as isize),
                         0 as c_long,
                     ) + cost_sig1;
                     if 0 as c_int == 0 {
-                        cost_siglast[2 as c_int as usize] = x264_cabac_size_decision_noup2(
+                        cost_siglast[2] = x264_cabac_size_decision_noup2(
                             &mut *cabac_state_last.offset(lastindex as isize),
                             1 as c_long,
                         ) + cost_sig1;
                     }
                 } else {
-                    cost_siglast[2 as c_int as usize] = 0 as c_int;
-                    cost_siglast[1 as c_int as usize] = cost_siglast[2 as c_int as usize];
-                    cost_siglast[0 as c_int as usize] = cost_siglast[1 as c_int as usize];
+                    cost_siglast[2] = 0 as c_int;
+                    cost_siglast[1] = cost_siglast[2];
+                    cost_siglast[0] = cost_siglast[1];
                 }
                 let mut ssd0: [uint64_t; 2] = [0; 2];
                 let mut ssd1: [uint64_t; 2] = [0; 2];
@@ -10492,7 +10428,7 @@ pub mod rdo_c {
                 while k < 2 as c_int {
                     let mut abs_level: c_int = q - 1 as c_int + k;
                     let mut unquant_abs_level: c_int = (if dc != 0 {
-                        *unquant_mf.offset(0 as c_int as isize) << 1 as c_int
+                        *unquant_mf.offset(0) << 1 as c_int
                     } else {
                         *unquant_mf.offset(*zigzag.offset(i_0 as isize) as isize)
                     }) * abs_level
@@ -10546,21 +10482,20 @@ pub mod rdo_c {
                 }
                 match q {
                     1 => {
-                        ssd1[0 as c_int as usize] = ssd1[0 as c_int as usize].wrapping_add(
-                            (cost_siglast[0 as c_int as usize] as uint64_t)
-                                .wrapping_mul(lambda2 as uint64_t)
+                        ssd1[0] = ssd1[0].wrapping_add(
+                            (cost_siglast[0] as uint64_t).wrapping_mul(lambda2 as uint64_t)
                                 >> CABAC_SIZE_BITS - LAMBDA_BITS,
                         );
                         levels_used = trellis_coef0_0(
-                            ssd0[0 as c_int as usize].wrapping_sub(ssd1[0 as c_int as usize]),
+                            ssd0[0].wrapping_sub(ssd1[0]),
                             nodes_cur,
                             nodes_prev,
                             level_tree.as_mut_ptr(),
                             levels_used,
                         );
                         levels_used = trellis_coef1_0(
-                            ssd0[1 as c_int as usize].wrapping_sub(ssd1[0 as c_int as usize]),
-                            ssd1[1 as c_int as usize].wrapping_sub(ssd1[0 as c_int as usize]),
+                            ssd0[1].wrapping_sub(ssd1[0]),
+                            ssd1[1].wrapping_sub(ssd1[0]),
                             cost_siglast.as_mut_ptr(),
                             nodes_cur,
                             nodes_prev,
@@ -10572,8 +10507,8 @@ pub mod rdo_c {
                     }
                     2 => {
                         levels_used = trellis_coef1_0(
-                            ssd0[0 as c_int as usize],
-                            ssd1[0 as c_int as usize],
+                            ssd0[0],
+                            ssd1[0],
                             cost_siglast.as_mut_ptr(),
                             nodes_cur,
                             nodes_prev,
@@ -10584,8 +10519,8 @@ pub mod rdo_c {
                         );
                         levels_used = trellis_coefn_0(
                             q,
-                            ssd0[1 as c_int as usize],
-                            ssd1[1 as c_int as usize],
+                            ssd0[1],
+                            ssd1[1],
                             cost_siglast.as_mut_ptr(),
                             nodes_cur,
                             nodes_prev,
@@ -10601,8 +10536,8 @@ pub mod rdo_c {
                     _ => {
                         levels_used = trellis_coefn_0(
                             q - 1 as c_int,
-                            ssd0[0 as c_int as usize],
-                            ssd1[0 as c_int as usize],
+                            ssd0[0],
+                            ssd1[0],
                             cost_siglast.as_mut_ptr(),
                             nodes_cur,
                             nodes_prev,
@@ -10614,8 +10549,8 @@ pub mod rdo_c {
                         );
                         levels_used = trellis_coefn_0(
                             q,
-                            ssd0[1 as c_int as usize],
-                            ssd1[1 as c_int as usize],
+                            ssd0[1],
+                            ssd1[1],
                             cost_siglast.as_mut_ptr(),
                             nodes_cur,
                             nodes_prev,
@@ -10656,7 +10591,7 @@ pub mod rdo_c {
                                 as uint64_t)
                                 .wrapping_mul(lambda2 as uint64_t)
                                 >> CABAC_SIZE_BITS - LAMBDA_BITS;
-                            let ref mut fresh1 = (*nodes_cur.offset(0 as c_int as isize)).score;
+                            let ref mut fresh1 = (*nodes_cur.offset(0)).score;
                             *fresh1 = (*fresh1).wrapping_sub(cost_sig0_0);
                         }
                         let mut j_3: c_int = 1 as c_int;
@@ -10721,7 +10656,7 @@ pub mod rdo_c {
                             } else {
                                 i_0
                             };
-                            cost_siglast_0[0 as c_int as usize] = x264_cabac_size_decision_noup2(
+                            cost_siglast_0[0] = x264_cabac_size_decision_noup2(
                                 &mut *cabac_state_sig.offset(sigindex_2 as isize),
                                 0 as c_long,
                             );
@@ -10729,23 +10664,20 @@ pub mod rdo_c {
                                 &mut *cabac_state_sig.offset(sigindex_2 as isize),
                                 1 as c_long,
                             );
-                            cost_siglast_0[1 as c_int as usize] = x264_cabac_size_decision_noup2(
+                            cost_siglast_0[1] = x264_cabac_size_decision_noup2(
                                 &mut *cabac_state_last.offset(lastindex_0 as isize),
                                 0 as c_long,
                             ) + cost_sig1_0;
                             if 1 as c_int == 0 {
-                                cost_siglast_0[2 as c_int as usize] = x264_cabac_size_decision_noup2(
+                                cost_siglast_0[2] = x264_cabac_size_decision_noup2(
                                     &mut *cabac_state_last.offset(lastindex_0 as isize),
                                     1 as c_long,
-                                )
-                                    + cost_sig1_0;
+                                ) + cost_sig1_0;
                             }
                         } else {
-                            cost_siglast_0[2 as c_int as usize] = 0 as c_int;
-                            cost_siglast_0[1 as c_int as usize] =
-                                cost_siglast_0[2 as c_int as usize];
-                            cost_siglast_0[0 as c_int as usize] =
-                                cost_siglast_0[1 as c_int as usize];
+                            cost_siglast_0[2] = 0 as c_int;
+                            cost_siglast_0[1] = cost_siglast_0[2];
+                            cost_siglast_0[0] = cost_siglast_0[1];
                         }
                         let mut ssd0_0: [uint64_t; 2] = [0; 2];
                         let mut ssd1_0: [uint64_t; 2] = [0; 2];
@@ -10753,7 +10685,7 @@ pub mod rdo_c {
                         while k_0 < 2 as c_int {
                             let mut abs_level_0: c_int = q_0 - 1 as c_int + k_0;
                             let mut unquant_abs_level_0: c_int = (if dc != 0 {
-                                *unquant_mf.offset(0 as c_int as isize) << 1 as c_int
+                                *unquant_mf.offset(0) << 1 as c_int
                             } else {
                                 *unquant_mf.offset(*zigzag.offset(i_0 as isize) as isize)
                             }) * abs_level_0
@@ -10809,25 +10741,21 @@ pub mod rdo_c {
                         }
                         match q_0 {
                             1 => {
-                                ssd1_0[0 as c_int as usize] = ssd1_0[0 as c_int as usize]
-                                    .wrapping_add(
-                                        (cost_siglast_0[0 as c_int as usize] as uint64_t)
-                                            .wrapping_mul(lambda2 as uint64_t)
-                                            >> CABAC_SIZE_BITS - LAMBDA_BITS,
-                                    );
+                                ssd1_0[0] = ssd1_0[0].wrapping_add(
+                                    (cost_siglast_0[0] as uint64_t)
+                                        .wrapping_mul(lambda2 as uint64_t)
+                                        >> CABAC_SIZE_BITS - LAMBDA_BITS,
+                                );
                                 levels_used = trellis_coef0_1(
-                                    ssd0_0[0 as c_int as usize]
-                                        .wrapping_sub(ssd1_0[0 as c_int as usize]),
+                                    ssd0_0[0].wrapping_sub(ssd1_0[0]),
                                     nodes_cur,
                                     nodes_prev,
                                     level_tree.as_mut_ptr(),
                                     levels_used,
                                 );
                                 levels_used = trellis_coef1_1(
-                                    ssd0_0[1 as c_int as usize]
-                                        .wrapping_sub(ssd1_0[0 as c_int as usize]),
-                                    ssd1_0[1 as c_int as usize]
-                                        .wrapping_sub(ssd1_0[0 as c_int as usize]),
+                                    ssd0_0[1].wrapping_sub(ssd1_0[0]),
+                                    ssd1_0[1].wrapping_sub(ssd1_0[0]),
                                     cost_siglast_0.as_mut_ptr(),
                                     nodes_cur,
                                     nodes_prev,
@@ -10839,8 +10767,8 @@ pub mod rdo_c {
                             }
                             2 => {
                                 levels_used = trellis_coef1_1(
-                                    ssd0_0[0 as c_int as usize],
-                                    ssd1_0[0 as c_int as usize],
+                                    ssd0_0[0],
+                                    ssd1_0[0],
                                     cost_siglast_0.as_mut_ptr(),
                                     nodes_cur,
                                     nodes_prev,
@@ -10851,8 +10779,8 @@ pub mod rdo_c {
                                 );
                                 levels_used = trellis_coefn_1(
                                     q_0,
-                                    ssd0_0[1 as c_int as usize],
-                                    ssd1_0[1 as c_int as usize],
+                                    ssd0_0[1],
+                                    ssd1_0[1],
                                     cost_siglast_0.as_mut_ptr(),
                                     nodes_cur,
                                     nodes_prev,
@@ -10866,8 +10794,8 @@ pub mod rdo_c {
                             _ => {
                                 levels_used = trellis_coefn_1(
                                     q_0 - 1 as c_int,
-                                    ssd0_0[0 as c_int as usize],
-                                    ssd1_0[0 as c_int as usize],
+                                    ssd0_0[0],
+                                    ssd1_0[0],
                                     cost_siglast_0.as_mut_ptr(),
                                     nodes_cur,
                                     nodes_prev,
@@ -10879,8 +10807,8 @@ pub mod rdo_c {
                                 );
                                 levels_used = trellis_coefn_1(
                                     q_0,
-                                    ssd0_0[1 as c_int as usize],
-                                    ssd1_0[1 as c_int as usize],
+                                    ssd0_0[1],
+                                    ssd1_0[1],
                                     cost_siglast_0.as_mut_ptr(),
                                     nodes_cur,
                                     nodes_prev,
@@ -10894,7 +10822,7 @@ pub mod rdo_c {
                         }
                     }
                 }
-                bnode = &mut *nodes_cur.offset(1 as c_int as isize) as *mut trellis_node_t;
+                bnode = &mut *nodes_cur.offset(1) as *mut trellis_node_t;
                 let mut j_5: c_int = 1 as c_int + 1 as c_int;
                 while j_5
                     < (if 1 as c_int != 0 {
@@ -10910,7 +10838,7 @@ pub mod rdo_c {
                 }
             }
             _ => {
-                bnode = &mut *nodes_cur.offset(0 as c_int as isize) as *mut trellis_node_t;
+                bnode = &mut *nodes_cur.offset(0) as *mut trellis_node_t;
                 let mut j_2: c_int = 0 as c_int + 1 as c_int;
                 while j_2
                     < (if 0 as c_int != 0 {
@@ -10924,7 +10852,7 @@ pub mod rdo_c {
                     }
                     j_2 += 1;
                 }
-                if bnode == &mut *nodes_cur.offset(0 as c_int as isize) as *mut trellis_node_t {
+                if bnode == &mut *nodes_cur.offset(0) as *mut trellis_node_t {
                     if num_coefs == 16 as c_int && dc == 0 {
                         memset(
                             dct as *mut c_void,
@@ -11021,7 +10949,7 @@ pub mod rdo_c {
         while i >= start {
             if (abs(*dct.offset(*zigzag.offset(i as isize) as isize)) as udctcoef).wrapping_mul(
                 (if dc != 0 {
-                    *quant_mf.offset(0 as c_int as isize) >> 1 as c_int
+                    *quant_mf.offset(0) >> 1 as c_int
                 } else {
                     *quant_mf.offset(*zigzag.offset(i as isize) as isize)
                 }),
@@ -11040,42 +10968,37 @@ pub mod rdo_c {
             while i <= last_nnz {
                 let mut coef: c_int = *dct.offset(*zigzag.offset(j as isize) as isize);
                 let mut abs_coef: c_int = abs(coef);
-                let mut sign: c_int = if coef < 0 as c_int {
-                    -(1 as c_int)
-                } else {
-                    1 as c_int
-                };
+                let mut sign: c_int = if coef < 0 as c_int { -1 } else { 1 as c_int };
                 let mut nearest_quant: c_int =
                     ((f as udctcoef).wrapping_add((abs_coef as udctcoef).wrapping_mul(
                         (if dc != 0 {
-                            *quant_mf.offset(0 as c_int as isize) >> 1 as c_int
+                            *quant_mf.offset(0) >> 1 as c_int
                         } else {
                             *quant_mf.offset(*zigzag.offset(j as isize) as isize)
                         }),
                     )) >> 16 as c_int) as c_int;
-                quant_coefs[0 as c_int as usize][i as usize] = (sign * nearest_quant) as dctcoef;
-                quant_coefs[1 as c_int as usize][i as usize] =
-                    quant_coefs[0 as c_int as usize][i as usize];
-                coefs[i as usize] = quant_coefs[1 as c_int as usize][i as usize];
+                quant_coefs[0][i as usize] = (sign * nearest_quant) as dctcoef;
+                quant_coefs[1][i as usize] = quant_coefs[0][i as usize];
+                coefs[i as usize] = quant_coefs[1][i as usize];
                 if nearest_quant != 0 {
                     let mut deadzone_quant: c_int = (((f / 2 as c_int) as udctcoef).wrapping_add(
                         (abs_coef as udctcoef).wrapping_mul(
                             (if dc != 0 {
-                                *quant_mf.offset(0 as c_int as isize) >> 1 as c_int
+                                *quant_mf.offset(0) >> 1 as c_int
                             } else {
                                 *quant_mf.offset(*zigzag.offset(j as isize) as isize)
                             }),
                         ),
                     ) >> 16 as c_int) as c_int;
                     let mut unquant1: c_int = (if dc != 0 {
-                        *unquant_mf.offset(0 as c_int as isize) << 1 as c_int
+                        *unquant_mf.offset(0) << 1 as c_int
                     } else {
                         *unquant_mf.offset(*zigzag.offset(j as isize) as isize)
                     }) * (nearest_quant - 0 as c_int)
                         + 128 as c_int
                         >> 8 as c_int;
                     let mut unquant0: c_int = (if dc != 0 {
-                        *unquant_mf.offset(0 as c_int as isize) << 1 as c_int
+                        *unquant_mf.offset(0) << 1 as c_int
                     } else {
                         *unquant_mf.offset(*zigzag.offset(j as isize) as isize)
                     }) * (nearest_quant - 1 as c_int)
@@ -11106,10 +11029,9 @@ pub mod rdo_c {
                         delta_distortion[i as usize] +=
                             ((psy_value0 - psy_value1) * psy_weight) as int64_t;
                     }
-                    quant_coefs[0 as c_int as usize][i as usize] =
-                        (sign * (nearest_quant - 1 as c_int)) as dctcoef;
+                    quant_coefs[0][i as usize] = (sign * (nearest_quant - 1 as c_int)) as dctcoef;
                     if deadzone_quant != nearest_quant {
-                        coefs[i as usize] = quant_coefs[0 as c_int as usize][i as usize];
+                        coefs[i as usize] = quant_coefs[0][i as usize];
                     } else {
                         round_mask |= (1 as c_int) << i;
                     }
@@ -11135,7 +11057,7 @@ pub mod rdo_c {
             loop {
                 let mut iter_score: int64_t = score;
                 let mut iter_distortion_delta: int64_t = 0 as int64_t;
-                let mut iter_coef: c_int = -(1 as c_int);
+                let mut iter_coef: c_int = -1;
                 let mut iter_mask: c_int = coef_mask;
                 let mut iter_round: c_int = round_mask;
                 i = b_ac;
@@ -11148,11 +11070,7 @@ pub mod rdo_c {
                         let mut cur_mask: c_int =
                             coef_mask & !((1 as c_int) << i) | ((new_coef != 0) as c_int) << i;
                         let mut cur_distortion_delta: int64_t = delta_distortion[i as usize]
-                            * (if round_change != 0 {
-                                -(1 as c_int)
-                            } else {
-                                1 as c_int
-                            }) as int64_t;
+                            * (if round_change != 0 { -1 } else { 1 as c_int }) as int64_t;
                         let mut cur_score: int64_t = cur_distortion_delta;
                         coefs[i as usize] = new_coef as dctcoef;
                         (*h).out.bs.i_bits_encoded = 0 as c_int;
@@ -11246,7 +11164,7 @@ pub mod rdo_c {
                     .offset((*h).mb.b_interlaced as isize))
                 .as_ptr(),
                 ctx_block_cat,
-                (*h).mb.i_trellis_lambda2[0 as c_int as usize][b_intra as usize],
+                (*h).mb.i_trellis_lambda2[0][b_intra as usize],
                 0 as c_int,
                 0 as c_int,
                 1 as c_int,
@@ -11266,7 +11184,7 @@ pub mod rdo_c {
                 .offset((*h).mb.b_interlaced as isize))
             .as_ptr(),
             DCT_LUMA_DC as c_int,
-            (*h).mb.i_trellis_lambda2[0 as c_int as usize][b_intra as usize],
+            (*h).mb.i_trellis_lambda2[0][b_intra as usize],
             0 as c_int,
             0 as c_int,
             1 as c_int,
@@ -11326,7 +11244,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
                 zigzag,
                 DCT_CHROMA_DC as c_int,
-                (*h).mb.i_trellis_lambda2[1 as c_int as usize][b_intra as usize],
+                (*h).mb.i_trellis_lambda2[1][b_intra as usize],
                 0 as c_int,
                 1 as c_int,
                 1 as c_int,
@@ -11343,7 +11261,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
             zigzag,
             DCT_CHROMA_DC as c_int,
-            (*h).mb.i_trellis_lambda2[1 as c_int as usize][b_intra as usize],
+            (*h).mb.i_trellis_lambda2[1][b_intra as usize],
             0 as c_int,
             1 as c_int,
             1 as c_int,
@@ -11727,9 +11645,7 @@ pub mod slicetype_c {
         mut dest: *mut pixel,
     ) -> *mut pixel {
         let mut ref0_distance: c_int = (*fenc).i_frame - (*ref_0).i_frame - 1 as c_int;
-        if (*(*fenc).lowres_mvs[0 as c_int as usize][ref0_distance as usize]
-            .offset(0 as c_int as isize))[0 as c_int as usize] as c_int
-            != 0x7fff as c_int
+        if (*(*fenc).lowres_mvs[0][ref0_distance as usize].offset(0))[0] as c_int != 0x7fff as c_int
         {
             let mut i_stride: c_int = (*fenc).i_stride_lowres;
             let mut i_lines: c_int = (*fenc).i_lines_lowres;
@@ -11740,13 +11656,11 @@ pub mod slicetype_c {
             while y < i_lines {
                 let mut x: c_int = 0 as c_int;
                 while x < i_width {
-                    let mut mvx: c_int = (*(*fenc).lowres_mvs[0 as c_int as usize]
-                        [ref0_distance as usize]
-                        .offset(i_mb_xy as isize))[0 as c_int as usize]
+                    let mut mvx: c_int = (*(*fenc).lowres_mvs[0][ref0_distance as usize]
+                        .offset(i_mb_xy as isize))[0]
                         as c_int;
-                    let mut mvy: c_int = (*(*fenc).lowres_mvs[0 as c_int as usize]
-                        [ref0_distance as usize]
-                        .offset(i_mb_xy as isize))[1 as c_int as usize]
+                    let mut mvy: c_int = (*(*fenc).lowres_mvs[0][ref0_distance as usize]
+                        .offset(i_mb_xy as isize))[1]
                         as c_int;
                     (*h).mc.mc_luma.expect("non-null function pointer")(
                         p.offset(x as isize),
@@ -11767,7 +11681,7 @@ pub mod slicetype_c {
             }
             return dest;
         }
-        return (*ref_0).lowres[0 as c_int as usize];
+        return (*ref_0).lowres[0];
     }
     #[inline(never)]
     #[c2rust::src_loc = "111:1"]
@@ -11779,16 +11693,14 @@ pub mod slicetype_c {
         mut dstv: *mut pixel,
     ) {
         let mut ref0_distance: c_int = (*fenc).i_frame - (*ref_0).i_frame - 1 as c_int;
-        let mut i_stride: c_int = (*fenc).i_stride[1 as c_int as usize];
-        let mut i_lines: c_int = (*fenc).i_lines[1 as c_int as usize];
-        let mut i_width: c_int = (*fenc).i_width[1 as c_int as usize];
+        let mut i_stride: c_int = (*fenc).i_stride[1];
+        let mut i_lines: c_int = (*fenc).i_lines[1];
+        let mut i_width: c_int = (*fenc).i_width[1];
         let mut v_shift: c_int = (*h).mb.chroma_v_shift;
         let mut cw: c_int = 8 as c_int * (*h).mb.i_mb_width;
         let mut ch: c_int = 16 as c_int * (*h).mb.i_mb_height >> v_shift;
         let mut height: c_int = 16 as c_int >> v_shift;
-        if (*(*fenc).lowres_mvs[0 as c_int as usize][ref0_distance as usize]
-            .offset(0 as c_int as isize))[0 as c_int as usize] as c_int
-            != 0x7fff as c_int
+        if (*(*fenc).lowres_mvs[0][ref0_distance as usize].offset(0))[0] as c_int != 0x7fff as c_int
         {
             x264_10_frame_expand_border_chroma(h, ref_0, 1 as c_int);
             let mut y: c_int = 0 as c_int;
@@ -11804,16 +11716,14 @@ pub mod slicetype_c {
                     let mut pixv: *mut pixel = dstv
                         .offset(pel_offset_y as isize)
                         .offset(pel_offset_x as isize);
-                    let mut src1: *mut pixel = (*ref_0).plane[1 as c_int as usize]
+                    let mut src1: *mut pixel = (*ref_0).plane[1]
                         .offset(pel_offset_y as isize)
                         .offset((pel_offset_x * 2 as c_int) as isize);
-                    let mut mvx: c_int = (*(*fenc).lowres_mvs[0 as c_int as usize]
-                        [ref0_distance as usize]
-                        .offset(mb_xy as isize))[0 as c_int as usize]
+                    let mut mvx: c_int = (*(*fenc).lowres_mvs[0][ref0_distance as usize]
+                        .offset(mb_xy as isize))[0]
                         as c_int;
-                    let mut mvy: c_int = (*(*fenc).lowres_mvs[0 as c_int as usize]
-                        [ref0_distance as usize]
-                        .offset(mb_xy as isize))[1 as c_int as usize]
+                    let mut mvy: c_int = (*(*fenc).lowres_mvs[0][ref0_distance as usize]
+                        .offset(mb_xy as isize))[1]
                         as c_int;
                     (*h).mc.mc_chroma.expect("non-null function pointer")(
                         pixu,
@@ -11841,7 +11751,7 @@ pub mod slicetype_c {
                 i_stride as intptr_t,
                 dstv,
                 i_stride as intptr_t,
-                (*ref_0).plane[1 as c_int as usize],
+                (*ref_0).plane[1],
                 i_stride as intptr_t,
                 cw,
                 ch,
@@ -11854,7 +11764,7 @@ pub mod slicetype_c {
             i_stride as intptr_t,
             dstv.offset(i_width as isize),
             i_stride as intptr_t,
-            (*fenc).plane[1 as c_int as usize],
+            (*fenc).plane[1],
             i_stride as intptr_t,
             cw,
             ch,
@@ -11873,9 +11783,7 @@ pub mod slicetype_c {
         let mut i_stride: c_int = (*fenc).i_stride[p as usize];
         let mut i_lines: c_int = (*fenc).i_lines[p as usize];
         let mut i_width: c_int = (*fenc).i_width[p as usize];
-        if (*(*fenc).lowres_mvs[0 as c_int as usize][ref0_distance as usize]
-            .offset(0 as c_int as isize))[0 as c_int as usize] as c_int
-            != 0x7fff as c_int
+        if (*(*fenc).lowres_mvs[0][ref0_distance as usize].offset(0))[0] as c_int != 0x7fff as c_int
         {
             x264_10_frame_expand_border_chroma(h, ref_0, p);
             let mut y: c_int = 0 as c_int;
@@ -11891,14 +11799,12 @@ pub mod slicetype_c {
                     let mut src: *mut pixel = (*ref_0).plane[p as usize]
                         .offset(pel_offset_y as isize)
                         .offset(pel_offset_x as isize);
-                    let mut mvx: c_int = (*(*fenc).lowres_mvs[0 as c_int as usize]
-                        [ref0_distance as usize]
-                        .offset(mb_xy as isize))[0 as c_int as usize]
+                    let mut mvx: c_int = (*(*fenc).lowres_mvs[0][ref0_distance as usize]
+                        .offset(mb_xy as isize))[0]
                         as c_int
                         / 2 as c_int;
-                    let mut mvy: c_int = (*(*fenc).lowres_mvs[0 as c_int as usize]
-                        [ref0_distance as usize]
-                        .offset(mb_xy as isize))[1 as c_int as usize]
+                    let mut mvy: c_int = (*(*fenc).lowres_mvs[0][ref0_distance as usize]
+                        .offset(mb_xy as isize))[1]
                         as c_int
                         / 2 as c_int;
                     (*h).mc
@@ -11941,15 +11847,15 @@ pub mod slicetype_c {
         } else {
             numslices = 1 as c_int;
         }
-        let mut denom_cost: c_int = bs_size_ue((*w.offset(0 as c_int as isize)).i_denom as c_uint)
-            * (2 as c_int - b_chroma);
+        let mut denom_cost: c_int =
+            bs_size_ue((*w.offset(0)).i_denom as c_uint) * (2 as c_int - b_chroma);
         return lambda
             * numslices
             * (10 as c_int
                 + denom_cost
                 + 2 as c_int
-                    * (bs_size_se((*w.offset(0 as c_int as isize)).i_scale as c_int)
-                        + bs_size_se((*w.offset(0 as c_int as isize)).i_offset as c_int)));
+                    * (bs_size_se((*w.offset(0)).i_scale as c_int)
+                        + bs_size_se((*w.offset(0)).i_offset as c_int)));
     }
     #[inline(never)]
     #[c2rust::src_loc = "191:1"]
@@ -11963,7 +11869,7 @@ pub mod slicetype_c {
         let mut i_stride: c_int = (*fenc).i_stride_lowres;
         let mut i_lines: c_int = (*fenc).i_lines_lowres;
         let mut i_width: c_int = (*fenc).i_width_lowres;
-        let mut fenc_plane: *mut pixel = (*fenc).lowres[0 as c_int as usize];
+        let mut fenc_plane: *mut pixel = (*fenc).lowres[0];
         let mut buf: [pixel; 64] = [0; 64];
         let mut pixoff: c_int = 0 as c_int;
         let mut i_mb: c_int = 0 as c_int;
@@ -12041,9 +11947,9 @@ pub mod slicetype_c {
         mut w: *mut x264_weight_t,
     ) -> c_uint {
         let mut cost: c_uint = 0 as c_uint;
-        let mut i_stride: c_int = (*fenc).i_stride[1 as c_int as usize];
-        let mut i_lines: c_int = (*fenc).i_lines[1 as c_int as usize];
-        let mut i_width: c_int = (*fenc).i_width[1 as c_int as usize];
+        let mut i_stride: c_int = (*fenc).i_stride[1];
+        let mut i_lines: c_int = (*fenc).i_lines[1];
+        let mut i_width: c_int = (*fenc).i_width[1];
         let mut src: *mut pixel = ref_0.offset(i_width as isize);
         let mut buf: [pixel; 128] = [0; 128];
         let mut pixoff: c_int = 0 as c_int;
@@ -12172,22 +12078,21 @@ pub mod slicetype_c {
     ) {
         let mut i_delta_index: c_int = (*fenc).i_frame - (*ref_0).i_frame - 1 as c_int;
         let epsilon: c_float = 1.0f32 / 128.0f32;
-        let mut weights: *mut x264_weight_t =
-            (*(*fenc).weight.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr();
-        (*weights.offset(0 as c_int as isize)).i_scale = 1 as c_int as int32_t;
-        (*weights.offset(0 as c_int as isize)).i_denom = 0 as c_int as int32_t;
-        (*weights.offset(0 as c_int as isize)).i_offset = 0 as c_int as int32_t;
-        let ref mut fresh8 = (*weights.offset(0 as c_int as isize)).weightfn;
+        let mut weights: *mut x264_weight_t = (*(*fenc).weight.as_mut_ptr().offset(0)).as_mut_ptr();
+        (*weights.offset(0)).i_scale = 1 as c_int as int32_t;
+        (*weights.offset(0)).i_denom = 0 as c_int as int32_t;
+        (*weights.offset(0)).i_offset = 0 as c_int as int32_t;
+        let ref mut fresh8 = (*weights.offset(0)).weightfn;
         *fresh8 = 0 as *mut weight_fn_t;
-        (*weights.offset(1 as c_int as isize)).i_scale = 1 as c_int as int32_t;
-        (*weights.offset(1 as c_int as isize)).i_denom = 0 as c_int as int32_t;
-        (*weights.offset(1 as c_int as isize)).i_offset = 0 as c_int as int32_t;
-        let ref mut fresh9 = (*weights.offset(1 as c_int as isize)).weightfn;
+        (*weights.offset(1)).i_scale = 1 as c_int as int32_t;
+        (*weights.offset(1)).i_denom = 0 as c_int as int32_t;
+        (*weights.offset(1)).i_offset = 0 as c_int as int32_t;
+        let ref mut fresh9 = (*weights.offset(1)).weightfn;
         *fresh9 = 0 as *mut weight_fn_t;
-        (*weights.offset(2 as c_int as isize)).i_scale = 1 as c_int as int32_t;
-        (*weights.offset(2 as c_int as isize)).i_denom = 0 as c_int as int32_t;
-        (*weights.offset(2 as c_int as isize)).i_offset = 0 as c_int as int32_t;
-        let ref mut fresh10 = (*weights.offset(2 as c_int as isize)).weightfn;
+        (*weights.offset(2)).i_scale = 1 as c_int as int32_t;
+        (*weights.offset(2)).i_denom = 0 as c_int as int32_t;
+        (*weights.offset(2)).i_offset = 0 as c_int as int32_t;
+        let ref mut fresh10 = (*weights.offset(2)).weightfn;
         *fresh10 = 0 as *mut weight_fn_t;
         let mut chroma_initted: c_int = 0 as c_int;
         let mut guess_scale: [c_float; 3] = [0.; 3];
@@ -12229,9 +12134,7 @@ pub mod slicetype_c {
         if b_lookahead == 0 {
             while chroma_denom > 0 as c_int {
                 let mut thresh: c_float = 127.0f32 / ((1 as c_int) << chroma_denom) as c_float;
-                if guess_scale[1 as c_int as usize] < thresh
-                    && guess_scale[2 as c_int as usize] < thresh
-                {
+                if guess_scale[1] < thresh && guess_scale[2] < thresh {
                     break;
                 }
                 chroma_denom -= 1;
@@ -12244,8 +12147,7 @@ pub mod slicetype_c {
             } else {
                 1 as c_int
             })
-            && !(plane_0 != 0
-                && ((*weights.offset(0 as c_int as isize)).weightfn.is_null() || b_lookahead != 0))
+            && !(plane_0 != 0 && ((*weights.offset(0)).weightfn.is_null() || b_lookahead != 0))
         {
             let mut minoff: c_int = 0;
             let mut minscale: c_int = 0;
@@ -12274,9 +12176,9 @@ pub mod slicetype_c {
                         255 as c_int,
                     ) as int32_t;
                     if (*weights.offset(plane_0 as isize)).i_scale > 127 as int32_t {
-                        let ref mut fresh12 = (*weights.offset(2 as c_int as isize)).weightfn;
+                        let ref mut fresh12 = (*weights.offset(2)).weightfn;
                         *fresh12 = 0 as *mut weight_fn_t;
-                        let ref mut fresh13 = (*weights.offset(1 as c_int as isize)).weightfn;
+                        let ref mut fresh13 = (*weights.offset(1)).weightfn;
                         *fresh13 = *fresh12;
                         break;
                     }
@@ -12621,12 +12523,7 @@ pub mod slicetype_c {
                             h, &mut a, &mut fenc, 0 as c_int, 0 as c_int, 0 as c_int,
                         );
                     }
-                    mcbuf = weight_cost_init_luma(
-                        h,
-                        fenc,
-                        ref_0,
-                        (*h).mb.p_weight_buf[0 as c_int as usize],
-                    );
+                    mcbuf = weight_cost_init_luma(h, fenc, ref_0, (*h).mb.p_weight_buf[0]);
                     minscore = weight_cost_luma(h, fenc, mcbuf, 0 as *mut x264_weight_t);
                     origscore = minscore;
                 } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
@@ -12634,19 +12531,16 @@ pub mod slicetype_c {
                         h,
                         fenc,
                         ref_0,
-                        (*h).mb.p_weight_buf[0 as c_int as usize],
+                        (*h).mb.p_weight_buf[0],
                         plane_0,
                     );
                     minscore =
                         weight_cost_chroma444(h, fenc, mcbuf, 0 as *mut x264_weight_t, plane_0);
                     origscore = minscore;
                 } else {
-                    let mut dstu: *mut pixel = (*h).mb.p_weight_buf[0 as c_int as usize];
-                    let mut dstv: *mut pixel = (*h).mb.p_weight_buf[0 as c_int as usize].offset(
-                        ((*fenc).i_stride[1 as c_int as usize]
-                            * (*fenc).i_lines[1 as c_int as usize])
-                            as isize,
-                    );
+                    let mut dstu: *mut pixel = (*h).mb.p_weight_buf[0];
+                    let mut dstv: *mut pixel = (*h).mb.p_weight_buf[0]
+                        .offset(((*fenc).i_stride[1] * (*fenc).i_lines[1]) as isize);
                     let fresh14 = chroma_initted;
                     chroma_initted = chroma_initted + 1;
                     if fresh14 == 0 {
@@ -12674,14 +12568,14 @@ pub mod slicetype_c {
                     let mut scale_dist: c_int = if b_lookahead != 0 {
                         0 as c_int
                     } else {
-                        weight_check_distance[(*h).param.analyse.i_subpel_refine as usize]
-                            [0 as c_int as usize] as c_int
+                        weight_check_distance[(*h).param.analyse.i_subpel_refine as usize][0]
+                            as c_int
                     };
                     let mut offset_dist: c_int = if b_lookahead != 0 {
                         0 as c_int
                     } else {
-                        weight_check_distance[(*h).param.analyse.i_subpel_refine as usize]
-                            [1 as c_int as usize] as c_int
+                        weight_check_distance[(*h).param.analyse.i_subpel_refine as usize][1]
+                            as c_int
                     };
                     let mut start_scale: c_int =
                         x264_clip3(minscale - scale_dist, 0 as c_int, 127 as c_int);
@@ -12784,7 +12678,7 @@ pub mod slicetype_c {
                             &mut *weights.offset(plane_0 as isize),
                         );
                         if (*h).param.analyse.i_weighted_pred == X264_WEIGHTP_FAKE
-                            && !(*weights.offset(0 as c_int as isize)).weightfn.is_null()
+                            && !(*weights.offset(0)).weightfn.is_null()
                             && plane_0 == 0
                         {
                             (*fenc).f_weighted_cost_delta[i_delta_index as usize] =
@@ -12795,24 +12689,21 @@ pub mod slicetype_c {
             }
             plane_0 += 1;
         }
-        if !(*weights.offset(1 as c_int as isize)).weightfn.is_null()
-            || !(*weights.offset(2 as c_int as isize)).weightfn.is_null()
-        {
-            let mut denom: c_int = if !(*weights.offset(1 as c_int as isize)).weightfn.is_null() {
-                (*weights.offset(1 as c_int as isize)).i_denom as c_int
+        if !(*weights.offset(1)).weightfn.is_null() || !(*weights.offset(2)).weightfn.is_null() {
+            let mut denom: c_int = if !(*weights.offset(1)).weightfn.is_null() {
+                (*weights.offset(1)).i_denom as c_int
             } else {
-                (*weights.offset(2 as c_int as isize)).i_denom as c_int
+                (*weights.offset(2)).i_denom as c_int
             };
-            let mut both_weighted: c_int =
-                (!(*weights.offset(1 as c_int as isize)).weightfn.is_null()
-                    && !(*weights.offset(2 as c_int as isize)).weightfn.is_null())
-                    as c_int;
+            let mut both_weighted: c_int = (!(*weights.offset(1)).weightfn.is_null()
+                && !(*weights.offset(2)).weightfn.is_null())
+                as c_int;
             while both_weighted == 0 && denom == 7 as c_int
                 || denom > 0 as c_int
-                    && !(!(*weights.offset(1 as c_int as isize)).weightfn.is_null()
-                        && (*weights.offset(1 as c_int as isize)).i_scale & 1 as int32_t != 0)
-                    && !(!(*weights.offset(2 as c_int as isize)).weightfn.is_null()
-                        && (*weights.offset(2 as c_int as isize)).i_scale & 1 as int32_t != 0)
+                    && !(!(*weights.offset(1)).weightfn.is_null()
+                        && (*weights.offset(1)).i_scale & 1 as int32_t != 0)
+                    && !(!(*weights.offset(2)).weightfn.is_null()
+                        && (*weights.offset(2)).i_scale & 1 as int32_t != 0)
             {
                 denom -= 1;
                 let mut i: c_int = 1 as c_int;
@@ -12835,9 +12726,9 @@ pub mod slicetype_c {
             }
             i_0 += 1;
         }
-        if !(*weights.offset(0 as c_int as isize)).weightfn.is_null() && b_lookahead != 0 {
+        if !(*weights.offset(0)).weightfn.is_null() && b_lookahead != 0 {
             let mut src: *mut pixel = (*ref_0).buffer_lowres;
-            let mut dst: *mut pixel = (*h).mb.p_weight_buf[0 as c_int as usize];
+            let mut dst: *mut pixel = (*h).mb.p_weight_buf[0];
             let mut width: c_int = (*ref_0).i_width_lowres
                 + ((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
                     32 as c_int
@@ -12853,9 +12744,9 @@ pub mod slicetype_c {
                 (*ref_0).i_stride_lowres as intptr_t,
                 width,
                 height,
-                &mut *weights.offset(0 as c_int as isize),
+                &mut *weights.offset(0),
             );
-            (*fenc).weighted[0 as c_int as usize] = (*h).mb.p_weight_buf[0 as c_int as usize]
+            (*fenc).weighted[0] = (*h).mb.p_weight_buf[0]
                 .offset(
                     (if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
                         32 as c_int
@@ -12910,7 +12801,7 @@ pub mod slicetype_c {
         };
         let mut fenc_mvs: [*mut [int16_t; 2]; 2] = [
             if b != p0 {
-                &mut *(*(*(*fenc).lowres_mvs.as_mut_ptr().offset(0 as c_int as isize))
+                &mut *(*(*(*fenc).lowres_mvs.as_mut_ptr().offset(0))
                     .as_mut_ptr()
                     .offset((b - p0 - 1 as c_int) as isize))
                 .offset(i_mb_xy as isize) as *mut [int16_t; 2]
@@ -12918,7 +12809,7 @@ pub mod slicetype_c {
                 0 as *mut [int16_t; 2]
             },
             if b != p1 {
-                &mut *(*(*(*fenc).lowres_mvs.as_mut_ptr().offset(1 as c_int as isize))
+                &mut *(*(*(*fenc).lowres_mvs.as_mut_ptr().offset(1))
                     .as_mut_ptr()
                     .offset((p1 - b - 1 as c_int) as isize))
                 .offset(i_mb_xy as isize) as *mut [int16_t; 2]
@@ -12928,23 +12819,17 @@ pub mod slicetype_c {
         ];
         let mut fenc_costs: [*mut c_int; 2] = [
             if b != p0 {
-                &mut *(*(*(*fenc)
-                    .lowres_mv_costs
+                &mut *(*(*(*fenc).lowres_mv_costs.as_mut_ptr().offset(0))
                     .as_mut_ptr()
-                    .offset(0 as c_int as isize))
-                .as_mut_ptr()
-                .offset((b - p0 - 1 as c_int) as isize))
+                    .offset((b - p0 - 1 as c_int) as isize))
                 .offset(i_mb_xy as isize) as *mut c_int
             } else {
                 0 as *mut c_int
             },
             if b != p1 {
-                &mut *(*(*(*fenc)
-                    .lowres_mv_costs
+                &mut *(*(*(*fenc).lowres_mv_costs.as_mut_ptr().offset(1))
                     .as_mut_ptr()
-                    .offset(1 as c_int as isize))
-                .as_mut_ptr()
-                .offset((p1 - b - 1 as c_int) as isize))
+                    .offset((p1 - b - 1 as c_int) as isize))
                 .offset(i_mb_xy as isize) as *mut c_int
             } else {
                 0 as *mut c_int
@@ -12958,7 +12843,7 @@ pub mod slicetype_c {
             || (*h).mb.i_mb_height <= 2 as c_int)
             as c_int;
         let mut pix1: [pixel; 288] = [0; 288];
-        let mut pix2: *mut pixel = pix1.as_mut_ptr().offset(8 as c_int as isize);
+        let mut pix2: *mut pixel = pix1.as_mut_ptr().offset(8);
         let mut m: [x264_me_t; 2] = [x264_me_t {
             i_pixel: 0,
             p_cost_mv: 0 as *mut uint16_t,
@@ -12978,24 +12863,23 @@ pub mod slicetype_c {
         let mut i_bcost: c_int = COST_MAX;
         let mut list_used: c_int = 0 as c_int;
         let mut lowres_penalty: c_int = 4 as c_int;
-        (*h).mb.pic.p_fenc[0 as c_int as usize] = (*h).mb.pic.fenc_buf.as_mut_ptr();
+        (*h).mb.pic.p_fenc[0] = (*h).mb.pic.fenc_buf.as_mut_ptr();
         (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fenc[0 as c_int as usize],
+            (*h).mb.pic.p_fenc[0],
             FENC_STRIDE as intptr_t,
-            &mut *(*(*fenc).lowres.as_mut_ptr().offset(0 as c_int as isize))
-                .offset(i_pel_offset as isize),
+            &mut *(*(*fenc).lowres.as_mut_ptr().offset(0)).offset(i_pel_offset as isize),
             i_stride as intptr_t,
             8 as c_int,
         );
         if !(p0 == p1) {
             mv_range = 2 as c_int * (*h).param.analyse.i_mv_range;
-            (*h).mb.mv_min_spel[0 as c_int as usize] =
+            (*h).mb.mv_min_spel[0] =
                 if 4 as c_int * (-(8 as c_int) * (*h).mb.i_mb_x - 12 as c_int) > -mv_range {
                     4 as c_int * (-(8 as c_int) * (*h).mb.i_mb_x - 12 as c_int)
                 } else {
                     -mv_range
                 };
-            (*h).mb.mv_max_spel[0 as c_int as usize] = if 4 as c_int
+            (*h).mb.mv_max_spel[0] = if 4 as c_int
                 * (8 as c_int * ((*h).mb.i_mb_width - (*h).mb.i_mb_x - 1 as c_int) + 12 as c_int)
                 < mv_range - 1 as c_int
             {
@@ -13005,18 +12889,16 @@ pub mod slicetype_c {
             } else {
                 mv_range - 1 as c_int
             };
-            (*h).mb.mv_limit_fpel[0 as c_int as usize][0 as c_int as usize] =
-                ((*h).mb.mv_min_spel[0 as c_int as usize] >> 2 as c_int) as int16_t;
-            (*h).mb.mv_limit_fpel[1 as c_int as usize][0 as c_int as usize] =
-                ((*h).mb.mv_max_spel[0 as c_int as usize] >> 2 as c_int) as int16_t;
+            (*h).mb.mv_limit_fpel[0][0] = ((*h).mb.mv_min_spel[0] >> 2 as c_int) as int16_t;
+            (*h).mb.mv_limit_fpel[1][0] = ((*h).mb.mv_max_spel[0] >> 2 as c_int) as int16_t;
             if (*h).mb.i_mb_x >= (*h).mb.i_mb_width - 2 as c_int {
-                (*h).mb.mv_min_spel[1 as c_int as usize] =
+                (*h).mb.mv_min_spel[1] =
                     if 4 as c_int * (-(8 as c_int) * (*h).mb.i_mb_y - 12 as c_int) > -mv_range {
                         4 as c_int * (-(8 as c_int) * (*h).mb.i_mb_y - 12 as c_int)
                     } else {
                         -mv_range
                     };
-                (*h).mb.mv_max_spel[1 as c_int as usize] = if 4 as c_int
+                (*h).mb.mv_max_spel[1] = if 4 as c_int
                     * (8 as c_int * ((*h).mb.i_mb_height - (*h).mb.i_mb_y - 1 as c_int)
                         + 12 as c_int)
                     < mv_range - 1 as c_int
@@ -13027,109 +12909,79 @@ pub mod slicetype_c {
                 } else {
                     mv_range - 1 as c_int
                 };
-                (*h).mb.mv_limit_fpel[0 as c_int as usize][1 as c_int as usize] =
-                    ((*h).mb.mv_min_spel[1 as c_int as usize] >> 2 as c_int) as int16_t;
-                (*h).mb.mv_limit_fpel[1 as c_int as usize][1 as c_int as usize] =
-                    ((*h).mb.mv_max_spel[1 as c_int as usize] >> 2 as c_int) as int16_t;
+                (*h).mb.mv_limit_fpel[0][1] = ((*h).mb.mv_min_spel[1] >> 2 as c_int) as int16_t;
+                (*h).mb.mv_limit_fpel[1][1] = ((*h).mb.mv_max_spel[1] >> 2 as c_int) as int16_t;
             }
-            m[0 as c_int as usize].i_pixel = PIXEL_8x8 as c_int;
-            m[0 as c_int as usize].p_cost_mv = (*a).p_cost_mv;
-            m[0 as c_int as usize].i_stride[0 as c_int as usize] = i_stride;
-            m[0 as c_int as usize].p_fenc[0 as c_int as usize] =
-                (*h).mb.pic.p_fenc[0 as c_int as usize];
-            m[0 as c_int as usize].weight = w;
-            m[0 as c_int as usize].i_ref = 0 as c_int;
-            m[0 as c_int as usize].p_fref[0 as c_int as usize] =
-                &mut *(*(*fref0).lowres.as_mut_ptr().offset(0 as c_int as isize))
+            m[0].i_pixel = PIXEL_8x8 as c_int;
+            m[0].p_cost_mv = (*a).p_cost_mv;
+            m[0].i_stride[0] = i_stride;
+            m[0].p_fenc[0] = (*h).mb.pic.p_fenc[0];
+            m[0].weight = w;
+            m[0].i_ref = 0 as c_int;
+            m[0].p_fref[0] = &mut *(*(*fref0).lowres.as_mut_ptr().offset(0))
+                .offset(i_pel_offset as isize) as *mut pixel;
+            m[0].p_fref[1] = &mut *(*(*fref0).lowres.as_mut_ptr().offset(1))
+                .offset(i_pel_offset as isize) as *mut pixel;
+            m[0].p_fref[2] = &mut *(*(*fref0).lowres.as_mut_ptr().offset(2))
+                .offset(i_pel_offset as isize) as *mut pixel;
+            m[0].p_fref[3] = &mut *(*(*fref0).lowres.as_mut_ptr().offset(3))
+                .offset(i_pel_offset as isize) as *mut pixel;
+            m[0].p_fref_w = m[0].p_fref[0];
+            if !(*w.offset(0)).weightfn.is_null() {
+                m[0].p_fref_w = &mut *(*(*fenc).weighted.as_mut_ptr().offset(0))
                     .offset(i_pel_offset as isize) as *mut pixel;
-            m[0 as c_int as usize].p_fref[1 as c_int as usize] =
-                &mut *(*(*fref0).lowres.as_mut_ptr().offset(1 as c_int as isize))
-                    .offset(i_pel_offset as isize) as *mut pixel;
-            m[0 as c_int as usize].p_fref[2 as c_int as usize] =
-                &mut *(*(*fref0).lowres.as_mut_ptr().offset(2 as c_int as isize))
-                    .offset(i_pel_offset as isize) as *mut pixel;
-            m[0 as c_int as usize].p_fref[3 as c_int as usize] =
-                &mut *(*(*fref0).lowres.as_mut_ptr().offset(3 as c_int as isize))
-                    .offset(i_pel_offset as isize) as *mut pixel;
-            m[0 as c_int as usize].p_fref_w = m[0 as c_int as usize].p_fref[0 as c_int as usize];
-            if !(*w.offset(0 as c_int as isize)).weightfn.is_null() {
-                m[0 as c_int as usize].p_fref_w =
-                    &mut *(*(*fenc).weighted.as_mut_ptr().offset(0 as c_int as isize))
-                        .offset(i_pel_offset as isize) as *mut pixel;
             }
             if b_bidir != 0 {
                 let mut dmv: [[int16_t; 2]; 2] = [[0; 2]; 2];
-                m[1 as c_int as usize].i_pixel = PIXEL_8x8 as c_int;
-                m[1 as c_int as usize].p_cost_mv = (*a).p_cost_mv;
-                m[1 as c_int as usize].i_stride[0 as c_int as usize] = i_stride;
-                m[1 as c_int as usize].p_fenc[0 as c_int as usize] =
-                    (*h).mb.pic.p_fenc[0 as c_int as usize];
-                m[1 as c_int as usize].i_ref = 0 as c_int;
-                m[1 as c_int as usize].weight = x264_zero.as_mut_ptr() as *const x264_weight_t;
-                m[1 as c_int as usize].p_fref[0 as c_int as usize] =
-                    &mut *(*(*fref1).lowres.as_mut_ptr().offset(0 as c_int as isize))
-                        .offset(i_pel_offset as isize) as *mut pixel;
-                m[1 as c_int as usize].p_fref[1 as c_int as usize] =
-                    &mut *(*(*fref1).lowres.as_mut_ptr().offset(1 as c_int as isize))
-                        .offset(i_pel_offset as isize) as *mut pixel;
-                m[1 as c_int as usize].p_fref[2 as c_int as usize] =
-                    &mut *(*(*fref1).lowres.as_mut_ptr().offset(2 as c_int as isize))
-                        .offset(i_pel_offset as isize) as *mut pixel;
-                m[1 as c_int as usize].p_fref[3 as c_int as usize] =
-                    &mut *(*(*fref1).lowres.as_mut_ptr().offset(3 as c_int as isize))
-                        .offset(i_pel_offset as isize) as *mut pixel;
-                m[1 as c_int as usize].p_fref_w =
-                    m[1 as c_int as usize].p_fref[0 as c_int as usize];
-                if (*(*fref1).lowres_mvs[0 as c_int as usize][(p1 - p0 - 1 as c_int) as usize]
-                    .offset(0 as c_int as isize))[0 as c_int as usize] as c_int
+                m[1].i_pixel = PIXEL_8x8 as c_int;
+                m[1].p_cost_mv = (*a).p_cost_mv;
+                m[1].i_stride[0] = i_stride;
+                m[1].p_fenc[0] = (*h).mb.pic.p_fenc[0];
+                m[1].i_ref = 0 as c_int;
+                m[1].weight = x264_zero.as_mut_ptr() as *const x264_weight_t;
+                m[1].p_fref[0] = &mut *(*(*fref1).lowres.as_mut_ptr().offset(0))
+                    .offset(i_pel_offset as isize) as *mut pixel;
+                m[1].p_fref[1] = &mut *(*(*fref1).lowres.as_mut_ptr().offset(1))
+                    .offset(i_pel_offset as isize) as *mut pixel;
+                m[1].p_fref[2] = &mut *(*(*fref1).lowres.as_mut_ptr().offset(2))
+                    .offset(i_pel_offset as isize) as *mut pixel;
+                m[1].p_fref[3] = &mut *(*(*fref1).lowres.as_mut_ptr().offset(3))
+                    .offset(i_pel_offset as isize) as *mut pixel;
+                m[1].p_fref_w = m[1].p_fref[0];
+                if (*(*fref1).lowres_mvs[0][(p1 - p0 - 1 as c_int) as usize].offset(0))[0] as c_int
                     != 0x7fff as c_int
                 {
-                    let mut mvr: *mut int16_t =
-                        (*(*(*(*fref1).lowres_mvs.as_mut_ptr().offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset((p1 - p0 - 1 as c_int) as isize))
-                        .offset(i_mb_xy as isize))
-                        .as_mut_ptr();
-                    dmv[0 as c_int as usize][0 as c_int as usize] =
-                        (*mvr.offset(0 as c_int as isize) as c_int * dist_scale_factor
-                            + 128 as c_int
-                            >> 8 as c_int) as int16_t;
-                    dmv[0 as c_int as usize][1 as c_int as usize] =
-                        (*mvr.offset(1 as c_int as isize) as c_int * dist_scale_factor
-                            + 128 as c_int
-                            >> 8 as c_int) as int16_t;
-                    dmv[1 as c_int as usize][0 as c_int as usize] =
-                        (dmv[0 as c_int as usize][0 as c_int as usize] as c_int
-                            - *mvr.offset(0 as c_int as isize) as c_int)
-                            as int16_t;
-                    dmv[1 as c_int as usize][1 as c_int as usize] =
-                        (dmv[0 as c_int as usize][1 as c_int as usize] as c_int
-                            - *mvr.offset(1 as c_int as isize) as c_int)
-                            as int16_t;
-                    dmv[0 as c_int as usize][0 as c_int as usize] = x264_clip3(
-                        dmv[0 as c_int as usize][0 as c_int as usize] as c_int,
-                        (*h).mb.mv_min_spel[0 as c_int as usize],
-                        (*h).mb.mv_max_spel[0 as c_int as usize],
-                    )
-                        as int16_t;
-                    dmv[0 as c_int as usize][1 as c_int as usize] = x264_clip3(
-                        dmv[0 as c_int as usize][1 as c_int as usize] as c_int,
-                        (*h).mb.mv_min_spel[1 as c_int as usize],
-                        (*h).mb.mv_max_spel[1 as c_int as usize],
-                    )
-                        as int16_t;
-                    dmv[1 as c_int as usize][0 as c_int as usize] = x264_clip3(
-                        dmv[1 as c_int as usize][0 as c_int as usize] as c_int,
-                        (*h).mb.mv_min_spel[0 as c_int as usize],
-                        (*h).mb.mv_max_spel[0 as c_int as usize],
-                    )
-                        as int16_t;
-                    dmv[1 as c_int as usize][1 as c_int as usize] = x264_clip3(
-                        dmv[1 as c_int as usize][1 as c_int as usize] as c_int,
-                        (*h).mb.mv_min_spel[1 as c_int as usize],
-                        (*h).mb.mv_max_spel[1 as c_int as usize],
-                    )
-                        as int16_t;
+                    let mut mvr: *mut int16_t = (*(*(*(*fref1).lowres_mvs.as_mut_ptr().offset(0))
+                        .as_mut_ptr()
+                        .offset((p1 - p0 - 1 as c_int) as isize))
+                    .offset(i_mb_xy as isize))
+                    .as_mut_ptr();
+                    dmv[0][0] = (*mvr.offset(0) as c_int * dist_scale_factor + 128 as c_int
+                        >> 8 as c_int) as int16_t;
+                    dmv[0][1] = (*mvr.offset(1) as c_int * dist_scale_factor + 128 as c_int
+                        >> 8 as c_int) as int16_t;
+                    dmv[1][0] = (dmv[0][0] as c_int - *mvr.offset(0) as c_int) as int16_t;
+                    dmv[1][1] = (dmv[0][1] as c_int - *mvr.offset(1) as c_int) as int16_t;
+                    dmv[0][0] = x264_clip3(
+                        dmv[0][0] as c_int,
+                        (*h).mb.mv_min_spel[0],
+                        (*h).mb.mv_max_spel[0],
+                    ) as int16_t;
+                    dmv[0][1] = x264_clip3(
+                        dmv[0][1] as c_int,
+                        (*h).mb.mv_min_spel[1],
+                        (*h).mb.mv_max_spel[1],
+                    ) as int16_t;
+                    dmv[1][0] = x264_clip3(
+                        dmv[1][0] as c_int,
+                        (*h).mb.mv_min_spel[0],
+                        (*h).mb.mv_max_spel[0],
+                    ) as int16_t;
+                    dmv[1][1] = x264_clip3(
+                        dmv[1][1] as c_int,
+                        (*h).mb.mv_min_spel[1],
+                        (*h).mb.mv_max_spel[1],
+                    ) as int16_t;
                     if (*h).param.analyse.i_subpel_refine <= 1 as c_int {
                         let ref mut fresh20 = (*(dmv.as_mut_ptr() as *mut x264_union64_t)).i;
                         *fresh20 = (*fresh20 as c_ulonglong & !(0x1000100010001 as c_ulonglong))
@@ -13140,41 +12992,23 @@ pub mod slicetype_c {
                 }
                 let mut i_cost: c_int = 0;
                 if (*h).param.analyse.i_subpel_refine <= 1 as c_int {
-                    let mut hpel_idx1: c_int =
-                        ((dmv[0 as c_int as usize][0 as c_int as usize] as c_int & 2 as c_int)
-                            >> 1 as c_int)
-                            + (dmv[0 as c_int as usize][1 as c_int as usize] as c_int & 2 as c_int);
-                    let mut hpel_idx2: c_int =
-                        ((dmv[1 as c_int as usize][0 as c_int as usize] as c_int & 2 as c_int)
-                            >> 1 as c_int)
-                            + (dmv[1 as c_int as usize][1 as c_int as usize] as c_int & 2 as c_int);
-                    let mut src1: *mut pixel = m[0 as c_int as usize].p_fref[hpel_idx1 as usize]
-                        .offset(
-                            (dmv[0 as c_int as usize][0 as c_int as usize] as c_int >> 2 as c_int)
-                                as isize,
-                        )
-                        .offset(
-                            ((dmv[0 as c_int as usize][1 as c_int as usize] as c_int >> 2 as c_int)
-                                * m[0 as c_int as usize].i_stride[0 as c_int as usize])
-                                as isize,
-                        );
-                    let mut src2: *mut pixel = m[1 as c_int as usize].p_fref[hpel_idx2 as usize]
-                        .offset(
-                            (dmv[1 as c_int as usize][0 as c_int as usize] as c_int >> 2 as c_int)
-                                as isize,
-                        )
-                        .offset(
-                            ((dmv[1 as c_int as usize][1 as c_int as usize] as c_int >> 2 as c_int)
-                                * m[1 as c_int as usize].i_stride[0 as c_int as usize])
-                                as isize,
-                        );
+                    let mut hpel_idx1: c_int = ((dmv[0][0] as c_int & 2 as c_int) >> 1 as c_int)
+                        + (dmv[0][1] as c_int & 2 as c_int);
+                    let mut hpel_idx2: c_int = ((dmv[1][0] as c_int & 2 as c_int) >> 1 as c_int)
+                        + (dmv[1][1] as c_int & 2 as c_int);
+                    let mut src1: *mut pixel = m[0].p_fref[hpel_idx1 as usize]
+                        .offset((dmv[0][0] as c_int >> 2 as c_int) as isize)
+                        .offset(((dmv[0][1] as c_int >> 2 as c_int) * m[0].i_stride[0]) as isize);
+                    let mut src2: *mut pixel = m[1].p_fref[hpel_idx2 as usize]
+                        .offset((dmv[1][0] as c_int >> 2 as c_int) as isize)
+                        .offset(((dmv[1][1] as c_int >> 2 as c_int) * m[1].i_stride[0]) as isize);
                     (*h).mc.avg[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
                         pix1.as_mut_ptr(),
                         16 as intptr_t,
                         src1,
-                        m[0 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
+                        m[0].i_stride[0] as intptr_t,
                         src2,
-                        m[1 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
+                        m[1].i_stride[0] as intptr_t,
                         i_bipred_weight,
                     );
                 } else {
@@ -13185,12 +13019,10 @@ pub mod slicetype_c {
                     src1_0 = (*h).mc.get_ref.expect("non-null function pointer")(
                         pix1.as_mut_ptr(),
                         &mut stride1,
-                        (*m.as_mut_ptr().offset(0 as c_int as isize))
-                            .p_fref
-                            .as_mut_ptr(),
-                        m[0 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
-                        dmv[0 as c_int as usize][0 as c_int as usize] as c_int,
-                        dmv[0 as c_int as usize][1 as c_int as usize] as c_int,
+                        (*m.as_mut_ptr().offset(0)).p_fref.as_mut_ptr(),
+                        m[0].i_stride[0] as intptr_t,
+                        dmv[0][0] as c_int,
+                        dmv[0][1] as c_int,
                         8 as c_int,
                         8 as c_int,
                         w,
@@ -13198,12 +13030,10 @@ pub mod slicetype_c {
                     src2_0 = (*h).mc.get_ref.expect("non-null function pointer")(
                         pix2,
                         &mut stride2,
-                        (*m.as_mut_ptr().offset(1 as c_int as isize))
-                            .p_fref
-                            .as_mut_ptr(),
-                        m[1 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
-                        dmv[1 as c_int as usize][0 as c_int as usize] as c_int,
-                        dmv[1 as c_int as usize][1 as c_int as usize] as c_int,
+                        (*m.as_mut_ptr().offset(1)).p_fref.as_mut_ptr(),
+                        m[1].i_stride[0] as intptr_t,
+                        dmv[1][0] as c_int,
+                        dmv[1][1] as c_int,
                         8 as c_int,
                         8 as c_int,
                         w,
@@ -13221,7 +13051,7 @@ pub mod slicetype_c {
                 i_cost = 0 as c_int * (*a).i_lambda
                     + (*h).pixf.mbcmp[PIXEL_8x8 as c_int as usize]
                         .expect("non-null function pointer")(
-                        m[0 as c_int as usize].p_fenc[0 as c_int as usize],
+                        m[0].p_fenc[0],
                         FENC_STRIDE as intptr_t,
                         pix1.as_mut_ptr(),
                         16 as intptr_t,
@@ -13235,15 +13065,15 @@ pub mod slicetype_c {
                     (*h).mc.avg[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
                         pix1.as_mut_ptr(),
                         16 as intptr_t,
-                        m[0 as c_int as usize].p_fref[0 as c_int as usize],
-                        m[0 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
-                        m[1 as c_int as usize].p_fref[0 as c_int as usize],
-                        m[1 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
+                        m[0].p_fref[0],
+                        m[0].i_stride[0] as intptr_t,
+                        m[1].p_fref[0],
+                        m[1].i_stride[0] as intptr_t,
                         i_bipred_weight,
                     );
                     i_cost_0 = (*h).pixf.mbcmp[PIXEL_8x8 as c_int as usize]
                         .expect("non-null function pointer")(
-                        m[0 as c_int as usize].p_fenc[0 as c_int as usize],
+                        m[0].p_fenc[0],
                         FENC_STRIDE as intptr_t,
                         pix1.as_mut_ptr(),
                         16 as intptr_t,
@@ -13261,18 +13091,14 @@ pub mod slicetype_c {
                     let mut i_mvc: c_int = 0 as c_int;
                     let mut fenc_mv: *mut [int16_t; 2] = fenc_mvs[l as usize];
                     let mut mvc: [[int16_t; 2]; 4] = [[0; 2]; 4];
-                    (*((*mvc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr()
-                        as *mut x264_union32_t))
-                        .i = 0 as uint32_t;
-                    (*((*mvc.as_mut_ptr().offset(2 as c_int as isize)).as_mut_ptr()
-                        as *mut x264_union32_t))
-                        .i = 0 as uint32_t;
+                    (*((*mvc.as_mut_ptr().offset(0)).as_mut_ptr() as *mut x264_union32_t)).i =
+                        0 as uint32_t;
+                    (*((*mvc.as_mut_ptr().offset(2)).as_mut_ptr() as *mut x264_union32_t)).i =
+                        0 as uint32_t;
                     if i_mb_x < (*h).mb.i_mb_width - 1 as c_int {
                         (*((*mvc.as_mut_ptr().offset(i_mvc as isize)).as_mut_ptr()
                             as *mut x264_union32_t))
-                            .i = (*((*fenc_mv.offset(1 as c_int as isize)).as_mut_ptr()
-                            as *mut x264_union32_t))
-                            .i;
+                            .i = (*((*fenc_mv.offset(1)).as_mut_ptr() as *mut x264_union32_t)).i;
                         i_mvc += 1;
                     }
                     if i_mb_y < (*h).i_threadslice_end - 1 as c_int {
@@ -13304,15 +13130,15 @@ pub mod slicetype_c {
                     if i_mvc <= 1 as c_int {
                         (*((*m.as_mut_ptr().offset(l as isize)).mvp.as_mut_ptr()
                             as *mut x264_union32_t))
-                            .i = (*((*mvc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr()
+                            .i = (*((*mvc.as_mut_ptr().offset(0)).as_mut_ptr()
                             as *mut x264_union32_t))
                             .i;
                     } else {
                         x264_median_mv(
                             (*m.as_mut_ptr().offset(l as isize)).mvp.as_mut_ptr(),
-                            (*mvc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
-                            (*mvc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
-                            (*mvc.as_mut_ptr().offset(2 as c_int as isize)).as_mut_ptr(),
+                            (*mvc.as_mut_ptr().offset(0)).as_mut_ptr(),
+                            (*mvc.as_mut_ptr().offset(1)).as_mut_ptr(),
+                            (*mvc.as_mut_ptr().offset(2)).as_mut_ptr(),
                         );
                     }
                     if (*((*m.as_mut_ptr().offset(l as isize)).mvp.as_mut_ptr()
@@ -13322,10 +13148,10 @@ pub mod slicetype_c {
                     {
                         m[l as usize].cost = (*h).pixf.mbcmp[PIXEL_8x8 as c_int as usize]
                             .expect("non-null function pointer")(
-                            m[l as usize].p_fenc[0 as c_int as usize],
+                            m[l as usize].p_fenc[0],
                             FENC_STRIDE as intptr_t,
-                            m[l as usize].p_fref[0 as c_int as usize],
-                            m[l as usize].i_stride[0 as c_int as usize] as intptr_t,
+                            m[l as usize].p_fref[0],
+                            m[l as usize].i_stride[0] as intptr_t,
                         );
                         if m[l as usize].cost < 64 as c_int {
                             (*((*m.as_mut_ptr().offset(l as isize)).mv.as_mut_ptr()
@@ -13347,8 +13173,7 @@ pub mod slicetype_c {
                                 i_mvc,
                                 0 as *mut c_int,
                             );
-                            m[l as usize].cost -=
-                                *(*a).p_cost_mv.offset(0 as c_int as isize) as c_int;
+                            m[l as usize].cost -= *(*a).p_cost_mv.offset(0) as c_int;
                             if (*((*m.as_mut_ptr().offset(l as isize)).mv.as_mut_ptr()
                                 as *mut x264_union32_t))
                                 .i
@@ -13377,60 +13202,29 @@ pub mod slicetype_c {
                 l += 1;
             }
             if b_bidir != 0
-                && ((*((*m.as_mut_ptr().offset(0 as c_int as isize))
-                    .mv
-                    .as_mut_ptr() as *mut x264_union32_t))
-                    .i
-                    != 0
-                    || (*((*m.as_mut_ptr().offset(1 as c_int as isize))
-                        .mv
-                        .as_mut_ptr() as *mut x264_union32_t))
-                        .i
+                && ((*((*m.as_mut_ptr().offset(0)).mv.as_mut_ptr() as *mut x264_union32_t)).i != 0
+                    || (*((*m.as_mut_ptr().offset(1)).mv.as_mut_ptr() as *mut x264_union32_t)).i
                         != 0)
             {
                 let mut i_cost_1: c_int = 0;
                 if (*h).param.analyse.i_subpel_refine <= 1 as c_int {
-                    let mut hpel_idx1_0: c_int = ((m[0 as c_int as usize].mv[0 as c_int as usize]
-                        as c_int
-                        & 2 as c_int)
-                        >> 1 as c_int)
-                        + (m[0 as c_int as usize].mv[1 as c_int as usize] as c_int & 2 as c_int);
-                    let mut hpel_idx2_0: c_int = ((m[1 as c_int as usize].mv[0 as c_int as usize]
-                        as c_int
-                        & 2 as c_int)
-                        >> 1 as c_int)
-                        + (m[1 as c_int as usize].mv[1 as c_int as usize] as c_int & 2 as c_int);
-                    let mut src1_1: *mut pixel = m[0 as c_int as usize].p_fref
-                        [hpel_idx1_0 as usize]
-                        .offset(
-                            (m[0 as c_int as usize].mv[0 as c_int as usize] as c_int >> 2 as c_int)
-                                as isize,
-                        )
-                        .offset(
-                            ((m[0 as c_int as usize].mv[1 as c_int as usize] as c_int
-                                >> 2 as c_int)
-                                * m[0 as c_int as usize].i_stride[0 as c_int as usize])
-                                as isize,
-                        );
-                    let mut src2_1: *mut pixel = m[1 as c_int as usize].p_fref
-                        [hpel_idx2_0 as usize]
-                        .offset(
-                            (m[1 as c_int as usize].mv[0 as c_int as usize] as c_int >> 2 as c_int)
-                                as isize,
-                        )
-                        .offset(
-                            ((m[1 as c_int as usize].mv[1 as c_int as usize] as c_int
-                                >> 2 as c_int)
-                                * m[1 as c_int as usize].i_stride[0 as c_int as usize])
-                                as isize,
-                        );
+                    let mut hpel_idx1_0: c_int = ((m[0].mv[0] as c_int & 2 as c_int) >> 1 as c_int)
+                        + (m[0].mv[1] as c_int & 2 as c_int);
+                    let mut hpel_idx2_0: c_int = ((m[1].mv[0] as c_int & 2 as c_int) >> 1 as c_int)
+                        + (m[1].mv[1] as c_int & 2 as c_int);
+                    let mut src1_1: *mut pixel = m[0].p_fref[hpel_idx1_0 as usize]
+                        .offset((m[0].mv[0] as c_int >> 2 as c_int) as isize)
+                        .offset(((m[0].mv[1] as c_int >> 2 as c_int) * m[0].i_stride[0]) as isize);
+                    let mut src2_1: *mut pixel = m[1].p_fref[hpel_idx2_0 as usize]
+                        .offset((m[1].mv[0] as c_int >> 2 as c_int) as isize)
+                        .offset(((m[1].mv[1] as c_int >> 2 as c_int) * m[1].i_stride[0]) as isize);
                     (*h).mc.avg[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
                         pix1.as_mut_ptr(),
                         16 as intptr_t,
                         src1_1,
-                        m[0 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
+                        m[0].i_stride[0] as intptr_t,
                         src2_1,
-                        m[1 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
+                        m[1].i_stride[0] as intptr_t,
                         i_bipred_weight,
                     );
                 } else {
@@ -13441,12 +13235,10 @@ pub mod slicetype_c {
                     src1_2 = (*h).mc.get_ref.expect("non-null function pointer")(
                         pix1.as_mut_ptr(),
                         &mut stride1_0,
-                        (*m.as_mut_ptr().offset(0 as c_int as isize))
-                            .p_fref
-                            .as_mut_ptr(),
-                        m[0 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
-                        m[0 as c_int as usize].mv[0 as c_int as usize] as c_int,
-                        m[0 as c_int as usize].mv[1 as c_int as usize] as c_int,
+                        (*m.as_mut_ptr().offset(0)).p_fref.as_mut_ptr(),
+                        m[0].i_stride[0] as intptr_t,
+                        m[0].mv[0] as c_int,
+                        m[0].mv[1] as c_int,
                         8 as c_int,
                         8 as c_int,
                         w,
@@ -13454,12 +13246,10 @@ pub mod slicetype_c {
                     src2_2 = (*h).mc.get_ref.expect("non-null function pointer")(
                         pix2,
                         &mut stride2_0,
-                        (*m.as_mut_ptr().offset(1 as c_int as isize))
-                            .p_fref
-                            .as_mut_ptr(),
-                        m[1 as c_int as usize].i_stride[0 as c_int as usize] as intptr_t,
-                        m[1 as c_int as usize].mv[0 as c_int as usize] as c_int,
-                        m[1 as c_int as usize].mv[1 as c_int as usize] as c_int,
+                        (*m.as_mut_ptr().offset(1)).p_fref.as_mut_ptr(),
+                        m[1].i_stride[0] as intptr_t,
+                        m[1].mv[0] as c_int,
+                        m[1].mv[1] as c_int,
                         8 as c_int,
                         8 as c_int,
                         w,
@@ -13477,7 +13267,7 @@ pub mod slicetype_c {
                 i_cost_1 = 5 as c_int * (*a).i_lambda
                     + (*h).pixf.mbcmp[PIXEL_8x8 as c_int as usize]
                         .expect("non-null function pointer")(
-                        m[0 as c_int as usize].p_fenc[0 as c_int as usize],
+                        m[0].p_fenc[0],
                         FENC_STRIDE as intptr_t,
                         pix1.as_mut_ptr(),
                         16 as intptr_t,
@@ -13494,9 +13284,8 @@ pub mod slicetype_c {
                 .as_mut_ptr()
                 .offset((8 as c_int + FDEC_STRIDE) as isize)
                 as *mut pixel;
-            let mut src: *mut pixel =
-                &mut *(*(*fenc).lowres.as_mut_ptr().offset(0 as c_int as isize))
-                    .offset(i_pel_offset as isize) as *mut pixel;
+            let mut src: *mut pixel = &mut *(*(*fenc).lowres.as_mut_ptr().offset(0))
+                .offset(i_pel_offset as isize) as *mut pixel;
             let intra_penalty: c_int = 5 as c_int * (*a).i_lambda;
             let mut satds: [c_int; 3] = [0; 3];
             let mut pixoff: c_int = 4 as c_int / SIZEOF_PIXEL;
@@ -13505,7 +13294,7 @@ pub mod slicetype_c {
                 src.offset(-(i_stride as isize)) as *const c_void,
                 (16 as c_int * SIZEOF_PIXEL) as size_t,
             );
-            let mut i: c_int = -(1 as c_int);
+            let mut i: c_int = -1;
             while i < 8 as c_int {
                 (*(&mut *pix.offset((i * 32 as c_int - pixoff) as isize) as *mut pixel
                     as *mut x264_union32_t))
@@ -13517,28 +13306,28 @@ pub mod slicetype_c {
             (*h).pixf
                 .intra_mbcmp_x3_8x8c
                 .expect("non-null function pointer")(
-                (*h).mb.pic.p_fenc[0 as c_int as usize],
+                (*h).mb.pic.p_fenc[0],
                 pix,
                 satds.as_mut_ptr(),
             );
-            let mut i_icost: c_int = if satds[0 as c_int as usize]
-                < (if satds[1 as c_int as usize] < satds[2 as c_int as usize] {
-                    satds[1 as c_int as usize]
+            let mut i_icost: c_int = if satds[0]
+                < (if satds[1] < satds[2] {
+                    satds[1]
                 } else {
-                    satds[2 as c_int as usize]
+                    satds[2]
                 }) {
-                satds[0 as c_int as usize]
-            } else if satds[1 as c_int as usize] < satds[2 as c_int as usize] {
-                satds[1 as c_int as usize]
+                satds[0]
+            } else if satds[1] < satds[2] {
+                satds[1]
             } else {
-                satds[2 as c_int as usize]
+                satds[2]
             };
             if (*h).param.analyse.i_subpel_refine > 1 as c_int {
                 (*h).predict_8x8c[I_PRED_CHROMA_P as c_int as usize]
                     .expect("non-null function pointer")(pix);
                 let mut satd: c_int = (*h).pixf.mbcmp[PIXEL_8x8 as c_int as usize]
                     .expect("non-null function pointer")(
-                    (*h).mb.pic.p_fenc[0 as c_int as usize],
+                    (*h).mb.pic.p_fenc[0],
                     FENC_STRIDE as intptr_t,
                     pix,
                     FDEC_STRIDE as intptr_t,
@@ -13558,7 +13347,7 @@ pub mod slicetype_c {
                     );
                     satd = (*h).pixf.mbcmp[PIXEL_8x8 as c_int as usize]
                         .expect("non-null function pointer")(
-                        (*h).mb.pic.p_fenc[0 as c_int as usize],
+                        (*h).mb.pic.p_fenc[0],
                         FENC_STRIDE as intptr_t,
                         pix,
                         FDEC_STRIDE as intptr_t,
@@ -13677,32 +13466,28 @@ pub mod slicetype_c {
         let mut fenc: *mut x264_frame_t = *frames.offset(b as isize);
         if (*fenc).i_cost_est[(b - p0) as usize][(p1 - b) as usize] >= 0 as c_int
             && ((*h).param.rc.i_vbv_buffer_size == 0
-                || *(*fenc).i_row_satds[(b - p0) as usize][(p1 - b) as usize]
-                    .offset(0 as c_int as isize)
-                    != -(1 as c_int))
+                || *(*fenc).i_row_satds[(b - p0) as usize][(p1 - b) as usize].offset(0) != -1)
         {
             i_score = (*fenc).i_cost_est[(b - p0) as usize][(p1 - b) as usize];
         } else {
             let mut dist_scale_factor: c_int = 128 as c_int;
-            do_search[0 as c_int as usize] = (b != p0
-                && (*(*fenc).lowres_mvs[0 as c_int as usize][(b - p0 - 1 as c_int) as usize]
-                    .offset(0 as c_int as isize))[0 as c_int as usize] as c_int
+            do_search[0] = (b != p0
+                && (*(*fenc).lowres_mvs[0][(b - p0 - 1 as c_int) as usize].offset(0))[0] as c_int
                     == 0x7fff as c_int) as c_int;
-            do_search[1 as c_int as usize] = (b != p1
-                && (*(*fenc).lowres_mvs[1 as c_int as usize][(p1 - b - 1 as c_int) as usize]
-                    .offset(0 as c_int as isize))[0 as c_int as usize] as c_int
+            do_search[1] = (b != p1
+                && (*(*fenc).lowres_mvs[1][(p1 - b - 1 as c_int) as usize].offset(0))[0] as c_int
                     == 0x7fff as c_int) as c_int;
-            if do_search[0 as c_int as usize] != 0 {
+            if do_search[0] != 0 {
                 if (*h).param.analyse.i_weighted_pred != 0 && b == p1 {
                     x264_10_weights_analyse(h, fenc, *frames.offset(p0 as isize), 1 as c_int);
-                    w = (*(*fenc).weight.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr();
+                    w = (*(*fenc).weight.as_mut_ptr().offset(0)).as_mut_ptr();
                 }
-                (*(*fenc).lowres_mvs[0 as c_int as usize][(b - p0 - 1 as c_int) as usize]
-                    .offset(0 as c_int as isize))[0 as c_int as usize] = 0 as int16_t;
+                (*(*fenc).lowres_mvs[0][(b - p0 - 1 as c_int) as usize].offset(0))[0] =
+                    0 as int16_t;
             }
-            if do_search[1 as c_int as usize] != 0 {
-                (*(*fenc).lowres_mvs[1 as c_int as usize][(p1 - b - 1 as c_int) as usize]
-                    .offset(0 as c_int as isize))[0 as c_int as usize] = 0 as int16_t;
+            if do_search[1] != 0 {
+                (*(*fenc).lowres_mvs[1][(p1 - b - 1 as c_int) as usize].offset(0))[0] =
+                    0 as int16_t;
             }
             if p1 != p0 {
                 dist_scale_factor = ((b - p0 << 8 as c_int) + (p1 - p0 >> 1 as c_int)) / (p1 - p0);
@@ -13711,9 +13496,8 @@ pub mod slicetype_c {
                 (*h).mb.i_mb_height + (NUM_INTS + PAD_SIZE) * (*h).param.i_lookahead_threads;
             let mut output_inter: [*mut c_int; 17] = [0 as *mut c_int; 17];
             let mut output_intra: [*mut c_int; 17] = [0 as *mut c_int; 17];
-            output_inter[0 as c_int as usize] = (*h).scratch_buffer2 as *mut c_int;
-            output_intra[0 as c_int as usize] =
-                output_inter[0 as c_int as usize].offset(output_buf_size as isize);
+            output_inter[0] = (*h).scratch_buffer2 as *mut c_int;
+            output_intra[0] = output_inter[0].offset(output_buf_size as isize);
             if (*h).param.i_lookahead_threads > 1 as c_int {
                 let mut s: [x264_slicetype_slice_t; 16] = [x264_slicetype_slice_t {
                     h: 0 as *mut x264_t,
@@ -13810,20 +13594,20 @@ pub mod slicetype_c {
                 (*h).i_threadslice_start = 0 as c_int;
                 (*h).i_threadslice_end = (*h).mb.i_mb_height;
                 memset(
-                    output_inter[0 as c_int as usize] as *mut c_void,
+                    output_inter[0] as *mut c_void,
                     0 as c_int,
                     ((output_buf_size - PAD_SIZE) as size_t)
                         .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
                 );
                 memset(
-                    output_intra[0 as c_int as usize] as *mut c_void,
+                    output_intra[0] as *mut c_void,
                     0 as c_int,
                     ((output_buf_size - PAD_SIZE) as size_t)
                         .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
                 );
-                let ref mut fresh19 = *output_intra[0 as c_int as usize].offset(NUM_ROWS as isize);
+                let ref mut fresh19 = *output_intra[0].offset(NUM_ROWS as isize);
                 *fresh19 = (*h).mb.i_mb_height;
-                *output_inter[0 as c_int as usize].offset(NUM_ROWS as isize) = *fresh19;
+                *output_inter[0].offset(NUM_ROWS as isize) = *fresh19;
                 let mut s_0: x264_slicetype_slice_t = {
                     let mut init = x264_slicetype_slice_t {
                         h: h,
@@ -13835,8 +13619,8 @@ pub mod slicetype_c {
                         dist_scale_factor: dist_scale_factor,
                         do_search: do_search.as_mut_ptr(),
                         w: w,
-                        output_inter: output_inter[0 as c_int as usize],
-                        output_intra: output_intra[0 as c_int as usize],
+                        output_inter: output_inter[0],
+                        output_intra: output_intra[0],
                     };
                     init
                 };
@@ -13846,15 +13630,14 @@ pub mod slicetype_c {
                 (*fenc).i_intra_mbs[(b - p0) as usize] = 0 as c_int;
             }
             if (*fenc).b_intra_calculated == 0 {
-                (*fenc).i_cost_est[0 as c_int as usize][0 as c_int as usize] = 0 as c_int;
-                (*fenc).i_cost_est_aq[0 as c_int as usize][0 as c_int as usize] = 0 as c_int;
+                (*fenc).i_cost_est[0][0] = 0 as c_int;
+                (*fenc).i_cost_est_aq[0][0] = 0 as c_int;
             }
             (*fenc).i_cost_est[(b - p0) as usize][(p1 - b) as usize] = 0 as c_int;
             (*fenc).i_cost_est_aq[(b - p0) as usize][(p1 - b) as usize] = 0 as c_int;
             let mut row_satd_inter: *mut c_int =
                 (*fenc).i_row_satds[(b - p0) as usize][(p1 - b) as usize];
-            let mut row_satd_intra: *mut c_int =
-                (*fenc).i_row_satds[0 as c_int as usize][0 as c_int as usize];
+            let mut row_satd_intra: *mut c_int = (*fenc).i_row_satds[0][0];
             let mut i_1: c_int = 0 as c_int;
             while i_1 < (*h).param.i_lookahead_threads {
                 if b == p1 {
@@ -13862,9 +13645,9 @@ pub mod slicetype_c {
                         *output_inter[i_1 as usize].offset(INTRA_MBS as isize);
                 }
                 if (*fenc).b_intra_calculated == 0 {
-                    (*fenc).i_cost_est[0 as c_int as usize][0 as c_int as usize] +=
+                    (*fenc).i_cost_est[0][0] +=
                         *output_intra[i_1 as usize].offset(COST_EST as isize);
-                    (*fenc).i_cost_est_aq[0 as c_int as usize][0 as c_int as usize] +=
+                    (*fenc).i_cost_est_aq[0][0] +=
                         *output_intra[i_1 as usize].offset(COST_EST_AQ as isize);
                 }
                 (*fenc).i_cost_est[(b - p0) as usize][(p1 - b) as usize] +=
@@ -14027,14 +13810,12 @@ pub mod slicetype_c {
         };
         let mut mvs: [*mut [int16_t; 2]; 2] = [
             if b != p0 {
-                (**frames.offset(b as isize)).lowres_mvs[0 as c_int as usize]
-                    [(b - p0 - 1 as c_int) as usize]
+                (**frames.offset(b as isize)).lowres_mvs[0][(b - p0 - 1 as c_int) as usize]
             } else {
                 0 as *mut [int16_t; 2]
             },
             if b != p1 {
-                (**frames.offset(b as isize)).lowres_mvs[1 as c_int as usize]
-                    [(p1 - b - 1 as c_int) as usize]
+                (**frames.offset(b as isize)).lowres_mvs[1][(p1 - b - 1 as c_int) as usize]
             } else {
                 0 as *mut [int16_t; 2]
             },
@@ -14089,11 +13870,11 @@ pub mod slicetype_c {
                 .mbtree_propagate_list
                 .expect("non-null function pointer")(
                 h,
-                ref_costs[0 as c_int as usize],
-                &mut *(*mvs.as_mut_ptr().offset(0 as c_int as isize)).offset(mb_index as isize),
+                ref_costs[0],
+                &mut *(*mvs.as_mut_ptr().offset(0)).offset(mb_index as isize),
                 buf,
                 &mut *lowres_costs.offset(mb_index as isize),
-                bipred_weights[0 as c_int as usize],
+                bipred_weights[0],
                 (*h).mb.i_mb_y,
                 (*h).mb.i_mb_width,
                 0 as c_int,
@@ -14103,11 +13884,11 @@ pub mod slicetype_c {
                     .mbtree_propagate_list
                     .expect("non-null function pointer")(
                     h,
-                    ref_costs[1 as c_int as usize],
-                    &mut *(*mvs.as_mut_ptr().offset(1 as c_int as isize)).offset(mb_index as isize),
+                    ref_costs[1],
+                    &mut *(*mvs.as_mut_ptr().offset(1)).offset(mb_index as isize),
                     buf,
                     &mut *lowres_costs.offset(mb_index as isize),
-                    bipred_weights[1 as c_int as usize],
+                    bipred_weights[1],
                     (*h).mb.i_mb_y,
                     (*h).mb.i_mb_width,
                     1 as c_int,
@@ -14158,14 +13939,14 @@ pub mod slicetype_c {
         if (*h).param.rc.i_lookahead == 0 {
             if b_intra != 0 {
                 memset(
-                    (**frames.offset(0 as c_int as isize)).i_propagate_cost as *mut c_void,
+                    (**frames.offset(0)).i_propagate_cost as *mut c_void,
                     0 as c_int,
                     ((*h).mb.i_mb_count as size_t)
                         .wrapping_mul(::core::mem::size_of::<uint16_t>() as size_t),
                 );
                 memcpy(
-                    (**frames.offset(0 as c_int as isize)).f_qp_offset as *mut c_void,
-                    (**frames.offset(0 as c_int as isize)).f_qp_offset_aq as *const c_void,
+                    (**frames.offset(0)).f_qp_offset as *mut c_void,
+                    (**frames.offset(0)).f_qp_offset_aq as *const c_void,
                     ((*h).mb.i_mb_count as size_t)
                         .wrapping_mul(::core::mem::size_of::<c_float>() as size_t),
                 );
@@ -14173,11 +13954,11 @@ pub mod slicetype_c {
             }
             let mut t: *mut uint16_t = (**frames.offset(last_nonb as isize)).i_propagate_cost;
             let ref mut fresh21 = (**frames.offset(last_nonb as isize)).i_propagate_cost;
-            *fresh21 = (**frames.offset(0 as c_int as isize)).i_propagate_cost;
-            let ref mut fresh22 = (**frames.offset(0 as c_int as isize)).i_propagate_cost;
+            *fresh21 = (**frames.offset(0)).i_propagate_cost;
+            let ref mut fresh22 = (**frames.offset(0)).i_propagate_cost;
             *fresh22 = t;
             memset(
-                (**frames.offset(0 as c_int as isize)).i_propagate_cost as *mut c_void,
+                (**frames.offset(0)).i_propagate_cost as *mut c_void,
                 0 as c_int,
                 ((*h).mb.i_mb_count as size_t)
                     .wrapping_mul(::core::mem::size_of::<uint16_t>() as size_t),
@@ -14291,8 +14072,8 @@ pub mod slicetype_c {
             );
             let mut t_0: *mut uint16_t = (**frames.offset(last_nonb as isize)).i_propagate_cost;
             let ref mut fresh24 = (**frames.offset(last_nonb as isize)).i_propagate_cost;
-            *fresh24 = (**frames.offset(0 as c_int as isize)).i_propagate_cost;
-            let ref mut fresh25 = (**frames.offset(0 as c_int as isize)).i_propagate_cost;
+            *fresh24 = (**frames.offset(0)).i_propagate_cost;
+            let ref mut fresh25 = (**frames.offset(0)).i_propagate_cost;
             *fresh25 = t_0;
         }
         macroblock_tree_finish(
@@ -14640,8 +14421,8 @@ pub mod slicetype_c {
             return 0 as c_int;
         }
         slicetype_frame_cost(h, a, frames, p0, p1, p1);
-        let mut icost: c_int = (*frame).i_cost_est[0 as c_int as usize][0 as c_int as usize];
-        let mut pcost: c_int = (*frame).i_cost_est[(p1 - p0) as usize][0 as c_int as usize];
+        let mut icost: c_int = (*frame).i_cost_est[0][0];
+        let mut pcost: c_int = (*frame).i_cost_est[(p1 - p0) as usize][0];
         let mut f_bias: c_float = 0.;
         let mut i_gop_size: c_int = (*frame).i_frame - (*(*h).lookahead).i_last_keyframe;
         let mut f_thresh_max: c_float =
@@ -15368,7 +15149,7 @@ pub mod slicetype_c {
         if (*(*h).lookahead).last_nonb.is_null() {
             return;
         }
-        frames[0 as c_int as usize] = (*(*h).lookahead).last_nonb;
+        frames[0] = (*(*h).lookahead).last_nonb;
         framecnt = 0 as c_int;
         while framecnt < i_max_search {
             frames[(framecnt + 1 as c_int) as usize] =
@@ -15382,7 +15163,7 @@ pub mod slicetype_c {
             }
             return;
         }
-        keyint_limit = (*h).param.i_keyint_max - (*frames[0 as c_int as usize]).i_frame
+        keyint_limit = (*h).param.i_keyint_max - (*frames[0]).i_frame
             + (*(*h).lookahead).i_last_keyframe
             - 1 as c_int;
         num_frames = if (*h).param.b_intra_refresh != 0 {
@@ -15398,13 +15179,13 @@ pub mod slicetype_c {
         } else if (*h).param.b_open_gop != 0 && num_frames < framecnt {
             num_frames += 1;
         } else if num_frames == 0 as c_int {
-            (*frames[1 as c_int as usize]).i_type = X264_TYPE_I;
+            (*frames[1]).i_type = X264_TYPE_I;
             return;
         }
-        if ((*frames[1 as c_int as usize]).i_type == X264_TYPE_AUTO
-            || ((*frames[1 as c_int as usize]).i_type == X264_TYPE_I
-                || (*frames[1 as c_int as usize]).i_type == X264_TYPE_IDR
-                || (*frames[1 as c_int as usize]).i_type == X264_TYPE_KEYFRAME))
+        if ((*frames[1]).i_type == X264_TYPE_AUTO
+            || ((*frames[1]).i_type == X264_TYPE_I
+                || (*frames[1]).i_type == X264_TYPE_IDR
+                || (*frames[1]).i_type == X264_TYPE_KEYFRAME))
             && (*h).param.i_scenecut_threshold != 0
             && scenecut(
                 h,
@@ -15417,8 +15198,8 @@ pub mod slicetype_c {
                 i_max_search,
             ) != 0
         {
-            if (*frames[1 as c_int as usize]).i_type == X264_TYPE_AUTO {
-                (*frames[1 as c_int as usize]).i_type = X264_TYPE_I;
+            if (*frames[1]).i_type == X264_TYPE_AUTO {
+                (*frames[1]).i_type = X264_TYPE_I;
             }
             return;
         }
@@ -16314,10 +16095,9 @@ pub mod slicetype_c {
             b = bframes + 1 as c_int;
             p1 = b;
             lowres_context_init(h, &mut a);
-            frames[0 as c_int as usize] = (*(*h).lookahead).last_nonb;
+            frames[0] = (*(*h).lookahead).last_nonb;
             memcpy(
-                &mut *frames.as_mut_ptr().offset(1 as c_int as isize) as *mut *mut x264_frame_t
-                    as *mut c_void,
+                &mut *frames.as_mut_ptr().offset(1) as *mut *mut x264_frame_t as *mut c_void,
                 (*(*h).lookahead).next.list as *const c_void,
                 ((bframes + 1 as c_int) as size_t)
                     .wrapping_mul(::core::mem::size_of::<*mut x264_frame_t>() as size_t),
@@ -16364,8 +16144,7 @@ pub mod slicetype_c {
                 0 as c_int,
             );
         }
-        let mut i_coded: c_int =
-            (**(*(*h).lookahead).next.list.offset(0 as c_int as isize)).i_frame;
+        let mut i_coded: c_int = (**(*(*h).lookahead).next.list.offset(0)).i_frame;
         if bframes != 0 {
             let mut idx_list: [c_int; 2] = [brefs + 1 as c_int, 1 as c_int];
             let mut i_1: c_int = 0 as c_int;
@@ -16383,9 +16162,8 @@ pub mod slicetype_c {
                     (**(*(*h).lookahead).next.list.offset(idx as isize)).i_pts;
                 i_1 += 1;
             }
-            frames[0 as c_int as usize] = *(*(*h).lookahead).next.list.offset(bframes as isize);
-            (*frames[0 as c_int as usize]).i_reordered_pts =
-                (**(*(*h).lookahead).next.list.offset(0 as c_int as isize)).i_pts;
+            frames[0] = *(*(*h).lookahead).next.list.offset(bframes as isize);
+            (*frames[0]).i_reordered_pts = (**(*(*h).lookahead).next.list.offset(0)).i_pts;
             memcpy(
                 (*(*h).lookahead).next.list as *mut c_void,
                 frames.as_mut_ptr() as *const c_void,
@@ -16409,8 +16187,8 @@ pub mod slicetype_c {
                     &mut (*h).i_cpb_delay,
                     &mut (*h).i_coded_fields,
                 );
-                (**(*(*h).lookahead).next.list.offset(0 as c_int as isize))
-                    .f_planned_cpb_duration[(i_2 - 1 as c_int) as usize] =
+                (**(*(*h).lookahead).next.list.offset(0)).f_planned_cpb_duration
+                    [(i_2 - 1 as c_int) as usize] =
                     (**(*(*h).lookahead).next.list.offset(i_2 as isize)).i_cpb_duration as c_double
                         * (*(*h).sps.as_mut_ptr()).vui.i_num_units_in_tick as c_double
                         / (*(*h).sps.as_mut_ptr()).vui.i_time_scale as c_double;
@@ -16443,10 +16221,8 @@ pub mod slicetype_c {
             b = (*(*h).fenc).i_bframes as c_int + 1 as c_int;
             p1 = b;
         } else {
-            p1 = ((*(*h).fref_nearest[1 as c_int as usize]).i_poc
-                - (*(*h).fref_nearest[0 as c_int as usize]).i_poc)
-                / 2 as c_int;
-            b = ((*(*h).fenc).i_poc - (*(*h).fref_nearest[0 as c_int as usize]).i_poc) / 2 as c_int;
+            p1 = ((*(*h).fref_nearest[1]).i_poc - (*(*h).fref_nearest[0]).i_poc) / 2 as c_int;
+            b = ((*(*h).fenc).i_poc - (*(*h).fref_nearest[0]).i_poc) / 2 as c_int;
         }
         let mut frames: *mut *mut x264_frame_t =
             (&mut (*h).fenc as *mut *mut x264_frame_t).offset(-(b as isize));
@@ -16499,8 +16275,8 @@ pub mod slicetype_c {
             || (*(*h).fenc).i_type == X264_TYPE_KEYFRAME)
         {
             memcpy(
-                (*(*h).fdec).i_row_satds[0 as c_int as usize][0 as c_int as usize] as *mut c_void,
-                (*(*h).fenc).i_row_satds[0 as c_int as usize][0 as c_int as usize] as *const c_void,
+                (*(*h).fdec).i_row_satds[0][0] as *mut c_void,
+                (*(*h).fenc).i_row_satds[0][0] as *const c_void,
                 ((*h).mb.i_mb_height as size_t)
                     .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
             );
@@ -16642,36 +16418,20 @@ pub mod rectangle_h {
                 (*(d.offset((s * 2 as c_int) as isize) as *mut x264_union64_t)).i = v8;
                 (*(d.offset((s * 3 as c_int) as isize) as *mut x264_union64_t)).i = v8;
             } else {
-                (*(d.offset((s * 0 as c_int) as isize)
-                    .offset(0 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d.offset((s * 0 as c_int) as isize)
-                    .offset(4 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
+                (*(d.offset((s * 0 as c_int) as isize).offset(0) as *mut x264_union32_t)).i = v4;
+                (*(d.offset((s * 0 as c_int) as isize).offset(4) as *mut x264_union32_t)).i = v4;
                 if h == 1 as c_int {
                     return;
                 }
-                (*(d.offset((s * 1 as c_int) as isize)
-                    .offset(0 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d.offset((s * 1 as c_int) as isize)
-                    .offset(4 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
+                (*(d.offset((s * 1 as c_int) as isize).offset(0) as *mut x264_union32_t)).i = v4;
+                (*(d.offset((s * 1 as c_int) as isize).offset(4) as *mut x264_union32_t)).i = v4;
                 if h == 2 as c_int {
                     return;
                 }
-                (*(d.offset((s * 2 as c_int) as isize)
-                    .offset(0 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d.offset((s * 2 as c_int) as isize)
-                    .offset(4 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d.offset((s * 3 as c_int) as isize)
-                    .offset(0 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
-                (*(d.offset((s * 3 as c_int) as isize)
-                    .offset(4 as c_int as isize) as *mut x264_union32_t))
-                    .i = v4;
+                (*(d.offset((s * 2 as c_int) as isize).offset(0) as *mut x264_union32_t)).i = v4;
+                (*(d.offset((s * 2 as c_int) as isize).offset(4) as *mut x264_union32_t)).i = v4;
+                (*(d.offset((s * 3 as c_int) as isize).offset(0) as *mut x264_union32_t)).i = v4;
+                (*(d.offset((s * 3 as c_int) as isize).offset(4) as *mut x264_union32_t)).i = v4;
             }
         } else if w == 16 as c_int {
             if h != 1 as c_int {
@@ -16688,22 +16448,14 @@ pub mod rectangle_h {
             }
             if WORD_SIZE == 8 as uint64_t {
                 loop {
-                    (*(d.offset((s * 0 as c_int) as isize)
-                        .offset(0 as c_int as isize)
-                        as *mut x264_union64_t))
-                        .i = v8;
-                    (*(d.offset((s * 0 as c_int) as isize)
-                        .offset(8 as c_int as isize)
-                        as *mut x264_union64_t))
-                        .i = v8;
-                    (*(d.offset((s * 1 as c_int) as isize)
-                        .offset(0 as c_int as isize)
-                        as *mut x264_union64_t))
-                        .i = v8;
-                    (*(d.offset((s * 1 as c_int) as isize)
-                        .offset(8 as c_int as isize)
-                        as *mut x264_union64_t))
-                        .i = v8;
+                    (*(d.offset((s * 0 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+                        v8;
+                    (*(d.offset((s * 0 as c_int) as isize).offset(8) as *mut x264_union64_t)).i =
+                        v8;
+                    (*(d.offset((s * 1 as c_int) as isize).offset(0) as *mut x264_union64_t)).i =
+                        v8;
+                    (*(d.offset((s * 1 as c_int) as isize).offset(8) as *mut x264_union64_t)).i =
+                        v8;
                     h -= 2 as c_int;
                     d = d.offset((s * 2 as c_int) as isize);
                     if !(h != 0) {
@@ -16712,9 +16464,9 @@ pub mod rectangle_h {
                 }
             } else {
                 loop {
-                    (*(d.offset(0 as c_int as isize) as *mut x264_union32_t)).i = v4;
-                    (*(d.offset(4 as c_int as isize) as *mut x264_union32_t)).i = v4;
-                    (*(d.offset(8 as c_int as isize) as *mut x264_union32_t)).i = v4;
+                    (*(d.offset(0) as *mut x264_union32_t)).i = v4;
+                    (*(d.offset(4) as *mut x264_union32_t)).i = v4;
+                    (*(d.offset(8) as *mut x264_union32_t)).i = v4;
                     (*(d.offset(12 as c_int as isize) as *mut x264_union32_t)).i = v4;
                     d = d.offset(s as isize);
                     h -= 1;
@@ -17408,7 +17160,7 @@ pub mod cabac_c {
             && *(*h)
                 .mb
                 .chroma_pred_mode
-                .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize) as c_int
+                .offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                 != 0 as c_int
         {
             ctx += 1;
@@ -17477,10 +17229,10 @@ pub mod cabac_c {
         let mut cbp_a: c_int = (*h).mb.cache.i_cbp_left & 0x30 as c_int;
         let mut cbp_b: c_int = (*h).mb.cache.i_cbp_top & 0x30 as c_int;
         let mut ctx: c_int = 0 as c_int;
-        if cbp_a != 0 && (*h).mb.cache.i_cbp_left != -(1 as c_int) {
+        if cbp_a != 0 && (*h).mb.cache.i_cbp_left != -1 {
             ctx += 1;
         }
-        if cbp_b != 0 && (*h).mb.cache.i_cbp_top != -(1 as c_int) {
+        if cbp_b != 0 && (*h).mb.cache.i_cbp_top != -1 {
             ctx += 2 as c_int;
         }
         if (*h).mb.i_cbp_chroma == 0 as c_int {
@@ -17703,12 +17455,10 @@ pub mod cabac_c {
         let mut mdx: c_int = 0;
         let mut mdy: c_int = 0;
         x264_10_mb_predict_mv(h, i_list, idx, width, mvp.as_mut_ptr());
-        mdx = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
-            [0 as c_int as usize] as c_int
-            - mvp[0 as c_int as usize] as c_int;
-        mdy = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
-            [1 as c_int as usize] as c_int
-            - mvp[1 as c_int as usize] as c_int;
+        mdx = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0] as c_int
+            - mvp[0] as c_int;
+        mdy = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1] as c_int
+            - mvp[1] as c_int;
         let mut amvd: uint16_t = x264_cabac_mvd_sum(
             (*(*(*h).mb.cache.mvd.as_mut_ptr().offset(i_list as isize))
                 .as_mut_ptr()
@@ -17882,7 +17632,7 @@ pub mod cabac_c {
         if slice_type == SLICE_TYPE_I as c_int {
             let mut ctx: c_int = 0 as c_int;
             if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
-                && (*h).mb.i_mb_type_left[0 as c_int as usize] != I_4x4 as c_int
+                && (*h).mb.i_mb_type_left[0] != I_4x4 as c_int
             {
                 ctx += 1;
             }
@@ -17974,14 +17724,14 @@ pub mod cabac_c {
             if (*h).mb.i_partition == D_16x16 as c_int {
                 x264_cabac_size_decision_noup(cb, 15 as c_long, 0 as c_long);
                 x264_cabac_size_decision_noup(cb, 16 as c_long, 0 as c_long);
-                if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+                if (*h).mb.pic.i_fref[0] > 1 as c_int {
                     cabac_ref_p(h, cb, 0 as c_int);
                 }
                 let mut mvd: uint16_t = cabac_mvd(h, cb, 0 as c_int, 0 as c_int, 4 as c_int);
                 x264_macroblock_cache_mvd(
                     h,
-                    block_idx_x[0 as c_int as usize] as c_int,
-                    block_idx_y[0 as c_int as usize] as c_int,
+                    block_idx_x[0] as c_int,
+                    block_idx_y[0] as c_int,
                     4 as c_int,
                     4 as c_int,
                     0 as c_int,
@@ -17990,15 +17740,15 @@ pub mod cabac_c {
             } else if (*h).mb.i_partition == D_16x8 as c_int {
                 x264_cabac_size_decision_noup(cb, 15 as c_long, 1 as c_long);
                 x264_cabac_size_decision_noup(cb, 17 as c_long, 1 as c_long);
-                if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+                if (*h).mb.pic.i_fref[0] > 1 as c_int {
                     cabac_ref_p(h, cb, 0 as c_int);
                     cabac_ref_p(h, cb, 8 as c_int);
                 }
                 let mut mvd_0: uint16_t = cabac_mvd(h, cb, 0 as c_int, 0 as c_int, 4 as c_int);
                 x264_macroblock_cache_mvd(
                     h,
-                    block_idx_x[0 as c_int as usize] as c_int,
-                    block_idx_y[0 as c_int as usize] as c_int,
+                    block_idx_x[0] as c_int,
+                    block_idx_y[0] as c_int,
                     4 as c_int,
                     2 as c_int,
                     0 as c_int,
@@ -18007,8 +17757,8 @@ pub mod cabac_c {
                 let mut mvd_1: uint16_t = cabac_mvd(h, cb, 0 as c_int, 8 as c_int, 4 as c_int);
                 x264_macroblock_cache_mvd(
                     h,
-                    block_idx_x[8 as c_int as usize] as c_int,
-                    block_idx_y[8 as c_int as usize] as c_int,
+                    block_idx_x[8] as c_int,
+                    block_idx_y[8] as c_int,
                     4 as c_int,
                     2 as c_int,
                     0 as c_int,
@@ -18017,15 +17767,15 @@ pub mod cabac_c {
             } else {
                 x264_cabac_size_decision_noup(cb, 15 as c_long, 1 as c_long);
                 x264_cabac_size_decision_noup(cb, 17 as c_long, 0 as c_long);
-                if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+                if (*h).mb.pic.i_fref[0] > 1 as c_int {
                     cabac_ref_p(h, cb, 0 as c_int);
                     cabac_ref_p(h, cb, 4 as c_int);
                 }
                 let mut mvd_2: uint16_t = cabac_mvd(h, cb, 0 as c_int, 0 as c_int, 2 as c_int);
                 x264_macroblock_cache_mvd(
                     h,
-                    block_idx_x[0 as c_int as usize] as c_int,
-                    block_idx_y[0 as c_int as usize] as c_int,
+                    block_idx_x[0] as c_int,
+                    block_idx_y[0] as c_int,
                     2 as c_int,
                     4 as c_int,
                     0 as c_int,
@@ -18034,8 +17784,8 @@ pub mod cabac_c {
                 let mut mvd_3: uint16_t = cabac_mvd(h, cb, 0 as c_int, 4 as c_int, 2 as c_int);
                 x264_macroblock_cache_mvd(
                     h,
-                    block_idx_x[4 as c_int as usize] as c_int,
-                    block_idx_y[4 as c_int as usize] as c_int,
+                    block_idx_x[4] as c_int,
+                    block_idx_y[4] as c_int,
                     2 as c_int,
                     4 as c_int,
                     0 as c_int,
@@ -18051,7 +17801,7 @@ pub mod cabac_c {
                 cabac_subpartition_p(cb, (*h).mb.i_sub_partition[i as usize] as c_int);
                 i += 1;
             }
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 cabac_ref_p(h, cb, 0 as c_int);
                 cabac_ref_p(h, cb, 4 as c_int);
                 cabac_ref_p(h, cb, 8 as c_int);
@@ -18076,8 +17826,8 @@ pub mod cabac_c {
     ) {
         let mut ctx: c_int = 0 as c_int;
         if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
-            && (*h).mb.i_mb_type_left[0 as c_int as usize] != B_SKIP as c_int
-            && (*h).mb.i_mb_type_left[0 as c_int as usize] != B_DIRECT as c_int
+            && (*h).mb.i_mb_type_left[0] != B_SKIP as c_int
+            && (*h).mb.i_mb_type_left[0] != B_DIRECT as c_int
         {
             ctx += 1;
         }
@@ -18103,10 +17853,10 @@ pub mod cabac_c {
                 cabac_subpartition_b(cb, (*h).mb.i_sub_partition[i as usize] as c_int);
                 i += 1;
             }
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 let mut i_0: c_int = 0 as c_int;
                 while i_0 < 4 as c_int {
-                    if x264_mb_partition_listX_table[0 as c_int as usize]
+                    if x264_mb_partition_listX_table[0]
                         [(*h).mb.i_sub_partition[i_0 as usize] as usize]
                         != 0
                     {
@@ -18115,10 +17865,10 @@ pub mod cabac_c {
                     i_0 += 1;
                 }
             }
-            if (*h).mb.pic.i_fref[1 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[1] > 1 as c_int {
                 let mut i_1: c_int = 0 as c_int;
                 while i_1 < 4 as c_int {
-                    if x264_mb_partition_listX_table[1 as c_int as usize]
+                    if x264_mb_partition_listX_table[1]
                         [(*h).mb.i_sub_partition[i_1 as usize] as usize]
                         != 0
                     {
@@ -18129,8 +17879,7 @@ pub mod cabac_c {
             }
             let mut i_2: c_int = 0 as c_int;
             while i_2 < 4 as c_int {
-                if x264_mb_partition_listX_table[0 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_2 as usize] as usize]
+                if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i_2 as usize] as usize]
                     != 0
                 {
                     let mut mvd: uint16_t =
@@ -18149,8 +17898,7 @@ pub mod cabac_c {
             }
             let mut i_3: c_int = 0 as c_int;
             while i_3 < 4 as c_int {
-                if x264_mb_partition_listX_table[1 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_3 as usize] as usize]
+                if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i_3 as usize] as usize]
                     != 0
                 {
                     let mut mvd_0: uint16_t =
@@ -18241,13 +17989,11 @@ pub mod cabac_c {
             let mut b_list: *const [uint8_t; 2] =
                 (*x264_mb_type_list_table.as_ptr().offset(i_mb_type as isize)).as_ptr()
                     as *const [uint8_t; 2];
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
-                if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
+                if (*b_list.offset(0))[0] != 0 {
                     cabac_ref_b(h, cb, 0 as c_int, 0 as c_int);
                 }
-                if (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] as c_int != 0
-                    && (*h).mb.i_partition != D_16x16 as c_int
-                {
+                if (*b_list.offset(0))[1] as c_int != 0 && (*h).mb.i_partition != D_16x16 as c_int {
                     cabac_ref_b(
                         h,
                         cb,
@@ -18256,13 +18002,11 @@ pub mod cabac_c {
                     );
                 }
             }
-            if (*h).mb.pic.i_fref[1 as c_int as usize] > 1 as c_int {
-                if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+            if (*h).mb.pic.i_fref[1] > 1 as c_int {
+                if (*b_list.offset(1))[0] != 0 {
                     cabac_ref_b(h, cb, 1 as c_int, 0 as c_int);
                 }
-                if (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] as c_int != 0
-                    && (*h).mb.i_partition != D_16x16 as c_int
-                {
+                if (*b_list.offset(1))[1] as c_int != 0 && (*h).mb.i_partition != D_16x16 as c_int {
                     cabac_ref_b(
                         h,
                         cb,
@@ -18274,12 +18018,12 @@ pub mod cabac_c {
             let mut i_list: c_int = 0 as c_int;
             while i_list < 2 as c_int {
                 if (*h).mb.i_partition == D_16x16 as c_int {
-                    if (*b_list.offset(i_list as isize))[0 as c_int as usize] != 0 {
+                    if (*b_list.offset(i_list as isize))[0] != 0 {
                         let mut mvd_1: uint16_t = cabac_mvd(h, cb, i_list, 0 as c_int, 4 as c_int);
                         x264_macroblock_cache_mvd(
                             h,
-                            block_idx_x[0 as c_int as usize] as c_int,
-                            block_idx_y[0 as c_int as usize] as c_int,
+                            block_idx_x[0] as c_int,
+                            block_idx_y[0] as c_int,
                             4 as c_int,
                             4 as c_int,
                             i_list,
@@ -18287,24 +18031,24 @@ pub mod cabac_c {
                         );
                     }
                 } else if (*h).mb.i_partition == D_16x8 as c_int {
-                    if (*b_list.offset(i_list as isize))[0 as c_int as usize] != 0 {
+                    if (*b_list.offset(i_list as isize))[0] != 0 {
                         let mut mvd_2: uint16_t = cabac_mvd(h, cb, i_list, 0 as c_int, 4 as c_int);
                         x264_macroblock_cache_mvd(
                             h,
-                            block_idx_x[0 as c_int as usize] as c_int,
-                            block_idx_y[0 as c_int as usize] as c_int,
+                            block_idx_x[0] as c_int,
+                            block_idx_y[0] as c_int,
                             4 as c_int,
                             2 as c_int,
                             i_list,
                             mvd_2,
                         );
                     }
-                    if (*b_list.offset(i_list as isize))[1 as c_int as usize] != 0 {
+                    if (*b_list.offset(i_list as isize))[1] != 0 {
                         let mut mvd_3: uint16_t = cabac_mvd(h, cb, i_list, 8 as c_int, 4 as c_int);
                         x264_macroblock_cache_mvd(
                             h,
-                            block_idx_x[8 as c_int as usize] as c_int,
-                            block_idx_y[8 as c_int as usize] as c_int,
+                            block_idx_x[8] as c_int,
+                            block_idx_y[8] as c_int,
                             4 as c_int,
                             2 as c_int,
                             i_list,
@@ -18312,24 +18056,24 @@ pub mod cabac_c {
                         );
                     }
                 } else {
-                    if (*b_list.offset(i_list as isize))[0 as c_int as usize] != 0 {
+                    if (*b_list.offset(i_list as isize))[0] != 0 {
                         let mut mvd_4: uint16_t = cabac_mvd(h, cb, i_list, 0 as c_int, 2 as c_int);
                         x264_macroblock_cache_mvd(
                             h,
-                            block_idx_x[0 as c_int as usize] as c_int,
-                            block_idx_y[0 as c_int as usize] as c_int,
+                            block_idx_x[0] as c_int,
+                            block_idx_y[0] as c_int,
                             2 as c_int,
                             4 as c_int,
                             i_list,
                             mvd_4,
                         );
                     }
-                    if (*b_list.offset(i_list as isize))[1 as c_int as usize] != 0 {
+                    if (*b_list.offset(i_list as isize))[1] != 0 {
                         let mut mvd_5: uint16_t = cabac_mvd(h, cb, i_list, 4 as c_int, 2 as c_int);
                         x264_macroblock_cache_mvd(
                             h,
-                            block_idx_x[4 as c_int as usize] as c_int,
-                            block_idx_y[4 as c_int as usize] as c_int,
+                            block_idx_x[4] as c_int,
+                            block_idx_y[4] as c_int,
                             2 as c_int,
                             4 as c_int,
                             i_list,
@@ -18371,12 +18115,12 @@ pub mod cabac_c {
         if b_dc != 0 {
             i_idx -= LUMA_DC;
             if i_cat == DCT_CHROMA_DC as c_int {
-                let mut i_nza: c_int = if (*h).mb.cache.i_cbp_left != -(1 as c_int) {
+                let mut i_nza: c_int = if (*h).mb.cache.i_cbp_left != -1 {
                     (*h).mb.cache.i_cbp_left >> 8 as c_int + i_idx & 1 as c_int
                 } else {
                     b_intra
                 };
-                let mut i_nzb: c_int = if (*h).mb.cache.i_cbp_top != -(1 as c_int) {
+                let mut i_nzb: c_int = if (*h).mb.cache.i_cbp_top != -1 {
                     (*h).mb.cache.i_cbp_top >> 8 as c_int + i_idx & 1 as c_int
                 } else {
                     b_intra
@@ -18485,7 +18229,7 @@ pub mod cabac_c {
         let mut last: c_int =
             (*h).quantf.coeff_last[ctx_block_cat as usize].expect("non-null function pointer")(l);
         let mut coeff_abs: c_int = abs(*l.offset(last as isize));
-        let mut ctx: c_int = coeff_abs_level1_ctx[0 as c_int as usize] as c_int + ctx_level;
+        let mut ctx: c_int = coeff_abs_level1_ctx[0] as c_int + ctx_level;
         let mut node_ctx: c_int = 0;
         let mut levelgt1_ctx: *const uint8_t = if chroma422dc != 0 {
             coeff_abs_levelgt1_ctx_chroma_dc.as_ptr()
@@ -18534,7 +18278,7 @@ pub mod cabac_c {
         }
         if coeff_abs > 1 as c_int {
             x264_cabac_size_decision(cb, ctx as c_long, 1 as c_long);
-            ctx = *levelgt1_ctx.offset(0 as c_int as isize) as c_int + ctx_level;
+            ctx = *levelgt1_ctx.offset(0) as c_int + ctx_level;
             if coeff_abs < 15 as c_int {
                 (*cb).f8_bits_encoded += x264_10_cabac_size_unary[(coeff_abs - 1 as c_int) as usize]
                     [(*cb).state[ctx as usize] as usize]
@@ -18542,22 +18286,19 @@ pub mod cabac_c {
                 (*cb).state[ctx as usize] = x264_10_cabac_transition_unary
                     [(coeff_abs - 1 as c_int) as usize][(*cb).state[ctx as usize] as usize];
             } else {
-                (*cb).f8_bits_encoded += x264_10_cabac_size_unary[14 as c_int as usize]
-                    [(*cb).state[ctx as usize] as usize]
-                    as c_int;
-                (*cb).state[ctx as usize] = x264_10_cabac_transition_unary[14 as c_int as usize]
-                    [(*cb).state[ctx as usize] as usize];
+                (*cb).f8_bits_encoded +=
+                    x264_10_cabac_size_unary[14][(*cb).state[ctx as usize] as usize] as c_int;
+                (*cb).state[ctx as usize] =
+                    x264_10_cabac_transition_unary[14][(*cb).state[ctx as usize] as usize];
                 (*cb).f8_bits_encoded += (bs_size_ue_big(
                     (coeff_abs - 15 as c_int + ((1 as c_int) << 0 as c_int) - 1 as c_int) as c_uint,
                 ) - 0 as c_int)
                     << 8 as c_int;
             }
-            node_ctx =
-                coeff_abs_level_transition[1 as c_int as usize][0 as c_int as usize] as c_int;
+            node_ctx = coeff_abs_level_transition[1][0] as c_int;
         } else {
             x264_cabac_size_decision(cb, ctx as c_long, 0 as c_long);
-            node_ctx =
-                coeff_abs_level_transition[0 as c_int as usize][0 as c_int as usize] as c_int;
+            node_ctx = coeff_abs_level_transition[0][0] as c_int;
             (*cb).f8_bits_encoded += 256 as c_int;
         }
         let mut i: c_int = last - 1 as c_int;
@@ -18605,23 +18346,21 @@ pub mod cabac_c {
                             [(coeff_abs - 1 as c_int) as usize]
                             [(*cb).state[ctx as usize] as usize];
                     } else {
-                        (*cb).f8_bits_encoded += x264_10_cabac_size_unary[14 as c_int as usize]
+                        (*cb).f8_bits_encoded += x264_10_cabac_size_unary[14]
                             [(*cb).state[ctx as usize] as usize]
                             as c_int;
-                        (*cb).state[ctx as usize] = x264_10_cabac_transition_unary
-                            [14 as c_int as usize][(*cb).state[ctx as usize] as usize];
+                        (*cb).state[ctx as usize] =
+                            x264_10_cabac_transition_unary[14][(*cb).state[ctx as usize] as usize];
                         (*cb).f8_bits_encoded += (bs_size_ue_big(
                             (coeff_abs - 15 as c_int + ((1 as c_int) << 0 as c_int) - 1 as c_int)
                                 as c_uint,
                         ) - 0 as c_int)
                             << 8 as c_int;
                     }
-                    node_ctx =
-                        coeff_abs_level_transition[1 as c_int as usize][node_ctx as usize] as c_int;
+                    node_ctx = coeff_abs_level_transition[1][node_ctx as usize] as c_int;
                 } else {
                     x264_cabac_size_decision(cb, ctx as c_long, 0 as c_long);
-                    node_ctx =
-                        coeff_abs_level_transition[0 as c_int as usize][node_ctx as usize] as c_int;
+                    node_ctx = coeff_abs_level_transition[0][node_ctx as usize] as c_int;
                     (*cb).f8_bits_encoded += 256 as c_int;
                 }
             } else {
@@ -18768,7 +18507,7 @@ pub mod cabac_c {
                                         as c_int,
                                     (*(*h).dct.luma4x4.as_mut_ptr().offset(i as isize))
                                         .as_mut_ptr()
-                                        .offset(1 as c_int as isize),
+                                        .offset(1),
                                 );
                             } else {
                                 x264_cabac_size_decision(cb, ctxidxinc_0 as c_long, 0 as c_long);
@@ -18785,77 +18524,67 @@ pub mod cabac_c {
                         && *(*h)
                             .mb
                             .mb_transform_size
-                            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
+                            .offset((*h).mb.i_mb_left_xy[0] as isize)
                             == 0
-                        && *(*h)
-                            .mb
-                            .cbp
-                            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                            as c_int
+                        && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                             & 0x1000 as c_int
                             == 0
                     {
-                        nnzbak[0 as c_int as usize][0 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 0 as c_int + 0 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[0][0] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 0 as c_int + 0 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 0 as c_int + 0 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[0 as c_int as usize][1 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 0 as c_int + 2 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[0][1] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 0 as c_int + 2 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 0 as c_int + 2 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[1 as c_int as usize][0 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 1 as c_int + 0 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[1][0] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 1 as c_int + 0 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 0 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[1 as c_int as usize][1 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 1 as c_int + 2 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[1][1] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 1 as c_int + 2 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 2 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[2 as c_int as usize][0 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 2 as c_int + 0 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[2][0] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 2 as c_int + 0 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 0 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[2 as c_int as usize][1 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 2 as c_int + 2 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[2][1] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 2 as c_int + 2 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 2 as c_int) as usize]
                             as c_int
@@ -18866,77 +18595,67 @@ pub mod cabac_c {
                         && *(*h)
                             .mb
                             .mb_transform_size
-                            .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
+                            .offset((*h).mb.i_mb_left_xy[1] as isize)
                             == 0
-                        && *(*h)
-                            .mb
-                            .cbp
-                            .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                            as c_int
+                        && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                             & 0x1000 as c_int
                             == 0
                     {
-                        nnzbak[0 as c_int as usize][2 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 0 as c_int + 8 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[0][2] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 0 as c_int + 8 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 0 as c_int + 8 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[0 as c_int as usize][3 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 0 as c_int + 10 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[0][3] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 0 as c_int + 10 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 0 as c_int + 10 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[1 as c_int as usize][2 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 1 as c_int + 8 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[1][2] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 1 as c_int + 8 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 8 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[1 as c_int as usize][3 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 1 as c_int + 10 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[1][3] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 1 as c_int + 10 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 10 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[2 as c_int as usize][2 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 2 as c_int + 8 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[2][2] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 2 as c_int + 8 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 8 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
                             as usize] = 0 as uint8_t;
-                        nnzbak[2 as c_int as usize][3 as c_int as usize] =
-                            (*h).mb.cache.non_zero_count[(x264_scan8
-                                [(16 as c_int * 2 as c_int + 10 as c_int) as usize]
-                                as c_int
-                                - 1 as c_int)
-                                as usize];
+                        nnzbak[2][3] = (*h).mb.cache.non_zero_count[(x264_scan8
+                            [(16 as c_int * 2 as c_int + 10 as c_int) as usize]
+                            as c_int
+                            - 1 as c_int)
+                            as usize];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 10 as c_int) as usize]
                             as c_int
@@ -18953,10 +18672,8 @@ pub mod cabac_c {
                             & 0x1000 as c_int
                             == 0
                     {
-                        (*(&mut *(*nnzbak.as_mut_ptr().offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize) as *mut uint8_t
-                            as *mut x264_union32_t))
+                        (*(&mut *(*nnzbak.as_mut_ptr().offset(0)).as_mut_ptr().offset(4)
+                            as *mut uint8_t as *mut x264_union32_t))
                             .i = (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                             (*x264_scan8
                                 .as_ptr()
@@ -18974,10 +18691,8 @@ pub mod cabac_c {
                                 - 8 as c_int) as isize,
                         ) as *mut uint8_t as *mut x264_union32_t))
                             .i = 0 as c_uint as uint32_t;
-                        (*(&mut *(*nnzbak.as_mut_ptr().offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize) as *mut uint8_t
-                            as *mut x264_union32_t))
+                        (*(&mut *(*nnzbak.as_mut_ptr().offset(1)).as_mut_ptr().offset(4)
+                            as *mut uint8_t as *mut x264_union32_t))
                             .i = (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                             (*x264_scan8
                                 .as_ptr()
@@ -18995,10 +18710,8 @@ pub mod cabac_c {
                                 - 8 as c_int) as isize,
                         ) as *mut uint8_t as *mut x264_union32_t))
                             .i = 0 as c_uint as uint32_t;
-                        (*(&mut *(*nnzbak.as_mut_ptr().offset(2 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize) as *mut uint8_t
-                            as *mut x264_union32_t))
+                        (*(&mut *(*nnzbak.as_mut_ptr().offset(2)).as_mut_ptr().offset(4)
+                            as *mut uint8_t as *mut x264_union32_t))
                             .i = (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
                             (*x264_scan8
                                 .as_ptr()
@@ -19065,13 +18778,9 @@ pub mod cabac_c {
                         && *(*h)
                             .mb
                             .mb_transform_size
-                            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
+                            .offset((*h).mb.i_mb_left_xy[0] as isize)
                             == 0
-                        && *(*h)
-                            .mb
-                            .cbp
-                            .offset((*h).mb.i_mb_left_xy[0 as c_int as usize] as isize)
-                            as c_int
+                        && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                             & 0x1000 as c_int
                             == 0
                     {
@@ -19079,44 +18788,40 @@ pub mod cabac_c {
                             [(16 as c_int * 0 as c_int + 0 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[0 as c_int as usize][0 as c_int as usize];
+                            as usize] = nnzbak[0][0];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 0 as c_int + 2 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[0 as c_int as usize][1 as c_int as usize];
+                            as usize] = nnzbak[0][1];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 0 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[1 as c_int as usize][0 as c_int as usize];
+                            as usize] = nnzbak[1][0];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 2 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[1 as c_int as usize][1 as c_int as usize];
+                            as usize] = nnzbak[1][1];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 0 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[2 as c_int as usize][0 as c_int as usize];
+                            as usize] = nnzbak[2][0];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 2 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[2 as c_int as usize][1 as c_int as usize];
+                            as usize] = nnzbak[2][1];
                     }
                     if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
                         && *(*h)
                             .mb
                             .mb_transform_size
-                            .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
+                            .offset((*h).mb.i_mb_left_xy[1] as isize)
                             == 0
-                        && *(*h)
-                            .mb
-                            .cbp
-                            .offset((*h).mb.i_mb_left_xy[1 as c_int as usize] as isize)
-                            as c_int
+                        && *(*h).mb.cbp.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                             & 0x1000 as c_int
                             == 0
                     {
@@ -19124,32 +18829,32 @@ pub mod cabac_c {
                             [(16 as c_int * 0 as c_int + 8 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[0 as c_int as usize][2 as c_int as usize];
+                            as usize] = nnzbak[0][2];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 0 as c_int + 10 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[0 as c_int as usize][3 as c_int as usize];
+                            as usize] = nnzbak[0][3];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 8 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[1 as c_int as usize][2 as c_int as usize];
+                            as usize] = nnzbak[1][2];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 1 as c_int + 10 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[1 as c_int as usize][3 as c_int as usize];
+                            as usize] = nnzbak[1][3];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 8 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[2 as c_int as usize][2 as c_int as usize];
+                            as usize] = nnzbak[2][2];
                         (*h).mb.cache.non_zero_count[(x264_scan8
                             [(16 as c_int * 2 as c_int + 10 as c_int) as usize]
                             as c_int
                             - 1 as c_int)
-                            as usize] = nnzbak[2 as c_int as usize][3 as c_int as usize];
+                            as usize] = nnzbak[2][3];
                     }
                     if (*h).mb.i_neighbour & MB_TOP as c_int as c_uint != 0
                         && *(*h)
@@ -19168,9 +18873,7 @@ pub mod cabac_c {
                                 as c_int
                                 - 8 as c_int) as isize,
                         ) as *mut uint8_t as *mut x264_union32_t))
-                            .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(0 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize)
+                            .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(0)).as_mut_ptr().offset(4)
                             as *mut uint8_t
                             as *mut x264_union32_t))
                             .i;
@@ -19181,9 +18884,7 @@ pub mod cabac_c {
                                 as c_int
                                 - 8 as c_int) as isize,
                         ) as *mut uint8_t as *mut x264_union32_t))
-                            .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(1 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize)
+                            .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(1)).as_mut_ptr().offset(4)
                             as *mut uint8_t
                             as *mut x264_union32_t))
                             .i;
@@ -19194,9 +18895,7 @@ pub mod cabac_c {
                                 as c_int
                                 - 8 as c_int) as isize,
                         ) as *mut uint8_t as *mut x264_union32_t))
-                            .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(2 as c_int as isize))
-                            .as_mut_ptr()
-                            .offset(4 as c_int as isize)
+                            .i = (*(&mut *(*nnzbak.as_mut_ptr().offset(2)).as_mut_ptr().offset(4)
                             as *mut uint8_t
                             as *mut x264_union32_t))
                             .i;
@@ -19286,8 +18985,7 @@ pub mod cabac_c {
                             h,
                             cb,
                             DCT_CHROMA_DC as c_int,
-                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_3 as c_long, 0 as c_long);
@@ -19308,8 +19006,7 @@ pub mod cabac_c {
                             h,
                             cb,
                             DCT_CHROMA_DC as c_int,
-                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize))
-                                .as_mut_ptr(),
+                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_4 as c_long, 0 as c_long);
@@ -19331,8 +19028,7 @@ pub mod cabac_c {
                             h,
                             cb,
                             DCT_CHROMA_DC as c_int,
-                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize))
-                                .as_mut_ptr(),
+                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_5 as c_long, 0 as c_long);
@@ -19353,8 +19049,7 @@ pub mod cabac_c {
                             h,
                             cb,
                             DCT_CHROMA_DC as c_int,
-                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize))
-                                .as_mut_ptr(),
+                            (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_6 as c_long, 0 as c_long);
@@ -19381,7 +19076,7 @@ pub mod cabac_c {
                                     DCT_CHROMA_AC as c_int,
                                     (*(*h).dct.luma4x4.as_mut_ptr().offset(j as isize))
                                         .as_mut_ptr()
-                                        .offset(1 as c_int as isize),
+                                        .offset(1),
                                 );
                             } else {
                                 x264_cabac_size_decision(cb, ctxidxinc_7 as c_long, 0 as c_long);
@@ -19435,10 +19130,7 @@ pub mod cabac_c {
                 mvd,
             );
         } else if i_mb_type > B_DIRECT as c_int && i_mb_type < B_8x8 as c_int {
-            if x264_mb_type_list_table[i_mb_type as usize][0 as c_int as usize]
-                [(i8 != 0) as c_int as usize]
-                != 0
-            {
+            if x264_mb_type_list_table[i_mb_type as usize][0][(i8 != 0) as c_int as usize] != 0 {
                 let mut mvd_0: uint16_t =
                     cabac_mvd(h, cb, 0 as c_int, 4 as c_int * i8, 4 as c_int >> b_8x16);
                 x264_macroblock_cache_mvd(
@@ -19451,10 +19143,7 @@ pub mod cabac_c {
                     mvd_0,
                 );
             }
-            if x264_mb_type_list_table[i_mb_type as usize][1 as c_int as usize]
-                [(i8 != 0) as c_int as usize]
-                != 0
-            {
+            if x264_mb_type_list_table[i_mb_type as usize][1][(i8 != 0) as c_int as usize] != 0 {
                 let mut mvd_1: uint16_t =
                     cabac_mvd(h, cb, 1 as c_int, 4 as c_int * i8, 4 as c_int >> b_8x16);
                 x264_macroblock_cache_mvd(
@@ -19468,9 +19157,7 @@ pub mod cabac_c {
                 );
             }
         } else {
-            if x264_mb_partition_listX_table[0 as c_int as usize]
-                [(*h).mb.i_sub_partition[i8 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i8 as usize] as usize] != 0
             {
                 let mut mvd_2: uint16_t = cabac_mvd(h, cb, 0 as c_int, 4 as c_int * i8, 2 as c_int);
                 x264_macroblock_cache_mvd(
@@ -19483,9 +19170,7 @@ pub mod cabac_c {
                     mvd_2,
                 );
             }
-            if x264_mb_partition_listX_table[1 as c_int as usize]
-                [(*h).mb.i_sub_partition[i8 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i8 as usize] as usize] != 0
             {
                 let mut mvd_3: uint16_t = cabac_mvd(h, cb, 1 as c_int, 4 as c_int * i8, 2 as c_int);
                 x264_macroblock_cache_mvd(
@@ -19606,7 +19291,7 @@ pub mod cabac_c {
                                 .as_mut_ptr()
                                 .offset((16 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_1 as c_long, 0 as c_long);
@@ -19633,7 +19318,7 @@ pub mod cabac_c {
                                 .as_mut_ptr()
                                 .offset((18 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_2 as c_long, 0 as c_long);
@@ -19660,7 +19345,7 @@ pub mod cabac_c {
                                 .as_mut_ptr()
                                 .offset((32 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_3 as c_long, 0 as c_long);
@@ -19687,7 +19372,7 @@ pub mod cabac_c {
                                 .as_mut_ptr()
                                 .offset((34 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_4 as c_long, 0 as c_long);
@@ -19715,7 +19400,7 @@ pub mod cabac_c {
                                 .as_mut_ptr()
                                 .offset((16 as c_int + i8) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_5 as c_long, 0 as c_long);
@@ -19742,7 +19427,7 @@ pub mod cabac_c {
                                 .as_mut_ptr()
                                 .offset((32 as c_int + i8) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                         );
                     } else {
                         x264_cabac_size_decision(cb, ctxidxinc_6 as c_long, 0 as c_long);
@@ -19969,7 +19654,7 @@ pub mod cabac_c {
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                     );
                 } else {
                     x264_cabac_size_decision(cb, ctxidxinc as c_long, 0 as c_long);
@@ -19990,7 +19675,7 @@ pub mod cabac_c {
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                     );
                 } else {
                     x264_cabac_size_decision(cb, ctxidxinc_0 as c_long, 0 as c_long);
@@ -20012,7 +19697,7 @@ pub mod cabac_c {
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                     );
                 } else {
                     x264_cabac_size_decision(cb, ctxidxinc_1 as c_long, 0 as c_long);
@@ -20033,7 +19718,7 @@ pub mod cabac_c {
                         h,
                         cb,
                         DCT_CHROMA_DC as c_int,
-                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                     );
                 } else {
                     x264_cabac_size_decision(cb, ctxidxinc_2 as c_long, 0 as c_long);
@@ -20060,7 +19745,7 @@ pub mod cabac_c {
                                 DCT_CHROMA_AC as c_int,
                                 (*(*h).dct.luma4x4.as_mut_ptr().offset(j as isize))
                                     .as_mut_ptr()
-                                    .offset(1 as c_int as isize),
+                                    .offset(1),
                             );
                         } else {
                             x264_cabac_size_decision(cb, ctxidxinc_3 as c_long, 0 as c_long);
@@ -20344,13 +20029,13 @@ pub mod cavlc_c {
         ],
         [
             1 as c_int as uint8_t,
-            -(1 as c_int) as uint8_t,
-            -(1 as c_int) as uint8_t,
-            -(1 as c_int) as uint8_t,
+            u8::MAX,
+            u8::MAX,
+            u8::MAX,
             2 as c_int as uint8_t,
-            -(1 as c_int) as uint8_t,
-            -(1 as c_int) as uint8_t,
-            -(1 as c_int) as uint8_t,
+            u8::MAX,
+            u8::MAX,
+            u8::MAX,
             3 as c_int as uint8_t,
         ],
     ];
@@ -20478,23 +20163,17 @@ pub mod cavlc_c {
         i_total_zero = (runlevel.last + 1 as int32_t - i_total as int32_t) as c_int;
         runlevel.level[(i_total + 0 as c_int) as usize] = 2 as c_int as dctcoef;
         runlevel.level[(i_total + 1 as c_int) as usize] = 2 as c_int as dctcoef;
-        i_trailing = ((runlevel.level[0 as c_int as usize] + 1 as dctcoef
-            | 1 as dctcoef - runlevel.level[0 as c_int as usize])
+        i_trailing = ((runlevel.level[0] + 1 as dctcoef | 1 as dctcoef - runlevel.level[0])
             >> 31 as c_int
             & 1 as dctcoef
-            | (runlevel.level[1 as c_int as usize] + 1 as dctcoef
-                | 1 as dctcoef - runlevel.level[1 as c_int as usize])
-                >> 31 as c_int
+            | (runlevel.level[1] + 1 as dctcoef | 1 as dctcoef - runlevel.level[1]) >> 31 as c_int
                 & 2 as dctcoef
-            | (runlevel.level[2 as c_int as usize] + 1 as dctcoef
-                | 1 as dctcoef - runlevel.level[2 as c_int as usize])
-                >> 31 as c_int
+            | (runlevel.level[2] + 1 as dctcoef | 1 as dctcoef - runlevel.level[2]) >> 31 as c_int
                 & 4 as dctcoef) as c_int;
         i_trailing = ctz_index[i_trailing as usize] as c_int;
-        i_sign = (runlevel.level[2 as c_int as usize] >> 31 as c_int & 1 as dctcoef
-            | runlevel.level[1 as c_int as usize] >> 31 as c_int & 2 as dctcoef
-            | runlevel.level[0 as c_int as usize] >> 31 as c_int & 4 as dctcoef)
-            as c_uint;
+        i_sign = (runlevel.level[2] >> 31 as c_int & 1 as dctcoef
+            | runlevel.level[1] >> 31 as c_int & 2 as dctcoef
+            | runlevel.level[0] >> 31 as c_int & 4 as dctcoef) as c_uint;
         i_sign >>= 3 as c_int - i_trailing;
         (*s).i_bits_encoded += x264_coeff_token[nC as usize][(i_total - 1 as c_int) as usize]
             [i_trailing as usize]
@@ -20614,14 +20293,12 @@ pub mod cavlc_c {
         let mut mvp: [int16_t; 2] = [0; 2];
         x264_10_mb_predict_mv(h, i_list, idx, width, mvp.as_mut_ptr());
         (*s).i_bits_encoded += bs_size_se(
-            (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
-                [0 as c_int as usize] as c_int
-                - mvp[0 as c_int as usize] as c_int,
+            (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0] as c_int
+                - mvp[0] as c_int,
         );
         (*s).i_bits_encoded += bs_size_se(
-            (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
-                [1 as c_int as usize] as c_int
-                - mvp[1 as c_int as usize] as c_int,
+            (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1] as c_int
+                - mvp[1] as c_int,
         );
     }
     #[inline]
@@ -20885,47 +20562,37 @@ pub mod cavlc_c {
         if i_mb_type == P_L0 as c_int {
             if (*h).mb.i_partition == D_16x16 as c_int {
                 (*s).i_bits_encoded += 1 as c_int;
-                if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+                if (*h).mb.pic.i_fref[0] > 1 as c_int {
                     (*s).i_bits_encoded += bs_size_te(
-                        (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[0 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.pic.i_fref[0] - 1 as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                     );
                 }
                 cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
             } else if (*h).mb.i_partition == D_16x8 as c_int {
                 (*s).i_bits_encoded += bs_size_ue(1 as c_uint);
-                if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+                if (*h).mb.pic.i_fref[0] > 1 as c_int {
                     (*s).i_bits_encoded += bs_size_te(
-                        (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[0 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.pic.i_fref[0] - 1 as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                     );
                     (*s).i_bits_encoded += bs_size_te(
-                        (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[8 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.pic.i_fref[0] - 1 as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[8] as usize] as c_int,
                     );
                 }
                 cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
                 cavlc_mvd(h, 0 as c_int, 8 as c_int, 4 as c_int);
             } else if (*h).mb.i_partition == D_8x16 as c_int {
                 (*s).i_bits_encoded += bs_size_ue(2 as c_uint);
-                if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+                if (*h).mb.pic.i_fref[0] > 1 as c_int {
                     (*s).i_bits_encoded += bs_size_te(
-                        (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[0 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.pic.i_fref[0] - 1 as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                     );
                     (*s).i_bits_encoded += bs_size_te(
-                        (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[4 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.pic.i_fref[0] - 1 as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[4] as usize] as c_int,
                     );
                 }
                 cavlc_mvd(h, 0 as c_int, 0 as c_int, 2 as c_int);
@@ -20933,14 +20600,10 @@ pub mod cavlc_c {
             }
         } else if i_mb_type == P_8x8 as c_int {
             let mut b_sub_ref: c_int = 0;
-            if (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[0 as c_int as usize] as usize]
-                as c_int
-                | (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[4 as c_int as usize] as usize]
-                    as c_int
-                | (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[8 as c_int as usize] as usize]
-                    as c_int
-                | (*h).mb.cache.ref_0[0 as c_int as usize]
-                    [x264_scan8[12 as c_int as usize] as usize] as c_int
+            if (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int
+                | (*h).mb.cache.ref_0[0][x264_scan8[4] as usize] as c_int
+                | (*h).mb.cache.ref_0[0][x264_scan8[8] as usize] as c_int
+                | (*h).mb.cache.ref_0[0][x264_scan8[12] as usize] as c_int
                 == 0 as c_int
             {
                 (*s).i_bits_encoded += bs_size_ue(4 as c_uint);
@@ -20963,24 +20626,20 @@ pub mod cavlc_c {
             }
             if b_sub_ref != 0 {
                 (*s).i_bits_encoded += bs_size_te(
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[0 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                 );
                 (*s).i_bits_encoded += bs_size_te(
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[4 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[4] as usize] as c_int,
                 );
                 (*s).i_bits_encoded += bs_size_te(
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[8 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[8] as usize] as c_int,
                 );
                 (*s).i_bits_encoded += bs_size_te(
-                    (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                    (*h).mb.cache.ref_0[0 as c_int as usize]
-                        [x264_scan8[12 as c_int as usize] as usize] as c_int,
+                    (*h).mb.pic.i_fref[0] - 1 as c_int,
+                    (*h).mb.cache.ref_0[0][x264_scan8[12] as usize] as c_int,
                 );
             }
             let mut i_0: c_int = 0 as c_int;
@@ -21010,34 +20669,32 @@ pub mod cavlc_c {
                 );
                 i += 1;
             }
-            if (*h).mb.pic.i_fref[0 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[0] > 1 as c_int {
                 let mut i_0: c_int = 0 as c_int;
                 while i_0 < 4 as c_int {
-                    if x264_mb_partition_listX_table[0 as c_int as usize]
+                    if x264_mb_partition_listX_table[0]
                         [(*h).mb.i_sub_partition[i_0 as usize] as usize]
                         != 0
                     {
                         (*s).i_bits_encoded += bs_size_te(
-                            (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int,
-                            (*h).mb.cache.ref_0[0 as c_int as usize]
-                                [x264_scan8[(i_0 * 4 as c_int) as usize] as usize]
+                            (*h).mb.pic.i_fref[0] - 1 as c_int,
+                            (*h).mb.cache.ref_0[0][x264_scan8[(i_0 * 4 as c_int) as usize] as usize]
                                 as c_int,
                         );
                     }
                     i_0 += 1;
                 }
             }
-            if (*h).mb.pic.i_fref[1 as c_int as usize] > 1 as c_int {
+            if (*h).mb.pic.i_fref[1] > 1 as c_int {
                 let mut i_1: c_int = 0 as c_int;
                 while i_1 < 4 as c_int {
-                    if x264_mb_partition_listX_table[1 as c_int as usize]
+                    if x264_mb_partition_listX_table[1]
                         [(*h).mb.i_sub_partition[i_1 as usize] as usize]
                         != 0
                     {
                         (*s).i_bits_encoded += bs_size_te(
-                            (*h).mb.pic.i_fref[1 as c_int as usize] - 1 as c_int,
-                            (*h).mb.cache.ref_0[1 as c_int as usize]
-                                [x264_scan8[(i_1 * 4 as c_int) as usize] as usize]
+                            (*h).mb.pic.i_fref[1] - 1 as c_int,
+                            (*h).mb.cache.ref_0[1][x264_scan8[(i_1 * 4 as c_int) as usize] as usize]
                                 as c_int,
                         );
                     }
@@ -21046,8 +20703,7 @@ pub mod cavlc_c {
             }
             let mut i_2: c_int = 0 as c_int;
             while i_2 < 4 as c_int {
-                if x264_mb_partition_listX_table[0 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_2 as usize] as usize]
+                if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i_2 as usize] as usize]
                     != 0
                 {
                     cavlc_mvd(h, 0 as c_int, 4 as c_int * i_2, 2 as c_int);
@@ -21056,8 +20712,7 @@ pub mod cavlc_c {
             }
             let mut i_3: c_int = 0 as c_int;
             while i_3 < 4 as c_int {
-                if x264_mb_partition_listX_table[1 as c_int as usize]
-                    [(*h).mb.i_sub_partition[i_3 as usize] as usize]
+                if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i_3 as usize] as usize]
                     != 0
                 {
                     cavlc_mvd(h, 1 as c_int, 4 as c_int * i_3, 2 as c_int);
@@ -21068,104 +20723,80 @@ pub mod cavlc_c {
             let mut b_list: *const [uint8_t; 2] =
                 (*x264_mb_type_list_table.as_ptr().offset(i_mb_type as isize)).as_ptr()
                     as *const [uint8_t; 2];
-            let i_ref0_max: c_int = (*h).mb.pic.i_fref[0 as c_int as usize] - 1 as c_int;
-            let i_ref1_max: c_int = (*h).mb.pic.i_fref[1 as c_int as usize] - 1 as c_int;
+            let i_ref0_max: c_int = (*h).mb.pic.i_fref[0] - 1 as c_int;
+            let i_ref1_max: c_int = (*h).mb.pic.i_fref[1] - 1 as c_int;
             (*s).i_bits_encoded += bs_size_ue(
                 mb_type_b_to_golomb[((*h).mb.i_partition - D_16x8 as c_int) as usize]
                     [(i_mb_type - B_L0_L0 as c_int) as usize] as c_uint,
             );
             if (*h).mb.i_partition == D_16x16 as c_int {
-                if i_ref0_max != 0
-                    && (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] as c_int != 0
-                {
+                if i_ref0_max != 0 && (*b_list.offset(0))[0] as c_int != 0 {
                     (*s).i_bits_encoded += bs_size_te(
                         i_ref0_max,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[0 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                     );
                 }
-                if i_ref1_max != 0
-                    && (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] as c_int != 0
-                {
+                if i_ref1_max != 0 && (*b_list.offset(1))[0] as c_int != 0 {
                     (*s).i_bits_encoded += bs_size_te(
                         i_ref1_max,
-                        (*h).mb.cache.ref_0[1 as c_int as usize]
-                            [x264_scan8[0 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.cache.ref_0[1][x264_scan8[0] as usize] as c_int,
                     );
                 }
-                if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(0))[0] != 0 {
                     cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
                 }
-                if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+                if (*b_list.offset(1))[0] != 0 {
                     cavlc_mvd(h, 1 as c_int, 0 as c_int, 4 as c_int);
                 }
             } else {
-                if i_ref0_max != 0
-                    && (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] as c_int != 0
-                {
+                if i_ref0_max != 0 && (*b_list.offset(0))[0] as c_int != 0 {
                     (*s).i_bits_encoded += bs_size_te(
                         i_ref0_max,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[0 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int,
                     );
                 }
-                if i_ref0_max != 0
-                    && (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] as c_int != 0
-                {
+                if i_ref0_max != 0 && (*b_list.offset(0))[1] as c_int != 0 {
                     (*s).i_bits_encoded += bs_size_te(
                         i_ref0_max,
-                        (*h).mb.cache.ref_0[0 as c_int as usize]
-                            [x264_scan8[12 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.cache.ref_0[0][x264_scan8[12] as usize] as c_int,
                     );
                 }
-                if i_ref1_max != 0
-                    && (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] as c_int != 0
-                {
+                if i_ref1_max != 0 && (*b_list.offset(1))[0] as c_int != 0 {
                     (*s).i_bits_encoded += bs_size_te(
                         i_ref1_max,
-                        (*h).mb.cache.ref_0[1 as c_int as usize]
-                            [x264_scan8[0 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.cache.ref_0[1][x264_scan8[0] as usize] as c_int,
                     );
                 }
-                if i_ref1_max != 0
-                    && (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] as c_int != 0
-                {
+                if i_ref1_max != 0 && (*b_list.offset(1))[1] as c_int != 0 {
                     (*s).i_bits_encoded += bs_size_te(
                         i_ref1_max,
-                        (*h).mb.cache.ref_0[1 as c_int as usize]
-                            [x264_scan8[12 as c_int as usize] as usize]
-                            as c_int,
+                        (*h).mb.cache.ref_0[1][x264_scan8[12] as usize] as c_int,
                     );
                 }
                 if (*h).mb.i_partition == D_16x8 as c_int {
-                    if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+                    if (*b_list.offset(0))[0] != 0 {
                         cavlc_mvd(h, 0 as c_int, 0 as c_int, 4 as c_int);
                     }
-                    if (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] != 0 {
+                    if (*b_list.offset(0))[1] != 0 {
                         cavlc_mvd(h, 0 as c_int, 8 as c_int, 4 as c_int);
                     }
-                    if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+                    if (*b_list.offset(1))[0] != 0 {
                         cavlc_mvd(h, 1 as c_int, 0 as c_int, 4 as c_int);
                     }
-                    if (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] != 0 {
+                    if (*b_list.offset(1))[1] != 0 {
                         cavlc_mvd(h, 1 as c_int, 8 as c_int, 4 as c_int);
                     }
                 } else {
-                    if (*b_list.offset(0 as c_int as isize))[0 as c_int as usize] != 0 {
+                    if (*b_list.offset(0))[0] != 0 {
                         cavlc_mvd(h, 0 as c_int, 0 as c_int, 2 as c_int);
                     }
-                    if (*b_list.offset(0 as c_int as isize))[1 as c_int as usize] != 0 {
+                    if (*b_list.offset(0))[1] != 0 {
                         cavlc_mvd(h, 0 as c_int, 4 as c_int, 2 as c_int);
                     }
-                    if (*b_list.offset(1 as c_int as isize))[0 as c_int as usize] != 0 {
+                    if (*b_list.offset(1))[0] != 0 {
                         cavlc_mvd(h, 1 as c_int, 0 as c_int, 2 as c_int);
                     }
-                    if (*b_list.offset(1 as c_int as isize))[1 as c_int as usize] != 0 {
+                    if (*b_list.offset(1))[1] != 0 {
                         cavlc_mvd(h, 1 as c_int, 4 as c_int, 2 as c_int);
                     }
                 }
@@ -21293,7 +20924,7 @@ pub mod cavlc_c {
                                 DCT_LUMA_AC as c_int,
                                 (*(*h).dct.luma4x4.as_mut_ptr().offset(i as isize))
                                     .as_mut_ptr()
-                                    .offset(1 as c_int as isize),
+                                    .offset(1),
                                 nC_0,
                             ) as uint8_t;
                         }
@@ -21330,7 +20961,7 @@ pub mod cavlc_c {
                 *nnz_1 = cavlc_block_residual_internal(
                     h,
                     DCT_CHROMA_DC as c_int,
-                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
+                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                     nC_1,
                 ) as uint8_t;
             }
@@ -21357,7 +20988,7 @@ pub mod cavlc_c {
                 *nnz_2 = cavlc_block_residual_internal(
                     h,
                     DCT_CHROMA_DC as c_int,
-                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
+                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                     nC_2,
                 ) as uint8_t;
             }
@@ -21395,7 +21026,7 @@ pub mod cavlc_c {
                                 DCT_CHROMA_AC as c_int,
                                 (*(*h).dct.luma4x4.as_mut_ptr().offset(j as isize))
                                     .as_mut_ptr()
-                                    .offset(1 as c_int as isize),
+                                    .offset(1),
                                 nC_3,
                             ) as uint8_t;
                         }
@@ -21431,28 +21062,18 @@ pub mod cavlc_c {
         } else if i_mb_type == P_L0 as c_int {
             cavlc_mvd(h, 0 as c_int, 4 as c_int * i8, 4 as c_int >> b_8x16);
         } else if i_mb_type > B_DIRECT as c_int && i_mb_type < B_8x8 as c_int {
-            if x264_mb_type_list_table[i_mb_type as usize][0 as c_int as usize]
-                [(i8 != 0) as c_int as usize]
-                != 0
-            {
+            if x264_mb_type_list_table[i_mb_type as usize][0][(i8 != 0) as c_int as usize] != 0 {
                 cavlc_mvd(h, 0 as c_int, 4 as c_int * i8, 4 as c_int >> b_8x16);
             }
-            if x264_mb_type_list_table[i_mb_type as usize][1 as c_int as usize]
-                [(i8 != 0) as c_int as usize]
-                != 0
-            {
+            if x264_mb_type_list_table[i_mb_type as usize][1][(i8 != 0) as c_int as usize] != 0 {
                 cavlc_mvd(h, 1 as c_int, 4 as c_int * i8, 4 as c_int >> b_8x16);
             }
         } else {
-            if x264_mb_partition_listX_table[0 as c_int as usize]
-                [(*h).mb.i_sub_partition[i8 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[0][(*h).mb.i_sub_partition[i8 as usize] as usize] != 0
             {
                 cavlc_mvd(h, 0 as c_int, 4 as c_int * i8, 2 as c_int);
             }
-            if x264_mb_partition_listX_table[1 as c_int as usize]
-                [(*h).mb.i_sub_partition[i8 as usize] as usize]
-                != 0
+            if x264_mb_partition_listX_table[1][(*h).mb.i_sub_partition[i8 as usize] as usize] != 0
             {
                 cavlc_mvd(h, 1 as c_int, 4 as c_int * i8, 2 as c_int);
             }
@@ -21500,7 +21121,7 @@ pub mod cavlc_c {
                                 .as_mut_ptr()
                                 .offset((16 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                             nC,
                         ) as uint8_t;
                     }
@@ -21537,7 +21158,7 @@ pub mod cavlc_c {
                                 .as_mut_ptr()
                                 .offset((18 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                             nC_0,
                         ) as uint8_t;
                     }
@@ -21574,7 +21195,7 @@ pub mod cavlc_c {
                                 .as_mut_ptr()
                                 .offset((32 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                             nC_1,
                         ) as uint8_t;
                     }
@@ -21611,7 +21232,7 @@ pub mod cavlc_c {
                                 .as_mut_ptr()
                                 .offset((34 as c_int + offset) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                             nC_2,
                         ) as uint8_t;
                     }
@@ -21645,7 +21266,7 @@ pub mod cavlc_c {
                                 .as_mut_ptr()
                                 .offset((16 as c_int + i8) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                             nC_3,
                         ) as uint8_t;
                     }
@@ -21678,7 +21299,7 @@ pub mod cavlc_c {
                                 .as_mut_ptr()
                                 .offset((32 as c_int + i8) as isize))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                             nC_4,
                         ) as uint8_t;
                     }
@@ -21809,7 +21430,7 @@ pub mod cavlc_c {
         (*h).out.bs.i_bits_encoded = cavlc_intra4x4_pred_size(h, 4 as c_int * i8, i_mode);
         (*h).out.bs.i_bits_encoded += bs_size_ue(
             cbp_to_golomb[!((*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int)
-                as c_int as usize][1 as c_int as usize]
+                as c_int as usize][1]
                 [((*h).mb.i_cbp_chroma << 4 as c_int | (*h).mb.i_cbp_luma) as usize]
                 as c_uint,
         );
@@ -21901,7 +21522,7 @@ pub mod cavlc_c {
                 *nnz = cavlc_block_residual_internal(
                     h,
                     DCT_CHROMA_DC as c_int,
-                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr(),
+                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(0)).as_mut_ptr(),
                     nC,
                 ) as uint8_t;
             }
@@ -21928,7 +21549,7 @@ pub mod cavlc_c {
                 *nnz_0 = cavlc_block_residual_internal(
                     h,
                     DCT_CHROMA_DC as c_int,
-                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(1 as c_int as isize)).as_mut_ptr(),
+                    (*(*h).dct.chroma_dc.as_mut_ptr().offset(1)).as_mut_ptr(),
                     nC_0,
                 ) as uint8_t;
             }
@@ -21966,7 +21587,7 @@ pub mod cavlc_c {
                                 DCT_CHROMA_AC as c_int,
                                 (*(*h).dct.luma4x4.as_mut_ptr().offset(j as isize))
                                     .as_mut_ptr()
-                                    .offset(1 as c_int as isize),
+                                    .offset(1),
                                 nC_1,
                             ) as uint8_t;
                         }
@@ -22353,7 +21974,7 @@ pub mod mman_h {
         pub fn madvise(__addr: *mut c_void, __len: size_t, __advice: c_int) -> c_int;
     }
     #[c2rust::src_loc = "44:9"]
-    pub const MAP_FAILED: *mut c_void = -(1 as c_int) as *mut c_void;
+    pub const MAP_FAILED: *mut c_void = core::ptr::null_mut();
     use super::types_h::__off64_t;
     extern "C" {
         #[c2rust::src_loc = "61:1"]

@@ -20,7 +20,7 @@ unsafe extern "C" fn open_file(
     } else {
         *p_handle = fopen(psz_filename, b"w+b\0" as *const u8 as *const c_char) as hnd_t;
         if (*p_handle).is_null() {
-            return -(1 as c_int);
+            return -1;
         }
     }
     return 0 as c_int;
@@ -31,11 +31,10 @@ unsafe extern "C" fn set_param(mut _handle: hnd_t, mut _p_param: *mut x264_param
 }
 #[c2rust::src_loc = "44:1"]
 unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t) -> c_int {
-    let mut size: c_int = (*p_nal.offset(0 as c_int as isize)).i_payload
-        + (*p_nal.offset(1 as c_int as isize)).i_payload
-        + (*p_nal.offset(2 as c_int as isize)).i_payload;
+    let mut size: c_int =
+        (*p_nal.offset(0)).i_payload + (*p_nal.offset(1)).i_payload + (*p_nal.offset(2)).i_payload;
     if fwrite(
-        (*p_nal.offset(0 as c_int as isize)).p_payload as *const c_void,
+        (*p_nal.offset(0)).p_payload as *const c_void,
         size as size_t,
         1 as size_t,
         handle as *mut FILE,
@@ -43,7 +42,7 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
     {
         return size;
     }
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "53:1"]
 unsafe extern "C" fn write_frame(
@@ -61,7 +60,7 @@ unsafe extern "C" fn write_frame(
     {
         return i_size;
     }
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "60:1"]
 unsafe extern "C" fn close_file(

@@ -210,13 +210,13 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
     let mut quant4_mf: [[[c_int; 16]; 6]; 4] = [[[0; 16]; 6]; 4];
     let mut quant8_mf: [[[c_int; 64]; 6]; 4] = [[[0; 64]; 6]; 4];
     let mut deadzone: [c_int; 4] = [
-        32 as c_int - (*h).param.analyse.i_luma_deadzone[1 as c_int as usize],
-        32 as c_int - (*h).param.analyse.i_luma_deadzone[0 as c_int as usize],
+        32 as c_int - (*h).param.analyse.i_luma_deadzone[1],
+        32 as c_int - (*h).param.analyse.i_luma_deadzone[0],
         32 as c_int - 11 as c_int,
         32 as c_int - 21 as c_int,
     ];
-    let mut max_qp_err: c_int = -(1 as c_int);
-    let mut max_chroma_qp_err: c_int = -(1 as c_int);
+    let mut max_qp_err: c_int = -1;
+    let mut max_chroma_qp_err: c_int = -1;
     let mut min_qp_err: c_int = QP_MAX + 1 as c_int;
     let mut num_8x8_lists: c_int =
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
@@ -820,7 +820,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                                     (*h).param.rc.i_qp_min,
                                     (*h).param.rc.i_qp_max,
                                 );
-                                return -(1 as c_int);
+                                return -1;
                             }
                         }
                         return 0 as c_int;
@@ -831,7 +831,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
         _ => {}
     }
     x264_10_cqm_delete(h);
-    return -(1 as c_int);
+    return -1;
 }
 #[no_mangle]
 #[c2rust::src_loc = "300:1"]
@@ -931,7 +931,7 @@ unsafe extern "C" fn cqm_parse_jmlist(
             !p.is_null()
         }
     {
-        let mut coef: c_int = -(1 as c_int);
+        let mut coef: c_int = -1;
         sscanf(
             p,
             b"%d\0" as *const u8 as *const c_char,
@@ -948,7 +948,7 @@ unsafe extern "C" fn cqm_parse_jmlist(
                 b"bad coefficient in list '%s'\n\0" as *const u8 as *const c_char,
                 name,
             );
-            return -(1 as c_int);
+            return -1;
         }
         *cqm.offset(i as isize) = coef as uint8_t;
         i += 1;
@@ -960,7 +960,7 @@ unsafe extern "C" fn cqm_parse_jmlist(
             b"not enough coefficients in list '%s'\n\0" as *const u8 as *const c_char,
             name,
         );
-        return -(1 as c_int);
+        return -1;
     }
     return 0 as c_int;
 }
@@ -981,7 +981,7 @@ unsafe extern "C" fn x264_10_cqm_parse_file(
             b"can't open file '%s'\n\0" as *const u8 as *const c_char,
             filename,
         );
-        return -(1 as c_int);
+        return -1;
     }
     loop {
         p = strchr(buf, '#' as i32);

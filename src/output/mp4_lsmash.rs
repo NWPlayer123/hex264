@@ -187,7 +187,7 @@ unsafe extern "C" fn open_file(
                 b"cannot open output file `%s'.\n\0" as *const u8 as *const c_char,
                 psz_filename,
             );
-            return -(1 as c_int);
+            return -1;
         }
         b_regular = x264_is_regular_file(fh);
         fclose(fh);
@@ -200,7 +200,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"failed to allocate memory for muxer information.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*p_mp4).b_dts_compress = (*opt).use_dts_compress;
     (*p_mp4).b_use_recovery = 0 as c_int;
@@ -214,7 +214,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"failed to create root.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if lsmash_open_file(psz_filename, 0 as c_int, &mut (*p_mp4).file_param) < 0 as c_int {
         remove_mp4_hnd(p_mp4 as hnd_t);
@@ -223,7 +223,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"failed to open an output file.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*p_mp4).b_fragments != 0 {
         (*p_mp4).file_param.mode = ::core::mem::transmute::<c_uint, lsmash_file_mode>(
@@ -240,7 +240,7 @@ unsafe extern "C" fn open_file(
             b"failed to allocate memory for summary information of video.\n\0" as *const u8
                 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*(*p_mp4).summary).sample_type = ISOM_CODEC_TYPE_AVC1_VIDEO;
     *p_handle = p_mp4 as hnd_t;
@@ -272,7 +272,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             b"MP4 media timescale %lu exceeds maximum\n\0" as *const u8 as *const c_char,
             i_media_timescale,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut brands: [lsmash_brand_type; 6] = [
         0 as lsmash_brand_type,
@@ -303,7 +303,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
         }
     }
     let mut file_param: *mut lsmash_file_parameters_t = &mut (*p_mp4).file_param;
-    (*file_param).major_brand = brands[0 as c_int as usize];
+    (*file_param).major_brand = brands[0];
     (*file_param).brands = brands.as_mut_ptr();
     (*file_param).brand_count = brand_count;
     (*file_param).minor_version = 0 as uint32_t;
@@ -313,7 +313,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             X264_LOG_ERROR,
             b"failed to add an output file into a ROOT.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut movie_param: lsmash_movie_parameters_t = lsmash_movie_parameters_t {
         timescale: 0,
@@ -332,7 +332,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             X264_LOG_ERROR,
             b"failed to set movie parameters.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*p_mp4).i_movie_timescale = lsmash_get_movie_timescale((*p_mp4).p_root);
     if (*p_mp4).i_movie_timescale == 0 {
@@ -341,7 +341,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             X264_LOG_ERROR,
             b"movie timescale is broken.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*p_mp4).i_track = lsmash_create_track((*p_mp4).p_root, ISOM_MEDIA_HANDLER_TYPE_VIDEO_TRACK);
     if (*p_mp4).i_track == 0 {
@@ -350,7 +350,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             X264_LOG_ERROR,
             b"failed to create a video track.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*(*p_mp4).summary).width = (*p_param).width as uint32_t;
     (*(*p_mp4).summary).height = (*p_param).height as uint32_t;
@@ -405,7 +405,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             X264_LOG_ERROR,
             b"failed to set track parameters for video.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut media_param: lsmash_media_parameters_t = lsmash_media_parameters_t {
         handler_type: 0 as lsmash_media_type,
@@ -437,7 +437,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             X264_LOG_ERROR,
             b"failed to set media parameters for video.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*p_mp4).i_video_timescale = lsmash_get_media_timescale((*p_mp4).p_root, (*p_mp4).i_track);
     if (*p_mp4).i_video_timescale == 0 {
@@ -446,25 +446,23 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
             X264_LOG_ERROR,
             b"media timescale for video is broken.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     return 0 as c_int;
 }
 #[c2rust::src_loc = "294:1"]
 unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t) -> c_int {
     let mut p_mp4: *mut mp4_hnd_t = handle as *mut mp4_hnd_t;
-    let mut sps_size: uint32_t =
-        ((*p_nal.offset(0 as c_int as isize)).i_payload - H264_NALU_LENGTH_SIZE) as uint32_t;
-    let mut pps_size: uint32_t =
-        ((*p_nal.offset(1 as c_int as isize)).i_payload - H264_NALU_LENGTH_SIZE) as uint32_t;
-    let mut sei_size: uint32_t = (*p_nal.offset(2 as c_int as isize)).i_payload as uint32_t;
-    let mut sps: *mut uint8_t = (*p_nal.offset(0 as c_int as isize))
+    let mut sps_size: uint32_t = ((*p_nal.offset(0)).i_payload - H264_NALU_LENGTH_SIZE) as uint32_t;
+    let mut pps_size: uint32_t = ((*p_nal.offset(1)).i_payload - H264_NALU_LENGTH_SIZE) as uint32_t;
+    let mut sei_size: uint32_t = (*p_nal.offset(2)).i_payload as uint32_t;
+    let mut sps: *mut uint8_t = (*p_nal.offset(0))
         .p_payload
         .offset(H264_NALU_LENGTH_SIZE as isize);
-    let mut pps: *mut uint8_t = (*p_nal.offset(1 as c_int as isize))
+    let mut pps: *mut uint8_t = (*p_nal.offset(1))
         .p_payload
         .offset(H264_NALU_LENGTH_SIZE as isize);
-    let mut sei: *mut uint8_t = (*p_nal.offset(2 as c_int as isize)).p_payload;
+    let mut sei: *mut uint8_t = (*p_nal.offset(2)).p_payload;
     let mut cs: *mut lsmash_codec_specific_t = lsmash_create_codec_specific_data(
         LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264,
         LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED,
@@ -484,7 +482,7 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
             X264_LOG_ERROR,
             b"failed to append SPS.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if lsmash_append_h264_parameter_set(
         param,
@@ -498,7 +496,7 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
             X264_LOG_ERROR,
             b"failed to append PPS.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if lsmash_add_codec_specific_data((*p_mp4).summary as *mut lsmash_summary_t, cs) != 0 {
         x264_cli_log(
@@ -506,7 +504,7 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
             X264_LOG_ERROR,
             b"failed to add H.264 specific info.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     lsmash_destroy_codec_specific_data(cs);
     cs = lsmash_create_codec_specific_data(
@@ -528,7 +526,7 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
             X264_LOG_ERROR,
             b"failed to add sample entry for video.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*p_mp4).p_sei_buffer = malloc(sei_size as size_t) as *mut uint8_t;
     if (*p_mp4).p_sei_buffer.is_null() {
@@ -537,7 +535,7 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
             X264_LOG_ERROR,
             b"failed to allocate sei transition buffer.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     memcpy(
         (*p_mp4).p_sei_buffer as *mut c_void,
@@ -558,7 +556,7 @@ unsafe extern "C" fn write_frame(
     let mut dts: uint64_t = 0;
     let mut cts: uint64_t = 0;
     if (*p_mp4).i_numframe == 0 {
-        (*p_mp4).i_start_offset = (*p_picture).i_dts * -(1 as c_int) as int64_t;
+        (*p_mp4).i_start_offset = (*p_picture).i_dts * -1 as int64_t;
         (*p_mp4).i_first_cts = if (*p_mp4).b_dts_compress != 0 {
             0 as uint64_t
         } else {
@@ -590,7 +588,7 @@ unsafe extern "C" fn write_frame(
             X264_LOG_ERROR,
             b"failed to create a video sample data.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if !(*p_mp4).p_sei_buffer.is_null() {
         memcpy(
@@ -650,7 +648,7 @@ unsafe extern "C" fn write_frame(
                 X264_LOG_ERROR,
                 b"failed to flush the rest of samples.\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         if lsmash_create_fragment_movie((*p_mp4).p_root) != 0 {
             x264_cli_log(
@@ -658,7 +656,7 @@ unsafe extern "C" fn write_frame(
                 X264_LOG_ERROR,
                 b"failed to create a movie fragment.\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     if lsmash_append_sample((*p_mp4).p_root, (*p_mp4).i_track, p_sample) != 0 {
@@ -667,7 +665,7 @@ unsafe extern "C" fn write_frame(
             X264_LOG_ERROR,
             b"failed to append a video frame.\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*p_mp4).i_prev_dts = dts;
     (*p_mp4).i_numframe += 1;

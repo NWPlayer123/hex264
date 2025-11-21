@@ -813,27 +813,21 @@ unsafe extern "C" fn hpel_filter(
         let mut x_0: c_int = 0 as c_int;
         while x_0 < width {
             *dstc.offset(x_0 as isize) = x264_clip_pixel(
-                *buf.offset(2 as c_int as isize)
+                *buf.offset(2)
                     .offset((x_0 - 2 as c_int * 1 as c_int) as isize) as c_int
                     + *buf
-                        .offset(2 as c_int as isize)
+                        .offset(2)
                         .offset((x_0 + 3 as c_int * 1 as c_int) as isize)
                         as c_int
                     - 5 as c_int
-                        * (*buf
-                            .offset(2 as c_int as isize)
-                            .offset((x_0 - 1 as c_int) as isize)
-                            as c_int
+                        * (*buf.offset(2).offset((x_0 - 1 as c_int) as isize) as c_int
                             + *buf
-                                .offset(2 as c_int as isize)
+                                .offset(2)
                                 .offset((x_0 + 2 as c_int * 1 as c_int) as isize)
                                 as c_int)
                     + 20 as c_int
-                        * (*buf.offset(2 as c_int as isize).offset(x_0 as isize) as c_int
-                            + *buf
-                                .offset(2 as c_int as isize)
-                                .offset((x_0 + 1 as c_int) as isize)
-                                as c_int)
+                        * (*buf.offset(2).offset(x_0 as isize) as c_int
+                            + *buf.offset(2).offset((x_0 + 1 as c_int) as isize) as c_int)
                     - 32 as c_int * pad
                     + 512 as c_int
                     >> 10 as c_int,
@@ -1324,10 +1318,10 @@ unsafe extern "C" fn integral_init4h(
     mut pix: *mut pixel,
     mut stride: intptr_t,
 ) {
-    let mut v: c_int = *pix.offset(0 as c_int as isize) as c_int
-        + *pix.offset(1 as c_int as isize) as c_int
-        + *pix.offset(2 as c_int as isize) as c_int
-        + *pix.offset(3 as c_int as isize) as c_int;
+    let mut v: c_int = *pix.offset(0) as c_int
+        + *pix.offset(1) as c_int
+        + *pix.offset(2) as c_int
+        + *pix.offset(3) as c_int;
     let mut x: c_int = 0 as c_int;
     while (x as intptr_t) < stride - 4 as intptr_t {
         *sum.offset(x as isize) =
@@ -1342,14 +1336,14 @@ unsafe extern "C" fn integral_init8h(
     mut pix: *mut pixel,
     mut stride: intptr_t,
 ) {
-    let mut v: c_int = *pix.offset(0 as c_int as isize) as c_int
-        + *pix.offset(1 as c_int as isize) as c_int
-        + *pix.offset(2 as c_int as isize) as c_int
-        + *pix.offset(3 as c_int as isize) as c_int
-        + *pix.offset(4 as c_int as isize) as c_int
-        + *pix.offset(5 as c_int as isize) as c_int
-        + *pix.offset(6 as c_int as isize) as c_int
-        + *pix.offset(7 as c_int as isize) as c_int;
+    let mut v: c_int = *pix.offset(0) as c_int
+        + *pix.offset(1) as c_int
+        + *pix.offset(2) as c_int
+        + *pix.offset(3) as c_int
+        + *pix.offset(4) as c_int
+        + *pix.offset(5) as c_int
+        + *pix.offset(6) as c_int
+        + *pix.offset(7) as c_int;
     let mut x: c_int = 0 as c_int;
     while (x as intptr_t) < stride - 8 as intptr_t {
         *sum.offset(x as isize) =
@@ -1395,10 +1389,10 @@ unsafe extern "C" fn integral_init8v(mut sum8: *mut uint16_t, mut stride: intptr
 #[no_mangle]
 #[c2rust::src_loc = "458:1"]
 unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *mut x264_frame_t) {
-    let mut src: *mut pixel = (*frame).plane[0 as c_int as usize];
-    let mut i_stride: c_int = (*frame).i_stride[0 as c_int as usize];
-    let mut i_height: c_int = (*frame).i_lines[0 as c_int as usize];
-    let mut i_width: c_int = (*frame).i_width[0 as c_int as usize];
+    let mut src: *mut pixel = (*frame).plane[0];
+    let mut i_stride: c_int = (*frame).i_stride[0];
+    let mut i_height: c_int = (*frame).i_lines[0];
+    let mut i_width: c_int = (*frame).i_width[0];
     let mut y: c_int = 0 as c_int;
     while y < i_height {
         *src.offset((i_width + y * i_stride) as isize) =
@@ -1414,10 +1408,10 @@ unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *m
         .frame_init_lowres_core
         .expect("non-null function pointer")(
         src,
-        (*frame).lowres[0 as c_int as usize],
-        (*frame).lowres[1 as c_int as usize],
-        (*frame).lowres[2 as c_int as usize],
-        (*frame).lowres[3 as c_int as usize],
+        (*frame).lowres[0],
+        (*frame).lowres[1],
+        (*frame).lowres[2],
+        (*frame).lowres[3],
         i_stride as intptr_t,
         (*frame).i_stride_lowres as intptr_t,
         (*frame).i_width_lowres,
@@ -1426,15 +1420,14 @@ unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *m
     x264_10_frame_expand_border_lowres(frame);
     memset(
         (*frame).i_cost_est.as_mut_ptr() as *mut c_void,
-        -(1 as c_int),
+        -1,
         ::core::mem::size_of::<[[c_int; 18]; 18]>() as size_t,
     );
     let mut y_0: c_int = 0 as c_int;
     while y_0 < (*h).param.i_bframe + 2 as c_int {
         let mut x: c_int = 0 as c_int;
         while x < (*h).param.i_bframe + 2 as c_int {
-            *(*frame).i_row_satds[y_0 as usize][x as usize].offset(0 as c_int as isize) =
-                -(1 as c_int);
+            *(*frame).i_row_satds[y_0 as usize][x as usize].offset(0) = -1;
             x += 1;
         }
         y_0 += 1;
@@ -1443,8 +1436,7 @@ unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *m
     while y_1 <= ((*h).param.i_bframe != 0) as c_int {
         let mut x_0: c_int = 0 as c_int;
         while x_0 <= (*h).param.i_bframe {
-            (*(*frame).lowres_mvs[y_1 as usize][x_0 as usize].offset(0 as c_int as isize))
-                [0 as c_int as usize] = 0x7fff as int16_t;
+            (*(*frame).lowres_mvs[y_1 as usize][x_0 as usize].offset(0))[0] = 0x7fff as int16_t;
             x_0 += 1;
         }
         y_1 += 1;
@@ -1604,8 +1596,8 @@ unsafe extern "C" fn mbtree_propagate_list(
                     ((1 as c_int) << 15 as c_int) - 1 as c_int
                 }) as uint16_t;
             } else {
-                let mut x: c_int = (*mvs.offset(i as isize))[0 as c_int as usize] as c_int;
-                let mut y: c_int = (*mvs.offset(i as isize))[1 as c_int as usize] as c_int;
+                let mut x: c_int = (*mvs.offset(i as isize))[0] as c_int;
+                let mut y: c_int = (*mvs.offset(i as isize))[1] as c_int;
                 let mut mbx: c_uint = ((x >> 5 as c_int) + i) as c_uint;
                 let mut mby: c_uint = ((y >> 5 as c_int) + mb_y) as c_uint;
                 let mut idx0: c_uint = mbx.wrapping_add(mby.wrapping_mul(stride));
@@ -2510,7 +2502,7 @@ unsafe extern "C" fn x264_10_frame_filter(
     let b_interlaced: c_int = (*h).param.b_interlaced;
     let mut start: c_int = mb_y * 16 as c_int - 8 as c_int;
     let mut height: c_int = (if b_end != 0 {
-        (*frame).i_lines[0 as c_int as usize] + 16 as c_int * (*h).param.b_interlaced
+        (*frame).i_lines[0] + 16 as c_int * (*h).param.b_interlaced
     } else {
         (mb_y + b_interlaced) * 16 as c_int
     }) + 8 as c_int;
@@ -2530,9 +2522,9 @@ unsafe extern "C" fn x264_10_frame_filter(
         let mut offs: c_int = start * stride - 8 as c_int;
         if b_interlaced == 0 || (*h).mb.b_adaptive_mbaff != 0 {
             (*h).mc.hpel_filter.expect("non-null function pointer")(
-                (*frame).filtered[p as usize][1 as c_int as usize].offset(offs as isize),
-                (*frame).filtered[p as usize][2 as c_int as usize].offset(offs as isize),
-                (*frame).filtered[p as usize][3 as c_int as usize].offset(offs as isize),
+                (*frame).filtered[p as usize][1].offset(offs as isize),
+                (*frame).filtered[p as usize][2].offset(offs as isize),
+                (*frame).filtered[p as usize][3].offset(offs as isize),
                 (*frame).plane[p as usize].offset(offs as isize),
                 stride as intptr_t,
                 width + 16 as c_int,
@@ -2553,9 +2545,9 @@ unsafe extern "C" fn x264_10_frame_filter(
             let mut i: c_int = 0 as c_int;
             while i < 2 as c_int {
                 (*h).mc.hpel_filter.expect("non-null function pointer")(
-                    (*frame).filtered_fld[p as usize][1 as c_int as usize].offset(offs as isize),
-                    (*frame).filtered_fld[p as usize][2 as c_int as usize].offset(offs as isize),
-                    (*frame).filtered_fld[p as usize][3 as c_int as usize].offset(offs as isize),
+                    (*frame).filtered_fld[p as usize][1].offset(offs as isize),
+                    (*frame).filtered_fld[p as usize][2].offset(offs as isize),
+                    (*frame).filtered_fld[p as usize][3].offset(offs as isize),
                     (*frame).plane_fld[p as usize].offset(offs as isize),
                     stride as intptr_t,
                     width + 16 as c_int,
@@ -2569,7 +2561,7 @@ unsafe extern "C" fn x264_10_frame_filter(
         p += 1;
     }
     if !(*frame).integral.is_null() {
-        let mut stride_0: c_int = (*frame).i_stride[0 as c_int as usize];
+        let mut stride_0: c_int = (*frame).i_stride[0];
         if start < 0 as c_int {
             memset(
                 (*frame)
@@ -2592,15 +2584,13 @@ unsafe extern "C" fn x264_10_frame_filter(
         }
         let mut y: c_int = start;
         while y < height {
-            let mut pix: *mut pixel = (*frame).plane[0 as c_int as usize]
-                .offset((y * stride_0) as isize)
-                .offset(
-                    -((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
-                        32 as c_int
-                    } else {
-                        64 as c_int / ::core::mem::size_of::<pixel>() as c_int
-                    }) as isize),
-                );
+            let mut pix: *mut pixel = (*frame).plane[0].offset((y * stride_0) as isize).offset(
+                -((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
+                    32 as c_int
+                } else {
+                    64 as c_int / ::core::mem::size_of::<pixel>() as c_int
+                }) as isize),
+            );
             let mut sum8: *mut uint16_t = (*frame)
                 .integral
                 .offset(((y + 1 as c_int) * stride_0) as isize)
@@ -2619,10 +2609,7 @@ unsafe extern "C" fn x264_10_frame_filter(
                     stride_0 as intptr_t,
                 );
                 sum8 = sum8.offset(-((8 as c_int * stride_0) as isize));
-                sum4 = sum8.offset(
-                    (stride_0 * ((*frame).i_lines[0 as c_int as usize] + PADV * 2 as c_int))
-                        as isize,
-                );
+                sum4 = sum8.offset((stride_0 * ((*frame).i_lines[0] + PADV * 2 as c_int)) as isize);
                 if y >= 8 as c_int - PADV {
                     (*h).mc.integral_init4v.expect("non-null function pointer")(
                         sum8,

@@ -41,7 +41,7 @@ unsafe extern "C" fn init(
     let mut h: *mut cache_hnd_t =
         calloc(1 as size_t, ::core::mem::size_of::<cache_hnd_t>() as size_t) as *mut cache_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).max_size = size as c_int;
     (*h).cache = malloc(
@@ -49,7 +49,7 @@ unsafe extern "C" fn init(
             .wrapping_mul(::core::mem::size_of::<*mut cli_pic_t>() as size_t),
     ) as *mut *mut cli_pic_t;
     if (*h).cache.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     let mut i: c_int = 0 as c_int;
     while i < (*h).max_size {
@@ -63,7 +63,7 @@ unsafe extern "C" fn init(
                 (*info).height as c_int,
             ) != 0
         {
-            return -(1 as c_int);
+            return -1;
         }
         i += 1;
     }
@@ -111,7 +111,7 @@ unsafe extern "C" fn fill_cache(mut h: *mut cache_hnd_t, mut frame: c_int) {
             duration: 0,
             opaque: 0 as *mut c_void,
         };
-        let mut cache: *mut cli_pic_t = *(*h).cache.offset(0 as c_int as isize);
+        let mut cache: *mut cli_pic_t = *(*h).cache.offset(0);
         if (*h)
             .prev_filter
             .get_frame
@@ -151,11 +151,11 @@ unsafe extern "C" fn get_frame(
             frame,
             (*h).first_frame,
         );
-        return -(1 as c_int);
+        return -1;
     }
     fill_cache(h, frame);
     if frame > (*h).first_frame + (*h).cur_size - 1 as c_int {
-        return -(1 as c_int);
+        return -1;
     }
     let mut idx: c_int = frame
         - (if (*h).eof != 0 {

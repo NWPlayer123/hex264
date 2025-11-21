@@ -31,26 +31,22 @@ use crate::tables_h::{x264_dct4_weight2_tab, x264_dct8_weight2_tab, x264_lambda2
 #[inline]
 #[c2rust::src_loc = "35:1"]
 unsafe extern "C" fn zigzag_scan_2x2_dc(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
-    *level.offset(0 as c_int as isize) =
-        *dct.offset((0 as c_int * 2 as c_int + 0 as c_int) as isize);
-    *level.offset(1 as c_int as isize) =
-        *dct.offset((1 as c_int * 2 as c_int + 0 as c_int) as isize);
-    *level.offset(2 as c_int as isize) =
-        *dct.offset((0 as c_int * 2 as c_int + 1 as c_int) as isize);
-    *level.offset(3 as c_int as isize) =
-        *dct.offset((1 as c_int * 2 as c_int + 1 as c_int) as isize);
+    *level.offset(0) = *dct.offset((0 as c_int * 2 as c_int + 0 as c_int) as isize);
+    *level.offset(1) = *dct.offset((1 as c_int * 2 as c_int + 0 as c_int) as isize);
+    *level.offset(2) = *dct.offset((0 as c_int * 2 as c_int + 1 as c_int) as isize);
+    *level.offset(3) = *dct.offset((1 as c_int * 2 as c_int + 1 as c_int) as isize);
 }
 #[inline]
 #[c2rust::src_loc = "44:1"]
 unsafe extern "C" fn zigzag_scan_2x4_dc(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
-    *level.offset(0 as c_int as isize) = *dct.offset(0 as c_int as isize);
-    *level.offset(1 as c_int as isize) = *dct.offset(2 as c_int as isize);
-    *level.offset(2 as c_int as isize) = *dct.offset(1 as c_int as isize);
-    *level.offset(3 as c_int as isize) = *dct.offset(4 as c_int as isize);
-    *level.offset(4 as c_int as isize) = *dct.offset(6 as c_int as isize);
-    *level.offset(5 as c_int as isize) = *dct.offset(3 as c_int as isize);
-    *level.offset(6 as c_int as isize) = *dct.offset(5 as c_int as isize);
-    *level.offset(7 as c_int as isize) = *dct.offset(7 as c_int as isize);
+    *level.offset(0) = *dct.offset(0);
+    *level.offset(1) = *dct.offset(2);
+    *level.offset(2) = *dct.offset(1);
+    *level.offset(3) = *dct.offset(4);
+    *level.offset(4) = *dct.offset(6);
+    *level.offset(5) = *dct.offset(3);
+    *level.offset(6) = *dct.offset(5);
+    *level.offset(7) = *dct.offset(7);
 }
 #[inline]
 #[c2rust::src_loc = "63:1"]
@@ -60,20 +56,15 @@ unsafe extern "C" fn idct_dequant_2x2_dc(
     mut dequant_mf: *mut [c_int; 16],
     mut i_qp: c_int,
 ) {
-    let mut d0: c_int = *dct.offset(0 as c_int as isize) + *dct.offset(1 as c_int as isize);
-    let mut d1: c_int = *dct.offset(2 as c_int as isize) + *dct.offset(3 as c_int as isize);
-    let mut d2: c_int = *dct.offset(0 as c_int as isize) - *dct.offset(1 as c_int as isize);
-    let mut d3: c_int = *dct.offset(2 as c_int as isize) - *dct.offset(3 as c_int as isize);
-    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0 as c_int as usize]
-        << i_qp / 6 as c_int;
-    (*dct4x4.offset(0 as c_int as isize))[0 as c_int as usize] =
-        ((d0 + d1) * dmf >> 5 as c_int) as dctcoef;
-    (*dct4x4.offset(1 as c_int as isize))[0 as c_int as usize] =
-        ((d0 - d1) * dmf >> 5 as c_int) as dctcoef;
-    (*dct4x4.offset(2 as c_int as isize))[0 as c_int as usize] =
-        ((d2 + d3) * dmf >> 5 as c_int) as dctcoef;
-    (*dct4x4.offset(3 as c_int as isize))[0 as c_int as usize] =
-        ((d2 - d3) * dmf >> 5 as c_int) as dctcoef;
+    let mut d0: c_int = *dct.offset(0) + *dct.offset(1);
+    let mut d1: c_int = *dct.offset(2) + *dct.offset(3);
+    let mut d2: c_int = *dct.offset(0) - *dct.offset(1);
+    let mut d3: c_int = *dct.offset(2) - *dct.offset(3);
+    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0] << i_qp / 6 as c_int;
+    (*dct4x4.offset(0))[0] = ((d0 + d1) * dmf >> 5 as c_int) as dctcoef;
+    (*dct4x4.offset(1))[0] = ((d0 - d1) * dmf >> 5 as c_int) as dctcoef;
+    (*dct4x4.offset(2))[0] = ((d2 + d3) * dmf >> 5 as c_int) as dctcoef;
+    (*dct4x4.offset(3))[0] = ((d2 - d3) * dmf >> 5 as c_int) as dctcoef;
 }
 #[inline]
 #[c2rust::src_loc = "72:1"]
@@ -82,36 +73,31 @@ unsafe extern "C" fn idct_dequant_2x2_dconly(
     mut dequant_mf: *mut [c_int; 16],
     mut i_qp: c_int,
 ) {
-    let mut d0: c_int = *dct.offset(0 as c_int as isize) + *dct.offset(1 as c_int as isize);
-    let mut d1: c_int = *dct.offset(2 as c_int as isize) + *dct.offset(3 as c_int as isize);
-    let mut d2: c_int = *dct.offset(0 as c_int as isize) - *dct.offset(1 as c_int as isize);
-    let mut d3: c_int = *dct.offset(2 as c_int as isize) - *dct.offset(3 as c_int as isize);
-    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0 as c_int as usize]
-        << i_qp / 6 as c_int;
-    *dct.offset(0 as c_int as isize) = ((d0 + d1) * dmf >> 5 as c_int) as dctcoef;
-    *dct.offset(1 as c_int as isize) = ((d0 - d1) * dmf >> 5 as c_int) as dctcoef;
-    *dct.offset(2 as c_int as isize) = ((d2 + d3) * dmf >> 5 as c_int) as dctcoef;
-    *dct.offset(3 as c_int as isize) = ((d2 - d3) * dmf >> 5 as c_int) as dctcoef;
+    let mut d0: c_int = *dct.offset(0) + *dct.offset(1);
+    let mut d1: c_int = *dct.offset(2) + *dct.offset(3);
+    let mut d2: c_int = *dct.offset(0) - *dct.offset(1);
+    let mut d3: c_int = *dct.offset(2) - *dct.offset(3);
+    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0] << i_qp / 6 as c_int;
+    *dct.offset(0) = ((d0 + d1) * dmf >> 5 as c_int) as dctcoef;
+    *dct.offset(1) = ((d0 - d1) * dmf >> 5 as c_int) as dctcoef;
+    *dct.offset(2) = ((d2 + d3) * dmf >> 5 as c_int) as dctcoef;
+    *dct.offset(3) = ((d2 - d3) * dmf >> 5 as c_int) as dctcoef;
 }
 #[inline]
 #[c2rust::src_loc = "82:1"]
 unsafe extern "C" fn dct2x2dc(mut d: *mut dctcoef, mut dct4x4: *mut [dctcoef; 16]) {
-    let mut d0: c_int = (*dct4x4.offset(0 as c_int as isize))[0 as c_int as usize]
-        + (*dct4x4.offset(1 as c_int as isize))[0 as c_int as usize];
-    let mut d1: c_int = (*dct4x4.offset(2 as c_int as isize))[0 as c_int as usize]
-        + (*dct4x4.offset(3 as c_int as isize))[0 as c_int as usize];
-    let mut d2: c_int = (*dct4x4.offset(0 as c_int as isize))[0 as c_int as usize]
-        - (*dct4x4.offset(1 as c_int as isize))[0 as c_int as usize];
-    let mut d3: c_int = (*dct4x4.offset(2 as c_int as isize))[0 as c_int as usize]
-        - (*dct4x4.offset(3 as c_int as isize))[0 as c_int as usize];
-    *d.offset(0 as c_int as isize) = (d0 + d1) as dctcoef;
-    *d.offset(2 as c_int as isize) = (d2 + d3) as dctcoef;
-    *d.offset(1 as c_int as isize) = (d0 - d1) as dctcoef;
-    *d.offset(3 as c_int as isize) = (d2 - d3) as dctcoef;
-    (*dct4x4.offset(0 as c_int as isize))[0 as c_int as usize] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(1 as c_int as isize))[0 as c_int as usize] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(2 as c_int as isize))[0 as c_int as usize] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(3 as c_int as isize))[0 as c_int as usize] = 0 as c_int as dctcoef;
+    let mut d0: c_int = (*dct4x4.offset(0))[0] + (*dct4x4.offset(1))[0];
+    let mut d1: c_int = (*dct4x4.offset(2))[0] + (*dct4x4.offset(3))[0];
+    let mut d2: c_int = (*dct4x4.offset(0))[0] - (*dct4x4.offset(1))[0];
+    let mut d3: c_int = (*dct4x4.offset(2))[0] - (*dct4x4.offset(3))[0];
+    *d.offset(0) = (d0 + d1) as dctcoef;
+    *d.offset(2) = (d2 + d3) as dctcoef;
+    *d.offset(1) = (d0 - d1) as dctcoef;
+    *d.offset(3) = (d2 - d3) as dctcoef;
+    (*dct4x4.offset(0))[0] = 0 as c_int as dctcoef;
+    (*dct4x4.offset(1))[0] = 0 as c_int as dctcoef;
+    (*dct4x4.offset(2))[0] = 0 as c_int as dctcoef;
+    (*dct4x4.offset(3))[0] = 0 as c_int as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "98:1"]
@@ -223,8 +209,8 @@ unsafe extern "C" fn mb_encode_i16x16(mut h: *mut x264_t, mut p: c_int, mut i_qp
         while idx < 16 as c_int {
             (*h).quantf.denoise_dct.expect("non-null function pointer")(
                 (*dct4x4.as_mut_ptr().offset(idx as isize)).as_mut_ptr(),
-                (*(*h).nr_residual_sum.offset(0 as c_int as isize)).as_mut_ptr(),
-                (*(*h).nr_offset.offset(0 as c_int as isize)).as_mut_ptr(),
+                (*(*h).nr_residual_sum.offset(0)).as_mut_ptr(),
+                (*(*h).nr_offset.offset(0)).as_mut_ptr(),
                 16 as c_int,
             );
             idx += 1;
@@ -232,9 +218,8 @@ unsafe extern "C" fn mb_encode_i16x16(mut h: *mut x264_t, mut p: c_int, mut i_qp
     }
     let mut idx_0: c_int = 0 as c_int;
     while idx_0 < 16 as c_int {
-        dct_dc4x4[block_idx_xy_1d[idx_0 as usize] as usize] =
-            dct4x4[idx_0 as usize][0 as c_int as usize];
-        dct4x4[idx_0 as usize][0 as c_int as usize] = 0 as c_int as dctcoef;
+        dct_dc4x4[block_idx_xy_1d[idx_0 as usize] as usize] = dct4x4[idx_0 as usize][0];
+        dct4x4[idx_0 as usize][0] = 0 as c_int as dctcoef;
         idx_0 += 1;
     }
     if (*h).mb.b_trellis != 0 {
@@ -381,10 +366,10 @@ unsafe extern "C" fn mb_encode_i16x16(mut h: *mut x264_t, mut p: c_int, mut i_qp
     } else {
         nz = (*h).quantf.quant_4x4_dc.expect("non-null function pointer")(
             dct_dc4x4.as_mut_ptr(),
-            ((*(*h).quant4_mf[i_quant_cat as usize].offset(i_qp as isize))[0 as c_int as usize]
-                >> 1 as c_int) as c_int,
-            ((*(*h).quant4_bias[i_quant_cat as usize].offset(i_qp as isize))[0 as c_int as usize]
-                << 1 as c_int) as c_int,
+            ((*(*h).quant4_mf[i_quant_cat as usize].offset(i_qp as isize))[0] >> 1 as c_int)
+                as c_int,
+            ((*(*h).quant4_bias[i_quant_cat as usize].offset(i_qp as isize))[0] << 1 as c_int)
+                as c_int,
         );
     }
     (*h).mb.cache.non_zero_count[x264_scan8[(LUMA_DC + p) as usize] as usize] = nz as uint8_t;
@@ -404,8 +389,7 @@ unsafe extern "C" fn mb_encode_i16x16(mut h: *mut x264_t, mut p: c_int, mut i_qp
         if block_cbp != 0 {
             let mut i_0: c_int = 0 as c_int;
             while i_0 < 16 as c_int {
-                dct4x4[i_0 as usize][0 as c_int as usize] =
-                    dct_dc4x4[block_idx_xy_1d[i_0 as usize] as usize];
+                dct4x4[i_0 as usize][0] = dct_dc4x4[block_idx_xy_1d[i_0 as usize] as usize];
                 i_0 += 1;
             }
         }
@@ -427,8 +411,7 @@ unsafe extern "C" fn mb_optimize_chroma_dc(
     mut i_qp: c_int,
     mut chroma422: c_int,
 ) -> c_int {
-    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0 as c_int as usize]
-        << i_qp / 6 as c_int;
+    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0] << i_qp / 6 as c_int;
     if dmf > 32 as c_int * 64 as c_int {
         return 1 as c_int;
     }
@@ -458,7 +441,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
     let mut dequant_mf: *mut [c_int; 16] = (*h).dequant4_mf[(CQM_4IC as c_int + b_inter) as usize];
     let mut dct_dc: [dctcoef; 8] = [0; 8];
     (*h).mb.i_cbp_chroma = 0 as c_int;
-    let ref mut fresh2 = *(*h).nr_count.offset(2 as c_int as isize);
+    let ref mut fresh2 = *(*h).nr_count.offset(2);
     *fresh2 = (*fresh2).wrapping_add(((*h).mb.b_noise_reduction * 4 as c_int) as uint32_t);
     (*(&mut *(*h)
         .mb
@@ -547,8 +530,8 @@ unsafe extern "C" fn mb_encode_chroma_internal(
             PIXEL_8x8 as c_int
         };
         if (*h).pixf.var2[chromapix as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fenc[1 as c_int as usize],
-            (*h).mb.pic.p_fdec[1 as c_int as usize],
+            (*h).mb.pic.p_fenc[1],
+            (*h).mb.pic.p_fdec[1],
             ssd.as_mut_ptr(),
         ) < thresh * 4 as c_int
         {
@@ -589,12 +572,10 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                             nz_dc |= (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
                                 &mut *dct_dc.as_mut_ptr().offset((4 as c_int * i) as isize),
                                 ((*(*h).quant4_mf[(CQM_4IC as c_int + b_inter) as usize]
-                                    .offset((i_qp + 3 as c_int * chroma422) as isize))
-                                    [0 as c_int as usize]
+                                    .offset((i_qp + 3 as c_int * chroma422) as isize))[0]
                                     >> 1 as c_int) as c_int,
                                 ((*(*h).quant4_bias[(CQM_4IC as c_int + b_inter) as usize]
-                                    .offset((i_qp + 3 as c_int * chroma422) as isize))
-                                    [0 as c_int as usize]
+                                    .offset((i_qp + 3 as c_int * chroma422) as isize))[0]
                                     << 1 as c_int) as c_int,
                             );
                             i += 1;
@@ -753,8 +734,8 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                 {
                     (*h).quantf.denoise_dct.expect("non-null function pointer")(
                         (*dct4x4.as_mut_ptr().offset(i_3 as isize)).as_mut_ptr(),
-                        (*(*h).nr_residual_sum.offset(2 as c_int as isize)).as_mut_ptr(),
-                        (*(*h).nr_offset.offset(2 as c_int as isize)).as_mut_ptr(),
+                        (*(*h).nr_residual_sum.offset(2)).as_mut_ptr(),
+                        (*(*h).nr_offset.offset(2)).as_mut_ptr(),
                         16 as c_int,
                     );
                     i_3 += 1;
@@ -899,12 +880,10 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                     nz_dc |= (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
                         &mut *dct_dc.as_mut_ptr().offset((4 as c_int * i_4) as isize),
                         ((*(*h).quant4_mf[(CQM_4IC as c_int + b_inter) as usize]
-                            .offset((i_qp + 3 as c_int * chroma422) as isize))
-                            [0 as c_int as usize]
+                            .offset((i_qp + 3 as c_int * chroma422) as isize))[0]
                             >> 1 as c_int) as c_int,
                         ((*(*h).quant4_bias[(CQM_4IC as c_int + b_inter) as usize]
-                            .offset((i_qp + 3 as c_int * chroma422) as isize))
-                            [0 as c_int as usize]
+                            .offset((i_qp + 3 as c_int * chroma422) as isize))[0]
                             << 1 as c_int) as c_int,
                     );
                     i_4 += 1;
@@ -1058,7 +1037,7 @@ unsafe extern "C" fn macroblock_encode_skip(mut h: *mut x264_t) {
         .cache
         .non_zero_count
         .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(0 as c_int as isize) as isize) as *mut uint8_t
+        .offset(*x264_scan8.as_ptr().offset(0) as isize) as *mut uint8_t
         as *mut x264_union32_t))
         .i = 0 as uint32_t;
     (*(&mut *(*h)
@@ -1066,7 +1045,7 @@ unsafe extern "C" fn macroblock_encode_skip(mut h: *mut x264_t) {
         .cache
         .non_zero_count
         .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(2 as c_int as isize) as isize) as *mut uint8_t
+        .offset(*x264_scan8.as_ptr().offset(2) as isize) as *mut uint8_t
         as *mut x264_union32_t))
         .i = 0 as uint32_t;
     (*(&mut *(*h)
@@ -1074,7 +1053,7 @@ unsafe extern "C" fn macroblock_encode_skip(mut h: *mut x264_t) {
         .cache
         .non_zero_count
         .as_mut_ptr()
-        .offset(*x264_scan8.as_ptr().offset(8 as c_int as isize) as isize) as *mut uint8_t
+        .offset(*x264_scan8.as_ptr().offset(8) as isize) as *mut uint8_t
         as *mut x264_union32_t))
         .i = 0 as uint32_t;
     (*(&mut *(*h)
@@ -1145,80 +1124,76 @@ unsafe extern "C" fn x264_10_predict_lossless_chroma(mut h: *mut x264_t, mut i_m
     let mut height: c_int = 16 as c_int >> (*h).mb.chroma_v_shift;
     if i_mode == I_PRED_CHROMA_V as c_int {
         (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fdec[1 as c_int as usize],
+            (*h).mb.pic.p_fdec[1],
             FDEC_STRIDE as intptr_t,
-            (*h).mb.pic.p_fenc[1 as c_int as usize].offset(-(FENC_STRIDE as isize)),
+            (*h).mb.pic.p_fenc[1].offset(-(FENC_STRIDE as isize)),
             FENC_STRIDE as intptr_t,
             height,
         );
         (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fdec[2 as c_int as usize],
+            (*h).mb.pic.p_fdec[2],
             FDEC_STRIDE as intptr_t,
-            (*h).mb.pic.p_fenc[2 as c_int as usize].offset(-(FENC_STRIDE as isize)),
+            (*h).mb.pic.p_fenc[2].offset(-(FENC_STRIDE as isize)),
             FENC_STRIDE as intptr_t,
             height,
         );
         memcpy(
-            (*h).mb.pic.p_fdec[1 as c_int as usize] as *mut c_void,
-            (*h).mb.pic.p_fdec[1 as c_int as usize].offset(-(FDEC_STRIDE as isize))
-                as *const c_void,
+            (*h).mb.pic.p_fdec[1] as *mut c_void,
+            (*h).mb.pic.p_fdec[1].offset(-(FDEC_STRIDE as isize)) as *const c_void,
             (8 as c_int * SIZEOF_PIXEL) as size_t,
         );
         memcpy(
-            (*h).mb.pic.p_fdec[2 as c_int as usize] as *mut c_void,
-            (*h).mb.pic.p_fdec[2 as c_int as usize].offset(-(FDEC_STRIDE as isize))
-                as *const c_void,
+            (*h).mb.pic.p_fdec[2] as *mut c_void,
+            (*h).mb.pic.p_fdec[2].offset(-(FDEC_STRIDE as isize)) as *const c_void,
             (8 as c_int * SIZEOF_PIXEL) as size_t,
         );
     } else if i_mode == I_PRED_CHROMA_H as c_int {
         (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fdec[1 as c_int as usize],
+            (*h).mb.pic.p_fdec[1],
             FDEC_STRIDE as intptr_t,
-            (*h).mb.pic.p_fenc[1 as c_int as usize].offset(-(1 as c_int as isize)),
+            (*h).mb.pic.p_fenc[1].offset(-(1)),
             FENC_STRIDE as intptr_t,
             height,
         );
         (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fdec[2 as c_int as usize],
+            (*h).mb.pic.p_fdec[2],
             FDEC_STRIDE as intptr_t,
-            (*h).mb.pic.p_fenc[2 as c_int as usize].offset(-(1 as c_int as isize)),
+            (*h).mb.pic.p_fenc[2].offset(-(1)),
             FENC_STRIDE as intptr_t,
             height,
         );
         x264_10_copy_column8(
-            (*h).mb.pic.p_fdec[1 as c_int as usize].offset((4 as c_int * FDEC_STRIDE) as isize),
-            (*h).mb.pic.p_fdec[1 as c_int as usize]
+            (*h).mb.pic.p_fdec[1].offset((4 as c_int * FDEC_STRIDE) as isize),
+            (*h).mb.pic.p_fdec[1]
                 .offset((4 as c_int * FDEC_STRIDE) as isize)
-                .offset(-(1 as c_int as isize)),
+                .offset(-(1)),
         );
         x264_10_copy_column8(
-            (*h).mb.pic.p_fdec[2 as c_int as usize].offset((4 as c_int * FDEC_STRIDE) as isize),
-            (*h).mb.pic.p_fdec[2 as c_int as usize]
+            (*h).mb.pic.p_fdec[2].offset((4 as c_int * FDEC_STRIDE) as isize),
+            (*h).mb.pic.p_fdec[2]
                 .offset((4 as c_int * FDEC_STRIDE) as isize)
-                .offset(-(1 as c_int as isize)),
+                .offset(-(1)),
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_422 as c_int {
             x264_10_copy_column8(
-                (*h).mb.pic.p_fdec[1 as c_int as usize]
-                    .offset((12 as c_int * FDEC_STRIDE) as isize),
-                (*h).mb.pic.p_fdec[1 as c_int as usize]
+                (*h).mb.pic.p_fdec[1].offset((12 as c_int * FDEC_STRIDE) as isize),
+                (*h).mb.pic.p_fdec[1]
                     .offset((12 as c_int * FDEC_STRIDE) as isize)
-                    .offset(-(1 as c_int as isize)),
+                    .offset(-(1)),
             );
             x264_10_copy_column8(
-                (*h).mb.pic.p_fdec[2 as c_int as usize]
-                    .offset((12 as c_int * FDEC_STRIDE) as isize),
-                (*h).mb.pic.p_fdec[2 as c_int as usize]
+                (*h).mb.pic.p_fdec[2].offset((12 as c_int * FDEC_STRIDE) as isize),
+                (*h).mb.pic.p_fdec[2]
                     .offset((12 as c_int * FDEC_STRIDE) as isize)
-                    .offset(-(1 as c_int as isize)),
+                    .offset(-(1)),
             );
         }
     } else {
         (*h).predict_chroma[i_mode as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fdec[1 as c_int as usize],
+            (*h).mb.pic.p_fdec[1],
         );
         (*h).predict_chroma[i_mode as usize].expect("non-null function pointer")(
-            (*h).mb.pic.p_fdec[2 as c_int as usize],
+            (*h).mb.pic.p_fdec[2],
         );
     };
 }
@@ -1252,7 +1227,7 @@ unsafe extern "C" fn x264_10_predict_lossless_4x4(
         (*h).mc.copy[PIXEL_4x4 as c_int as usize].expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
-            p_src.offset(-(1 as c_int as isize)),
+            p_src.offset(-(1)),
             stride as intptr_t,
             4 as c_int,
         );
@@ -1297,7 +1272,7 @@ unsafe extern "C" fn x264_10_predict_lossless_8x8(
         (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
-            p_src.offset(-(1 as c_int as isize)),
+            p_src.offset(-(1)),
             stride as intptr_t,
             8 as c_int,
         );
@@ -1338,7 +1313,7 @@ unsafe extern "C" fn x264_10_predict_lossless_16x16(
             .expect("non-null function pointer")(
             p_dst,
             FDEC_STRIDE as intptr_t,
-            (*h).mb.pic.p_fenc_plane[p as usize].offset(-(1 as c_int as isize)),
+            (*h).mb.pic.p_fenc_plane[p as usize].offset(-(1)),
             stride as intptr_t,
             16 as c_int,
         );
@@ -1384,16 +1359,16 @@ unsafe extern "C" fn macroblock_encode_internal(
         if chroma != 0 {
             let mut height: c_int = 16 as c_int >> (*h).mb.chroma_v_shift;
             (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
-                (*h).mb.pic.p_fdec[1 as c_int as usize],
+                (*h).mb.pic.p_fdec[1],
                 FDEC_STRIDE as intptr_t,
-                (*h).mb.pic.p_fenc[1 as c_int as usize],
+                (*h).mb.pic.p_fenc[1],
                 FENC_STRIDE as intptr_t,
                 height,
             );
             (*h).mc.copy[PIXEL_8x8 as c_int as usize].expect("non-null function pointer")(
-                (*h).mb.pic.p_fdec[2 as c_int as usize],
+                (*h).mb.pic.p_fdec[2],
                 FDEC_STRIDE as intptr_t,
-                (*h).mb.pic.p_fenc[2 as c_int as usize],
+                (*h).mb.pic.p_fenc[2],
                 FENC_STRIDE as intptr_t,
                 height,
             );
@@ -1413,25 +1388,23 @@ unsafe extern "C" fn macroblock_encode_internal(
     if (*h).mb.i_type == P_SKIP as c_int {
         if (*h).mb.b_skip_mc == 0 {
             let mut mvx: c_int = x264_clip3(
-                (*h).mb.cache.mv[0 as c_int as usize][x264_scan8[0 as c_int as usize] as usize]
-                    [0 as c_int as usize] as c_int,
-                (*h).mb.mv_min[0 as c_int as usize],
-                (*h).mb.mv_max[0 as c_int as usize],
+                (*h).mb.cache.mv[0][x264_scan8[0] as usize][0] as c_int,
+                (*h).mb.mv_min[0],
+                (*h).mb.mv_max[0],
             );
             let mut mvy: c_int = x264_clip3(
-                (*h).mb.cache.mv[0 as c_int as usize][x264_scan8[0 as c_int as usize] as usize]
-                    [1 as c_int as usize] as c_int,
-                (*h).mb.mv_min[1 as c_int as usize],
-                (*h).mb.mv_max[1 as c_int as usize],
+                (*h).mb.cache.mv[0][x264_scan8[0] as usize][1] as c_int,
+                (*h).mb.mv_min[1],
+                (*h).mb.mv_max[1],
             );
             let mut p_1: c_int = 0 as c_int;
             while p_1 < plane_count {
                 (*h).mc.mc_luma.expect("non-null function pointer")(
                     (*h).mb.pic.p_fdec[p_1 as usize],
                     FDEC_STRIDE as intptr_t,
-                    &mut *(*(*(*h).mb.pic.p_fref.as_mut_ptr().offset(0 as c_int as isize))
+                    &mut *(*(*(*h).mb.pic.p_fref.as_mut_ptr().offset(0))
                         .as_mut_ptr()
-                        .offset(0 as c_int as isize))
+                        .offset(0))
                     .as_mut_ptr()
                     .offset((p_1 * 4 as c_int) as isize),
                     (*h).mb.pic.i_stride[p_1 as usize] as intptr_t,
@@ -1439,7 +1412,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                     mvy,
                     16 as c_int,
                     16 as c_int,
-                    &mut *(*(*h).sh.weight.as_mut_ptr().offset(0 as c_int as isize))
+                    &mut *(*(*h).sh.weight.as_mut_ptr().offset(0))
                         .as_mut_ptr()
                         .offset(p_1 as isize),
                 );
@@ -1450,12 +1423,11 @@ unsafe extern "C" fn macroblock_encode_internal(
                 let mut height_0: c_int = 16 as c_int >> v_shift;
                 if mvx | mvy != 0 {
                     (*h).mc.mc_chroma.expect("non-null function pointer")(
-                        (*h).mb.pic.p_fdec[1 as c_int as usize],
-                        (*h).mb.pic.p_fdec[2 as c_int as usize],
+                        (*h).mb.pic.p_fdec[1],
+                        (*h).mb.pic.p_fdec[2],
                         FDEC_STRIDE as intptr_t,
-                        (*h).mb.pic.p_fref[0 as c_int as usize][0 as c_int as usize]
-                            [4 as c_int as usize],
-                        (*h).mb.pic.i_stride[1 as c_int as usize] as intptr_t,
+                        (*h).mb.pic.p_fref[0][0][4],
+                        (*h).mb.pic.i_stride[1] as intptr_t,
                         mvx,
                         2 as c_int * mvy >> v_shift,
                         8 as c_int,
@@ -1465,46 +1437,39 @@ unsafe extern "C" fn macroblock_encode_internal(
                     (*h).mc
                         .load_deinterleave_chroma_fdec
                         .expect("non-null function pointer")(
-                        (*h).mb.pic.p_fdec[1 as c_int as usize],
-                        (*h).mb.pic.p_fref[0 as c_int as usize][0 as c_int as usize]
-                            [4 as c_int as usize],
-                        (*h).mb.pic.i_stride[1 as c_int as usize] as intptr_t,
+                        (*h).mb.pic.p_fdec[1],
+                        (*h).mb.pic.p_fref[0][0][4],
+                        (*h).mb.pic.i_stride[1] as intptr_t,
                         height_0,
                     );
                 }
-                if !(*h).sh.weight[0 as c_int as usize][1 as c_int as usize]
-                    .weightfn
-                    .is_null()
-                {
-                    (*(*h).sh.weight[0 as c_int as usize][1 as c_int as usize]
+                if !(*h).sh.weight[0][1].weightfn.is_null() {
+                    (*(*h).sh.weight[0][1]
                         .weightfn
                         .offset((8 as c_int >> 2 as c_int) as isize))
                     .expect("non-null function pointer")(
-                        (*h).mb.pic.p_fdec[1 as c_int as usize],
+                        (*h).mb.pic.p_fdec[1],
                         FDEC_STRIDE as intptr_t,
-                        (*h).mb.pic.p_fdec[1 as c_int as usize],
+                        (*h).mb.pic.p_fdec[1],
                         FDEC_STRIDE as intptr_t,
-                        &mut *(*(*h).sh.weight.as_mut_ptr().offset(0 as c_int as isize))
+                        &mut *(*(*h).sh.weight.as_mut_ptr().offset(0))
                             .as_mut_ptr()
-                            .offset(1 as c_int as isize),
+                            .offset(1),
                         height_0,
                     );
                 }
-                if !(*h).sh.weight[0 as c_int as usize][2 as c_int as usize]
-                    .weightfn
-                    .is_null()
-                {
-                    (*(*h).sh.weight[0 as c_int as usize][2 as c_int as usize]
+                if !(*h).sh.weight[0][2].weightfn.is_null() {
+                    (*(*h).sh.weight[0][2]
                         .weightfn
                         .offset((8 as c_int >> 2 as c_int) as isize))
                     .expect("non-null function pointer")(
-                        (*h).mb.pic.p_fdec[2 as c_int as usize],
+                        (*h).mb.pic.p_fdec[2],
                         FDEC_STRIDE as intptr_t,
-                        (*h).mb.pic.p_fdec[2 as c_int as usize],
+                        (*h).mb.pic.p_fdec[2],
                         FDEC_STRIDE as intptr_t,
-                        &mut *(*(*h).sh.weight.as_mut_ptr().offset(0 as c_int as isize))
+                        &mut *(*(*h).sh.weight.as_mut_ptr().offset(0))
                             .as_mut_ptr()
-                            .offset(2 as c_int as isize),
+                            .offset(2),
                         height_0,
                     );
                 }
@@ -1532,7 +1497,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         (*h).mb.b_transform_8x8 = 1 as c_int;
         if (*h).mb.i_skip_intra != 0 {
             (*h).mc.copy[PIXEL_16x16 as c_int as usize].expect("non-null function pointer")(
-                (*h).mb.pic.p_fdec[0 as c_int as usize],
+                (*h).mb.pic.p_fdec[0],
                 FDEC_STRIDE as intptr_t,
                 (*h).mb.pic.i8x8_fdec_buf.as_mut_ptr(),
                 16 as intptr_t,
@@ -1543,25 +1508,25 @@ unsafe extern "C" fn macroblock_encode_internal(
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(*x264_scan8.as_ptr().offset(0 as c_int as isize) as isize)
-                as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i8x8_nnz_buf[0 as c_int as usize];
+                .offset(*x264_scan8.as_ptr().offset(0) as isize) as *mut uint8_t
+                as *mut x264_union32_t))
+                .i = (*h).mb.pic.i8x8_nnz_buf[0];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(*x264_scan8.as_ptr().offset(2 as c_int as isize) as isize)
-                as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i8x8_nnz_buf[1 as c_int as usize];
+                .offset(*x264_scan8.as_ptr().offset(2) as isize) as *mut uint8_t
+                as *mut x264_union32_t))
+                .i = (*h).mb.pic.i8x8_nnz_buf[1];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(*x264_scan8.as_ptr().offset(8 as c_int as isize) as isize)
-                as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i8x8_nnz_buf[2 as c_int as usize];
+                .offset(*x264_scan8.as_ptr().offset(8) as isize) as *mut uint8_t
+                as *mut x264_union32_t))
+                .i = (*h).mb.pic.i8x8_nnz_buf[2];
             (*(&mut *(*h)
                 .mb
                 .cache
@@ -1569,7 +1534,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 .as_mut_ptr()
                 .offset(*x264_scan8.as_ptr().offset(10 as c_int as isize) as isize)
                 as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i8x8_nnz_buf[3 as c_int as usize];
+                .i = (*h).mb.pic.i8x8_nnz_buf[3];
             (*h).mb.i_cbp_luma = (*h).mb.pic.i8x8_cbp;
             if (*h).mb.i_skip_intra == 2 as c_int {
                 (*h).mc.memcpy_aligned.expect("non-null function pointer")(
@@ -1600,7 +1565,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         (*h).mb.b_transform_8x8 = 0 as c_int;
         if (*h).mb.i_skip_intra != 0 {
             (*h).mc.copy[PIXEL_16x16 as c_int as usize].expect("non-null function pointer")(
-                (*h).mb.pic.p_fdec[0 as c_int as usize],
+                (*h).mb.pic.p_fdec[0],
                 FDEC_STRIDE as intptr_t,
                 (*h).mb.pic.i4x4_fdec_buf.as_mut_ptr(),
                 16 as intptr_t,
@@ -1611,25 +1576,25 @@ unsafe extern "C" fn macroblock_encode_internal(
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(*x264_scan8.as_ptr().offset(0 as c_int as isize) as isize)
-                as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i4x4_nnz_buf[0 as c_int as usize];
+                .offset(*x264_scan8.as_ptr().offset(0) as isize) as *mut uint8_t
+                as *mut x264_union32_t))
+                .i = (*h).mb.pic.i4x4_nnz_buf[0];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(*x264_scan8.as_ptr().offset(2 as c_int as isize) as isize)
-                as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i4x4_nnz_buf[1 as c_int as usize];
+                .offset(*x264_scan8.as_ptr().offset(2) as isize) as *mut uint8_t
+                as *mut x264_union32_t))
+                .i = (*h).mb.pic.i4x4_nnz_buf[1];
             (*(&mut *(*h)
                 .mb
                 .cache
                 .non_zero_count
                 .as_mut_ptr()
-                .offset(*x264_scan8.as_ptr().offset(8 as c_int as isize) as isize)
-                as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i4x4_nnz_buf[2 as c_int as usize];
+                .offset(*x264_scan8.as_ptr().offset(8) as isize) as *mut uint8_t
+                as *mut x264_union32_t))
+                .i = (*h).mb.pic.i4x4_nnz_buf[2];
             (*(&mut *(*h)
                 .mb
                 .cache
@@ -1637,7 +1602,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 .as_mut_ptr()
                 .offset(*x264_scan8.as_ptr().offset(10 as c_int as isize) as isize)
                 as *mut uint8_t as *mut x264_union32_t))
-                .i = (*h).mb.pic.i4x4_nnz_buf[3 as c_int as usize];
+                .i = (*h).mb.pic.i4x4_nnz_buf[3];
             (*h).mb.i_cbp_luma = (*h).mb.pic.i4x4_cbp;
             if (*h).mb.i_skip_intra == 2 as c_int {
                 (*h).mc.memcpy_aligned.expect("non-null function pointer")(
@@ -2138,10 +2103,10 @@ unsafe extern "C" fn macroblock_encode_internal(
                 x264_10_predict_lossless_chroma(h, i_mode_1);
             } else {
                 (*h).predict_chroma[i_mode_1 as usize].expect("non-null function pointer")(
-                    (*h).mb.pic.p_fdec[1 as c_int as usize],
+                    (*h).mb.pic.p_fdec[1],
                 );
                 (*h).predict_chroma[i_mode_1 as usize].expect("non-null function pointer")(
-                    (*h).mb.pic.p_fdec[2 as c_int as usize],
+                    (*h).mb.pic.p_fdec[2],
                 );
             }
         }
@@ -2172,15 +2137,13 @@ unsafe extern "C" fn macroblock_encode_internal(
         if (*h).mb.i_type == P_L0 as c_int
             && (*h).mb.i_partition == D_16x16 as c_int
             && (*h).mb.i_cbp_luma | (*h).mb.i_cbp_chroma == 0
-            && (*((*(*(*h).mb.cache.mv.as_mut_ptr().offset(0 as c_int as isize))
+            && (*((*(*(*h).mb.cache.mv.as_mut_ptr().offset(0))
                 .as_mut_ptr()
-                .offset(*x264_scan8.as_ptr().offset(0 as c_int as isize) as isize))
+                .offset(*x264_scan8.as_ptr().offset(0) as isize))
             .as_mut_ptr() as *mut x264_union32_t))
                 .i
                 == (*((*h).mb.cache.pskip_mv.as_mut_ptr() as *mut x264_union32_t)).i
-            && (*h).mb.cache.ref_0[0 as c_int as usize][x264_scan8[0 as c_int as usize] as usize]
-                as c_int
-                == 0 as c_int
+            && (*h).mb.cache.ref_0[0][x264_scan8[0] as usize] as c_int == 0 as c_int
         {
             (*h).mb.i_type = P_SKIP as c_int;
         }
@@ -2220,30 +2183,30 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
             CQM_4PY as c_int
         };
         if b_bidir == 0 {
-            mvp[0 as c_int as usize] = x264_clip3(
-                (*h).mb.cache.pskip_mv[0 as c_int as usize] as c_int,
-                (*h).mb.mv_min[0 as c_int as usize],
-                (*h).mb.mv_max[0 as c_int as usize],
+            mvp[0] = x264_clip3(
+                (*h).mb.cache.pskip_mv[0] as c_int,
+                (*h).mb.mv_min[0],
+                (*h).mb.mv_max[0],
             ) as int16_t;
-            mvp[1 as c_int as usize] = x264_clip3(
-                (*h).mb.cache.pskip_mv[1 as c_int as usize] as c_int,
-                (*h).mb.mv_min[1 as c_int as usize],
-                (*h).mb.mv_max[1 as c_int as usize],
+            mvp[1] = x264_clip3(
+                (*h).mb.cache.pskip_mv[1] as c_int,
+                (*h).mb.mv_min[1],
+                (*h).mb.mv_max[1],
             ) as int16_t;
             (*h).mc.mc_luma.expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[p as usize],
                 FDEC_STRIDE as intptr_t,
-                &mut *(*(*(*h).mb.pic.p_fref.as_mut_ptr().offset(0 as c_int as isize))
+                &mut *(*(*(*h).mb.pic.p_fref.as_mut_ptr().offset(0))
                     .as_mut_ptr()
-                    .offset(0 as c_int as isize))
+                    .offset(0))
                 .as_mut_ptr()
                 .offset((p * 4 as c_int) as isize),
                 (*h).mb.pic.i_stride[p as usize] as intptr_t,
-                mvp[0 as c_int as usize] as c_int,
-                mvp[1 as c_int as usize] as c_int,
+                mvp[0] as c_int,
+                mvp[1] as c_int,
                 16 as c_int,
                 16 as c_int,
-                &mut *(*(*h).sh.weight.as_mut_ptr().offset(0 as c_int as isize))
+                &mut *(*(*h).sh.weight.as_mut_ptr().offset(0))
                     .as_mut_ptr()
                     .offset(p as isize),
             );
@@ -2328,14 +2291,13 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
         if b_bidir == 0 {
             if (*(mvp.as_mut_ptr() as *mut x264_union32_t)).i != 0 {
                 (*h).mc.mc_chroma.expect("non-null function pointer")(
-                    (*h).mb.pic.p_fdec[1 as c_int as usize],
-                    (*h).mb.pic.p_fdec[2 as c_int as usize],
+                    (*h).mb.pic.p_fdec[1],
+                    (*h).mb.pic.p_fdec[2],
                     FDEC_STRIDE as intptr_t,
-                    (*h).mb.pic.p_fref[0 as c_int as usize][0 as c_int as usize]
-                        [4 as c_int as usize],
-                    (*h).mb.pic.i_stride[1 as c_int as usize] as intptr_t,
-                    mvp[0 as c_int as usize] as c_int,
-                    mvp[1 as c_int as usize] as c_int * ((1 as c_int) << chroma422),
+                    (*h).mb.pic.p_fref[0][0][4],
+                    (*h).mb.pic.i_stride[1] as intptr_t,
+                    mvp[0] as c_int,
+                    mvp[1] as c_int * ((1 as c_int) << chroma422),
                     8 as c_int,
                     if chroma422 != 0 {
                         16 as c_int
@@ -2347,10 +2309,9 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                 (*h).mc
                     .load_deinterleave_chroma_fdec
                     .expect("non-null function pointer")(
-                    (*h).mb.pic.p_fdec[1 as c_int as usize],
-                    (*h).mb.pic.p_fref[0 as c_int as usize][0 as c_int as usize]
-                        [4 as c_int as usize],
-                    (*h).mb.pic.i_stride[1 as c_int as usize] as intptr_t,
+                    (*h).mb.pic.p_fdec[1],
+                    (*h).mb.pic.p_fref[0][0][4],
+                    (*h).mb.pic.i_stride[1] as intptr_t,
                     if chroma422 != 0 {
                         16 as c_int
                     } else {
@@ -2364,11 +2325,11 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
             let mut p_src: *mut pixel = (*h).mb.pic.p_fenc[(1 as c_int + ch) as usize];
             let mut p_dst: *mut pixel = (*h).mb.pic.p_fdec[(1 as c_int + ch) as usize];
             if b_bidir == 0
-                && !(*h).sh.weight[0 as c_int as usize][(1 as c_int + ch) as usize]
+                && !(*h).sh.weight[0][(1 as c_int + ch) as usize]
                     .weightfn
                     .is_null()
             {
-                (*(*h).sh.weight[0 as c_int as usize][(1 as c_int + ch) as usize]
+                (*(*h).sh.weight[0][(1 as c_int + ch) as usize]
                     .weightfn
                     .offset((8 as c_int >> 2 as c_int) as isize))
                 .expect("non-null function pointer")(
@@ -2376,7 +2337,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     FDEC_STRIDE as intptr_t,
                     (*h).mb.pic.p_fdec[(1 as c_int + ch) as usize],
                     FDEC_STRIDE as intptr_t,
-                    &mut *(*(*h).sh.weight.as_mut_ptr().offset(0 as c_int as isize))
+                    &mut *(*(*h).sh.weight.as_mut_ptr().offset(0))
                         .as_mut_ptr()
                         .offset((1 as c_int + ch) as isize),
                     if chroma422 != 0 {
@@ -2418,12 +2379,12 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     {
                         (*h).quantf.denoise_dct.expect("non-null function pointer")(
                             (*dct4x4.as_mut_ptr().offset(i4x4_0 as isize)).as_mut_ptr(),
-                            (*(*h).nr_residual_sum.offset(2 as c_int as isize)).as_mut_ptr(),
-                            (*(*h).nr_offset.offset(2 as c_int as isize)).as_mut_ptr(),
+                            (*(*h).nr_residual_sum.offset(2)).as_mut_ptr(),
+                            (*(*h).nr_offset.offset(2)).as_mut_ptr(),
                             16 as c_int,
                         );
-                        dct_dc[i4x4_0 as usize] = dct4x4[i4x4_0 as usize][0 as c_int as usize];
-                        dct4x4[i4x4_0 as usize][0 as c_int as usize] = 0 as c_int as dctcoef;
+                        dct_dc[i4x4_0 as usize] = dct4x4[i4x4_0 as usize][0];
+                        dct4x4[i4x4_0 as usize][0] = 0 as c_int as dctcoef;
                         i4x4_0 += 1;
                     }
                 } else if chroma422 != 0 {
@@ -2444,12 +2405,10 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     if (*h).quantf.quant_2x2_dc.expect("non-null function pointer")(
                         &mut *dct_dc.as_mut_ptr().offset((4 as c_int * i_0) as isize),
                         ((*(*h).quant4_mf[CQM_4PC as c_int as usize]
-                            .offset((i_qp + 3 as c_int * chroma422) as isize))
-                            [0 as c_int as usize]
+                            .offset((i_qp + 3 as c_int * chroma422) as isize))[0]
                             >> 1 as c_int) as c_int,
                         ((*(*h).quant4_bias[CQM_4PC as c_int as usize]
-                            .offset((i_qp + 3 as c_int * chroma422) as isize))
-                            [0 as c_int as usize]
+                            .offset((i_qp + 3 as c_int * chroma422) as isize))[0]
                             << 1 as c_int) as c_int,
                     ) != 0
                     {
@@ -2466,13 +2425,13 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                                 p_src.offset((8 as c_int * i_1 * FENC_STRIDE) as isize),
                                 p_dst.offset((8 as c_int * i_1 * FDEC_STRIDE) as isize),
                             );
-                            dct4x4[(i_1 * 4 as c_int + 0 as c_int) as usize][0 as c_int as usize] =
+                            dct4x4[(i_1 * 4 as c_int + 0 as c_int) as usize][0] =
                                 0 as c_int as dctcoef;
-                            dct4x4[(i_1 * 4 as c_int + 1 as c_int) as usize][0 as c_int as usize] =
+                            dct4x4[(i_1 * 4 as c_int + 1 as c_int) as usize][0] =
                                 0 as c_int as dctcoef;
-                            dct4x4[(i_1 * 4 as c_int + 2 as c_int) as usize][0 as c_int as usize] =
+                            dct4x4[(i_1 * 4 as c_int + 2 as c_int) as usize][0] =
                                 0 as c_int as dctcoef;
-                            dct4x4[(i_1 * 4 as c_int + 3 as c_int) as usize][0 as c_int as usize] =
+                            dct4x4[(i_1 * 4 as c_int + 3 as c_int) as usize][0] =
                                 0 as c_int as dctcoef;
                             i_1 += 1;
                         }
@@ -2556,12 +2515,9 @@ unsafe extern "C" fn x264_10_macroblock_probe_skip(
 #[c2rust::src_loc = "1146:1"]
 unsafe extern "C" fn x264_10_noise_reduction_update(mut h: *mut x264_t) {
     (*h).nr_offset = (*h).nr_offset_denoise.as_mut_ptr() as *mut [udctcoef; 64];
-    (*h).nr_residual_sum = (*(*h)
-        .nr_residual_sum_buf
-        .as_mut_ptr()
-        .offset(0 as c_int as isize))
-    .as_mut_ptr() as *mut [uint32_t; 64];
-    (*h).nr_count = (*(*h).nr_count_buf.as_mut_ptr().offset(0 as c_int as isize)).as_mut_ptr();
+    (*h).nr_residual_sum =
+        (*(*h).nr_residual_sum_buf.as_mut_ptr().offset(0)).as_mut_ptr() as *mut [uint32_t; 64];
+    (*h).nr_count = (*(*h).nr_count_buf.as_mut_ptr().offset(0)).as_mut_ptr();
     let mut cat: c_int = 0 as c_int;
     while cat
         < 3 as c_int
@@ -2609,7 +2565,7 @@ unsafe extern "C" fn x264_10_noise_reduction_update(mut h: *mut x264_t) {
                     ) as udctcoef;
             i_0 += 1;
         }
-        (*(*h).nr_offset.offset(cat as isize))[0 as c_int as usize] = 0 as udctcoef;
+        (*(*h).nr_offset.offset(cat as isize))[0] = 0 as udctcoef;
         cat += 1;
     }
 }
@@ -3084,12 +3040,12 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                     if (*h).mb.b_noise_reduction != 0 {
                         (*h).quantf.denoise_dct.expect("non-null function pointer")(
                             (*dct4x4_0.as_mut_ptr().offset(i4x4_2 as isize)).as_mut_ptr(),
-                            (*(*h).nr_residual_sum.offset(2 as c_int as isize)).as_mut_ptr(),
-                            (*(*h).nr_offset.offset(2 as c_int as isize)).as_mut_ptr(),
+                            (*(*h).nr_residual_sum.offset(2)).as_mut_ptr(),
+                            (*(*h).nr_offset.offset(2)).as_mut_ptr(),
                             16 as c_int,
                         );
                     }
-                    dct4x4_0[i4x4_2 as usize][0 as c_int as usize] = 0 as c_int as dctcoef;
+                    dct4x4_0[i4x4_2 as usize][0] = 0 as c_int as dctcoef;
                     if (*h).mb.b_trellis != 0 {
                         nz = x264_10_quant_4x4_trellis(
                             h,

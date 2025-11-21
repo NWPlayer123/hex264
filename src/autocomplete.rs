@@ -308,7 +308,7 @@ unsafe extern "C" fn suggest_token(
             if tok_len != 0 && tok_len >= cur_len && strncmp(s, cur, cur_len as size_t) == 0 {
                 printf(b"%.*s \0" as *const u8 as *const c_char, tok_len, s);
             }
-            s = tok_end.offset(1 as c_int as isize);
+            s = tok_end.offset(1);
         }
         suggest(s, cur, cur_len);
     }

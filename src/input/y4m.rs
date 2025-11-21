@@ -120,7 +120,7 @@ unsafe extern "C" fn open_file(
     let mut alt_colorspace: c_int = X264_CSP_NONE;
     let mut alt_bit_depth: c_int = 8 as c_int;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*info).vfr = 0 as c_int;
     if strcmp(psz_filename, b"-\0" as *const u8 as *const c_char) == 0 {
@@ -129,7 +129,7 @@ unsafe extern "C" fn open_file(
         (*h).fh = fopen(psz_filename, b"rb\0" as *const u8 as *const c_char) as *mut FILE;
     }
     if (*h).fh.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     i = 0 as c_int;
     while i < Y4M_MAX_HEADER {
@@ -153,7 +153,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"bad sequence header magic\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if i == 256 as c_int {
         x264_cli_log(
@@ -161,7 +161,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"bad sequence header length\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     header_end = &mut *header.as_mut_ptr().offset((i + 1 as c_int) as isize) as *mut c_char;
     (*h).seq_header_len = i + 1 as c_int;
@@ -242,7 +242,7 @@ unsafe extern "C" fn open_file(
                         6 as size_t,
                     ) == 0
                     {
-                        tokstart = tokstart.offset(6 as c_int as isize);
+                        tokstart = tokstart.offset(6);
                         alt_colorspace = parse_csp_and_depth(tokstart, &mut alt_bit_depth);
                     } else if strncmp(
                         b"COLORRANGE=\0" as *const u8 as *const c_char,
@@ -288,7 +288,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"colorspace unhandled\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if (*h).bit_depth < 8 as c_int || (*h).bit_depth > 16 as c_int {
         x264_cli_log(
@@ -297,7 +297,7 @@ unsafe extern "C" fn open_file(
             b"unsupported bit depth `%d'\n\0" as *const u8 as *const c_char,
             (*h).bit_depth,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*info).thread_safe = 1 as c_int;
     (*info).num_frames = 0 as c_int;
@@ -330,7 +330,7 @@ unsafe extern "C" fn open_file(
                 X264_LOG_ERROR,
                 b"bad frame header length\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         (*h).frame_header_len = len as c_int;
         (*h).frame_size = ((*h).frame_size as size_t).wrapping_add(len) as int64_t as int64_t;
@@ -344,7 +344,7 @@ unsafe extern "C" fn open_file(
                 X264_LOG_ERROR,
                 b"empty input file\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
         if (*h).bit_depth & 7 as c_int == 0 {
             (*h).use_mmap = (x264_cli_mmap_init(&mut (*h).mmap, (*h).fh) == 0) as c_int;
@@ -364,9 +364,8 @@ unsafe extern "C" fn read_frame_internal(
     let mut header_buf: [c_char; 16] = [0; 16];
     let mut header: *mut c_char = 0 as *mut c_char;
     if (*h).use_mmap != 0 {
-        header = (*pic).img.plane[0 as c_int as usize] as *mut c_char;
-        (*pic).img.plane[0 as c_int as usize] =
-            (*pic).img.plane[0 as c_int as usize].offset((*h).frame_header_len as isize);
+        header = (*pic).img.plane[0] as *mut c_char;
+        (*pic).img.plane[0] = (*pic).img.plane[0].offset((*h).frame_header_len as isize);
         while i <= (*h).frame_header_len
             && *header.offset((i - 1 as c_int) as isize) as c_int != '\n' as i32
         {
@@ -378,12 +377,12 @@ unsafe extern "C" fn read_frame_internal(
                 X264_LOG_ERROR,
                 b"bad frame header length\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
     } else {
         header = header_buf.as_mut_ptr();
         if fread(header as *mut c_void, 1 as size_t, slen, (*h).fh) as size_t != slen {
-            return -(1 as c_int);
+            return -1;
         }
         while i <= Y4M_MAX_HEADER && fgetc((*h).fh) != '\n' as i32 {
             i += 1;
@@ -394,7 +393,7 @@ unsafe extern "C" fn read_frame_internal(
                 X264_LOG_ERROR,
                 b"bad frame header length\n\0" as *const u8 as *const c_char,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     if memcmp(
@@ -408,7 +407,7 @@ unsafe extern "C" fn read_frame_internal(
             X264_LOG_ERROR,
             b"bad frame header magic\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     i = 0 as c_int;
     while i < (*pic).img.planes {
@@ -426,7 +425,7 @@ unsafe extern "C" fn read_frame_internal(
         ) as uint64_t
             != (*h).plane_size[i as usize] as uint64_t
         {
-            return -(1 as c_int);
+            return -1;
         }
         if bit_depth_uc != 0 {
             let mut plane: *mut uint16_t = (*pic).img.plane[i as usize] as *mut uint16_t;
@@ -451,13 +450,13 @@ unsafe extern "C" fn read_frame(
 ) -> c_int {
     let mut h: *mut y4m_hnd_t = handle as *mut y4m_hnd_t;
     if (*h).use_mmap != 0 {
-        (*pic).img.plane[0 as c_int as usize] = x264_cli_mmap(
+        (*pic).img.plane[0] = x264_cli_mmap(
             &mut (*h).mmap,
             (*h).frame_size * i_frame as int64_t + (*h).seq_header_len as int64_t,
             (*h).frame_size,
         ) as *mut uint8_t;
-        if (*pic).img.plane[0 as c_int as usize].is_null() {
-            return -(1 as c_int);
+        if (*pic).img.plane[0].is_null() {
+            return -1;
         }
     } else if i_frame > (*h).next_frame {
         if x264_is_regular_file((*h).fh) != 0 {
@@ -470,14 +469,14 @@ unsafe extern "C" fn read_frame(
         } else {
             while i_frame > (*h).next_frame {
                 if read_frame_internal(pic, h, 0 as c_int) != 0 {
-                    return -(1 as c_int);
+                    return -1;
                 }
                 (*h).next_frame += 1;
             }
         }
     }
     if read_frame_internal(pic, h, (*h).bit_depth & 7 as c_int) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).next_frame = i_frame + 1 as c_int;
     return 0 as c_int;
@@ -488,8 +487,7 @@ unsafe extern "C" fn release_frame(mut pic: *mut cli_pic_t, mut handle: hnd_t) -
     if (*h).use_mmap != 0 {
         return x264_cli_munmap(
             &mut (*h).mmap,
-            (*pic).img.plane[0 as c_int as usize].offset(-((*h).frame_header_len as isize))
-                as *mut c_void,
+            (*pic).img.plane[0].offset(-((*h).frame_header_len as isize)) as *mut c_void,
             (*h).frame_size,
         );
     }

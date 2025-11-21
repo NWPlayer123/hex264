@@ -125,7 +125,7 @@ unsafe extern "C" fn read_frame_internal(
                     av_packet_unref(pkt);
                 }
             } else if ret == AVERROR_EOF {
-                return -(1 as c_int);
+                return -1;
             }
             if ret != 0 {
                 x264_cli_log(
@@ -134,7 +134,7 @@ unsafe extern "C" fn read_frame_internal(
                     b"video decoding failed on frame %d\n\0" as *const u8 as *const c_char,
                     (*h).next_frame,
                 );
-                return -(1 as c_int);
+                return -1;
             }
         }
         (*h).next_frame += 1;
@@ -184,18 +184,18 @@ unsafe extern "C" fn open_file(
     let mut h: *mut lavf_hnd_t =
         calloc(1 as size_t, ::core::mem::size_of::<lavf_hnd_t>() as size_t) as *mut lavf_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     if strcmp(psz_filename, b"-\0" as *const u8 as *const c_char) == 0 {
         psz_filename = b"pipe:\0" as *const u8 as *const c_char as *mut c_char;
     }
     (*h).frame = av_frame_alloc();
     if (*h).frame.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*h).pkt = av_packet_alloc();
     if (*h).pkt.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     let mut options: *mut AVDictionary = 0 as *mut AVDictionary;
     if !(*opt).resolution.is_null() {
@@ -227,7 +227,7 @@ unsafe extern "C" fn open_file(
                 b"unknown file format: %s\n\0" as *const u8 as *const c_char,
                 (*opt).format,
             );
-            return -(1 as c_int);
+            return -1;
         }
     }
     if avformat_open_input(&mut (*h).lavf, psz_filename, format, &mut options) != 0 {
@@ -236,7 +236,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"could not open input file\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if !options.is_null() {
         av_dict_free(&mut options);
@@ -247,7 +247,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"could not find input stream info\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     let mut i: c_int = 0 as c_int;
     while (i as c_uint) < (*(*h).lavf).nb_streams
@@ -262,13 +262,13 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"could not find video stream\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*h).stream_id = i;
     (*h).next_frame = 0 as c_int;
     (*h).lavc = codec_from_stream(*(*(*h).lavf).streams.offset(i as isize));
     if (*h).lavc.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
     (*info).fps_num = (**(*(*h).lavf).streams.offset(i as isize))
         .avg_frame_rate
@@ -291,7 +291,7 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"could not find decoder for video stream\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     (*h).first_pic = malloc(::core::mem::size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
     if (*h).first_pic.is_null()
@@ -308,10 +308,10 @@ unsafe extern "C" fn open_file(
             X264_LOG_ERROR,
             b"malloc failed\n\0" as *const u8 as *const c_char,
         );
-        return -(1 as c_int);
+        return -1;
     }
     if read_frame_internal((*h).first_pic, h, 0 as c_int, info) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*info).width = (*(*h).lavc).width as u32;
     (*info).height = (*(*h).lavc).height as u32;
@@ -342,7 +342,7 @@ unsafe extern "C" fn picture_alloc(
     mut height: c_int,
 ) -> c_int {
     if x264_cli_pic_alloc(pic, X264_CSP_NONE, width, height) != 0 {
-        return -(1 as c_int);
+        return -1;
     }
     (*pic).img.csp = csp;
     (*pic).img.planes = 4 as c_int;

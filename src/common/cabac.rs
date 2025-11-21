@@ -36,9 +36,8 @@ unsafe extern "C" fn x264_10_cabac_init(mut h: *mut x264_t) {
             let mut j: c_int = 0 as c_int;
             while j < ctx_count {
                 let mut state: c_int = x264_clip3(
-                    ((*cabac_context_init)[j as usize][0 as c_int as usize] as c_int * qp
-                        >> 4 as c_int)
-                        + (*cabac_context_init)[j as usize][1 as c_int as usize] as c_int,
+                    ((*cabac_context_init)[j as usize][0] as c_int * qp >> 4 as c_int)
+                        + (*cabac_context_init)[j as usize][1] as c_int,
                     1 as c_int,
                     126 as c_int,
                 );
@@ -116,7 +115,7 @@ unsafe extern "C" fn cabac_putbyte(mut cb: *mut x264_cabac_t) {
         } else {
             let mut carry: c_int = out >> 8 as c_int;
             let mut bytes_outstanding: c_int = (*cb).i_bytes_outstanding;
-            let ref mut fresh0 = *(*cb).p.offset(-(1 as c_int) as isize);
+            let ref mut fresh0 = *(*cb).p.offset(-1 as isize);
             *fresh0 = (*fresh0 as c_int + carry) as uint8_t;
             while bytes_outstanding > 0 as c_int {
                 let fresh1 = (*cb).p;
@@ -169,7 +168,7 @@ unsafe extern "C" fn x264_10_cabac_encode_bypass_c(mut cb: *mut x264_cabac_t, mu
 }
 #[c2rust::src_loc = "136:18"]
 static mut bypass_lut: [c_int; 16] = [
-    -(1 as c_int),
+    -1,
     0x2 as c_int,
     0x14 as c_int,
     0x68 as c_int,

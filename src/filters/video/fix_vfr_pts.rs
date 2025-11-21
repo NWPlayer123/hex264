@@ -38,9 +38,9 @@ unsafe extern "C" fn init(
         ::core::mem::size_of::<fix_vfr_pts_hnd_t>() as size_t,
     ) as *mut fix_vfr_pts_hnd_t;
     if h.is_null() {
-        return -(1 as c_int);
+        return -1;
     }
-    (*h).holder_frame = -(1 as c_int);
+    (*h).holder_frame = -1;
     (*h).prev_hnd = *handle;
     (*h).prev_filter = *filter;
     *handle = h as hnd_t;
@@ -70,16 +70,16 @@ unsafe extern "C" fn get_frame(
                 (*h).holder_frame,
             ) != 0
         {
-            return -(1 as c_int);
+            return -1;
         }
-        (*h).holder_frame = -(1 as c_int);
+        (*h).holder_frame = -1;
         if (*h)
             .prev_filter
             .get_frame
             .expect("non-null function pointer")((*h).prev_hnd, &mut (*h).holder, frame)
             != 0
         {
-            return -(1 as c_int);
+            return -1;
         }
     }
     if (*h).holder.duration == 0 {
@@ -91,7 +91,7 @@ unsafe extern "C" fn get_frame(
                 (*h).holder.img.height,
             ) != 0
             {
-                return -(1 as c_int);
+                return -1;
             }
             (*h).buffer_allocated = 1 as c_int;
         }
@@ -104,7 +104,7 @@ unsafe extern "C" fn get_frame(
                 (*h).prev_hnd, &mut (*h).holder, frame
             ) != 0
         {
-            return -(1 as c_int);
+            return -1;
         }
         (*h).holder_ret = (*h)
             .prev_filter

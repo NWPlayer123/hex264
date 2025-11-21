@@ -364,7 +364,7 @@ unsafe extern "C" fn cli_pic_init_internal(
                 * stride as int64_t;
             (*pic).img.plane[i as usize] = x264_malloc(size) as *mut uint8_t;
             if (*pic).img.plane[i as usize].is_null() {
-                return -(1 as c_int);
+                return -1;
             }
         }
         i += 1;
@@ -461,7 +461,7 @@ unsafe extern "C" fn x264_cli_mmap_init(mut h: *mut cli_mmap_t, mut fh: *mut FIL
         (*h).fd = fd;
         return ((*h).align_mask < 0 as c_int || fd < 0 as c_int) as c_int;
     }
-    return -(1 as c_int);
+    return -1;
 }
 #[c2rust::src_loc = "183:9"]
 const MMAP_PADDING: c_int = 64 as c_int;
@@ -527,7 +527,7 @@ unsafe extern "C" fn x264_cli_munmap(
                 .wrapping_sub(MMAP_PADDING as c_ulong)
                 .wrapping_sub((addr as intptr_t - base as intptr_t) as c_ulong)
     {
-        return -(1 as c_int);
+        return -1;
     }
     return munmap(
         base,
