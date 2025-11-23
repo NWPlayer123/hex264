@@ -1,4 +1,5 @@
 use ::core::ffi::{c_char, c_double, c_float, c_int, c_uchar, c_uint, c_ulong, c_ushort, c_void};
+use std::str::FromStr;
 
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
@@ -28,22 +29,22 @@ use crate::strings_h::{strcasecmp, strncasecmp};
 use crate::types_h::__off64_t;
 use crate::x264_config_h::X264_CHROMA_FORMAT;
 use crate::x264_h::{
-    x264_avcintra_flavor_names, x264_b_pyramid_names, x264_colmatrix_names, x264_colorprim_names,
-    x264_direct_pred_names, x264_fullrange_names, x264_motion_est_names, x264_nal_hrd_names,
-    x264_overscan_names, x264_param_t, x264_picture_t, x264_preset_names, x264_transfer_names,
-    x264_vidformat_names, ContentLightLevel, CropRectangle, FramePacking, MasteringDisplay,
+    x264_avcintra_flavor_names, x264_colmatrix_names, x264_colorprim_names, x264_direct_pred_names,
+    x264_fullrange_names, x264_motion_est_names, x264_nal_hrd_names, x264_overscan_names,
+    x264_param_t, x264_picture_t, x264_preset_names, x264_transfer_names, x264_vidformat_names,
+    BPyramid, ContentLightLevel, CropRectangle, FramePacking, MasteringDisplay,
     X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16,
     X264_ANALYSE_PSUB8x8, PIC_STRUCT_AUTO, X264_AQ_AUTOVARIANCE, X264_AQ_NONE, X264_AQ_VARIANCE,
     X264_AVCINTRA_FLAVOR_PANASONIC, X264_B_ADAPT_FAST, X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS,
-    X264_B_PYRAMID_NORMAL, X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW, X264_CPU_SSSE3,
-    X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_CSP_HIGH_DEPTH, X264_CSP_I400,
-    X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE,
-    X264_CSP_V210, X264_DIRECT_PRED_AUTO, X264_DIRECT_PRED_SPATIAL, X264_KEYINT_MAX_INFINITE,
-    X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING,
-    X264_ME_DIA, X264_ME_HEX, X264_ME_TESA, X264_ME_UMH, X264_NAL_HRD_NONE,
-    X264_PARAM_ALLOC_FAILED, X264_PARAM_BAD_NAME, X264_PARAM_BAD_VALUE, X264_QP_AUTO, X264_RC_ABR,
-    X264_RC_CQP, X264_RC_CRF, X264_SYNC_LOOKAHEAD_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO,
-    X264_WEIGHTP_NONE, X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
+    X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW, X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT,
+    X264_CQM_JVT, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444,
+    X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE, X264_CSP_V210, X264_DIRECT_PRED_AUTO,
+    X264_DIRECT_PRED_SPATIAL, X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG,
+    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_ME_DIA, X264_ME_HEX, X264_ME_TESA,
+    X264_ME_UMH, X264_NAL_HRD_NONE, X264_PARAM_ALLOC_FAILED, X264_PARAM_BAD_NAME,
+    X264_PARAM_BAD_VALUE, X264_QP_AUTO, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF,
+    X264_SYNC_LOOKAHEAD_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO, X264_WEIGHTP_NONE,
+    X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
 };
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
@@ -564,7 +565,7 @@ unsafe extern "C" fn x264_picture_clean(mut pic: *mut x264_picture_t) {
 }
 #[no_mangle]
 #[c2rust::src_loc = "344:1"]
-unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
+pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     memset(
         param as *mut c_void,
         0 as c_int,
@@ -605,7 +606,7 @@ unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     (*param).i_scenecut_threshold = 40 as c_int;
     (*param).i_bframe_adaptive = X264_B_ADAPT_FAST;
     (*param).i_bframe_bias = 0 as c_int;
-    (*param).i_bframe_pyramid = X264_B_PYRAMID_NORMAL;
+    (*param).bframe_pyramid = BPyramid::default();
     (*param).b_interlaced = 0 as c_int;
     (*param).b_constrained_intra = 0 as c_int;
     (*param).b_deblocking_filter = 1 as c_int;
@@ -1031,7 +1032,7 @@ unsafe extern "C" fn param_apply_tune(
 }
 #[no_mangle]
 #[c2rust::src_loc = "706:1"]
-unsafe extern "C" fn x264_param_default_preset(
+pub unsafe extern "C" fn x264_param_default_preset(
     mut param: *mut x264_param_t,
     mut preset: *const c_char,
     mut tune: *const c_char,
@@ -1181,20 +1182,34 @@ unsafe extern "C" fn x264_param_apply_profile(
 unsafe extern "C" fn parse_enum(
     mut arg: *const c_char,
     mut names: *const *const c_char,
-    mut dst: *mut c_int,
+    mut dst: *mut i32,
 ) -> c_int {
-    let mut i: c_int = 0 as c_int;
-    while !(*names.offset(i as isize)).is_null() {
-        if **names.offset(i as isize) as c_int != 0
-            && strcasecmp(arg, *names.offset(i as isize)) == 0
-        {
-            *dst = i;
-            return 0 as c_int;
+    let mut i = 0;
+    while !(*names.offset(i)).is_null() {
+        if **names.offset(i) != 0 && strcasecmp(arg, *names.offset(i)) == 0 {
+            *dst = i as i32;
+            return 0;
         }
         i += 1;
     }
     return -1;
 }
+use core::ffi::CStr;
+
+// TODO: is this used enough to justify? Most just do atoi directly instead of trying to extract a
+// string representation.
+macro_rules! parse_enum_param {
+    ($value:expr, $enum_type:ty) => {
+        (|| -> Result<$enum_type, ()> {
+            let s = CStr::from_ptr($value).to_str().map_err(|_| ())?;
+            <$enum_type>::from_str(s).or_else(|_| {
+                let num = s.parse::<usize>().map_err(|_| ())?;
+                <$enum_type>::from_repr(num).ok_or(())
+            })
+        })()
+    };
+}
+
 #[c2rust::src_loc = "827:1"]
 unsafe extern "C" fn parse_cqm(
     mut str: *const c_char,
@@ -1270,7 +1285,7 @@ unsafe extern "C" fn atof_internal(mut str: *const c_char, mut b_error: *mut c_i
 }
 #[no_mangle]
 #[c2rust::src_loc = "886:1"]
-unsafe extern "C" fn x264_param_parse(
+pub unsafe extern "C" fn x264_param_parse(
     mut p: *mut x264_param_t,
     mut name: *const c_char,
     mut value: *const c_char,
@@ -1629,15 +1644,10 @@ unsafe extern "C" fn x264_param_parse(
     } else if strcmp(name, b"b-bias\0" as *const u8 as *const c_char) == 0 {
         (*p).i_bframe_bias = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"b-pyramid\0" as *const u8 as *const c_char) == 0 {
-        b_error |= parse_enum(
-            value,
-            x264_b_pyramid_names.as_ptr(),
-            &mut (*p).i_bframe_pyramid,
-        );
-        if b_error != 0 {
-            b_error = 0 as c_int;
-            (*p).i_bframe_pyramid = atoi_internal(value, &mut b_error);
-        }
+        (*p).bframe_pyramid = parse_enum_param!(value, BPyramid).unwrap_or_else(|_| {
+            b_error = 1;
+            BPyramid::None
+        });
     } else if strcmp(name, b"open-gop\0" as *const u8 as *const c_char) == 0 {
         name_was_bool = 1 as c_int;
         (*p).b_open_gop = atobool_internal(value, &mut b_error);
@@ -2306,7 +2316,7 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
             s,
             b" b_pyramid=%d b_adapt=%d b_bias=%d direct=%d weightb=%d open_gop=%d\0" as *const u8
                 as *const c_char,
-            (*p).i_bframe_pyramid,
+            (*p).bframe_pyramid as i32,
             (*p).i_bframe_adaptive,
             (*p).i_bframe_bias,
             (*p).analyse.i_direct_mv_pred,

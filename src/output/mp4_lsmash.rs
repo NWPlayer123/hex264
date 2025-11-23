@@ -1,5 +1,7 @@
 use core::ffi::{c_char, c_double, c_int, c_uint, c_void};
 
+use log::error;
+
 use crate::__stddef_size_t_h::size_t;
 use crate::lsmash_h::{
     lsmash_add_codec_specific_data, lsmash_add_sample_entry, lsmash_adhoc_remux_t,
@@ -28,13 +30,14 @@ use crate::lsmash_h::{
 };
 use crate::osdep_h::{x264_is_regular_file, x264_is_regular_file_path};
 use crate::output_h::{cli_output_opt_t, cli_output_t};
+use crate::src::x264::x264_cli_log;
 use crate::stdint_intn_h::{int32_t, int64_t};
 use crate::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use crate::stdio_h::{fclose, fopen};
 use crate::stdlib_h::{calloc, free, malloc};
 use crate::string_h::{memcpy, strcmp};
-use crate::x264_h::{x264_nal_t, x264_param_t, x264_picture_t, X264_LOG_ERROR};
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264_h::{x264_nal_t, x264_param_t, x264_picture_t, BPyramid, X264_LOG_ERROR};
+use crate::x264cli_h::hnd_t;
 use crate::FILE_h::FILE;
 use crate::__stddef_null_h::NULL;
 #[derive(Copy, Clone)]
@@ -43,25 +46,32 @@ use crate::__stddef_null_h::NULL;
 struct mp4_hnd_t {
     p_root: *mut lsmash_root_t,
     summary: *mut lsmash_video_summary_t,
-    b_stdout: c_int,
-    i_movie_timescale: uint32_t,
-    i_video_timescale: uint32_t,
+    file_param: lsmash_file_parameters_t,
     i_track: uint32_t,
     i_sample_entry: uint32_t,
-    i_time_inc: uint64_t,
+
+    i_movie_timescale: uint32_t,
+    i_video_timescale: uint32_t,
+    /// The duration between each individual frame.
+    frame_duration: u32,
+
     i_start_offset: int64_t,
     i_first_cts: uint64_t,
     i_prev_dts: uint64_t,
-    i_sei_size: uint32_t,
-    p_sei_buffer: *mut uint8_t,
-    i_numframe: c_int,
     i_init_delta: int64_t,
-    i_delay_frames: c_int,
+
     b_dts_compress: c_int,
     i_dts_compress_multiplier: c_int,
-    b_use_recovery: c_int,
+    i_delay_frames: c_int,
+
+    p_sei_buffer: *mut uint8_t,
+    i_sei_size: uint32_t,
+
+    b_stdout: c_int,
     b_fragments: c_int,
-    file_param: lsmash_file_parameters_t,
+    b_use_recovery: c_int,
+
+    i_numframe: c_int,
 }
 #[c2rust::src_loc = "33:9"]
 const H264_NALU_LENGTH_SIZE: c_int = 4 as c_int;
@@ -94,34 +104,18 @@ unsafe extern "C" fn close_file(
             if lsmash_flush_pooled_samples(
                 (*p_mp4).p_root,
                 (*p_mp4).i_track,
-                ((if last_delta != 0 {
-                    last_delta
-                } else {
-                    1 as uint32_t
-                }) as uint64_t)
-                    .wrapping_mul((*p_mp4).i_time_inc) as uint32_t,
+                last_delta.max(1) * (*p_mp4).frame_duration,
             ) != 0
             {
-                x264_cli_log(
-                    b"mp4\0" as *const u8 as *const c_char,
-                    X264_LOG_ERROR,
-                    b"failed to flush the rest of samples.\n\0" as *const u8 as *const c_char,
-                );
+                error!("failed to flush the rest of samples.");
             }
-            if (*p_mp4).i_movie_timescale != 0 as uint32_t
-                && (*p_mp4).i_video_timescale != 0 as uint32_t
-            {
-                actual_duration = ((largest_pts + last_delta as int64_t) as uint64_t)
-                    .wrapping_mul((*p_mp4).i_time_inc)
-                    as c_double
-                    / (*p_mp4).i_video_timescale as c_double
-                    * (*p_mp4).i_movie_timescale as c_double;
+            if (*p_mp4).i_movie_timescale != 0 && (*p_mp4).i_video_timescale != 0 {
+                let end_time = (largest_pts + last_delta as i64) as u64;
+                let duration_ticks = end_time * u64::from((*p_mp4).frame_duration);
+                actual_duration = duration_ticks as f64 / (*p_mp4).i_video_timescale as f64
+                    * (*p_mp4).i_movie_timescale as f64;
             } else {
-                x264_cli_log(
-                    b"mp4\0" as *const u8 as *const c_char,
-                    X264_LOG_ERROR,
-                    b"timescale is broken.\n\0" as *const u8 as *const c_char,
-                );
+                error!("timescale is broken.");
             }
             let mut edit: lsmash_edit_t = lsmash_edit_t {
                 duration: 0,
@@ -134,11 +128,7 @@ unsafe extern "C" fn close_file(
             if (*p_mp4).b_fragments == 0 {
                 if lsmash_create_explicit_timeline_map((*p_mp4).p_root, (*p_mp4).i_track, edit) != 0
                 {
-                    x264_cli_log(
-                        b"mp4\0" as *const u8 as *const c_char,
-                        X264_LOG_ERROR,
-                        b"failed to set timeline map for video.\n\0" as *const u8 as *const c_char,
-                    );
+                    error!("failed to set timeline map for video.");
                 }
             } else if (*p_mp4).b_stdout == 0 {
                 if lsmash_modify_explicit_timeline_map(
@@ -148,21 +138,12 @@ unsafe extern "C" fn close_file(
                     edit,
                 ) != 0
                 {
-                    x264_cli_log(
-                        b"mp4\0" as *const u8 as *const c_char,
-                        X264_LOG_ERROR,
-                        b"failed to update timeline map for video.\n\0" as *const u8
-                            as *const c_char,
-                    );
+                    error!("failed to update timeline map for video.");
                 }
             }
         }
         if lsmash_finish_movie((*p_mp4).p_root, 0 as *mut lsmash_adhoc_remux_t) != 0 {
-            x264_cli_log(
-                b"mp4\0" as *const u8 as *const c_char,
-                X264_LOG_ERROR,
-                b"failed to finish movie.\n\0" as *const u8 as *const c_char,
-            );
+            error!("failed to finish movie.");
         }
     }
     remove_mp4_hnd(p_mp4 as hnd_t);
@@ -181,12 +162,7 @@ unsafe extern "C" fn open_file(
         let mut fh: *mut FILE =
             fopen(psz_filename, b"wb\0" as *const u8 as *const c_char) as *mut FILE;
         if fh.is_null() {
-            x264_cli_log(
-                b"mp4\0" as *const u8 as *const c_char,
-                X264_LOG_ERROR,
-                b"cannot open output file `%s'.\n\0" as *const u8 as *const c_char,
-                psz_filename,
-            );
+            error!("cannot open output file {psz_filename:?}.");
             return -1;
         }
         b_regular = x264_is_regular_file(fh);
@@ -251,7 +227,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     let mut p_mp4: *mut mp4_hnd_t = handle as *mut mp4_hnd_t;
     let mut i_media_timescale: uint64_t = 0;
     (*p_mp4).i_delay_frames = if (*p_param).i_bframe != 0 {
-        if (*p_param).i_bframe_pyramid != 0 {
+        if (*p_param).bframe_pyramid != BPyramid::None {
             2 as c_int
         } else {
             1 as c_int
@@ -263,8 +239,8 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
         (*p_mp4).b_dts_compress * (*p_mp4).i_delay_frames + 1 as c_int;
     i_media_timescale = ((*p_param).i_timebase_den as uint64_t)
         .wrapping_mul((*p_mp4).i_dts_compress_multiplier as uint64_t);
-    (*p_mp4).i_time_inc = ((*p_param).i_timebase_num as uint64_t)
-        .wrapping_mul((*p_mp4).i_dts_compress_multiplier as uint64_t);
+    (*p_mp4).frame_duration =
+        (*p_param).i_timebase_num * ((*p_mp4).i_dts_compress_multiplier as u32);
     if i_media_timescale > 4294967295 as uint64_t {
         x264_cli_log(
             b"mp4\0" as *const u8 as *const c_char,
@@ -467,43 +443,20 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
         LSMASH_CODEC_SPECIFIC_DATA_TYPE_ISOM_VIDEO_H264,
         LSMASH_CODEC_SPECIFIC_FORMAT_STRUCTURED,
     );
-    let mut param: *mut lsmash_h264_specific_parameters_t =
-        (*cs).data.structured as *mut lsmash_h264_specific_parameters_t;
-    (*param).lengthSizeMinusOne = (H264_NALU_LENGTH_SIZE - 1 as c_int) as uint8_t;
-    if lsmash_append_h264_parameter_set(
-        param,
-        H264_PARAMETER_SET_TYPE_SPS,
-        sps as *mut c_void,
-        sps_size,
-    ) != 0
+    let mut param: *mut lsmash_h264_specific_parameters_t = (*cs).data.structured as _;
+    (*param).lengthSizeMinusOne = (H264_NALU_LENGTH_SIZE - 1) as u8;
+    if lsmash_append_h264_parameter_set(param, H264_PARAMETER_SET_TYPE_SPS, sps as _, sps_size) != 0
     {
-        x264_cli_log(
-            b"mp4\0" as *const u8 as *const c_char,
-            X264_LOG_ERROR,
-            b"failed to append SPS.\n\0" as *const u8 as *const c_char,
-        );
+        error!("failed to append SPS.");
         return -1;
     }
-    if lsmash_append_h264_parameter_set(
-        param,
-        H264_PARAMETER_SET_TYPE_PPS,
-        pps as *mut c_void,
-        pps_size,
-    ) != 0
+    if lsmash_append_h264_parameter_set(param, H264_PARAMETER_SET_TYPE_PPS, pps as _, pps_size) != 0
     {
-        x264_cli_log(
-            b"mp4\0" as *const u8 as *const c_char,
-            X264_LOG_ERROR,
-            b"failed to append PPS.\n\0" as *const u8 as *const c_char,
-        );
+        error!("failed to append PPS.");
         return -1;
     }
     if lsmash_add_codec_specific_data((*p_mp4).summary as *mut lsmash_summary_t, cs) != 0 {
-        x264_cli_log(
-            b"mp4\0" as *const u8 as *const c_char,
-            X264_LOG_ERROR,
-            b"failed to add H.264 specific info.\n\0" as *const u8 as *const c_char,
-        );
+        error!("failed to add H.264 specific info.");
         return -1;
     }
     lsmash_destroy_codec_specific_data(cs);
@@ -521,20 +474,12 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
         (*p_mp4).summary as *mut c_void,
     ) as uint32_t;
     if (*p_mp4).i_sample_entry == 0 {
-        x264_cli_log(
-            b"mp4\0" as *const u8 as *const c_char,
-            X264_LOG_ERROR,
-            b"failed to add sample entry for video.\n\0" as *const u8 as *const c_char,
-        );
+        error!("failed to add sample entry for video.");
         return -1;
     }
     (*p_mp4).p_sei_buffer = malloc(sei_size as size_t) as *mut uint8_t;
     if (*p_mp4).p_sei_buffer.is_null() {
-        x264_cli_log(
-            b"mp4\0" as *const u8 as *const c_char,
-            X264_LOG_ERROR,
-            b"failed to allocate sei transition buffer.\n\0" as *const u8 as *const c_char,
-        );
+        error!("failed to allocate sei transition buffer.");
         return -1;
     }
     memcpy(
@@ -560,7 +505,7 @@ unsafe extern "C" fn write_frame(
         (*p_mp4).i_first_cts = if (*p_mp4).b_dts_compress != 0 {
             0 as uint64_t
         } else {
-            ((*p_mp4).i_start_offset as uint64_t).wrapping_mul((*p_mp4).i_time_inc)
+            ((*p_mp4).i_start_offset as u64) * u64::from((*p_mp4).frame_duration)
         };
         if (*p_mp4).b_fragments != 0 {
             let mut edit: lsmash_edit_t = lsmash_edit_t {
@@ -583,11 +528,7 @@ unsafe extern "C" fn write_frame(
     let mut p_sample: *mut lsmash_sample_t =
         lsmash_create_sample((i_size as uint32_t).wrapping_add((*p_mp4).i_sei_size));
     if p_sample.is_null() {
-        x264_cli_log(
-            b"mp4\0" as *const u8 as *const c_char,
-            X264_LOG_ERROR,
-            b"failed to create a video sample data.\n\0" as *const u8 as *const c_char,
-        );
+        error!("failed to create a video sample data.");
         return -1;
     }
     if !(*p_mp4).p_sei_buffer.is_null() {
@@ -607,35 +548,35 @@ unsafe extern "C" fn write_frame(
     (*p_mp4).i_sei_size = 0 as uint32_t;
     if (*p_mp4).b_dts_compress != 0 {
         if (*p_mp4).i_numframe == 1 as c_int {
-            (*p_mp4).i_init_delta = (((*p_picture).i_dts + (*p_mp4).i_start_offset) as uint64_t)
-                .wrapping_mul((*p_mp4).i_time_inc) as int64_t;
+            (*p_mp4).i_init_delta = ((((*p_picture).i_dts + (*p_mp4).i_start_offset) as uint64_t)
+                * u64::from((*p_mp4).frame_duration))
+                as int64_t;
         }
         dts = if (*p_mp4).i_numframe > (*p_mp4).i_delay_frames {
-            ((*p_picture).i_dts as uint64_t).wrapping_mul((*p_mp4).i_time_inc)
+            ((*p_picture).i_dts as u64) * u64::from((*p_mp4).frame_duration)
         } else {
             ((*p_mp4).i_numframe as int64_t
                 * ((*p_mp4).i_init_delta / (*p_mp4).i_dts_compress_multiplier as int64_t))
                 as uint64_t
         };
-        cts = ((*p_picture).i_pts as uint64_t).wrapping_mul((*p_mp4).i_time_inc);
+        cts = ((*p_picture).i_pts as uint64_t) * u64::from((*p_mp4).frame_duration);
     } else {
         dts = (((*p_picture).i_dts + (*p_mp4).i_start_offset) as uint64_t)
-            .wrapping_mul((*p_mp4).i_time_inc);
+            * u64::from((*p_mp4).frame_duration);
         cts = (((*p_picture).i_pts + (*p_mp4).i_start_offset) as uint64_t)
-            .wrapping_mul((*p_mp4).i_time_inc);
+            * u64::from((*p_mp4).frame_duration);
     }
     (*p_sample).dts = dts;
     (*p_sample).cts = cts;
     (*p_sample).index = (*p_mp4).i_sample_entry;
     (*p_sample).prop.ra_flags = (if (*p_picture).b_keyframe != 0 {
-        ISOM_SAMPLE_RANDOM_ACCESS_FLAG_SYNC as c_int
+        ISOM_SAMPLE_RANDOM_ACCESS_FLAG_SYNC
     } else {
-        ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE as c_int
+        ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE
     }) as lsmash_random_access_flag;
     if (*p_mp4).b_fragments != 0
         && (*p_mp4).i_numframe != 0
-        && (*p_sample).prop.ra_flags as c_uint
-            != ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE as c_int as c_uint
+        && (*p_sample).prop.ra_flags != ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE
     {
         if lsmash_flush_pooled_samples(
             (*p_mp4).p_root,

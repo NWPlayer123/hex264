@@ -1,25 +1,10 @@
-use core::ffi::{c_char, c_int, c_long, c_void};
-
-use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
-use crate::avformat_h::{av_demuxer_iterate, AVInputFormat};
 use crate::bits_stdio_h::putchar;
-use crate::cpu_h::{x264_cpu_name_t, x264_cpu_names};
-use crate::input_h::{x264_cli_csps, X264_CSP_CLI_MAX};
-use crate::pixdesc_h::{av_pix_fmt_desc_next, AVPixFmtDescriptor};
 use crate::stdio_h::{printf, snprintf};
-use crate::string_h::{strchr, strcmp, strlen, strncmp};
+use crate::string_h::{strchr, strcmp, strncmp};
 use crate::strings_h::strncasecmp;
-use crate::x264_h::{
-    x264_avcintra_flavor_names, x264_b_pyramid_names, x264_colmatrix_names, x264_colorprim_names,
-    x264_direct_pred_names, x264_motion_est_names, x264_nal_hrd_names, x264_overscan_names,
-    x264_preset_names, x264_transfer_names, x264_tune_names, x264_vidformat_names, X264_CSP_NONE,
-};
-use crate::x264cli_h::{
-    x264_avcintra_class_names, x264_cqm_names, x264_demuxer_names, x264_log_level_names,
-    x264_muxer_names, x264_output_csp_names, x264_partition_names, x264_pulldown_names,
-    x264_range_names, x264_valid_profile_names,
-};
+use core::ffi::{c_char, c_int, c_long};
+
 #[c2rust::src_loc = "35:27"]
 static mut level_names: [*const c_char; 21] = [
     b"1\0" as *const u8 as *const c_char,
@@ -313,6 +298,7 @@ unsafe extern "C" fn suggest_token(
         suggest(s, cur, cur_len);
     }
 }
+/*
 #[no_mangle]
 #[c2rust::src_loc = "293:1"]
 unsafe extern "C" fn x264_cli_autocomplete(
@@ -353,6 +339,9 @@ unsafe extern "C" fn x264_cli_autocomplete(
     } else if strcmp(prev, b"--b-adapt\0" as *const u8 as *const c_char) == 0 {
         suggest_num_range(0 as c_int, 2 as c_int, cur, cur_len);
     } else if strcmp(prev, b"--b-pyramid\0" as *const u8 as *const c_char) == 0 {
+        for variant in BPyramid::VARIANTS {
+            suggest(*variant, cur, cur_len);
+        }
         let mut s_2: *const *const c_char = x264_b_pyramid_names.as_ptr();
         while !(*s_2).is_null() {
             suggest(*s_2, cur, cur_len);
@@ -437,10 +426,8 @@ unsafe extern "C" fn x264_cli_autocomplete(
             s_10 = s_10.offset(1);
         }
     } else if strcmp(prev, b"--me\0" as *const u8 as *const c_char) == 0 {
-        let mut s_11: *const *const c_char = x264_motion_est_names.as_ptr();
-        while !(*s_11).is_null() {
-            suggest(*s_11, cur, cur_len);
-            s_11 = s_11.offset(1);
+        for name in x264_motion_est_names {
+            suggest(name, cur, cur_len);
         }
     } else if strcmp(prev, b"--muxer\0" as *const u8 as *const c_char) == 0 {
         let mut s_12: *const *const c_char = x264_muxer_names.as_ptr();
@@ -572,3 +559,4 @@ unsafe extern "C" fn x264_cli_autocomplete(
     putchar('\n' as i32);
     return 0 as c_int;
 }
+*/

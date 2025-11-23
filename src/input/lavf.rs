@@ -26,13 +26,14 @@ use crate::pixfmt_h::{
     AVCOL_RANGE_JPEG, AV_PIX_FMT_BGR24, AV_PIX_FMT_BGRA, AV_PIX_FMT_YUV420P, AV_PIX_FMT_YUV422P,
     AV_PIX_FMT_YUV444P,
 };
+use crate::src::x264::x264_cli_log;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint32_t, uint8_t};
 use crate::stdlib_h::{calloc, free, malloc};
 use crate::string_h::{memcpy, memset, strcmp};
 use crate::strings_h::strcasecmp;
 use crate::x264_h::{X264_CSP_NONE, X264_CSP_VFLIP, X264_LOG_ERROR, X264_LOG_WARNING};
-use crate::x264cli_h::{get_filename_extension, hnd_t, x264_cli_log};
+use crate::x264cli_h::{get_filename_extension, hnd_t};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "40:9"]

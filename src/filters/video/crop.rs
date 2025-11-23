@@ -7,12 +7,13 @@ use crate::input_h::{
     x264_cli_get_csp,
 };
 use crate::src::filters::filters::x264_split_options;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_h::intptr_t;
 use crate::stdio_h::printf;
 use crate::stdlib_h::{calloc, free};
 use crate::video_h::cli_vid_filter_t;
 use crate::x264_h::{x264_param_t, X264_LOG_ERROR, X264_LOG_INFO};
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "34:9"]

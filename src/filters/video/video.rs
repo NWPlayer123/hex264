@@ -2,10 +2,11 @@ use core::ffi::{c_char, c_int};
 use core::ptr::addr_of_mut;
 
 use crate::input_h::video_info_t;
+use crate::src::x264::x264_cli_log;
 use crate::strings_h::strcasecmp;
 use crate::video_h::cli_vid_filter_t;
 use crate::x264_h::{x264_param_t, X264_LOG_ERROR};
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 #[c2rust::src_loc = "28:26"]
 static mut first_filter: *mut cli_vid_filter_t =
     0 as *const cli_vid_filter_t as *mut cli_vid_filter_t;

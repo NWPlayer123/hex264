@@ -26,6 +26,7 @@ use crate::input_h::{
 };
 use crate::osdep_h::x264_is_regular_file;
 use crate::pixfmt_h::AV_PIX_FMT_YUV411P;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_uintn_h::uint8_t;
 use crate::stdio_h::{fclose, fflush, fopen, stderr};
 use crate::stdlib_h::{calloc, free};
@@ -36,7 +37,7 @@ use crate::x264_h::{
     X264_CSP_I444, X264_CSP_NONE, X264_CSP_VFLIP, X264_CSP_YUYV, X264_LOG_DEBUG, X264_LOG_ERROR,
     X264_LOG_INFO, X264_LOG_WARNING,
 };
-use crate::x264cli_h::{get_filename_extension, hnd_t, x264_cli_log, x264_cli_printf};
+use crate::x264cli_h::{get_filename_extension, hnd_t, x264_cli_printf};
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
 #[repr(C)]

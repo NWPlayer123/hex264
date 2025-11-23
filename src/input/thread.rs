@@ -2,13 +2,14 @@ use core::ffi::{c_char, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
 use crate::input_h::{cli_input, cli_input_opt_t, cli_input_t, cli_pic_t, video_info_t};
+use crate::src::x264::x264_cli_log;
 use crate::stdlib_h::{free, malloc};
 use crate::threadpool_h::{
     x264_10_threadpool_delete, x264_10_threadpool_init, x264_10_threadpool_run,
     x264_10_threadpool_wait, x264_threadpool_t,
 };
 use crate::x264_h::X264_LOG_ERROR;
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "32:9"]

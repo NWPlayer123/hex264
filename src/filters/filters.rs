@@ -2,11 +2,11 @@ use core::ffi::{c_char, c_double, c_int, c_long, c_uint, c_ulong, c_void};
 
 use crate::__stddef_size_t_h::size_t;
 use crate::assert_h::{__assert_fail, __ASSERT_FUNCTION};
+use crate::src::x264::x264_cli_log;
 use crate::stdlib_h::{calloc, strtod, strtol};
 use crate::string_h::{memcpy, strcmp, strcspn, strlen, strncmp};
 use crate::strings_h::strcasecmp;
 use crate::x264_h::X264_LOG_ERROR;
-use crate::x264cli_h::x264_cli_log;
 #[no_mangle]
 #[c2rust::src_loc = "32:1"]
 pub unsafe extern "C" fn x264_split_options(

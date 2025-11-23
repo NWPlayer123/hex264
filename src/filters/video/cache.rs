@@ -6,12 +6,13 @@ use crate::input_h::{
     cli_image_t, cli_pic_t, video_info_t, x264_cli_pic_alloc, x264_cli_pic_clean,
 };
 use crate::internal_h::x264_cli_pic_copy;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_h::intptr_t;
 use crate::stdint_uintn_h::uint8_t;
 use crate::stdlib_h::{calloc, free, malloc};
 use crate::video_h::cli_vid_filter_t;
 use crate::x264_h::{x264_param_t, X264_LOG_ERROR};
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "39:9"]

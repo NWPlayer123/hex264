@@ -27,8 +27,8 @@ use crate::string_h::{memcmp, memcpy, memset, strlen};
 use crate::tables_h::{x264_cqm_flat16, x264_cqm_jvt};
 use crate::x264_config_h::X264_VERSION;
 use crate::x264_h::{
-    x264_level_t, x264_levels, x264_param_t, ContentLightLevel, FramePacking, MasteringDisplay,
-    X264_BUILD, X264_B_PYRAMID_STRICT, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_CSP_BGR,
+    x264_level_t, x264_levels, x264_param_t, BPyramid, ContentLightLevel, FramePacking,
+    MasteringDisplay, X264_BUILD, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_CSP_BGR,
     X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_LOG_ERROR, X264_LOG_WARNING,
     X264_RC_ABR, X264_RC_CQP,
 };
@@ -267,7 +267,7 @@ unsafe extern "C" fn x264_10_sps_init(
     if (*param).i_keyint_max == 1 as c_int && (*sps).i_profile_idc >= PROFILE_HIGH as c_int {
         (*sps).b_constraint_set3 = 1 as c_int;
     }
-    (*sps).vui.i_num_reorder_frames = if (*param).i_bframe_pyramid != 0 {
+    (*sps).vui.i_num_reorder_frames = if (*param).bframe_pyramid != BPyramid::None {
         2 as c_int
     } else if (*param).i_bframe != 0 {
         1 as c_int
@@ -277,13 +277,13 @@ unsafe extern "C" fn x264_10_sps_init(
     (*sps).i_num_ref_frames = if (16 as c_int)
         < (if (*param).i_frame_reference
             > (if 1 as c_int + (*sps).vui.i_num_reorder_frames
-                > (if (if (*param).i_bframe_pyramid != 0 {
+                > (if (if (*param).bframe_pyramid != BPyramid::None {
                     4 as c_int
                 } else {
                     1 as c_int
                 }) > (*param).i_dpb_size
                 {
-                    if (*param).i_bframe_pyramid != 0 {
+                    if (*param).bframe_pyramid != BPyramid::None {
                         4 as c_int
                     } else {
                         1 as c_int
@@ -294,13 +294,13 @@ unsafe extern "C" fn x264_10_sps_init(
             {
                 1 as c_int + (*sps).vui.i_num_reorder_frames
             } else {
-                if (if (*param).i_bframe_pyramid != 0 {
+                if (if (*param).bframe_pyramid != BPyramid::None {
                     4 as c_int
                 } else {
                     1 as c_int
                 }) > (*param).i_dpb_size
                 {
-                    if (*param).i_bframe_pyramid != 0 {
+                    if (*param).bframe_pyramid != BPyramid::None {
                         4 as c_int
                     } else {
                         1 as c_int
@@ -313,13 +313,13 @@ unsafe extern "C" fn x264_10_sps_init(
             (*param).i_frame_reference
         } else {
             if 1 as c_int + (*sps).vui.i_num_reorder_frames
-                > (if (if (*param).i_bframe_pyramid != 0 {
+                > (if (if (*param).bframe_pyramid != BPyramid::None {
                     4 as c_int
                 } else {
                     1 as c_int
                 }) > (*param).i_dpb_size
                 {
-                    if (*param).i_bframe_pyramid != 0 {
+                    if (*param).bframe_pyramid != BPyramid::None {
                         4 as c_int
                     } else {
                         1 as c_int
@@ -330,13 +330,13 @@ unsafe extern "C" fn x264_10_sps_init(
             {
                 1 as c_int + (*sps).vui.i_num_reorder_frames
             } else {
-                if (if (*param).i_bframe_pyramid != 0 {
+                if (if (*param).bframe_pyramid != BPyramid::None {
                     4 as c_int
                 } else {
                     1 as c_int
                 }) > (*param).i_dpb_size
                 {
-                    if (*param).i_bframe_pyramid != 0 {
+                    if (*param).bframe_pyramid != BPyramid::None {
                         4 as c_int
                     } else {
                         1 as c_int
@@ -349,13 +349,13 @@ unsafe extern "C" fn x264_10_sps_init(
         16 as c_int
     } else if (*param).i_frame_reference
         > (if 1 as c_int + (*sps).vui.i_num_reorder_frames
-            > (if (if (*param).i_bframe_pyramid != 0 {
+            > (if (if (*param).bframe_pyramid != BPyramid::None {
                 4 as c_int
             } else {
                 1 as c_int
             }) > (*param).i_dpb_size
             {
-                if (*param).i_bframe_pyramid != 0 {
+                if (*param).bframe_pyramid != BPyramid::None {
                     4 as c_int
                 } else {
                     1 as c_int
@@ -366,13 +366,13 @@ unsafe extern "C" fn x264_10_sps_init(
         {
             1 as c_int + (*sps).vui.i_num_reorder_frames
         } else {
-            if (if (*param).i_bframe_pyramid != 0 {
+            if (if (*param).bframe_pyramid != BPyramid::None {
                 4 as c_int
             } else {
                 1 as c_int
             }) > (*param).i_dpb_size
             {
-                if (*param).i_bframe_pyramid != 0 {
+                if (*param).bframe_pyramid != BPyramid::None {
                     4 as c_int
                 } else {
                     1 as c_int
@@ -384,13 +384,13 @@ unsafe extern "C" fn x264_10_sps_init(
     {
         (*param).i_frame_reference
     } else if 1 as c_int + (*sps).vui.i_num_reorder_frames
-        > (if (if (*param).i_bframe_pyramid != 0 {
+        > (if (if (*param).bframe_pyramid != BPyramid::None {
             4 as c_int
         } else {
             1 as c_int
         }) > (*param).i_dpb_size
         {
-            if (*param).i_bframe_pyramid != 0 {
+            if (*param).bframe_pyramid != BPyramid::None {
                 4 as c_int
             } else {
                 1 as c_int
@@ -400,13 +400,13 @@ unsafe extern "C" fn x264_10_sps_init(
         })
     {
         1 as c_int + (*sps).vui.i_num_reorder_frames
-    } else if (if (*param).i_bframe_pyramid != 0 {
+    } else if (if (*param).bframe_pyramid != BPyramid::None {
         4 as c_int
     } else {
         1 as c_int
     }) > (*param).i_dpb_size
     {
-        if (*param).i_bframe_pyramid != 0 {
+        if (*param).bframe_pyramid != BPyramid::None {
             4 as c_int
         } else {
             1 as c_int
@@ -415,13 +415,13 @@ unsafe extern "C" fn x264_10_sps_init(
         (*param).i_dpb_size
     };
     (*sps).vui.i_max_dec_frame_buffering = (*sps).i_num_ref_frames;
-    (*sps).i_num_ref_frames -= ((*param).i_bframe_pyramid == X264_B_PYRAMID_STRICT) as c_int;
+    (*sps).i_num_ref_frames -= ((*param).bframe_pyramid == BPyramid::Strict) as c_int;
     if (*param).i_keyint_max == 1 as c_int {
         (*sps).i_num_ref_frames = 0 as c_int;
         (*sps).vui.i_max_dec_frame_buffering = 0 as c_int;
     }
     let mut max_frame_num: c_int = (*sps).vui.i_max_dec_frame_buffering
-        * (((*param).i_bframe_pyramid != 0) as c_int + 1 as c_int)
+        * (((*param).bframe_pyramid != BPyramid::None) as c_int + 1 as c_int)
         + 1 as c_int;
     if (*param).b_intra_refresh != 0 {
         let mut time_to_recovery: c_int =
@@ -449,7 +449,7 @@ unsafe extern "C" fn x264_10_sps_init(
         };
     if (*sps).i_poc_type == 0 as c_int {
         let mut max_delta_poc: c_int = ((*param).i_bframe + 2 as c_int)
-            * (((*param).i_bframe_pyramid != 0) as c_int + 1 as c_int)
+            * (((*param).bframe_pyramid != BPyramid::None) as c_int + 1 as c_int)
             * 2 as c_int;
         (*sps).i_log2_max_poc_lsb = 4 as c_int;
         while (1 as c_int) << (*sps).i_log2_max_poc_lsb <= max_delta_poc * 2 as c_int {

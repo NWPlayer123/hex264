@@ -26,6 +26,8 @@ use crate::pixdesc_h::av_get_pix_fmt_name;
 use crate::pixfmt_h::{AVPixelFormat, AV_PIX_FMT_NB, AV_PIX_FMT_NONE};
 use crate::signal_h::signal;
 use crate::signum_generic_h::SIGINT;
+use crate::src::common::base::x264_param_parse;
+use crate::src::common::base::{x264_param_default, x264_param_default_preset};
 use crate::src::filters::video::video::x264_init_vid_filter;
 use crate::stdint_intn_h::{int32_t, int64_t};
 use crate::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
@@ -43,26 +45,24 @@ use crate::version_major_h::LIBSWSCALE_VERSION_MAJOR;
 use crate::video_h::{cli_vid_filter_t, x264_register_vid_filters, x264_vid_filter_help};
 use crate::x264_config_h::{X264_CHROMA_FORMAT, X264_VERSION};
 use crate::x264_h::{
-    x264_avcintra_flavor_names, x264_b_pyramid_names, x264_chroma_format, x264_colmatrix_names,
-    x264_colorprim_names, x264_direct_pred_names, x264_encoder_close, x264_encoder_delayed_frames,
-    x264_encoder_encode, x264_encoder_headers, x264_encoder_open_165, x264_encoder_parameters,
-    x264_hrd_t, x264_image_properties_t, x264_image_t, x264_levels, x264_motion_est_names,
-    x264_nal_t, x264_overscan_names, x264_param_apply_fastfirstpass, x264_param_apply_profile,
-    x264_param_cleanup, x264_param_default, x264_param_default_preset, x264_param_parse,
-    x264_param_t, x264_picture_init, x264_picture_t, x264_sei_payload_t, x264_sei_t, x264_t,
-    x264_transfer_names, x264_vidformat_names, x264_zone_t, C2RustUnnamed_2, C2RustUnnamed_3,
-    C2RustUnnamed_4, CropRectangle, PIC_STRUCT_BOTTOM_TOP, PIC_STRUCT_BOTTOM_TOP_BOTTOM,
-    PIC_STRUCT_DOUBLE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_TRIPLE,
-    X264_BUILD, X264_CSP_BGR, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422,
-    X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE, X264_CSP_RGB, X264_LOG_DEBUG, X264_LOG_ERROR,
-    X264_LOG_INFO, X264_LOG_NONE, X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_NAL_HRD_VBR,
-    X264_QP_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I,
-    X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
+    x264_avcintra_flavor_names, x264_chroma_format, x264_colmatrix_names, x264_colorprim_names,
+    x264_direct_pred_names, x264_encoder_close, x264_encoder_delayed_frames, x264_encoder_encode,
+    x264_encoder_headers, x264_encoder_open_165, x264_encoder_parameters, x264_hrd_t,
+    x264_image_properties_t, x264_image_t, x264_levels, x264_motion_est_names, x264_nal_t,
+    x264_overscan_names, x264_param_apply_fastfirstpass, x264_param_apply_profile,
+    x264_param_cleanup, x264_param_t, x264_picture_init, x264_picture_t, x264_sei_payload_t,
+    x264_sei_t, x264_t, x264_transfer_names, x264_vidformat_names, x264_zone_t, BPyramid,
+    C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, CropRectangle, PIC_STRUCT_BOTTOM_TOP,
+    PIC_STRUCT_BOTTOM_TOP_BOTTOM, PIC_STRUCT_DOUBLE, PIC_STRUCT_TOP_BOTTOM,
+    PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_TRIPLE, X264_BUILD, X264_CSP_BGR, X264_CSP_HIGH_DEPTH,
+    X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE,
+    X264_CSP_RGB, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_NONE, X264_LOG_WARNING,
+    X264_NAL_HRD_CBR, X264_NAL_HRD_VBR, X264_QP_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO,
+    X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
 };
-use crate::x264cli_h::{
-    get_filename_extension, hnd_t, x264_cli_autocomplete, RANGE_AUTO, RANGE_PC, UPDATE_INTERVAL,
-};
+use crate::x264cli_h::{get_filename_extension, hnd_t, RANGE_AUTO, RANGE_PC, UPDATE_INTERVAL};
 use crate::FILE_h::FILE;
+use log::{error, warn};
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "129:9"]
@@ -527,7 +527,7 @@ static mut pulldown_frame_duration: [c_float; 10] = [
 static mut cli_log_level: c_int = X264_LOG_INFO;
 #[no_mangle]
 #[c2rust::src_loc = "270:1"]
-unsafe extern "C" fn x264_cli_log(
+pub unsafe extern "C" fn x264_cli_log(
     mut name: *const c_char,
     mut i_level: c_int,
     mut fmt: *const c_char,
@@ -641,14 +641,14 @@ unsafe extern "C" fn print_version_info() {
 }
 #[c2rust::src_loc = "362:1"]
 unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
-    if argc == 4 as c_int
+    /*if argc == 4 as c_int
         && strcmp(
             *argv.offset(1),
             b"--autocomplete\0" as *const u8 as *const c_char,
         ) == 0
     {
         return x264_cli_autocomplete(*argv.offset(2), *argv.offset(3));
-    }
+    }*/
     let mut param: x264_param_t = x264_param_t {
         cpu: 0,
         i_threads: 0,
@@ -684,7 +684,7 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
         i_bframe: 0,
         i_bframe_adaptive: 0,
         i_bframe_bias: 0,
-        i_bframe_pyramid: 0,
+        bframe_pyramid: BPyramid::None,
         b_open_gop: 0,
         b_bluray_compat: 0,
         i_avcintra_class: 0,
@@ -1010,10 +1010,28 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         b"      --profile <string>      Force the limits of an H.264 profile\n                                  Overrides all settings.\n\0"
             as *const u8 as *const c_char,
     );
-    if longhelp == 2 as c_int {
-        printf(
-            b"                                  - baseline:\n                                    --no-8x8dct --bframes 0 --no-cabac\n                                    --cqm flat --weightp 0\n                                    No interlaced.\n                                    No lossless.\n                                  - main:\n                                    --no-8x8dct --cqm flat\n                                    No lossless.\n                                  - high:\n                                    No lossless.\n                                  - high10:\n                                    No lossless.\n                                    Support for bit depth 8-10.\n                                  - high422:\n                                    No lossless.\n                                    Support for bit depth 8-10.\n                                    Support for 4:2:0/4:2:2 chroma subsampling.\n                                  - high444:\n                                    Support for bit depth 8-10.\n                                    Support for 4:2:0/4:2:2/4:4:4 chroma subsampling.\n\0"
-                as *const u8 as *const c_char,
+    if longhelp == 2 {
+        println!(
+            "                                  - baseline:
+                                    --no-8x8dct --bframes 0 --no-cabac
+                                    --cqm flat --weightp 0
+                                    No interlaced.
+                                    No lossless.
+                                  - main:
+                                    --no-8x8dct --cqm flat
+                                    No lossless.
+                                  - high:
+                                    No lossless.
+                                  - high10:
+                                    No lossless.
+                                    Support for bit depth 8-10.
+                                  - high422:
+                                    No lossless.
+                                    Support for bit depth 8-10.
+                                    Support for 4:2:0/4:2:2 chroma subsampling.
+                                  - high444:
+                                    Support for bit depth 8-10.
+                                    Support for 4:2:0/4:2:2/4:4:4 chroma subsampling."
         );
     } else {
         printf(
@@ -1021,19 +1039,57 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_valid_profile_names.as_ptr()),
         );
     }
-    printf(
-        b"      --preset <string>       Use a preset to select encoding settings [medium]\n                                  Overridden by user settings.\n\0"
-            as *const u8 as *const c_char,
+    println!(
+        "      --preset <string>       Use a preset to select encoding settings [medium]
+                                  Overridden by user settings.",
     );
-    if longhelp == 2 as c_int {
-        printf(
-            b"                                  - ultrafast:\n                                    --no-8x8dct --aq-mode 0 --b-adapt 0\n                                    --bframes 0 --no-cabac --no-deblock\n                                    --no-mbtree --me dia --no-mixed-refs\n                                    --partitions none --rc-lookahead 0 --ref 1\n                                    --scenecut 0 --subme 0 --trellis 0\n                                    --no-weightb --weightp 0\n                                  - superfast:\n                                    --no-mbtree --me dia --no-mixed-refs\n                                    --partitions i8x8,i4x4 --rc-lookahead 0\n                                    --ref 1 --subme 1 --trellis 0 --weightp 1\n                                  - veryfast:\n                                    --no-mixed-refs --rc-lookahead 10\n                                    --ref 1 --subme 2 --trellis 0 --weightp 1\n                                  - faster:\n                                    --no-mixed-refs --rc-lookahead 20\n                                    --ref 2 --subme 4 --weightp 1\n                                  - fast:\n                                    --rc-lookahead 30 --ref 2 --subme 6\n                                    --weightp 1\n                                  - medium:\n                                    Default settings apply.\n                                  - slow:\n                                    --direct auto --rc-lookahead 50 --ref 5\n                                    --subme 8 --trellis 2\n                                  - slower:\n                                    --b-adapt 2 --direct auto --me umh\n                                    --partitions all --rc-lookahead 60\n                                    --ref 8 --subme 9 --trellis 2\n                                  - veryslow:\n                                    --b-adapt 2 --bframes 8 --direct auto\n                                    --me umh --merange 24 --partitions all\n                                    --ref 16 --subme 10 --trellis 2\n                                    --rc-lookahead 60\n                                  - placebo:\n                                    --bframes 16 --b-adapt 2 --direct auto\n                                    --slow-firstpass --no-fast-pskip\n                                    --me tesa --merange 24 --partitions all\n                                    --rc-lookahead 60 --ref 16 --subme 11\n                                    --trellis 2\n\0"
-                as *const u8 as *const c_char,
+    if longhelp == 2 {
+        println!(
+            "                                  - ultrafast:
+                                    --no-8x8dct --aq-mode 0 --b-adapt 0
+                                    --bframes 0 --no-cabac --no-deblock
+                                    --no-mbtree --me dia --no-mixed-refs
+                                    --partitions none --rc-lookahead 0 --ref 1
+                                    --scenecut 0 --subme 0 --trellis 0
+                                    --no-weightb --weightp 0
+                                  - superfast:
+                                    --no-mbtree --me dia --no-mixed-refs
+                                    --partitions i8x8,i4x4 --rc-lookahead 0
+                                    --ref 1 --subme 1 --trellis 0 --weightp 1
+                                  - veryfast:
+                                    --no-mixed-refs --rc-lookahead 10
+                                    --ref 1 --subme 2 --trellis 0 --weightp 1
+                                  - faster:
+                                    --no-mixed-refs --rc-lookahead 20
+                                    --ref 2 --subme 4 --weightp 1
+                                  - fast:
+                                    --rc-lookahead 30 --ref 2 --subme 6
+                                    --weightp 1
+                                  - medium:
+                                    Default settings apply.
+                                  - slow:
+                                    --direct auto --rc-lookahead 50 --ref 5
+                                    --subme 8 --trellis 2
+                                  - slower:
+                                    --b-adapt 2 --direct auto --me umh
+                                    --partitions all --rc-lookahead 60
+                                    --ref 8 --subme 9 --trellis 2
+                                  - veryslow:
+                                    --b-adapt 2 --bframes 8 --direct auto
+                                    --me umh --merange 24 --partitions all
+                                    --ref 16 --subme 10 --trellis 2
+                                    --rc-lookahead 60
+                                  - placebo:
+                                    --bframes 16 --b-adapt 2 --direct auto
+                                    --slow-firstpass --no-fast-pskip
+                                    --me tesa --merange 24 --partitions all
+                                    --rc-lookahead 60 --ref 16 --subme 11
+                                    --trellis 2"
         );
     } else {
-        printf(
-            b"                                  - ultrafast,superfast,veryfast,faster,fast\n                                  - medium,slow,slower,veryslow,placebo\n\0"
-                as *const u8 as *const c_char,
+        println!(
+            "                                  - ultrafast,superfast,veryfast,faster,fast
+                                  - medium,slow,slower,veryslow,placebo"
         );
     }
     printf(
@@ -1118,9 +1174,12 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
     }
     if longhelp >= 1 as c_int {
         printf(
-            b"      --b-pyramid <string>    Keep some B-frames as references [%s]\n                                  - none: Disabled\n                                  - strict: Strictly hierarchical pyramid\n                                  - normal: Non-strict (not Blu-ray compatible)\n\0"
-                as *const u8 as *const c_char,
-            strtable_lookup(x264_b_pyramid_names.as_ptr(), (*defaults).i_bframe_pyramid),
+            c"      --b-pyramid <string>    Keep some B-frames as references [%s]\n
+                                  - none: Disabled\n
+                                  - strict: Strictly hierarchical pyramid\n
+                                  - normal: Non-strict (not Blu-ray compatible)\n"
+                .as_ptr(),
+            BPyramid::default().as_ref(),
         );
     }
     if longhelp >= 1 as c_int {
@@ -3569,11 +3628,7 @@ unsafe extern "C" fn select_output(
         (*param).b_annexb = 0 as c_int;
         (*param).b_repeat_headers = 0 as c_int;
         if (*param).i_nal_hrd == X264_NAL_HRD_CBR {
-            x264_cli_log(
-                b"x264\0" as *const u8 as *const c_char,
-                X264_LOG_WARNING,
-                b"cbr nal-hrd is not compatible with mp4\n\0" as *const u8 as *const c_char,
-            );
+            warn!("cbr nal-hrd is not compatible with mp4");
             (*param).i_nal_hrd = X264_NAL_HRD_VBR;
         }
     } else if strcasecmp(ext, b"mkv\0" as *const u8 as *const c_char) == 0 {
@@ -3660,12 +3715,7 @@ unsafe extern "C" fn select_input(
             cli_input = raw_input;
         }
         if (*p_handle).is_null() {
-            x264_cli_log(
-                b"x264\0" as *const u8 as *const c_char,
-                X264_LOG_ERROR,
-                b"could not open input file `%s' via any method!\n\0" as *const u8 as *const c_char,
-                filename,
-            );
+            error!("could not open input file {filename:?} via any method!");
             return -1;
         }
     }
@@ -3889,7 +3939,7 @@ unsafe extern "C" fn parse(
         i_bframe: 0,
         i_bframe_adaptive: 0,
         i_bframe_bias: 0,
-        i_bframe_pyramid: 0,
+        bframe_pyramid: BPyramid::None,
         b_open_gop: 0,
         b_bluray_compat: 0,
         i_avcintra_class: 0,
@@ -4385,7 +4435,7 @@ unsafe extern "C" fn parse(
             let mut name: *const c_char = if long_options_index > 0 as c_int {
                 long_options[long_options_index as usize].name
             } else {
-                *argv.offset((optind - 2 as c_int) as isize) as *const c_char
+                *argv.offset((optind - 2) as isize) as *const c_char
             };
             x264_cli_log(
                 b"x264\0" as *const u8 as *const c_char,
@@ -4425,12 +4475,7 @@ unsafe extern "C" fn parse(
         &mut output_opt,
     ) != 0
     {
-        x264_cli_log(
-            b"x264\0" as *const u8 as *const c_char,
-            X264_LOG_ERROR,
-            b"could not open output file `%s'\n\0" as *const u8 as *const c_char,
-            output_filename,
-        );
+        error!("could not open output file {output_filename:?}");
         return -1;
     }
     let fresh0 = optind;
@@ -5344,6 +5389,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
 }
 #[c2rust::src_loc = "1938:13"]
 const MAX_PTS_WARNING: c_int = 3 as c_int;
+/*
 fn main() {
     let mut args: Vec<*mut c_char> = Vec::new();
     for arg in ::std::env::args() {
@@ -5360,4 +5406,13 @@ fn main() {
             args.as_mut_ptr() as *mut *mut c_char,
         ) as i32)
     }
+}
+*/
+
+/// Arguments to the Hex264 Video Encoder.
+#[derive(argp::FromArgs)]
+struct Hex264Args {}
+
+fn main() {
+    let args: Hex264Args = argp::parse_args_or_exit(argp::DEFAULT);
 }

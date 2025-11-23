@@ -9,6 +9,7 @@ use crate::input_h::{
     x264_cli_pic_plane_size,
 };
 use crate::osdep_h::x264_is_regular_file;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use crate::stdio_h::{
@@ -21,7 +22,7 @@ use crate::x264_h::{
     X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MAX,
     X264_CSP_NONE, X264_LOG_ERROR,
 };
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
 #[repr(C)]

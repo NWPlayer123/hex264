@@ -10,14 +10,17 @@ use crate::flv_bytestream_h::{
 };
 use crate::osdep_h::{endian_fix64, x264_is_regular_file};
 use crate::output_h::{cli_output_opt_t, cli_output_t};
+use crate::src::x264::x264_cli_log;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use crate::stdio_h::{fclose, fseeko, ftello, fwrite, SEEK_SET};
 use crate::stdlib_h::{calloc, free, malloc};
 use crate::string_h::memcpy;
 use crate::types_h::__off64_t;
-use crate::x264_h::{x264_nal_t, x264_param_t, x264_picture_t, X264_LOG_INFO, X264_LOG_WARNING};
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264_h::{
+    x264_nal_t, x264_param_t, x264_picture_t, BPyramid, X264_LOG_INFO, X264_LOG_WARNING,
+};
+use crate::x264cli_h::hnd_t;
 use crate::FILE_h::FILE;
 use crate::__stddef_null_h::NULL;
 #[derive(Copy, Clone)]
@@ -137,7 +140,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
         (*p_param).i_timebase_num as c_double / (*p_param).i_timebase_den as c_double;
     (*p_flv).b_vfr_input = (*p_param).b_vfr_input;
     (*p_flv).i_delay_frames = if (*p_param).i_bframe != 0 {
-        if (*p_param).i_bframe_pyramid != 0 {
+        if (*p_param).bframe_pyramid != BPyramid::None {
             2 as c_int
         } else {
             1 as c_int

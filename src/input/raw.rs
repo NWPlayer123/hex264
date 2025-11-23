@@ -8,6 +8,7 @@ use crate::input_h::{
     x264_cli_pic_init_noalloc, x264_cli_pic_plane_size, X264_CSP_CLI_MAX,
 };
 use crate::osdep_h::x264_is_regular_file;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint16_t, uint64_t, uint8_t};
 use crate::stdio_h::{fclose, fopen, fread, fseeko, ftello, sscanf, stdin, SEEK_END, SEEK_SET};
@@ -16,7 +17,7 @@ use crate::string_h::{memset, strcmp};
 use crate::strings_h::strcasecmp;
 use crate::types_h::__off64_t;
 use crate::x264_h::{X264_CSP_HIGH_DEPTH, X264_CSP_I420, X264_CSP_NONE, X264_LOG_ERROR};
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
 #[repr(C)]

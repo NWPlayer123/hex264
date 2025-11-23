@@ -5,6 +5,7 @@ use crate::base_h::x264_reduce_fraction;
 use crate::filters_h::x264_otoi;
 use crate::input_h::{cli_pic_t, video_info_t};
 use crate::src::filters::video::video::x264_init_vid_filter;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_h::intptr_t;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint32_t, uint64_t};
@@ -13,7 +14,7 @@ use crate::stdlib_h::{free, malloc};
 use crate::string_h::{memcpy, strtok_r};
 use crate::video_h::cli_vid_filter_t;
 use crate::x264_h::{x264_param_t, X264_LOG_ERROR};
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "33:9"]

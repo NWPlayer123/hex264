@@ -438,7 +438,7 @@ pub mod x264_h {
         pub i_bframe: c_int,
         pub i_bframe_adaptive: c_int,
         pub i_bframe_bias: c_int,
-        pub i_bframe_pyramid: c_int,
+        pub bframe_pyramid: BPyramid,
         pub b_open_gop: c_int,
         pub b_bluray_compat: c_int,
         pub i_avcintra_class: c_int,
@@ -533,7 +533,7 @@ pub mod x264_h {
                 i_bframe: 0,
                 i_bframe_adaptive: 0,
                 i_bframe_bias: 0,
-                i_bframe_pyramid: 0,
+                bframe_pyramid: BPyramid::None,
                 b_open_gop: 0,
                 b_bluray_compat: 0,
                 i_avcintra_class: 0,
@@ -595,6 +595,29 @@ pub mod x264_h {
                 opaque: core::ptr::null_mut(),
             }
         }
+    }
+
+    // TODO: check where this is from (not main H.264 spec)
+    #[derive(
+        Debug,
+        Default,
+        Clone,
+        Copy,
+        PartialEq,
+        Eq,
+        strum::AsRefStr,
+        strum::EnumString,
+        strum::FromRepr,
+        strum::VariantNames,
+    )]
+    #[strum(serialize_all = "snake_case")]
+    pub enum BPyramid {
+        None = 0,
+        /// Strictly hierarchical pyramid
+        Strict = 1,
+        /// Non-strict (not blu-ray compatible)
+        #[default]
+        Normal = 2,
     }
 
     /// HDR metadata used for tonemapping.
@@ -983,13 +1006,6 @@ pub mod x264_h {
         b"tesa\0" as *const u8 as *const c_char,
         0 as *const c_char,
     ];
-    #[c2rust::src_loc = "240:27"]
-    pub static mut x264_b_pyramid_names: [*const c_char; 4] = [
-        b"none\0" as *const u8 as *const c_char,
-        b"strict\0" as *const u8 as *const c_char,
-        b"normal\0" as *const u8 as *const c_char,
-        0 as *const c_char,
-    ];
     #[c2rust::src_loc = "241:27"]
     pub static mut x264_overscan_names: [*const c_char; 4] = [
         b"undef\0" as *const u8 as *const c_char,
@@ -1131,22 +1147,8 @@ pub mod x264_h {
         pub type x264_t;
         #[c2rust::src_loc = "651:36"]
         pub static x264_levels: [x264_level_t; 0];
-        #[c2rust::src_loc = "659:10"]
-        pub fn x264_param_default(_: *mut x264_param_t);
-        #[c2rust::src_loc = "672:10"]
-        pub fn x264_param_parse(
-            _: *mut x264_param_t,
-            name: *const c_char,
-            value: *const c_char,
-        ) -> c_int;
         #[c2rust::src_loc = "679:10"]
         pub fn x264_param_cleanup(param: *mut x264_param_t);
-        #[c2rust::src_loc = "723:10"]
-        pub fn x264_param_default_preset(
-            _: *mut x264_param_t,
-            preset: *const c_char,
-            tune: *const c_char,
-        ) -> c_int;
         #[c2rust::src_loc = "729:10"]
         pub fn x264_param_apply_fastfirstpass(_: *mut x264_param_t);
         #[c2rust::src_loc = "744:10"]
@@ -1249,8 +1251,6 @@ pub mod x264_h {
     pub const X264_B_ADAPT_TRELLIS: c_int = 2 as c_int;
     #[c2rust::src_loc = "226:9"]
     pub const X264_WEIGHTP_SIMPLE: c_int = 1 as c_int;
-    #[c2rust::src_loc = "230:9"]
-    pub const X264_B_PYRAMID_NORMAL: c_int = 2 as c_int;
     #[c2rust::src_loc = "853:13"]
     pub const X264_MBINFO_CONSTANT: c_uint = (1 as c_uint) << 0 as c_int;
     #[c2rust::src_loc = "86:1"]
@@ -1333,10 +1333,6 @@ pub mod x264_h {
     pub const X264_WEIGHTP_NONE: c_int = 0 as c_int;
     #[c2rust::src_loc = "227:9"]
     pub const X264_WEIGHTP_SMART: c_int = 2 as c_int;
-    #[c2rust::src_loc = "228:9"]
-    pub const X264_B_PYRAMID_NONE: c_int = 0 as c_int;
-    #[c2rust::src_loc = "229:9"]
-    pub const X264_B_PYRAMID_STRICT: c_int = 1 as c_int;
     #[c2rust::src_loc = "231:9"]
     pub const X264_KEYINT_MIN_AUTO: c_int = 0 as c_int;
     #[c2rust::src_loc = "232:9"]
@@ -1458,10 +1454,6 @@ pub mod x264cli_h {
 
     use super::string_h::strlen;
     extern "C" {
-        #[c2rust::src_loc = "78:1"]
-        pub fn x264_cli_autocomplete(prev: *const c_char, cur: *const c_char) -> c_int;
-    }
-    extern "C" {
         #[c2rust::src_loc = "39:27"]
         pub static x264_avcintra_class_names: [*const c_char; 0];
         #[c2rust::src_loc = "40:27"]
@@ -1482,10 +1474,6 @@ pub mod x264cli_h {
         pub static x264_demuxer_names: [*const c_char; 0];
         #[c2rust::src_loc = "48:27"]
         pub static x264_muxer_names: [*const c_char; 0];
-    }
-    extern "C" {
-        #[c2rust::src_loc = "76:1"]
-        pub fn x264_cli_log(name: *const c_char, i_level: c_int, fmt: *const c_char, ...);
     }
     extern "C" {
         #[c2rust::src_loc = "77:1"]
@@ -13998,7 +13986,7 @@ pub mod slicetype_c {
                     .wrapping_mul(::core::mem::size_of::<uint16_t>() as size_t),
             );
             bframes = last_nonb - cur_nonb - 1 as c_int;
-            if (*h).param.i_bframe_pyramid != 0 && bframes > 1 as c_int {
+            if (*h).param.bframe_pyramid != BPyramid::None && bframes > 1 as c_int {
                 let mut middle: c_int = (bframes + 1 as c_int) / 2 as c_int + cur_nonb;
                 slicetype_frame_cost(h, a, frames, cur_nonb, last_nonb, middle);
                 memset(
@@ -14082,7 +14070,7 @@ pub mod slicetype_c {
             average_duration,
             last_nonb,
         );
-        if (*h).param.i_bframe_pyramid != 0
+        if (*h).param.bframe_pyramid != BPyramid::None
             && bframes > 1 as c_int
             && (*h).param.rc.i_vbv_buffer_size == 0
         {
@@ -14276,7 +14264,7 @@ pub mod slicetype_c {
             if cost > threshold {
                 break;
             }
-            if (*h).param.i_bframe_pyramid != 0 && next_nonb - cur_nonb > 2 as c_int {
+            if (*h).param.bframe_pyramid != BPyramid::None && next_nonb - cur_nonb > 2 as c_int {
                 let mut middle: c_int = cur_nonb + (next_nonb - cur_nonb) / 2 as c_int;
                 cost = cost.wrapping_add(slicetype_frame_cost(
                     h, a, frames, cur_nonb, next_nonb, middle,
@@ -15535,8 +15523,10 @@ pub mod slicetype_c {
     }
     use ::core::ffi::{c_char, c_double, c_float, c_int, c_uint, c_ulonglong, c_void};
 
+    use log::warn;
+
     use crate::src::encoder::analyse::x264_mb_analysis_list_t;
-    use crate::x264_h::FramePacking;
+    use crate::x264_h::{BPyramid, FramePacking};
     #[no_mangle]
     #[c2rust::src_loc = "1745:1"]
     pub unsafe extern "C" fn x264_10_slicetype_decide(mut h: *mut x264_t) {
@@ -15630,31 +15620,25 @@ pub mod slicetype_c {
                 );
             }
             if (*frm).i_type == X264_TYPE_BREF
-                && (*h).param.i_bframe_pyramid < X264_B_PYRAMID_NORMAL
-                && brefs == (*h).param.i_bframe_pyramid
+                && (*h).param.bframe_pyramid != BPyramid::Normal
+                && brefs == (*h).param.bframe_pyramid as i32
             {
                 (*frm).i_type = X264_TYPE_B;
-                x264_10_log(
-                    h,
-                    X264_LOG_WARNING,
-                    b"B-ref at frame %d incompatible with B-pyramid %s \n\0" as *const u8
-                        as *const c_char,
+                warn!(
+                    "B-ref at frame {} incompatible with B-pyramid {}",
                     (*frm).i_frame,
-                    x264_b_pyramid_names[(*h).param.i_bframe_pyramid as usize],
+                    (*h).param.bframe_pyramid.as_ref()
                 );
             } else if (*frm).i_type == X264_TYPE_BREF
-                && (*h).param.i_bframe_pyramid == X264_B_PYRAMID_NORMAL
+                && (*h).param.bframe_pyramid == BPyramid::Normal
                 && brefs != 0
                 && (*h).param.i_frame_reference <= brefs + 3 as c_int
             {
                 (*frm).i_type = X264_TYPE_B;
-                x264_10_log(
-                    h,
-                    X264_LOG_WARNING,
-                    b"B-ref at frame %d incompatible with B-pyramid %s and %d reference frames\n\0"
-                        as *const u8 as *const c_char,
+                warn!(
+                    "B-ref at frame {} incompatible with B-pyramid {} and {} reference frames",
                     (*frm).i_frame,
-                    x264_b_pyramid_names[(*h).param.i_bframe_pyramid as usize],
+                    (*h).param.bframe_pyramid.as_ref(),
                     (*h).param.i_frame_reference,
                 );
             }
@@ -15759,7 +15743,7 @@ pub mod slicetype_c {
             .b_last_minigop_bframe = 1 as uint8_t;
         }
         (**(*(*h).lookahead).next.list.offset(bframes as isize)).i_bframes = bframes as uint8_t;
-        if (*h).param.i_bframe_pyramid != 0 && bframes > 1 as c_int && brefs == 0 {
+        if (*h).param.bframe_pyramid != BPyramid::None && bframes > 1 as c_int && brefs == 0 {
             (**(*(*h).lookahead)
                 .next
                 .list
@@ -16350,10 +16334,9 @@ pub mod slicetype_c {
     use super::tables_h::{x264_lambda_tab, x264_zero};
     use super::threadpool_h::{x264_10_threadpool_run, x264_10_threadpool_wait};
     use super::x264_h::{
-        x264_b_pyramid_names, X264_B_ADAPT_FAST, X264_B_ADAPT_TRELLIS, X264_B_PYRAMID_NORMAL,
-        X264_LOG_DEBUG, X264_LOG_WARNING, X264_ME_DIA, X264_RC_CQP, X264_TYPE_AUTO, X264_TYPE_B,
-        X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
-        X264_WEIGHTP_SIMPLE,
+        X264_B_ADAPT_FAST, X264_B_ADAPT_TRELLIS, X264_LOG_DEBUG, X264_LOG_WARNING, X264_ME_DIA,
+        X264_RC_CQP, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR,
+        X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_SIMPLE,
     };
     use crate::src::encoder::analyse::{mb_analyse_load_costs, x264_mb_analysis_t};
 }

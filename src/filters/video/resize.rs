@@ -23,6 +23,7 @@ use crate::pixfmt_h::{
     AV_PIX_FMT_YUV444P16LE, AV_PIX_FMT_YUYV422,
 };
 use crate::src::filters::filters::x264_split_options;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
 use crate::stdio_h::{printf, sscanf};
@@ -43,7 +44,8 @@ use crate::x264_h::{
     X264_CSP_NV21, X264_CSP_RGB, X264_CSP_UYVY, X264_CSP_VFLIP, X264_CSP_YUYV, X264_CSP_YV12,
     X264_CSP_YV16, X264_CSP_YV24, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING,
 };
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "61:9"]
