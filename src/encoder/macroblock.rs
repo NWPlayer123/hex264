@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_int, c_uint, c_ulong, c_ulonglong, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -108,9 +109,9 @@ unsafe extern "C" fn array_non_zero(mut v: *mut dctcoef, mut i_count: c_int) -> 
             if (*(&mut *v.offset(i as isize) as *mut dctcoef as *mut x264_union64_t)).i != 0 {
                 return 1 as c_int;
             }
-            i = (i as c_ulong).wrapping_add(
-                (8 as usize).wrapping_div(::core::mem::size_of::<dctcoef>() as usize) as c_ulong,
-            ) as c_int as c_int;
+            i = (i as c_ulong)
+                .wrapping_add((8 as usize).wrapping_div(size_of::<dctcoef>() as usize) as c_ulong)
+                as c_int as c_int;
         }
     } else {
         let mut i_0: c_int = 0 as c_int;
@@ -118,9 +119,9 @@ unsafe extern "C" fn array_non_zero(mut v: *mut dctcoef, mut i_count: c_int) -> 
             if (*(&mut *v.offset(i_0 as isize) as *mut dctcoef as *mut x264_union32_t)).i != 0 {
                 return 1 as c_int;
             }
-            i_0 = (i_0 as c_ulong).wrapping_add(
-                (4 as usize).wrapping_div(::core::mem::size_of::<dctcoef>() as usize) as c_ulong,
-            ) as c_int as c_int;
+            i_0 = (i_0 as c_ulong)
+                .wrapping_add((4 as usize).wrapping_div(size_of::<dctcoef>() as usize) as c_ulong)
+                as c_int as c_int;
         }
     }
     return 0 as c_int;
@@ -1540,7 +1541,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                     (*h).dct.luma8x8.as_mut_ptr() as *mut c_void,
                     (*h).mb.pic.i8x8_dct_buf.as_mut_ptr() as *const c_void,
-                    ::core::mem::size_of::<[[dctcoef; 64]; 3]>() as size_t,
+                    size_of::<[[dctcoef; 64]; 3]>() as size_t,
                 );
             }
         }
@@ -1608,7 +1609,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                     (*h).dct.luma4x4.as_mut_ptr() as *mut c_void,
                     (*h).mb.pic.i4x4_dct_buf.as_mut_ptr() as *const c_void,
-                    ::core::mem::size_of::<[[dctcoef; 16]; 15]>() as size_t,
+                    size_of::<[[dctcoef; 16]; 15]>() as size_t,
                 );
             }
         }

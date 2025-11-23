@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -110,7 +111,7 @@ unsafe extern "C" fn open_file(
     mut _opt: *mut cli_input_opt_t,
 ) -> c_int {
     let mut h: *mut y4m_hnd_t =
-        calloc(1 as size_t, ::core::mem::size_of::<y4m_hnd_t>() as size_t) as *mut y4m_hnd_t;
+        calloc(1 as size_t, size_of::<y4m_hnd_t>() as size_t) as *mut y4m_hnd_t;
     let mut i: c_int = 0;
     let mut n: uint32_t = 0;
     let mut d: uint32_t = 0;
@@ -146,7 +147,7 @@ unsafe extern "C" fn open_file(
     if strncmp(
         header.as_mut_ptr(),
         b"YUV4MPEG2\0" as *const u8 as *const c_char,
-        (::core::mem::size_of::<[c_char; 10]>() as size_t).wrapping_sub(1 as size_t),
+        (size_of::<[c_char; 10]>() as size_t).wrapping_sub(1 as size_t),
     ) != 0
     {
         x264_cli_log(
@@ -168,7 +169,7 @@ unsafe extern "C" fn open_file(
     (*h).seq_header_len = i + 1 as c_int;
     let mut tokstart: *mut c_char = header
         .as_mut_ptr()
-        .offset(::core::mem::size_of::<[c_char; 10]>() as usize as isize);
+        .offset(size_of::<[c_char; 10]>() as usize as isize);
     while tokstart < header_end {
         if !(*tokstart as c_int == 0x20 as c_int) {
             let fresh0 = tokstart;
@@ -325,7 +326,7 @@ unsafe extern "C" fn open_file(
         while len <= Y4M_MAX_HEADER as size_t && fgetc((*h).fh) != '\n' as i32 {
             len = len.wrapping_add(1);
         }
-        if len > 256 as size_t || len < ::core::mem::size_of::<[c_char; 6]>() as usize {
+        if len > 256 as size_t || len < size_of::<[c_char; 6]>() as usize {
             x264_cli_log(
                 b"y4m\0" as *const u8 as *const c_char,
                 X264_LOG_ERROR,
@@ -361,7 +362,7 @@ unsafe extern "C" fn read_frame_internal(
     mut bit_depth_uc: c_int,
 ) -> c_int {
     let mut pixel_depth: c_int = x264_cli_csp_depth_factor((*pic).img.csp);
-    let mut i: c_int = ::core::mem::size_of::<[c_char; 6]>() as c_int;
+    let mut i: c_int = size_of::<[c_char; 6]>() as c_int;
     let mut header_buf: [c_char; 16] = [0; 16];
     let mut header: *mut c_char = 0 as *mut c_char;
     if (*h).use_mmap != 0 {
@@ -523,7 +524,7 @@ unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut handle: hnd_t) {
         memset(
             pic as *mut c_void,
             0 as c_int,
-            ::core::mem::size_of::<cli_pic_t>() as size_t,
+            size_of::<cli_pic_t>() as size_t,
         );
     } else {
         x264_cli_pic_clean(pic);
@@ -563,7 +564,7 @@ static mut y4m_input: cli_input_t = cli_input_t {
     close_file: Some(close_file as unsafe extern "C" fn(hnd_t) -> c_int),
 };
 unsafe extern "C" fn run_static_initializers() {
-    slen = (::core::mem::size_of::<[c_char; 6]>() as size_t).wrapping_sub(1 as size_t);
+    slen = (size_of::<[c_char; 6]>() as size_t).wrapping_sub(1 as size_t);
 }
 #[used]
 #[cfg_attr(target_os = "linux", link_section = ".init_array")]

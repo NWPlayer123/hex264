@@ -1,4 +1,5 @@
 use ::core::ffi::{c_char, c_float, c_int, c_long, c_ulong, c_void};
+use ::core::mem::size_of;
 
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
@@ -339,7 +340,7 @@ unsafe extern "C" fn cli_pic_init_internal(
     memset(
         pic as *mut c_void,
         0 as c_int,
-        ::core::mem::size_of::<cli_pic_t>() as size_t,
+        size_of::<cli_pic_t>() as size_t,
     );
     let mut csp_mask: c_int = csp & X264_CSP_MASK;
     if x264_cli_csp_is_invalid(csp) != 0 {
@@ -412,7 +413,7 @@ unsafe extern "C" fn x264_cli_pic_clean(mut pic: *mut cli_pic_t) {
     memset(
         pic as *mut c_void,
         0 as c_int,
-        ::core::mem::size_of::<cli_pic_t>() as size_t,
+        size_of::<cli_pic_t>() as size_t,
     );
 }
 #[no_mangle]

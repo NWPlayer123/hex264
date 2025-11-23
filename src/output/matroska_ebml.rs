@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_double, c_float, c_int, c_longlong, c_uint, c_ulong, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -63,7 +64,7 @@ unsafe extern "C" fn mk_create_context(
         c = (*w).freelist;
         (*w).freelist = (*(*w).freelist).next as *mut mk_context;
     } else {
-        c = calloc(1 as size_t, ::core::mem::size_of::<mk_context>() as size_t) as *mut mk_context;
+        c = calloc(1 as size_t, size_of::<mk_context>() as size_t) as *mut mk_context;
         if c.is_null() {
             return 0 as *mut mk_context;
         }
@@ -373,7 +374,7 @@ unsafe extern "C" fn mk_write_float(
 #[c2rust::src_loc = "291:1"]
 unsafe extern "C" fn mk_create_writer(mut filename: *const c_char) -> *mut mk_writer {
     let mut w: *mut mk_writer =
-        calloc(1 as size_t, ::core::mem::size_of::<mk_writer>() as size_t) as *mut mk_writer;
+        calloc(1 as size_t, size_of::<mk_writer>() as size_t) as *mut mk_writer;
     if w.is_null() {
         return 0 as *mut mk_writer;
     }

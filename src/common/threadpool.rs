@@ -1,4 +1,5 @@
 use ::core::ffi::{c_int, c_void};
+use ::core::mem::size_of;
 
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
@@ -70,19 +71,17 @@ unsafe extern "C" fn x264_10_threadpool_init(
         return -1;
     }
     let mut pool: *mut x264_threadpool_t = 0 as *mut x264_threadpool_t;
-    pool = x264_malloc(::core::mem::size_of::<x264_threadpool_t>() as int64_t)
-        as *mut x264_threadpool_t;
+    pool = x264_malloc(size_of::<x264_threadpool_t>() as int64_t) as *mut x264_threadpool_t;
     if !pool.is_null() {
         memset(
             pool as *mut c_void,
             0 as c_int,
-            ::core::mem::size_of::<x264_threadpool_t>() as size_t,
+            size_of::<x264_threadpool_t>() as size_t,
         );
         *p_pool = pool;
         (*pool).threads = threads;
         (*pool).thread_handle = x264_malloc(
-            ((*pool).threads as usize).wrapping_mul(::core::mem::size_of::<pthread_t>() as usize)
-                as int64_t,
+            ((*pool).threads as usize).wrapping_mul(size_of::<pthread_t>() as usize) as int64_t,
         ) as *mut pthread_t;
         if !(*pool).thread_handle.is_null() {
             if !(x264_10_sync_frame_list_init(&mut (*pool).uninit, (*pool).threads) != 0
@@ -96,7 +95,7 @@ unsafe extern "C" fn x264_10_threadpool_init(
                         break;
                     }
                     let mut job: *mut x264_threadpool_job_t = 0 as *mut x264_threadpool_job_t;
-                    job = x264_malloc(::core::mem::size_of::<x264_threadpool_job_t>() as int64_t)
+                    job = x264_malloc(size_of::<x264_threadpool_job_t>() as int64_t)
                         as *mut x264_threadpool_job_t;
                     if job.is_null() {
                         current_block = 598935323617260105;

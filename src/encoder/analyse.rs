@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_float, c_int, c_uint, c_ulonglong, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -222,7 +223,7 @@ unsafe extern "C" fn init_costs(
     let mut lambda: c_int = x264_lambda_tab[qp as usize] as c_int;
     (*h).cost_mv[qp as usize] = x264_malloc(
         ((4 as c_int * 4 as c_int * mv_range + 1 as c_int) as usize)
-            .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize) as int64_t,
+            .wrapping_mul(size_of::<uint16_t>() as usize) as int64_t,
     ) as *mut uint16_t;
     if !(*h).cost_mv[qp as usize].is_null() {
         (*h).cost_mv[qp as usize] =
@@ -269,7 +270,7 @@ unsafe extern "C" fn init_costs(
                 }
                 (*h).cost_mv_fpel[qp as usize][j_0 as usize] = x264_malloc(
                     ((4 as c_int * mv_range + 1 as c_int) as usize)
-                        .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
+                        .wrapping_mul(size_of::<uint16_t>() as usize)
                         as int64_t,
                 ) as *mut uint16_t;
                 if (*h).cost_mv_fpel[qp as usize][j_0 as usize].is_null() {
@@ -317,7 +318,7 @@ pub unsafe extern "C" fn x264_10_analyse_init_costs(mut h: *mut x264_t) -> c_int
     let mut mv_range: c_int = (*h).param.analyse.i_mv_range << (*h).param.b_interlaced;
     let mut logs: *mut c_float = x264_malloc(
         ((2 as c_int * 4 as c_int * mv_range + 1 as c_int) as usize)
-            .wrapping_mul(::core::mem::size_of::<c_float>() as usize) as int64_t,
+            .wrapping_mul(size_of::<c_float>() as usize) as int64_t,
     ) as *mut c_float;
     if logs.is_null() {
         return -1;
@@ -391,10 +392,10 @@ pub unsafe extern "C" fn x264_10_analyse_weight_frame(mut h: *mut x264_t, mut en
         if !(*h).sh.weight[j as usize][0].weightfn.is_null() {
             let mut frame: *mut x264_frame_t = (*h).fref[0][j as usize];
             let mut width: c_int = (*frame).i_width[0]
-                + ((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
+                + ((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
                     32 as c_int
                 } else {
-                    64 as c_int / ::core::mem::size_of::<pixel>() as c_int
+                    64 as c_int / size_of::<pixel>() as c_int
                 }) + PADH);
             let mut i_padv: c_int = PADV << (*h).param.b_interlaced;
             let mut offset: c_int = 0;
@@ -402,10 +403,10 @@ pub unsafe extern "C" fn x264_10_analyse_weight_frame(mut h: *mut x264_t, mut en
             let mut src: *mut pixel = (*frame).filtered[0][0]
                 .offset(-(((*frame).i_stride[0] * i_padv) as isize))
                 .offset(
-                    -((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
+                    -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
                         32 as c_int
                     } else {
-                        64 as c_int / ::core::mem::size_of::<pixel>() as c_int
+                        64 as c_int / size_of::<pixel>() as c_int
                     }) as isize),
                 );
             height = (if 16 as c_int + end + i_padv
@@ -424,12 +425,10 @@ pub unsafe extern "C" fn x264_10_analyse_weight_frame(mut h: *mut x264_t, mut en
                         let mut dst: *mut pixel = (*(*h).fenc).weighted[k as usize]
                             .offset(-(((*(*h).fenc).i_stride[0] * i_padv) as isize))
                             .offset(
-                                -((if 32 as c_int
-                                    > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int
-                                {
+                                -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
                                     32 as c_int
                                 } else {
-                                    64 as c_int / ::core::mem::size_of::<pixel>() as c_int
+                                    64 as c_int / size_of::<pixel>() as c_int
                                 }) as isize),
                             );
                         x264_10_weight_scale_plane(
@@ -1251,7 +1250,7 @@ unsafe extern "C" fn mb_init_fenc_cache(mut h: *mut x264_t, mut b_satd: c_int) {
     if b_satd != 0 {
         (*h).mc.memzero_aligned.expect("non-null function pointer")(
             (*h).mb.pic.fenc_satd_cache.as_mut_ptr() as *mut c_void,
-            ::core::mem::size_of::<[uint32_t; 32]>() as size_t,
+            size_of::<[uint32_t; 32]>() as size_t,
         );
     }
 }
@@ -1796,7 +1795,7 @@ unsafe extern "C" fn mb_analyse_intra(
                     (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                         (*h).mb.pic.i8x8_dct_buf.as_mut_ptr() as *mut c_void,
                         (*h).dct.luma8x8.as_mut_ptr() as *const c_void,
-                        ::core::mem::size_of::<[[dctcoef; 64]; 3]>() as size_t,
+                        size_of::<[[dctcoef; 64]; 3]>() as size_t,
                     );
                 }
             }
@@ -2059,7 +2058,7 @@ unsafe extern "C" fn mb_analyse_intra(
                     (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                         (*h).mb.pic.i4x4_dct_buf.as_mut_ptr() as *mut c_void,
                         (*h).dct.luma4x4.as_mut_ptr() as *const c_void,
-                        ::core::mem::size_of::<[[dctcoef; 16]; 15]>() as size_t,
+                        size_of::<[[dctcoef; 16]; 15]>() as size_t,
                     );
                 }
             }
@@ -2668,7 +2667,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(mut h: *mut x264_t, mut a: *mut x26
             (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                 &mut (*a).l0.me16x16 as *mut x264_me_t as *mut c_void,
                 &mut m as *mut x264_me_t as *const c_void,
-                ::core::mem::size_of::<x264_me_t>() as size_t,
+                size_of::<x264_me_t>() as size_t,
             );
         }
         i_ref += 1;
@@ -3018,7 +3017,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
                 (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                     l0m as *mut c_void,
                     &mut m as *mut x264_me_t as *const c_void,
-                    ::core::mem::size_of::<x264_me_t>() as size_t,
+                    size_of::<x264_me_t>() as size_t,
                 );
             }
             if i_ref_0 == i_maxref && i_maxref < (*h).mb.ref_blind_dupe {
@@ -3537,7 +3536,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                 (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                     l0m as *mut c_void,
                     &mut m as *mut x264_me_t as *const c_void,
-                    ::core::mem::size_of::<x264_me_t>() as size_t,
+                    size_of::<x264_me_t>() as size_t,
                 );
             }
             j += 1;
@@ -3815,7 +3814,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
                 (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                     l0m as *mut c_void,
                     &mut m as *mut x264_me_t as *const c_void,
-                    ::core::mem::size_of::<x264_me_t>() as size_t,
+                    size_of::<x264_me_t>() as size_t,
                 );
             }
             j += 1;
@@ -5928,7 +5927,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(mut h: *mut x264_t, mut a: *mut x26
                     (*h).mc.memcpy_aligned.expect("non-null function pointer")(
                         &mut (*lX).me16x16 as *mut x264_me_t as *mut c_void,
                         &mut m as *mut x264_me_t as *const c_void,
-                        ::core::mem::size_of::<x264_me_t>() as size_t,
+                        size_of::<x264_me_t>() as size_t,
                     );
                 }
                 (*((*(*(*lX).mvc.as_mut_ptr().offset(i_ref as isize))
@@ -5971,12 +5970,12 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(mut h: *mut x264_t, mut a: *mut x26
     (*h).mc.memcpy_aligned.expect("non-null function pointer")(
         &mut (*a).l0.bi16x16 as *mut x264_me_t as *mut c_void,
         &mut (*a).l0.me16x16 as *mut x264_me_t as *const c_void,
-        ::core::mem::size_of::<x264_me_t>() as size_t,
+        size_of::<x264_me_t>() as size_t,
     );
     (*h).mc.memcpy_aligned.expect("non-null function pointer")(
         &mut (*a).l1.bi16x16 as *mut x264_me_t as *mut c_void,
         &mut (*a).l1.me16x16 as *mut x264_me_t as *const c_void,
-        ::core::mem::size_of::<x264_me_t>() as size_t,
+        size_of::<x264_me_t>() as size_t,
     );
     let mut ref_costs: c_int = *(*a).p_cost_ref[0].offset((*a).l0.bi16x16.i_ref as isize) as c_int
         + *(*a).p_cost_ref[1].offset((*a).l1.bi16x16.i_ref as isize) as c_int;
@@ -7028,7 +7027,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                         &mut *(*lX_0).me8x8.as_mut_ptr().offset(i as isize) as *mut x264_me_t
                             as *mut c_void,
                         &mut m as *mut x264_me_t as *const c_void,
-                        ::core::mem::size_of::<x264_me_t>() as size_t,
+                        size_of::<x264_me_t>() as size_t,
                     );
                     (*a).i_satd8x8[l_0 as usize][i as usize] = m.cost - (m.cost_mv + m.i_ref_cost);
                 }
@@ -7601,7 +7600,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                         &mut *(*lX).me16x8.as_mut_ptr().offset(i as isize) as *mut x264_me_t
                             as *mut c_void,
                         &mut m as *mut x264_me_t as *const c_void,
-                        ::core::mem::size_of::<x264_me_t>() as size_t,
+                        size_of::<x264_me_t>() as size_t,
                     );
                 }
                 j += 1;
@@ -7938,7 +7937,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                         &mut *(*lX).me8x16.as_mut_ptr().offset(i as isize) as *mut x264_me_t
                             as *mut c_void,
                         &mut m as *mut x264_me_t as *const c_void,
-                        ::core::mem::size_of::<x264_me_t>() as size_t,
+                        size_of::<x264_me_t>() as size_t,
                     );
                 }
                 j += 1;

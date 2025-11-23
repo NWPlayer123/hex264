@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_double, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -624,7 +625,7 @@ unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli
     if memcmp(
         &mut input_prop as *mut frame_prop_t as *const c_void,
         &mut (*h).scale as *mut frame_prop_t as *const c_void,
-        ::core::mem::size_of::<frame_prop_t>() as size_t,
+        size_of::<frame_prop_t>() as size_t,
     ) == 0
     {
         return 0 as c_int;
@@ -691,10 +692,7 @@ unsafe extern "C" fn init(
     if opts.is_null() && !opt_string.is_null() {
         return -1;
     }
-    let mut h: *mut resizer_hnd_t = calloc(
-        1 as size_t,
-        ::core::mem::size_of::<resizer_hnd_t>() as size_t,
-    ) as *mut resizer_hnd_t;
+    let mut h: *mut resizer_hnd_t = calloc(1, size_of::<resizer_hnd_t>()) as *mut resizer_hnd_t;
     if h.is_null() {
         return -1;
     }

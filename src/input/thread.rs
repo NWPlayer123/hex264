@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -38,8 +39,7 @@ unsafe extern "C" fn open_file(
     mut info: *mut video_info_t,
     mut _opt: *mut cli_input_opt_t,
 ) -> c_int {
-    let mut h: *mut thread_hnd_t =
-        malloc(::core::mem::size_of::<thread_hnd_t>() as size_t) as *mut thread_hnd_t;
+    let mut h: *mut thread_hnd_t = malloc(size_of::<thread_hnd_t>() as size_t) as *mut thread_hnd_t;
     if h.is_null()
         || cli_input.picture_alloc.expect("non-null function pointer")(
             &mut (*h).pic,
@@ -59,8 +59,7 @@ unsafe extern "C" fn open_file(
     (*h).input = cli_input;
     (*h).p_handle = *p_handle;
     (*h).next_frame = -1;
-    (*h).next_args =
-        malloc(::core::mem::size_of::<thread_input_arg_t>() as size_t) as *mut thread_input_arg_t;
+    (*h).next_args = malloc(size_of::<thread_input_arg_t>() as size_t) as *mut thread_input_arg_t;
     if (*h).next_args.is_null() {
         return -1;
     }

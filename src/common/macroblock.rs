@@ -1,4 +1,5 @@
 use ::core::ffi::{c_char, c_int, c_uint, c_ulonglong, c_void};
+use ::core::mem::size_of;
 
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
@@ -608,16 +609,14 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
     let fresh0 = prealloc_idx;
     prealloc_idx = prealloc_idx + 1;
     preallocs[fresh0 as usize] = &mut (*h).mb.qp as *mut *mut int8_t as *mut *mut uint8_t;
-    prealloc_size += (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
-        as int64_t
+    prealloc_size += (i_mb_count as usize).wrapping_mul(size_of::<int8_t>() as usize) as int64_t
         + (64 as c_int - 1 as c_int) as int64_t
         & !(64 as c_int - 1 as c_int) as int64_t;
     (*h).mb.cbp = prealloc_size as intptr_t as *mut c_void as *mut int16_t;
     let fresh1 = prealloc_idx;
     prealloc_idx = prealloc_idx + 1;
     preallocs[fresh1 as usize] = &mut (*h).mb.cbp as *mut *mut int16_t as *mut *mut uint8_t;
-    prealloc_size += (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
-        as int64_t
+    prealloc_size += (i_mb_count as usize).wrapping_mul(size_of::<int16_t>() as usize) as int64_t
         + (64 as c_int - 1 as c_int) as int64_t
         & !(64 as c_int - 1 as c_int) as int64_t;
     (*h).mb.mb_transform_size = prealloc_size as intptr_t as *mut c_void as *mut int8_t;
@@ -625,16 +624,14 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
     prealloc_idx = prealloc_idx + 1;
     preallocs[fresh2 as usize] =
         &mut (*h).mb.mb_transform_size as *mut *mut int8_t as *mut *mut uint8_t;
-    prealloc_size += (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
-        as int64_t
+    prealloc_size += (i_mb_count as usize).wrapping_mul(size_of::<int8_t>() as usize) as int64_t
         + (64 as c_int - 1 as c_int) as int64_t
         & !(64 as c_int - 1 as c_int) as int64_t;
     (*h).mb.slice_table = prealloc_size as intptr_t as *mut c_void as *mut int32_t;
     let fresh3 = prealloc_idx;
     prealloc_idx = prealloc_idx + 1;
     preallocs[fresh3 as usize] = &mut (*h).mb.slice_table as *mut *mut int32_t as *mut *mut uint8_t;
-    prealloc_size += (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<int32_t>() as usize)
-        as int64_t
+    prealloc_size += (i_mb_count as usize).wrapping_mul(size_of::<int32_t>() as usize) as int64_t
         + (64 as c_int - 1 as c_int) as int64_t
         & !(64 as c_int - 1 as c_int) as int64_t;
     (*h).mb.intra4x4_pred_mode = prealloc_size as intptr_t as *mut c_void as *mut [int8_t; 8];
@@ -642,8 +639,8 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
     prealloc_idx = prealloc_idx + 1;
     preallocs[fresh4 as usize] =
         &mut (*h).mb.intra4x4_pred_mode as *mut *mut [int8_t; 8] as *mut *mut uint8_t;
-    prealloc_size += ((i_mb_count * 8 as c_int) as usize)
-        .wrapping_mul(::core::mem::size_of::<int8_t>() as usize) as int64_t
+    prealloc_size += ((i_mb_count * 8 as c_int) as usize).wrapping_mul(size_of::<int8_t>() as usize)
+        as int64_t
         + (64 as c_int - 1 as c_int) as int64_t
         & !(64 as c_int - 1 as c_int) as int64_t;
     (*h).mb.non_zero_count = prealloc_size as intptr_t as *mut c_void as *mut [uint8_t; 48];
@@ -652,7 +649,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
     preallocs[fresh5 as usize] =
         &mut (*h).mb.non_zero_count as *mut *mut [uint8_t; 48] as *mut *mut uint8_t;
     prealloc_size += ((i_mb_count * 48 as c_int) as usize)
-        .wrapping_mul(::core::mem::size_of::<uint8_t>() as usize) as int64_t
+        .wrapping_mul(size_of::<uint8_t>() as usize) as int64_t
         + (64 as c_int - 1 as c_int) as int64_t
         & !(64 as c_int - 1 as c_int) as int64_t;
     if (*h).param.b_cabac != 0 {
@@ -660,8 +657,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
         let fresh6 = prealloc_idx;
         prealloc_idx = prealloc_idx + 1;
         preallocs[fresh6 as usize] = &mut (*h).mb.skipbp as *mut *mut int8_t as *mut *mut uint8_t;
-        prealloc_size += (i_mb_count as usize)
-            .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
+        prealloc_size += (i_mb_count as usize).wrapping_mul(size_of::<int8_t>() as usize)
             as int64_t
             + (64 as c_int - 1 as c_int) as int64_t
             & !(64 as c_int - 1 as c_int) as int64_t;
@@ -670,8 +666,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
         prealloc_idx = prealloc_idx + 1;
         preallocs[fresh7 as usize] =
             &mut (*h).mb.chroma_pred_mode as *mut *mut int8_t as *mut *mut uint8_t;
-        prealloc_size += (i_mb_count as usize)
-            .wrapping_mul(::core::mem::size_of::<int8_t>() as usize)
+        prealloc_size += (i_mb_count as usize).wrapping_mul(size_of::<int8_t>() as usize)
             as int64_t
             + (64 as c_int - 1 as c_int) as int64_t
             & !(64 as c_int - 1 as c_int) as int64_t;
@@ -681,8 +676,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
         preallocs[fresh8 as usize] = &mut *(*h).mb.mvd.as_mut_ptr().offset(0)
             as *mut *mut [[uint8_t; 2]; 8]
             as *mut *mut uint8_t;
-        prealloc_size += (i_mb_count as usize)
-            .wrapping_mul(::core::mem::size_of::<[[uint8_t; 2]; 8]>() as usize)
+        prealloc_size += (i_mb_count as usize).wrapping_mul(size_of::<[[uint8_t; 2]; 8]>() as usize)
             as int64_t
             + (64 as c_int - 1 as c_int) as int64_t
             & !(64 as c_int - 1 as c_int) as int64_t;
@@ -694,7 +688,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
                 as *mut *mut [[uint8_t; 2]; 8]
                 as *mut *mut uint8_t;
             prealloc_size += (i_mb_count as usize)
-                .wrapping_mul(::core::mem::size_of::<[[uint8_t; 2]; 8]>() as usize)
+                .wrapping_mul(size_of::<[[uint8_t; 2]; 8]>() as usize)
                 as int64_t
                 + (64 as c_int - 1 as c_int) as int64_t
                 & !(64 as c_int - 1 as c_int) as int64_t;
@@ -735,7 +729,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
                 as *mut *mut [int16_t; 2]
                 as *mut *mut uint8_t;
             prealloc_size += ((2 as c_int * (i_mb_count + 1 as c_int)) as usize)
-                .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                .wrapping_mul(size_of::<int16_t>() as usize)
                 as int64_t
                 + (64 as c_int - 1 as c_int) as int64_t
                 & !(64 as c_int - 1 as c_int) as int64_t;
@@ -777,8 +771,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
             preallocs[fresh11 as usize] =
                 &mut *(*h).mb.p_weight_buf.as_mut_ptr().offset(i_0 as isize) as *mut *mut pixel
                     as *mut *mut uint8_t;
-            prealloc_size += (luma_plane_size * ::core::mem::size_of::<pixel>() as c_int)
-                as int64_t
+            prealloc_size += (luma_plane_size * size_of::<pixel>() as c_int) as int64_t
                 + (64 as c_int - 1 as c_int) as int64_t
                 & !(64 as c_int - 1 as c_int) as int64_t;
             i_0 += 1;
@@ -801,7 +794,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
         memset(
             (*h).mb.slice_table as *mut c_void,
             -1,
-            (i_mb_count as size_t).wrapping_mul(::core::mem::size_of::<int32_t>() as size_t),
+            (i_mb_count as size_t).wrapping_mul(size_of::<int32_t>() as size_t),
         );
         let mut i_1: c_int = 0 as c_int;
         while i_1 < 2 as c_int {
@@ -884,7 +877,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
             {
                 (*h).intra_border_backup[i as usize][j as usize] = x264_malloc(
                     (((*(*h).sps.as_mut_ptr()).i_mb_width * 16 as c_int + 32 as c_int)
-                        * ::core::mem::size_of::<pixel>() as c_int) as int64_t,
+                        * size_of::<pixel>() as c_int) as int64_t,
                 ) as *mut pixel;
                 if (*h).intra_border_backup[i as usize][j as usize].is_null() {
                     current_block = 11409641321532490549;
@@ -908,7 +901,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                     if (*h).param.b_sliced_threads != 0 {
                         if h == (*h).thread[0] && i_0 == 0 {
                             (*h).deblock_strength[0] = x264_malloc(
-                                (::core::mem::size_of::<[[[uint8_t; 4]; 8]; 2]>() as usize)
+                                (size_of::<[[[uint8_t; 4]; 8]; 2]>() as usize)
                                     .wrapping_mul((*h).mb.i_mb_count as usize)
                                     as int64_t,
                             )
@@ -923,7 +916,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                         }
                     } else {
                         (*h).deblock_strength[i_0 as usize] = x264_malloc(
-                            (::core::mem::size_of::<[[[uint8_t; 4]; 8]; 2]>() as usize)
+                            (size_of::<[[[uint8_t; 4]; 8]; 2]>() as usize)
                                 .wrapping_mul((*h).mb.i_mb_width as usize)
                                 as int64_t,
                         )
@@ -947,13 +940,12 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
             if b_lookahead == 0 {
                 let mut buf_hpel: c_int =
                     (((*(*(*h).thread[0]).fdec).i_width[0] + 48 as c_int + 32 as c_int) as usize)
-                        .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
-                        as c_int;
+                        .wrapping_mul(size_of::<int16_t>() as usize) as c_int;
                 let mut buf_ssim: c_int = (((*h).param.analyse.b_ssim
                     * 8 as c_int
                     * ((*h).param.width as c_int / 4 as c_int + 3 as c_int))
                     as usize)
-                    .wrapping_mul(::core::mem::size_of::<c_int>() as usize)
+                    .wrapping_mul(size_of::<c_int>() as usize)
                     as c_int;
                 let mut me_range: c_int =
                     if (*h).param.analyse.i_me_range < (*h).param.analyse.i_mv_range {
@@ -964,11 +956,11 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                 let mut buf_tesa: c_int =
                     (((*h).param.analyse.me_method.exhaustive_search()) as usize).wrapping_mul(
                         ((me_range * 2 as c_int + 24 as c_int) as usize)
-                            .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                            .wrapping_mul(size_of::<int16_t>() as usize)
                             .wrapping_add(
                                 (((me_range + 4 as c_int) * (me_range + 1 as c_int) * 4 as c_int)
                                     as usize)
-                                    .wrapping_mul(::core::mem::size_of::<mvsad_t>() as usize),
+                                    .wrapping_mul(size_of::<mvsad_t>() as usize),
                             ),
                     ) as c_int;
                 scratch_size = if buf_hpel
@@ -986,7 +978,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
             }
             buf_mbtree = ((*h).param.rc.b_mb_tree as usize).wrapping_mul(
                 ((*h).mb.i_mb_width as usize)
-                    .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
+                    .wrapping_mul(size_of::<int16_t>() as usize)
                     .wrapping_add((64 as c_int - 1 as c_int) as usize)
                     & !(64 as c_int - 1 as c_int) as usize,
             ) as c_int;
@@ -1012,7 +1004,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                     buf_lookahead_threads = (((*h).mb.i_mb_height
                         + (4 as c_int + 32 as c_int) * (*h).param.i_lookahead_threads)
                         as usize)
-                        .wrapping_mul(::core::mem::size_of::<c_int>() as usize)
+                        .wrapping_mul(size_of::<c_int>() as usize)
                         .wrapping_mul(2 as usize)
                         as c_int;
                     buf_mbtree2 = buf_mbtree * 12 as c_int;
@@ -1141,7 +1133,7 @@ pub unsafe extern "C" fn x264_10_macroblock_slice_init(mut h: *mut x264_t) {
     memset(
         (*h).mb.cache.ref_0.as_mut_ptr() as *mut c_void,
         -(2 as c_int),
-        ::core::mem::size_of::<[[int8_t; 40]; 2]>() as size_t,
+        size_of::<[[int8_t; 40]; 2]>() as size_t,
     );
     if (*h).i_ref[0] > 0 as c_int {
         let mut field: c_int = 0 as c_int;

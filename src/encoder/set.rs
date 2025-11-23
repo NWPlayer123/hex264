@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_float, c_int, c_uint, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -1463,7 +1464,7 @@ unsafe extern "C" fn x264_10_sei_avcintra_umid_write(
     memcpy(
         data.as_mut_ptr() as *mut c_void,
         avcintra_uuid.as_ptr() as *const c_void,
-        ::core::mem::size_of::<[uint8_t; 16]>() as size_t,
+        size_of::<[uint8_t; 16]>() as size_t,
     );
     memcpy(
         data.as_mut_ptr().offset(16 as c_int as isize) as *mut c_void,
@@ -1509,9 +1510,7 @@ unsafe extern "C" fn x264_10_sei_avcintra_vanc_write(
 ) -> c_int {
     let mut data: [uint8_t; 6000] = [0; 6000];
     let mut msg: *const c_char = b"VANC\0" as *const u8 as *const c_char;
-    if len < 0 as c_int
-        || len as c_uint as usize > ::core::mem::size_of::<[uint8_t; 6000]>() as usize
-    {
+    if len < 0 as c_int || len as c_uint as usize > size_of::<[uint8_t; 6000]>() as usize {
         x264_10_log(
             h,
             X264_LOG_ERROR,
@@ -1520,15 +1519,11 @@ unsafe extern "C" fn x264_10_sei_avcintra_vanc_write(
         );
         return -1;
     }
-    memset(
-        data.as_mut_ptr() as *mut c_void,
-        0xff as c_int,
-        len as size_t,
-    );
+    memset(data.as_mut_ptr() as _, 0xff, len as usize);
     memcpy(
-        data.as_mut_ptr() as *mut c_void,
-        avcintra_uuid.as_ptr() as *const c_void,
-        ::core::mem::size_of::<[uint8_t; 16]>() as size_t,
+        data.as_mut_ptr() as _,
+        avcintra_uuid.as_ptr() as _,
+        size_of::<[u8; 16]>(),
     );
     memcpy(
         data.as_mut_ptr().offset(16 as c_int as isize) as *mut c_void,

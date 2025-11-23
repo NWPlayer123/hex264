@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_double, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -124,7 +125,7 @@ unsafe extern "C" fn parse_tcfile(
     let mut fpss: *mut c_double = 0 as *mut c_double;
     ret = (!fgets(
         buff.as_mut_ptr(),
-        ::core::mem::size_of::<[c_char; 256]>() as c_int,
+        size_of::<[c_char; 256]>() as c_int,
         tcfile_in,
     )
     .is_null()
@@ -158,7 +159,7 @@ unsafe extern "C" fn parse_tcfile(
         num = 2 as c_int;
         while !fgets(
             buff.as_mut_ptr(),
-            ::core::mem::size_of::<[c_char; 256]>() as c_int,
+            size_of::<[c_char; 256]>() as c_int,
             tcfile_in,
         )
         .is_null()
@@ -205,7 +206,7 @@ unsafe extern "C" fn parse_tcfile(
         seq_num = 0 as c_int;
         while !fgets(
             buff.as_mut_ptr(),
-            ::core::mem::size_of::<[c_char; 256]>() as c_int,
+            size_of::<[c_char; 256]>() as c_int,
             tcfile_in,
         )
         .is_null()
@@ -265,16 +266,14 @@ unsafe extern "C" fn parse_tcfile(
         }
         timecodes_num = (*h).stored_pts_num;
         fseeko(tcfile_in, file_pos as __off64_t, SEEK_SET);
-        timecodes = malloc(
-            (timecodes_num as size_t).wrapping_mul(::core::mem::size_of::<c_double>() as size_t),
-        ) as *mut c_double;
+        timecodes = malloc((timecodes_num as size_t).wrapping_mul(size_of::<c_double>() as size_t))
+            as *mut c_double;
         if timecodes.is_null() {
             return -1;
         }
         if (*h).auto_timebase_den != 0 || (*h).auto_timebase_num != 0 {
             fpss = malloc(
-                ((seq_num + 1 as c_int) as size_t)
-                    .wrapping_mul(::core::mem::size_of::<c_double>() as size_t),
+                ((seq_num + 1 as c_int) as size_t).wrapping_mul(size_of::<c_double>() as size_t),
             ) as *mut c_double;
             if fpss.is_null() {
                 current_block = 15792084957793291482;
@@ -298,7 +297,7 @@ unsafe extern "C" fn parse_tcfile(
                         if !(num < timecodes_num - 1 as c_int
                             && !fgets(
                                 buff.as_mut_ptr(),
-                                ::core::mem::size_of::<[c_char; 256]>() as c_int,
+                                size_of::<[c_char; 256]>() as c_int,
                                 tcfile_in,
                             )
                             .is_null())
@@ -378,7 +377,7 @@ unsafe extern "C" fn parse_tcfile(
                                     while num < timecodes_num - 1 as c_int
                                         && !fgets(
                                             buff.as_mut_ptr(),
-                                            ::core::mem::size_of::<[c_char; 256]>() as c_int,
+                                            size_of::<[c_char; 256]>() as c_int,
                                             tcfile_in,
                                         )
                                         .is_null()
@@ -452,7 +451,7 @@ unsafe extern "C" fn parse_tcfile(
         (*h).stored_pts_num = 0 as c_int;
         while !fgets(
             buff.as_mut_ptr(),
-            ::core::mem::size_of::<[c_char; 256]>() as c_int,
+            size_of::<[c_char; 256]>() as c_int,
             tcfile_in,
         )
         .is_null()
@@ -478,16 +477,15 @@ unsafe extern "C" fn parse_tcfile(
             return -1;
         }
         fseeko(tcfile_in, file_pos_0 as __off64_t, SEEK_SET);
-        timecodes = malloc(
-            (timecodes_num as size_t).wrapping_mul(::core::mem::size_of::<c_double>() as size_t),
-        ) as *mut c_double;
+        timecodes = malloc((timecodes_num as size_t).wrapping_mul(size_of::<c_double>() as size_t))
+            as *mut c_double;
         if timecodes.is_null() {
             return -1;
         }
         num = 0 as c_int;
         if !fgets(
             buff.as_mut_ptr(),
-            ::core::mem::size_of::<[c_char; 256]>() as c_int,
+            size_of::<[c_char; 256]>() as c_int,
             tcfile_in,
         )
         .is_null()
@@ -510,7 +508,7 @@ unsafe extern "C" fn parse_tcfile(
             while num < timecodes_num
                 && !fgets(
                     buff.as_mut_ptr(),
-                    ::core::mem::size_of::<[c_char; 256]>() as c_int,
+                    size_of::<[c_char; 256]>() as c_int,
                     tcfile_in,
                 )
                 .is_null()
@@ -557,7 +555,7 @@ unsafe extern "C" fn parse_tcfile(
         } else if (*h).auto_timebase_den != 0 {
             fpss = malloc(
                 ((timecodes_num - 1 as c_int) as size_t)
-                    .wrapping_mul(::core::mem::size_of::<c_double>() as size_t),
+                    .wrapping_mul(size_of::<c_double>() as size_t),
             ) as *mut c_double;
             if fpss.is_null() {
                 current_block = 15792084957793291482;
@@ -658,8 +656,7 @@ unsafe extern "C" fn parse_tcfile(
                 return -1;
             }
             (*h).pts = malloc(
-                ((*h).stored_pts_num as size_t)
-                    .wrapping_mul(::core::mem::size_of::<int64_t>() as size_t),
+                ((*h).stored_pts_num as size_t).wrapping_mul(size_of::<int64_t>() as size_t),
             ) as *mut int64_t;
             if !(*h).pts.is_null() {
                 num = 0 as c_int;
@@ -706,7 +703,7 @@ unsafe extern "C" fn open_file(
     let mut ret: c_int = 0 as c_int;
     let mut tcfile_in: *mut FILE = 0 as *mut FILE;
     let mut h: *mut timecode_hnd_t =
-        malloc(::core::mem::size_of::<timecode_hnd_t>() as size_t) as *mut timecode_hnd_t;
+        malloc(size_of::<timecode_hnd_t>() as size_t) as *mut timecode_hnd_t;
     if h.is_null() {
         x264_cli_log(
             b"timecode\0" as *const u8 as *const c_char,
