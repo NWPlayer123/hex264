@@ -4,6 +4,7 @@ use crate::__stddef_size_t_h::size_t;
 use crate::input_h::{cli_input, cli_input_opt_t, cli_input_t, cli_pic_t, video_info_t};
 use crate::mathcalls_h::{fabs, floor, log10, pow, round};
 use crate::osdep_h::x264_is_regular_file;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_h::UINT32_MAX;
 use crate::stdint_intn_h::int64_t;
 use crate::stdint_uintn_h::{uint32_t, uint64_t};
@@ -11,7 +12,7 @@ use crate::stdio_h::{fclose, fgets, fopen, fseeko, ftello, sscanf, SEEK_SET};
 use crate::stdlib_h::{free, malloc, strtoul};
 use crate::types_h::__off64_t;
 use crate::x264_h::{X264_LOG_ERROR, X264_LOG_INFO};
-use crate::x264cli_h::{gcd, hnd_t, lcm, x264_cli_log};
+use crate::x264cli_h::{gcd, hnd_t, lcm};
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
 #[repr(C)]

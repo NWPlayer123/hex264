@@ -1,5 +1,7 @@
 use ::core::ffi::{c_char, c_double, c_float, c_int, c_long, c_uint, c_ulong, c_void};
 
+use log::error;
+
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
 use crate::assert_h::__assert_fail;
@@ -21,6 +23,7 @@ use crate::mc_h::{weight_fn_t, x264_weight_t};
 use crate::osdep_h::x264_is_regular_file;
 use crate::pixel_h::PIXEL_16x16;
 use crate::ratecontrol_h::{x264_10_encoder_reconfig_apply, x264_10_rc_analyse_slice};
+use crate::src::common::base::x264_param_parse;
 use crate::stdint_h::intptr_t;
 use crate::stdint_intn_h::{int16_t, int32_t, int64_t};
 use crate::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
@@ -30,7 +33,7 @@ use crate::string_h::{
     memcpy, memset, strcat, strchr, strcmp, strcpy, strcspn, strlen, strncmp, strstr, strtok_r,
 };
 use crate::x264_h::{
-    x264_level_t, x264_levels, x264_param_cleanup, x264_param_parse, x264_param_t, x264_zone_t,
+    x264_level_t, x264_levels, x264_param_cleanup, x264_param_t, x264_zone_t, BPyramid,
     FramePacking, X264_AQ_AUTOVARIANCE, X264_AQ_AUTOVARIANCE_BIASED, X264_AQ_NONE,
     X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_DIRECT_PRED_AUTO, X264_KEYINT_MAX_INFINITE,
     X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR,
@@ -576,7 +579,7 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
             .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize) as int64_t,
     ) as *mut uint16_t;
     if !(*rc).mbtree.qp_buffer[0].is_null() {
-        if (*h).param.i_bframe_pyramid != 0 && (*h).param.rc.b_stat_read != 0 {
+        if (*h).param.bframe_pyramid != BPyramid::None && (*h).param.rc.b_stat_read != 0 {
             (*rc).mbtree.qp_buffer[1] = x264_malloc(
                 ((*rc).mbtree.src_mb_count as usize)
                     .wrapping_mul(::core::mem::size_of::<uint16_t>() as usize)
@@ -1561,14 +1564,14 @@ unsafe extern "C" fn x264_10_ratecontrol_new(mut h: *mut x264_t) -> c_int {
                             b"b_pyramid=%d\0" as *const u8 as *const c_char,
                             &mut i_0 as *mut c_int,
                         ) != 0
-                        && (*h).param.i_bframe_pyramid != i_0
+                        && (*h).param.bframe_pyramid as i32 != i_0
                     {
                         x264_10_log(
                             h,
                             X264_LOG_ERROR,
                             b"different b_pyramid setting than first pass (%d vs %d)\n\0"
                                 as *const u8 as *const c_char,
-                            (*h).param.i_bframe_pyramid,
+                            (*h).param.bframe_pyramid as i32,
                             i_0,
                         );
                         return -1;
@@ -2259,13 +2262,7 @@ unsafe extern "C" fn parse_zone(
                 val = val.offset(1);
             }
             if x264_param_parse((*z).param as *mut x264_param_t, tok, val) != 0 {
-                x264_10_log(
-                    h,
-                    X264_LOG_ERROR,
-                    b"invalid zone param: %s = %s\n\0" as *const u8 as *const c_char,
-                    tok,
-                    val,
-                );
+                error!("invalid zone param: {tok:?} = {val:?}");
                 return -1;
             }
             p = 0 as *mut c_char;

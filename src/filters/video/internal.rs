@@ -4,10 +4,10 @@ use crate::__stddef_size_t_h::size_t;
 use crate::input_h::{
     cli_pic_t, x264_cli_csp_depth_factor, x264_cli_csp_is_invalid, x264_cli_csps,
 };
+use crate::src::x264::x264_cli_log;
 use crate::stdint_uintn_h::uint8_t;
 use crate::string_h::memcpy;
 use crate::x264_h::{X264_CSP_MASK, X264_LOG_ERROR};
-use crate::x264cli_h::x264_cli_log;
 #[no_mangle]
 #[c2rust::src_loc = "30:1"]
 unsafe extern "C" fn x264_cli_plane_copy(

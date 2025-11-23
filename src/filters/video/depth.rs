@@ -11,6 +11,7 @@ use crate::input_h::{
 };
 use crate::internal::BIT_DEPTH;
 use crate::src::filters::filters::x264_split_options;
+use crate::src::x264::x264_cli_log;
 use crate::stdint_intn_h::{int16_t, int64_t};
 use crate::stdint_uintn_h::{uint16_t, uint8_t};
 use crate::stdlib_h::free;
@@ -21,7 +22,7 @@ use crate::x264_h::{
     X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_NV12, X264_CSP_NV16, X264_CSP_NV21,
     X264_CSP_RGB, X264_CSP_YV12, X264_CSP_YV16, X264_CSP_YV24, X264_LOG_ERROR,
 };
-use crate::x264cli_h::{hnd_t, x264_cli_log};
+use crate::x264cli_h::hnd_t;
 #[derive(Copy, Clone)]
 #[repr(C)]
 #[c2rust::src_loc = "40:9"]

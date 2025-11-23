@@ -29,7 +29,7 @@ use crate::stdlib_h::abs;
 use crate::string_h::{memcpy, memset};
 use crate::tables_h::x264_zero;
 use crate::util_h::{x264_union128_sse_t, M128_ZERO};
-use crate::x264_h::{X264_ME_ESA, X264_WEIGHTP_SMART};
+use crate::x264_h::{BPyramid, X264_ME_ESA, X264_WEIGHTP_SMART};
 #[inline(never)]
 #[c2rust::src_loc = "37:1"]
 unsafe extern "C" fn mb_mc_0xywh(
@@ -704,14 +704,14 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
     while i < 2 as c_int {
         let mut i_refs: c_int = (if (16 as c_int)
             < (if i != 0 {
-                1 as c_int + ((*h).param.i_bframe_pyramid != 0) as c_int
+                1 as c_int + ((*h).param.bframe_pyramid != BPyramid::None) as c_int
             } else {
                 (*h).param.i_frame_reference
             }) {
             16 as c_int
         } else {
             if i != 0 {
-                1 as c_int + ((*h).param.i_bframe_pyramid != 0) as c_int
+                1 as c_int + ((*h).param.bframe_pyramid != BPyramid::None) as c_int
             } else {
                 (*h).param.i_frame_reference
             }
@@ -807,14 +807,14 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
         while i_1 < 2 as c_int {
             let mut i_refs_0: c_int = (if (16 as c_int)
                 < (if i_1 != 0 {
-                    1 as c_int + ((*h).param.i_bframe_pyramid != 0) as c_int
+                    1 as c_int + ((*h).param.bframe_pyramid != BPyramid::None) as c_int
                 } else {
                     (*h).param.i_frame_reference
                 }) {
                 16 as c_int
             } else {
                 if i_1 != 0 {
-                    1 as c_int + ((*h).param.i_bframe_pyramid != 0) as c_int
+                    1 as c_int + ((*h).param.bframe_pyramid != BPyramid::None) as c_int
                 } else {
                     (*h).param.i_frame_reference
                 }

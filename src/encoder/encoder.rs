@@ -1,6 +1,8 @@
 use ::core::ffi::{c_char, c_double, c_float, c_int, c_long, c_uint, c_void};
 use ::core::mem::size_of;
 
+use log::warn;
+
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
 use crate::analyse_h::{
@@ -121,7 +123,6 @@ use crate::threadpool_h::{
     x264_10_threadpool_wait,
 };
 use crate::types_h::__off64_t;
-use crate::x264_h::FramePacking;
 use crate::x264_h::{
     x264_level_t, x264_levels, x264_nal_t, x264_param_cleanup, x264_param_t, x264_picture_t,
     x264_sei_payload_t, X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8,
@@ -129,18 +130,19 @@ use crate::x264_h::{
     NAL_PRIORITY_DISPOSABLE, NAL_PRIORITY_HIGH, NAL_PRIORITY_HIGHEST, NAL_PRIORITY_LOW, NAL_SEI,
     NAL_SLICE, NAL_SLICE_IDR, NAL_SPS, PIC_STRUCT_AUTO, PIC_STRUCT_BOTTOM_TOP,
     PIC_STRUCT_PROGRESSIVE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TRIPLE, X264_AVCINTRA_FLAVOR_SONY,
-    X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_B_PYRAMID_NONE, X264_B_PYRAMID_NORMAL,
-    X264_B_PYRAMID_STRICT, X264_CPU_AVX512, X264_CPU_BMI1, X264_CPU_BMI2, X264_CPU_CACHELINE_64,
-    X264_CPU_FMA3, X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW, X264_CPU_SSE42, X264_CPU_SSSE3,
-    X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CSP_BGR, X264_CSP_HIGH_DEPTH, X264_CSP_I400,
-    X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE,
-    X264_DIRECT_PRED_AUTO, X264_DIRECT_PRED_NONE, X264_DIRECT_PRED_SPATIAL,
-    X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO,
-    X264_LOG_WARNING, X264_ME_DIA, X264_ME_ESA, X264_ME_HEX, X264_ME_TESA, X264_ME_UMH,
-    X264_NAL_HRD_CBR, X264_NAL_HRD_NONE, X264_NAL_HRD_VBR, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF,
-    X264_THREADS_AUTO, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR,
-    X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_NONE, X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
+    X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_CPU_AVX512, X264_CPU_BMI1, X264_CPU_BMI2,
+    X264_CPU_CACHELINE_64, X264_CPU_FMA3, X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW,
+    X264_CPU_SSE42, X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CSP_BGR,
+    X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK,
+    X264_CSP_MAX, X264_CSP_NONE, X264_DIRECT_PRED_AUTO, X264_DIRECT_PRED_NONE,
+    X264_DIRECT_PRED_SPATIAL, X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG,
+    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_ME_DIA, X264_ME_ESA, X264_ME_HEX,
+    X264_ME_TESA, X264_ME_UMH, X264_NAL_HRD_CBR, X264_NAL_HRD_NONE, X264_NAL_HRD_VBR, X264_RC_ABR,
+    X264_RC_CQP, X264_RC_CRF, X264_THREADS_AUTO, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF,
+    X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_NONE,
+    X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
 };
+use crate::x264_h::{BPyramid, FramePacking};
 use crate::FILE_h::FILE;
 extern "C" {
     #[allow(
@@ -2018,10 +2020,9 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         };
     }
     if (*h).param.b_bluray_compat != 0 {
-        (*h).param.i_bframe_pyramid = if (1 as c_int) < (*h).param.i_bframe_pyramid {
-            1 as c_int
-        } else {
-            (*h).param.i_bframe_pyramid
+        (*h).param.bframe_pyramid = match (*h).param.bframe_pyramid {
+            BPyramid::Normal => BPyramid::Strict,
+            other => other,
         };
         (*h).param.i_bframe = if (*h).param.i_bframe < 3 as c_int {
             (*h).param.i_bframe
@@ -2089,13 +2090,8 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     );
     (*h).param.i_bframe_bias = x264_clip3((*h).param.i_bframe_bias, -(90 as c_int), 100 as c_int);
     if (*h).param.i_bframe <= 1 as c_int {
-        (*h).param.i_bframe_pyramid = X264_B_PYRAMID_NONE;
+        (*h).param.bframe_pyramid = BPyramid::None;
     }
-    (*h).param.i_bframe_pyramid = x264_clip3(
-        (*h).param.i_bframe_pyramid,
-        X264_B_PYRAMID_NONE,
-        X264_B_PYRAMID_NORMAL,
-    );
     (*h).param.i_bframe_adaptive = x264_clip3(
         (*h).param.i_bframe_adaptive,
         X264_B_ADAPT_NONE,
@@ -2107,13 +2103,9 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         (*h).param.analyse.b_weighted_bipred = 0 as c_int;
         (*h).param.b_open_gop = 0 as c_int;
     }
-    if (*h).param.b_intra_refresh != 0 && (*h).param.i_bframe_pyramid == X264_B_PYRAMID_NORMAL {
-        x264_10_log(
-            h,
-            X264_LOG_WARNING,
-            b"b-pyramid normal + intra-refresh is not supported\n\0" as *const u8 as *const c_char,
-        );
-        (*h).param.i_bframe_pyramid = X264_B_PYRAMID_STRICT;
+    if (*h).param.b_intra_refresh != 0 && (*h).param.bframe_pyramid == BPyramid::Normal {
+        warn!("b-pyramid normal + intra-refresh is not supported");
+        (*h).param.bframe_pyramid = BPyramid::Strict;
     }
     if (*h).param.b_intra_refresh != 0
         && ((*h).param.i_frame_reference > 1 as c_int || (*h).param.i_dpb_size > 1 as c_int)
@@ -3161,13 +3153,13 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                     .i_bframe
                                                                                     != 0
                                                                                 {
-                                                                                    if (*h).param.i_bframe_pyramid != 0 {
-                                                                                    2 as c_int
+                                                                                    if (*h).param.bframe_pyramid != BPyramid::None {
+                                                                                    2
                                                                                 } else {
-                                                                                    1 as c_int
+                                                                                    1
                                                                                 }
                                                                                 } else {
-                                                                                    0 as c_int
+                                                                                    0
                                                                                 };
                                                                             (*h).frames
                                                                                 .i_max_ref0 = (*h)
@@ -3932,7 +3924,7 @@ unsafe extern "C" fn encoder_try_reconfig(
         (*h).param.analyse.b_transform_8x8 = (*param).analyse.b_transform_8x8;
     }
     if (*h).frames.i_max_ref1 > 1 as c_int {
-        (*h).param.i_bframe_pyramid = (*param).i_bframe_pyramid;
+        (*h).param.bframe_pyramid = (*param).bframe_pyramid;
     }
     (*h).param.i_slice_max_size = (*param).i_slice_max_size;
     (*h).param.i_slice_max_mbs = (*param).i_slice_max_mbs;
@@ -4886,7 +4878,7 @@ unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
             as c_int;
         i += 1;
     }
-    if (*h).param.i_bframe_pyramid != X264_B_PYRAMID_STRICT
+    if (*h).param.bframe_pyramid != BPyramid::Strict
         && b_hasdelayframe == 0
         && (*h).frames.i_poc_last_open_gop == -1
     {
@@ -4894,7 +4886,7 @@ unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
     }
     ref_0 = 0 as c_int;
     while !(*h).frames.reference[ref_0 as usize].is_null() {
-        if (*h).param.i_bframe_pyramid == X264_B_PYRAMID_STRICT
+        if (*h).param.bframe_pyramid == BPyramid::Strict
             && (*(*h).frames.reference[ref_0 as usize]).i_type == X264_TYPE_BREF
             || (*(*h).frames.reference[ref_0 as usize]).i_poc < (*h).frames.i_poc_last_open_gop
                 && (*h).sh.i_type != SLICE_TYPE_B as c_int
@@ -4916,7 +4908,7 @@ unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
         }
         ref_0 += 1;
     }
-    if (*h).param.i_bframe_pyramid != 0 {
+    if (*h).param.bframe_pyramid != BPyramid::None {
         (*h).sh.i_mmco_remove_from_end = if ref_0 + 2 as c_int - (*h).frames.i_max_dpb > 0 as c_int
         {
             ref_0 + 2 as c_int - (*h).frames.i_max_dpb
@@ -6086,7 +6078,7 @@ unsafe extern "C" fn x264_10_encoder_encode(
         (*h).frames.i_poc_last_open_gop = -1;
     } else if (*(*h).fenc).i_type == X264_TYPE_BREF {
         i_nal_type = NAL_SLICE as c_int;
-        i_nal_ref_idc = if (*h).param.i_bframe_pyramid == X264_B_PYRAMID_STRICT {
+        i_nal_ref_idc = if (*h).param.bframe_pyramid == BPyramid::Strict {
             NAL_PRIORITY_LOW as c_int
         } else {
             NAL_PRIORITY_HIGH as c_int
