@@ -22,7 +22,7 @@ use crate::stdint_intn_h::{int16_t, int32_t, int8_t};
 use crate::stdint_uintn_h::{uint16_t, uint32_t, uint64_t, uint8_t};
 use crate::stdlib_h::abs;
 use crate::tables_h::x264_zero;
-use crate::x264_h::{X264_ME_DIA, X264_ME_ESA, X264_ME_HEX, X264_ME_TESA, X264_ME_UMH};
+use crate::x264_h::MotionEstimation;
 #[c2rust::src_loc = "38:22"]
 static mut subpel_iterations: [[uint8_t; 4]; 12] = [
     [
@@ -369,8 +369,8 @@ unsafe extern "C" fn x264_10_me_search_ref(
             }
         }
     }
-    match (*h).mb.i_me_method {
-        X264_ME_DIA => {
+    match (*h).mb.me_method {
+        MotionEstimation::Dia => {
             bcost <<= 4 as c_int;
             let mut i_1: c_int = i_me_range;
             loop {
@@ -430,10 +430,10 @@ unsafe extern "C" fn x264_10_me_search_ref(
             bcost >>= 4 as c_int;
             current_block = 14127502640287082657;
         }
-        X264_ME_HEX => {
+        MotionEstimation::Hex => {
             current_block = 14690580863265192683;
         }
-        X264_ME_UMH => {
+        MotionEstimation::Umh => {
             static mut pixel_size_shift: [uint8_t; 7] = [
                 0 as c_int as uint8_t,
                 1 as c_int as uint8_t,
@@ -1769,7 +1769,7 @@ unsafe extern "C" fn x264_10_me_search_ref(
                 }
             }
         }
-        X264_ME_ESA | X264_ME_TESA => {
+        MotionEstimation::Esa | MotionEstimation::Tesa => {
             let min_x: c_int = if bmx - i_me_range > mv_x_min {
                 bmx - i_me_range
             } else {
@@ -1828,7 +1828,7 @@ unsafe extern "C" fn x264_10_me_search_ref(
             if i_pixel == PIXEL_8x16 as c_int || i_pixel == PIXEL_4x8 as c_int {
                 enc_dc[1] = enc_dc[2];
             }
-            if (*h).mb.i_me_method == X264_ME_TESA {
+            if (*h).mb.me_method == MotionEstimation::Tesa {
                 let mut mvsads: *mut mvsad_t = xs
                     .offset((width + 31 as c_int & !(31 as c_int)) as isize)
                     .offset(4) as *mut mvsad_t;

@@ -125,8 +125,8 @@ use crate::threadpool_h::{
 use crate::types_h::__off64_t;
 use crate::x264_h::{
     x264_level_t, x264_levels, x264_nal_t, x264_param_cleanup, x264_param_t, x264_picture_t,
-    x264_sei_payload_t, X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8,
-    X264_ANALYSE_PSUB16x16, X264_ANALYSE_PSUB8x8, NAL_AUD, NAL_FILLER, NAL_PPS,
+    x264_sei_payload_t, MotionEstimation, X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4,
+    X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16, X264_ANALYSE_PSUB8x8, NAL_AUD, NAL_FILLER, NAL_PPS,
     NAL_PRIORITY_DISPOSABLE, NAL_PRIORITY_HIGH, NAL_PRIORITY_HIGHEST, NAL_PRIORITY_LOW, NAL_SEI,
     NAL_SLICE, NAL_SLICE_IDR, NAL_SPS, PIC_STRUCT_AUTO, PIC_STRUCT_BOTTOM_TOP,
     PIC_STRUCT_PROGRESSIVE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TRIPLE, X264_AVCINTRA_FLAVOR_SONY,
@@ -136,11 +136,10 @@ use crate::x264_h::{
     X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK,
     X264_CSP_MAX, X264_CSP_NONE, X264_DIRECT_PRED_AUTO, X264_DIRECT_PRED_NONE,
     X264_DIRECT_PRED_SPATIAL, X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG,
-    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_ME_DIA, X264_ME_ESA, X264_ME_HEX,
-    X264_ME_TESA, X264_ME_UMH, X264_NAL_HRD_CBR, X264_NAL_HRD_NONE, X264_NAL_HRD_VBR, X264_RC_ABR,
-    X264_RC_CQP, X264_RC_CRF, X264_THREADS_AUTO, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF,
-    X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_NONE,
-    X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
+    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_NAL_HRD_NONE,
+    X264_NAL_HRD_VBR, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF, X264_THREADS_AUTO, X264_TYPE_AUTO,
+    X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
+    X264_WEIGHTP_NONE, X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
 };
 use crate::x264_h::{BPyramid, FramePacking};
 use crate::FILE_h::FILE;
@@ -2230,20 +2229,20 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     if (*h).param.i_cqm_preset < X264_CQM_FLAT || (*h).param.i_cqm_preset > X264_CQM_CUSTOM {
         (*h).param.i_cqm_preset = X264_CQM_FLAT;
     }
-    if (*h).param.analyse.i_me_method < X264_ME_DIA || (*h).param.analyse.i_me_method > X264_ME_TESA
-    {
-        (*h).param.analyse.i_me_method = X264_ME_HEX;
-    }
     (*h).param.analyse.i_me_range =
         x264_clip3((*h).param.analyse.i_me_range, 4 as c_int, 1024 as c_int);
-    if (*h).param.analyse.i_me_range > 16 as c_int && (*h).param.analyse.i_me_method <= X264_ME_HEX
+    if (*h).param.analyse.i_me_range > 16 as c_int
+        && matches!(
+            (*h).param.analyse.me_method,
+            MotionEstimation::Dia | MotionEstimation::Hex
+        )
     {
         (*h).param.analyse.i_me_range = 16 as c_int;
     }
-    if (*h).param.analyse.i_me_method == X264_ME_TESA
+    if (*h).param.analyse.me_method == MotionEstimation::Tesa
         && ((*h).mb.b_lossless != 0 || (*h).param.analyse.i_subpel_refine <= 1 as c_int)
     {
-        (*h).param.analyse.i_me_method = X264_ME_ESA;
+        (*h).param.analyse.me_method = MotionEstimation::Esa;
     }
     (*h).param.analyse.b_mixed_references = ((*h).param.analyse.b_mixed_references != 0
         && (*h).param.i_frame_reference > 1 as c_int)
@@ -2549,13 +2548,9 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         },
     );
     if (*h).param.b_interlaced != 0 {
-        if (*h).param.analyse.i_me_method >= X264_ME_ESA {
-            x264_10_log(
-                h,
-                X264_LOG_WARNING,
-                b"interlace + me=esa is not implemented\n\0" as *const u8 as *const c_char,
-            );
-            (*h).param.analyse.i_me_method = X264_ME_UMH;
+        if (*h).param.analyse.me_method.exhaustive_search() {
+            warn!("interlace + me=esa is not implemented");
+            (*h).param.analyse.me_method = MotionEstimation::Umh;
         }
         if (*h).param.analyse.i_weighted_pred > 0 as c_int {
             x264_10_log(
@@ -2734,7 +2729,7 @@ unsafe extern "C" fn mbcmp_init(mut h: *mut x264_t) {
     } else {
         (*h).pixf.intra_sad_x9_8x8
     };
-    satd &= ((*h).param.analyse.i_me_method == X264_ME_TESA) as c_int;
+    satd &= ((*h).param.analyse.me_method == MotionEstimation::Tesa) as c_int;
     memcpy(
         (*h).pixf.fpelcmp.as_mut_ptr() as *mut c_void,
         (if satd != 0 {
@@ -3897,7 +3892,7 @@ unsafe extern "C" fn encoder_try_reconfig(
     (*h).param.analyse.inter = (*param).analyse.inter;
     (*h).param.analyse.intra = (*param).analyse.intra;
     (*h).param.analyse.i_direct_mv_pred = (*param).analyse.i_direct_mv_pred;
-    if (*h).param.analyse.i_me_method < X264_ME_ESA
+    if !(*h).param.analyse.me_method.exhaustive_search()
         || (*param).analyse.i_me_range < (*h).param.analyse.i_me_range
     {
         (*h).param.analyse.i_me_range = (*param).analyse.i_me_range;
@@ -3914,10 +3909,12 @@ unsafe extern "C" fn encoder_try_reconfig(
     (*h).param.analyse.f_psy_rd = (*param).analyse.f_psy_rd;
     (*h).param.analyse.f_psy_trellis = (*param).analyse.f_psy_trellis;
     (*h).param.crop_rect = (*param).crop_rect;
-    if (*h).param.analyse.i_me_method >= X264_ME_ESA || (*param).analyse.i_me_method < X264_ME_ESA {
-        (*h).param.analyse.i_me_method = (*param).analyse.i_me_method;
+    if (*h).param.analyse.me_method.exhaustive_search()
+        || !(*param).analyse.me_method.exhaustive_search()
+    {
+        (*h).param.analyse.me_method = (*param).analyse.me_method;
     }
-    if (*h).param.analyse.i_me_method >= X264_ME_ESA && (*h).frames.b_have_sub8x8_esa == 0 {
+    if (*h).param.analyse.me_method.exhaustive_search() && (*h).frames.b_have_sub8x8_esa == 0 {
         (*h).param.analyse.inter &= !X264_ANALYSE_PSUB8x8;
     }
     if (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0 {

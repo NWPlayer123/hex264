@@ -29,7 +29,7 @@ use crate::stdlib_h::abs;
 use crate::string_h::{memcpy, memset};
 use crate::tables_h::x264_zero;
 use crate::util_h::{x264_union128_sse_t, M128_ZERO};
-use crate::x264_h::{BPyramid, X264_ME_ESA, X264_WEIGHTP_SMART};
+use crate::x264_h::{BPyramid, X264_WEIGHTP_SMART};
 #[inline(never)]
 #[c2rust::src_loc = "37:1"]
 unsafe extern "C" fn mb_mc_0xywh(
@@ -961,9 +961,8 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                     } else {
                         (*h).param.analyse.i_mv_range
                     };
-                let mut buf_tesa: c_int = (((*h).param.analyse.i_me_method >= X264_ME_ESA) as c_int
-                    as usize)
-                    .wrapping_mul(
+                let mut buf_tesa: c_int =
+                    (((*h).param.analyse.me_method.exhaustive_search()) as usize).wrapping_mul(
                         ((me_range * 2 as c_int + 24 as c_int) as usize)
                             .wrapping_mul(::core::mem::size_of::<int16_t>() as usize)
                             .wrapping_add(
@@ -1171,7 +1170,7 @@ pub unsafe extern "C" fn x264_10_macroblock_slice_init(mut h: *mut x264_t) {
 #[no_mangle]
 #[c2rust::src_loc = "501:1"]
 pub unsafe extern "C" fn x264_10_macroblock_thread_init(mut h: *mut x264_t) {
-    (*h).mb.i_me_method = (*h).param.analyse.i_me_method;
+    (*h).mb.me_method = (*h).param.analyse.me_method;
     (*h).mb.i_subpel_refine = (*h).param.analyse.i_subpel_refine;
     if (*h).sh.i_type == SLICE_TYPE_B as c_int
         && ((*h).mb.i_subpel_refine == 6 as c_int || (*h).mb.i_subpel_refine == 8 as c_int)

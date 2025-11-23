@@ -70,7 +70,6 @@ use crate::util_h::{x264_union128_sse_t, M128_ZERO};
 use crate::x264_h::{
     X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16,
     X264_ANALYSE_PSUB8x8, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_WARNING, X264_MBINFO_CONSTANT,
-    X264_ME_ESA,
 };
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -259,7 +258,7 @@ unsafe extern "C" fn init_costs(
             }
             i_0 += 1;
         }
-        if (*h).param.analyse.i_me_method >= X264_ME_ESA
+        if (*h).param.analyse.me_method.exhaustive_search()
             && (*h).cost_mv_fpel[qp as usize][0].is_null()
         {
             let mut j_0: c_int = 0 as c_int;
@@ -2589,7 +2588,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(mut h: *mut x264_t, mut a: *mut x26
                     as isize,
             ) as *mut pixel;
         }
-        if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+        if (*h).param.analyse.me_method.exhaustive_search() {
             m.integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                 .as_mut_ptr()
                 .offset(i_ref as isize))
@@ -2960,7 +2959,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
                             * *m.i_stride.as_mut_ptr().offset(1)) as isize,
                 ) as *mut pixel;
             }
-            if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+            if (*h).param.analyse.me_method.exhaustive_search() {
                 m.integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                     .as_mut_ptr()
                     .offset(i_ref_0 as isize))
@@ -3241,7 +3240,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(mut h: *mut x264_t, mut a: *mut x264_
                         * *(*m).i_stride.as_mut_ptr().offset(1)) as isize,
             ) as *mut pixel;
         }
-        if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+        if (*h).param.analyse.me_method.exhaustive_search() {
             (*m).integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                 .as_mut_ptr()
                 .offset(i_ref as isize))
@@ -3493,7 +3492,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                             * *m.i_stride.as_mut_ptr().offset(1)) as isize,
                 ) as *mut pixel;
             }
-            if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+            if (*h).param.analyse.me_method.exhaustive_search() {
                 m.integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                     .as_mut_ptr()
                     .offset(i_ref as isize))
@@ -3771,7 +3770,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
                             * *m.i_stride.as_mut_ptr().offset(1)) as isize,
                 ) as *mut pixel;
             }
-            if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+            if (*h).param.analyse.me_method.exhaustive_search() {
                 m.integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                     .as_mut_ptr()
                     .offset(i_ref as isize))
@@ -4758,7 +4757,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4(
                         * *(*m).i_stride.as_mut_ptr().offset(1)) as isize,
             ) as *mut pixel;
         }
-        if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+        if (*h).param.analyse.me_method.exhaustive_search() {
             (*m).integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                 .as_mut_ptr()
                 .offset(i_ref as isize))
@@ -4907,7 +4906,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x4(
                         * *(*m).i_stride.as_mut_ptr().offset(1)) as isize,
             ) as *mut pixel;
         }
-        if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+        if (*h).param.analyse.me_method.exhaustive_search() {
             (*m).integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                 .as_mut_ptr()
                 .offset(i_ref as isize))
@@ -5057,7 +5056,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x8(
                         * *(*m).i_stride.as_mut_ptr().offset(1)) as isize,
             ) as *mut pixel;
         }
-        if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+        if (*h).param.analyse.me_method.exhaustive_search() {
             (*m).integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(0))
                 .as_mut_ptr()
                 .offset(i_ref as isize))
@@ -5900,7 +5899,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(mut h: *mut x264_t, mut a: *mut x26
                             as isize,
                     ) as *mut pixel;
                 }
-                if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+                if (*h).param.analyse.me_method.exhaustive_search() {
                     m.integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(l as isize))
                         .as_mut_ptr()
                         .offset(i_ref as isize))
@@ -6993,7 +6992,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                                 as isize,
                         ) as *mut pixel;
                 }
-                if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+                if (*h).param.analyse.me_method.exhaustive_search() {
                     m.integral =
                         &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(l_0 as isize))
                             .as_mut_ptr()
@@ -7255,7 +7254,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(mut h: *mut x264_t, mut a: *mut x264_
                             as isize,
                     ) as *mut pixel;
             }
-            if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+            if (*h).param.analyse.me_method.exhaustive_search() {
                 (*m).integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(l as isize))
                     .as_mut_ptr()
                     .offset((*lX).me16x16.i_ref as isize))
@@ -7551,7 +7550,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                             as isize,
                     ) as *mut pixel;
                 }
-                if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+                if (*h).param.analyse.me_method.exhaustive_search() {
                     m.integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(l as isize))
                         .as_mut_ptr()
                         .offset(i_ref as isize))
@@ -7888,7 +7887,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                             as isize,
                     ) as *mut pixel;
                 }
-                if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+                if (*h).param.analyse.me_method.exhaustive_search() {
                     m.integral = &mut *(*(*(*h).mb.pic.p_integral.as_mut_ptr().offset(l as isize))
                         .as_mut_ptr()
                         .offset(i_ref as isize))

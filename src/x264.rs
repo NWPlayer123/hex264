@@ -48,17 +48,17 @@ use crate::x264_h::{
     x264_avcintra_flavor_names, x264_chroma_format, x264_colmatrix_names, x264_colorprim_names,
     x264_direct_pred_names, x264_encoder_close, x264_encoder_delayed_frames, x264_encoder_encode,
     x264_encoder_headers, x264_encoder_open_165, x264_encoder_parameters, x264_hrd_t,
-    x264_image_properties_t, x264_image_t, x264_levels, x264_motion_est_names, x264_nal_t,
-    x264_overscan_names, x264_param_apply_fastfirstpass, x264_param_apply_profile,
-    x264_param_cleanup, x264_param_t, x264_picture_init, x264_picture_t, x264_sei_payload_t,
-    x264_sei_t, x264_t, x264_transfer_names, x264_vidformat_names, x264_zone_t, BPyramid,
-    C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4, CropRectangle, PIC_STRUCT_BOTTOM_TOP,
-    PIC_STRUCT_BOTTOM_TOP_BOTTOM, PIC_STRUCT_DOUBLE, PIC_STRUCT_TOP_BOTTOM,
-    PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_TRIPLE, X264_BUILD, X264_CSP_BGR, X264_CSP_HIGH_DEPTH,
-    X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE,
-    X264_CSP_RGB, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_NONE, X264_LOG_WARNING,
-    X264_NAL_HRD_CBR, X264_NAL_HRD_VBR, X264_QP_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO,
-    X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
+    x264_image_properties_t, x264_image_t, x264_levels, x264_nal_t, x264_overscan_names,
+    x264_param_apply_fastfirstpass, x264_param_apply_profile, x264_param_cleanup, x264_param_t,
+    x264_picture_init, x264_picture_t, x264_sei_payload_t, x264_sei_t, x264_t, x264_transfer_names,
+    x264_vidformat_names, x264_zone_t, BPyramid, C2RustUnnamed_2, C2RustUnnamed_3, C2RustUnnamed_4,
+    CropRectangle, MotionEstimation, PIC_STRUCT_BOTTOM_TOP, PIC_STRUCT_BOTTOM_TOP_BOTTOM,
+    PIC_STRUCT_DOUBLE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_TRIPLE,
+    X264_BUILD, X264_CSP_BGR, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422,
+    X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE, X264_CSP_RGB, X264_LOG_DEBUG, X264_LOG_ERROR,
+    X264_LOG_INFO, X264_LOG_NONE, X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_NAL_HRD_VBR,
+    X264_QP_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I,
+    X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
 };
 use crate::x264cli_h::{get_filename_extension, hnd_t, RANGE_AUTO, RANGE_PC, UPDATE_INTERVAL};
 use crate::FILE_h::FILE;
@@ -719,7 +719,7 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
             b_weighted_bipred: 0,
             i_direct_mv_pred: 0,
             i_chroma_qp_offset: 0,
-            i_me_method: 0,
+            me_method: MotionEstimation::Dia,
             i_me_range: 0,
             i_mv_range: 0,
             i_mv_range_thread: 0,
@@ -1494,18 +1494,19 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
     }
     if longhelp >= 1 as c_int {
         printf(
-            b"      --me <string>           Integer pixel motion estimation method [\"%s\"]\n\0"
-                as *const u8 as *const c_char,
-            strtable_lookup(
-                x264_motion_est_names.as_ptr(),
-                (*defaults).analyse.i_me_method,
-            ),
+            c"      --me <string>           Integer pixel motion estimation method [\"%s\"]\n"
+                .as_ptr(),
+            (*defaults).analyse.me_method.as_ref(),
         );
     }
     if longhelp == 2 as c_int {
         printf(
-            b"                                  - dia: diamond search, radius 1 (fast)\n                                  - hex: hexagonal search, radius 2\n                                  - umh: uneven multi-hexagon search\n                                  - esa: exhaustive search\n                                  - tesa: hadamard exhaustive search (slow)\n\0"
-                as *const u8 as *const c_char,
+            c"                                  - dia: diamond search, radius 1 (fast)\n
+                                  - hex: hexagonal search, radius 2\n
+                                  - umh: uneven multi-hexagon search\n
+                                  - esa: exhaustive search\n
+                                  - tesa: hadamard exhaustive search (slow)\n"
+                .as_ptr(),
         );
     } else if longhelp >= 1 as c_int {
         printf(
@@ -3974,7 +3975,7 @@ unsafe extern "C" fn parse(
             b_weighted_bipred: 0,
             i_direct_mv_pred: 0,
             i_chroma_qp_offset: 0,
-            i_me_method: 0,
+            me_method: MotionEstimation::Dia,
             i_me_range: 0,
             i_mv_range: 0,
             i_mv_range_thread: 0,
