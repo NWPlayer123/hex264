@@ -800,7 +800,7 @@ pub mod x264_h {
         pub b_weighted_bipred: c_int,
         pub i_direct_mv_pred: c_int,
         pub i_chroma_qp_offset: c_int,
-        pub i_me_method: c_int,
+        pub me_method: MotionEstimation,
         pub i_me_range: c_int,
         pub i_mv_range: c_int,
         pub i_mv_range_thread: c_int,
@@ -831,7 +831,7 @@ pub mod x264_h {
                 b_weighted_bipred: 0,
                 i_direct_mv_pred: 0,
                 i_chroma_qp_offset: 0,
-                i_me_method: 0,
+                me_method: MotionEstimation::Dia,
                 i_me_range: 0,
                 i_mv_range: 0,
                 i_mv_range_thread: 0,
@@ -851,6 +851,39 @@ pub mod x264_h {
                 b_psnr: 0,
                 b_ssim: 0,
             }
+        }
+    }
+
+    #[derive(
+        Debug,
+        Default,
+        Clone,
+        Copy,
+        PartialEq,
+        Eq,
+        strum::AsRefStr,
+        strum::EnumString,
+        strum::FromRepr,
+        strum::VariantNames,
+    )]
+    #[strum(serialize_all = "snake_case")]
+    pub enum MotionEstimation {
+        /// Diamond search, radius 1 (fastest)
+        Dia,
+        /// Hexagonal search, radius 2
+        #[default]
+        Hex,
+        /// Uneven multi-hexagon search
+        Umh,
+        /// Exhaustive search (very slow)
+        Esa,
+        /// Hadamard exhaustive search (slowest)
+        Tesa,
+    }
+
+    impl MotionEstimation {
+        pub fn exhaustive_search(&self) -> bool {
+            matches!(self, Self::Esa | Self::Tesa)
         }
     }
 
@@ -995,15 +1028,6 @@ pub mod x264_h {
         b"spatial\0" as *const u8 as *const c_char,
         b"temporal\0" as *const u8 as *const c_char,
         b"auto\0" as *const u8 as *const c_char,
-        0 as *const c_char,
-    ];
-    #[c2rust::src_loc = "239:27"]
-    pub static mut x264_motion_est_names: [*const c_char; 6] = [
-        b"dia\0" as *const u8 as *const c_char,
-        b"hex\0" as *const u8 as *const c_char,
-        b"umh\0" as *const u8 as *const c_char,
-        b"esa\0" as *const u8 as *const c_char,
-        b"tesa\0" as *const u8 as *const c_char,
         0 as *const c_char,
     ];
     #[c2rust::src_loc = "241:27"]
@@ -1239,10 +1263,6 @@ pub mod x264_h {
     pub const X264_ANALYSE_PSUB8x8: c_uint = 0x20 as c_uint;
     #[c2rust::src_loc = "200:9"]
     pub const X264_ANALYSE_BSUB16x16: c_uint = 0x100 as c_uint;
-    #[c2rust::src_loc = "206:9"]
-    pub const X264_ME_DIA: c_int = 0 as c_int;
-    #[c2rust::src_loc = "209:9"]
-    pub const X264_ME_ESA: c_int = 3 as c_int;
     #[c2rust::src_loc = "214:9"]
     pub const X264_RC_CQP: c_int = 0 as c_int;
     #[c2rust::src_loc = "223:9"]
@@ -1313,12 +1333,6 @@ pub mod x264_h {
     pub const X264_DIRECT_PRED_SPATIAL: c_int = 1 as c_int;
     #[c2rust::src_loc = "205:9"]
     pub const X264_DIRECT_PRED_AUTO: c_int = 3 as c_int;
-    #[c2rust::src_loc = "207:9"]
-    pub const X264_ME_HEX: c_int = 1 as c_int;
-    #[c2rust::src_loc = "208:9"]
-    pub const X264_ME_UMH: c_int = 2 as c_int;
-    #[c2rust::src_loc = "210:9"]
-    pub const X264_ME_TESA: c_int = 4 as c_int;
     #[c2rust::src_loc = "211:9"]
     pub const X264_CQM_FLAT: c_int = 0 as c_int;
     #[c2rust::src_loc = "213:9"]
@@ -5032,7 +5046,7 @@ pub mod common_h {
         pub i_mb_xy: c_int,
         pub i_b8_xy: c_int,
         pub i_b4_xy: c_int,
-        pub i_me_method: c_int,
+        pub me_method: MotionEstimation,
         pub i_subpel_refine: c_int,
         pub b_chroma_me: c_int,
         pub b_trellis: c_int,
@@ -5310,6 +5324,7 @@ pub mod common_h {
     use ::core::ffi::{c_char, c_double, c_int, c_uint, c_void};
 
     use crate::src::common::quant::x264_quant_function_t;
+    use crate::x264_h::MotionEstimation;
 
     use super::bitstream_h::{bs_t, x264_bitstream_function_t};
     use super::cabac_h::x264_cabac_t;
@@ -11593,14 +11608,13 @@ pub mod slicetype_c {
         (*a).i_lambda = x264_lambda_tab[(*a).i_qp as usize] as c_int;
         mb_analyse_load_costs(h, a);
         if (*h).param.analyse.i_subpel_refine > 1 as c_int {
-            (*h).mb.i_me_method = if (1 as c_int) < (*h).param.analyse.i_me_method {
-                1 as c_int
-            } else {
-                (*h).param.analyse.i_me_method
+            (*h).mb.me_method = match (*h).param.analyse.me_method {
+                MotionEstimation::Dia => MotionEstimation::Hex,
+                other => other,
             };
             (*h).mb.i_subpel_refine = 4 as c_int;
         } else {
-            (*h).mb.i_me_method = X264_ME_DIA;
+            (*h).mb.me_method = MotionEstimation::Dia;
             (*h).mb.i_subpel_refine = 2 as c_int;
         }
         (*h).mb.b_chroma_me = 0 as c_int;
@@ -13503,7 +13517,7 @@ pub mod slicetype_c {
                 let mut i: c_int = 0 as c_int;
                 while i < (*h).param.i_lookahead_threads {
                     let mut t: *mut x264_t = (*h).lookahead_thread[i as usize];
-                    (*t).mb.i_me_method = (*h).mb.i_me_method;
+                    (*t).mb.me_method = (*h).mb.me_method;
                     (*t).mb.i_subpel_refine = (*h).mb.i_subpel_refine;
                     (*t).mb.b_chroma_me = (*h).mb.b_chroma_me;
                     s[i as usize] = {
@@ -15526,7 +15540,7 @@ pub mod slicetype_c {
     use log::warn;
 
     use crate::src::encoder::analyse::x264_mb_analysis_list_t;
-    use crate::x264_h::{BPyramid, FramePacking};
+    use crate::x264_h::{BPyramid, FramePacking, MotionEstimation};
     #[no_mangle]
     #[c2rust::src_loc = "1745:1"]
     pub unsafe extern "C" fn x264_10_slicetype_decide(mut h: *mut x264_t) {
@@ -16334,8 +16348,8 @@ pub mod slicetype_c {
     use super::tables_h::{x264_lambda_tab, x264_zero};
     use super::threadpool_h::{x264_10_threadpool_run, x264_10_threadpool_wait};
     use super::x264_h::{
-        X264_B_ADAPT_FAST, X264_B_ADAPT_TRELLIS, X264_LOG_DEBUG, X264_LOG_WARNING, X264_ME_DIA,
-        X264_RC_CQP, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR,
+        X264_B_ADAPT_FAST, X264_B_ADAPT_TRELLIS, X264_LOG_DEBUG, X264_LOG_WARNING, X264_RC_CQP,
+        X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR,
         X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_SIMPLE,
     };
     use crate::src::encoder::analyse::{mb_analyse_load_costs, x264_mb_analysis_t};

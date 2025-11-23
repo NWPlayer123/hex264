@@ -26,7 +26,7 @@ use crate::x264_h::{
     X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_CSP_NONE,
     X264_CSP_NV12, X264_CSP_NV16, X264_CSP_NV21, X264_CSP_RGB, X264_CSP_UYVY, X264_CSP_V210,
     X264_CSP_VFLIP, X264_CSP_YUYV, X264_CSP_YV12, X264_CSP_YV16, X264_CSP_YV24, X264_LOG_ERROR,
-    X264_LOG_WARNING, X264_ME_ESA, X264_QP_AUTO, X264_TYPE_AUTO, X264_TYPE_KEYFRAME,
+    X264_LOG_WARNING, X264_QP_AUTO, X264_TYPE_AUTO, X264_TYPE_KEYFRAME,
 };
 #[c2rust::src_loc = "30:1"]
 unsafe extern "C" fn align_stride(mut x: c_int, mut align: c_int, mut disalign: c_int) -> c_int {
@@ -381,7 +381,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                         as int64_t
                         + (64 as c_int - 1 as c_int) as int64_t
                         & !(64 as c_int - 1 as c_int) as int64_t;
-                    if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+                    if (*h).param.analyse.me_method.exhaustive_search() {
                         (*frame).buffer[3] = prealloc_size as intptr_t as *mut c_void as *mut pixel;
                         let fresh23 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
@@ -685,7 +685,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                         (*((*(*frame).mv16x16.offset(0)).as_mut_ptr() as *mut x264_union32_t)).i =
                             0 as uint32_t;
                         (*frame).mv16x16 = (*frame).mv16x16.offset(1);
-                        if (*h).param.analyse.i_me_method >= X264_ME_ESA {
+                        if (*h).param.analyse.me_method.exhaustive_search() {
                             (*frame).integral = ((*frame).buffer[3] as *mut uint16_t)
                                 .offset(((*frame).i_stride[0] * i_padv) as isize)
                                 .offset(
