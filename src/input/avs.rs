@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_double, c_float, c_int, c_void};
 
 use crate::__stddef_null_h::NULL;
@@ -594,7 +595,7 @@ unsafe extern "C" fn open_file(
         return -1;
     }
     let mut h: *mut avs_hnd_t =
-        calloc(1 as size_t, ::core::mem::size_of::<avs_hnd_t>() as size_t) as *mut avs_hnd_t;
+        calloc(1 as size_t, size_of::<avs_hnd_t>() as size_t) as *mut avs_hnd_t;
     if h.is_null() {
         return -1;
     }
@@ -1001,7 +1002,7 @@ unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut _handle: hnd_t) 
     memset(
         pic as *mut c_void,
         0 as c_int,
-        ::core::mem::size_of::<cli_pic_t>() as size_t,
+        size_of::<cli_pic_t>() as size_t,
     );
 }
 #[c2rust::src_loc = "551:1"]

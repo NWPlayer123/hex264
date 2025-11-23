@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -40,14 +41,14 @@ unsafe extern "C" fn init(
         return 0 as c_int;
     }
     let mut h: *mut cache_hnd_t =
-        calloc(1 as size_t, ::core::mem::size_of::<cache_hnd_t>() as size_t) as *mut cache_hnd_t;
+        calloc(1 as size_t, size_of::<cache_hnd_t>() as size_t) as *mut cache_hnd_t;
     if h.is_null() {
         return -1;
     }
     (*h).max_size = size as c_int;
     (*h).cache = malloc(
         (((*h).max_size + 1 as c_int) as size_t)
-            .wrapping_mul(::core::mem::size_of::<*mut cli_pic_t>() as size_t),
+            .wrapping_mul(size_of::<*mut cli_pic_t>() as size_t),
     ) as *mut *mut cli_pic_t;
     if (*h).cache.is_null() {
         return -1;
@@ -55,7 +56,7 @@ unsafe extern "C" fn init(
     let mut i: c_int = 0 as c_int;
     while i < (*h).max_size {
         let ref mut fresh0 = *(*h).cache.offset(i as isize);
-        *fresh0 = malloc(::core::mem::size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
+        *fresh0 = malloc(size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
         if (*(*h).cache.offset(i as isize)).is_null()
             || x264_cli_pic_alloc(
                 *(*h).cache.offset(i as isize),

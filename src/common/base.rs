@@ -1,4 +1,5 @@
 use ::core::ffi::{c_char, c_double, c_float, c_int, c_uchar, c_uint, c_ulong, c_ushort, c_void};
+use ::core::mem::size_of;
 use std::str::FromStr;
 
 use crate::__stddef_null_h::NULL;
@@ -237,12 +238,9 @@ unsafe extern "C" fn x264_param_strdup(
     let mut current_block: u64;
     let mut buf: *mut strdup_buffer = (*param).opaque as *mut strdup_buffer;
     if buf.is_null() {
-        buf = malloc(
-            (8 as c_ulong as c_int as size_t).wrapping_add(
-                (BUFFER_DEFAULT_SIZE as size_t)
-                    .wrapping_mul(::core::mem::size_of::<*mut c_void>() as size_t),
-            ),
-        ) as *mut strdup_buffer;
+        buf = malloc((8 as c_ulong as c_int as size_t).wrapping_add(
+            (BUFFER_DEFAULT_SIZE as size_t).wrapping_mul(size_of::<*mut c_void>() as size_t),
+        )) as *mut strdup_buffer;
         if buf.is_null() {
             current_block = 14623623056652471472;
         } else {
@@ -253,9 +251,7 @@ unsafe extern "C" fn x264_param_strdup(
         }
     } else if (*buf).count == (*buf).size {
         if (*buf).size
-            > (INT_MAX - 8 as c_ulong as c_int)
-                / 2 as c_int
-                / ::core::mem::size_of::<*mut c_void>() as c_int
+            > (INT_MAX - 8 as c_ulong as c_int) / 2 as c_int / size_of::<*mut c_void>() as c_int
         {
             current_block = 14623623056652471472;
         } else {
@@ -263,8 +259,7 @@ unsafe extern "C" fn x264_param_strdup(
             buf = realloc(
                 buf as *mut c_void,
                 (8 as c_ulong as c_int as size_t).wrapping_add(
-                    (new_size as size_t)
-                        .wrapping_mul(::core::mem::size_of::<*mut c_void>() as size_t),
+                    (new_size as size_t).wrapping_mul(size_of::<*mut c_void>() as size_t),
                 ),
             ) as *mut strdup_buffer;
             if buf.is_null() {
@@ -317,7 +312,7 @@ unsafe extern "C" fn x264_picture_init(mut pic: *mut x264_picture_t) {
     memset(
         pic as *mut c_void,
         0 as c_int,
-        ::core::mem::size_of::<x264_picture_t>() as size_t,
+        size_of::<x264_picture_t>() as size_t,
     );
     (*pic).i_type = X264_TYPE_AUTO;
     (*pic).i_qpplus1 = X264_QP_AUTO;
@@ -559,7 +554,7 @@ unsafe extern "C" fn x264_picture_clean(mut pic: *mut x264_picture_t) {
     memset(
         pic as *mut c_void,
         0 as c_int,
-        ::core::mem::size_of::<x264_picture_t>() as size_t,
+        size_of::<x264_picture_t>() as size_t,
     );
 }
 #[no_mangle]
@@ -568,7 +563,7 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     memset(
         param as *mut c_void,
         0 as c_int,
-        ::core::mem::size_of::<x264_param_t>() as size_t,
+        size_of::<x264_param_t>() as size_t,
     );
     (*param).cpu = x264_cpu_detect();
     (*param).i_threads = X264_THREADS_AUTO;
@@ -676,42 +671,42 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     memset(
         (*param).cqm_4iy.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 16]>() as size_t,
+        size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_4py.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 16]>() as size_t,
+        size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_4ic.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 16]>() as size_t,
+        size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_4pc.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 16]>() as size_t,
+        size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_8iy.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 64]>() as size_t,
+        size_of::<[uint8_t; 64]>() as size_t,
     );
     memset(
         (*param).cqm_8py.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 64]>() as size_t,
+        size_of::<[uint8_t; 64]>() as size_t,
     );
     memset(
         (*param).cqm_8ic.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 64]>() as size_t,
+        size_of::<[uint8_t; 64]>() as size_t,
     );
     memset(
         (*param).cqm_8pc.as_mut_ptr() as *mut c_void,
         16 as c_int,
-        ::core::mem::size_of::<[uint8_t; 64]>() as size_t,
+        size_of::<[uint8_t; 64]>() as size_t,
     );
     (*param).b_repeat_headers = 1 as c_int;
     (*param).b_annexb = 1 as c_int;
@@ -739,8 +734,8 @@ unsafe extern "C" fn param_apply_preset(
     let mut i: c_int = strtol(preset, &mut end, 10 as c_int) as c_int;
     if *end as c_int == 0 as c_int
         && i >= 0 as c_int
-        && i < (::core::mem::size_of::<[*const c_char; 11]>() as usize)
-            .wrapping_div(::core::mem::size_of::<*const c_char>() as usize) as c_int
+        && i < (size_of::<[*const c_char; 11]>() as usize)
+            .wrapping_div(size_of::<*const c_char>() as usize) as c_int
             - 1 as c_int
     {
         preset = x264_preset_names[i as usize];

@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_int, c_uint, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -143,12 +144,12 @@ unsafe extern "C" fn read_frame_internal(
     memcpy(
         (*p_pic).img.stride.as_mut_ptr() as *mut c_void,
         (*(*h).frame).linesize.as_mut_ptr() as *const c_void,
-        ::core::mem::size_of::<[c_int; 4]>() as size_t,
+        size_of::<[c_int; 4]>() as size_t,
     );
     memcpy(
         (*p_pic).img.plane.as_mut_ptr() as *mut c_void,
         (*(*h).frame).data.as_mut_ptr() as *const c_void,
-        ::core::mem::size_of::<[*mut uint8_t; 4]>() as size_t,
+        size_of::<[*mut uint8_t; 4]>() as size_t,
     );
     let mut is_fullrange: c_int = 0 as c_int;
     (*p_pic).img.width = (*(*h).lavc).width;
@@ -183,7 +184,7 @@ unsafe extern "C" fn open_file(
     mut opt: *mut cli_input_opt_t,
 ) -> c_int {
     let mut h: *mut lavf_hnd_t =
-        calloc(1 as size_t, ::core::mem::size_of::<lavf_hnd_t>() as size_t) as *mut lavf_hnd_t;
+        calloc(1 as size_t, size_of::<lavf_hnd_t>() as size_t) as *mut lavf_hnd_t;
     if h.is_null() {
         return -1;
     }
@@ -294,7 +295,7 @@ unsafe extern "C" fn open_file(
         );
         return -1;
     }
-    (*h).first_pic = malloc(::core::mem::size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
+    (*h).first_pic = malloc(size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
     if (*h).first_pic.is_null()
         || lavf_input.picture_alloc.expect("non-null function pointer")(
             (*h).first_pic,
@@ -367,7 +368,7 @@ unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut _handle: hnd_t) 
     memset(
         pic as *mut c_void,
         0 as c_int,
-        ::core::mem::size_of::<cli_pic_t>() as size_t,
+        size_of::<cli_pic_t>() as size_t,
     );
 }
 #[c2rust::src_loc = "269:1"]

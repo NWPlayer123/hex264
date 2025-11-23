@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -1947,8 +1948,7 @@ unsafe extern "C" fn x264_10_me_search_ref(
                     let mut j_1: c_int = i_7;
                     while j_1 < nmvsad {
                         let mut sad_1: uint32_t = 0;
-                        if WORD_SIZE == 8 as uint64_t
-                            && ::core::mem::size_of::<mvsad_t>() as usize == 8 as usize
+                        if WORD_SIZE == 8 as uint64_t && size_of::<mvsad_t>() as usize == 8 as usize
                         {
                             let ref mut fresh0 = (*(&mut *mvsads.offset(i_7 as isize)
                                 as *mut mvsad_t
@@ -1986,9 +1986,7 @@ unsafe extern "C" fn x264_10_me_search_ref(
                         i_8 += 1;
                     }
                     nmvsad -= 1;
-                    if ::core::mem::size_of::<mvsad_t>() as usize
-                        == ::core::mem::size_of::<uint64_t>() as usize
-                    {
+                    if size_of::<mvsad_t>() as usize == size_of::<uint64_t>() as usize {
                         (*(&mut *mvsads.offset(bi as isize) as *mut mvsad_t
                             as *mut x264_union64_t))
                             .i = (*(&mut *mvsads.offset(nmvsad as isize) as *mut mvsad_t
@@ -3620,7 +3618,7 @@ unsafe extern "C" fn me_refine_bidir(
     let mut p_cost_m1y: *const uint16_t = (*m1).p_cost_mv.offset(-((*m1).mvp[1] as c_int as isize));
     (*h).mc.memzero_aligned.expect("non-null function pointer")(
         visited.as_mut_ptr() as *mut c_void,
-        ::core::mem::size_of::<[[[uint8_t; 8]; 8]; 8]>() as size_t,
+        size_of::<[[[uint8_t; 8]; 8]; 8]>() as size_t,
     );
     let mut pass: c_int = 0 as c_int;
     while pass < 8 as c_int {

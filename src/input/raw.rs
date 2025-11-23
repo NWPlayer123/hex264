@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -39,7 +40,7 @@ unsafe extern "C" fn open_file(
     mut opt: *mut cli_input_opt_t,
 ) -> c_int {
     let mut h: *mut raw_hnd_t =
-        calloc(1 as size_t, ::core::mem::size_of::<raw_hnd_t>() as size_t) as *mut raw_hnd_t;
+        calloc(1 as size_t, size_of::<raw_hnd_t>() as size_t) as *mut raw_hnd_t;
     if h.is_null() {
         return -1;
     }
@@ -278,7 +279,7 @@ unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut handle: hnd_t) {
         memset(
             pic as *mut c_void,
             0 as c_int,
-            ::core::mem::size_of::<cli_pic_t>() as size_t,
+            size_of::<cli_pic_t>() as size_t,
         );
     } else {
         x264_cli_pic_clean(pic);

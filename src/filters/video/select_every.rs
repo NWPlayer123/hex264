@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_int, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -49,8 +50,7 @@ unsafe extern "C" fn init(
     mut param: *mut x264_param_t,
     mut opt_string: *mut c_char,
 ) -> c_int {
-    let mut h: *mut selvry_hnd_t =
-        malloc(::core::mem::size_of::<selvry_hnd_t>() as size_t) as *mut selvry_hnd_t;
+    let mut h: *mut selvry_hnd_t = malloc(size_of::<selvry_hnd_t>() as size_t) as *mut selvry_hnd_t;
     if h.is_null() {
         return -1;
     }
@@ -118,16 +118,15 @@ unsafe extern "C" fn init(
         );
         return -1;
     }
-    (*h).pattern = malloc(
-        ((*h).pattern_len as size_t).wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
-    ) as *mut c_int;
+    (*h).pattern = malloc(((*h).pattern_len as size_t).wrapping_mul(size_of::<c_int>() as size_t))
+        as *mut c_int;
     if (*h).pattern.is_null() {
         return -1;
     }
     memcpy(
         (*h).pattern as *mut c_void,
         offsets.as_mut_ptr() as *const c_void,
-        ((*h).pattern_len as size_t).wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
+        ((*h).pattern_len as size_t).wrapping_mul(size_of::<c_int>() as size_t),
     );
     let mut max_rewind: intptr_t = 0 as intptr_t;
     let mut min: c_int = (*h).step_size;

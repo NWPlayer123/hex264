@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_float, c_int, c_uint, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -1421,7 +1422,7 @@ unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *m
     memset(
         (*frame).i_cost_est.as_mut_ptr() as *mut c_void,
         -1,
-        ::core::mem::size_of::<[[c_int; 18]; 18]>() as size_t,
+        size_of::<[[c_int; 18]; 18]>() as size_t,
     );
     let mut y_0: c_int = 0 as c_int;
     while y_0 < (*h).param.i_bframe + 2 as c_int {
@@ -2568,14 +2569,14 @@ unsafe extern "C" fn x264_10_frame_filter(
                     .integral
                     .offset(-((PADV * stride_0) as isize))
                     .offset(
-                        -((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
+                        -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
                             32 as c_int
                         } else {
-                            64 as c_int / ::core::mem::size_of::<pixel>() as c_int
+                            64 as c_int / size_of::<pixel>() as c_int
                         }) as isize),
                     ) as *mut c_void,
                 0 as c_int,
-                (stride_0 as size_t).wrapping_mul(::core::mem::size_of::<uint16_t>() as size_t),
+                (stride_0 as size_t).wrapping_mul(size_of::<uint16_t>() as size_t),
             );
             start = -PADV;
         }
@@ -2585,20 +2586,20 @@ unsafe extern "C" fn x264_10_frame_filter(
         let mut y: c_int = start;
         while y < height {
             let mut pix: *mut pixel = (*frame).plane[0].offset((y * stride_0) as isize).offset(
-                -((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
+                -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
                     32 as c_int
                 } else {
-                    64 as c_int / ::core::mem::size_of::<pixel>() as c_int
+                    64 as c_int / size_of::<pixel>() as c_int
                 }) as isize),
             );
             let mut sum8: *mut uint16_t = (*frame)
                 .integral
                 .offset(((y + 1 as c_int) * stride_0) as isize)
                 .offset(
-                    -((if 32 as c_int > 64 as c_int / ::core::mem::size_of::<pixel>() as c_int {
+                    -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
                         32 as c_int
                     } else {
-                        64 as c_int / ::core::mem::size_of::<pixel>() as c_int
+                        64 as c_int / size_of::<pixel>() as c_int
                     }) as isize),
                 );
             let mut sum4: *mut uint16_t = 0 as *mut uint16_t;

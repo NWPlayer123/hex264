@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_double, c_int, c_ulonglong, c_void};
 
 use crate::__stddef_size_t_h::size_t;
@@ -244,7 +245,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
             if memcmp(
                 (*(*h).sps.as_mut_ptr()).scaling_list[(i + start) as usize] as *const c_void,
                 (*(*h).sps.as_mut_ptr()).scaling_list[(j + start) as usize] as *const c_void,
-                (size as size_t).wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+                (size as size_t).wrapping_mul(size_of::<uint8_t>() as size_t),
             ) == 0
             {
                 break;
@@ -259,17 +260,14 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
             (*h).quant4_mf[i as usize] = x264_malloc(
                 (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int) * size)
                     as usize)
-                    .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
-                    as int64_t,
+                    .wrapping_mul(size_of::<udctcoef>() as usize) as int64_t,
             ) as *mut [udctcoef; 16];
             if (*h).quant4_mf[i as usize].is_null() {
                 current_block = 4491644631990352080;
                 break;
             }
             (*h).dequant4_mf[i as usize] = x264_malloc(
-                ((6 as c_int * size) as usize)
-                    .wrapping_mul(::core::mem::size_of::<c_int>() as usize)
-                    as int64_t,
+                ((6 as c_int * size) as usize).wrapping_mul(size_of::<c_int>() as usize) as int64_t,
             ) as *mut [c_int; 16];
             if (*h).dequant4_mf[i as usize].is_null() {
                 current_block = 4491644631990352080;
@@ -278,8 +276,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
             (*h).unquant4_mf[i as usize] = x264_malloc(
                 (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int) * size)
                     as usize)
-                    .wrapping_mul(::core::mem::size_of::<c_int>() as usize)
-                    as int64_t,
+                    .wrapping_mul(size_of::<c_int>() as usize) as int64_t,
             ) as *mut [c_int; 16];
             if (*h).unquant4_mf[i as usize].is_null() {
                 current_block = 4491644631990352080;
@@ -292,7 +289,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                 && memcmp(
                     (*(*h).sps.as_mut_ptr()).scaling_list[(i + start) as usize] as *const c_void,
                     (*(*h).sps.as_mut_ptr()).scaling_list[(j + start) as usize] as *const c_void,
-                    (size as size_t).wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+                    (size as size_t).wrapping_mul(size_of::<uint8_t>() as size_t),
                 ) == 0
             {
                 break;
@@ -306,8 +303,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
             (*h).quant4_bias[i as usize] = x264_malloc(
                 (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int) * size)
                     as usize)
-                    .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
-                    as int64_t,
+                    .wrapping_mul(size_of::<udctcoef>() as usize) as int64_t,
             ) as *mut [udctcoef; 16];
             if (*h).quant4_bias[i as usize].is_null() {
                 current_block = 4491644631990352080;
@@ -316,8 +312,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
             (*h).quant4_bias0[i as usize] = x264_malloc(
                 (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int) * size)
                     as usize)
-                    .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
-                    as int64_t,
+                    .wrapping_mul(size_of::<udctcoef>() as usize) as int64_t,
             ) as *mut [udctcoef; 16];
             if (*h).quant4_bias0[i as usize].is_null() {
                 current_block = 4491644631990352080;
@@ -348,8 +343,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                             as *const c_void,
                         (*(*h).sps.as_mut_ptr()).scaling_list[(j_0 + start_0) as usize]
                             as *const c_void,
-                        (size_0 as size_t)
-                            .wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+                        (size_0 as size_t).wrapping_mul(size_of::<uint8_t>() as size_t),
                     ) == 0
                     {
                         break;
@@ -364,7 +358,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                     (*h).quant8_mf[i_0 as usize] = x264_malloc(
                         (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int)
                             * size_0) as usize)
-                            .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
+                            .wrapping_mul(size_of::<udctcoef>() as usize)
                             as int64_t,
                     ) as *mut [udctcoef; 64];
                     if (*h).quant8_mf[i_0 as usize].is_null() {
@@ -372,8 +366,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                         break;
                     }
                     (*h).dequant8_mf[i_0 as usize] = x264_malloc(
-                        ((6 as c_int * size_0) as usize)
-                            .wrapping_mul(::core::mem::size_of::<c_int>() as usize)
+                        ((6 as c_int * size_0) as usize).wrapping_mul(size_of::<c_int>() as usize)
                             as int64_t,
                     ) as *mut [c_int; 64];
                     if (*h).dequant8_mf[i_0 as usize].is_null() {
@@ -383,7 +376,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                     (*h).unquant8_mf[i_0 as usize] = x264_malloc(
                         (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int)
                             * size_0) as usize)
-                            .wrapping_mul(::core::mem::size_of::<c_int>() as usize)
+                            .wrapping_mul(size_of::<c_int>() as usize)
                             as int64_t,
                     ) as *mut [c_int; 64];
                     if (*h).unquant8_mf[i_0 as usize].is_null() {
@@ -399,8 +392,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                                 as *const c_void,
                             (*(*h).sps.as_mut_ptr()).scaling_list[(j_0 + start_0) as usize]
                                 as *const c_void,
-                            (size_0 as size_t)
-                                .wrapping_mul(::core::mem::size_of::<uint8_t>() as size_t),
+                            (size_0 as size_t).wrapping_mul(size_of::<uint8_t>() as size_t),
                         ) == 0
                     {
                         break;
@@ -414,7 +406,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                     (*h).quant8_bias[i_0 as usize] = x264_malloc(
                         (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int)
                             * size_0) as usize)
-                            .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
+                            .wrapping_mul(size_of::<udctcoef>() as usize)
                             as int64_t,
                     ) as *mut [udctcoef; 64];
                     if (*h).quant8_bias[i_0 as usize].is_null() {
@@ -424,7 +416,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                     (*h).quant8_bias0[i_0 as usize] = x264_malloc(
                         (((51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int)
                             * size_0) as usize)
-                            .wrapping_mul(::core::mem::size_of::<udctcoef>() as usize)
+                            .wrapping_mul(size_of::<udctcoef>() as usize)
                             as int64_t,
                     ) as *mut [udctcoef; 64];
                     if (*h).quant8_bias0[i_0 as usize].is_null() {
@@ -685,13 +677,12 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                         }
                         q_1 += 1;
                     }
-                    (*h).nr_offset_emergency = x264_malloc(
-                        (::core::mem::size_of::<[[udctcoef; 64]; 4]>() as usize).wrapping_mul(
+                    (*h).nr_offset_emergency =
+                        x264_malloc((size_of::<[[udctcoef; 64]; 4]>() as usize).wrapping_mul(
                             (51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) + 18 as c_int
                                 - (51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int)))
                                 as usize,
-                        ) as int64_t,
-                    ) as *mut [[udctcoef; 64]; 4];
+                        ) as int64_t) as *mut [[udctcoef; 64]; 4];
                     if !(*h).nr_offset_emergency.is_null() {
                         let mut q_2: c_int = 0 as c_int;
                         while q_2 < QP_MAX - QP_MAX_SPEC {

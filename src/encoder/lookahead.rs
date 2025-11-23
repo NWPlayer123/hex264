@@ -1,3 +1,4 @@
+use ::core::mem::size_of;
 use core::ffi::{c_char, c_int, c_uint, c_void};
 
 use crate::__stddef_null_h::NULL;
@@ -184,13 +185,12 @@ unsafe extern "C" fn x264_10_lookahead_init(
 ) -> c_int {
     let mut look_h: *mut x264_t = 0 as *mut x264_t;
     let mut look: *mut x264_lookahead_t = 0 as *mut x264_lookahead_t;
-    look =
-        x264_malloc(::core::mem::size_of::<x264_lookahead_t>() as int64_t) as *mut x264_lookahead_t;
+    look = x264_malloc(size_of::<x264_lookahead_t>() as int64_t) as *mut x264_lookahead_t;
     if !look.is_null() {
         memset(
             look as *mut c_void,
             0 as c_int,
-            ::core::mem::size_of::<x264_lookahead_t>() as size_t,
+            size_of::<x264_lookahead_t>() as size_t,
         );
         let mut i: c_int = 0 as c_int;
         while i < (*h).param.i_threads {
