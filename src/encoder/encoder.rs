@@ -125,21 +125,20 @@ use crate::threadpool_h::{
 use crate::types_h::__off64_t;
 use crate::x264_h::{
     x264_level_t, x264_levels, x264_nal_t, x264_param_cleanup, x264_param_t, x264_picture_t,
-    x264_sei_payload_t, MotionEstimation, X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4,
-    X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16, X264_ANALYSE_PSUB8x8, NAL_AUD, NAL_FILLER, NAL_PPS,
-    NAL_PRIORITY_DISPOSABLE, NAL_PRIORITY_HIGH, NAL_PRIORITY_HIGHEST, NAL_PRIORITY_LOW, NAL_SEI,
-    NAL_SLICE, NAL_SLICE_IDR, NAL_SPS, PIC_STRUCT_AUTO, PIC_STRUCT_BOTTOM_TOP,
-    PIC_STRUCT_PROGRESSIVE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TRIPLE, X264_AVCINTRA_FLAVOR_SONY,
-    X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_CPU_AVX512, X264_CPU_BMI1, X264_CPU_BMI2,
-    X264_CPU_CACHELINE_64, X264_CPU_FMA3, X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW,
-    X264_CPU_SSE42, X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CSP_BGR,
-    X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK,
-    X264_CSP_MAX, X264_CSP_NONE, X264_DIRECT_PRED_AUTO, X264_DIRECT_PRED_NONE,
-    X264_DIRECT_PRED_SPATIAL, X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG,
-    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_NAL_HRD_NONE,
-    X264_NAL_HRD_VBR, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF, X264_THREADS_AUTO, X264_TYPE_AUTO,
-    X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
-    X264_WEIGHTP_NONE, X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
+    x264_sei_payload_t, DirectPrediction, MotionEstimation, X264_ANALYSE_BSUB16x16,
+    X264_ANALYSE_I4x4, X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16, X264_ANALYSE_PSUB8x8, NAL_AUD,
+    NAL_FILLER, NAL_PPS, NAL_PRIORITY_DISPOSABLE, NAL_PRIORITY_HIGH, NAL_PRIORITY_HIGHEST,
+    NAL_PRIORITY_LOW, NAL_SEI, NAL_SLICE, NAL_SLICE_IDR, NAL_SPS, PIC_STRUCT_AUTO,
+    PIC_STRUCT_BOTTOM_TOP, PIC_STRUCT_PROGRESSIVE, PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TRIPLE,
+    X264_AVCINTRA_FLAVOR_SONY, X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_CPU_AVX512,
+    X264_CPU_BMI1, X264_CPU_BMI2, X264_CPU_CACHELINE_64, X264_CPU_FMA3, X264_CPU_SSE2_IS_FAST,
+    X264_CPU_SSE2_IS_SLOW, X264_CPU_SSE42, X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT,
+    X264_CSP_BGR, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444,
+    X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE, X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO,
+    X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR,
+    X264_NAL_HRD_NONE, X264_NAL_HRD_VBR, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF, X264_THREADS_AUTO,
+    X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME,
+    X264_TYPE_P, X264_WEIGHTP_NONE, X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
 };
 use crate::x264_h::{BPyramid, FramePacking};
 use crate::FILE_h::FILE;
@@ -326,7 +325,7 @@ unsafe extern "C" fn slice_header_init(
     (*sh).i_delta_poc[0] = 0 as c_int;
     (*sh).i_delta_poc[1] = 0 as c_int;
     (*sh).i_redundant_pic_cnt = 0 as c_int;
-    (*h).mb.b_direct_auto_write = ((*h).param.analyse.i_direct_mv_pred == X264_DIRECT_PRED_AUTO
+    (*h).mb.b_direct_auto_write = ((*h).param.analyse.direct_mv_pred == DirectPrediction::Auto
         && (*h).param.i_bframe != 0
         && ((*h).param.rc.b_stat_write != 0 || (*h).param.rc.b_stat_read == 0))
         as c_int;
@@ -337,7 +336,7 @@ unsafe extern "C" fn slice_header_init(
                     ((*h).stat.i_direct_score[1] > (*h).stat.i_direct_score[0]) as c_int;
             } else {
                 (*sh).b_direct_spatial_mv_pred =
-                    ((*param).analyse.i_direct_mv_pred == X264_DIRECT_PRED_SPATIAL) as c_int;
+                    ((*param).analyse.direct_mv_pred == DirectPrediction::Spatial) as c_int;
             }
         } else {
             (*h).mb.b_direct_auto_write = 0 as c_int;
@@ -2063,20 +2062,14 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     if (*h).param.i_scenecut_threshold < 0 as c_int {
         (*h).param.i_scenecut_threshold = 0 as c_int;
     }
-    (*h).param.analyse.i_direct_mv_pred = x264_clip3(
-        (*h).param.analyse.i_direct_mv_pred,
-        X264_DIRECT_PRED_NONE,
-        X264_DIRECT_PRED_AUTO,
-    );
     if (*h).param.analyse.i_subpel_refine == 0
-        && (*h).param.analyse.i_direct_mv_pred > X264_DIRECT_PRED_SPATIAL
+        && matches!(
+            (*h).param.analyse.direct_mv_pred,
+            DirectPrediction::Temporal | DirectPrediction::Auto
+        )
     {
-        x264_10_log(
-            h,
-            X264_LOG_WARNING,
-            b"subme=0 + direct=temporal is not supported\n\0" as *const u8 as *const c_char,
-        );
-        (*h).param.analyse.i_direct_mv_pred = X264_DIRECT_PRED_SPATIAL;
+        warn!("subme=0 + direct=temporal is not supported");
+        (*h).param.analyse.direct_mv_pred = DirectPrediction::Spatial;
     }
     (*h).param.i_bframe = x264_clip3(
         (*h).param.i_bframe,
@@ -2098,7 +2091,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     );
     if (*h).param.i_bframe == 0 {
         (*h).param.i_bframe_adaptive = X264_B_ADAPT_NONE;
-        (*h).param.analyse.i_direct_mv_pred = 0 as c_int;
+        (*h).param.analyse.direct_mv_pred = DirectPrediction::None;
         (*h).param.analyse.b_weighted_bipred = 0 as c_int;
         (*h).param.b_open_gop = 0 as c_int;
     }
@@ -3891,7 +3884,7 @@ unsafe extern "C" fn encoder_try_reconfig(
     (*h).param.i_alternative_transfer = (*param).i_alternative_transfer;
     (*h).param.analyse.inter = (*param).analyse.inter;
     (*h).param.analyse.intra = (*param).analyse.intra;
-    (*h).param.analyse.i_direct_mv_pred = (*param).analyse.i_direct_mv_pred;
+    (*h).param.analyse.direct_mv_pred = (*param).analyse.direct_mv_pred;
     if !(*h).param.analyse.me_method.exhaustive_search()
         || (*param).analyse.i_me_range < (*h).param.analyse.i_me_range
     {
@@ -7219,7 +7212,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                 buf.as_mut_ptr(),
             );
         }
-        if ((*h).param.analyse.i_direct_mv_pred == X264_DIRECT_PRED_AUTO
+        if ((*h).param.analyse.direct_mv_pred == DirectPrediction::Auto
             || (*h).stat.i_direct_frames[0] != 0 && (*h).stat.i_direct_frames[1] != 0)
             && (*h).stat.i_frame_count[SLICE_TYPE_B as c_int as usize] != 0
         {

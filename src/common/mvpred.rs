@@ -14,7 +14,7 @@ use crate::stdint_h::{INT16_MAX, INT16_MIN};
 use crate::stdint_intn_h::{int16_t, int8_t};
 use crate::stdint_uintn_h::uint32_t;
 use crate::stdlib_h::abs;
-use crate::x264_h::X264_DIRECT_PRED_NONE;
+use crate::x264_h::DirectPrediction;
 #[no_mangle]
 #[c2rust::src_loc = "30:1"]
 unsafe extern "C" fn x264_10_mb_predict_mv(
@@ -746,8 +746,8 @@ unsafe extern "C" fn x264_10_mb_predict_mv_direct16x16(
     mut b_changed: *mut c_int,
 ) -> c_int {
     let mut b_available: c_int = 0;
-    if (*h).param.analyse.i_direct_mv_pred == X264_DIRECT_PRED_NONE {
-        return 0 as c_int;
+    if (*h).param.analyse.direct_mv_pred == DirectPrediction::None {
+        return 0;
     } else if (*h).sh.b_direct_spatial_mv_pred != 0 {
         if (*h).sh.b_mbaff != 0 {
             b_available = mb_predict_mv_direct16x16_spatial_interlaced(h);
