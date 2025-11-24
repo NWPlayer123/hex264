@@ -1,7 +1,9 @@
 use ::core::ffi::{c_char, c_double, c_float, c_int, c_long, c_uint, c_ulong, c_void};
 use ::core::mem::size_of;
 
-use log::error;
+use log::{error, warn};
+
+use crate::x264_h::DirectPrediction;
 
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
@@ -36,11 +38,10 @@ use crate::string_h::{
 use crate::x264_h::{
     x264_level_t, x264_levels, x264_param_cleanup, x264_param_t, x264_zone_t, BPyramid,
     FramePacking, X264_AQ_AUTOVARIANCE, X264_AQ_AUTOVARIANCE_BIASED, X264_AQ_NONE,
-    X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_DIRECT_PRED_AUTO, X264_KEYINT_MAX_INFINITE,
-    X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR,
-    X264_QP_AUTO, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF, X264_TYPE_AUTO, X264_TYPE_B,
-    X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
-    X264_WEIGHTP_SIMPLE,
+    X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS, X264_KEYINT_MAX_INFINITE, X264_LOG_DEBUG,
+    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_QP_AUTO, X264_RC_ABR,
+    X264_RC_CQP, X264_RC_CRF, X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I,
+    X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_SIMPLE,
 };
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
@@ -1718,14 +1719,9 @@ unsafe extern "C" fn x264_10_ratecontrol_new(mut h: *mut x264_t) -> c_int {
                         );
                     }
                     if strstr(opts, b"direct=3\0" as *const u8 as *const c_char).is_null()
-                        && (*h).param.analyse.i_direct_mv_pred == X264_DIRECT_PRED_AUTO
+                        && (*h).param.analyse.direct_mv_pred == DirectPrediction::Auto
                     {
-                        x264_10_log(
-                            h,
-                            X264_LOG_WARNING,
-                            b"direct=auto not used on the first pass\n\0" as *const u8
-                                as *const c_char,
-                        );
+                        warn!("direct=auto not used on the first pass");
                         (*h).mb.b_direct_auto_write = 1 as c_int;
                     }
                     p = strstr(opts, b"b_adapt=\0" as *const u8 as *const c_char);
@@ -2559,7 +2555,7 @@ unsafe extern "C" fn x264_10_ratecontrol_start(
         (*rc).rce = &mut *(*rc).entry.offset(frame as isize) as *mut ratecontrol_entry_t;
         rce = (*rc).rce;
         if (*h).sh.i_type == SLICE_TYPE_B as c_int
-            && (*h).param.analyse.i_direct_mv_pred == X264_DIRECT_PRED_AUTO
+            && (*h).param.analyse.direct_mv_pred == DirectPrediction::Auto
         {
             (*h).sh.b_direct_spatial_mv_pred = ((*rce).direct_mode as c_int == 's' as i32) as c_int;
             (*h).mb.b_direct_auto_read = ((*rce).direct_mode as c_int == 's' as i32

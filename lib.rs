@@ -798,7 +798,7 @@ pub mod x264_h {
         pub b_transform_8x8: c_int,
         pub i_weighted_pred: c_int,
         pub b_weighted_bipred: c_int,
-        pub i_direct_mv_pred: c_int,
+        pub direct_mv_pred: DirectPrediction,
         pub i_chroma_qp_offset: c_int,
         pub me_method: MotionEstimation,
         pub i_me_range: c_int,
@@ -829,7 +829,7 @@ pub mod x264_h {
                 b_transform_8x8: 0,
                 i_weighted_pred: 0,
                 b_weighted_bipred: 0,
-                i_direct_mv_pred: 0,
+                direct_mv_pred: DirectPrediction::None,
                 i_chroma_qp_offset: 0,
                 me_method: MotionEstimation::Dia,
                 i_me_range: 0,
@@ -852,6 +852,28 @@ pub mod x264_h {
                 b_ssim: 0,
             }
         }
+    }
+
+    /// Direct Motion Vector Prediction Mode.
+    #[derive(
+        Debug,
+        Default,
+        Clone,
+        Copy,
+        PartialEq,
+        Eq,
+        strum::AsRefStr,
+        strum::EnumString,
+        strum::FromRepr,
+        strum::VariantNames,
+    )]
+    #[strum(serialize_all = "snake_case")]
+    pub enum DirectPrediction {
+        None,
+        #[default]
+        Spatial,
+        Temporal,
+        Auto,
     }
 
     #[derive(
@@ -1022,14 +1044,6 @@ pub mod x264_h {
     pub const X264_BUILD: c_int = 165 as c_int;
     #[c2rust::src_loc = "217:9"]
     pub const X264_QP_AUTO: c_int = 0 as c_int;
-    #[c2rust::src_loc = "238:27"]
-    pub static mut x264_direct_pred_names: [*const c_char; 5] = [
-        b"none\0" as *const u8 as *const c_char,
-        b"spatial\0" as *const u8 as *const c_char,
-        b"temporal\0" as *const u8 as *const c_char,
-        b"auto\0" as *const u8 as *const c_char,
-        0 as *const c_char,
-    ];
     #[c2rust::src_loc = "241:27"]
     pub static mut x264_overscan_names: [*const c_char; 4] = [
         b"undef\0" as *const u8 as *const c_char,
@@ -1327,12 +1341,6 @@ pub mod x264_h {
     pub const X264_CPU_SSE2_IS_SLOW: c_uint = (1 as c_uint) << 19 as c_int;
     #[c2rust::src_loc = "161:9"]
     pub const X264_CPU_SSE2_IS_FAST: c_uint = (1 as c_uint) << 20 as c_int;
-    #[c2rust::src_loc = "202:9"]
-    pub const X264_DIRECT_PRED_NONE: c_int = 0 as c_int;
-    #[c2rust::src_loc = "203:9"]
-    pub const X264_DIRECT_PRED_SPATIAL: c_int = 1 as c_int;
-    #[c2rust::src_loc = "205:9"]
-    pub const X264_DIRECT_PRED_AUTO: c_int = 3 as c_int;
     #[c2rust::src_loc = "211:9"]
     pub const X264_CQM_FLAT: c_int = 0 as c_int;
     #[c2rust::src_loc = "213:9"]

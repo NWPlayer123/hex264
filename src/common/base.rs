@@ -30,21 +30,20 @@ use crate::strings_h::{strcasecmp, strncasecmp};
 use crate::types_h::__off64_t;
 use crate::x264_config_h::X264_CHROMA_FORMAT;
 use crate::x264_h::{
-    x264_avcintra_flavor_names, x264_colmatrix_names, x264_colorprim_names, x264_direct_pred_names,
-    x264_fullrange_names, x264_nal_hrd_names, x264_overscan_names, x264_param_t, x264_picture_t,
-    x264_preset_names, x264_transfer_names, x264_vidformat_names, BPyramid, ContentLightLevel,
-    CropRectangle, FramePacking, MasteringDisplay, MotionEstimation, X264_ANALYSE_BSUB16x16,
+    x264_avcintra_flavor_names, x264_colmatrix_names, x264_colorprim_names, x264_fullrange_names,
+    x264_nal_hrd_names, x264_overscan_names, x264_param_t, x264_picture_t, x264_preset_names,
+    x264_transfer_names, x264_vidformat_names, BPyramid, ContentLightLevel, CropRectangle,
+    DirectPrediction, FramePacking, MasteringDisplay, MotionEstimation, X264_ANALYSE_BSUB16x16,
     X264_ANALYSE_I4x4, X264_ANALYSE_I8x8, X264_ANALYSE_PSUB16x16, X264_ANALYSE_PSUB8x8,
     PIC_STRUCT_AUTO, X264_AQ_AUTOVARIANCE, X264_AQ_NONE, X264_AQ_VARIANCE,
     X264_AVCINTRA_FLAVOR_PANASONIC, X264_B_ADAPT_FAST, X264_B_ADAPT_NONE, X264_B_ADAPT_TRELLIS,
     X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW, X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT,
     X264_CQM_JVT, X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444,
-    X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE, X264_CSP_V210, X264_DIRECT_PRED_AUTO,
-    X264_DIRECT_PRED_SPATIAL, X264_KEYINT_MAX_INFINITE, X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG,
-    X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING, X264_NAL_HRD_NONE, X264_PARAM_ALLOC_FAILED,
-    X264_PARAM_BAD_NAME, X264_PARAM_BAD_VALUE, X264_QP_AUTO, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF,
-    X264_SYNC_LOOKAHEAD_AUTO, X264_THREADS_AUTO, X264_TYPE_AUTO, X264_WEIGHTP_NONE,
-    X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
+    X264_CSP_MASK, X264_CSP_MAX, X264_CSP_NONE, X264_CSP_V210, X264_KEYINT_MAX_INFINITE,
+    X264_KEYINT_MIN_AUTO, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_WARNING,
+    X264_NAL_HRD_NONE, X264_PARAM_ALLOC_FAILED, X264_PARAM_BAD_NAME, X264_PARAM_BAD_VALUE,
+    X264_QP_AUTO, X264_RC_ABR, X264_RC_CQP, X264_RC_CRF, X264_SYNC_LOOKAHEAD_AUTO,
+    X264_THREADS_AUTO, X264_TYPE_AUTO, X264_WEIGHTP_NONE, X264_WEIGHTP_SIMPLE, X264_WEIGHTP_SMART,
 };
 use crate::FILE_h::FILE;
 #[derive(Copy, Clone)]
@@ -645,7 +644,7 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     (*param).analyse.intra = X264_ANALYSE_I4x4 | X264_ANALYSE_I8x8;
     (*param).analyse.inter =
         X264_ANALYSE_I4x4 | X264_ANALYSE_I8x8 | X264_ANALYSE_PSUB16x16 | X264_ANALYSE_BSUB16x16;
-    (*param).analyse.i_direct_mv_pred = X264_DIRECT_PRED_SPATIAL;
+    (*param).analyse.direct_mv_pred = DirectPrediction::default();
     (*param).analyse.me_method = MotionEstimation::default();
     (*param).analyse.f_psy_rd = 1.0f32;
     (*param).analyse.b_psy = 1 as c_int;
@@ -791,7 +790,7 @@ unsafe extern "C" fn param_apply_preset(
         if strcasecmp(preset, b"slow\0" as *const u8 as *const c_char) == 0 {
             (*param).analyse.i_subpel_refine = 8 as c_int;
             (*param).i_frame_reference = 5 as c_int;
-            (*param).analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+            (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
             (*param).analyse.i_trellis = 2 as c_int;
             (*param).rc.i_lookahead = 50 as c_int;
         } else if strcasecmp(preset, b"slower\0" as *const u8 as *const c_char) == 0 {
@@ -799,7 +798,7 @@ unsafe extern "C" fn param_apply_preset(
             (*param).analyse.i_subpel_refine = 9 as c_int;
             (*param).i_frame_reference = 8 as c_int;
             (*param).i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
-            (*param).analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+            (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
             (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
             (*param).analyse.i_trellis = 2 as c_int;
             (*param).rc.i_lookahead = 60 as c_int;
@@ -809,7 +808,7 @@ unsafe extern "C" fn param_apply_preset(
             (*param).analyse.i_me_range = 24 as c_int;
             (*param).i_frame_reference = 16 as c_int;
             (*param).i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
-            (*param).analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+            (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
             (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
             (*param).analyse.i_trellis = 2 as c_int;
             (*param).i_bframe = 8 as c_int;
@@ -820,7 +819,7 @@ unsafe extern "C" fn param_apply_preset(
             (*param).analyse.i_me_range = 24 as c_int;
             (*param).i_frame_reference = 16 as c_int;
             (*param).i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
-            (*param).analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+            (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
             (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
             (*param).analyse.b_fast_pskip = 0 as c_int;
             (*param).analyse.i_trellis = 2 as c_int;
@@ -1812,11 +1811,14 @@ pub unsafe extern "C" fn x264_param_parse(
     } else if strcmp(name, b"direct\0" as *const u8 as *const c_char) == 0
         || strcmp(name, b"direct-pred\0" as *const u8 as *const c_char) == 0
     {
-        b_error |= parse_enum(
-            value,
-            x264_direct_pred_names.as_ptr(),
-            &mut (*p).analyse.i_direct_mv_pred,
-        );
+        (*p).analyse.direct_mv_pred = CStr::from_ptr(value)
+            .to_str()
+            .ok()
+            .and_then(|s| DirectPrediction::from_str(s).ok())
+            .unwrap_or_else(|| {
+                b_error = 1;
+                DirectPrediction::None
+            });
     } else if strcmp(name, b"chroma-qp-offset\0" as *const u8 as *const c_char) == 0 {
         (*p).analyse.i_chroma_qp_offset = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"me\0" as *const u8 as *const c_char) == 0 {
@@ -2312,7 +2314,7 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
             (*p).bframe_pyramid as i32,
             (*p).i_bframe_adaptive,
             (*p).i_bframe_bias,
-            (*p).analyse.i_direct_mv_pred,
+            (*p).analyse.direct_mv_pred,
             (*p).analyse.b_weighted_bipred,
             (*p).b_open_gop,
         ) as isize);
