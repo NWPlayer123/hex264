@@ -45,7 +45,7 @@ struct lavf_hnd_t {
     pkt: *mut AVPacket,
     stream_id: c_int,
     next_frame: c_int,
-    vfr_input: c_int,
+    vfr_input: bool,
     first_pic: *mut cli_pic_t,
 }
 #[c2rust::src_loc = "53:1"]
@@ -158,10 +158,10 @@ unsafe extern "C" fn read_frame_internal(
         handle_jpeg((*(*h).lavc).pix_fmt as c_int, &mut is_fullrange) | X264_CSP_OTHER;
     if !info.is_null() {
         (*info).fullrange = is_fullrange;
-        (*info).interlaced = ((*(*h).frame).flags & AV_FRAME_FLAG_INTERLACED != 0) as c_int;
-        (*info).tff = ((*(*h).frame).flags & AV_FRAME_FLAG_TOP_FIELD_FIRST != 0) as c_int;
+        (*info).interlaced = (*(*h).frame).flags & AV_FRAME_FLAG_INTERLACED != 0;
+        (*info).tff = (*(*h).frame).flags & AV_FRAME_FLAG_TOP_FIELD_FIRST != 0;
     }
-    if (*h).vfr_input != 0 {
+    if (*h).vfr_input {
         (*p_pic).duration = 0 as int64_t;
         (*p_pic).pts = (*p_pic).duration;
         if (*(*h).frame).pts != AV_NOPTS_VALUE {
@@ -169,7 +169,7 @@ unsafe extern "C" fn read_frame_internal(
         } else if (*(*h).frame).pkt_dts != AV_NOPTS_VALUE {
             (*p_pic).pts = (*(*h).frame).pkt_dts;
         } else if !info.is_null() {
-            (*info).vfr = 0 as c_int;
+            (*info).vfr = false;
             (*h).vfr_input = (*info).vfr;
             return 0 as c_int;
         }

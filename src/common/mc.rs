@@ -2500,28 +2500,28 @@ unsafe extern "C" fn x264_10_frame_filter(
     mut mb_y: c_int,
     mut b_end: c_int,
 ) {
-    let b_interlaced: c_int = (*h).param.b_interlaced;
+    let interlaced = (*h).param.interlaced;
     let mut start: c_int = mb_y * 16 as c_int - 8 as c_int;
     let mut height: c_int = (if b_end != 0 {
-        (*frame).i_lines[0] + 16 as c_int * (*h).param.b_interlaced
+        (*frame).i_lines[0] + 16 * (*h).param.interlaced as i32
     } else {
-        (mb_y + b_interlaced) * 16 as c_int
-    }) + 8 as c_int;
-    if mb_y & b_interlaced != 0 {
+        (mb_y + interlaced as i32) * 16
+    }) + 8;
+    if mb_y & interlaced as i32 != 0 {
         return;
     }
     let mut p: c_int = 0 as c_int;
     while p
         < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-            3 as c_int
+            3
         } else {
-            1 as c_int
+            1
         })
     {
         let mut stride: c_int = (*frame).i_stride[p as usize];
         let width: c_int = (*frame).i_width[p as usize];
         let mut offs: c_int = start * stride - 8 as c_int;
-        if b_interlaced == 0 || (*h).mb.b_adaptive_mbaff != 0 {
+        if !interlaced || (*h).mb.b_adaptive_mbaff != 0 {
             (*h).mc.hpel_filter.expect("non-null function pointer")(
                 (*frame).filtered[p as usize][1].offset(offs as isize),
                 (*frame).filtered[p as usize][2].offset(offs as isize),
@@ -2533,7 +2533,7 @@ unsafe extern "C" fn x264_10_frame_filter(
                 (*h).scratch_buffer as *mut int16_t,
             );
         }
-        if b_interlaced != 0 {
+        if interlaced {
             stride = (*frame).i_stride[p as usize] << 1 as c_int;
             start = (mb_y * 16 as c_int >> 1 as c_int) - 8 as c_int;
             let mut height_fld: c_int = ((if b_end != 0 {

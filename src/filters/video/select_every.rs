@@ -25,7 +25,7 @@ struct selvry_hnd_t {
     pattern: *mut c_int,
     pattern_len: c_int,
     step_size: c_int,
-    vfr: c_int,
+    vfr: bool,
     pts: int64_t,
 }
 #[c2rust::src_loc = "28:9"]
@@ -175,7 +175,7 @@ unsafe extern "C" fn init(
         (*info).fps_den = (*info).fps_den.wrapping_mul((*h).step_size as uint32_t);
         (*info).fps_num = (*info).fps_num.wrapping_mul((*h).pattern_len as uint32_t);
         x264_reduce_fraction(&mut (*info).fps_num, &mut (*info).fps_den);
-        if (*info).vfr != 0 {
+        if (*info).vfr {
             (*info).timebase_den = (*info)
                 .timebase_den
                 .wrapping_mul((*h).pattern_len as uint32_t);
@@ -210,7 +210,7 @@ unsafe extern "C" fn get_frame(
     {
         return -1;
     }
-    if (*h).vfr != 0 {
+    if (*h).vfr {
         (*output).pts = (*h).pts;
         (*h).pts += (*output).duration;
     }

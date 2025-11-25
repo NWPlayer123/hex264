@@ -812,7 +812,7 @@ unsafe extern "C" fn init(
         );
         return -1;
     }
-    if (*h).dst.height != (*info).height as c_int && (*info).interlaced != 0 {
+    if (*h).dst.height != (*info).height as c_int && (*info).interlaced {
         x264_cli_log(
             b"resize\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,

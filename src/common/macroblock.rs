@@ -121,7 +121,7 @@ unsafe extern "C" fn mb_mc_0xywh(
         );
     } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
         let mut v_shift: c_int = (*h).mb.chroma_v_shift;
-        if v_shift & (*h).mb.b_interlaced & i_ref != 0 {
+        if v_shift & (*h).mb.interlaced as i32 & i_ref != 0 {
             mvy += ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int;
         }
         let mut offset: c_int = (4 as c_int * FDEC_STRIDE >> v_shift) * y + 2 as c_int * x;
@@ -259,7 +259,7 @@ unsafe extern "C" fn mb_mc_1xywh(
         );
     } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
         let mut v_shift: c_int = (*h).mb.chroma_v_shift;
-        if v_shift & (*h).mb.b_interlaced & i_ref != 0 {
+        if v_shift & (*h).mb.interlaced as i32 & i_ref != 0 {
             mvy += ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int;
         }
         let mut offset: c_int = (4 as c_int * FDEC_STRIDE >> v_shift) * y + 2 as c_int * x;
@@ -440,10 +440,10 @@ unsafe extern "C" fn mb_mc_01xywh(
         );
     } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
         let mut v_shift: c_int = (*h).mb.chroma_v_shift;
-        if v_shift & (*h).mb.b_interlaced & i_ref0 != 0 {
+        if v_shift & (*h).mb.interlaced as i32 & i_ref0 != 0 {
             mvy0 += ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int;
         }
-        if v_shift & (*h).mb.b_interlaced & i_ref1 != 0 {
+        if v_shift & (*h).mb.interlaced as i32 & i_ref1 != 0 {
             mvy1 += ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int;
         }
         (*h).mc.mc_chroma.expect("non-null function pointer")(
@@ -601,7 +601,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
     (*h).mb.i_mb_stride = (*h).mb.i_mb_width;
     (*h).mb.i_b8_stride = (*h).mb.i_mb_width * 2 as c_int;
     (*h).mb.i_b4_stride = (*h).mb.i_mb_width * 4 as c_int;
-    (*h).mb.b_interlaced = (*h).param.b_interlaced;
+    (*h).mb.interlaced = (*h).param.interlaced;
     let mut prealloc_idx: c_int = 0 as c_int;
     let mut prealloc_size: int64_t = 0 as int64_t;
     let mut preallocs: [*mut *mut uint8_t; 1024] = [0 as *mut *mut uint8_t; 1024];
@@ -652,7 +652,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
         .wrapping_mul(size_of::<uint8_t>() as usize) as int64_t
         + (64 as c_int - 1 as c_int) as int64_t
         & !(64 as c_int - 1 as c_int) as int64_t;
-    if (*h).param.b_cabac != 0 {
+    if (*h).param.cabac {
         (*h).mb.skipbp = prealloc_size as intptr_t as *mut c_void as *mut int8_t;
         let fresh6 = prealloc_idx;
         prealloc_idx = prealloc_idx + 1;
@@ -709,7 +709,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
             } else {
                 (*h).param.i_frame_reference
             }
-        }) << (*h).param.b_interlaced;
+        }) << (*h).param.interlaced as i32;
         if (*h).param.analyse.i_weighted_pred == X264_WEIGHTP_SMART {
             i_refs = if (16 as c_int) < i_refs + 1 as c_int + (10 as c_int == 8 as c_int) as c_int {
                 16 as c_int
@@ -738,11 +738,11 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
         i += 1;
     }
     if (*h).param.analyse.i_weighted_pred != 0 {
-        let mut i_padv: c_int = PADV << (*h).param.b_interlaced;
+        let mut i_padv: c_int = PADV << (*h).param.interlaced as i32;
         let mut luma_plane_size: c_int = 0 as c_int;
         let mut numweightbuf: c_int = 0;
         if (*h).param.analyse.i_weighted_pred == X264_WEIGHTP_FAKE {
-            if (*h).param.i_sync_lookahead == 0 || h == (*h).thread[(*h).param.i_threads as usize] {
+            if (*h).param.i_sync_lookahead == 0 || h == (*h).thread[*(*h).param.threads as usize] {
                 luma_plane_size = (*(*h).fdec).i_stride_lowres
                     * ((*h).mb.i_mb_height * 8 as c_int + 2 as c_int * i_padv);
                 numweightbuf = 1 as c_int;
@@ -811,7 +811,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_allocate(mut h: *mut x264_t) -
                 } else {
                     (*h).param.i_frame_reference
                 }
-            }) << (*h).param.b_interlaced;
+            }) << (*h).param.interlaced as i32;
             if (*h).param.analyse.i_weighted_pred == X264_WEIGHTP_SMART {
                 i_refs_0 = if (16 as c_int)
                     < i_refs_0 + 1 as c_int + (10 as c_int == 8 as c_int) as c_int
@@ -858,7 +858,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
         let mut i: c_int = 0 as c_int;
         's_5: loop {
             if !(i
-                < (if (*h).param.b_interlaced != 0 {
+                < (if (*h).param.interlaced {
                     5 as c_int
                 } else {
                     2 as c_int
@@ -894,11 +894,11 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
             _ => {
                 let mut i_0: c_int = 0 as c_int;
                 loop {
-                    if !(i_0 <= (*h).param.b_interlaced) {
+                    if !(i_0 <= (*h).param.interlaced as i32) {
                         current_block = 5783071609795492627;
                         break;
                     }
-                    if (*h).param.b_sliced_threads != 0 {
+                    if (*h).param.sliced_threads {
                         if h == (*h).thread[0] && i_0 == 0 {
                             (*h).deblock_strength[0] = x264_malloc(
                                 (size_of::<[[[uint8_t; 4]; 8]; 2]>() as usize)
@@ -941,12 +941,10 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                 let mut buf_hpel: c_int =
                     (((*(*(*h).thread[0]).fdec).i_width[0] + 48 as c_int + 32 as c_int) as usize)
                         .wrapping_mul(size_of::<int16_t>() as usize) as c_int;
-                let mut buf_ssim: c_int = (((*h).param.analyse.b_ssim
-                    * 8 as c_int
-                    * ((*h).param.width as c_int / 4 as c_int + 3 as c_int))
-                    as usize)
-                    .wrapping_mul(size_of::<c_int>() as usize)
-                    as c_int;
+                let mut buf_ssim: c_int =
+                    (((*h).param.analyse.ssim as i32 * 8 * ((*h).param.width as c_int / 4 + 3))
+                        as usize)
+                        .wrapping_mul(size_of::<c_int>()) as c_int;
                 let mut me_range: c_int =
                     if (*h).param.analyse.i_me_range < (*h).param.analyse.i_mv_range {
                         (*h).param.analyse.i_me_range
@@ -976,7 +974,7 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
                     buf_tesa
                 };
             }
-            buf_mbtree = ((*h).param.rc.b_mb_tree as usize).wrapping_mul(
+            buf_mbtree = ((*h).param.rc.mb_tree as usize).wrapping_mul(
                 ((*h).mb.i_mb_width as usize)
                     .wrapping_mul(size_of::<int16_t>() as usize)
                     .wrapping_add((64 as c_int - 1 as c_int) as usize)
@@ -1001,12 +999,10 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_allocate(
             match current_block {
                 11409641321532490549 => {}
                 _ => {
-                    buf_lookahead_threads = (((*h).mb.i_mb_height
-                        + (4 as c_int + 32 as c_int) * (*h).param.i_lookahead_threads)
-                        as usize)
-                        .wrapping_mul(size_of::<c_int>() as usize)
-                        .wrapping_mul(2 as usize)
-                        as c_int;
+                    buf_lookahead_threads = ((*h).mb.i_mb_height as usize
+                        + (4 + 32) * *(*h).param.lookahead_threads as usize)
+                        .wrapping_mul(size_of::<c_int>())
+                        .wrapping_mul(2) as c_int;
                     buf_mbtree2 = buf_mbtree * 12 as c_int;
                     scratch_size = if buf_lookahead_threads > buf_mbtree2 {
                         buf_lookahead_threads
@@ -1031,16 +1027,14 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_free(
     mut b_lookahead: c_int,
 ) {
     if b_lookahead == 0 {
-        let mut i: c_int = 0 as c_int;
-        while i <= (*h).param.b_interlaced {
-            if (*h).param.b_sliced_threads == 0 || h == (*h).thread[0] && i == 0 {
-                x264_free((*h).deblock_strength[i as usize] as *mut c_void);
+        for n in 0..=(*h).param.interlaced as usize {
+            if !(*h).param.sliced_threads || h == (*h).thread[0] && n == 0 {
+                x264_free((*h).deblock_strength[n] as *mut c_void);
             }
-            i += 1;
         }
         let mut i_0: c_int = 0 as c_int;
         while i_0
-            < (if (*h).param.b_interlaced != 0 {
+            < (if (*h).param.interlaced {
                 5 as c_int
             } else {
                 2 as c_int
@@ -1115,8 +1109,8 @@ pub unsafe extern "C" fn x264_10_macroblock_slice_init(mut h: *mut x264_t) {
                 -(2 as c_int) as int8_t;
             (*h).mb.deblock_ref_table[(-1 + 2 as c_int) as usize] = -1 as int8_t;
             let mut i_2: c_int = 0 as c_int;
-            while i_2 < (*h).i_ref[0] << (*h).sh.b_mbaff {
-                if (*h).mb.b_interlaced == 0 {
+            while i_2 < (*h).i_ref[0] << (*h).sh.mbaff as i32 {
+                if !(*h).mb.interlaced {
                     (*h).mb.deblock_ref_table[(i_2 + 2 as c_int) as usize] =
                         ((*(*h).fref[0][i_2 as usize]).i_frame_num & 63 as c_int) as int8_t;
                 } else {
@@ -1137,7 +1131,7 @@ pub unsafe extern "C" fn x264_10_macroblock_slice_init(mut h: *mut x264_t) {
     );
     if (*h).i_ref[0] > 0 as c_int {
         let mut field: c_int = 0 as c_int;
-        while field <= (*h).sh.b_mbaff {
+        while field <= (*h).sh.mbaff as i32 {
             let mut curpoc: c_int = (*(*h).fdec).i_poc + (*(*h).fdec).i_delta_poc[field as usize];
             let mut refpoc: c_int =
                 (*(*h).fref[0][0]).i_poc + (*(*h).fref[0][0]).i_delta_poc[field as usize];
@@ -1169,12 +1163,12 @@ pub unsafe extern "C" fn x264_10_macroblock_thread_init(mut h: *mut x264_t) {
     {
         (*h).mb.i_subpel_refine -= 1;
     }
-    (*h).mb.b_chroma_me = ((*h).param.analyse.b_chroma_me != 0
+    (*h).mb.b_chroma_me = ((*h).param.analyse.chroma_me
         && ((*h).sh.i_type == SLICE_TYPE_P as c_int && (*h).mb.i_subpel_refine >= 5 as c_int
             || (*h).sh.i_type == SLICE_TYPE_B as c_int && (*h).mb.i_subpel_refine >= 9 as c_int))
         as c_int;
     (*h).mb.b_dct_decimate = ((*h).sh.i_type == SLICE_TYPE_B as c_int
-        || (*h).param.analyse.b_dct_decimate != 0 && (*h).sh.i_type != SLICE_TYPE_I as c_int)
+        || (*h).param.analyse.dct_decimate && (*h).sh.i_type != SLICE_TYPE_I as c_int)
         as c_int;
     (*h).mb.i_mb_prev_xy = -1;
     (*h).mb.pic.p_fenc[0] = (*h).mb.pic.fenc_buf.as_mut_ptr();
@@ -1273,7 +1267,7 @@ unsafe extern "C" fn macroblock_load_pic_pointers(
     mut b_chroma: c_int,
     mut b_mbaff: c_int,
 ) {
-    let mut mb_interlaced: c_int = (b_mbaff != 0 && (*h).mb.b_interlaced != 0) as c_int;
+    let mut mb_interlaced: c_int = (b_mbaff != 0 && (*h).mb.interlaced) as c_int;
     let mut height: c_int = if b_chroma != 0 {
         16 as c_int >> (*h).mb.chroma_v_shift
     } else {
@@ -1611,7 +1605,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours(
     mut mb_y: c_int,
     mut b_interlaced: c_int,
 ) {
-    let mb_interlaced: c_int = (b_interlaced != 0 && (*h).mb.b_interlaced != 0) as c_int;
+    let mb_interlaced: c_int = (b_interlaced != 0 && (*h).mb.interlaced) as c_int;
     let mut top_y: c_int = mb_y - ((1 as c_int) << mb_interlaced);
     let mut top: c_int = top_y * (*h).mb.i_mb_stride + mb_x;
     (*h).mb.i_mb_x = mb_x;
@@ -1736,7 +1730,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours(
             *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int;
         if *(*h).mb.slice_table.offset(left[0] as isize) == (*h).sh.i_first_mb as int32_t {
             (*h).mb.i_neighbour |= MB_LEFT as c_int as c_uint;
-            if (*h).param.b_constrained_intra == 0
+            if !(*h).param.constrained_intra
                 || ((*h).mb.i_mb_type_left[0] == I_4x4 as c_int
                     || (*h).mb.i_mb_type_left[0] == I_8x8 as c_int
                     || (*h).mb.i_mb_type_left[0] == I_16x16 as c_int
@@ -1754,7 +1748,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours(
             (*h).mb.i_mb_type_top = *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize) as c_int;
             if *(*h).mb.slice_table.offset(top as isize) == (*h).sh.i_first_mb as int32_t {
                 (*h).mb.i_neighbour |= MB_TOP as c_int as c_uint;
-                if (*h).param.b_constrained_intra == 0
+                if !(*h).param.constrained_intra
                     || ((*h).mb.i_mb_type_top == I_4x4 as c_int
                         || (*h).mb.i_mb_type_top == I_8x8 as c_int
                         || (*h).mb.i_mb_type_top == I_16x16 as c_int
@@ -1767,7 +1761,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours(
                     .as_mut_ptr()
                     .offset(12 as c_int as isize) as *mut uint8_t;
                 &mut *(*h).mb.mb_transform_size.offset(top as isize) as *mut int8_t;
-                if (*h).param.b_cabac != 0 {
+                if (*h).param.cabac {
                     &mut *(*h).mb.skipbp.offset(top as isize) as *mut int8_t;
                 }
             }
@@ -1782,7 +1776,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours(
                 == (*h).sh.i_first_mb as int32_t
             {
                 (*h).mb.i_neighbour |= MB_TOPLEFT as c_int as c_uint;
-                if (*h).param.b_constrained_intra == 0
+                if !(*h).param.constrained_intra
                     || ((*h).mb.i_mb_type_topleft == I_4x4 as c_int
                         || (*h).mb.i_mb_type_topleft == I_8x8 as c_int
                         || (*h).mb.i_mb_type_topleft == I_16x16 as c_int
@@ -1805,7 +1799,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours(
                 == (*h).sh.i_first_mb as int32_t
             {
                 (*h).mb.i_neighbour |= MB_TOPRIGHT as c_int as c_uint;
-                if (*h).param.b_constrained_intra == 0
+                if !(*h).param.constrained_intra
                     || ((*h).mb.i_mb_type_topright == I_4x4 as c_int
                         || (*h).mb.i_mb_type_topright == I_8x8 as c_int
                         || (*h).mb.i_mb_type_topright == I_16x16 as c_int
@@ -1847,7 +1841,7 @@ unsafe extern "C" fn macroblock_cache_load(
         .as_mut_ptr()
         .offset((mb_y & 1 as c_int) as isize))
     .offset(
-        (if (*h).param.b_sliced_threads != 0 {
+        (if (*h).param.sliced_threads {
             (*h).mb.i_mb_xy
         } else {
             mb_x
@@ -1902,7 +1896,7 @@ unsafe extern "C" fn macroblock_cache_load(
                 .offset((top_4x4 + 4 as c_int) as isize) as *mut [int16_t; 2];
             &mut *(*(*h).mb.ref_0.as_mut_ptr().offset(l as isize))
                 .offset((top_8x8 - 1 as c_int) as isize) as *mut int8_t;
-            if (*h).param.b_cabac != 0 {
+            if (*h).param.cabac {
                 &mut *(*(*h).mb.mvd.as_mut_ptr().offset(l as isize)).offset(top as isize)
                     as *mut [[uint8_t; 2]; 8];
             }
@@ -2069,8 +2063,8 @@ unsafe extern "C" fn macroblock_cache_load(
                     as c_int;
     }
     if b_mbaff != 0 {
-        (*h).mb.pic.i_fref[0] = (*h).i_ref[0] << (*h).mb.b_interlaced;
-        (*h).mb.pic.i_fref[1] = (*h).i_ref[1] << (*h).mb.b_interlaced;
+        (*h).mb.pic.i_fref[0] = (*h).i_ref[0] << (*h).mb.interlaced as i32;
+        (*h).mb.pic.i_fref[1] = (*h).i_ref[1] << (*h).mb.interlaced as i32;
     }
     if b_mbaff == 0 {
         x264_10_copy_column8(
@@ -2407,7 +2401,7 @@ unsafe extern "C" fn macroblock_cache_load(
             }
         }
         if b_mbaff != 0 && (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0 {
-            if (*h).mb.b_interlaced != 0
+            if (*h).mb.interlaced
                 && *(*h)
                     .mb
                     .field
@@ -2456,7 +2450,7 @@ unsafe extern "C" fn macroblock_cache_load(
                 ))
                 .as_mut_ptr() as *mut x264_union32_t))
                     .i;
-            } else if (*h).mb.b_interlaced == 0
+            } else if !(*h).mb.interlaced
                 && *(*h)
                     .mb
                     .field
@@ -2525,7 +2519,7 @@ unsafe extern "C" fn macroblock_cache_load(
                     .i;
             }
         }
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             let mut mvd: *mut [[uint8_t; 2]; 8] = (*h).mb.mvd[l_0 as usize];
             if (*h).mb.i_neighbour & MB_TOP as c_int as c_uint != 0 {
                 (*((*(*(*h).mb.cache.mvd.as_mut_ptr().offset(l_0 as isize))
@@ -2633,7 +2627,7 @@ unsafe extern "C" fn macroblock_cache_load(
             }
         }
         if b_mbaff != 0 {
-            if (*h).mb.b_interlaced != 0 {
+            if (*h).mb.interlaced {
                 if (*h).mb.i_mb_topleft_xy >= 0 as c_int
                     && *(*h).mb.field.offset((*h).mb.i_mb_topleft_xy as isize) == 0
                 {
@@ -3280,17 +3274,16 @@ unsafe extern "C" fn macroblock_cache_load(
         }
         l_0 += 1;
     }
-    if b_mbaff != 0 && mb_x == 0 as c_int && mb_y & 1 as c_int == 0 {
-        if (*h).mb.i_mb_top_xy >= (*h).sh.i_first_mb {
-            (*h).mb.field_decoding_flag =
-                *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) as c_int;
+    if b_mbaff != 0 && mb_x == 0 && mb_y & 1 == 0 {
+        (*h).mb.field_decoding_flag = if (*h).mb.i_mb_top_xy >= (*h).sh.i_first_mb {
+            *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) != 0
         } else {
-            (*h).mb.field_decoding_flag = 0 as c_int;
+            false
         }
     }
     (*h).mb.b_allow_skip = 1 as c_int;
     if b_mbaff != 0 {
-        if (*h).mb.b_interlaced != (*h).mb.field_decoding_flag
+        if (*h).mb.interlaced != (*h).mb.field_decoding_flag
             && mb_y & 1 as c_int != 0
             && (*(*h)
                 .mb
@@ -3307,7 +3300,7 @@ unsafe extern "C" fn macroblock_cache_load(
             (*h).mb.b_allow_skip = 0 as c_int;
         }
     }
-    if (*h).param.b_cabac != 0 {
+    if (*h).param.cabac {
         if b_mbaff != 0 {
             let mut left_xy: c_int = 0;
             let mut top_xy: c_int = 0;
@@ -3315,11 +3308,11 @@ unsafe extern "C" fn macroblock_cache_load(
             left_xy = mb_xy - 1 as c_int;
             if mb_y & 1 as c_int != 0
                 && mb_x > 0 as c_int
-                && (*h).mb.field_decoding_flag == *(*h).mb.field.offset(left_xy as isize) as c_int
+                && (*h).mb.field_decoding_flag as u8 == *(*h).mb.field.offset(left_xy as isize)
             {
                 left_xy += (*h).mb.i_mb_stride;
             }
-            if (*h).mb.field_decoding_flag != 0 {
+            if (*h).mb.field_decoding_flag {
                 top_xy = mb_xy - (*h).mb.i_mb_stride;
                 if mb_y & 1 as c_int == 0
                     && top_xy >= 0 as c_int
@@ -3357,19 +3350,19 @@ unsafe extern "C" fn macroblock_cache_load(
             .mb
             .bipred_weight_buf
             .as_mut_ptr()
-            .offset((*h).mb.b_interlaced as isize))
+            .offset((*h).mb.interlaced as isize))
         .as_mut_ptr()
-        .offset(((*h).mb.b_interlaced & (mb_y & 1 as c_int)) as isize))
+        .offset(((*h).mb.interlaced as i32 & (mb_y & 1)) as isize))
         .as_mut_ptr() as *mut [int8_t; 4];
         (*h).mb.dist_scale_factor = (*(*(*h)
             .mb
             .dist_scale_factor_buf
             .as_mut_ptr()
-            .offset((*h).mb.b_interlaced as isize))
+            .offset((*h).mb.interlaced as isize))
         .as_mut_ptr()
-        .offset(((*h).mb.b_interlaced & (mb_y & 1 as c_int)) as isize))
+        .offset(((*h).mb.interlaced as i32 & (mb_y & 1)) as isize))
         .as_mut_ptr() as *mut [int16_t; 4];
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             let mut skipbp: uint8_t = 0;
             x264_macroblock_cache_skip(
                 h, 0 as c_int, 0 as c_int, 4 as c_int, 4 as c_int, 0 as c_int,
@@ -3475,8 +3468,8 @@ unsafe extern "C" fn macroblock_deblock_strength_mbaff(
     mut h: *mut x264_t,
     mut bs: *mut [[uint8_t; 4]; 8],
 ) {
-    if (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
-        && *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int != (*h).mb.b_interlaced
+    if (*h).mb.i_neighbour & MB_LEFT != 0
+        && *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0] as isize) != (*h).mb.interlaced as u8
     {
         static mut offset: [[[uint8_t; 8]; 2]; 2] = [
             [
@@ -3525,26 +3518,20 @@ unsafe extern "C" fn macroblock_deblock_strength_mbaff(
             ],
         ];
         let mut tmpbs: [uint8_t; 8] = [0; 8];
-        let mut off: *const uint8_t = (*(*offset.as_ptr().offset((*h).mb.b_interlaced as isize))
+        let mut off: *const uint8_t = (*(*offset.as_ptr().offset((*h).mb.interlaced as isize))
             .as_ptr()
             .offset(((*h).mb.i_mb_y & 1 as c_int) as isize))
         .as_ptr();
         let mut nnz: *mut [uint8_t; 48] = (*h).mb.non_zero_count;
-        let mut i: c_int = 0 as c_int;
-        while i < 8 as c_int {
-            let mut left: c_int = (*h).mb.i_mb_left_xy[(if (*h).mb.b_interlaced != 0 {
-                i >> 2 as c_int
-            } else {
-                i & 1 as c_int
-            }) as usize];
-            let mut nnz_this: c_int = (*h).mb.cache.non_zero_count
-                [(x264_scan8[0] as c_int + 8 as c_int * (i >> 1 as c_int)) as usize]
-                as c_int;
+        for n in 0..8 as usize {
+            let mut left = (*h).mb.i_mb_left_xy[if (*h).mb.interlaced { n >> 2 } else { n & 1 }];
+            let mut nnz_this =
+                (*h).mb.cache.non_zero_count[x264_scan8[0] as usize + 8 * (n >> 1)] as i32;
             let mut nnz_left: c_int = (*nnz.offset(left as isize))
-                [(3 as c_int + 4 as c_int * *off.offset(i as isize) as c_int) as usize]
+                [(3 as c_int + 4 as c_int * *off.offset(n as isize) as c_int) as usize]
                 as c_int;
-            if (*h).param.b_cabac == 0 && (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0 {
-                let mut j: c_int = *off.offset(i as isize) as c_int & !(1 as c_int);
+            if !(*h).param.cabac && (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0 {
+                let mut j: c_int = *off.offset(n as isize) as c_int & !(1 as c_int);
                 if *(*h).mb.mb_transform_size.offset(left as isize) != 0 {
                     nnz_left = ((*(&mut *(*nnz.offset(left as isize))
                         .as_mut_ptr()
@@ -3559,14 +3546,9 @@ unsafe extern "C" fn macroblock_deblock_strength_mbaff(
                         != 0) as c_int;
                 }
             }
-            tmpbs[i as usize] = (if nnz_left != 0 || nnz_this != 0 {
-                2 as c_int
-            } else {
-                1 as c_int
-            }) as uint8_t;
-            i += 1;
+            tmpbs[n] = if nnz_left != 0 || nnz_this != 0 { 2 } else { 1 };
         }
-        if (*h).mb.b_interlaced != 0 {
+        if (*h).mb.interlaced {
             (*((*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr() as *mut x264_union32_t)).i =
                 (*(&mut *tmpbs.as_mut_ptr().offset(0) as *mut uint8_t as *mut x264_union32_t)).i;
             (*((*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr() as *mut x264_union32_t)).i =
@@ -3585,9 +3567,9 @@ unsafe extern "C" fn macroblock_deblock_strength_mbaff(
         }
     }
     if (*h).mb.i_neighbour & MB_TOP as c_int as c_uint != 0
-        && (*h).mb.b_interlaced != *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) as c_int
+        && (*h).mb.interlaced as u8 != *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize)
     {
-        if (*h).mb.i_mb_y & 1 as c_int == 0 && (*h).mb.b_interlaced == 0 {
+        if (*h).mb.i_mb_y & 1 == 0 && !(*h).mb.interlaced {
             let mut mbn_xy: c_int = (*h).mb.i_mb_xy - 2 as c_int * (*h).mb.i_mb_stride;
             let mut nnz_cur: *mut uint8_t = &mut *(*h)
                 .mb
@@ -3606,9 +3588,9 @@ unsafe extern "C" fn macroblock_deblock_strength_mbaff(
                         .offset((3 as c_int * 4 as c_int) as isize)
                         as *mut uint8_t as *mut x264_union32_t))
                         .i;
-                if (*h).param.b_cabac == 0
+                if !(*h).param.cabac
                     && (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0
-                    && *(*h).mb.mb_transform_size.offset(mbn_xy as isize) as c_int != 0
+                    && *(*h).mb.mb_transform_size.offset(mbn_xy as isize) != 0
                 {
                     nnz_top[1] = ((*(&mut *(*nnz_0.offset(mbn_xy as isize)).as_mut_ptr().offset(8)
                         as *mut uint8_t
@@ -3710,13 +3692,13 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock_strength(mut h: *mut x264_t)
         neighbour_changed = ((*h).mb.i_neighbour_frame & !(*h).mb.i_neighbour) as c_int;
         (*h).mb.i_neighbour = (*h).mb.i_neighbour_frame;
     }
-    if (*h).sh.b_mbaff != 0
-        && (*h).mb.i_neighbour & MB_LEFT as c_int as c_uint != 0
+    if (*h).sh.mbaff
+        && (*h).mb.i_neighbour & MB_LEFT != 0
         && *(*h)
             .mb
             .field
-            .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize) as c_int
-            != (*h).mb.b_interlaced
+            .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize)
+            != (*h).mb.interlaced as u8
     {
         (*h).mb.i_mb_left_xy[0] = (*h).mb.i_mb_xy - 1 as c_int;
         (*h).mb.i_mb_left_xy[1] = (*h).mb.i_mb_left_xy[0];
@@ -3735,7 +3717,7 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock_strength(mut h: *mut x264_t)
         let mut s8x8: c_int = (*h).mb.i_b8_stride;
         let mut s4x4: c_int = (*h).mb.i_b4_stride;
         let mut nnz: *mut [uint8_t; 48] = (*h).mb.non_zero_count;
-        let mut left_index_table: *const x264_left_table_t = if (*h).sh.b_mbaff != 0 {
+        let mut left_index_table: *const x264_left_table_t = if (*h).sh.mbaff {
             (*h).mb.left_index_table
         } else {
             &*left_indices.as_ptr().offset(3) as *const x264_left_table_t
@@ -3924,7 +3906,7 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock_strength(mut h: *mut x264_t)
             as *mut int8_t as *mut x264_union32_t))
             .i = refbot;
     }
-    if (*h).param.b_cabac == 0 && (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0 {
+    if !(*h).param.cabac && (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0 {
         let mut nnz_0: *mut [uint8_t; 48] = (*h).mb.non_zero_count;
         let mut top: c_int = (*h).mb.i_mb_top_xy;
         let mut left_0: *mut c_int = (*h).mb.i_mb_left_xy.as_mut_ptr();
@@ -4109,11 +4091,11 @@ pub unsafe extern "C" fn x264_10_macroblock_deblock_strength(mut h: *mut x264_t)
         (*h).mb.cache.non_zero_count.as_mut_ptr(),
         (*h).mb.cache.ref_0.as_mut_ptr(),
         (*h).mb.cache.mv.as_mut_ptr(),
-        bs as *mut [[uint8_t; 4]; 8],
-        4 as c_int >> (*h).mb.b_interlaced,
+        bs,
+        4 >> (*h).mb.interlaced as i32,
         ((*h).sh.i_type == SLICE_TYPE_B as c_int) as c_int,
     );
-    if (*h).sh.b_mbaff != 0 {
+    if (*h).sh.mbaff {
         macroblock_deblock_strength_mbaff(h, bs);
     }
 }
@@ -4133,13 +4115,11 @@ unsafe extern "C" fn macroblock_store_pic(
         16 as c_int
     };
     let mut i_stride: c_int = (*(*h).fdec).i_stride[i as usize];
-    let mut i_stride2: c_int = i_stride << (b_mbaff != 0 && (*h).mb.b_interlaced != 0) as c_int;
-    let mut i_pix_offset: c_int = if b_mbaff != 0 && (*h).mb.b_interlaced != 0 {
-        16 as c_int * mb_x
-            + height * (mb_y & !(1 as c_int)) * i_stride
-            + (mb_y & 1 as c_int) * i_stride
+    let mut i_stride2: c_int = i_stride << (b_mbaff != 0 && (*h).mb.interlaced) as i32;
+    let mut i_pix_offset: c_int = if b_mbaff != 0 && (*h).mb.interlaced {
+        16 * mb_x + height * (mb_y & !1) * i_stride + (mb_y & 1) * i_stride
     } else {
-        16 as c_int * mb_x + height * mb_y * i_stride
+        16 * mb_x + height * mb_y * i_stride
     };
     if b_chroma != 0 {
         (*h).mc
@@ -4171,13 +4151,13 @@ unsafe extern "C" fn macroblock_backup_intra(
     mut b_mbaff: c_int,
 ) {
     let mut backup_dst: c_int = if b_mbaff == 0 {
-        mb_y & 1 as c_int
-    } else if mb_y & 1 as c_int != 0 {
-        1 as c_int
-    } else if (*h).mb.b_interlaced != 0 {
-        0 as c_int
+        mb_y & 1
+    } else if mb_y & 1 != 0 {
+        1
+    } else if (*h).mb.interlaced {
+        0
     } else {
-        2 as c_int
+        2
     };
     memcpy(
         &mut *(*(*(*h)
@@ -4241,16 +4221,8 @@ unsafe extern "C" fn macroblock_backup_intra(
     }
     if b_mbaff != 0 {
         if mb_y & 1 as c_int != 0 {
-            let mut backup_src_0: c_int = (if (*h).mb.b_interlaced != 0 {
-                7 as c_int
-            } else {
-                14 as c_int
-            }) * FDEC_STRIDE;
-            backup_dst = if (*h).mb.b_interlaced != 0 {
-                2 as c_int
-            } else {
-                0 as c_int
-            };
+            let mut backup_src_0: c_int = (if (*h).mb.interlaced { 7 } else { 14 }) * FDEC_STRIDE;
+            backup_dst = if (*h).mb.interlaced { 2 } else { 0 };
             memcpy(
                 &mut *(*(*(*h)
                     .intra_border_backup
@@ -4289,11 +4261,7 @@ unsafe extern "C" fn macroblock_backup_intra(
                 );
             } else if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
                 if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_420 as c_int {
-                    backup_src_0 = (if (*h).mb.b_interlaced != 0 {
-                        3 as c_int
-                    } else {
-                        6 as c_int
-                    }) * FDEC_STRIDE;
+                    backup_src_0 = (if (*h).mb.interlaced { 3 } else { 6 }) * FDEC_STRIDE;
                 }
                 memcpy(
                     &mut *(*(*(*h)
@@ -4334,7 +4302,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_save(mut h: *mut x264_t) {
     let i_mb_8x8: c_int = (*h).mb.i_b8_xy;
     let mut i4x4: *mut int8_t = (*(*h).mb.intra4x4_pred_mode.offset(i_mb_xy as isize)).as_mut_ptr();
     let mut nnz: *mut uint8_t = (*(*h).mb.non_zero_count.offset(i_mb_xy as isize)).as_mut_ptr();
-    if (*h).sh.b_mbaff != 0 {
+    if (*h).sh.mbaff {
         macroblock_backup_intra(h, (*h).mb.i_mb_x, (*h).mb.i_mb_y, 1 as c_int);
         macroblock_store_pic(
             h,
@@ -4438,7 +4406,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_save(mut h: *mut x264_t) {
             (*h).mb.cache.intra4x4_pred_mode[x264_scan8[13] as usize] as uint32_t,
             0 as uint32_t,
         );
-    } else if (*h).param.b_constrained_intra == 0
+    } else if !(*h).param.constrained_intra
         || (i_mb_type == I_4x4 as c_int
             || i_mb_type == I_8x8 as c_int
             || i_mb_type == I_16x16 as c_int
@@ -4464,15 +4432,9 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_save(mut h: *mut x264_t) {
         *(*h).mb.cbp.offset(i_mb_xy as isize) =
             ((*h).mb.i_cbp_chroma << 4 as c_int | (*h).mb.i_cbp_luma | 0x1700 as c_int) as int16_t;
         (*h).mb.b_transform_8x8 = 0 as c_int;
-        let mut i: c_int = 0 as c_int;
-        while i < 48 as c_int {
-            (*h).mb.cache.non_zero_count[x264_scan8[i as usize] as usize] =
-                (if (*h).param.b_cabac != 0 {
-                    1 as c_int
-                } else {
-                    16 as c_int
-                }) as uint8_t;
-            i += 1;
+        for n in 0..48 {
+            (*h).mb.cache.non_zero_count[x264_scan8[n] as usize] =
+                if (*h).param.cabac { 1 } else { 16 };
         }
     } else {
         if (*h).mb.i_type != I_16x16 as c_int
@@ -4753,7 +4715,7 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_save(mut h: *mut x264_t) {
             }
         }
     }
-    if (*h).param.b_cabac != 0 {
+    if (*h).param.cabac {
         let mut mvd0: *mut [uint8_t; 2] = (*(*(*h).mb.mvd.as_mut_ptr().offset(0))
             .offset(i_mb_xy as isize))
         .as_mut_ptr() as *mut [uint8_t; 2];
@@ -4856,9 +4818,9 @@ pub unsafe extern "C" fn x264_10_macroblock_cache_save(mut h: *mut x264_t) {
 #[c2rust::src_loc = "1883:1"]
 pub unsafe extern "C" fn x264_10_macroblock_bipred_init(mut h: *mut x264_t) {
     let mut mbfield: c_int = 0 as c_int;
-    while mbfield <= (*h).sh.b_mbaff {
+    while mbfield <= (*h).sh.mbaff as i32 {
         let mut field: c_int = 0 as c_int;
-        while field <= (*h).sh.b_mbaff {
+        while field <= (*h).sh.mbaff as i32 {
             let mut i_ref0: c_int = 0 as c_int;
             while i_ref0 < (*h).i_ref[0] << mbfield {
                 let mut l0: *mut x264_frame_t = (*h).fref[0][(i_ref0 >> mbfield) as usize];
@@ -4889,9 +4851,9 @@ pub unsafe extern "C" fn x264_10_macroblock_bipred_init(mut h: *mut x264_t) {
                         (*h).mb.dist_scale_factor_buf[mbfield as usize][field as usize]
                             [i_ref0 as usize][i_ref1 as usize] = dist_scale_factor as int16_t;
                         dist_scale_factor >>= 2 as c_int;
-                        if (*h).param.analyse.b_weighted_bipred != 0
-                            && dist_scale_factor >= -(64 as c_int)
-                            && dist_scale_factor <= 128 as c_int
+                        if (*h).param.analyse.weighted_bipred
+                            && dist_scale_factor >= -64
+                            && dist_scale_factor <= 128
                         {
                             (*h).mb.bipred_weight_buf[mbfield as usize][field as usize]
                                 [i_ref0 as usize][i_ref1 as usize] =

@@ -145,14 +145,14 @@ unsafe extern "C" fn mb_encode_i16x16(mut h: *mut x264_t, mut p: c_int, mut i_qp
         CQM_4IY as c_int
     };
     let mut i_mode: c_int = (*h).mb.i_intra16x16_pred_mode;
-    if (*h).mb.b_lossless != 0 {
+    if (*h).mb.lossless {
         x264_10_predict_lossless_16x16(h, p, i_mode);
     } else {
         (*h).predict_16x16[i_mode as usize].expect("non-null function pointer")(
             (*h).mb.pic.p_fdec[p as usize],
         );
     }
-    if (*h).mb.b_lossless != 0 {
+    if (*h).mb.lossless {
         let mut i: c_int = 0 as c_int;
         while i < 16 as c_int {
             let mut oe: c_int = block_idx_xy_fenc[i as usize] as c_int;
@@ -646,7 +646,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
         };
         let mut nz_ac: c_int = 0 as c_int;
         let mut dct4x4: [[dctcoef; 16]; 8] = [[0; 16]; 8];
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             static mut chroma422_scan: [uint8_t; 8] = [
                 0 as c_int as uint8_t,
                 2 as c_int as uint8_t,
@@ -1207,7 +1207,7 @@ unsafe extern "C" fn x264_10_predict_lossless_4x4(
     mut idx: c_int,
     mut i_mode: c_int,
 ) {
-    let mut stride: c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+    let mut stride: c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.interlaced as i32;
     let mut p_src: *mut pixel = (*h).mb.pic.p_fenc_plane[p as usize]
         .offset((block_idx_x[idx as usize] as c_int * 4 as c_int) as isize)
         .offset((block_idx_y[idx as usize] as c_int * 4 as c_int * stride) as isize);
@@ -1252,7 +1252,7 @@ unsafe extern "C" fn x264_10_predict_lossless_8x8(
     mut i_mode: c_int,
     mut edge: *mut pixel,
 ) {
-    let mut stride: c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+    let mut stride: c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.interlaced as i32;
     let mut p_src: *mut pixel = (*h).mb.pic.p_fenc_plane[p as usize]
         .offset(((idx & 1 as c_int) * 8 as c_int) as isize)
         .offset(((idx >> 1 as c_int) * 8 as c_int * stride) as isize);
@@ -1293,7 +1293,7 @@ unsafe extern "C" fn x264_10_predict_lossless_16x16(
     mut p: c_int,
     mut i_mode: c_int,
 ) {
-    let mut stride: c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+    let mut stride: c_int = (*(*h).fenc).i_stride[p as usize] << (*h).mb.interlaced as i32;
     let mut p_dst: *mut pixel = (*h).mb.pic.p_fdec[p as usize];
     if i_mode == I_PRED_16x16_V as c_int {
         (*h).mc.copy[PIXEL_16x16 as c_int as usize].expect("non-null function pointer")(
@@ -1648,7 +1648,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         if (*h).mb.b_skip_mc == 0 {
             x264_10_mb_mc(h);
         }
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             if (*h).mb.b_transform_8x8 != 0 {
                 let mut p_5: c_int = 0 as c_int;
                 while p_5 < plane_count {
@@ -1719,7 +1719,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
         } else if (*h).mb.b_transform_8x8 != 0 {
             let mut dct8x8: [[dctcoef; 64]; 4] = [[0; 64]; 4];
-            b_decimate &= ((*h).mb.b_trellis == 0 || (*h).param.b_cabac == 0) as c_int;
+            b_decimate &= ((*h).mb.b_trellis == 0 || !(*h).param.cabac) as c_int;
             let mut p_7: c_int = 0 as c_int;
             while p_7 < plane_count {
                 let mut quant_cat: c_int = if p_7 != 0 {
@@ -2100,7 +2100,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             || (*h).mb.i_type == I_PCM as c_int
         {
             let mut i_mode_1: c_int = (*h).mb.i_chroma_pred_mode;
-            if (*h).mb.b_lossless != 0 {
+            if (*h).mb.lossless {
                 x264_10_predict_lossless_chroma(h, i_mode_1);
             } else {
                 (*h).predict_chroma[i_mode_1 as usize].expect("non-null function pointer")(
@@ -2123,7 +2123,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         (*h).mb.i_cbp_chroma = 0 as c_int;
     }
     let mut cbp: c_int = (*h).mb.i_cbp_chroma << 4 as c_int | (*h).mb.i_cbp_luma;
-    if (*h).param.b_cabac != 0 {
+    if (*h).param.cabac {
         cbp |= ((*h).mb.cache.non_zero_count[x264_scan8[LUMA_DC as usize] as usize] as c_int)
             << 8 as c_int
             | ((*h).mb.cache.non_zero_count[x264_scan8[(CHROMA_DC + 0 as c_int) as usize] as usize]
@@ -2589,7 +2589,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
     if (*h).mb.b_skip_mc == 0 {
         x264_10_mb_mc_8x8(h, i8);
     }
-    if (*h).mb.b_lossless != 0 {
+    if (*h).mb.lossless {
         let mut p: c_int = 0 as c_int;
         while p < plane_count {
             let mut p_fenc: *mut pixel = (*h).mb.pic.p_fenc[p as usize]
@@ -3146,7 +3146,7 @@ unsafe extern "C" fn macroblock_encode_p4x4_internal(
             .offset(*block_idx_xy_fdec.as_ptr().offset(i4 as isize) as isize)
             as *mut pixel;
         let mut nz: c_int = 0;
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                 (*(*h)
                     .dct

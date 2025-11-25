@@ -51,14 +51,11 @@ unsafe extern "C" fn x264_10_mb_predict_mv(
             .as_mut_ptr()
             .offset((i8 - 8 as c_int - 1 as c_int) as isize))
         .as_mut_ptr();
-        if (*h).sh.b_mbaff != 0
-            && (*h).mb.cache.ref_0[i_list as usize][(x264_scan8[0] as c_int - 1 as c_int) as usize]
-                as c_int
-                != -(2 as c_int)
-            && (*h).mb.b_interlaced
-                != *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
+        if (*h).sh.mbaff
+            && (*h).mb.cache.ref_0[i_list as usize][(x264_scan8[0] - 1) as usize] != -2
+            && (*h).mb.interlaced as u8 != *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0] as isize)
         {
-            if idx == 2 as c_int {
+            if idx == 2 {
                 mv_c = (*(*(*h)
                     .mb
                     .cache
@@ -239,15 +236,15 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(mut h: *mut x264_t) -> c
         *(*(*h).fref[1][0]).mb_partition.offset(mb_xy as isize) as c_int,
         *(*(*h).fref[1][0]).mb_partition.offset(mb_xy as isize) as c_int,
     ];
-    let mut preshift: c_int = (*h).mb.b_interlaced;
-    let mut postshift: c_int = (*h).mb.b_interlaced;
-    let mut offset: c_int = 1 as c_int;
-    let mut yshift: c_int = 1 as c_int;
+    let mut preshift = (*h).mb.interlaced as i32;
+    let mut postshift = (*h).mb.interlaced as i32;
+    let mut offset: c_int = 1;
+    let mut yshift: c_int = 1;
     (*h).mb.i_partition = partition_col[0];
-    if (*h).param.b_interlaced != 0
-        && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) as c_int != (*h).mb.b_interlaced
+    if (*h).param.interlaced
+        && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) != (*h).mb.interlaced as u8
     {
-        if (*h).mb.b_interlaced != 0 {
+        if (*h).mb.interlaced {
             mb_y = (*h).mb.i_mb_y & !(1 as c_int);
             mb_xy = mb_x + (*h).mb.i_mb_stride * mb_y;
             type_col[0] = *(*(*h).fref[1][0]).mb_type.offset(mb_xy as isize) as c_int;
@@ -280,7 +277,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(mut h: *mut x264_t) -> c
         } else {
             let mut cur_poc: c_int = (*(*h).fdec).i_poc
                 + (*(*h).fdec).i_delta_poc
-                    [((*h).mb.b_interlaced & (*h).mb.i_mb_y & 1 as c_int) as usize];
+                    [((*h).mb.interlaced as i32 & (*h).mb.i_mb_y & 1 as c_int) as usize];
             let mut col_parity: c_int =
                 (abs((*(*h).fref[1][0]).i_poc + (*(*h).fref[1][0]).i_delta_poc[0] - cur_poc)
                     >= abs((*(*h).fref[1][0]).i_poc + (*(*h).fref[1][0]).i_delta_poc[1] - cur_poc))
@@ -316,16 +313,16 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(mut h: *mut x264_t) -> c
     while i8 < max_i8 {
         let mut x8: c_int = i8 & 1 as c_int;
         let mut y8: c_int = i8 >> 1 as c_int;
-        let mut ypart: c_int = if (*h).sh.b_mbaff != 0
-            && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) as c_int != (*h).mb.b_interlaced
+        let mut ypart: c_int = if (*h).sh.mbaff
+            && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) != (*h).mb.interlaced as u8
         {
-            if (*h).mb.b_interlaced != 0 {
-                y8 * 6 as c_int
+            if (*h).mb.interlaced {
+                y8 * 6
             } else {
-                2 as c_int * ((*h).mb.i_mb_y & 1 as c_int) + y8
+                2 * ((*h).mb.i_mb_y & 1) + y8
             }
         } else {
-            3 as c_int * y8
+            3 * y8
         };
         if type_col[y8 as usize] == I_4x4 as c_int
             || type_col[y8 as usize] == I_8x8 as c_int
@@ -366,7 +363,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(mut h: *mut x264_t) -> c
             let mut i_ref: c_int =
                 (*h).mb.map_col_to_list0[((i_ref1_ref >> preshift) + 2 as c_int) as usize] as c_int
                     * ((1 as c_int) << postshift)
-                    + (offset & i_ref1_ref & (*h).mb.b_interlaced);
+                    + (offset & i_ref1_ref & (*h).mb.interlaced as i32);
             if i_ref >= 0 as c_int {
                 let mut dist_scale_factor: c_int =
                     (*(*h).mb.dist_scale_factor.offset(i_ref as isize))[0] as c_int;
@@ -382,7 +379,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(mut h: *mut x264_t) -> c
                 let mut l0x: c_int =
                     dist_scale_factor * *mv_col.offset(0) as c_int + 128 as c_int >> 8 as c_int;
                 let mut l0y: c_int = dist_scale_factor * mv_y as c_int + 128 as c_int >> 8 as c_int;
-                if (*h).param.i_threads > 1 as c_int
+                if *(*h).param.threads > 1
                     && (l0y > (*h).mb.mv_max_spel[1]
                         || l0y - mv_y as c_int > (*h).mb.mv_max_spel[1])
                 {
@@ -535,9 +532,9 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
     ];
     (*h).mb.i_partition = partition_col[0];
     if b_interlaced != 0
-        && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) as c_int != (*h).mb.b_interlaced
+        && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) != (*h).mb.interlaced as u8
     {
-        if (*h).mb.b_interlaced != 0 {
+        if (*h).mb.interlaced {
             mb_y = (*h).mb.i_mb_y & !(1 as c_int);
             mb_xy = mb_x + (*h).mb.i_mb_stride * mb_y;
             type_col[0] = *(*(*h).fref[1][0]).mb_type.offset(mb_xy as isize) as c_int;
@@ -568,7 +565,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
         } else {
             let mut cur_poc: c_int = (*(*h).fdec).i_poc
                 + (*(*h).fdec).i_delta_poc
-                    [((*h).mb.b_interlaced & (*h).mb.i_mb_y & 1 as c_int) as usize];
+                    [((*h).mb.interlaced as i32 & (*h).mb.i_mb_y & 1 as c_int) as usize];
             let mut col_parity: c_int =
                 (abs((*(*h).fref[1][0]).i_poc + (*(*h).fref[1][0]).i_delta_poc[0] - cur_poc)
                     >= abs((*(*h).fref[1][0]).i_poc + (*(*h).fref[1][0]).i_delta_poc[1] - cur_poc))
@@ -639,7 +636,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
         );
         return 1 as c_int;
     }
-    if (*h).param.i_threads > 1 as c_int
+    if *(*h).param.threads > 1
         && (mv[0][1] as c_int > (*h).mb.mv_max_spel[1]
             || mv[1][1] as c_int > (*h).mb.mv_max_spel[1])
     {
@@ -656,24 +653,23 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
         return 1 as c_int;
     }
     let mut max_i8: c_int = D_16x16 as c_int - (*h).mb.i_partition + 1 as c_int;
-    let mut step: c_int = ((*h).mb.i_partition == D_16x8 as c_int) as c_int + 1 as c_int;
+    let mut step = ((*h).mb.i_partition == D_16x8 as c_int) as usize + 1;
     let mut width: c_int = 4 as c_int >> (D_16x16 as c_int - (*h).mb.i_partition & 1 as c_int);
     let mut height: c_int = 4 as c_int >> (D_16x16 as c_int - (*h).mb.i_partition >> 1 as c_int);
     let mut current_block_59: u64;
-    let mut i8: c_int = 0 as c_int;
-    while i8 < max_i8 {
+    for i8 in (0..max_i8).step_by(step) {
         let x8: c_int = i8 & 1 as c_int;
         let y8: c_int = i8 >> 1 as c_int;
         let mut ypart: c_int = if b_interlaced != 0
-            && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) as c_int != (*h).mb.b_interlaced
+            && *(*(*h).fref[1][0]).field.offset(mb_xy as isize) != (*h).mb.interlaced as u8
         {
-            if (*h).mb.b_interlaced != 0 {
-                y8 * 6 as c_int
+            if (*h).mb.interlaced {
+                y8 * 6
             } else {
-                2 as c_int * ((*h).mb.i_mb_y & 1 as c_int) + y8
+                2 * ((*h).mb.i_mb_y & 1) + y8
             }
         } else {
-            3 as c_int * y8
+            3 * y8
         };
         let mut o8: c_int = x8 + (ypart >> 1 as c_int) * (*h).mb.i_b8_stride;
         let mut o4: c_int = 3 as c_int * x8 + ypart * (*h).mb.i_b4_stride;
@@ -727,7 +723,6 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
                 }
             }
         }
-        i8 += step;
     }
     return 1 as c_int;
 }
@@ -749,7 +744,7 @@ unsafe extern "C" fn x264_10_mb_predict_mv_direct16x16(
     if (*h).param.analyse.direct_mv_pred == DirectPrediction::None {
         return 0;
     } else if (*h).sh.b_direct_spatial_mv_pred != 0 {
-        if (*h).sh.b_mbaff != 0 {
+        if (*h).sh.mbaff {
             b_available = mb_predict_mv_direct16x16_spatial_interlaced(h);
         } else {
             b_available = mb_predict_mv_direct16x16_spatial_progressive(h);
@@ -959,9 +954,9 @@ unsafe extern "C" fn x264_10_mb_predict_mv_ref16x16(
             }
         }
     }
-    if (*h).sh.b_mbaff != 0 {
-        if (*h).mb.i_mb_left_xy[0] >= 0 as c_int {
-            let mut shift: c_int = 1 as c_int + (*h).mb.b_interlaced
+    if (*h).sh.mbaff {
+        if (*h).mb.i_mb_left_xy[0] >= 0 {
+            let mut shift: c_int = 1 + (*h).mb.interlaced as i32
                 - *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int;
             let mut mvp: *mut int16_t = (*(*(*(*h).mb.mvr.as_mut_ptr().offset(i_list as isize))
                 .as_mut_ptr()
@@ -974,7 +969,7 @@ unsafe extern "C" fn x264_10_mb_predict_mv_ref16x16(
             i += 1;
         }
         if (*h).mb.i_mb_top_xy >= 0 as c_int {
-            let mut shift_0: c_int = 1 as c_int + (*h).mb.b_interlaced
+            let mut shift_0: c_int = 1 + (*h).mb.interlaced as i32
                 - *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) as c_int;
             let mut mvp_0: *mut int16_t = (*(*(*(*h).mb.mvr.as_mut_ptr().offset(i_list as isize))
                 .as_mut_ptr()
@@ -987,7 +982,7 @@ unsafe extern "C" fn x264_10_mb_predict_mv_ref16x16(
             i += 1;
         }
         if (*h).mb.i_mb_topleft_xy >= 0 as c_int {
-            let mut shift_1: c_int = 1 as c_int + (*h).mb.b_interlaced
+            let mut shift_1: c_int = 1 as c_int + (*h).mb.interlaced as i32
                 - *(*h).mb.field.offset((*h).mb.i_mb_topleft_xy as isize) as c_int;
             let mut mvp_1: *mut int16_t = (*(*(*(*h).mb.mvr.as_mut_ptr().offset(i_list as isize))
                 .as_mut_ptr()
@@ -1000,7 +995,7 @@ unsafe extern "C" fn x264_10_mb_predict_mv_ref16x16(
             i += 1;
         }
         if (*h).mb.i_mb_topright_xy >= 0 as c_int {
-            let mut shift_2: c_int = 1 as c_int + (*h).mb.b_interlaced
+            let mut shift_2: c_int = 1 as c_int + (*h).mb.interlaced as i32
                 - *(*h).mb.field.offset((*h).mb.i_mb_topright_xy as isize) as c_int;
             let mut mvp_2: *mut int16_t = (*(*(*(*h).mb.mvr.as_mut_ptr().offset(i_list as isize))
                 .as_mut_ptr()
@@ -1037,11 +1032,11 @@ unsafe extern "C" fn x264_10_mb_predict_mv_ref16x16(
         let mut field: c_int = (*h).mb.i_mb_y & 1 as c_int;
         let mut curpoc: c_int = (*(*h).fdec).i_poc + (*(*h).fdec).i_delta_poc[field as usize];
         let mut refpoc: c_int =
-            (*(*h).fref[i_list as usize][(i_ref >> (*h).sh.b_mbaff) as usize]).i_poc;
+            (*(*h).fref[i_list as usize][(i_ref >> (*h).sh.mbaff as i32) as usize]).i_poc;
         refpoc += (*l0).i_delta_poc[(field ^ i_ref & 1 as c_int) as usize];
         let mut mb_index: c_int = (*h).mb.i_mb_xy + 0 as c_int + 0 as c_int * (*h).mb.i_mb_stride;
-        let mut scale: c_int =
-            (curpoc - refpoc) * (*l0).inv_ref_poc[((*h).mb.b_interlaced & field) as usize] as c_int;
+        let mut scale: c_int = (curpoc - refpoc)
+            * (*l0).inv_ref_poc[((*h).mb.interlaced as i32 & field) as usize] as c_int;
         (*mvc.offset(i as isize))[0] = x264_clip3(
             (*(*l0).mv16x16.offset(mb_index as isize))[0] as c_int * scale + 128 as c_int
                 >> 8 as c_int,
@@ -1059,7 +1054,7 @@ unsafe extern "C" fn x264_10_mb_predict_mv_ref16x16(
             let mut mb_index_0: c_int =
                 (*h).mb.i_mb_xy + 1 as c_int + 0 as c_int * (*h).mb.i_mb_stride;
             let mut scale_0: c_int = (curpoc - refpoc)
-                * (*l0).inv_ref_poc[((*h).mb.b_interlaced & field) as usize] as c_int;
+                * (*l0).inv_ref_poc[((*h).mb.interlaced as i32 & field) as usize] as c_int;
             (*mvc.offset(i as isize))[0] = x264_clip3(
                 (*(*l0).mv16x16.offset(mb_index_0 as isize))[0] as c_int * scale_0 + 128 as c_int
                     >> 8 as c_int,
@@ -1078,7 +1073,7 @@ unsafe extern "C" fn x264_10_mb_predict_mv_ref16x16(
             let mut mb_index_1: c_int =
                 (*h).mb.i_mb_xy + 0 as c_int + 1 as c_int * (*h).mb.i_mb_stride;
             let mut scale_1: c_int = (curpoc - refpoc)
-                * (*l0).inv_ref_poc[((*h).mb.b_interlaced & field) as usize] as c_int;
+                * (*l0).inv_ref_poc[((*h).mb.interlaced as i32 & field) as usize] as c_int;
             (*mvc.offset(i as isize))[0] = x264_clip3(
                 (*(*l0).mv16x16.offset(mb_index_1 as isize))[0] as c_int * scale_1 + 128 as c_int
                     >> 8 as c_int,

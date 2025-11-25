@@ -29,9 +29,9 @@ use crate::tables_h::{x264_cqm_flat16, x264_cqm_jvt};
 use crate::x264_config_h::X264_VERSION;
 use crate::x264_h::{
     x264_level_t, x264_levels, x264_param_t, BPyramid, ContentLightLevel, FramePacking,
-    MasteringDisplay, X264_BUILD, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_CSP_BGR,
-    X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_LOG_ERROR, X264_LOG_WARNING,
-    X264_RC_ABR, X264_RC_CQP,
+    MasteringDisplay, RateControlMode, X264_BUILD, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT,
+    X264_CSP_BGR, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK, X264_LOG_ERROR,
+    X264_LOG_WARNING,
 };
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -213,8 +213,7 @@ unsafe extern "C" fn x264_10_sps_init(
     (*sps).i_id = i_id;
     (*sps).i_mb_width = ((*param).width as c_int + 15 as c_int) / 16 as c_int;
     (*sps).i_mb_height = ((*param).height as c_int + 15 as c_int) / 16 as c_int;
-    (*sps).b_frame_mbs_only =
-        !((*param).b_interlaced != 0 || (*param).b_fake_interlaced != 0) as c_int;
+    (*sps).b_frame_mbs_only = !((*param).interlaced || (*param).fake_interlaced) as c_int;
     if (*sps).b_frame_mbs_only == 0 {
         (*sps).i_mb_height = (*sps).i_mb_height + 1 as c_int & !(1 as c_int);
     }
@@ -227,7 +226,7 @@ unsafe extern "C" fn x264_10_sps_init(
     } else {
         CHROMA_400 as c_int
     };
-    (*sps).b_qpprime_y_zero_transform_bypass = ((*param).rc.i_rc_method == X264_RC_CQP
+    (*sps).b_qpprime_y_zero_transform_bypass = ((*param).rc.i_rc_method == RateControlMode::CQP
         && (*param).rc.i_qp_constant == 0 as c_int)
         as c_int;
     if (*sps).b_qpprime_y_zero_transform_bypass != 0
@@ -238,15 +237,15 @@ unsafe extern "C" fn x264_10_sps_init(
         (*sps).i_profile_idc = PROFILE_HIGH422 as c_int;
     } else if BIT_DEPTH > 8 as c_int {
         (*sps).i_profile_idc = PROFILE_HIGH10 as c_int;
-    } else if (*param).analyse.b_transform_8x8 != 0
+    } else if (*param).analyse.transform_8x8
         || (*param).i_cqm_preset != X264_CQM_FLAT
         || (*sps).i_chroma_format_idc == CHROMA_400 as c_int
     {
         (*sps).i_profile_idc = PROFILE_HIGH as c_int;
-    } else if (*param).b_cabac != 0
+    } else if (*param).cabac
         || (*param).i_bframe > 0 as c_int
-        || (*param).b_interlaced != 0
-        || (*param).b_fake_interlaced != 0
+        || (*param).interlaced
+        || (*param).fake_interlaced
         || (*param).analyse.i_weighted_pred > 0 as c_int
     {
         (*sps).i_profile_idc = PROFILE_MAIN as c_int;
@@ -424,7 +423,7 @@ unsafe extern "C" fn x264_10_sps_init(
     let mut max_frame_num: c_int = (*sps).vui.i_max_dec_frame_buffering
         * (((*param).bframe_pyramid != BPyramid::None) as c_int + 1 as c_int)
         + 1 as c_int;
-    if (*param).b_intra_refresh != 0 {
+    if (*param).intra_refresh {
         let mut time_to_recovery: c_int =
             (if ((*sps).i_mb_width - 1 as c_int) < (*param).i_keyint_max {
                 (*sps).i_mb_width - 1 as c_int
@@ -443,7 +442,7 @@ unsafe extern "C" fn x264_10_sps_init(
         (*sps).i_log2_max_frame_num += 1;
     }
     (*sps).i_poc_type =
-        if (*param).i_bframe != 0 || (*param).b_interlaced != 0 || (*param).i_avcintra_class != 0 {
+        if (*param).i_bframe != 0 || (*param).interlaced || (*param).i_avcintra_class != 0 {
             0 as c_int
         } else {
             2 as c_int
@@ -459,7 +458,7 @@ unsafe extern "C" fn x264_10_sps_init(
     }
     (*sps).b_vui = 1 as c_int;
     (*sps).b_gaps_in_frame_num_value_allowed = 0 as c_int;
-    (*sps).b_mb_adaptive_frame_field = (*param).b_interlaced;
+    (*sps).mb_adaptive_frame_field = (*param).interlaced;
     (*sps).b_direct8x8_inference = 1 as c_int;
     x264_10_sps_init_reconfigurable(sps, param);
     (*sps).vui.b_overscan_info_present =
@@ -532,11 +531,11 @@ unsafe extern "C" fn x264_10_sps_init(
     if (*sps).vui.b_timing_info_present != 0 {
         (*sps).vui.i_num_units_in_tick = (*param).i_timebase_num;
         (*sps).vui.i_time_scale = (*param).i_timebase_den.wrapping_mul(2 as uint32_t);
-        (*sps).vui.b_fixed_frame_rate = ((*param).b_vfr_input == 0) as c_int;
+        (*sps).vui.b_fixed_frame_rate = (!(*param).vfr_input) as c_int;
     }
     (*sps).vui.b_vcl_hrd_parameters_present = 0 as c_int;
     (*sps).vui.b_nal_hrd_parameters_present = ((*param).i_nal_hrd != 0) as c_int;
-    (*sps).vui.b_pic_struct_present = (*param).b_pic_struct;
+    (*sps).vui.pic_struct_present = (*param).pic_struct;
     (*sps).vui.b_bitstream_restriction =
         !((*sps).b_constraint_set3 != 0 && (*sps).i_profile_idc >= PROFILE_HIGH as c_int) as c_int;
     if (*sps).vui.b_bitstream_restriction != 0 {
@@ -697,7 +696,7 @@ unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_
     );
     bs_write1(s, (*sps).b_frame_mbs_only as uint32_t);
     if (*sps).b_frame_mbs_only == 0 {
-        bs_write1(s, (*sps).b_mb_adaptive_frame_field as uint32_t);
+        bs_write1(s, (*sps).mb_adaptive_frame_field as uint32_t);
     }
     bs_write1(s, (*sps).b_direct8x8_inference as uint32_t);
     bs_write1(s, (*sps).b_crop as uint32_t);
@@ -931,7 +930,7 @@ unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_
         {
             bs_write1(s, 0 as uint32_t);
         }
-        bs_write1(s, (*sps).vui.b_pic_struct_present as uint32_t);
+        bs_write1(s, (*sps).vui.pic_struct_present as uint32_t);
         bs_write1(s, (*sps).vui.b_bitstream_restriction as uint32_t);
         if (*sps).vui.b_bitstream_restriction != 0 {
             bs_write1(
@@ -959,34 +958,31 @@ unsafe extern "C" fn x264_10_pps_init(
 ) {
     (*pps).i_id = i_id;
     (*pps).i_sps_id = (*sps).i_id;
-    (*pps).b_cabac = (*param).b_cabac;
-    (*pps).b_pic_order = ((*param).i_avcintra_class == 0 && (*param).b_interlaced != 0) as c_int;
+    (*pps).cabac = (*param).cabac;
+    (*pps).b_pic_order = ((*param).i_avcintra_class == 0 && (*param).interlaced) as c_int;
     (*pps).i_num_slice_groups = 1 as c_int;
     (*pps).i_num_ref_idx_l0_default_active = (*param).i_frame_reference;
     (*pps).i_num_ref_idx_l1_default_active = 1 as c_int;
     (*pps).b_weighted_pred = ((*param).analyse.i_weighted_pred > 0 as c_int) as c_int;
-    (*pps).b_weighted_bipred = if (*param).analyse.b_weighted_bipred != 0 {
-        2 as c_int
+    (*pps).b_weighted_bipred = if (*param).analyse.weighted_bipred {
+        2
     } else {
-        0 as c_int
+        0
     };
-    (*pps).i_pic_init_qp = if (*param).rc.i_rc_method == X264_RC_ABR || (*param).b_stitchable != 0 {
-        26 as c_int + QP_BD_OFFSET
-    } else if (*param).rc.i_qp_constant < 51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) {
+    (*pps).i_pic_init_qp = if (*param).rc.i_rc_method == RateControlMode::ABR || (*param).stitchable
+    {
+        26 + QP_BD_OFFSET
+    } else if (*param).rc.i_qp_constant < 51 + 6 * (10 - 8) {
         (*param).rc.i_qp_constant
     } else {
-        51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int)
+        51 + 6 * (10 - 8)
     };
     (*pps).i_pic_init_qs = 26 as c_int + QP_BD_OFFSET;
     (*pps).i_chroma_qp_index_offset = (*param).analyse.i_chroma_qp_offset;
     (*pps).b_deblocking_filter_control = 1 as c_int;
-    (*pps).b_constrained_intra_pred = (*param).b_constrained_intra;
+    (*pps).constrained_intra_pred = (*param).constrained_intra;
     (*pps).b_redundant_pic_cnt = 0 as c_int;
-    (*pps).b_transform_8x8_mode = if (*param).analyse.b_transform_8x8 != 0 {
-        1 as c_int
-    } else {
-        0 as c_int
-    };
+    (*pps).b_transform_8x8_mode = if (*param).analyse.transform_8x8 { 1 } else { 0 };
 }
 #[no_mangle]
 #[c2rust::src_loc = "505:1"]
@@ -998,7 +994,7 @@ unsafe extern "C" fn x264_10_pps_write(
     bs_realign(s);
     bs_write_ue_big(s, (*pps).i_id as c_uint);
     bs_write_ue_big(s, (*pps).i_sps_id as c_uint);
-    bs_write1(s, (*pps).b_cabac as uint32_t);
+    bs_write1(s, (*pps).cabac as uint32_t);
     bs_write1(s, (*pps).b_pic_order as uint32_t);
     bs_write_ue_big(s, ((*pps).i_num_slice_groups - 1 as c_int) as c_uint);
     bs_write_ue_big(
@@ -1015,7 +1011,7 @@ unsafe extern "C" fn x264_10_pps_write(
     bs_write_se(s, (*pps).i_pic_init_qs - 26 as c_int - QP_BD_OFFSET);
     bs_write_se(s, (*pps).i_chroma_qp_index_offset);
     bs_write1(s, (*pps).b_deblocking_filter_control as uint32_t);
-    bs_write1(s, (*pps).b_constrained_intra_pred as uint32_t);
+    bs_write1(s, (*pps).constrained_intra_pred as uint32_t);
     bs_write1(s, (*pps).b_redundant_pic_cnt as uint32_t);
     let mut b_scaling_list: c_int =
         ((*sps).b_avcintra_hd == 0 && (*sps).i_cqm_preset != X264_CQM_FLAT) as c_int;
@@ -1215,7 +1211,7 @@ unsafe extern "C" fn x264_10_sei_pic_timing_write(mut h: *mut x264_t, mut s: *mu
             (*(*h).fenc).i_dpb_output_delay as uint32_t,
         );
     }
-    if (*sps).vui.b_pic_struct_present != 0 {
+    if (*sps).vui.pic_struct_present {
         bs_write(
             &mut q,
             4 as c_int,
@@ -1633,25 +1629,25 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
         }
         ret = 1 as c_int;
     }
-    if (*h).param.b_interlaced > ((*l).frame_only == 0) as c_int {
+    if (*h).param.interlaced as i32 > ((*l).frame_only == 0) as c_int {
         if verbose != 0 {
             x264_10_log(
                 h,
                 X264_LOG_WARNING,
                 b"interlaced (%ld) > level limit (%d)\n\0" as *const u8 as *const c_char,
-                (*h).param.b_interlaced as int64_t,
+                (*h).param.interlaced as int64_t,
                 ((*l).frame_only == 0) as c_int,
             );
         }
         ret = 1 as c_int;
     }
-    if (*h).param.b_fake_interlaced > ((*l).frame_only == 0) as c_int {
+    if (*h).param.fake_interlaced as i32 > ((*l).frame_only == 0) as c_int {
         if verbose != 0 {
             x264_10_log(
                 h,
                 X264_LOG_WARNING,
                 b"fake interlaced (%ld) > level limit (%d)\n\0" as *const u8 as *const c_char,
-                (*h).param.b_fake_interlaced as int64_t,
+                (*h).param.fake_interlaced as int64_t,
                 ((*l).frame_only == 0) as c_int,
             );
         }

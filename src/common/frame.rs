@@ -78,7 +78,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
     let mut i_width: c_int = 0;
     let mut i_lines: c_int = 0;
     let mut luma_plane_count: c_int = 0;
-    let mut i_padv: c_int = PADV << (*h).param.b_interlaced;
+    let mut i_padv: c_int = PADV << (*h).param.interlaced as i32;
     let mut align: c_int = NATIVE_ALIGN / SIZEOF_PIXEL;
     if (*h).param.cpu & X264_CPU_CACHELINE_64 as uint32_t != 0
         || (*h).param.cpu & X264_CPU_AVX512 as uint32_t != 0
@@ -216,7 +216,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                     prealloc_size += (chroma_plane_size * size_of::<pixel>() as c_int) as int64_t
                         + (64 as c_int - 1 as c_int) as int64_t
                         & !(64 as c_int - 1 as c_int) as int64_t;
-                    if (*h).param.b_interlaced != 0 {
+                    if (*h).param.interlaced {
                         (*frame).buffer_fld[1] =
                             prealloc_size as intptr_t as *mut c_void as *mut pixel;
                         let fresh10 = prealloc_idx;
@@ -250,7 +250,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                     prealloc_size += luma_plane_size * size_of::<pixel>() as c_int as int64_t
                         + (64 as c_int - 1 as c_int) as int64_t
                         & !(64 as c_int - 1 as c_int) as int64_t;
-                    if (*h).param.b_interlaced != 0 {
+                    if (*h).param.interlaced {
                         (*frame).buffer_fld[p as usize] =
                             prealloc_size as intptr_t as *mut c_void as *mut pixel;
                         let fresh12 = prealloc_idx;
@@ -396,7 +396,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                             + (64 as c_int - 1 as c_int) as int64_t
                             & !(64 as c_int - 1 as c_int) as int64_t;
                     }
-                    if (*h).param.b_interlaced != 0 {
+                    if (*h).param.interlaced {
                         (*frame).field = prealloc_size as intptr_t as *mut c_void as *mut uint8_t;
                         let fresh24 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
@@ -583,7 +583,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                                     64 as c_int / size_of::<pixel>() as c_int
                                 }) as isize,
                             );
-                        if (*h).param.b_interlaced != 0 {
+                        if (*h).param.interlaced {
                             (*frame).plane_fld[1] = (*frame).buffer_fld[1]
                                 .offset(((*frame).i_stride[1] * chroma_padv_0) as isize)
                                 .offset(
@@ -617,7 +617,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                                             64 as c_int / size_of::<pixel>() as c_int
                                         }) as isize,
                                     );
-                                if (*h).param.b_interlaced != 0 {
+                                if (*h).param.interlaced {
                                     (*frame).filtered_fld[p_0 as usize][i_4 as usize] = (*frame)
                                         .buffer_fld[p_0 as usize]
                                         .offset((i_4 as int64_t * luma_plane_size_1) as isize)
@@ -648,7 +648,7 @@ unsafe extern "C" fn frame_new(mut h: *mut x264_t, mut b_fdec: c_int) -> *mut x2
                                     }) as isize,
                                 );
                             (*frame).filtered[p_0 as usize][0] = (*frame).plane[p_0 as usize];
-                            if (*h).param.b_interlaced != 0 {
+                            if (*h).param.interlaced {
                                 (*frame).plane_fld[p_0 as usize] = (*frame).buffer_fld
                                     [p_0 as usize]
                                     .offset(((*frame).i_stride[p_0 as usize] * i_padv) as isize)
@@ -1229,12 +1229,10 @@ unsafe extern "C" fn x264_10_frame_expand_border(
     mut mb_y: c_int,
 ) {
     let mut pad_top: c_int = (mb_y == 0 as c_int) as c_int;
-    let mut pad_bot: c_int =
-        (mb_y == (*h).mb.i_mb_height - ((1 as c_int) << (*h).sh.b_mbaff)) as c_int;
+    let mut pad_bot: c_int = (mb_y == (*h).mb.i_mb_height - (1 << (*h).sh.mbaff as i32)) as c_int;
     let mut b_start: c_int = (mb_y == (*h).i_threadslice_start) as c_int;
-    let mut b_end: c_int =
-        (mb_y == (*h).i_threadslice_end - ((1 as c_int) << (*h).sh.b_mbaff)) as c_int;
-    if mb_y & (*h).sh.b_mbaff != 0 {
+    let mut b_end: c_int = (mb_y == (*h).i_threadslice_end - (1 << (*h).sh.mbaff as i32)) as c_int;
+    if mb_y & (*h).sh.mbaff as i32 != 0 {
         return;
     }
     let mut i: c_int = 0 as c_int;
@@ -1244,18 +1242,18 @@ unsafe extern "C" fn x264_10_frame_expand_border(
         let mut stride: c_int = (*frame).i_stride[i as usize];
         let mut width: c_int = 16 as c_int * (*h).mb.i_mb_width;
         let mut height: c_int = (if pad_bot != 0 {
-            16 as c_int * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.b_mbaff
+            16 as c_int * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.mbaff as i32
         } else {
             16 as c_int
         }) >> v_shift;
         let mut padh: c_int = PADH;
         let mut padv: c_int = PADV >> v_shift;
         if b_end != 0 && b_start == 0 {
-            height += 4 as c_int >> v_shift + (*h).sh.b_mbaff;
+            height += 4 as c_int >> v_shift + (*h).sh.mbaff as i32;
         }
         let mut pix: *mut pixel = 0 as *mut pixel;
         let mut starty: c_int = 16 as c_int * mb_y - 4 as c_int * (b_start == 0) as c_int;
-        if (*h).sh.b_mbaff != 0 {
+        if (*h).sh.mbaff {
             pix = (*frame).plane_fld[i as usize].offset((starty * stride >> v_shift) as isize);
             plane_expand_border(
                 pix,
@@ -1311,9 +1309,9 @@ unsafe extern "C" fn x264_10_frame_expand_border_filtered(
     let mut b_start: c_int = (mb_y == 0) as c_int;
     let mut width: c_int = 16 as c_int * (*h).mb.i_mb_width + 8 as c_int;
     let mut height: c_int = if b_end != 0 {
-        (16 as c_int * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.b_mbaff) + 16 as c_int
+        (16 * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.mbaff as i32) + 16
     } else {
-        16 as c_int
+        16
     };
     let mut padh: c_int = PADH - 4 as c_int;
     let mut padv: c_int = PADV - 8 as c_int;
@@ -1329,7 +1327,7 @@ unsafe extern "C" fn x264_10_frame_expand_border_filtered(
         while i < 4 as c_int {
             let mut stride: c_int = (*frame).i_stride[p as usize];
             let mut pix: *mut pixel = 0 as *mut pixel;
-            if (*h).sh.b_mbaff != 0 {
+            if (*h).sh.mbaff {
                 pix = (*frame).filtered_fld[p as usize][i as usize]
                     .offset(((16 as c_int * mb_y - 16 as c_int) * stride) as isize)
                     .offset(-(4));
@@ -1363,7 +1361,7 @@ unsafe extern "C" fn x264_10_frame_expand_border_filtered(
                 pix,
                 stride,
                 width,
-                height << (*h).sh.b_mbaff,
+                height << (*h).sh.mbaff as i32,
                 padh,
                 padv,
                 b_start,
@@ -1454,7 +1452,7 @@ unsafe extern "C" fn x264_10_frame_expand_border_mod16(
                         .offset((y_0 * *(*frame).i_stride.as_mut_ptr().offset(i as isize)) as isize)
                         as *mut pixel as *mut c_void,
                     &mut *(*(*frame).plane.as_mut_ptr().offset(i as isize)).offset(
-                        ((i_height - (!y_0 & (*h).param.b_interlaced) - 1 as c_int)
+                        ((i_height - (!y_0 & (*h).param.interlaced as i32) - 1 as c_int)
                             * *(*frame).i_stride.as_mut_ptr().offset(i as isize))
                             as isize,
                     ) as *mut pixel as *const c_void,
@@ -1547,23 +1545,23 @@ unsafe extern "C" fn x264_10_frame_new_slice(
     mut frame: *mut x264_frame_t,
 ) -> c_int {
     if (*h).param.i_slice_count_max != 0 {
-        let mut slice_count: c_int = 0;
-        if (*h).param.b_sliced_threads != 0 {
-            slice_count = x264_pthread_fetch_and_add(
+        let slice_count = match (*h).param.sliced_threads {
+            true => x264_pthread_fetch_and_add(
                 &mut (*frame).i_slice_count,
                 1 as c_int,
                 &mut (*frame).mutex,
-            );
-        } else {
-            let fresh1 = (*frame).i_slice_count;
-            (*frame).i_slice_count = (*frame).i_slice_count + 1;
-            slice_count = fresh1;
-        }
+            ),
+            false => {
+                let slice_count = (*frame).i_slice_count;
+                (*frame).i_slice_count += 1;
+                slice_count
+            }
+        };
         if slice_count >= (*h).param.i_slice_count_max {
             return -1;
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "735:1"]
@@ -1689,12 +1687,11 @@ unsafe extern "C" fn x264_10_frame_pop_unused(
     (*frame).i_reference_count = 1 as c_int;
     (*frame).b_intra_calculated = 0 as c_int;
     (*frame).b_scenecut = 1 as c_int;
-    (*frame).b_keyframe = 0 as c_int;
+    (*frame).keyframe = false;
     (*frame).b_corrupt = 0 as c_int;
-    (*frame).i_slice_count = if (*h).param.b_sliced_threads != 0 {
-        (*h).param.i_threads
-    } else {
-        1 as c_int
+    (*frame).i_slice_count = match (*h).param.sliced_threads {
+        true => *(*h).param.threads as i32,
+        false => 1,
     };
     memset(
         (*frame).weight.as_mut_ptr() as *mut c_void,

@@ -221,11 +221,11 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
     let mut min_qp_err: c_int = QP_MAX + 1 as c_int;
     let mut num_8x8_lists: c_int =
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-            4 as c_int
-        } else if (*h).param.analyse.b_transform_8x8 != 0 {
-            2 as c_int
+            4
+        } else if (*h).param.analyse.transform_8x8 {
+            2
         } else {
-            0 as c_int
+            0
         };
     let mut i: c_int = 0 as c_int;
     loop {
@@ -587,7 +587,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                             }
                             i_list_1 += 1;
                         }
-                        if (*h).param.analyse.b_transform_8x8 != 0 {
+                        if (*h).param.analyse.transform_8x8 {
                             let mut i_list_2: c_int = 0 as c_int;
                             while i_list_2 < num_8x8_lists {
                                 let mut i_6: c_int = 0 as c_int;
@@ -694,12 +694,8 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                                         as c_int
                             {
                                 let mut dct8x8: c_int = cat & 1 as c_int;
-                                if !((*h).param.analyse.b_transform_8x8 == 0 && dct8x8 != 0) {
-                                    let mut size_1: c_int = if dct8x8 != 0 {
-                                        64 as c_int
-                                    } else {
-                                        16 as c_int
-                                    };
+                                if !(!(*h).param.analyse.transform_8x8 && dct8x8 != 0) {
+                                    let mut size_1: c_int = if dct8x8 != 0 { 64 } else { 16 };
                                     let mut nr_offset: *mut udctcoef =
                                         (*(*(*h).nr_offset_emergency.offset(q_2 as isize))
                                             .as_mut_ptr()
@@ -763,14 +759,12 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                             }
                             q_2 += 1;
                         }
-                        if (*h).mb.b_lossless == 0 {
+                        if !(*h).mb.lossless {
                             while *(*h).chroma_qp_table.offset(
-                                (if (*h).param.rc.i_qp_min
-                                    < 51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int)
-                                {
+                                (if (*h).param.rc.i_qp_min < 51 + 6 * (10 - 8) {
                                     (*h).param.rc.i_qp_min
                                 } else {
-                                    51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int)
+                                    51 + 6 * (10 - 8)
                                 }) as isize,
                             ) as c_int
                                 <= max_chroma_qp_err
@@ -783,7 +777,7 @@ unsafe extern "C" fn x264_10_cqm_init(mut h: *mut x264_t) -> c_int {
                             if max_qp_err >= (*h).param.rc.i_qp_min {
                                 (*h).param.rc.i_qp_min = max_qp_err + 1 as c_int;
                             }
-                            if (*h).param.b_cabac == 0
+                            if !(*h).param.cabac
                                 && (*(*h).sps.as_mut_ptr()).i_profile_idc < PROFILE_HIGH as c_int
                             {
                                 while *(*h).chroma_qp_table.offset(

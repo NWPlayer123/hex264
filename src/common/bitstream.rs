@@ -53,7 +53,7 @@ unsafe extern "C" fn x264_10_nal_encode(
     let mut src: *mut uint8_t = (*nal).p_payload;
     let mut end: *mut uint8_t = (*nal).p_payload.offset((*nal).i_payload as isize);
     let mut orig_dst: *mut uint8_t = dst;
-    if (*h).param.b_annexb != 0 {
+    if (*h).param.annexb {
         if (*nal).b_long_startcode != 0 {
             let fresh7 = dst;
             dst = dst.offset(1);
@@ -89,7 +89,7 @@ unsafe extern "C" fn x264_10_nal_encode(
             0 as c_int
         };
     }
-    if (*h).param.b_annexb == 0 {
+    if !(*h).param.annexb {
         let mut chunk_size: c_int = size - 4 as c_int;
         *orig_dst.offset(0) = (chunk_size >> 24 as c_int) as uint8_t;
         *orig_dst.offset(1) = (chunk_size >> 16 as c_int) as uint8_t;
