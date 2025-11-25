@@ -124,7 +124,7 @@ unsafe extern "C" fn open_file(
     if h.is_null() {
         return -1;
     }
-    (*info).vfr = 0 as c_int;
+    (*info).vfr = false;
     if strcmp(psz_filename, b"-\0" as *const u8 as *const c_char) == 0 {
         (*h).fh = stdin;
     } else {
@@ -192,15 +192,15 @@ unsafe extern "C" fn open_file(
                     tokstart = tokstart.offset(1);
                     match *fresh1 as c_int {
                         116 => {
-                            (*info).interlaced = 1 as c_int;
-                            (*info).tff = 1 as c_int;
+                            (*info).interlaced = true;
+                            (*info).tff = true;
                         }
                         98 => {
-                            (*info).interlaced = 1 as c_int;
-                            (*info).tff = 0 as c_int;
+                            (*info).interlaced = true;
+                            (*info).tff = false;
                         }
                         109 => {
-                            (*info).interlaced = 1 as c_int;
+                            (*info).interlaced = true;
                         }
                         _ => {}
                     }

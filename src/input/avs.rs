@@ -801,8 +801,8 @@ unsafe extern "C" fn open_file(
             return -1;
         }
         res = update_clip(h, &mut vi, tmp, res);
-        (*info).interlaced = 1 as c_int;
-        (*info).tff = avs_is_tff(vi);
+        (*info).interlaced = true;
+        (*info).tff = avs_is_tff(vi) != 0;
     }
     (*h).func
         .avs_release_value
@@ -911,7 +911,7 @@ unsafe extern "C" fn open_file(
         );
         return -1;
     }
-    (*info).vfr = 0 as c_int;
+    (*info).vfr = false;
     *p_handle = h as hnd_t;
     return 0 as c_int;
 }

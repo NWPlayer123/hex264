@@ -144,7 +144,7 @@ unsafe extern "C" fn lookahead_thread(mut h: *mut x264_t) -> *mut c_void {
             );
             pthread_mutex_unlock(&mut (*(*h).lookahead).next.mutex);
             if (*(*h).lookahead).next.i_size
-                <= (*(*h).lookahead).i_slicetype_length + (*h).param.b_vfr_input
+                <= (*(*h).lookahead).i_slicetype_length + (*h).param.vfr_input as i32
             {
                 while (*(*h).lookahead).ifbuf.i_size == 0 && (*(*h).lookahead).b_exit_thread == 0 {
                     pthread_cond_wait(
@@ -192,16 +192,13 @@ unsafe extern "C" fn x264_10_lookahead_init(
             0 as c_int,
             size_of::<x264_lookahead_t>() as size_t,
         );
-        let mut i: c_int = 0 as c_int;
-        while i < (*h).param.i_threads {
-            (*(*h).thread[i as usize]).lookahead = look;
-            i += 1;
+        for n in 0..*(*h).param.threads as usize {
+            (*(*h).thread[n]).lookahead = look;
         }
         (*look).i_last_keyframe = -(*h).param.i_keyint_max;
-        (*look).b_analyse_keyframe = (((*h).param.rc.b_mb_tree != 0
+        (*look).b_analyse_keyframe = (((*h).param.rc.mb_tree
             || (*h).param.rc.i_vbv_buffer_size != 0 && (*h).param.rc.i_lookahead != 0)
-            && (*h).param.rc.b_stat_read == 0) as c_int
-            as uint8_t;
+            && !(*h).param.rc.stat_read) as c_int as uint8_t;
         (*look).i_slicetype_length = i_slicetype_length;
         if !(x264_10_sync_frame_list_init(
             &mut (*look).ifbuf,
@@ -215,7 +212,7 @@ unsafe extern "C" fn x264_10_lookahead_init(
             if (*h).param.i_sync_lookahead == 0 {
                 return 0 as c_int;
             }
-            look_h = (*h).thread[(*h).param.i_threads as usize];
+            look_h = (*h).thread[*(*h).param.threads as usize];
             *look_h = *h;
             if !(x264_10_macroblock_cache_allocate(look_h) != 0) {
                 if !(x264_10_macroblock_thread_allocate(look_h, 1 as c_int) < 0 as c_int) {
@@ -248,6 +245,7 @@ unsafe extern "C" fn x264_10_lookahead_init(
 #[c2rust::src_loc = "171:1"]
 unsafe extern "C" fn x264_10_lookahead_delete(mut h: *mut x264_t) {
     if (*h).param.i_sync_lookahead != 0 {
+        let threads = *(*h).param.threads as usize;
         pthread_mutex_lock(&mut (*(*h).lookahead).ifbuf.mutex);
         ::core::ptr::write_volatile(
             &mut (*(*h).lookahead).b_exit_thread as *mut uint8_t,
@@ -255,10 +253,10 @@ unsafe extern "C" fn x264_10_lookahead_delete(mut h: *mut x264_t) {
         );
         pthread_cond_broadcast(&mut (*(*h).lookahead).ifbuf.cv_fill);
         pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
-        pthread_join((*(*h).lookahead).thread_handle, 0 as *mut *mut c_void);
-        x264_10_macroblock_cache_free((*h).thread[(*h).param.i_threads as usize]);
-        x264_10_macroblock_thread_free((*h).thread[(*h).param.i_threads as usize], 1 as c_int);
-        x264_free((*h).thread[(*h).param.i_threads as usize] as *mut c_void);
+        pthread_join((*(*h).lookahead).thread_handle, core::ptr::null_mut());
+        x264_10_macroblock_cache_free((*h).thread[threads]);
+        x264_10_macroblock_thread_free((*h).thread[threads], 1);
+        x264_free((*h).thread[threads] as *mut c_void);
     }
     x264_10_sync_frame_list_delete(&mut (*(*h).lookahead).ifbuf);
     x264_10_sync_frame_list_delete(&mut (*(*h).lookahead).next);

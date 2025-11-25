@@ -30,7 +30,7 @@ unsafe extern "C" fn init(
     mut _param: *mut x264_param_t,
     mut _opt_string: *mut c_char,
 ) -> c_int {
-    if (*info).vfr == 0 {
+    if !(*info).vfr {
         return 0 as c_int;
     }
     let mut h: *mut fix_vfr_pts_hnd_t = calloc(

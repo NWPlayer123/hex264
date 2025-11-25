@@ -1027,8 +1027,8 @@ unsafe extern "C" fn x264_10_macroblock_write_cavlc(mut h: *mut x264_t) {
         as c_int;
     let i_mb_pos_start: c_int = bs_pos(s) as c_int;
     let mut i_mb_pos_tex: c_int = 0;
-    if (*h).sh.b_mbaff != 0
-        && ((*h).mb.i_mb_y & 1 as c_int == 0
+    if (*h).sh.mbaff
+        && ((*h).mb.i_mb_y & 1 == 0
             || (*(*h)
                 .mb
                 .type_0
@@ -1041,8 +1041,8 @@ unsafe extern "C" fn x264_10_macroblock_write_cavlc(mut h: *mut x264_t) {
                     as c_int
                     == B_SKIP as c_int))
     {
-        bs_write1(s, (*h).mb.b_interlaced as uint32_t);
-        (*h).mb.field_decoding_flag = (*h).mb.b_interlaced;
+        bs_write1(s, (*h).mb.interlaced as uint32_t);
+        (*h).mb.field_decoding_flag = (*h).mb.interlaced;
     }
     if i_mb_type == I_PCM as c_int {
         static mut i_offsets: [uint8_t; 3] = [

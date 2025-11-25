@@ -44,7 +44,7 @@ struct flv_hnd_t {
     i_init_delta: int64_t,
     i_delay_frames: c_int,
     d_timebase: c_double,
-    b_vfr_input: c_int,
+    vfr_input: bool,
     b_dts_compress: c_int,
     start: c_uint,
 }
@@ -101,7 +101,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     flv_put_amf_string(c, b"height\0" as *const u8 as *const c_char);
     flv_put_amf_double(c, (*p_param).height as c_double);
     flv_put_amf_string(c, b"framerate\0" as *const u8 as *const c_char);
-    if (*p_param).b_vfr_input == 0 {
+    if !(*p_param).vfr_input {
         flv_put_amf_double(
             c,
             (*p_param).i_fps_num as c_double / (*p_param).i_fps_den as c_double,
@@ -138,7 +138,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     (*p_flv).i_fps_den = (*p_param).i_fps_den as int64_t;
     (*p_flv).d_timebase =
         (*p_param).i_timebase_num as c_double / (*p_param).i_timebase_den as c_double;
-    (*p_flv).b_vfr_input = (*p_param).b_vfr_input;
+    (*p_flv).vfr_input = (*p_param).vfr_input;
     (*p_flv).i_delay_frames = if (*p_param).i_bframe != 0 {
         if (*p_param).bframe_pyramid != BPyramid::None {
             2 as c_int
@@ -286,7 +286,7 @@ unsafe extern "C" fn write_frame(
     (*p_flv).start = (*c).d_cur;
     flv_put_byte(
         c,
-        ((if (*p_picture).b_keyframe != 0 {
+        ((if (*p_picture).keyframe {
             FLV_FRAME_KEY as c_int
         } else {
             FLV_FRAME_INTER as c_int

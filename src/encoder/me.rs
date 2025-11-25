@@ -2122,9 +2122,6 @@ unsafe extern "C" fn x264_10_me_search_ref(
             }
             current_block = 14127502640287082657;
         }
-        _ => {
-            current_block = 14127502640287082657;
-        }
     }
     match current_block {
         14690580863265192683 => {
@@ -2429,7 +2426,7 @@ unsafe extern "C" fn refine_subpel(
         as c_int;
     let mut chromapix: c_int = (*h).luma2chroma_pixel[i_pixel as usize] as c_int;
     let mut chroma_v_shift: c_int = (*h).mb.chroma_v_shift;
-    let mut mvy_offset: c_int = if chroma_v_shift & (*h).mb.b_interlaced & (*m).i_ref != 0 {
+    let mut mvy_offset: c_int = if chroma_v_shift & (*h).mb.interlaced as i32 & (*m).i_ref != 0 {
         ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
     } else {
         0 as c_int
@@ -3364,12 +3361,12 @@ unsafe extern "C" fn me_refine_bidir(
     };
     let mut ref0: c_int = (*h).mb.cache.ref_0[0][s8 as usize] as c_int;
     let mut ref1: c_int = (*h).mb.cache.ref_0[1][s8 as usize] as c_int;
-    let mv0y_offset: c_int = if chroma_v_shift & (*h).mb.b_interlaced & ref0 != 0 {
+    let mv0y_offset: c_int = if chroma_v_shift & (*h).mb.interlaced as i32 & ref0 != 0 {
         ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
     } else {
         0 as c_int
     };
-    let mv1y_offset: c_int = if chroma_v_shift & (*h).mb.b_interlaced & ref1 != 0 {
+    let mv1y_offset: c_int = if chroma_v_shift & (*h).mb.interlaced as i32 & ref1 != 0 {
         ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
     } else {
         0 as c_int
@@ -4032,7 +4029,7 @@ unsafe extern "C" fn x264_10_me_refine_qpel_rd(
     let bh: c_int = x264_pixel_size[(*m).i_pixel as usize].h as c_int;
     let i_pixel: c_int = (*m).i_pixel;
     let mut chroma_v_shift: c_int = (*h).mb.chroma_v_shift;
-    let mut mvy_offset: c_int = if chroma_v_shift & (*h).mb.b_interlaced & (*m).i_ref != 0 {
+    let mut mvy_offset: c_int = if chroma_v_shift & (*h).mb.interlaced as i32 & (*m).i_ref != 0 {
         ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
     } else {
         0 as c_int

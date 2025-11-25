@@ -6,7 +6,6 @@ use crate::__stddef_null_h::NULL_0;
 use crate::__stddef_size_t_h::size_t;
 use crate::base_h::x264_reduce_fraction;
 use crate::config_h::{HAVE_FFMS, HAVE_GPL, HAVE_LAVF};
-use crate::cpu_h::x264_cpu_num_processors;
 use crate::getopt_core_h::{optarg, optind};
 use crate::getopt_ext_h::{getopt_long, no_argument, option, required_argument};
 use crate::input_h::{
@@ -28,6 +27,7 @@ use crate::signal_h::signal;
 use crate::signum_generic_h::SIGINT;
 use crate::src::common::base::x264_param_parse;
 use crate::src::common::base::{x264_param_default, x264_param_default_preset};
+use crate::src::common::cpu::x264_cpu_num_processors;
 use crate::src::filters::video::video::x264_init_vid_filter;
 use crate::stdint_intn_h::{int32_t, int64_t};
 use crate::stdint_uintn_h::{uint32_t, uint64_t, uint8_t};
@@ -56,10 +56,10 @@ use crate::x264_h::{
     PIC_STRUCT_TOP_BOTTOM, PIC_STRUCT_TOP_BOTTOM_TOP, PIC_STRUCT_TRIPLE, X264_BUILD, X264_CSP_BGR,
     X264_CSP_HIGH_DEPTH, X264_CSP_I400, X264_CSP_I420, X264_CSP_I422, X264_CSP_I444, X264_CSP_MASK,
     X264_CSP_NONE, X264_CSP_RGB, X264_LOG_DEBUG, X264_LOG_ERROR, X264_LOG_INFO, X264_LOG_NONE,
-    X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_NAL_HRD_VBR, X264_QP_AUTO, X264_THREADS_AUTO,
-    X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME,
-    X264_TYPE_P,
+    X264_LOG_WARNING, X264_NAL_HRD_CBR, X264_NAL_HRD_VBR, X264_QP_AUTO, X264_TYPE_AUTO,
+    X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
 };
+use crate::x264_h::{RateControlMode, ThreadCount};
 use crate::x264cli_h::{get_filename_extension, hnd_t, RANGE_AUTO, RANGE_PC, UPDATE_INTERVAL};
 use crate::FILE_h::FILE;
 use log::{error, warn};
@@ -651,11 +651,11 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
     }*/
     let mut param: x264_param_t = x264_param_t {
         cpu: 0,
-        i_threads: 0,
-        i_lookahead_threads: 0,
-        b_sliced_threads: 0,
-        b_deterministic: 0,
-        b_cpu_independent: 0,
+        threads: ThreadCount::AUTO,
+        lookahead_threads: ThreadCount::AUTO,
+        sliced_threads: false,
+        deterministic: false,
+        cpu_independent: false,
         i_sync_lookahead: 0,
         width: 0,
         height: 0,
@@ -680,22 +680,22 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
         i_keyint_max: 0,
         i_keyint_min: 0,
         i_scenecut_threshold: 0,
-        b_intra_refresh: 0,
+        intra_refresh: false,
         i_bframe: 0,
         i_bframe_adaptive: 0,
         i_bframe_bias: 0,
         bframe_pyramid: BPyramid::None,
-        b_open_gop: 0,
-        b_bluray_compat: 0,
+        open_gop: false,
+        bluray_compat: false,
         i_avcintra_class: 0,
         i_avcintra_flavor: 0,
-        b_deblocking_filter: 0,
+        deblocking_filter: false,
         i_deblocking_filter_alphac0: 0,
         i_deblocking_filter_beta: 0,
-        b_cabac: 0,
+        cabac: false,
         i_cabac_init_idc: 0,
-        b_interlaced: 0,
-        b_constrained_intra: 0,
+        interlaced: false,
+        constrained_intra: false,
         i_cqm_preset: 0,
         psz_cqm_file: 0 as *mut c_char,
         cqm_4iy: [0; 16],
@@ -709,14 +709,14 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
         pf_log: None,
         p_log_private: 0 as *mut c_void,
         i_log_level: 0,
-        b_full_recon: 0,
+        full_recon: false,
         psz_dump_yuv: 0 as *mut c_char,
         analyse: C2RustUnnamed_3 {
             intra: 0,
             inter: 0,
-            b_transform_8x8: 0,
+            transform_8x8: false,
             i_weighted_pred: 0,
-            b_weighted_bipred: 0,
+            weighted_bipred: false,
             direct_mv_pred: DirectPrediction::None,
             i_chroma_qp_offset: 0,
             me_method: MotionEstimation::Dia,
@@ -724,23 +724,23 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
             i_mv_range: 0,
             i_mv_range_thread: 0,
             i_subpel_refine: 0,
-            b_chroma_me: 0,
-            b_mixed_references: 0,
+            chroma_me: false,
+            mixed_references: false,
             i_trellis: 0,
-            b_fast_pskip: 0,
-            b_dct_decimate: 0,
+            fast_pskip: false,
+            dct_decimate: false,
             i_noise_reduction: 0,
             f_psy_rd: 0.,
             f_psy_trellis: 0.,
-            b_psy: 0,
+            psy: false,
             b_mb_info: 0,
             b_mb_info_update: 0,
             i_luma_deadzone: [0; 2],
-            b_psnr: 0,
-            b_ssim: 0,
+            psnr: false,
+            ssim: false,
         },
         rc: C2RustUnnamed_2 {
-            i_rc_method: 0,
+            i_rc_method: RateControlMode::CQP,
             i_qp_constant: 0,
             i_qp_min: 0,
             i_qp_max: 0,
@@ -754,14 +754,14 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
             f_vbv_buffer_init: 0.,
             f_ip_factor: 0.,
             f_pb_factor: 0.,
-            b_filler: 0,
+            filler: false,
             i_aq_mode: 0,
             f_aq_strength: 0.,
-            b_mb_tree: 0,
+            mb_tree: false,
             i_lookahead: 0,
-            b_stat_write: 0,
+            stat_write: false,
             psz_stat_out: 0 as *mut c_char,
-            b_stat_read: 0,
+            stat_read: false,
             psz_stat_in: 0 as *mut c_char,
             f_qcompress: 0.,
             f_qblur: 0.,
@@ -775,21 +775,21 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
         mastering_display: None,
         content_light_level: None,
         i_alternative_transfer: 0,
-        b_aud: 0,
-        b_repeat_headers: 0,
-        b_annexb: 0,
+        aud: false,
+        repeat_headers: false,
+        annexb: false,
         i_sps_id: 0,
-        b_vfr_input: 0,
-        b_pulldown: 0,
+        vfr_input: false,
+        pulldown: false,
         i_fps_num: 0,
         i_fps_den: 0,
         i_timebase_num: 0,
         i_timebase_den: 0,
-        b_tff: 0,
-        b_pic_struct: 0,
-        b_fake_interlaced: 0,
-        b_stitchable: 0,
-        b_opencl: 0,
+        tff: false,
+        pic_struct: false,
+        fake_interlaced: false,
+        stitchable: false,
+        opencl: false,
         i_opencl_device: 0,
         opencl_device_id: 0 as *mut c_void,
         psz_clbin_file: 0 as *mut c_char,
@@ -3624,20 +3624,20 @@ unsafe extern "C" fn select_output(
     }
     if strcasecmp(ext, b"mp4\0" as *const u8 as *const c_char) == 0 {
         cli_output = mp4_output;
-        (*param).b_annexb = 0 as c_int;
-        (*param).b_repeat_headers = 0 as c_int;
+        (*param).annexb = false;
+        (*param).repeat_headers = false;
         if (*param).i_nal_hrd == X264_NAL_HRD_CBR {
             warn!("cbr nal-hrd is not compatible with mp4");
             (*param).i_nal_hrd = X264_NAL_HRD_VBR;
         }
     } else if strcasecmp(ext, b"mkv\0" as *const u8 as *const c_char) == 0 {
         cli_output = mkv_output;
-        (*param).b_annexb = 0 as c_int;
-        (*param).b_repeat_headers = 0 as c_int;
+        (*param).annexb = false;
+        (*param).repeat_headers = false;
     } else if strcasecmp(ext, b"flv\0" as *const u8 as *const c_char) == 0 {
         cli_output = flv_output;
-        (*param).b_annexb = 0 as c_int;
-        (*param).b_repeat_headers = 0 as c_int;
+        (*param).annexb = false;
+        (*param).repeat_headers = false;
     } else {
         cli_output = raw_output;
     }
@@ -3905,11 +3905,11 @@ unsafe extern "C" fn parse(
     let mut tcfile_name: *mut c_char = 0 as *mut c_char;
     let mut defaults: x264_param_t = x264_param_t {
         cpu: 0,
-        i_threads: 0,
-        i_lookahead_threads: 0,
-        b_sliced_threads: 0,
-        b_deterministic: 0,
-        b_cpu_independent: 0,
+        threads: ThreadCount::AUTO,
+        lookahead_threads: ThreadCount::AUTO,
+        sliced_threads: false,
+        deterministic: false,
+        cpu_independent: false,
         i_sync_lookahead: 0,
         width: 0,
         height: 0,
@@ -3934,22 +3934,22 @@ unsafe extern "C" fn parse(
         i_keyint_max: 0,
         i_keyint_min: 0,
         i_scenecut_threshold: 0,
-        b_intra_refresh: 0,
+        intra_refresh: false,
         i_bframe: 0,
         i_bframe_adaptive: 0,
         i_bframe_bias: 0,
         bframe_pyramid: BPyramid::None,
-        b_open_gop: 0,
-        b_bluray_compat: 0,
+        open_gop: false,
+        bluray_compat: false,
         i_avcintra_class: 0,
         i_avcintra_flavor: 0,
-        b_deblocking_filter: 0,
+        deblocking_filter: false,
         i_deblocking_filter_alphac0: 0,
         i_deblocking_filter_beta: 0,
-        b_cabac: 0,
+        cabac: false,
         i_cabac_init_idc: 0,
-        b_interlaced: 0,
-        b_constrained_intra: 0,
+        interlaced: false,
+        constrained_intra: false,
         i_cqm_preset: 0,
         psz_cqm_file: 0 as *mut c_char,
         cqm_4iy: [0; 16],
@@ -3963,14 +3963,14 @@ unsafe extern "C" fn parse(
         pf_log: None,
         p_log_private: 0 as *mut c_void,
         i_log_level: 0,
-        b_full_recon: 0,
+        full_recon: false,
         psz_dump_yuv: 0 as *mut c_char,
         analyse: C2RustUnnamed_3 {
             intra: 0,
             inter: 0,
-            b_transform_8x8: 0,
+            transform_8x8: false,
             i_weighted_pred: 0,
-            b_weighted_bipred: 0,
+            weighted_bipred: false,
             direct_mv_pred: DirectPrediction::None,
             i_chroma_qp_offset: 0,
             me_method: MotionEstimation::Dia,
@@ -3978,23 +3978,23 @@ unsafe extern "C" fn parse(
             i_mv_range: 0,
             i_mv_range_thread: 0,
             i_subpel_refine: 0,
-            b_chroma_me: 0,
-            b_mixed_references: 0,
+            chroma_me: false,
+            mixed_references: false,
             i_trellis: 0,
-            b_fast_pskip: 0,
-            b_dct_decimate: 0,
+            fast_pskip: false,
+            dct_decimate: false,
             i_noise_reduction: 0,
             f_psy_rd: 0.,
             f_psy_trellis: 0.,
-            b_psy: 0,
+            psy: false,
             b_mb_info: 0,
             b_mb_info_update: 0,
             i_luma_deadzone: [0; 2],
-            b_psnr: 0,
-            b_ssim: 0,
+            psnr: false,
+            ssim: false,
         },
         rc: C2RustUnnamed_2 {
-            i_rc_method: 0,
+            i_rc_method: RateControlMode::CQP,
             i_qp_constant: 0,
             i_qp_min: 0,
             i_qp_max: 0,
@@ -4008,14 +4008,14 @@ unsafe extern "C" fn parse(
             f_vbv_buffer_init: 0.,
             f_ip_factor: 0.,
             f_pb_factor: 0.,
-            b_filler: 0,
+            filler: false,
             i_aq_mode: 0,
             f_aq_strength: 0.,
-            b_mb_tree: 0,
+            mb_tree: false,
             i_lookahead: 0,
-            b_stat_write: 0,
+            stat_write: false,
             psz_stat_out: 0 as *mut c_char,
-            b_stat_read: 0,
+            stat_read: false,
             psz_stat_in: 0 as *mut c_char,
             f_qcompress: 0.,
             f_qblur: 0.,
@@ -4029,21 +4029,21 @@ unsafe extern "C" fn parse(
         mastering_display: None,
         content_light_level: None,
         i_alternative_transfer: 0,
-        b_aud: 0,
-        b_repeat_headers: 0,
-        b_annexb: 0,
+        aud: false,
+        repeat_headers: false,
+        annexb: false,
         i_sps_id: 0,
-        b_vfr_input: 0,
-        b_pulldown: 0,
+        vfr_input: false,
+        pulldown: false,
         i_fps_num: 0,
         i_fps_den: 0,
         i_timebase_num: 0,
         i_timebase_den: 0,
-        b_tff: 0,
-        b_pic_struct: 0,
-        b_fake_interlaced: 0,
-        b_stitchable: 0,
-        b_opencl: 0,
+        tff: false,
+        pic_struct: false,
+        fake_interlaced: false,
+        stitchable: false,
+        opencl: false,
         i_opencl_device: 0,
         opencl_device_id: 0 as *mut c_void,
         psz_clbin_file: 0 as *mut c_char,
@@ -4280,7 +4280,7 @@ unsafe extern "C" fn parse(
             }
             268 => {
                 b_user_fps = 1 as c_int;
-                (*param).b_vfr_input = 0 as c_int;
+                (*param).vfr_input = false;
                 current_block = 3419397958955478856;
             }
             272 => {
@@ -4488,15 +4488,15 @@ unsafe extern "C" fn parse(
             fullrange: 0,
             width: 0,
             height: 0,
-            interlaced: 0,
+            interlaced: false,
             num_frames: 0,
             sar_width: 0,
             sar_height: 0,
-            tff: 0,
+            tff: false,
             thread_safe: 0,
             timebase_num: 0,
             timebase_den: 0,
-            vfr: 0,
+            vfr: false,
         };
         init
     };
@@ -4505,13 +4505,13 @@ unsafe extern "C" fn parse(
     info.fps_num = (*param).i_fps_num;
     info.fps_den = (*param).i_fps_den;
     info.fullrange = (input_opt.input_range == RANGE_PC as c_int) as c_int;
-    info.interlaced = (*param).b_interlaced;
+    info.interlaced = (*param).interlaced;
     if (*param).vui.i_sar_width > 0 as c_int && (*param).vui.i_sar_height > 0 as c_int {
         info.sar_width = (*param).vui.i_sar_width as uint32_t;
         info.sar_height = (*param).vui.i_sar_height as uint32_t;
     }
-    info.tff = (*param).b_tff;
-    info.vfr = (*param).b_vfr_input;
+    info.tff = (*param).tff;
+    info.vfr = (*param).vfr_input;
     input_opt.seek = (*opt).i_seek;
     input_opt.progress = (*opt).b_progress;
     input_opt.output_csp = output_csp;
@@ -4550,7 +4550,7 @@ unsafe extern "C" fn parse(
         b"%dx%d%c %u:%u @ %u/%u fps (%cfr)\n\0" as *const u8 as *const c_char,
         info.width,
         info.height,
-        if info.interlaced != 0 {
+        if info.interlaced {
             'i' as i32
         } else {
             'p' as i32
@@ -4559,11 +4559,7 @@ unsafe extern "C" fn parse(
         info.sar_height,
         info.fps_num,
         info.fps_den,
-        if info.vfr != 0 {
-            'v' as i32
-        } else {
-            'c' as i32
-        },
+        if info.vfr { 'v' as i32 } else { 'c' as i32 },
     );
     if info.width == 0 || info.height == 0 || info.width > 16384 || info.height > 16384 {
         x264_cli_log(
@@ -4599,7 +4595,7 @@ unsafe extern "C" fn parse(
             return -1;
         }
         cli_input = timecode_input;
-    } else if info.vfr == 0 && !input_opt.timebase.is_null() {
+    } else if !info.vfr && !input_opt.timebase.is_null() {
         x264_cli_log(
             b"x264\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
@@ -4618,8 +4614,8 @@ unsafe extern "C" fn parse(
     if !thread_input.is_null()
         && info.thread_safe != 0
         && (b_thread_input != 0
-            || (*param).i_threads > 1 as c_int
-            || (*param).i_threads == X264_THREADS_AUTO && x264_cpu_num_processors() > 1 as c_int)
+            || (*param).threads != ThreadCount::AUTO
+            || (*param).threads == ThreadCount::AUTO && x264_cpu_num_processors() > 1)
     {
         if (*thread_input)
             .open_file
@@ -4646,7 +4642,7 @@ unsafe extern "C" fn parse(
         info.fps_num = (*param).i_fps_num;
         info.fps_den = (*param).i_fps_den;
     }
-    if info.vfr == 0 {
+    if !info.vfr {
         info.timebase_num = info.fps_den;
         info.timebase_den = info.fps_num;
     }
@@ -4688,11 +4684,11 @@ unsafe extern "C" fn parse(
             * (info.timebase_num as c_double / i_user_timebase_num as c_double);
         info.timebase_num = i_user_timebase_num as uint32_t;
         info.timebase_den = i_user_timebase_den as uint32_t;
-        info.vfr = 1 as c_int;
+        info.vfr = true;
     }
     if b_user_interlaced != 0 {
-        info.interlaced = (*param).b_interlaced;
-        info.tff = (*param).b_tff;
+        info.interlaced = (*param).interlaced;
+        info.tff = (*param).tff;
     }
     if input_opt.input_range != RANGE_AUTO as c_int {
         info.fullrange = input_opt.input_range;
@@ -4700,7 +4696,7 @@ unsafe extern "C" fn parse(
     if init_vid_filters(vid_filters, &mut (*opt).hin, &mut info, param, output_csp) != 0 {
         return -1;
     }
-    (*param).b_vfr_input = info.vfr;
+    (*param).vfr_input = info.vfr;
     (*param).i_fps_num = info.fps_num;
     (*param).i_fps_den = info.fps_den;
     (*param).i_timebase_num = info.timebase_num;
@@ -4718,17 +4714,17 @@ unsafe extern "C" fn parse(
         info.num_frames = (*param).i_frame_total;
     }
     (*param).i_frame_total = info.num_frames;
-    if b_user_interlaced == 0 && info.interlaced != 0 {
+    if b_user_interlaced == 0 && info.interlaced {
         x264_cli_log(
             b"x264\0" as *const u8 as *const c_char,
             X264_LOG_WARNING,
             b"input appears to be interlaced, enabling %cff interlaced mode.\n                If you want otherwise, use --no-interlaced or --%cff\n\0"
                 as *const u8 as *const c_char,
-            if info.tff != 0 { 't' as i32 } else { 'b' as i32 },
-            if info.tff != 0 { 'b' as i32 } else { 't' as i32 },
+            if info.tff { 't' as i32 } else { 'b' as i32 },
+            if info.tff  { 'b' as i32 } else { 't' as i32 },
         );
-        (*param).b_interlaced = 1 as c_int;
-        (*param).b_tff = (info.tff != 0) as c_int;
+        (*param).interlaced = true;
+        (*param).tff = info.tff;
     }
     let mut csp: c_int = (*param).i_csp & X264_CSP_MASK;
     if csp >= X264_CSP_BGR && csp <= X264_CSP_RGB {
@@ -4858,7 +4854,7 @@ unsafe extern "C" fn encode_frame(
         i_type: 0,
         i_qpplus1: 0,
         i_pic_struct: 0,
-        b_keyframe: 0,
+        keyframe: false,
         i_pts: 0,
         i_dts: 0,
         param: 0 as *mut x264_param_t,
@@ -5004,7 +5000,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
         i_type: 0,
         i_qpplus1: 0,
         i_pic_struct: 0,
-        b_keyframe: 0,
+        keyframe: false,
         i_pts: 0,
         i_dts: 0,
         param: 0 as *mut x264_param_t,
@@ -5069,9 +5065,9 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
     let mut pulldown_pts: c_double = 0 as c_int as c_double;
     let mut retval: c_int = 0 as c_int;
     (*opt).b_progress &= ((*param).i_log_level < X264_LOG_DEBUG) as c_int;
-    if (*opt).i_pulldown != 0 && (*param).b_vfr_input == 0 {
-        (*param).b_pulldown = 1 as c_int;
-        (*param).b_pic_struct = 1 as c_int;
+    if (*opt).i_pulldown != 0 && !(*param).vfr_input {
+        (*param).pulldown = true;
+        (*param).pic_struct = true;
         pulldown =
             &*pulldown_values.as_ptr().offset((*opt).i_pulldown as isize) as *const cli_pulldown_t;
         (*param).i_timebase_num = (*param).i_fps_den;
@@ -5121,7 +5117,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                         * (*param).i_fps_den as int64_t
                         / (*param).i_timebase_num as int64_t
                         / (*param).i_fps_num as int64_t;
-                    if ticks_per_frame < 1 as int64_t && (*param).b_vfr_input == 0 {
+                    if ticks_per_frame < 1 as int64_t && !(*param).vfr_input {
                         x264_cli_log(
                             b"x264\0" as *const u8 as *const c_char,
                             X264_LOG_ERROR,
@@ -5135,7 +5131,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                         } else {
                             1 as int64_t
                         };
-                        if (*param).b_repeat_headers == 0 {
+                        if !(*param).repeat_headers {
                             let mut headers: *mut x264_nal_t = 0 as *mut x264_nal_t;
                             let mut i_nal: c_int = 0;
                             if x264_encoder_headers(h, &mut headers, &mut i_nal) < 0 as c_int {
@@ -5192,10 +5188,10 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                     }
                                     x264_picture_init(&mut pic);
                                     convert_cli_to_lib_pic(&mut pic, &mut cli_pic);
-                                    if (*param).b_vfr_input == 0 {
+                                    if !(*param).vfr_input {
                                         pic.i_pts = i_frame as int64_t;
                                     }
-                                    if (*opt).i_pulldown != 0 && (*param).b_vfr_input == 0 {
+                                    if (*opt).i_pulldown != 0 && !(*param).vfr_input {
                                         pic.i_pic_struct = (*pulldown).pattern
                                             [(i_frame % (*pulldown).mod_0) as usize]
                                             as c_int;
@@ -5413,5 +5409,5 @@ fn main() {
 struct Hex264Args {}
 
 fn main() {
-    let args: Hex264Args = argp::parse_args_or_exit(argp::DEFAULT);
+    let _args: Hex264Args = argp::parse_args_or_exit(argp::DEFAULT);
 }

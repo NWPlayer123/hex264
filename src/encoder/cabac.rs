@@ -71,7 +71,7 @@ unsafe extern "C" fn cabac_mb_type_intra(
 #[c2rust::src_loc = "70:1"]
 unsafe extern "C" fn cabac_field_decoding_flag(mut h: *mut x264_t, mut cb: *mut x264_cabac_t) {
     let mut ctx: c_int = 0 as c_int;
-    ctx += (*h).mb.field_decoding_flag & ((*h).mb.i_mb_x != 0) as c_int;
+    ctx += ((*h).mb.field_decoding_flag & ((*h).mb.i_mb_x != 0)) as i32;
     ctx += ((*h).mb.i_mb_top_mbpair_xy >= 0 as c_int
         && *(*h)
             .mb
@@ -80,8 +80,8 @@ unsafe extern "C" fn cabac_field_decoding_flag(mut h: *mut x264_t, mut cb: *mut 
             == (*h).sh.i_first_mb as int32_t
         && *(*h).mb.field.offset((*h).mb.i_mb_top_mbpair_xy as isize) as c_int != 0)
         as c_int;
-    x264_10_cabac_encode_decision_c(cb, 70 as c_int + ctx, (*h).mb.b_interlaced);
-    (*h).mb.field_decoding_flag = (*h).mb.b_interlaced;
+    x264_10_cabac_encode_decision_c(cb, 70 as c_int + ctx, (*h).mb.interlaced as i32);
+    (*h).mb.field_decoding_flag = (*h).mb.interlaced;
 }
 #[c2rust::src_loc = "83:1"]
 unsafe extern "C" fn cabac_intra4x4_pred_mode(
@@ -1118,10 +1118,10 @@ unsafe extern "C" fn cabac_block_residual_internal(
     mut l: *mut dctcoef,
     mut chroma422dc: c_int,
 ) {
-    let mut ctx_sig: c_int = x264_significant_coeff_flag_offset[(*h).mb.b_interlaced as usize]
+    let mut ctx_sig: c_int = x264_significant_coeff_flag_offset[(*h).mb.interlaced as usize]
         [ctx_block_cat as usize] as c_int;
     let mut ctx_last: c_int =
-        x264_last_coeff_flag_offset[(*h).mb.b_interlaced as usize][ctx_block_cat as usize] as c_int;
+        x264_last_coeff_flag_offset[(*h).mb.interlaced as usize][ctx_block_cat as usize] as c_int;
     let mut ctx_level: c_int = x264_coeff_abs_level_m1_offset[ctx_block_cat as usize] as c_int;
     let mut coeff_idx: c_int = -1;
     let mut node_ctx: c_int = 0 as c_int;
@@ -1179,7 +1179,7 @@ unsafe extern "C" fn cabac_block_residual_internal(
         if count_m1_0 == 63 as c_int {
             let mut sig_offset: *const uint8_t = (*x264_significant_coeff_flag_offset_8x8
                 .as_ptr()
-                .offset((*h).mb.b_interlaced as isize))
+                .offset((*h).mb.interlaced as isize))
             .as_ptr();
             let mut i_0: c_int = 0 as c_int;
             loop {
@@ -1320,7 +1320,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
     let i_mb_type: c_int = (*h).mb.i_type;
     let i_mb_pos_start: c_int = x264_cabac_pos(cb) as c_int;
     let mut i_mb_pos_tex: c_int = 0;
-    if (*h).sh.b_mbaff != 0
+    if (*h).sh.mbaff
         && ((*h).mb.i_mb_y & 1 as c_int == 0
             || (*(*h)
                 .mb

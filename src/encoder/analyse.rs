@@ -219,7 +219,7 @@ unsafe extern "C" fn init_costs(
     if !(*h).cost_mv[qp as usize].is_null() {
         return 0 as c_int;
     }
-    let mut mv_range: c_int = (*h).param.analyse.i_mv_range << (*h).param.b_interlaced;
+    let mut mv_range: c_int = (*h).param.analyse.i_mv_range << (*h).param.interlaced as i32;
     let mut lambda: c_int = x264_lambda_tab[qp as usize] as c_int;
     (*h).cost_mv[qp as usize] = x264_malloc(
         ((4 as c_int * 4 as c_int * mv_range + 1 as c_int) as usize)
@@ -315,11 +315,10 @@ unsafe extern "C" fn init_costs(
 #[c2rust::src_loc = "179:1"]
 pub unsafe extern "C" fn x264_10_analyse_init_costs(mut h: *mut x264_t) -> c_int {
     let mut current_block: u64;
-    let mut mv_range: c_int = (*h).param.analyse.i_mv_range << (*h).param.b_interlaced;
+    let mut mv_range: c_int = (*h).param.analyse.i_mv_range << (*h).param.interlaced as i32;
     let mut logs: *mut c_float = x264_malloc(
-        ((2 as c_int * 4 as c_int * mv_range + 1 as c_int) as usize)
-            .wrapping_mul(size_of::<c_float>() as usize) as int64_t,
-    ) as *mut c_float;
+        ((2 * 4 * mv_range + 1) as usize).wrapping_mul(size_of::<c_float>()) as int64_t,
+    ) as _;
     if logs.is_null() {
         return -1;
     }
@@ -361,7 +360,7 @@ pub unsafe extern "C" fn x264_10_analyse_init_costs(mut h: *mut x264_t) -> c_int
 #[no_mangle]
 #[c2rust::src_loc = "204:1"]
 pub unsafe extern "C" fn x264_10_analyse_free_costs(mut h: *mut x264_t) {
-    let mut mv_range: c_int = (*h).param.analyse.i_mv_range << (*h).param.b_interlaced;
+    let mut mv_range: c_int = (*h).param.analyse.i_mv_range << (*h).param.interlaced as i32;
     let mut i: c_int = 0 as c_int;
     while i < QP_MAX + 1 as c_int {
         if !(*h).cost_mv[i as usize].is_null() {
@@ -397,7 +396,7 @@ pub unsafe extern "C" fn x264_10_analyse_weight_frame(mut h: *mut x264_t, mut en
                 } else {
                     64 as c_int / size_of::<pixel>() as c_int
                 }) + PADH);
-            let mut i_padv: c_int = PADV << (*h).param.b_interlaced;
+            let mut i_padv: c_int = PADV << (*h).param.interlaced as i32;
             let mut offset: c_int = 0;
             let mut height: c_int = 0;
             let mut src: *mut pixel = (*frame).filtered[0][0]
@@ -516,10 +515,10 @@ unsafe extern "C" fn mb_analyse_init_qp(
     } else {
         36 as c_int
     };
-    (*h).mb.i_chroma_lambda2_offset = if (*h).param.analyse.b_psy != 0 {
+    (*h).mb.i_chroma_lambda2_offset = if (*h).param.analyse.psy {
         x264_chroma_lambda2_offset_tab[chroma_offset_idx as usize] as c_int
     } else {
-        256 as c_int
+        256
     };
     if qp > QP_MAX_SPEC {
         (*h).nr_offset = (*(*h)
@@ -589,10 +588,10 @@ unsafe extern "C" fn mb_analyse_init(
     }) as c_int;
     (*a).b_fast_intra = 0 as c_int;
     (*a).b_avoid_topright = 0 as c_int;
-    (*h).mb.i_skip_intra = if (*h).mb.b_lossless != 0 {
-        0 as c_int
+    (*h).mb.i_skip_intra = if (*h).mb.lossless {
+        0
     } else if (*a).i_mbrd != 0 {
-        2 as c_int
+        2
     } else {
         ((*h).param.analyse.i_trellis == 0 && (*h).param.analyse.i_noise_reduction == 0) as c_int
     };
@@ -612,7 +611,7 @@ unsafe extern "C" fn mb_analyse_init(
         } else {
             i_fmv_range - 1 as c_int
         };
-        if (*h).param.b_intra_refresh != 0 && (*h).sh.i_type == SLICE_TYPE_P as c_int {
+        if (*h).param.intra_refresh && (*h).sh.i_type == SLICE_TYPE_P as c_int {
             let mut max_x: c_int =
                 ((*(*h).fref[0][0]).i_pir_end_col * 16 as c_int - 3 as c_int) * 4 as c_int;
             let mut max_mv: c_int = max_x - 4 as c_int * 16 as c_int * (*h).mb.i_mb_x;
@@ -628,11 +627,11 @@ unsafe extern "C" fn mb_analyse_init(
             (((*h).mb.mv_min_spel[0] >> 2 as c_int) + i_fpel_border) as int16_t;
         (*h).mb.mv_limit_fpel[1][0] =
             (((*h).mb.mv_max_spel[0] >> 2 as c_int) - i_fpel_border) as int16_t;
-        if (*h).mb.i_mb_x == 0 as c_int && (*h).mb.i_mb_y & (*h).param.b_interlaced == 0 {
-            let mut mb_y: c_int = (*h).mb.i_mb_y >> (*h).sh.b_mbaff;
+        if (*h).mb.i_mb_x == 0 && (*h).mb.i_mb_y & (*h).param.interlaced as i32 == 0 {
+            let mut mb_y: c_int = (*h).mb.i_mb_y >> (*h).sh.mbaff as i32;
             let mut thread_mvy_range: c_int = i_fmv_range;
             if (*h).i_thread_frames > 1 as c_int {
-                let mut pix_y: c_int = ((*h).mb.i_mb_y | (*h).param.b_interlaced) * 16 as c_int;
+                let mut pix_y: c_int = ((*h).mb.i_mb_y | (*h).param.interlaced as i32) * 16;
                 let mut thresh: c_int = pix_y + (*h).param.analyse.i_mv_range_thread;
                 let mut i: c_int = ((*h).sh.i_type == SLICE_TYPE_B as c_int) as c_int;
                 while i >= 0 as c_int {
@@ -651,15 +650,15 @@ unsafe extern "C" fn mb_analyse_init(
                     }
                     i -= 1;
                 }
-                if (*h).param.b_deterministic != 0 {
+                if (*h).param.deterministic {
                     thread_mvy_range = (*h).param.analyse.i_mv_range_thread;
                 }
-                if (*h).param.b_interlaced != 0 {
+                if (*h).param.interlaced {
                     thread_mvy_range >>= 1 as c_int;
                 }
                 x264_10_analyse_weight_frame(h, pix_y + thread_mvy_range);
             }
-            if (*h).param.b_interlaced != 0 {
+            if (*h).param.interlaced {
                 let mut i_0: c_int = 0 as c_int;
                 while i_0 < 3 as c_int {
                     let mut j_0: c_int = (i_0 == 2 as c_int) as c_int;
@@ -720,18 +719,18 @@ unsafe extern "C" fn mb_analyse_init(
                     (((*h).mb.mv_max_spel[1] >> 2 as c_int) - i_fpel_border) as int16_t;
             }
         }
-        if (*h).param.b_interlaced != 0 {
-            let mut i_1: c_int = if (*h).mb.b_interlaced != 0 {
-                2 as c_int
+        if (*h).param.interlaced {
+            let n = if (*h).mb.interlaced {
+                2
             } else {
-                (*h).mb.i_mb_y & 1 as c_int
+                ((*h).mb.i_mb_y & 1) as _
             };
-            (*h).mb.mv_min[1] = (*h).mb.mv_miny_row[i_1 as usize];
-            (*h).mb.mv_max[1] = (*h).mb.mv_maxy_row[i_1 as usize];
-            (*h).mb.mv_min_spel[1] = (*h).mb.mv_miny_spel_row[i_1 as usize];
-            (*h).mb.mv_max_spel[1] = (*h).mb.mv_maxy_spel_row[i_1 as usize];
-            (*h).mb.mv_limit_fpel[0][1] = (*h).mb.mv_miny_fpel_row[i_1 as usize] as int16_t;
-            (*h).mb.mv_limit_fpel[1][1] = (*h).mb.mv_maxy_fpel_row[i_1 as usize] as int16_t;
+            (*h).mb.mv_min[1] = (*h).mb.mv_miny_row[n];
+            (*h).mb.mv_max[1] = (*h).mb.mv_maxy_row[n];
+            (*h).mb.mv_min_spel[1] = (*h).mb.mv_miny_spel_row[n];
+            (*h).mb.mv_max_spel[1] = (*h).mb.mv_maxy_spel_row[n];
+            (*h).mb.mv_limit_fpel[0][1] = (*h).mb.mv_miny_fpel_row[n] as int16_t;
+            (*h).mb.mv_limit_fpel[1][1] = (*h).mb.mv_maxy_fpel_row[n] as int16_t;
         }
         (*a).l0.i_cost8x16 = COST_MAX;
         (*a).l0.i_cost16x8 = (*a).l0.i_cost8x16;
@@ -804,7 +803,7 @@ unsafe extern "C" fn mb_analyse_init(
             }
         }
         (*h).mb.b_skip_mc = 0 as c_int;
-        if (*h).param.b_intra_refresh != 0
+        if (*h).param.intra_refresh
             && (*h).sh.i_type == SLICE_TYPE_P as c_int
             && (*h).mb.i_mb_x >= (*(*h).fdec).i_pir_start_col
             && (*h).mb.i_mb_x <= (*(*h).fdec).i_pir_end_col
@@ -1229,7 +1228,7 @@ unsafe extern "C" fn psy_trellis_init(mut h: *mut x264_t, mut do_both_dct: c_int
 #[c2rust::src_loc = "570:1"]
 unsafe extern "C" fn mb_init_fenc_cache(mut h: *mut x264_t, mut b_satd: c_int) {
     if (*h).param.analyse.i_trellis == 2 as c_int && (*h).mb.i_psy_trellis != 0 {
-        psy_trellis_init(h, (*h).param.analyse.b_transform_8x8);
+        psy_trellis_init(h, (*h).param.analyse.transform_8x8 as i32);
     }
     if (*h).mb.i_psy_rd == 0 {
         return;
@@ -1264,7 +1263,7 @@ unsafe extern "C" fn mb_analyse_intra_chroma(mut h: *mut x264_t, mut a: *mut x26
             (*a).i_satd_chroma = 0 as c_int;
             return;
         }
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             x264_10_predict_lossless_16x16(h, 1 as c_int, (*a).i_predict16x16);
             x264_10_predict_lossless_16x16(h, 2 as c_int, (*a).i_predict16x16);
         } else {
@@ -1292,7 +1291,7 @@ unsafe extern "C" fn mb_analyse_intra_chroma(mut h: *mut x264_t, mut a: *mut x26
     let mut predict_mode: *const int8_t =
         predict_chroma_mode_available((*h).mb.i_neighbour_intra as c_int);
     let mut chromapix: c_int = (*h).luma2chroma_pixel[PIXEL_16x16 as c_int as usize] as c_int;
-    if *predict_mode.offset(3) as c_int >= 0 as c_int && (*h).mb.b_lossless == 0 {
+    if *predict_mode.offset(3) >= 0 && !(*h).mb.lossless {
         let mut satdu: [c_int; 4] = [0; 4];
         let mut satdv: [c_int; 4] = [0; 4];
         (*h).pixf
@@ -1345,7 +1344,7 @@ unsafe extern "C" fn mb_analyse_intra_chroma(mut h: *mut x264_t, mut a: *mut x26
         while *predict_mode as c_int >= 0 as c_int {
             let mut i_satd_0: c_int = 0;
             let mut i_mode_0: c_int = *predict_mode as c_int;
-            if (*h).mb.b_lossless != 0 {
+            if (*h).mb.lossless {
                 x264_10_predict_lossless_chroma(h, i_mode_0);
             } else {
                 (*h).predict_chroma[i_mode_0 as usize].expect("non-null function pointer")(
@@ -1484,7 +1483,7 @@ unsafe extern "C" fn mb_analyse_intra(
         } else {
             COST_MAX
         };
-        if (*h).mb.b_lossless == 0 && *predict_mode.offset(3) as c_int >= 0 as c_int {
+        if !(*h).mb.lossless && *predict_mode.offset(3) >= 0 {
             (*h).pixf
                 .intra_mbcmp_x3_16x16
                 .expect("non-null function pointer")(
@@ -1529,7 +1528,7 @@ unsafe extern "C" fn mb_analyse_intra(
             while *predict_mode as c_int >= 0 as c_int {
                 let mut i_satd: c_int = 0;
                 let mut i_mode: c_int = *predict_mode as c_int;
-                if (*h).mb.b_lossless != 0 {
+                if (*h).mb.lossless {
                     x264_10_predict_lossless_16x16(h, 0 as c_int, i_mode);
                 } else {
                     (*h).predict_16x16[i_mode as usize].expect("non-null function pointer")(p_dst);
@@ -1626,7 +1625,7 @@ unsafe extern "C" fn mb_analyse_intra(
                 }
                 x264_macroblock_cache_intra8x8_pred(h, 2 as c_int * x, 2 as c_int * y, i_best);
             } else {
-                if (*h).mb.b_lossless == 0 && *predict_mode_0.offset(5) as c_int >= 0 as c_int {
+                if !(*h).mb.lossless && *predict_mode_0.offset(5) as c_int >= 0 as c_int {
                     let mut satd: [int32_t; 4] = [0; 4];
                     (*h).pixf
                         .intra_mbcmp_x3_8x8
@@ -1673,7 +1672,7 @@ unsafe extern "C" fn mb_analyse_intra(
                 {
                     let mut i_satd_0: c_int = 0;
                     let mut i_mode_0: c_int = *predict_mode_0 as c_int;
-                    if (*h).mb.b_lossless != 0 {
+                    if (*h).mb.lossless {
                         x264_10_predict_lossless_8x8(
                             h,
                             p_dst_by,
@@ -1711,7 +1710,7 @@ unsafe extern "C" fn mb_analyse_intra(
                 if idx == 3 as c_int || i_cost > i_satd_thresh {
                     break;
                 }
-                if (*h).mb.b_lossless != 0 {
+                if (*h).mb.lossless {
                     x264_10_predict_lossless_8x8(
                         h,
                         p_dst_by,
@@ -1901,7 +1900,7 @@ unsafe extern "C" fn mb_analyse_intra(
                 (*h).mb.cache.intra4x4_pred_mode[x264_scan8[idx as usize] as usize] =
                     i_best_0 as int8_t;
             } else {
-                if (*h).mb.b_lossless == 0 && *predict_mode_1.offset(5) as c_int >= 0 as c_int {
+                if !(*h).mb.lossless && *predict_mode_1.offset(5) as c_int >= 0 as c_int {
                     let mut satd_0: [int32_t; 4] = [0; 4];
                     (*h).pixf
                         .intra_mbcmp_x3_4x4
@@ -1947,7 +1946,7 @@ unsafe extern "C" fn mb_analyse_intra(
                     while *predict_mode_1 as c_int >= 0 as c_int {
                         let mut i_satd_1: c_int = 0;
                         let mut i_mode_1: c_int = *predict_mode_1 as c_int;
-                        if (*h).mb.b_lossless != 0 {
+                        if (*h).mb.lossless {
                             x264_10_predict_lossless_4x4(h, p_dst_by_0, 0 as c_int, idx, i_mode_1);
                         } else {
                             (*h).predict_4x4[i_mode_1 as usize].expect("non-null function pointer")(
@@ -1982,7 +1981,7 @@ unsafe extern "C" fn mb_analyse_intra(
                 if i_cost_0 > i_satd_thresh_0 || idx == 15 as c_int {
                     break;
                 }
-                if (*h).mb.b_lossless != 0 {
+                if (*h).mb.lossless {
                     x264_10_predict_lossless_4x4(
                         h,
                         p_dst_by_0,
@@ -2165,7 +2164,7 @@ unsafe extern "C" fn intra_rd_refine(mut h: *mut x264_t, mut a: *mut x264_mb_ana
                 let mut i: c_int = 0 as c_int;
                 while i < i_max {
                     let mut i_mode_1: c_int = predict_mode_sorted[i as usize] as c_int;
-                    if (*h).mb.b_lossless != 0 {
+                    if (*h).mb.lossless {
                         x264_10_predict_lossless_chroma(h, i_mode_1);
                     } else {
                         (*h).predict_chroma[i_mode_1 as usize].expect("non-null function pointer")(
@@ -3045,9 +3044,8 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
             (*l0m).i_ref as int8_t,
         );
         (*a).i_satd8x8[0][i as usize] = (*l0m).cost - ((*l0m).cost_mv + (*l0m).i_ref_cost);
-        if (*h).param.b_cabac == 0 || (*h).param.analyse.inter & X264_ANALYSE_PSUB8x8 != 0 {
-            (*l0m).cost +=
-                (*a).i_lambda * i_sub_mb_p_cost_table[D_L0_8x8 as c_int as usize] as c_int;
+        if !(*h).param.cabac || (*h).param.analyse.inter & X264_ANALYSE_PSUB8x8 != 0 {
+            (*l0m).cost += (*a).i_lambda * i_sub_mb_p_cost_table[D_L0_8x8 as usize] as c_int;
         }
         i += 1;
     }
@@ -3055,14 +3053,14 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
         + (*a).l0.me8x8[1].cost
         + (*a).l0.me8x8[2].cost
         + (*a).l0.me8x8[3].cost;
-    if (*h).param.b_cabac == 0
+    if !(*h).param.cabac
         && (*a).l0.me8x8[0].i_ref
             | (*a).l0.me8x8[1].i_ref
             | (*a).l0.me8x8[2].i_ref
             | (*a).l0.me8x8[3].i_ref
             == 0
     {
-        (*a).l0.i_cost8x8 -= *(*a).p_cost_ref[0].offset(0) as c_int * 4 as c_int;
+        (*a).l0.i_cost8x8 -= *(*a).p_cost_ref[0].offset(0) as c_int * 4;
     }
     (*((*h).mb.i_sub_partition.as_mut_ptr() as *mut x264_union32_t)).i =
         (D_L0_8x8 as c_int * 0x1010101 as c_int) as uint32_t;
@@ -3074,10 +3072,10 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(mut h: *mut x264_t, mut a: *mut x264_
     } else {
         (*a).l0.me16x16.i_ref
     };
-    let i_ref_cost: c_int = if (*h).param.b_cabac != 0 || i_ref != 0 {
+    let i_ref_cost: c_int = if (*h).param.cabac || i_ref != 0 {
         *(*a).p_cost_ref[0].offset(i_ref as isize) as c_int
     } else {
-        0 as c_int
+        0
     };
     let mut p_fenc: *mut *mut pixel = (*h).mb.pic.p_fenc.as_mut_ptr();
     let mut i_mvc: c_int = 0;
@@ -3276,7 +3274,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(mut h: *mut x264_t, mut a: *mut x264_
         i_mvc += 1;
         (*a).i_satd8x8[0][i as usize] = (*m).cost - (*m).cost_mv;
         (*m).cost += i_ref_cost;
-        if (*h).param.b_cabac == 0 || (*h).param.analyse.inter & X264_ANALYSE_PSUB8x8 != 0 {
+        if !(*h).param.cabac || (*h).param.analyse.inter & X264_ANALYSE_PSUB8x8 != 0 {
             (*m).cost += (*a).i_lambda * i_sub_mb_p_cost_table[D_L0_8x8 as c_int as usize] as c_int;
         }
         i += 1;
@@ -3285,7 +3283,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(mut h: *mut x264_t, mut a: *mut x264_
         + (*a).l0.me8x8[1].cost
         + (*a).l0.me8x8[2].cost
         + (*a).l0.me8x8[3].cost;
-    if (*h).param.b_cabac != 0 {
+    if (*h).param.cabac {
         (*a).l0.i_cost8x8 -= i_ref_cost;
     }
     (*((*h).mb.i_sub_partition.as_mut_ptr() as *mut x264_union32_t)).i =
@@ -3867,7 +3865,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
     let mut or: c_int = 8 as c_int * (i8x8 & 1 as c_int)
         + (4 as c_int >> chroma_v_shift) * (i8x8 & 2 as c_int) * i_stride;
     let mut i_ref: c_int = (*a).l0.me8x8[i8x8 as usize].i_ref;
-    let mut mvy_offset: c_int = if chroma_v_shift != 0 && (*h).mb.b_interlaced & i_ref != 0 {
+    let mut mvy_offset: c_int = if chroma_v_shift != 0 && (*h).mb.interlaced as i32 & i_ref != 0 {
         ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
     } else {
         0 as c_int
@@ -5164,16 +5162,16 @@ unsafe extern "C" fn analyse_bi_chroma(
         } else {
             let mut v_shift: c_int = (*h).mb.chroma_v_shift;
             let mut l0_mvy_offset: c_int =
-                if v_shift & (*h).mb.b_interlaced & (*a).l0.bi16x16.i_ref != 0 {
-                    ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
+                if v_shift & (*h).mb.interlaced as i32 & (*a).l0.bi16x16.i_ref != 0 {
+                    ((*h).mb.i_mb_y & 1) * 4 - 2
                 } else {
-                    0 as c_int
+                    0
                 };
             let mut l1_mvy_offset: c_int =
-                if v_shift & (*h).mb.b_interlaced & (*a).l1.bi16x16.i_ref != 0 {
-                    ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
+                if v_shift & (*h).mb.interlaced as i32 & (*a).l1.bi16x16.i_ref != 0 {
+                    ((*h).mb.i_mb_y & 1 as c_int) * 4 - 2
                 } else {
-                    0 as c_int
+                    0
                 };
             (*h).mc.mc_chroma.expect("non-null function pointer")(
                 (*pix.as_mut_ptr().offset(0)).as_mut_ptr(),
@@ -5289,18 +5287,24 @@ unsafe extern "C" fn analyse_bi_chroma(
             );
         } else {
             let mut v_shift_0: c_int = (*h).mb.chroma_v_shift;
-            let mut l0_mvy_offset_0: c_int =
-                if v_shift_0 & (*h).mb.b_interlaced & (*a).l0.me16x8[idx as usize].i_ref != 0 {
-                    ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
-                } else {
-                    0 as c_int
-                };
-            let mut l1_mvy_offset_0: c_int =
-                if v_shift_0 & (*h).mb.b_interlaced & (*a).l1.me16x8[idx as usize].i_ref != 0 {
-                    ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
-                } else {
-                    0 as c_int
-                };
+            let mut l0_mvy_offset_0: c_int = if v_shift_0
+                & (*h).mb.interlaced as i32
+                & (*a).l0.me16x8[idx as usize].i_ref
+                != 0
+            {
+                ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
+            } else {
+                0 as c_int
+            };
+            let mut l1_mvy_offset_0: c_int = if v_shift_0
+                & (*h).mb.interlaced as i32
+                & (*a).l1.me16x8[idx as usize].i_ref
+                != 0
+            {
+                ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
+            } else {
+                0 as c_int
+            };
             (*h).mc.mc_chroma.expect("non-null function pointer")(
                 (*pix.as_mut_ptr().offset(0)).as_mut_ptr(),
                 (*pix.as_mut_ptr().offset(1)).as_mut_ptr(),
@@ -5423,18 +5427,24 @@ unsafe extern "C" fn analyse_bi_chroma(
             );
         } else {
             let mut v_shift_1: c_int = (*h).mb.chroma_v_shift;
-            let mut l0_mvy_offset_1: c_int =
-                if v_shift_1 & (*h).mb.b_interlaced & (*a).l0.me8x16[idx as usize].i_ref != 0 {
-                    ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
-                } else {
-                    0 as c_int
-                };
-            let mut l1_mvy_offset_1: c_int =
-                if v_shift_1 & (*h).mb.b_interlaced & (*a).l1.me8x16[idx as usize].i_ref != 0 {
-                    ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
-                } else {
-                    0 as c_int
-                };
+            let mut l0_mvy_offset_1: c_int = if v_shift_1
+                & (*h).mb.interlaced as i32
+                & (*a).l0.me8x16[idx as usize].i_ref
+                != 0
+            {
+                ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
+            } else {
+                0 as c_int
+            };
+            let mut l1_mvy_offset_1: c_int = if v_shift_1
+                & (*h).mb.interlaced as i32
+                & (*a).l1.me8x16[idx as usize].i_ref
+                != 0
+            {
+                ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
+            } else {
+                0 as c_int
+            };
             (*h).mc.mc_chroma.expect("non-null function pointer")(
                 (*pix.as_mut_ptr().offset(0)).as_mut_ptr(),
                 (*pix.as_mut_ptr().offset(1)).as_mut_ptr(),
@@ -5558,13 +5568,13 @@ unsafe extern "C" fn analyse_bi_chroma(
         } else {
             let mut v_shift_2: c_int = (*h).mb.chroma_v_shift;
             let mut l0_mvy_offset_2: c_int =
-                if v_shift_2 & (*h).mb.b_interlaced & (*a).l0.me8x8[idx as usize].i_ref != 0 {
+                if v_shift_2 & (*h).mb.interlaced as i32 & (*a).l0.me8x8[idx as usize].i_ref != 0 {
                     ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
                 } else {
                     0 as c_int
                 };
             let mut l1_mvy_offset_2: c_int =
-                if v_shift_2 & (*h).mb.b_interlaced & (*a).l1.me8x8[idx as usize].i_ref != 0 {
+                if v_shift_2 & (*h).mb.interlaced as i32 & (*a).l1.me8x8[idx as usize].i_ref != 0 {
                     ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int
                 } else {
                     0 as c_int
@@ -6116,7 +6126,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(mut h: *mut x264_t, mut a: *mut x26
                 let mut chromapix: c_int =
                     (*h).luma2chroma_pixel[PIXEL_16x16 as c_int as usize] as c_int;
                 let mut v_shift: c_int = (*h).mb.chroma_v_shift;
-                if v_shift & (*h).mb.b_interlaced & (*a).l0.bi16x16.i_ref != 0 {
+                if v_shift & (*h).mb.interlaced as i32 & (*a).l0.bi16x16.i_ref != 0 {
                     let mut l0_mvy_offset: c_int =
                         ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int;
                     (*h).mc.mc_chroma.expect("non-null function pointer")(
@@ -6140,7 +6150,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(mut h: *mut x264_t, mut a: *mut x26
                         16 as c_int >> v_shift,
                     );
                 }
-                if v_shift & (*h).mb.b_interlaced & (*a).l1.bi16x16.i_ref != 0 {
+                if v_shift & (*h).mb.interlaced as i32 & (*a).l1.bi16x16.i_ref != 0 {
                     let mut l1_mvy_offset: c_int =
                         ((*h).mb.i_mb_y & 1 as c_int) * 4 as c_int - 2 as c_int;
                     (*h).mc.mc_chroma.expect("non-null function pointer")(
@@ -8332,8 +8342,8 @@ unsafe extern "C" fn refine_bidir(mut h: *mut x264_t, mut a: *mut x264_mb_analys
 #[c2rust::src_loc = "2735:1"]
 unsafe extern "C" fn mb_analyse_transform(mut h: *mut x264_t) {
     if x264_mb_transform_8x8_allowed(h) != 0
-        && (*h).param.analyse.b_transform_8x8 != 0
-        && (*h).mb.b_lossless == 0
+        && (*h).param.analyse.transform_8x8
+        && !(*h).mb.lossless
     {
         x264_10_mb_mc(h);
         let mut plane_count: c_int = if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc
@@ -8393,8 +8403,7 @@ unsafe extern "C" fn mb_analyse_transform_rd(
     mut i_satd: *mut c_int,
     mut i_rd: *mut c_int,
 ) {
-    if (*h).param.analyse.b_transform_8x8 != 0 && (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0
-    {
+    if (*h).param.analyse.transform_8x8 && (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0 {
         let mut subpart_bak: uint32_t =
             (*((*h).mb.i_sub_partition.as_mut_ptr() as *mut x264_union32_t)).i;
         if (*h).mb.i_type == P_8x8 as c_int {
@@ -8527,7 +8536,7 @@ unsafe extern "C" fn mb_analyse_qp_rd(mut h: *mut x264_t, mut a: *mut x264_mb_an
     (*h).mb.i_qp = bqp;
     (*h).mb.i_chroma_qp = *(*h).chroma_qp_table.offset((*h).mb.i_qp as isize) as c_int;
     if (*h).mb.i_qp != orig_qp
-        && (*h).param.analyse.b_transform_8x8 != 0
+        && (*h).param.analyse.transform_8x8
         && x264_mb_transform_8x8_allowed(h) != 0
     {
         (*h).mb.b_transform_8x8 ^= 1 as c_int;
@@ -8886,7 +8895,7 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
         );
         analysis.b_try_skip = 0 as c_int;
         if analysis.b_force_intra != 0 {
-            if (*h).param.analyse.b_psy == 0 {
+            if !(*h).param.analyse.psy {
                 mb_analyse_init_qp(
                     h,
                     &mut analysis,
@@ -8906,7 +8915,7 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
                     & X264_MBINFO_CONSTANT
                     != 0
             {
-                if (*h).sh.b_mbaff == 0
+                if !(*h).sh.mbaff
                     && (*(*h).fdec).i_frame - (*(*h).fref[0][0]).i_frame == 1 as c_int
                     && (*h).sh.b_weighted_pred == 0
                     && *(*(*h).fref[0][0])
@@ -8942,12 +8951,12 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
                         && (*h).mb.cache.pskip_mv[1] as c_int > (*h).mb.mv_max_spel[1])
                         as c_int;
                     if HAVE_INTERLACED != 0
-                        && (*h).mb.b_interlaced == 0
-                        && (*h).mb.i_mb_y * 16 as c_int >= (*h).param.height as c_int
+                        && !(*h).mb.interlaced
+                        && (*h).mb.i_mb_y * 16 >= (*h).param.height as i32
                         && skip_invalid == 0
                     {
                         b_skip = 1 as c_int;
-                    } else if (*h).param.analyse.b_fast_pskip != 0 {
+                    } else if (*h).param.analyse.fast_pskip {
                         if !(skip_invalid != 0) {
                             if (*h).param.analyse.i_subpel_refine >= 3 as c_int {
                                 analysis.b_try_skip = 1 as c_int;
@@ -9018,7 +9027,7 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
                                 return;
                             }
                             if flags & X264_ANALYSE_PSUB16x16 != 0 {
-                                if (*h).param.analyse.b_mixed_references != 0 {
+                                if (*h).param.analyse.mixed_references {
                                     mb_analyse_inter_p8x8_mixed_ref(h, &mut analysis);
                                 } else {
                                     mb_analyse_inter_p8x8(h, &mut analysis);
@@ -9717,8 +9726,8 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
                     x264_10_mb_mc(h);
                 }
                 if HAVE_INTERLACED != 0
-                    && (*h).mb.b_interlaced == 0
-                    && (*h).mb.i_mb_y * 16 as c_int >= (*h).param.height as c_int
+                    && !(*h).mb.interlaced
+                    && (*h).mb.i_mb_y * 16 >= (*h).param.height as i32
                 {
                     b_skip_0 = 1 as c_int;
                 } else if analysis.i_mbrd != 0 {
@@ -9822,7 +9831,7 @@ pub unsafe extern "C" fn x264_10_macroblock_analyse(mut h: *mut x264_t) {
                     }
                 }
                 if flags_0 & X264_ANALYSE_BSUB16x16 != 0 {
-                    if (*h).param.analyse.b_mixed_references != 0 {
+                    if (*h).param.analyse.mixed_references {
                         mb_analyse_inter_b8x8_mixed_ref(h, &mut analysis);
                     } else {
                         mb_analyse_inter_b8x8(h, &mut analysis);
@@ -10807,12 +10816,12 @@ unsafe extern "C" fn analyse_update_cache(mut h: *mut x264_t, mut a: *mut x264_m
             let mut ref_0: c_int = (*h).mb.cache.ref_0[l as usize][x264_scan8[0] as usize] as c_int;
             if !(ref_0 < 0 as c_int) {
                 completed = x264_10_frame_cond_wait(
-                    (*(*h).fref[l as usize][(ref_0 >> (*h).mb.b_interlaced) as usize]).orig
+                    (*(*h).fref[l as usize][(ref_0 >> (*h).mb.interlaced as i32) as usize]).orig
                         as *mut x264_frame_t,
                     -1,
                 );
                 if ((*h).mb.cache.mv[l as usize][x264_scan8[15] as usize][1] as c_int
-                    >> 2 as c_int - (*h).mb.b_interlaced)
+                    >> 2 as c_int - (*h).mb.interlaced as i32)
                     + (*h).mb.i_mb_y * 16 as c_int
                     > completed
                 {

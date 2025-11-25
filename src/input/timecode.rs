@@ -776,7 +776,7 @@ unsafe extern "C" fn open_file(
     fclose(tcfile_in);
     (*info).timebase_num = (*h).timebase_num as uint32_t;
     (*info).timebase_den = (*h).timebase_den as uint32_t;
-    (*info).vfr = 1 as c_int;
+    (*info).vfr = true;
     *p_handle = h as hnd_t;
     return 0 as c_int;
 }

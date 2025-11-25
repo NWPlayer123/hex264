@@ -415,11 +415,11 @@ pub mod x264_h {
     #[c2rust::src_loc = "315:16"]
     pub struct x264_param_t {
         pub cpu: uint32_t,
-        pub i_threads: c_int,
-        pub i_lookahead_threads: c_int,
-        pub b_sliced_threads: c_int,
-        pub b_deterministic: c_int,
-        pub b_cpu_independent: c_int,
+        pub threads: ThreadCount,
+        pub lookahead_threads: ThreadCount,
+        pub sliced_threads: bool,
+        pub deterministic: bool,
+        pub cpu_independent: bool,
         pub i_sync_lookahead: c_int,
         pub width: u32,
         pub height: u32,
@@ -434,22 +434,22 @@ pub mod x264_h {
         pub i_keyint_max: c_int,
         pub i_keyint_min: c_int,
         pub i_scenecut_threshold: c_int,
-        pub b_intra_refresh: c_int,
+        pub intra_refresh: bool,
         pub i_bframe: c_int,
         pub i_bframe_adaptive: c_int,
         pub i_bframe_bias: c_int,
         pub bframe_pyramid: BPyramid,
-        pub b_open_gop: c_int,
-        pub b_bluray_compat: c_int,
+        pub open_gop: bool,
+        pub bluray_compat: bool,
         pub i_avcintra_class: c_int,
         pub i_avcintra_flavor: c_int,
-        pub b_deblocking_filter: c_int,
+        pub deblocking_filter: bool,
         pub i_deblocking_filter_alphac0: c_int,
         pub i_deblocking_filter_beta: c_int,
-        pub b_cabac: c_int,
+        pub cabac: bool,
         pub i_cabac_init_idc: c_int,
-        pub b_interlaced: c_int,
-        pub b_constrained_intra: c_int,
+        pub interlaced: bool,
+        pub constrained_intra: bool,
         pub i_cqm_preset: c_int,
         pub psz_cqm_file: *mut c_char,
         pub cqm_4iy: [uint8_t; 16],
@@ -465,7 +465,7 @@ pub mod x264_h {
         >,
         pub p_log_private: *mut c_void,
         pub i_log_level: c_int,
-        pub b_full_recon: c_int,
+        pub full_recon: bool,
         pub psz_dump_yuv: *mut c_char,
         pub analyse: C2RustUnnamed_3,
         pub rc: C2RustUnnamed_2,
@@ -477,21 +477,21 @@ pub mod x264_h {
         /// Content Light Level SEI metadata.
         pub content_light_level: Option<ContentLightLevel>,
         pub i_alternative_transfer: c_int,
-        pub b_aud: c_int,
-        pub b_repeat_headers: c_int,
-        pub b_annexb: c_int,
+        pub aud: bool,
+        pub repeat_headers: bool,
+        pub annexb: bool,
         pub i_sps_id: c_int,
-        pub b_vfr_input: c_int,
-        pub b_pulldown: c_int,
+        pub vfr_input: bool,
+        pub pulldown: bool,
         pub i_fps_num: uint32_t,
         pub i_fps_den: uint32_t,
         pub i_timebase_num: uint32_t,
         pub i_timebase_den: uint32_t,
-        pub b_tff: c_int,
-        pub b_pic_struct: c_int,
-        pub b_fake_interlaced: c_int,
-        pub b_stitchable: c_int,
-        pub b_opencl: c_int,
+        pub tff: bool,
+        pub pic_struct: bool,
+        pub fake_interlaced: bool,
+        pub stitchable: bool,
+        pub opencl: bool,
         pub i_opencl_device: c_int,
         pub opencl_device_id: *mut c_void,
         pub psz_clbin_file: *mut c_char,
@@ -510,11 +510,11 @@ pub mod x264_h {
         fn new() -> Self {
             Self {
                 cpu: 0,
-                i_threads: 0,
-                i_lookahead_threads: 0,
-                b_sliced_threads: 0,
-                b_deterministic: 0,
-                b_cpu_independent: 0,
+                threads: ThreadCount::default(),
+                lookahead_threads: ThreadCount::default(),
+                sliced_threads: false,
+                deterministic: false,
+                cpu_independent: false,
                 i_sync_lookahead: 0,
                 width: 0,
                 height: 0,
@@ -529,22 +529,22 @@ pub mod x264_h {
                 i_keyint_max: 0,
                 i_keyint_min: 0,
                 i_scenecut_threshold: 0,
-                b_intra_refresh: 0,
+                intra_refresh: false,
                 i_bframe: 0,
                 i_bframe_adaptive: 0,
                 i_bframe_bias: 0,
                 bframe_pyramid: BPyramid::None,
-                b_open_gop: 0,
-                b_bluray_compat: 0,
+                open_gop: false,
+                bluray_compat: false,
                 i_avcintra_class: 0,
                 i_avcintra_flavor: 0,
-                b_deblocking_filter: 0,
+                deblocking_filter: false,
                 i_deblocking_filter_alphac0: 0,
                 i_deblocking_filter_beta: 0,
-                b_cabac: 0,
+                cabac: false,
                 i_cabac_init_idc: 0,
-                b_interlaced: 0,
-                b_constrained_intra: 0,
+                interlaced: false,
+                constrained_intra: false,
                 i_cqm_preset: 0,
                 psz_cqm_file: core::ptr::null_mut(),
                 cqm_4iy: [0; 16],
@@ -558,7 +558,7 @@ pub mod x264_h {
                 pf_log: None,
                 p_log_private: core::ptr::null_mut(),
                 i_log_level: 0,
-                b_full_recon: 0,
+                full_recon: false,
                 psz_dump_yuv: core::ptr::null_mut(),
                 analyse: C2RustUnnamed_3::new(),
                 rc: C2RustUnnamed_2::new(),
@@ -567,21 +567,21 @@ pub mod x264_h {
                 mastering_display: None,
                 content_light_level: None,
                 i_alternative_transfer: 0,
-                b_aud: 0,
-                b_repeat_headers: 0,
-                b_annexb: 0,
+                aud: false,
+                repeat_headers: false,
+                annexb: false,
                 i_sps_id: 0,
-                b_vfr_input: 0,
-                b_pulldown: 0,
+                vfr_input: false,
+                pulldown: false,
                 i_fps_num: 0,
                 i_fps_den: 0,
                 i_timebase_num: 0,
                 i_timebase_den: 0,
-                b_tff: 0,
-                b_pic_struct: 0,
-                b_fake_interlaced: 0,
-                b_stitchable: 0,
-                b_opencl: 0,
+                tff: false,
+                pic_struct: false,
+                fake_interlaced: false,
+                stitchable: false,
+                opencl: false,
                 i_opencl_device: 0,
                 opencl_device_id: core::ptr::null_mut(),
                 psz_clbin_file: core::ptr::null_mut(),
@@ -594,6 +594,31 @@ pub mod x264_h {
                 nalu_process: None,
                 opaque: core::ptr::null_mut(),
             }
+        }
+    }
+
+    #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+    #[repr(transparent)]
+    pub struct ThreadCount(u32);
+
+    impl ThreadCount {
+        pub const AUTO: Self = Self(0);
+        pub const MAX: Self = Self(128);
+
+        pub fn new(value: u32) -> Self {
+            Self(value)
+        }
+
+        pub fn validate(value: u32) -> Self {
+            Self(value.clamp(1, 128))
+        }
+    }
+
+    impl Deref for ThreadCount {
+        type Target = u32;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
         }
     }
 
@@ -722,7 +747,7 @@ pub mod x264_h {
     #[repr(C)]
     #[c2rust::src_loc = "443:5"]
     pub struct C2RustUnnamed_2 {
-        pub i_rc_method: c_int,
+        pub i_rc_method: RateControlMode,
         pub i_qp_constant: c_int,
         pub i_qp_min: c_int,
         pub i_qp_max: c_int,
@@ -736,14 +761,14 @@ pub mod x264_h {
         pub f_vbv_buffer_init: c_float,
         pub f_ip_factor: c_float,
         pub f_pb_factor: c_float,
-        pub b_filler: c_int,
+        pub filler: bool,
         pub i_aq_mode: c_int,
         pub f_aq_strength: c_float,
-        pub b_mb_tree: c_int,
+        pub mb_tree: bool,
         pub i_lookahead: c_int,
-        pub b_stat_write: c_int,
+        pub stat_write: bool,
         pub psz_stat_out: *mut c_char,
-        pub b_stat_read: c_int,
+        pub stat_read: bool,
         pub psz_stat_in: *mut c_char,
         pub f_qcompress: c_float,
         pub f_qblur: c_float,
@@ -756,7 +781,7 @@ pub mod x264_h {
     impl C2RustUnnamed_2 {
         fn new() -> Self {
             Self {
-                i_rc_method: 0,
+                i_rc_method: RateControlMode::CQP,
                 i_qp_constant: 0,
                 i_qp_min: 0,
                 i_qp_max: 0,
@@ -770,14 +795,14 @@ pub mod x264_h {
                 f_vbv_buffer_init: 0.0,
                 f_ip_factor: 0.0,
                 f_pb_factor: 0.0,
-                b_filler: 0,
+                filler: false,
                 i_aq_mode: 0,
                 f_aq_strength: 0.0,
-                b_mb_tree: 0,
+                mb_tree: false,
                 i_lookahead: 0,
-                b_stat_write: 0,
+                stat_write: false,
                 psz_stat_out: core::ptr::null_mut(),
-                b_stat_read: 0,
+                stat_read: false,
                 psz_stat_in: core::ptr::null_mut(),
                 f_qcompress: 0.0,
                 f_qblur: 0.0,
@@ -789,15 +814,38 @@ pub mod x264_h {
         }
     }
 
+    #[derive(
+        Debug,
+        Default,
+        Clone,
+        Copy,
+        PartialEq,
+        Eq,
+        strum::AsRefStr,
+        strum::EnumString,
+        strum::FromRepr,
+        strum::VariantNames,
+    )]
+    #[strum(serialize_all = "snake_case")]
+    pub enum RateControlMode {
+        /// Constant QP
+        CQP,
+        /// Constant rate factor (1-pass VBR)
+        #[default]
+        CRF,
+        /// Average bitrate (multi-pass)
+        ABR,
+    }
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "406:5"]
     pub struct C2RustUnnamed_3 {
         pub intra: c_uint,
         pub inter: c_uint,
-        pub b_transform_8x8: c_int,
+        pub transform_8x8: bool,
         pub i_weighted_pred: c_int,
-        pub b_weighted_bipred: c_int,
+        pub weighted_bipred: bool,
         pub direct_mv_pred: DirectPrediction,
         pub i_chroma_qp_offset: c_int,
         pub me_method: MotionEstimation,
@@ -805,20 +853,20 @@ pub mod x264_h {
         pub i_mv_range: c_int,
         pub i_mv_range_thread: c_int,
         pub i_subpel_refine: c_int,
-        pub b_chroma_me: c_int,
-        pub b_mixed_references: c_int,
+        pub chroma_me: bool,
+        pub mixed_references: bool,
         pub i_trellis: c_int,
-        pub b_fast_pskip: c_int,
-        pub b_dct_decimate: c_int,
+        pub fast_pskip: bool,
+        pub dct_decimate: bool,
         pub i_noise_reduction: c_int,
         pub f_psy_rd: c_float,
         pub f_psy_trellis: c_float,
-        pub b_psy: c_int,
+        pub psy: bool,
         pub b_mb_info: c_int,
         pub b_mb_info_update: c_int,
         pub i_luma_deadzone: [c_int; 2],
-        pub b_psnr: c_int,
-        pub b_ssim: c_int,
+        pub psnr: bool,
+        pub ssim: bool,
     }
 
     impl C2RustUnnamed_3 {
@@ -826,9 +874,9 @@ pub mod x264_h {
             Self {
                 intra: 0,
                 inter: 0,
-                b_transform_8x8: 0,
+                transform_8x8: false,
                 i_weighted_pred: 0,
-                b_weighted_bipred: 0,
+                weighted_bipred: false,
                 direct_mv_pred: DirectPrediction::None,
                 i_chroma_qp_offset: 0,
                 me_method: MotionEstimation::Dia,
@@ -836,25 +884,25 @@ pub mod x264_h {
                 i_mv_range: 0,
                 i_mv_range_thread: 0,
                 i_subpel_refine: 0,
-                b_chroma_me: 0,
-                b_mixed_references: 0,
+                chroma_me: false,
+                mixed_references: false,
                 i_trellis: 0,
-                b_fast_pskip: 0,
-                b_dct_decimate: 0,
+                fast_pskip: false,
+                dct_decimate: false,
                 i_noise_reduction: 0,
                 f_psy_rd: 0.0f32,
                 f_psy_trellis: 0.0f32,
-                b_psy: 0,
+                psy: false,
                 b_mb_info: 0,
                 b_mb_info_update: 0,
                 i_luma_deadzone: [0; 2],
-                b_psnr: 0,
-                b_ssim: 0,
+                psnr: false,
+                ssim: false,
             }
         }
     }
 
-    /// Direct Motion Vector Prediction Mode.
+    /// Direct Motion Vector Prediction Mode
     #[derive(
         Debug,
         Default,
@@ -1030,7 +1078,7 @@ pub mod x264_h {
         pub i_type: c_int,
         pub i_qpplus1: c_int,
         pub i_pic_struct: c_int,
-        pub b_keyframe: c_int,
+        pub keyframe: bool,
         pub i_pts: int64_t,
         pub i_dts: int64_t,
         pub param: *mut x264_param_t,
@@ -1177,6 +1225,7 @@ pub mod x264_h {
     #[c2rust::src_loc = "301:9"]
     pub const X264_NAL_HRD_CBR: c_int = 2 as c_int;
     use ::core::ffi::{c_char, c_double, c_float, c_int, c_uint, c_void};
+    use std::ops::Deref;
 
     use super::stdint_intn_h::{int32_t, int64_t};
     use super::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
@@ -1277,8 +1326,6 @@ pub mod x264_h {
     pub const X264_ANALYSE_PSUB8x8: c_uint = 0x20 as c_uint;
     #[c2rust::src_loc = "200:9"]
     pub const X264_ANALYSE_BSUB16x16: c_uint = 0x100 as c_uint;
-    #[c2rust::src_loc = "214:9"]
-    pub const X264_RC_CQP: c_int = 0 as c_int;
     #[c2rust::src_loc = "223:9"]
     pub const X264_B_ADAPT_FAST: c_int = 1 as c_int;
     #[c2rust::src_loc = "224:9"]
@@ -1345,10 +1392,6 @@ pub mod x264_h {
     pub const X264_CQM_FLAT: c_int = 0 as c_int;
     #[c2rust::src_loc = "213:9"]
     pub const X264_CQM_CUSTOM: c_int = 2 as c_int;
-    #[c2rust::src_loc = "215:9"]
-    pub const X264_RC_CRF: c_int = 1 as c_int;
-    #[c2rust::src_loc = "216:9"]
-    pub const X264_RC_ABR: c_int = 2 as c_int;
     #[c2rust::src_loc = "222:9"]
     pub const X264_B_ADAPT_NONE: c_int = 0 as c_int;
     #[c2rust::src_loc = "225:9"]
@@ -1589,15 +1632,15 @@ pub mod input_h {
         pub fullrange: c_int,
         pub width: u32,
         pub height: u32,
-        pub interlaced: c_int,
+        pub interlaced: bool,
         pub num_frames: c_int,
         pub sar_width: uint32_t,
         pub sar_height: uint32_t,
-        pub tff: c_int,
+        pub tff: bool,
         pub thread_safe: c_int,
         pub timebase_num: uint32_t,
         pub timebase_den: uint32_t,
-        pub vfr: c_int,
+        pub vfr: bool,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -2725,7 +2768,7 @@ pub mod osdep_h {
     pub unsafe extern "C" fn x264_pthread_fetch_and_add(
         mut val: *mut c_int,
         mut add: c_int,
-        mut mutex: *mut pthread_mutex_t,
+        mut _mutex: *mut pthread_mutex_t,
     ) -> c_int {
         return ::core::intrinsics::atomic_xadd_seqcst(val, add);
     }
@@ -3023,8 +3066,6 @@ pub mod base_h {
     ];
     #[c2rust::src_loc = "137:9"]
     pub const X264_REF_MAX: c_int = 16 as c_int;
-    #[c2rust::src_loc = "138:9"]
-    pub const X264_THREAD_MAX: c_int = 128 as c_int;
     #[c2rust::src_loc = "140:9"]
     pub const X264_LOOKAHEAD_MAX: c_int = 250 as c_int;
     #[c2rust::src_loc = "144:9"]
@@ -3211,10 +3252,6 @@ pub mod strings_h {
 }
 #[c2rust::header_src = "/home/nwplayer123/Hacks/hex264/x264/common/cpu.h:37"]
 pub mod cpu_h {
-    extern "C" {
-        #[c2rust::src_loc = "30:10"]
-        pub fn x264_cpu_num_processors() -> c_int;
-    }
     #[derive(Copy, Clone)]
     #[repr(C)]
     #[c2rust::src_loc = "49:9"]
@@ -3222,7 +3259,7 @@ pub mod cpu_h {
         pub name: *const c_char,
         pub flags: uint32_t,
     }
-    use ::core::ffi::{c_char, c_int};
+    use ::core::ffi::c_char;
 
     use super::stdint_uintn_h::uint32_t;
     extern "C" {
@@ -5062,7 +5099,7 @@ pub mod common_h {
         pub b_dct_decimate: c_int,
         pub i_psy_rd: c_int,
         pub i_psy_trellis: c_int,
-        pub b_interlaced: c_int,
+        pub interlaced: bool,
         pub b_adaptive_mbaff: c_int,
         pub mv_min: [c_int; 2],
         pub mv_max: [c_int; 2],
@@ -5096,7 +5133,7 @@ pub mod common_h {
         pub i_mb_top_mbpair_xy: c_int,
         pub topleft_partition: c_int,
         pub b_allow_skip: c_int,
-        pub field_decoding_flag: c_int,
+        pub field_decoding_flag: bool,
         pub base: *mut uint8_t,
         pub type_0: *mut int8_t,
         pub partition: *mut uint8_t,
@@ -5135,7 +5172,7 @@ pub mod common_h {
         pub i_last_qp: c_int,
         pub i_last_dqp: c_int,
         pub b_variable_qp: c_int,
-        pub b_lossless: c_int,
+        pub lossless: bool,
         pub b_direct_auto_read: c_int,
         pub b_direct_auto_write: c_int,
         pub i_trellis_lambda2: [[c_int; 2]; 2],
@@ -5253,7 +5290,7 @@ pub mod common_h {
         pub i_last_mb: c_int,
         pub i_pps_id: c_int,
         pub i_frame_num: c_int,
-        pub b_mbaff: c_int,
+        pub mbaff: bool,
         pub b_field_pic: c_int,
         pub b_bottom_field: c_int,
         pub i_idr_pic_id: c_int,
@@ -5510,7 +5547,7 @@ pub mod frame_h {
         pub i_frame_num: c_int,
         pub b_kept_as_ref: c_int,
         pub i_pic_struct: c_int,
-        pub b_keyframe: c_int,
+        pub keyframe: bool,
         pub b_fdec: uint8_t,
         pub b_last_minigop_bframe: uint8_t,
         pub i_bframes: uint8_t,
@@ -6614,7 +6651,7 @@ pub mod cabac_h {
     }
     use ::core::ffi::{c_int, c_long};
 
-    use super::stdint_uintn_h::{uint16_t, uint8_t};
+    use super::stdint_uintn_h::uint8_t;
     use super::tables_h::{x264_cabac_entropy, x264_cabac_transition};
     #[inline(always)]
     #[c2rust::src_loc = "94:1"]
@@ -7292,7 +7329,7 @@ pub mod set_h {
     pub struct x264_pps_t {
         pub i_id: c_int,
         pub i_sps_id: c_int,
-        pub b_cabac: c_int,
+        pub cabac: bool,
         pub b_pic_order: c_int,
         pub i_num_slice_groups: c_int,
         pub i_num_ref_idx_l0_default_active: c_int,
@@ -7303,7 +7340,7 @@ pub mod set_h {
         pub i_pic_init_qs: c_int,
         pub i_chroma_qp_index_offset: c_int,
         pub b_deblocking_filter_control: c_int,
-        pub b_constrained_intra_pred: c_int,
+        pub constrained_intra_pred: bool,
         pub b_redundant_pic_cnt: c_int,
         pub b_transform_8x8_mode: c_int,
     }
@@ -7326,7 +7363,7 @@ pub mod set_h {
         pub i_mb_width: c_int,
         pub i_mb_height: c_int,
         pub b_frame_mbs_only: c_int,
-        pub b_mb_adaptive_frame_field: c_int,
+        pub mb_adaptive_frame_field: bool,
         pub b_direct8x8_inference: c_int,
         pub b_crop: c_int,
         pub crop: C2RustUnnamed_16,
@@ -7365,7 +7402,7 @@ pub mod set_h {
         pub b_nal_hrd_parameters_present: c_int,
         pub b_vcl_hrd_parameters_present: c_int,
         pub hrd: C2RustUnnamed_15,
-        pub b_pic_struct_present: c_int,
+        pub pic_struct_present: bool,
         pub b_bitstream_restriction: c_int,
         pub b_motion_vectors_over_pic_boundaries: c_int,
         pub i_max_bytes_per_pic_denom: c_int,
@@ -8236,7 +8273,7 @@ pub mod macroblock_h {
     use super::base_h::{x264_scan8, x264_union32_t};
     use super::common_h::{x264_t, FDEC_STRIDE, FENC_STRIDE};
     use super::predict_h::{x264_mb_pred_mode4x4_fix, I_PRED_4x4_DC};
-    use super::stdint_intn_h::{int16_t, int8_t};
+    use super::stdint_intn_h::int16_t;
     use super::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
     extern "C" {
         #[c2rust::src_loc = "339:1"]
@@ -8776,7 +8813,7 @@ pub mod rdo_c {
         i_ssd = ssd_mb(h);
         if (*h).mb.i_type == P_SKIP as c_int || (*h).mb.i_type == B_SKIP as c_int {
             i_bits = 1 as c_int * i_lambda2 + 128 as c_int >> 8 as c_int;
-        } else if (*h).param.b_cabac != 0 {
+        } else if (*h).param.cabac {
             let mut cabac_tmp: x264_cabac_t = x264_cabac_t {
                 i_low: 0,
                 i_range: 0,
@@ -8863,7 +8900,7 @@ pub mod rdo_c {
                 >> 8 as c_int) as c_int;
             i_ssd = i_ssd.wrapping_add(chromassd as uint64_t);
         }
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             let mut cabac_tmp: x264_cabac_t = x264_cabac_t {
                 i_low: 0,
                 i_range: 0,
@@ -8948,7 +8985,7 @@ pub mod rdo_c {
                     >> 8 as c_int,
             );
         }
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             let mut cabac_tmp: x264_cabac_t = x264_cabac_t {
                 i_low: 0,
                 i_range: 0,
@@ -9043,7 +9080,7 @@ pub mod rdo_c {
                 >> 8 as c_int) as c_int;
             i_ssd = i_ssd.wrapping_add(chromassd as uint64_t);
         }
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             let mut cabac_tmp: x264_cabac_t = x264_cabac_t {
                 i_low: 0,
                 i_range: 0,
@@ -9127,7 +9164,7 @@ pub mod rdo_c {
                 >> 8 as c_int) as c_int;
             i_ssd = i_ssd.wrapping_add(chromassd as uint64_t);
         }
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             let mut cabac_tmp: x264_cabac_t = x264_cabac_t {
                 i_low: 0,
                 i_range: 0,
@@ -9179,7 +9216,7 @@ pub mod rdo_c {
             + ssd_plane(h, chromapix, 2 as c_int, 0 as c_int, 0 as c_int))
             as uint64_t;
         (*h).mb.i_chroma_pred_mode = i_mode;
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             let mut cabac_tmp: x264_cabac_t = x264_cabac_t {
                 i_low: 0,
                 i_range: 0,
@@ -9468,7 +9505,7 @@ pub mod rdo_c {
     #[inline(never)]
     #[c2rust::src_loc = "553:1"]
     pub unsafe extern "C" fn trellis_coef0_1(
-        mut ssd0: uint64_t,
+        mut _ssd0: uint64_t,
         mut nodes_cur: *mut trellis_node_t,
         mut nodes_prev: *mut trellis_node_t,
         mut level_tree: *mut trellis_level_t,
@@ -9801,7 +9838,7 @@ pub mod rdo_c {
         mut levels_used: c_int,
         mut lambda2: c_int,
         mut level_state: *mut uint8_t,
-        mut levelgt1_ctx: c_int,
+        mut _levelgt1_ctx: c_int,
     ) -> c_int {
         let mut prefix: c_int = if (abs_level - 1 as c_int) < 14 as c_int {
             abs_level - 1 as c_int
@@ -10114,18 +10151,18 @@ pub mod rdo_c {
         } else {
             x264_dct4_weight2_tab.as_ptr()
         };
-        let b_interlaced: c_int = (*h).mb.b_interlaced;
+        let interlaced = (*h).mb.interlaced;
         let mut cabac_state_sig: *mut uint8_t = &mut *(*h).cabac.state.as_mut_ptr().offset(
             *(*x264_significant_coeff_flag_offset
                 .as_ptr()
-                .offset(b_interlaced as isize))
+                .offset(interlaced as isize))
             .as_ptr()
             .offset(ctx_block_cat as isize) as isize,
         ) as *mut uint8_t;
         let mut cabac_state_last: *mut uint8_t = &mut *(*h).cabac.state.as_mut_ptr().offset(
             *(*x264_last_coeff_flag_offset
                 .as_ptr()
-                .offset(b_interlaced as isize))
+                .offset(interlaced as isize))
             .as_ptr()
             .offset(ctx_block_cat as isize) as isize,
         ) as *mut uint8_t;
@@ -10334,7 +10371,7 @@ pub mod rdo_c {
             if quant_coefs[i_0 as usize] == 0 {
                 if 0 as c_int == 0 {
                     let mut sigindex: c_int = if dc == 0 && num_coefs == 64 as c_int {
-                        x264_significant_coeff_flag_offset_8x8[b_interlaced as usize][i_0 as usize]
+                        x264_significant_coeff_flag_offset_8x8[interlaced as usize][i_0 as usize]
                             as c_int
                     } else if b_chroma != 0 && dc != 0 && num_coefs == 8 as c_int {
                         x264_coeff_flag_offset_chroma_422_dc[i_0 as usize] as c_int
@@ -10396,7 +10433,7 @@ pub mod rdo_c {
                 }
                 if i_0 < num_coefs - 1 as c_int || 0 as c_int != 0 {
                     let mut sigindex_0: c_int = if dc == 0 && num_coefs == 64 as c_int {
-                        x264_significant_coeff_flag_offset_8x8[b_interlaced as usize][i_0 as usize]
+                        x264_significant_coeff_flag_offset_8x8[interlaced as usize][i_0 as usize]
                             as c_int
                     } else if b_chroma != 0 && dc != 0 && num_coefs == 8 as c_int {
                         x264_coeff_flag_offset_chroma_422_dc[i_0 as usize] as c_int
@@ -10588,7 +10625,7 @@ pub mod rdo_c {
                     if quant_coefs[i_0 as usize] == 0 {
                         if 1 as c_int == 0 {
                             let mut sigindex_1: c_int = if dc == 0 && num_coefs == 64 as c_int {
-                                x264_significant_coeff_flag_offset_8x8[b_interlaced as usize]
+                                x264_significant_coeff_flag_offset_8x8[interlaced as usize]
                                     [i_0 as usize] as c_int
                             } else if b_chroma != 0 && dc != 0 && num_coefs == 8 as c_int {
                                 x264_coeff_flag_offset_chroma_422_dc[i_0 as usize] as c_int
@@ -10653,7 +10690,7 @@ pub mod rdo_c {
                         }
                         if i_0 < num_coefs - 1 as c_int || 1 as c_int != 0 {
                             let mut sigindex_2: c_int = if dc == 0 && num_coefs == 64 as c_int {
-                                x264_significant_coeff_flag_offset_8x8[b_interlaced as usize]
+                                x264_significant_coeff_flag_offset_8x8[interlaced as usize]
                                     [i_0 as usize] as c_int
                             } else if b_chroma != 0 && dc != 0 && num_coefs == 8 as c_int {
                                 x264_coeff_flag_offset_chroma_422_dc[i_0 as usize] as c_int
@@ -10959,11 +10996,11 @@ pub mod rdo_c {
         i = end;
         while i >= start {
             if (abs(*dct.offset(*zigzag.offset(i as isize) as isize)) as udctcoef).wrapping_mul(
-                (if dc != 0 {
+                if dc != 0 {
                     *quant_mf.offset(0) >> 1 as c_int
                 } else {
                     *quant_mf.offset(*zigzag.offset(i as isize) as isize)
-                }),
+                },
             ) >= f as udctcoef
             {
                 break;
@@ -10980,26 +11017,23 @@ pub mod rdo_c {
                 let mut coef: c_int = *dct.offset(*zigzag.offset(j as isize) as isize);
                 let mut abs_coef: c_int = abs(coef);
                 let mut sign: c_int = if coef < 0 as c_int { -1 } else { 1 as c_int };
-                let mut nearest_quant: c_int =
-                    ((f as udctcoef).wrapping_add((abs_coef as udctcoef).wrapping_mul(
-                        (if dc != 0 {
-                            *quant_mf.offset(0) >> 1 as c_int
-                        } else {
-                            *quant_mf.offset(*zigzag.offset(j as isize) as isize)
-                        }),
-                    )) >> 16 as c_int) as c_int;
+                let mut nearest_quant: c_int = ((f as udctcoef).wrapping_add(
+                    (abs_coef as udctcoef).wrapping_mul(if dc != 0 {
+                        *quant_mf.offset(0) >> 1 as c_int
+                    } else {
+                        *quant_mf.offset(*zigzag.offset(j as isize) as isize)
+                    }),
+                ) >> 16 as c_int) as c_int;
                 quant_coefs[0][i as usize] = (sign * nearest_quant) as dctcoef;
                 quant_coefs[1][i as usize] = quant_coefs[0][i as usize];
                 coefs[i as usize] = quant_coefs[1][i as usize];
                 if nearest_quant != 0 {
                     let mut deadzone_quant: c_int = (((f / 2 as c_int) as udctcoef).wrapping_add(
-                        (abs_coef as udctcoef).wrapping_mul(
-                            (if dc != 0 {
-                                *quant_mf.offset(0) >> 1 as c_int
-                            } else {
-                                *quant_mf.offset(*zigzag.offset(j as isize) as isize)
-                            }),
-                        ),
+                        (abs_coef as udctcoef).wrapping_mul(if dc != 0 {
+                            *quant_mf.offset(0) >> 1 as c_int
+                        } else {
+                            *quant_mf.offset(*zigzag.offset(j as isize) as isize)
+                        }),
                     ) >> 16 as c_int) as c_int;
                     let mut unquant1: c_int = (if dc != 0 {
                         *unquant_mf.offset(0) << 1 as c_int
@@ -11157,7 +11191,7 @@ pub mod rdo_c {
         mut b_intra: c_int,
         mut idx: c_int,
     ) -> c_int {
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             return quant_trellis_cabac(
                 h,
                 dct,
@@ -11172,7 +11206,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
                 (*x264_zigzag_scan4
                     .as_ptr()
-                    .offset((*h).mb.b_interlaced as isize))
+                    .offset((*h).mb.interlaced as isize))
                 .as_ptr(),
                 ctx_block_cat,
                 (*h).mb.i_trellis_lambda2[0][b_intra as usize],
@@ -11192,7 +11226,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
             (*x264_zigzag_scan4
                 .as_ptr()
-                .offset((*h).mb.b_interlaced as isize))
+                .offset((*h).mb.interlaced as isize))
             .as_ptr(),
             DCT_LUMA_DC as c_int,
             (*h).mb.i_trellis_lambda2[0][b_intra as usize],
@@ -11241,7 +11275,7 @@ pub mod rdo_c {
             zigzag = zigzag_scan2x2.as_ptr();
             num_coefs = 4 as c_int;
         }
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             return quant_trellis_cabac(
                 h,
                 dct,
@@ -11310,7 +11344,7 @@ pub mod rdo_c {
             0 as c_int as uint8_t,
         ];
         let mut b_ac: c_int = ctx_ac[ctx_block_cat as usize] as c_int;
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             return quant_trellis_cabac(
                 h,
                 dct,
@@ -11325,7 +11359,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
                 (*x264_zigzag_scan4
                     .as_ptr()
-                    .offset((*h).mb.b_interlaced as isize))
+                    .offset((*h).mb.interlaced as isize))
                 .as_ptr(),
                 ctx_block_cat,
                 (*h).mb.i_trellis_lambda2[b_chroma as usize][b_intra as usize],
@@ -11345,7 +11379,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
             (*x264_zigzag_scan4
                 .as_ptr()
-                .offset((*h).mb.b_interlaced as isize))
+                .offset((*h).mb.interlaced as isize))
             .as_ptr(),
             ctx_block_cat,
             (*h).mb.i_trellis_lambda2[b_chroma as usize][b_intra as usize],
@@ -11369,7 +11403,7 @@ pub mod rdo_c {
         mut b_chroma: c_int,
         mut idx: c_int,
     ) -> c_int {
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             return quant_trellis_cabac(
                 h,
                 dct,
@@ -11384,7 +11418,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
                 (*x264_zigzag_scan8
                     .as_ptr()
-                    .offset((*h).mb.b_interlaced as isize))
+                    .offset((*h).mb.interlaced as isize))
                 .as_ptr(),
                 ctx_block_cat,
                 (*h).mb.i_trellis_lambda2[b_chroma as usize][b_intra as usize],
@@ -11409,7 +11443,7 @@ pub mod rdo_c {
                 .as_mut_ptr(),
                 (*x264_zigzag_scan8
                     .as_ptr()
-                    .offset((*h).mb.b_interlaced as isize))
+                    .offset((*h).mb.interlaced as isize))
                 .as_ptr(),
                 DCT_LUMA_4x4 as c_int,
                 (*h).mb.i_trellis_lambda2[b_chroma as usize][b_intra as usize],
@@ -11485,7 +11519,6 @@ pub mod rdo_c {
         x264_significant_coeff_flag_offset, x264_significant_coeff_flag_offset_8x8, x264_zero,
     };
     use super::util_h::{x264_union128_sse_t, M128_ZERO};
-    use super::xmmintrin_h::__m128;
     #[cfg(target_arch = "x86")]
     pub use ::core::arch::x86::_mm_setr_ps;
     #[cfg(target_arch = "x86_64")]
@@ -12804,10 +12837,10 @@ pub mod slicetype_c {
         let i_mb_xy: c_int = i_mb_x + i_mb_y * i_mb_stride;
         let i_stride: c_int = (*fenc).i_stride_lowres;
         let i_pel_offset: c_int = 8 as c_int * (i_mb_x + i_mb_y * i_stride);
-        let i_bipred_weight: c_int = if (*h).param.analyse.b_weighted_bipred != 0 {
-            64 as c_int - (dist_scale_factor >> 2 as c_int)
+        let i_bipred_weight: c_int = if (*h).param.analyse.weighted_bipred {
+            64 - (dist_scale_factor >> 2)
         } else {
-            32 as c_int
+            32
         };
         let mut fenc_mvs: [*mut [int16_t; 2]; 2] = [
             if b != p0 {
@@ -13421,7 +13454,7 @@ pub mod slicetype_c {
     #[c2rust::src_loc = "814:1"]
     pub unsafe extern "C" fn slicetype_slice_cost(mut s: *mut x264_slicetype_slice_t) {
         let mut h: *mut x264_t = (*s).h;
-        let mut do_edges: c_int = ((*h).param.rc.b_mb_tree != 0
+        let mut do_edges: c_int = ((*h).param.rc.mb_tree
             || (*h).param.rc.i_vbv_buffer_size != 0
             || (*h).mb.i_mb_width <= 2 as c_int
             || (*h).mb.i_mb_height <= 2 as c_int) as c_int;
@@ -13470,6 +13503,7 @@ pub mod slicetype_c {
         mut p1: c_int,
         mut b: c_int,
     ) -> c_int {
+        let lookahead_threads = *(*h).param.lookahead_threads;
         let mut i_score: c_int = 0 as c_int;
         let mut do_search: [c_int; 2] = [0; 2];
         let mut w: *const x264_weight_t = x264_zero.as_mut_ptr() as *const x264_weight_t;
@@ -13503,12 +13537,12 @@ pub mod slicetype_c {
                 dist_scale_factor = ((b - p0 << 8 as c_int) + (p1 - p0 >> 1 as c_int)) / (p1 - p0);
             }
             let mut output_buf_size: c_int =
-                (*h).mb.i_mb_height + (NUM_INTS + PAD_SIZE) * (*h).param.i_lookahead_threads;
+                (*h).mb.i_mb_height + (NUM_INTS + PAD_SIZE) * lookahead_threads as i32;
             let mut output_inter: [*mut c_int; 17] = [0 as *mut c_int; 17];
             let mut output_intra: [*mut c_int; 17] = [0 as *mut c_int; 17];
             output_inter[0] = (*h).scratch_buffer2 as *mut c_int;
             output_intra[0] = output_inter[0].offset(output_buf_size as isize);
-            if (*h).param.i_lookahead_threads > 1 as c_int {
+            if lookahead_threads > 1 {
                 let mut s: [x264_slicetype_slice_t; 16] = [x264_slicetype_slice_t {
                     h: 0 as *mut x264_t,
                     a: 0 as *mut x264_mb_analysis_t,
@@ -13522,13 +13556,12 @@ pub mod slicetype_c {
                     output_inter: 0 as *mut c_int,
                     output_intra: 0 as *mut c_int,
                 }; 16];
-                let mut i: c_int = 0 as c_int;
-                while i < (*h).param.i_lookahead_threads {
-                    let mut t: *mut x264_t = (*h).lookahead_thread[i as usize];
+                for n in 0..lookahead_threads as usize {
+                    let mut t: *mut x264_t = (*h).lookahead_thread[n];
                     (*t).mb.me_method = (*h).mb.me_method;
                     (*t).mb.i_subpel_refine = (*h).mb.i_subpel_refine;
                     (*t).mb.b_chroma_me = (*h).mb.b_chroma_me;
-                    s[i as usize] = {
+                    s[n] = {
                         let mut init = x264_slicetype_slice_t {
                             h: t,
                             a: a,
@@ -13539,39 +13572,39 @@ pub mod slicetype_c {
                             dist_scale_factor: dist_scale_factor,
                             do_search: do_search.as_mut_ptr(),
                             w: w,
-                            output_inter: output_inter[i as usize],
-                            output_intra: output_intra[i as usize],
+                            output_inter: output_inter[n],
+                            output_intra: output_intra[n],
                         };
                         init
                     };
-                    (*t).i_threadslice_start = ((*h).mb.i_mb_height * i
-                        + (*h).param.i_lookahead_threads / 2 as c_int)
-                        / (*h).param.i_lookahead_threads;
-                    (*t).i_threadslice_end = ((*h).mb.i_mb_height * (i + 1 as c_int)
-                        + (*h).param.i_lookahead_threads / 2 as c_int)
-                        / (*h).param.i_lookahead_threads;
+                    (*t).i_threadslice_start = (((*h).mb.i_mb_height as u32 * n as u32
+                        + lookahead_threads / 2)
+                        / lookahead_threads) as i32;
+                    (*t).i_threadslice_end = (((*h).mb.i_mb_height as u32 * (n as u32 + 1)
+                        + lookahead_threads / 2)
+                        / lookahead_threads) as i32;
                     let mut thread_height: c_int =
                         (*t).i_threadslice_end - (*t).i_threadslice_start;
                     let mut thread_output_size: c_int = thread_height + NUM_INTS;
                     memset(
-                        output_inter[i as usize] as *mut c_void,
+                        output_inter[n] as *mut c_void,
                         0 as c_int,
                         (thread_output_size as size_t)
                             .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
                     );
                     memset(
-                        output_intra[i as usize] as *mut c_void,
+                        output_intra[n] as *mut c_void,
                         0 as c_int,
                         (thread_output_size as size_t)
                             .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
                     );
-                    let ref mut fresh18 = *output_intra[i as usize].offset(NUM_ROWS as isize);
+                    let ref mut fresh18 = *output_intra[n].offset(NUM_ROWS as isize);
                     *fresh18 = thread_height;
-                    *output_inter[i as usize].offset(NUM_ROWS as isize) = *fresh18;
-                    output_inter[(i + 1 as c_int) as usize] = output_inter[i as usize]
+                    *output_inter[n].offset(NUM_ROWS as isize) = *fresh18;
+                    output_inter[n + 1] = output_inter[n]
                         .offset(thread_output_size as isize)
                         .offset(PAD_SIZE as isize);
-                    output_intra[(i + 1 as c_int) as usize] = output_intra[i as usize]
+                    output_intra[n + 1] = output_intra[n]
                         .offset(thread_output_size as isize)
                         .offset(PAD_SIZE as isize);
                     x264_10_threadpool_run(
@@ -13586,19 +13619,15 @@ pub mod slicetype_c {
                             slicetype_slice_cost
                                 as unsafe extern "C" fn(*mut x264_slicetype_slice_t) -> (),
                         ))),
-                        &mut *s.as_mut_ptr().offset(i as isize) as *mut x264_slicetype_slice_t
+                        &mut *s.as_mut_ptr().offset(n as isize) as *mut x264_slicetype_slice_t
                             as *mut c_void,
                     );
-                    i += 1;
                 }
-                let mut i_0: c_int = 0 as c_int;
-                while i_0 < (*h).param.i_lookahead_threads {
+                for n in 0..lookahead_threads as isize {
                     x264_10_threadpool_wait(
                         (*h).lookaheadpool,
-                        &mut *s.as_mut_ptr().offset(i_0 as isize) as *mut x264_slicetype_slice_t
-                            as *mut c_void,
+                        &mut *s.as_mut_ptr().offset(n) as *mut _ as *mut _,
                     );
-                    i_0 += 1;
                 }
             } else {
                 (*h).i_threadslice_start = 0 as c_int;
@@ -13648,35 +13677,31 @@ pub mod slicetype_c {
             let mut row_satd_inter: *mut c_int =
                 (*fenc).i_row_satds[(b - p0) as usize][(p1 - b) as usize];
             let mut row_satd_intra: *mut c_int = (*fenc).i_row_satds[0][0];
-            let mut i_1: c_int = 0 as c_int;
-            while i_1 < (*h).param.i_lookahead_threads {
+            for n in 0..lookahead_threads as usize {
                 if b == p1 {
                     (*fenc).i_intra_mbs[(b - p0) as usize] +=
-                        *output_inter[i_1 as usize].offset(INTRA_MBS as isize);
+                        *output_inter[n].offset(INTRA_MBS as isize);
                 }
                 if (*fenc).b_intra_calculated == 0 {
-                    (*fenc).i_cost_est[0][0] +=
-                        *output_intra[i_1 as usize].offset(COST_EST as isize);
-                    (*fenc).i_cost_est_aq[0][0] +=
-                        *output_intra[i_1 as usize].offset(COST_EST_AQ as isize);
+                    (*fenc).i_cost_est[0][0] += *output_intra[n].offset(COST_EST as isize);
+                    (*fenc).i_cost_est_aq[0][0] += *output_intra[n].offset(COST_EST_AQ as isize);
                 }
                 (*fenc).i_cost_est[(b - p0) as usize][(p1 - b) as usize] +=
-                    *output_inter[i_1 as usize].offset(COST_EST as isize);
+                    *output_inter[n].offset(COST_EST as isize);
                 (*fenc).i_cost_est_aq[(b - p0) as usize][(p1 - b) as usize] +=
-                    *output_inter[i_1 as usize].offset(COST_EST_AQ as isize);
+                    *output_inter[n].offset(COST_EST_AQ as isize);
                 if (*h).param.rc.i_vbv_buffer_size != 0 {
-                    let mut row_count: c_int =
-                        *output_inter[i_1 as usize].offset(NUM_ROWS as isize);
+                    let mut row_count: c_int = *output_inter[n].offset(NUM_ROWS as isize);
                     memcpy(
                         row_satd_inter as *mut c_void,
-                        output_inter[i_1 as usize].offset(NUM_INTS as isize) as *const c_void,
+                        output_inter[n].offset(NUM_INTS as isize) as *const c_void,
                         (row_count as size_t)
                             .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
                     );
                     if (*fenc).b_intra_calculated == 0 {
                         memcpy(
                             row_satd_intra as *mut c_void,
-                            output_intra[i_1 as usize].offset(NUM_INTS as isize) as *const c_void,
+                            output_intra[n].offset(NUM_INTS as isize) as *const c_void,
                             (row_count as size_t)
                                 .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
                         );
@@ -13684,7 +13709,6 @@ pub mod slicetype_c {
                     row_satd_inter = row_satd_inter.offset(row_count as isize);
                     row_satd_intra = row_satd_intra.offset(row_count as isize);
                 }
-                i_1 += 1;
             }
             i_score = (*fenc).i_cost_est[(b - p0) as usize][(p1 - b) as usize];
             if b != p1 {
@@ -13813,10 +13837,10 @@ pub mod slicetype_c {
         ];
         let mut dist_scale_factor: c_int =
             ((b - p0 << 8 as c_int) + (p1 - p0 >> 1 as c_int)) / (p1 - p0);
-        let mut i_bipred_weight: c_int = if (*h).param.analyse.b_weighted_bipred != 0 {
-            64 as c_int - (dist_scale_factor >> 2 as c_int)
+        let mut i_bipred_weight: c_int = if (*h).param.analyse.weighted_bipred {
+            64 - (dist_scale_factor >> 2)
         } else {
-            32 as c_int
+            32
         };
         let mut mvs: [*mut [int16_t; 2]; 2] = [
             if b != p0 {
@@ -14115,7 +14139,7 @@ pub mod slicetype_c {
     ) -> c_int {
         let mut cost: c_int = slicetype_frame_cost(h, a, frames, p0, p1, b);
         if (*h).param.rc.i_aq_mode != 0 {
-            if (*h).param.rc.b_mb_tree != 0 {
+            if (*h).param.rc.mb_tree {
                 return slicetype_frame_cost_recalculate(h, frames, p0, p1, b);
             } else {
                 return (**frames.offset(b as isize)).i_cost_est_aq[(b - p0) as usize]
@@ -14143,7 +14167,7 @@ pub mod slicetype_c {
                 (*prev_frame).i_cpb_duration += (*cur_frame).i_dpb_output_delay;
             }
         }
-        if (*cur_frame).b_keyframe != 0 && (*h).param.b_intra_refresh == 0 {
+        if (*cur_frame).keyframe && !(*h).param.intra_refresh {
             *i_cpb_delay = 0 as int64_t;
         }
         *i_cpb_delay += (*cur_frame).i_duration;
@@ -14442,7 +14466,7 @@ pub mod slicetype_c {
         if (*h).param.i_keyint_min == (*h).param.i_keyint_max {
             f_thresh_min = f_thresh_max;
         }
-        if i_gop_size <= (*h).param.i_keyint_min / 4 as c_int || (*h).param.b_intra_refresh != 0 {
+        if i_gop_size <= (*h).param.i_keyint_min / 4 as c_int || (*h).param.intra_refresh {
             f_bias = f_thresh_min / 4 as c_int as c_float;
         } else if i_gop_size <= (*h).param.i_keyint_min {
             f_bias = f_thresh_min * i_gop_size as c_float / (*h).param.i_keyint_min as c_float;
@@ -15120,7 +15144,7 @@ pub mod slicetype_c {
         };
         let mut b_vbv_lookahead: c_int =
             ((*h).param.rc.i_vbv_buffer_size != 0 && (*h).param.rc.i_lookahead != 0) as c_int;
-        if (*h).param.b_deterministic != 0 {
+        if (*h).param.deterministic {
             i_max_search = if i_max_search
                 < (*(*h).lookahead).i_slicetype_length + 1 as c_int - intra_minigop
             {
@@ -15142,20 +15166,6 @@ pub mod slicetype_c {
                 .as_ptr(),
             );
         }
-        'c_125261: {
-            if (*h).frames.b_have_lowres != 0 {
-            } else {
-                __assert_fail(
-                    b"h->frames.b_have_lowres\0" as *const u8 as *const c_char,
-                    b"encoder/slicetype.c\0" as *const u8 as *const c_char,
-                    1488 as c_uint,
-                    ::core::mem::transmute::<[u8; 46], [c_char; 46]>(
-                        *b"void x264_10_slicetype_analyse(x264_t *, int)\0",
-                    )
-                    .as_ptr(),
-                );
-            }
-        };
         if (*(*h).lookahead).last_nonb.is_null() {
             return;
         }
@@ -15168,7 +15178,7 @@ pub mod slicetype_c {
         }
         lowres_context_init(h, &mut a);
         if framecnt == 0 {
-            if (*h).param.rc.b_mb_tree != 0 {
+            if (*h).param.rc.mb_tree {
                 macroblock_tree(h, &mut a, frames.as_mut_ptr(), 0 as c_int, keyframe);
             }
             return;
@@ -15176,7 +15186,7 @@ pub mod slicetype_c {
         keyint_limit = (*h).param.i_keyint_max - (*frames[0]).i_frame
             + (*(*h).lookahead).i_last_keyframe
             - 1 as c_int;
-        num_frames = if (*h).param.b_intra_refresh != 0 {
+        num_frames = if (*h).param.intra_refresh {
             framecnt
         } else if framecnt < keyint_limit {
             framecnt
@@ -15184,9 +15194,9 @@ pub mod slicetype_c {
             keyint_limit
         };
         orig_num_frames = num_frames;
-        if (*h).param.analyse.b_psy != 0 && (*h).param.rc.b_mb_tree != 0 || b_vbv_lookahead != 0 {
+        if (*h).param.analyse.psy && (*h).param.rc.mb_tree || b_vbv_lookahead != 0 {
             num_frames = framecnt;
-        } else if (*h).param.b_open_gop != 0 && num_frames < framecnt {
+        } else if (*h).param.open_gop && num_frames < framecnt {
             num_frames += 1;
         } else if num_frames == 0 as c_int {
             (*frames[1]).i_type = X264_TYPE_I;
@@ -15216,7 +15226,7 @@ pub mod slicetype_c {
         let mut j: c_int = 1 as c_int;
         while j <= num_frames {
             if (*frames[j as usize]).i_type == X264_TYPE_KEYFRAME {
-                (*frames[j as usize]).i_type = if (*h).param.b_open_gop != 0 {
+                (*frames[j as usize]).i_type = if (*h).param.open_gop {
                     X264_TYPE_I
                 } else {
                     X264_TYPE_IDR
@@ -15455,7 +15465,7 @@ pub mod slicetype_c {
             }
             reset_start = (keyframe == 0) as c_int + 1 as c_int;
         }
-        if (*h).param.rc.b_mb_tree != 0 {
+        if (*h).param.rc.mb_tree {
             macroblock_tree(
                 h,
                 &mut a,
@@ -15468,7 +15478,7 @@ pub mod slicetype_c {
                 keyframe,
             );
         }
-        if (*h).param.b_intra_refresh == 0 {
+        if !(*h).param.intra_refresh {
             let mut last_keyframe: c_int = (*(*h).lookahead).i_last_keyframe;
             let mut last_possible: c_int = 0 as c_int;
             let mut j_7: c_int = 1 as c_int;
@@ -15480,10 +15490,9 @@ pub mod slicetype_c {
                         || (*frm).i_forced_type == X264_TYPE_IDR
                         || (*frm).i_forced_type == X264_TYPE_KEYFRAME)
                 {
-                    if (*h).param.b_open_gop != 0
-                        || !((*frames[(j_7 - 1 as c_int) as usize]).i_forced_type == X264_TYPE_B
-                            || (*frames[(j_7 - 1 as c_int) as usize]).i_forced_type
-                                == X264_TYPE_BREF)
+                    if (*h).param.open_gop
+                        || !((*frames[(j_7 - 1) as usize]).i_forced_type == X264_TYPE_B
+                            || (*frames[(j_7 - 1) as usize]).i_forced_type == X264_TYPE_BREF)
                     {
                         last_possible = j_7;
                     }
@@ -15496,7 +15505,7 @@ pub mod slicetype_c {
                     }
                     last_possible = 0 as c_int;
                     if (*frm).i_type != X264_TYPE_IDR {
-                        (*frm).i_type = if (*h).param.b_open_gop != 0 {
+                        (*frm).i_type = if (*h).param.open_gop {
                             X264_TYPE_I
                         } else {
                             X264_TYPE_IDR
@@ -15504,9 +15513,9 @@ pub mod slicetype_c {
                     }
                 }
                 if (*frm).i_type == X264_TYPE_I && keyframe_dist >= (*h).param.i_keyint_min {
-                    if (*h).param.b_open_gop != 0 {
+                    if (*h).param.open_gop {
                         last_keyframe = (*frm).i_frame;
-                        if (*h).param.b_bluray_compat != 0 {
+                        if (*h).param.bluray_compat {
                             let mut bframes_0: c_int = 0 as c_int;
                             while bframes_0 < j_7 - 1 as c_int
                                 && ((*frames[(j_7 - 1 as c_int - bframes_0) as usize]).i_type
@@ -15548,7 +15557,7 @@ pub mod slicetype_c {
     use log::warn;
 
     use crate::src::encoder::analyse::x264_mb_analysis_list_t;
-    use crate::x264_h::{BPyramid, FramePacking, MotionEstimation};
+    use crate::x264_h::{BPyramid, FramePacking, MotionEstimation, RateControlMode};
     #[no_mangle]
     #[c2rust::src_loc = "1745:1"]
     pub unsafe extern "C" fn x264_10_slicetype_decide(mut h: *mut x264_t) {
@@ -15562,7 +15571,7 @@ pub mod slicetype_c {
         let mut lookahead_size: c_int = (*(*h).lookahead).next.i_size;
         let mut i: c_int = 0 as c_int;
         while i < (*(*h).lookahead).next.i_size {
-            if (*h).param.b_vfr_input != 0 {
+            if (*h).param.vfr_input {
                 let fresh5 = lookahead_size;
                 lookahead_size = lookahead_size - 1;
                 if fresh5 > 1 as c_int {
@@ -15603,19 +15612,16 @@ pub mod slicetype_c {
             }
             i += 1;
         }
-        if (*h).param.rc.b_stat_read != 0 {
-            let mut i_0: c_int = 0 as c_int;
-            while i_0 < (*(*h).lookahead).next.i_size {
-                (**(*(*h).lookahead).next.list.offset(i_0 as isize)).i_type =
-                    x264_10_ratecontrol_slice_type(
-                        h,
-                        (**(*(*h).lookahead).next.list.offset(i_0 as isize)).i_frame,
-                    );
-                i_0 += 1;
+        if (*h).param.rc.stat_read {
+            for n in 0..(*(*h).lookahead).next.i_size as isize {
+                (**(*(*h).lookahead).next.list.offset(n)).i_type = x264_10_ratecontrol_slice_type(
+                    h,
+                    (**(*(*h).lookahead).next.list.offset(n)).i_frame,
+                );
             }
         } else if (*h).param.i_bframe != 0 && (*h).param.i_bframe_adaptive != 0
             || (*h).param.i_scenecut_threshold != 0
-            || (*h).param.rc.b_mb_tree != 0
+            || (*h).param.rc.mb_tree
             || (*h).param.rc.i_vbv_buffer_size != 0 && (*h).param.rc.i_lookahead != 0
         {
             x264_10_slicetype_analyse(h, 0 as c_int);
@@ -15665,18 +15671,17 @@ pub mod slicetype_c {
                 );
             }
             if (*frm).i_type == X264_TYPE_KEYFRAME {
-                (*frm).i_type = if (*h).param.b_open_gop != 0 {
+                (*frm).i_type = if (*h).param.open_gop {
                     X264_TYPE_I
                 } else {
                     X264_TYPE_IDR
                 };
             }
-            if ((*h).param.b_intra_refresh == 0 || (*frm).i_frame == 0 as c_int)
+            if (!(*h).param.intra_refresh || (*frm).i_frame == 0 as c_int)
                 && (*frm).i_frame - (*(*h).lookahead).i_last_keyframe >= (*h).param.i_keyint_max
             {
                 if (*frm).i_type == X264_TYPE_AUTO || (*frm).i_type == X264_TYPE_I {
-                    (*frm).i_type = if (*h).param.b_open_gop != 0
-                        && (*(*h).lookahead).i_last_keyframe >= 0 as c_int
+                    (*frm).i_type = if (*h).param.open_gop && (*(*h).lookahead).i_last_keyframe >= 0
                     {
                         X264_TYPE_I
                     } else {
@@ -15684,7 +15689,7 @@ pub mod slicetype_c {
                     };
                 }
                 let mut warn: c_int = ((*frm).i_type != X264_TYPE_IDR) as c_int;
-                if warn != 0 && (*h).param.b_open_gop != 0 {
+                if warn != 0 && (*h).param.open_gop {
                     warn &= ((*frm).i_type != X264_TYPE_I) as c_int;
                 }
                 if warn != 0 {
@@ -15696,8 +15701,7 @@ pub mod slicetype_c {
                         (*frm).i_type,
                         (*frm).i_frame,
                     );
-                    (*frm).i_type = if (*h).param.b_open_gop != 0
-                        && (*(*h).lookahead).i_last_keyframe >= 0 as c_int
+                    (*frm).i_type = if (*h).param.open_gop && (*(*h).lookahead).i_last_keyframe >= 0
                     {
                         X264_TYPE_I
                     } else {
@@ -15708,19 +15712,19 @@ pub mod slicetype_c {
             if (*frm).i_type == X264_TYPE_I
                 && (*frm).i_frame - (*(*h).lookahead).i_last_keyframe >= (*h).param.i_keyint_min
             {
-                if (*h).param.b_open_gop != 0 {
+                if (*h).param.open_gop {
                     (*(*h).lookahead).i_last_keyframe = (*frm).i_frame;
-                    if (*h).param.b_bluray_compat != 0 {
+                    if (*h).param.bluray_compat {
                         (*(*h).lookahead).i_last_keyframe -= bframes;
                     }
-                    (*frm).b_keyframe = 1 as c_int;
+                    (*frm).keyframe = true;
                 } else {
                     (*frm).i_type = X264_TYPE_IDR;
                 }
             }
             if (*frm).i_type == X264_TYPE_IDR {
                 (*(*h).lookahead).i_last_keyframe = (*frm).i_frame;
-                (*frm).b_keyframe = 1 as c_int;
+                (*frm).keyframe = true;
                 if bframes > 0 as c_int {
                     bframes -= 1;
                     (**(*(*h).lookahead).next.list.offset(bframes as isize)).i_type = X264_TYPE_P;
@@ -15773,7 +15777,7 @@ pub mod slicetype_c {
             .i_type = X264_TYPE_BREF;
             brefs += 1;
         }
-        if (*h).param.rc.i_rc_method != X264_RC_CQP {
+        if (*h).param.rc.i_rc_method != RateControlMode::CQP {
             let mut a: x264_mb_analysis_t = x264_mb_analysis_t {
                 i_lambda: 0,
                 i_lambda2: 0,
@@ -16139,7 +16143,7 @@ pub mod slicetype_c {
                 }
             }
         }
-        if (*h).param.rc.b_stat_read == 0
+        if !(*h).param.rc.stat_read
             && (**(*(*h).lookahead).next.list.offset(bframes as isize)).i_type == X264_TYPE_P
             && (*h).param.analyse.i_weighted_pred >= X264_WEIGHTP_SIMPLE
         {
@@ -16245,21 +16249,7 @@ pub mod slicetype_c {
                 .as_ptr(),
             );
         }
-        'c_55672: {
-            if cost >= 0 as c_int {
-            } else {
-                __assert_fail(
-                    b"cost >= 0\0" as *const u8 as *const c_char,
-                    b"encoder/slicetype.c\0" as *const u8 as *const c_char,
-                    1996 as c_uint,
-                    ::core::mem::transmute::<[u8; 39], [c_char; 39]>(
-                        *b"int x264_10_rc_analyse_slice(x264_t *)\0",
-                    )
-                    .as_ptr(),
-                );
-            }
-        };
-        if (*h).param.rc.b_mb_tree != 0 && (*h).param.rc.b_stat_read == 0 {
+        if (*h).param.rc.mb_tree && !(*h).param.rc.stat_read {
             cost = slicetype_frame_cost_recalculate(h, frames, p0, p1, b);
             if b != 0 && (*h).param.rc.i_vbv_buffer_size != 0 {
                 slicetype_frame_cost_recalculate(h, frames, b, b, b);
@@ -16287,7 +16277,7 @@ pub mod slicetype_c {
                     .wrapping_mul(::core::mem::size_of::<c_int>() as size_t),
             );
         }
-        if (*h).param.b_intra_refresh != 0
+        if (*h).param.intra_refresh
             && (*h).param.rc.i_vbv_buffer_size != 0
             && (*(*h).fenc).i_type == X264_TYPE_P
         {
@@ -16326,7 +16316,6 @@ pub mod slicetype_c {
         }
         return cost;
     }
-    use super::__stddef_null_h::NULL;
     use super::__stddef_size_t_h::size_t;
     use super::assert_h::__assert_fail;
     use super::base_h::{
@@ -16356,9 +16345,9 @@ pub mod slicetype_c {
     use super::tables_h::{x264_lambda_tab, x264_zero};
     use super::threadpool_h::{x264_10_threadpool_run, x264_10_threadpool_wait};
     use super::x264_h::{
-        X264_B_ADAPT_FAST, X264_B_ADAPT_TRELLIS, X264_LOG_DEBUG, X264_LOG_WARNING, X264_RC_CQP,
-        X264_TYPE_AUTO, X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR,
-        X264_TYPE_KEYFRAME, X264_TYPE_P, X264_WEIGHTP_SIMPLE,
+        X264_B_ADAPT_FAST, X264_B_ADAPT_TRELLIS, X264_LOG_DEBUG, X264_LOG_WARNING, X264_TYPE_AUTO,
+        X264_TYPE_B, X264_TYPE_BREF, X264_TYPE_I, X264_TYPE_IDR, X264_TYPE_KEYFRAME, X264_TYPE_P,
+        X264_WEIGHTP_SIMPLE,
     };
     use crate::src::encoder::analyse::{mb_analyse_load_costs, x264_mb_analysis_t};
 }
@@ -16490,17 +16479,6 @@ pub mod rectangle_h {
                 )
                 .as_ptr(),
             );
-            'c_27015: {
-                __assert_fail(
-                    b"0\0" as *const u8 as *const c_char,
-                    b"./common/rectangle.h\0" as *const u8 as *const c_char,
-                    108 as c_uint,
-                    ::core::mem::transmute::<[u8; 65], [c_char; 65]>(
-                        *b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0",
-                    )
-                    .as_ptr(),
-                );
-            };
         };
     }
     #[inline(always)]
@@ -16791,13 +16769,13 @@ pub mod encoder_macroblock_h {
             as *mut pixel;
         let mut dct4x4: [dctcoef; 16] = [0; 16];
         if b_predict != 0 {
-            if (*h).mb.b_lossless != 0 {
+            if (*h).mb.lossless {
                 x264_10_predict_lossless_4x4(h, p_dst, p, idx, i_mode);
             } else {
                 (*h).predict_4x4[i_mode as usize].expect("non-null function pointer")(p_dst);
             }
         }
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                 (*(*h)
                     .dct
@@ -16880,7 +16858,7 @@ pub mod encoder_macroblock_h {
                 );
                 edge = edge_buf.as_mut_ptr();
             }
-            if (*h).mb.b_lossless != 0 {
+            if (*h).mb.lossless {
                 x264_10_predict_lossless_8x8(h, p_dst, p, idx, i_mode, edge as *mut pixel);
             } else {
                 (*h).predict_8x8[i_mode as usize].expect("non-null function pointer")(
@@ -16889,7 +16867,7 @@ pub mod encoder_macroblock_h {
                 );
             }
         }
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             nz = (*h).zigzagf.sub_8x8.expect("non-null function pointer")(
                 (*(*h)
                     .dct
@@ -17395,10 +17373,10 @@ pub mod cabac_c {
     #[inline(always)]
     #[c2rust::src_loc = "270:1"]
     pub unsafe extern "C" fn cabac_mvd_cpn(
-        mut h: *mut x264_t,
+        mut _h: *mut x264_t,
         mut cb: *mut x264_cabac_t,
-        mut i_list: c_int,
-        mut idx: c_int,
+        mut _i_list: c_int,
+        mut _idx: c_int,
         mut l: c_int,
         mut mvd: c_int,
         mut ctx: c_int,
@@ -18224,11 +18202,11 @@ pub mod cabac_c {
     ) {
         let mut sig_offset: *const uint8_t = (*x264_significant_coeff_flag_offset_8x8
             .as_ptr()
-            .offset((*h).mb.b_interlaced as isize))
+            .offset((*h).mb.interlaced as isize))
         .as_ptr();
-        let mut ctx_sig: c_int = x264_significant_coeff_flag_offset[(*h).mb.b_interlaced as usize]
+        let mut ctx_sig: c_int = x264_significant_coeff_flag_offset[(*h).mb.interlaced as usize]
             [ctx_block_cat as usize] as c_int;
-        let mut ctx_last: c_int = x264_last_coeff_flag_offset[(*h).mb.b_interlaced as usize]
+        let mut ctx_last: c_int = x264_last_coeff_flag_offset[(*h).mb.interlaced as usize]
             [ctx_block_cat as usize] as c_int;
         let mut ctx_level: c_int = x264_coeff_abs_level_m1_offset[ctx_block_cat as usize] as c_int;
         let mut last: c_int =
@@ -18245,11 +18223,11 @@ pub mod cabac_c {
             != (if b_8x8 != 0 {
                 63 as c_int
             } else {
-                (if chroma422dc != 0 {
+                if chroma422dc != 0 {
                     7 as c_int
                 } else {
                     x264_count_cat_m1[ctx_block_cat as usize] as c_int
-                })
+                }
             })
         {
             x264_cabac_size_decision(
@@ -18258,11 +18236,11 @@ pub mod cabac_c {
                     + (if b_8x8 != 0 {
                         *sig_offset.offset(last as isize) as c_int
                     } else {
-                        (if chroma422dc != 0 {
+                        if chroma422dc != 0 {
                             x264_coeff_flag_offset_chroma_422_dc[last as usize] as c_int
                         } else {
                             last
-                        })
+                        }
                     })) as c_long,
                 1 as c_long,
             );
@@ -18272,11 +18250,11 @@ pub mod cabac_c {
                     + (if b_8x8 != 0 {
                         x264_last_coeff_flag_offset_8x8[last as usize] as c_int
                     } else {
-                        (if chroma422dc != 0 {
+                        if chroma422dc != 0 {
                             x264_coeff_flag_offset_chroma_422_dc[last as usize] as c_int
                         } else {
                             last
-                        })
+                        }
                     })) as c_long,
                 1 as c_long,
             );
@@ -18316,11 +18294,11 @@ pub mod cabac_c {
                         + (if b_8x8 != 0 {
                             *sig_offset.offset(i as isize) as c_int
                         } else {
-                            (if chroma422dc != 0 {
+                            if chroma422dc != 0 {
                                 x264_coeff_flag_offset_chroma_422_dc[i as usize] as c_int
                             } else {
                                 i
-                            })
+                            }
                         })) as c_long,
                     1 as c_long,
                 );
@@ -18330,11 +18308,11 @@ pub mod cabac_c {
                         + (if b_8x8 != 0 {
                             x264_last_coeff_flag_offset_8x8[i as usize] as c_int
                         } else {
-                            (if chroma422dc != 0 {
+                            if chroma422dc != 0 {
                                 x264_coeff_flag_offset_chroma_422_dc[i as usize] as c_int
                             } else {
                                 i
-                            })
+                            }
                         })) as c_long,
                     0 as c_long,
                 );
@@ -18375,11 +18353,11 @@ pub mod cabac_c {
                         + (if b_8x8 != 0 {
                             *sig_offset.offset(i as isize) as c_int
                         } else {
-                            (if chroma422dc != 0 {
+                            if chroma422dc != 0 {
                                 x264_coeff_flag_offset_chroma_422_dc[i as usize] as c_int
                             } else {
                                 i
-                            })
+                            }
                         })) as c_long,
                     0 as c_long,
                 );
@@ -18431,7 +18409,7 @@ pub mod cabac_c {
     pub unsafe extern "C" fn cabac_block_residual_422_dc(
         mut h: *mut x264_t,
         mut cb: *mut x264_cabac_t,
-        mut ctx_block_cat: c_int,
+        mut _ctx_block_cat: c_int,
         mut l: *mut dctcoef,
     ) {
         cabac_block_residual_internal(h, cb, DCT_CHROMA_DC as c_int, l, 0 as c_int, 1 as c_int);
@@ -19790,7 +19768,7 @@ pub mod cabac_c {
         x264_10_cabac_transition_unary,
     };
     use super::rectangle_h::x264_macroblock_cache_mvd;
-    use super::stdint_intn_h::{int16_t, int8_t};
+    use super::stdint_intn_h::int16_t;
     use super::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
     use super::stdlib_h::abs;
     use super::tables_h::{
@@ -20159,7 +20137,7 @@ pub mod cavlc_c {
         let mut i_trailing: c_int = 0;
         let mut i_total_zero: c_int = 0;
         let mut i_suffix_length: c_int = 0;
-        let mut i_sign: c_uint = 0;
+        let mut _i_sign: c_uint = 0;
         i_total = (*h).quantf.coeff_level_run[ctx_block_cat as usize]
             .expect("non-null function pointer")(l, &mut runlevel);
         &mut *x264_10_run_before
@@ -20176,10 +20154,10 @@ pub mod cavlc_c {
             | (runlevel.level[2] + 1 as dctcoef | 1 as dctcoef - runlevel.level[2]) >> 31 as c_int
                 & 4 as dctcoef) as c_int;
         i_trailing = ctz_index[i_trailing as usize] as c_int;
-        i_sign = (runlevel.level[2] >> 31 as c_int & 1 as dctcoef
+        _i_sign = (runlevel.level[2] >> 31 as c_int & 1 as dctcoef
             | runlevel.level[1] >> 31 as c_int & 2 as dctcoef
             | runlevel.level[0] >> 31 as c_int & 4 as dctcoef) as c_uint;
-        i_sign >>= 3 as c_int - i_trailing;
+        _i_sign >>= 3 as c_int - i_trailing;
         (*s).i_bits_encoded += x264_coeff_token[nC as usize][(i_total - 1 as c_int) as usize]
             [i_trailing as usize]
             .i_size as c_int;
@@ -20827,8 +20805,8 @@ pub mod cavlc_c {
             || (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_422 as c_int)
             as c_int;
         (*s).i_bits_encoded = 0 as c_int;
-        if (*h).sh.b_mbaff != 0
-            && ((*h).mb.i_mb_y & 1 as c_int == 0
+        if (*h).sh.mbaff
+            && ((*h).mb.i_mb_y & 1 == 0
                 || (*(*h)
                     .mb
                     .type_0
@@ -21614,7 +21592,7 @@ pub mod cavlc_c {
         bs_size_se, bs_size_te, bs_size_ue, bs_t, x264_10_level_token, x264_10_run_before,
         x264_run_level_t, LEVEL_TABLE_SIZE,
     };
-    use super::common_h::{dctcoef, x264_t, QP_BD_OFFSET, QP_MAX_SPEC};
+    use super::common_h::{dctcoef, x264_t, QP_MAX_SPEC};
     use super::macroblock_h::{
         x264_10_mb_predict_mv, x264_mb_partition_listX_table, x264_mb_predict_intra4x4_mode,
         x264_mb_predict_non_zero_code, x264_mb_transform_8x8_allowed, x264_mb_type_list_table,
@@ -21627,7 +21605,7 @@ pub mod cavlc_c {
     use super::predict_h::{
         x264_mb_chroma_pred_mode_fix, x264_mb_pred_mode16x16_fix, x264_mb_pred_mode4x4_fix,
     };
-    use super::stdint_intn_h::{int16_t, int32_t, int8_t};
+    use super::stdint_intn_h::{int16_t, int32_t};
     use super::stdint_uintn_h::{uint16_t, uint32_t, uint8_t};
     use super::tables_h::{
         vlc_t, x264_coeff0_token, x264_coeff_token, x264_total_zeros, x264_total_zeros_2x2_dc,
@@ -23877,7 +23855,7 @@ pub mod codec_h {
 
     use super::avutil_h::AVMediaType;
     use super::channel_layout_h::AVChannelLayout;
-    use super::codec_id_h::{AVCodecID, AV_CODEC_ID_NONE};
+    use super::codec_id_h::AVCodecID;
     use super::log_h::AVClass;
     use super::pixfmt_h::AVPixelFormat;
     use super::rational_h::AVRational;

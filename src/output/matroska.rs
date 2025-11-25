@@ -86,7 +86,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     let mut p_mkv: *mut mkv_hnd_t = handle as *mut mkv_hnd_t;
     let mut dw: int64_t = 0;
     let mut dh: int64_t = 0;
-    if (*p_param).i_fps_num > 0 as uint32_t && (*p_param).b_vfr_input == 0 {
+    if (*p_param).i_fps_num > 0 && !(*p_param).vfr_input {
         (*p_mkv).frame_duration = (*p_param).i_fps_den as int64_t * 1000000000 as c_int as int64_t
             / (*p_param).i_fps_num as int64_t;
     } else {
@@ -221,7 +221,7 @@ unsafe extern "C" fn write_frame(
     if mk_set_frame_flags(
         (*p_mkv).w,
         i_stamp,
-        (*p_picture).b_keyframe,
+        (*p_picture).keyframe as i32,
         ((*p_picture).i_type == X264_TYPE_B) as c_int,
     ) < 0 as c_int
     {

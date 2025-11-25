@@ -126,7 +126,7 @@ unsafe extern "C" fn open_file(
     }
     (*info).thread_safe = 1 as c_int;
     (*info).num_frames = 0 as c_int;
-    (*info).vfr = 0 as c_int;
+    (*info).vfr = false;
     let mut csp: *const x264_cli_csp_t = x264_cli_get_csp((*info).csp);
     let mut i: c_int = 0 as c_int;
     while i < (*csp).planes {

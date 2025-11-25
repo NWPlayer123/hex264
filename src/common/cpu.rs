@@ -1,12 +1,7 @@
-use core::ffi::{c_char, c_int, c_void};
+use core::ffi::c_char;
 
-use crate::__stddef_size_t_h::size_t;
 use crate::cpu_h::x264_cpu_name_t;
-use crate::cpu_set_h::{__sched_cpucount, cpu_set_t};
-use crate::sched_h::sched_getaffinity;
 use crate::stdint_uintn_h::uint32_t;
-use crate::string_h::memset;
-use crate::types_h::__pid_t;
 use crate::x264_h::{
     X264_CPU_AVX, X264_CPU_AVX2, X264_CPU_AVX512, X264_CPU_BMI1, X264_CPU_BMI2,
     X264_CPU_CACHELINE_32, X264_CPU_CACHELINE_64, X264_CPU_FMA3, X264_CPU_FMA4, X264_CPU_LZCNT,
@@ -344,24 +339,11 @@ static mut x264_cpu_names: [x264_cpu_name_t; 28] = [
 #[no_mangle]
 #[c2rust::src_loc = "627:1"]
 unsafe extern "C" fn x264_cpu_detect() -> uint32_t {
-    return 0 as uint32_t;
+    return 0;
 }
-#[no_mangle]
-#[c2rust::src_loc = "634:1"]
-unsafe extern "C" fn x264_cpu_num_processors() -> c_int {
-    let mut p_aff: cpu_set_t = cpu_set_t { __bits: [0; 16] };
-    memset(
-        &mut p_aff as *mut cpu_set_t as *mut c_void,
-        0 as c_int,
-        ::core::mem::size_of::<cpu_set_t>() as size_t,
-    );
-    if sched_getaffinity(
-        0 as __pid_t,
-        ::core::mem::size_of::<cpu_set_t>() as size_t,
-        &mut p_aff,
-    ) != 0
-    {
-        return 1 as c_int;
-    }
-    return __sched_cpucount(::core::mem::size_of::<cpu_set_t>() as size_t, &mut p_aff);
+
+pub fn x264_cpu_num_processors() -> usize {
+    std::thread::available_parallelism()
+        .map(|n| n.get())
+        .unwrap_or(1)
 }

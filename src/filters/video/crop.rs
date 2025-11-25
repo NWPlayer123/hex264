@@ -54,8 +54,8 @@ unsafe extern "C" fn handle_opts(
             );
             return -1;
         }
-        // TODO: fix otoi
         (*h).dims[i as usize] = x264_otoi(opt, -1) as u32;
+        #[allow(unused_comparisons, reason = "fix otoi above")]
         if (*h).dims[i as usize] < 0 {
             x264_cli_log(
                 b"crop\0" as *const u8 as *const c_char,
@@ -67,7 +67,7 @@ unsafe extern "C" fn handle_opts(
             return -1;
         }
         let mut dim_mod: c_int = if i & 1 as c_int != 0 {
-            (*(*h).csp).mod_height << (*info).interlaced
+            (*(*h).csp).mod_height << (*info).interlaced as i32
         } else {
             (*(*h).csp).mod_width
         };

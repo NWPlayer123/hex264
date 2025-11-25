@@ -272,7 +272,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
         let fresh3 = brand_count;
         brand_count = brand_count.wrapping_add(1);
         brands[fresh3 as usize] = ISOM_BRAND_TYPE_AVC1;
-        if (*p_param).b_open_gop != 0 {
+        if (*p_param).open_gop {
             let fresh4 = brand_count;
             brand_count = brand_count.wrapping_add(1);
             brands[fresh4 as usize] = ISOM_BRAND_TYPE_ISO6;
@@ -404,8 +404,8 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     media_param.media_handler_name =
         b"L-SMASH Video Media Handler\0" as *const u8 as *const c_char as *mut c_char;
     if (*p_mp4).b_use_recovery != 0 {
-        media_param.roll_grouping = (*p_param).b_intra_refresh as uint8_t;
-        media_param.rap_grouping = (*p_param).b_open_gop as uint8_t;
+        media_param.roll_grouping = (*p_param).intra_refresh as uint8_t;
+        media_param.rap_grouping = (*p_param).open_gop as uint8_t;
     }
     if lsmash_set_media_parameters((*p_mp4).p_root, (*p_mp4).i_track, &mut media_param) != 0 {
         x264_cli_log(
@@ -569,7 +569,7 @@ unsafe extern "C" fn write_frame(
     (*p_sample).dts = dts;
     (*p_sample).cts = cts;
     (*p_sample).index = (*p_mp4).i_sample_entry;
-    (*p_sample).prop.ra_flags = (if (*p_picture).b_keyframe != 0 {
+    (*p_sample).prop.ra_flags = (if (*p_picture).keyframe {
         ISOM_SAMPLE_RANDOM_ACCESS_FLAG_SYNC
     } else {
         ISOM_SAMPLE_RANDOM_ACCESS_FLAG_NONE
