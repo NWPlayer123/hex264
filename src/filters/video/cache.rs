@@ -38,7 +38,7 @@ unsafe extern "C" fn init(
 ) -> c_int {
     let mut size: intptr_t = opt_string as intptr_t;
     if size <= 0 as intptr_t {
-        return 0 as c_int;
+        return 0;
     }
     let mut h: *mut cache_hnd_t =
         calloc(1 as size_t, size_of::<cache_hnd_t>() as size_t) as *mut cache_hnd_t;
@@ -46,14 +46,13 @@ unsafe extern "C" fn init(
         return -1;
     }
     (*h).max_size = size as c_int;
-    (*h).cache = malloc(
-        (((*h).max_size + 1 as c_int) as size_t)
-            .wrapping_mul(size_of::<*mut cli_pic_t>() as size_t),
-    ) as *mut *mut cli_pic_t;
+    (*h).cache =
+        malloc((((*h).max_size + 1) as size_t).wrapping_mul(size_of::<*mut cli_pic_t>() as size_t))
+            as *mut *mut cli_pic_t;
     if (*h).cache.is_null() {
         return -1;
     }
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*h).max_size {
         let ref mut fresh0 = *(*h).cache.offset(i as isize);
         *fresh0 = malloc(size_of::<cli_pic_t>() as size_t) as *mut cli_pic_t;
@@ -75,29 +74,28 @@ unsafe extern "C" fn init(
     (*h).prev_hnd = *handle;
     *handle = h as hnd_t;
     *filter = cache_10_filter;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "84:1"]
 unsafe extern "C" fn fill_cache(mut h: *mut cache_hnd_t, mut frame: c_int) {
-    let mut shift: c_int = frame - ((*h).first_frame + (*h).cur_size - 1 as c_int);
-    if shift <= 0 as c_int || (*h).eof != 0 {
+    let mut shift: c_int = frame - ((*h).first_frame + (*h).cur_size - 1);
+    if shift <= 0 || (*h).eof != 0 {
         return;
     }
-    let mut cur_frame: c_int =
-        if (*h).first_frame + (*h).cur_size > frame - (*h).max_size + 1 as c_int {
-            (*h).first_frame + (*h).cur_size
-        } else {
-            frame - (*h).max_size + 1 as c_int
-        };
+    let mut cur_frame: c_int = if (*h).first_frame + (*h).cur_size > frame - (*h).max_size + 1 {
+        (*h).first_frame + (*h).cur_size
+    } else {
+        frame - (*h).max_size + 1
+    };
     (*h).first_frame = if (*h).first_frame + shift < cur_frame {
         (*h).first_frame + shift
     } else {
         cur_frame
     };
-    (*h).cur_size = if (*h).cur_size - shift > 0 as c_int {
+    (*h).cur_size = if (*h).cur_size - shift > 0 {
         (*h).cur_size - shift
     } else {
-        0 as c_int
+        0
     };
     while (*h).cur_size < (*h).max_size {
         let mut temp: cli_pic_t = cli_pic_t {
@@ -156,7 +154,7 @@ unsafe extern "C" fn get_frame(
         return -1;
     }
     fill_cache(h, frame);
-    if frame > (*h).first_frame + (*h).cur_size - 1 as c_int {
+    if frame > (*h).first_frame + (*h).cur_size - 1 {
         return -1;
     }
     let mut idx: c_int = frame
@@ -166,7 +164,7 @@ unsafe extern "C" fn get_frame(
             (*h).first_frame
         });
     *output = **(*h).cache.offset(idx as isize);
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "132:1"]
 unsafe extern "C" fn release_frame(
@@ -174,13 +172,13 @@ unsafe extern "C" fn release_frame(
     mut _pic: *mut cli_pic_t,
     mut _frame: c_int,
 ) -> c_int {
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "138:1"]
 unsafe extern "C" fn free_filter(mut handle: hnd_t) {
     let mut h: *mut cache_hnd_t = handle as *mut cache_hnd_t;
     (*h).prev_filter.free.expect("non-null function pointer")((*h).prev_hnd);
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*h).max_size {
         x264_cli_pic_clean(*(*h).cache.offset(i as isize));
         free(*(*h).cache.offset(i as isize) as *mut c_void);

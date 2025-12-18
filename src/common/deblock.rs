@@ -17,716 +17,108 @@ use crate::stdlib_h::abs;
 use crate::x264_h::X264_MBINFO_CONSTANT;
 #[c2rust::src_loc = "32:22"]
 static mut i_alpha_table: [uint8_t; 88] = [
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    4 as c_int as uint8_t,
-    4 as c_int as uint8_t,
-    5 as c_int as uint8_t,
-    6 as c_int as uint8_t,
-    7 as c_int as uint8_t,
-    8 as c_int as uint8_t,
-    9 as c_int as uint8_t,
-    10 as c_int as uint8_t,
-    12 as c_int as uint8_t,
-    13 as c_int as uint8_t,
-    15 as c_int as uint8_t,
-    17 as c_int as uint8_t,
-    20 as c_int as uint8_t,
-    22 as c_int as uint8_t,
-    25 as c_int as uint8_t,
-    28 as c_int as uint8_t,
-    32 as c_int as uint8_t,
-    36 as c_int as uint8_t,
-    40 as c_int as uint8_t,
-    45 as c_int as uint8_t,
-    50 as c_int as uint8_t,
-    56 as c_int as uint8_t,
-    63 as c_int as uint8_t,
-    71 as c_int as uint8_t,
-    80 as c_int as uint8_t,
-    90 as c_int as uint8_t,
-    101 as c_int as uint8_t,
-    113 as c_int as uint8_t,
-    127 as c_int as uint8_t,
-    144 as c_int as uint8_t,
-    162 as c_int as uint8_t,
-    182 as c_int as uint8_t,
-    203 as c_int as uint8_t,
-    226 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
-    255 as c_int as uint8_t,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 5, 6, 7, 8, 9, 10, 12, 13, 15, 17, 20, 22, 25, 28, 32, 36, 40,
+    45, 50, 56, 63, 71, 80, 90, 101, 113, 127, 144, 162, 182, 203, 226, 255, 255, 255, 255, 255,
+    255, 255, 255, 255, 255, 255, 255, 255, 255,
 ];
 #[c2rust::src_loc = "44:22"]
 static mut i_beta_table: [uint8_t; 88] = [
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    0 as c_int as uint8_t,
-    2 as c_int as uint8_t,
-    2 as c_int as uint8_t,
-    2 as c_int as uint8_t,
-    3 as c_int as uint8_t,
-    3 as c_int as uint8_t,
-    3 as c_int as uint8_t,
-    3 as c_int as uint8_t,
-    4 as c_int as uint8_t,
-    4 as c_int as uint8_t,
-    4 as c_int as uint8_t,
-    6 as c_int as uint8_t,
-    6 as c_int as uint8_t,
-    7 as c_int as uint8_t,
-    7 as c_int as uint8_t,
-    8 as c_int as uint8_t,
-    8 as c_int as uint8_t,
-    9 as c_int as uint8_t,
-    9 as c_int as uint8_t,
-    10 as c_int as uint8_t,
-    10 as c_int as uint8_t,
-    11 as c_int as uint8_t,
-    11 as c_int as uint8_t,
-    12 as c_int as uint8_t,
-    12 as c_int as uint8_t,
-    13 as c_int as uint8_t,
-    13 as c_int as uint8_t,
-    14 as c_int as uint8_t,
-    14 as c_int as uint8_t,
-    15 as c_int as uint8_t,
-    15 as c_int as uint8_t,
-    16 as c_int as uint8_t,
-    16 as c_int as uint8_t,
-    17 as c_int as uint8_t,
-    17 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
-    18 as c_int as uint8_t,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11,
+    12, 12, 13, 13, 14, 14, 15, 15, 16, 16, 17, 17, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
+    18, 18,
 ];
 #[c2rust::src_loc = "56:21"]
 static mut i_tc0_table: [[int8_t; 4]; 88] = [
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        0 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        0 as c_int as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        2 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        2 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        2 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        1 as c_int as int8_t,
-        2 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        2 as c_int as int8_t,
-        3 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        1 as c_int as int8_t,
-        2 as c_int as int8_t,
-        3 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        2 as c_int as int8_t,
-        2 as c_int as int8_t,
-        3 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        2 as c_int as int8_t,
-        2 as c_int as int8_t,
-        4 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        2 as c_int as int8_t,
-        3 as c_int as int8_t,
-        4 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        2 as c_int as int8_t,
-        3 as c_int as int8_t,
-        4 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        3 as c_int as int8_t,
-        3 as c_int as int8_t,
-        5 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        3 as c_int as int8_t,
-        4 as c_int as int8_t,
-        6 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        3 as c_int as int8_t,
-        4 as c_int as int8_t,
-        6 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        4 as c_int as int8_t,
-        5 as c_int as int8_t,
-        7 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        4 as c_int as int8_t,
-        5 as c_int as int8_t,
-        8 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        4 as c_int as int8_t,
-        6 as c_int as int8_t,
-        9 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        5 as c_int as int8_t,
-        7 as c_int as int8_t,
-        10 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        6 as c_int as int8_t,
-        8 as c_int as int8_t,
-        11 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        6 as c_int as int8_t,
-        8 as c_int as int8_t,
-        13 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        7 as c_int as int8_t,
-        10 as c_int as int8_t,
-        14 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        8 as c_int as int8_t,
-        11 as c_int as int8_t,
-        16 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        9 as c_int as int8_t,
-        12 as c_int as int8_t,
-        18 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        10 as c_int as int8_t,
-        13 as c_int as int8_t,
-        20 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        11 as c_int as int8_t,
-        15 as c_int as int8_t,
-        23 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
-    [
-        -1 as int8_t,
-        13 as c_int as int8_t,
-        17 as c_int as int8_t,
-        25 as c_int as int8_t,
-    ],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 0 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 0 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 1 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 0 as int8_t, 1 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 1 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 2 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 2 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 2 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 1 as int8_t, 2 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 2 as int8_t, 3 as int8_t],
+    [-1 as int8_t, 1 as int8_t, 2 as int8_t, 3 as int8_t],
+    [-1 as int8_t, 2 as int8_t, 2 as int8_t, 3 as int8_t],
+    [-1 as int8_t, 2 as int8_t, 2 as int8_t, 4 as int8_t],
+    [-1 as int8_t, 2 as int8_t, 3 as int8_t, 4 as int8_t],
+    [-1 as int8_t, 2 as int8_t, 3 as int8_t, 4 as int8_t],
+    [-1 as int8_t, 3 as int8_t, 3 as int8_t, 5 as int8_t],
+    [-1 as int8_t, 3 as int8_t, 4 as int8_t, 6 as int8_t],
+    [-1 as int8_t, 3 as int8_t, 4 as int8_t, 6 as int8_t],
+    [-1 as int8_t, 4 as int8_t, 5 as int8_t, 7 as int8_t],
+    [-1 as int8_t, 4 as int8_t, 5 as int8_t, 8 as int8_t],
+    [-1 as int8_t, 4 as int8_t, 6 as int8_t, 9 as int8_t],
+    [-1 as int8_t, 5 as int8_t, 7 as int8_t, 10 as int8_t],
+    [-1 as int8_t, 6 as int8_t, 8 as int8_t, 11 as int8_t],
+    [-1 as int8_t, 6 as int8_t, 8 as int8_t, 13 as int8_t],
+    [-1 as int8_t, 7 as int8_t, 10 as int8_t, 14 as int8_t],
+    [-1 as int8_t, 8 as int8_t, 11 as int8_t, 16 as int8_t],
+    [-1 as int8_t, 9 as int8_t, 12 as int8_t, 18 as int8_t],
+    [-1 as int8_t, 10 as int8_t, 13 as int8_t, 20 as int8_t],
+    [-1 as int8_t, 11 as int8_t, 15 as int8_t, 23 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
+    [-1 as int8_t, 13 as int8_t, 17 as int8_t, 25 as int8_t],
 ];
 #[inline(always)]
 #[c2rust::src_loc = "79:1"]
@@ -737,8 +129,8 @@ unsafe extern "C" fn deblock_edge_luma_c(
     mut beta: c_int,
     mut tc0: int8_t,
 ) {
-    let mut p2: c_int = *pix.offset((-(3 as c_int) as intptr_t * xstride) as isize) as c_int;
-    let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p2: c_int = *pix.offset((-(3) as intptr_t * xstride) as isize) as c_int;
+    let mut p1: c_int = *pix.offset((-(2) as intptr_t * xstride) as isize) as c_int;
     let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
@@ -748,9 +140,9 @@ unsafe extern "C" fn deblock_edge_luma_c(
         let mut delta: c_int = 0;
         if abs(p2 - p0) < beta {
             if tc0 != 0 {
-                *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) =
+                *pix.offset((-(2) as intptr_t * xstride) as isize) =
                     (p1 + x264_clip3(
-                        (p2 + (p0 + q0 + 1 as c_int >> 1 as c_int) >> 1 as c_int) - p1,
+                        (p2 + (p0 + q0 + 1 >> 1) >> 1) - p1,
                         -(tc0 as c_int),
                         tc0 as c_int,
                     )) as pixel;
@@ -761,18 +153,14 @@ unsafe extern "C" fn deblock_edge_luma_c(
             if tc0 != 0 {
                 *pix.offset((1 as intptr_t * xstride) as isize) = (q1
                     + x264_clip3(
-                        (q2 + (p0 + q0 + 1 as c_int >> 1 as c_int) >> 1 as c_int) - q1,
+                        (q2 + (p0 + q0 + 1 >> 1) >> 1) - q1,
                         -(tc0 as c_int),
                         tc0 as c_int,
                     )) as pixel;
             }
             tc += 1;
         }
-        delta = x264_clip3(
-            (q0 - p0) * 4 as c_int + (p1 - q1) + 4 as c_int >> 3 as c_int,
-            -tc,
-            tc,
-        );
+        delta = x264_clip3((q0 - p0) * 4 + (p1 - q1) + 4 >> 3, -tc, tc);
         *pix.offset((-1 as intptr_t * xstride) as isize) = x264_clip_pixel(p0 + delta);
         *pix.offset((0 as intptr_t * xstride) as isize) = x264_clip_pixel(q0 - delta);
     }
@@ -787,13 +175,13 @@ unsafe extern "C" fn deblock_luma_c(
     mut beta: c_int,
     mut tc0: *mut int8_t,
 ) {
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
-        if (*tc0.offset(i as isize) as c_int) < 0 as c_int {
+    let mut i: c_int = 0;
+    while i < 4 {
+        if (*tc0.offset(i as isize) as c_int) < 0 {
             pix = pix.offset((4 as intptr_t * ystride) as isize);
         } else {
-            let mut d: c_int = 0 as c_int;
-            while d < 4 as c_int {
+            let mut d: c_int = 0;
+            while d < 4 {
                 deblock_edge_luma_c(pix, xstride, alpha, beta, *tc0.offset(i as isize));
                 d += 1;
                 pix = pix.offset(ystride as isize);
@@ -810,14 +198,14 @@ unsafe extern "C" fn deblock_h_luma_mbaff_c(
     mut beta: c_int,
     mut tc0: *mut int8_t,
 ) {
-    let mut d: c_int = 0 as c_int;
-    while d < 8 as c_int {
+    let mut d: c_int = 0;
+    while d < 8 {
         deblock_edge_luma_c(
             pix,
             1 as intptr_t,
             alpha,
             beta,
-            *tc0.offset((d >> 1 as c_int) as isize),
+            *tc0.offset((d >> 1) as isize),
         );
         d += 1;
         pix = pix.offset(stride as isize);
@@ -852,13 +240,13 @@ unsafe extern "C" fn deblock_edge_chroma_c(
     mut beta: c_int,
     mut tc: int8_t,
 ) {
-    let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p1: c_int = *pix.offset((-(2) as intptr_t * xstride) as isize) as c_int;
     let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
         let mut delta: c_int = x264_clip3(
-            (q0 - p0) * 4 as c_int + (p1 - q1) + 4 as c_int >> 3 as c_int,
+            (q0 - p0) * 4 + (p1 - q1) + 4 >> 3,
             -(tc as c_int),
             tc as c_int,
         );
@@ -877,16 +265,16 @@ unsafe extern "C" fn deblock_chroma_c(
     mut beta: c_int,
     mut tc0: *mut int8_t,
 ) {
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
+    let mut i: c_int = 0;
+    while i < 4 {
         let mut tc: c_int = *tc0.offset(i as isize) as c_int;
-        if tc <= 0 as c_int {
+        if tc <= 0 {
             pix = pix.offset((height as intptr_t * ystride) as isize);
         } else {
-            let mut d: c_int = 0 as c_int;
+            let mut d: c_int = 0;
             while d < height {
-                let mut e: c_int = 0 as c_int;
-                while e < 2 as c_int {
+                let mut e: c_int = 0;
+                while e < 2 {
                     deblock_edge_chroma_c(pix, xstride, alpha, beta, *tc0.offset(i as isize));
                     e += 1;
                     pix = pix.offset(1);
@@ -906,7 +294,7 @@ unsafe extern "C" fn deblock_h_chroma_mbaff_c(
     mut beta: c_int,
     mut tc0: *mut int8_t,
 ) {
-    deblock_chroma_c(pix, 1 as c_int, 2 as intptr_t, stride, alpha, beta, tc0);
+    deblock_chroma_c(pix, 1, 2 as intptr_t, stride, alpha, beta, tc0);
 }
 #[c2rust::src_loc = "170:1"]
 unsafe extern "C" fn deblock_v_chroma_c(
@@ -916,7 +304,7 @@ unsafe extern "C" fn deblock_v_chroma_c(
     mut beta: c_int,
     mut tc0: *mut int8_t,
 ) {
-    deblock_chroma_c(pix, 2 as c_int, stride, 2 as intptr_t, alpha, beta, tc0);
+    deblock_chroma_c(pix, 2, stride, 2 as intptr_t, alpha, beta, tc0);
 }
 #[c2rust::src_loc = "174:1"]
 unsafe extern "C" fn deblock_h_chroma_c(
@@ -926,7 +314,7 @@ unsafe extern "C" fn deblock_h_chroma_c(
     mut beta: c_int,
     mut tc0: *mut int8_t,
 ) {
-    deblock_chroma_c(pix, 2 as c_int, 2 as intptr_t, stride, alpha, beta, tc0);
+    deblock_chroma_c(pix, 2, 2 as intptr_t, stride, alpha, beta, tc0);
 }
 #[c2rust::src_loc = "178:1"]
 unsafe extern "C" fn deblock_h_chroma_422_c(
@@ -936,7 +324,7 @@ unsafe extern "C" fn deblock_h_chroma_422_c(
     mut beta: c_int,
     mut tc0: *mut int8_t,
 ) {
-    deblock_chroma_c(pix, 4 as c_int, 2 as intptr_t, stride, alpha, beta, tc0);
+    deblock_chroma_c(pix, 4, 2 as intptr_t, stride, alpha, beta, tc0);
 }
 #[inline(always)]
 #[c2rust::src_loc = "183:1"]
@@ -946,48 +334,41 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    let mut p2: c_int = *pix.offset((-(3 as c_int) as intptr_t * xstride) as isize) as c_int;
-    let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p2: c_int = *pix.offset((-(3) as intptr_t * xstride) as isize) as c_int;
+    let mut p1: c_int = *pix.offset((-(2) as intptr_t * xstride) as isize) as c_int;
     let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
     let mut q2: c_int = *pix.offset((2 as intptr_t * xstride) as isize) as c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
-        if abs(p0 - q0) < (alpha >> 2 as c_int) + 2 as c_int {
+        if abs(p0 - q0) < (alpha >> 2) + 2 {
             if abs(p2 - p0) < beta {
-                let p3: c_int =
-                    *pix.offset((-(4 as c_int) as intptr_t * xstride) as isize) as c_int;
+                let p3: c_int = *pix.offset((-(4) as intptr_t * xstride) as isize) as c_int;
                 *pix.offset((-1 as intptr_t * xstride) as isize) =
-                    (p2 + 2 as c_int * p1 + 2 as c_int * p0 + 2 as c_int * q0 + q1 + 4 as c_int
-                        >> 3 as c_int) as pixel;
-                *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) =
-                    (p2 + p1 + p0 + q0 + 2 as c_int >> 2 as c_int) as pixel;
-                *pix.offset((-(3 as c_int) as intptr_t * xstride) as isize) =
-                    (2 as c_int * p3 + 3 as c_int * p2 + p1 + p0 + q0 + 4 as c_int >> 3 as c_int)
-                        as pixel;
+                    (p2 + 2 * p1 + 2 * p0 + 2 * q0 + q1 + 4 >> 3) as pixel;
+                *pix.offset((-(2) as intptr_t * xstride) as isize) =
+                    (p2 + p1 + p0 + q0 + 2 >> 2) as pixel;
+                *pix.offset((-(3) as intptr_t * xstride) as isize) =
+                    (2 * p3 + 3 * p2 + p1 + p0 + q0 + 4 >> 3) as pixel;
             } else {
                 *pix.offset((-1 as intptr_t * xstride) as isize) =
-                    (2 as c_int * p1 + p0 + q1 + 2 as c_int >> 2 as c_int) as pixel;
+                    (2 * p1 + p0 + q1 + 2 >> 2) as pixel;
             }
             if abs(q2 - q0) < beta {
                 let q3: c_int = *pix.offset((3 as intptr_t * xstride) as isize) as c_int;
                 *pix.offset((0 as intptr_t * xstride) as isize) =
-                    (p1 + 2 as c_int * p0 + 2 as c_int * q0 + 2 as c_int * q1 + q2 + 4 as c_int
-                        >> 3 as c_int) as pixel;
+                    (p1 + 2 * p0 + 2 * q0 + 2 * q1 + q2 + 4 >> 3) as pixel;
                 *pix.offset((1 as intptr_t * xstride) as isize) =
-                    (p0 + q0 + q1 + q2 + 2 as c_int >> 2 as c_int) as pixel;
+                    (p0 + q0 + q1 + q2 + 2 >> 2) as pixel;
                 *pix.offset((2 as intptr_t * xstride) as isize) =
-                    (2 as c_int * q3 + 3 as c_int * q2 + q1 + q0 + p0 + 4 as c_int >> 3 as c_int)
-                        as pixel;
+                    (2 * q3 + 3 * q2 + q1 + q0 + p0 + 4 >> 3) as pixel;
             } else {
                 *pix.offset((0 as intptr_t * xstride) as isize) =
-                    (2 as c_int * q1 + q0 + p1 + 2 as c_int >> 2 as c_int) as pixel;
+                    (2 * q1 + q0 + p1 + 2 >> 2) as pixel;
             }
         } else {
-            *pix.offset((-1 as intptr_t * xstride) as isize) =
-                (2 as c_int * p1 + p0 + q1 + 2 as c_int >> 2 as c_int) as pixel;
-            *pix.offset((0 as intptr_t * xstride) as isize) =
-                (2 as c_int * q1 + q0 + p1 + 2 as c_int >> 2 as c_int) as pixel;
+            *pix.offset((-1 as intptr_t * xstride) as isize) = (2 * p1 + p0 + q1 + 2 >> 2) as pixel;
+            *pix.offset((0 as intptr_t * xstride) as isize) = (2 * q1 + q0 + p1 + 2 >> 2) as pixel;
         }
     }
 }
@@ -1000,8 +381,8 @@ unsafe extern "C" fn deblock_luma_intra_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    let mut d: c_int = 0 as c_int;
-    while d < 16 as c_int {
+    let mut d: c_int = 0;
+    while d < 16 {
         deblock_edge_luma_intra_c(pix, xstride, alpha, beta);
         d += 1;
         pix = pix.offset(ystride as isize);
@@ -1014,8 +395,8 @@ unsafe extern "C" fn deblock_h_luma_intra_mbaff_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    let mut d: c_int = 0 as c_int;
-    while d < 8 as c_int {
+    let mut d: c_int = 0;
+    while d < 8 {
         deblock_edge_luma_intra_c(pix, 1 as intptr_t, alpha, beta);
         d += 1;
         pix = pix.offset(ystride as isize);
@@ -1047,15 +428,13 @@ unsafe extern "C" fn deblock_edge_chroma_intra_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    let mut p1: c_int = *pix.offset((-(2 as c_int) as intptr_t * xstride) as isize) as c_int;
+    let mut p1: c_int = *pix.offset((-(2) as intptr_t * xstride) as isize) as c_int;
     let mut p0: c_int = *pix.offset((-1 as intptr_t * xstride) as isize) as c_int;
     let mut q0: c_int = *pix.offset((0 as intptr_t * xstride) as isize) as c_int;
     let mut q1: c_int = *pix.offset((1 as intptr_t * xstride) as isize) as c_int;
     if abs(p0 - q0) < alpha && abs(p1 - p0) < beta && abs(q1 - q0) < beta {
-        *pix.offset((-1 as intptr_t * xstride) as isize) =
-            (2 as c_int * p1 + p0 + q1 + 2 as c_int >> 2 as c_int) as pixel;
-        *pix.offset((0 as intptr_t * xstride) as isize) =
-            (2 as c_int * q1 + q0 + p1 + 2 as c_int >> 2 as c_int) as pixel;
+        *pix.offset((-1 as intptr_t * xstride) as isize) = (2 * p1 + p0 + q1 + 2 >> 2) as pixel;
+        *pix.offset((0 as intptr_t * xstride) as isize) = (2 * q1 + q0 + p1 + 2 >> 2) as pixel;
     }
 }
 #[inline(always)]
@@ -1069,9 +448,9 @@ unsafe extern "C" fn deblock_chroma_intra_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    let mut d: c_int = 0 as c_int;
+    let mut d: c_int = 0;
     while d < height {
-        let mut e: c_int = 0 as c_int;
+        let mut e: c_int = 0;
         while e < width {
             deblock_edge_chroma_intra_c(pix, xstride, alpha, beta);
             e += 1;
@@ -1088,15 +467,7 @@ unsafe extern "C" fn deblock_h_chroma_intra_mbaff_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    deblock_chroma_intra_c(
-        pix,
-        2 as c_int,
-        4 as c_int,
-        2 as intptr_t,
-        stride,
-        alpha,
-        beta,
-    );
+    deblock_chroma_intra_c(pix, 2, 4, 2 as intptr_t, stride, alpha, beta);
 }
 #[c2rust::src_loc = "264:1"]
 unsafe extern "C" fn deblock_v_chroma_intra_c(
@@ -1105,15 +476,7 @@ unsafe extern "C" fn deblock_v_chroma_intra_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    deblock_chroma_intra_c(
-        pix,
-        1 as c_int,
-        16 as c_int,
-        stride,
-        2 as intptr_t,
-        alpha,
-        beta,
-    );
+    deblock_chroma_intra_c(pix, 1, 16, stride, 2 as intptr_t, alpha, beta);
 }
 #[c2rust::src_loc = "268:1"]
 unsafe extern "C" fn deblock_h_chroma_intra_c(
@@ -1122,15 +485,7 @@ unsafe extern "C" fn deblock_h_chroma_intra_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    deblock_chroma_intra_c(
-        pix,
-        2 as c_int,
-        8 as c_int,
-        2 as intptr_t,
-        stride,
-        alpha,
-        beta,
-    );
+    deblock_chroma_intra_c(pix, 2, 8, 2 as intptr_t, stride, alpha, beta);
 }
 #[c2rust::src_loc = "272:1"]
 unsafe extern "C" fn deblock_h_chroma_422_intra_c(
@@ -1139,15 +494,7 @@ unsafe extern "C" fn deblock_h_chroma_422_intra_c(
     mut alpha: c_int,
     mut beta: c_int,
 ) {
-    deblock_chroma_intra_c(
-        pix,
-        2 as c_int,
-        16 as c_int,
-        2 as intptr_t,
-        stride,
-        alpha,
-        beta,
-    );
+    deblock_chroma_intra_c(pix, 2, 16, 2 as intptr_t, stride, alpha, beta);
 }
 #[c2rust::src_loc = "277:1"]
 unsafe extern "C" fn deblock_strength_c(
@@ -1158,25 +505,25 @@ unsafe extern "C" fn deblock_strength_c(
     mut mvy_limit: c_int,
     mut bframe: c_int,
 ) {
-    let mut dir: c_int = 0 as c_int;
-    while dir < 2 as c_int {
-        let mut s1: c_int = if dir != 0 { 1 as c_int } else { 8 as c_int };
-        let mut s2: c_int = if dir != 0 { 8 as c_int } else { 1 as c_int };
-        let mut edge: c_int = 0 as c_int;
-        while edge < 4 as c_int {
-            let mut i: c_int = 0 as c_int;
+    let mut dir: c_int = 0;
+    while dir < 2 {
+        let mut s1: c_int = if dir != 0 { 1 } else { 8 };
+        let mut s2: c_int = if dir != 0 { 8 } else { 1 };
+        let mut edge: c_int = 0;
+        while edge < 4 {
+            let mut i: c_int = 0;
             let mut loc: c_int = X264_SCAN8_0 + edge * s2;
-            while i < 4 as c_int {
+            while i < 4 {
                 let mut locn: c_int = loc - s2;
                 if *nnz.offset(loc as isize) as c_int != 0
                     || *nnz.offset(locn as isize) as c_int != 0
                 {
-                    (*bs.offset(dir as isize))[edge as usize][i as usize] = 2 as uint8_t;
+                    (*bs.offset(dir as isize))[edge as usize][i as usize] = 2;
                 } else if (*ref_0.offset(0))[loc as usize] as c_int
                     != (*ref_0.offset(0))[locn as usize] as c_int
                     || abs((*mv.offset(0))[loc as usize][0] as c_int
                         - (*mv.offset(0))[locn as usize][0] as c_int)
-                        >= 4 as c_int
+                        >= 4
                     || abs((*mv.offset(0))[loc as usize][1] as c_int
                         - (*mv.offset(0))[locn as usize][1] as c_int)
                         >= mvy_limit
@@ -1185,14 +532,14 @@ unsafe extern "C" fn deblock_strength_c(
                             != (*ref_0.offset(1))[locn as usize] as c_int
                             || abs((*mv.offset(1))[loc as usize][0] as c_int
                                 - (*mv.offset(1))[locn as usize][0] as c_int)
-                                >= 4 as c_int
+                                >= 4
                             || abs((*mv.offset(1))[loc as usize][1] as c_int
                                 - (*mv.offset(1))[locn as usize][1] as c_int)
                                 >= mvy_limit)
                 {
-                    (*bs.offset(dir as isize))[edge as usize][i as usize] = 1 as uint8_t;
+                    (*bs.offset(dir as isize))[edge as usize][i as usize] = 1;
                 } else {
-                    (*bs.offset(dir as isize))[edge as usize][i as usize] = 0 as uint8_t;
+                    (*bs.offset(dir as isize))[edge as usize][i as usize] = 0;
                 }
                 i += 1;
                 loc += s1;
@@ -1217,25 +564,23 @@ unsafe extern "C" fn deblock_edge(
 ) {
     let mut index_a: c_int = i_qp + a;
     let mut index_b: c_int = i_qp + b;
-    let mut alpha: c_int =
-        (i_alpha_table[(index_a + 24 as c_int) as usize] as c_int) << BIT_DEPTH - 8 as c_int;
-    let mut beta: c_int =
-        (i_beta_table[(index_b + 24 as c_int) as usize] as c_int) << BIT_DEPTH - 8 as c_int;
+    let mut alpha: c_int = (i_alpha_table[(index_a + 24) as usize] as c_int) << BIT_DEPTH - 8;
+    let mut beta: c_int = (i_beta_table[(index_b + 24) as usize] as c_int) << BIT_DEPTH - 8;
     let mut tc: [int8_t; 4] = [0; 4];
     if (*(bS as *mut x264_union32_t)).i == 0 || alpha == 0 || beta == 0 {
         return;
     }
-    tc[0] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(0) as usize] as c_int
-        * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
+    tc[0] = (i_tc0_table[(index_a + 24) as usize][*bS.offset(0) as usize] as c_int
+        * ((1) << BIT_DEPTH - 8)
         + b_chroma) as int8_t;
-    tc[1] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(1) as usize] as c_int
-        * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
+    tc[1] = (i_tc0_table[(index_a + 24) as usize][*bS.offset(1) as usize] as c_int
+        * ((1) << BIT_DEPTH - 8)
         + b_chroma) as int8_t;
-    tc[2] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(2) as usize] as c_int
-        * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
+    tc[2] = (i_tc0_table[(index_a + 24) as usize][*bS.offset(2) as usize] as c_int
+        * ((1) << BIT_DEPTH - 8)
         + b_chroma) as int8_t;
-    tc[3] = (i_tc0_table[(index_a + 24 as c_int) as usize][*bS.offset(3) as usize] as c_int
-        * ((1 as c_int) << BIT_DEPTH - 8 as c_int)
+    tc[3] = (i_tc0_table[(index_a + 24) as usize][*bS.offset(3) as usize] as c_int
+        * ((1) << BIT_DEPTH - 8)
         + b_chroma) as int8_t;
     pf_inter.expect("non-null function pointer")(pix, i_stride, alpha, beta, tc.as_mut_ptr());
 }
@@ -1254,10 +599,8 @@ unsafe extern "C" fn deblock_edge_intra(
 ) {
     let mut index_a: c_int = i_qp + a;
     let mut index_b: c_int = i_qp + b;
-    let mut alpha: c_int =
-        (i_alpha_table[(index_a + 24 as c_int) as usize] as c_int) << BIT_DEPTH - 8 as c_int;
-    let mut beta: c_int =
-        (i_beta_table[(index_b + 24 as c_int) as usize] as c_int) << BIT_DEPTH - 8 as c_int;
+    let mut alpha: c_int = (i_alpha_table[(index_a + 24) as usize] as c_int) << BIT_DEPTH - 8;
+    let mut beta: c_int = (i_beta_table[(index_b + 24) as usize] as c_int) << BIT_DEPTH - 8;
     if alpha == 0 || beta == 0 {
         return;
     }
@@ -1270,25 +613,24 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
     mut mb_x: c_int,
     mut mb_y: c_int,
 ) {
-    let mut deblock_on_slice_edges: c_int =
-        ((*h).sh.i_disable_deblocking_filter_idc != 2 as c_int) as c_int;
-    (*h).mb.i_neighbour = 0 as c_uint;
+    let mut deblock_on_slice_edges: c_int = ((*h).sh.i_disable_deblocking_filter_idc != 2) as c_int;
+    (*h).mb.i_neighbour = 0;
     (*h).mb.i_mb_xy = mb_y * (*h).mb.i_mb_stride + mb_x;
     (*h).mb.interlaced =
         (*h).param.interlaced && *(*h).mb.field.offset((*h).mb.i_mb_xy as isize) != 0;
     (*h).mb.i_mb_top_y = mb_y - (1 << (*h).mb.interlaced as i32);
     (*h).mb.i_mb_top_xy = mb_x + (*h).mb.i_mb_stride * (*h).mb.i_mb_top_y;
-    (*h).mb.i_mb_left_xy[0] = (*h).mb.i_mb_xy - 1 as c_int;
+    (*h).mb.i_mb_left_xy[0] = (*h).mb.i_mb_xy - 1;
     (*h).mb.i_mb_left_xy[1] = (*h).mb.i_mb_left_xy[0];
     if (*h).sh.mbaff {
-        if mb_y & 1 as c_int != 0 {
+        if mb_y & 1 != 0 {
             if mb_x != 0
                 && *(*h).mb.field.offset(((*h).mb.i_mb_xy - 1) as isize) != (*h).mb.interlaced as u8
             {
                 (*h).mb.i_mb_left_xy[0] -= (*h).mb.i_mb_stride;
             }
         } else {
-            if (*h).mb.i_mb_top_xy >= 0 as c_int
+            if (*h).mb.i_mb_top_xy >= 0
                 && (*h).mb.interlaced
                 && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) == 0
             {
@@ -1302,7 +644,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
             }
         }
     }
-    if mb_x > 0 as c_int
+    if mb_x > 0
         && (deblock_on_slice_edges != 0
             || *(*h).mb.slice_table.offset((*h).mb.i_mb_left_xy[0] as isize)
                 == *(*h).mb.slice_table.offset((*h).mb.i_mb_xy as isize))
@@ -1323,10 +665,10 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
     let mut interlaced = (*h).sh.mbaff;
     let mut a: c_int = (*h).sh.i_alpha_c0_offset - QP_BD_OFFSET;
     let mut b: c_int = (*h).sh.i_beta_offset - QP_BD_OFFSET;
-    let mut qp_thresh: c_int = 15 as c_int
+    let mut qp_thresh: c_int = 15
         - (if a < b { a } else { b })
-        - (if 0 as c_int > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset {
-            0 as c_int
+        - (if 0 > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset {
+            0
         } else {
             (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset
         });
@@ -1335,13 +677,13 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
     let mut chroma_format: c_int = (*(*h).sps.as_mut_ptr()).i_chroma_format_idc;
     let mut chroma444: c_int =
         ((*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int) as c_int;
-    let mut chroma_height: c_int = 16 as c_int >> (*h).mb.chroma_v_shift;
+    let mut chroma_height: c_int = 16 >> (*h).mb.chroma_v_shift;
     let mut uvdiff: intptr_t = if chroma444 != 0 {
         (*(*h).fdec).plane[2].offset_from((*(*h).fdec).plane[1]) as intptr_t
     } else {
         1 as intptr_t
     };
-    let mut mb_x: c_int = 0 as c_int;
+    let mut mb_x: c_int = 0;
     while mb_x < (*h).mb.i_mb_width {
         x264_10_prefetch_fenc(h, (*h).fdec, mb_x, mb_y);
         macroblock_cache_load_neighbours_deblock(h, mb_x, mb_y);
@@ -1356,7 +698,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
         let mut bs: *mut [[uint8_t; 4]; 8] = (*(*(*h)
             .deblock_strength
             .as_mut_ptr()
-            .offset((mb_y & 1 as c_int) as isize))
+            .offset((mb_y & 1) as isize))
         .offset(
             (if (*h).param.sliced_threads {
                 mb_xy
@@ -1366,19 +708,19 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
         ))
         .as_mut_ptr() as *mut [[uint8_t; 4]; 8];
         let mut pixy: *mut pixel = (*(*h).fdec).plane[0]
-            .offset((16 as c_int * mb_y * stridey) as isize)
-            .offset((16 as c_int * mb_x) as isize);
+            .offset((16 * mb_y * stridey) as isize)
+            .offset((16 * mb_x) as isize);
         let mut pixuv: *mut pixel = if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
             (*(*h).fdec).plane[1]
                 .offset((chroma_height * mb_y * strideuv) as isize)
-                .offset((16 as c_int * mb_x) as isize)
+                .offset((16 * mb_x) as isize)
         } else {
             0 as *mut pixel
         };
         if mb_y & (*h).mb.interlaced as i32 != 0 {
-            pixy = pixy.offset(-((15 as c_int * stridey) as isize));
+            pixy = pixy.offset(-((15 * stridey) as isize));
             if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
-                pixuv = pixuv.offset(-(((chroma_height - 1 as c_int) * strideuv) as isize));
+                pixuv = pixuv.offset(-(((chroma_height - 1) * strideuv) as isize));
             }
         }
         let mut stride2y: c_int = stridey << (*h).mb.interlaced as i32;
@@ -1404,16 +746,11 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                     (*h).loopf.deblock_luma_intra_mbaff;
                 let mut chroma_intra_deblock: x264_deblock_intra_t =
                     (*h).loopf.deblock_chroma_intra_mbaff;
-                let mut c: c_int = if chroma444 != 0 {
-                    0 as c_int
-                } else {
-                    1 as c_int
-                };
+                let mut c: c_int = if chroma444 != 0 { 0 } else { 1 };
                 left_qp[0] = *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int;
-                luma_qp[0] = qp + left_qp[0] + 1 as c_int >> 1 as c_int;
+                luma_qp[0] = qp + left_qp[0] + 1 >> 1;
                 chroma_qp[0] =
-                    qpc + *(*h).chroma_qp_table.offset(left_qp[0] as isize) as c_int + 1 as c_int
-                        >> 1 as c_int;
+                    qpc + *(*h).chroma_qp_table.offset(left_qp[0] as isize) as c_int + 1 >> 1;
                 if intra_cur != 0
                     || (*(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0] as isize) as c_int
                         == I_4x4 as c_int
@@ -1427,19 +764,19 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                     deblock_edge_intra(
                         h,
                         pixy,
-                        (2 as c_int * stridey) as intptr_t,
+                        (2 * stridey) as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                         luma_qp[0],
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         luma_intra_deblock,
                     );
                     if chroma_format != 0 {
                         deblock_edge_intra(
                             h,
                             pixuv,
-                            (2 as c_int * strideuv) as intptr_t,
+                            (2 * strideuv) as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             chroma_qp[0],
                             a,
@@ -1451,7 +788,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(uvdiff as isize),
-                                (2 as c_int * strideuv) as intptr_t,
+                                (2 * strideuv) as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 chroma_qp[0],
                                 a,
@@ -1465,19 +802,19 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                     deblock_edge(
                         h,
                         pixy,
-                        (2 as c_int * stridey) as intptr_t,
+                        (2 * stridey) as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                         luma_qp[0],
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         luma_deblock,
                     );
                     if chroma_format != 0 {
                         deblock_edge(
                             h,
                             pixuv,
-                            (2 as c_int * strideuv) as intptr_t,
+                            (2 * strideuv) as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             chroma_qp[0],
                             a,
@@ -1489,7 +826,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             deblock_edge(
                                 h,
                                 pixuv.offset(uvdiff as isize),
-                                (2 as c_int * strideuv) as intptr_t,
+                                (2 * strideuv) as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 chroma_qp[0],
                                 a,
@@ -1509,10 +846,9 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                     false => 0,
                 };
                 left_qp[1] = *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int;
-                luma_qp[1] = qp + left_qp[1] + 1 as c_int >> 1 as c_int;
+                luma_qp[1] = qp + left_qp[1] + 1 >> 1;
                 chroma_qp[1] =
-                    qpc + *(*h).chroma_qp_table.offset(left_qp[1] as isize) as c_int + 1 as c_int
-                        >> 1 as c_int;
+                    qpc + *(*h).chroma_qp_table.offset(left_qp[1] as isize) as c_int + 1 >> 1;
                 if intra_cur != 0
                     || (*(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1] as isize) as c_int
                         == I_4x4 as c_int
@@ -1526,19 +862,19 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                     deblock_edge_intra(
                         h,
                         pixy.offset((stridey << offy) as isize),
-                        (2 as c_int * stridey) as intptr_t,
+                        (2 * stridey) as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
                         luma_qp[1],
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         luma_intra_deblock,
                     );
                     if chroma_format != 0 {
                         deblock_edge_intra(
                             h,
                             pixuv.offset((strideuv << offuv) as isize),
-                            (2 as c_int * strideuv) as intptr_t,
+                            (2 * strideuv) as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
                             chroma_qp[1],
                             a,
@@ -1552,7 +888,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 pixuv
                                     .offset(uvdiff as isize)
                                     .offset((strideuv << offuv) as isize),
-                                (2 as c_int * strideuv) as intptr_t,
+                                (2 * strideuv) as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
                                 chroma_qp[1],
                                 a,
@@ -1566,19 +902,19 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                     deblock_edge(
                         h,
                         pixy.offset((stridey << offy) as isize),
-                        (2 as c_int * stridey) as intptr_t,
+                        (2 * stridey) as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
                         luma_qp[1],
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         luma_deblock,
                     );
                     if chroma_format != 0 {
                         deblock_edge(
                             h,
                             pixuv.offset((strideuv << offuv) as isize),
-                            (2 as c_int * strideuv) as intptr_t,
+                            (2 * strideuv) as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
                             chroma_qp[1],
                             a,
@@ -1592,7 +928,7 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 pixuv
                                     .offset(uvdiff as isize)
                                     .offset((strideuv << offuv) as isize),
-                                (2 as c_int * strideuv) as intptr_t,
+                                (2 * strideuv) as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(4)).as_mut_ptr(),
                                 chroma_qp[1],
                                 a,
@@ -1604,35 +940,18 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                     }
                 }
             } else {
-                let mut qpl: c_int =
-                    *(*h).mb.qp.offset(((*h).mb.i_mb_xy - 1 as c_int) as isize) as c_int;
-                let mut qp_left: c_int = qp + qpl + 1 as c_int >> 1 as c_int;
+                let mut qpl: c_int = *(*h).mb.qp.offset(((*h).mb.i_mb_xy - 1) as isize) as c_int;
+                let mut qp_left: c_int = qp + qpl + 1 >> 1;
                 let mut qpc_left: c_int =
-                    qpc + *(*h).chroma_qp_table.offset(qpl as isize) as c_int + 1 as c_int
-                        >> 1 as c_int;
-                let mut intra_left: c_int = (*(*h)
-                    .mb
-                    .type_0
-                    .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize)
+                    qpc + *(*h).chroma_qp_table.offset(qpl as isize) as c_int + 1 >> 1;
+                let mut intra_left: c_int = (*(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1) as isize)
                     as c_int
                     == I_4x4 as c_int
-                    || *(*h)
-                        .mb
-                        .type_0
-                        .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize)
-                        as c_int
+                    || *(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1) as isize) as c_int
                         == I_8x8 as c_int
-                    || *(*h)
-                        .mb
-                        .type_0
-                        .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize)
-                        as c_int
+                    || *(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1) as isize) as c_int
                         == I_16x16 as c_int
-                    || *(*h)
-                        .mb
-                        .type_0
-                        .offset(((*h).mb.i_mb_xy - 1 as c_int) as isize)
-                        as c_int
+                    || *(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1) as isize) as c_int
                         == I_PCM as c_int) as c_int;
                 let mut intra_deblock: c_int = (intra_cur != 0 || intra_left != 0) as c_int;
                 if !(*(*h).fdec).mb_info.is_null()
@@ -1660,212 +979,140 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                                 != 0) as c_int) as uint8_t;
                 }
                 if intra_deblock != 0 {
-                    if 0 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+                    if 0 & 1 == 0 || transform_8x8 == 0 {
                         deblock_edge_intra(
                             h,
-                            pixy.offset(
-                                (4 as c_int
-                                    * 0 as c_int
-                                    * (if 0 as c_int != 0 {
-                                        stride2y
-                                    } else {
-                                        1 as c_int
-                                    })) as isize,
-                            ),
+                            pixy.offset((4 * 0 * (if 0 != 0 { stride2y } else { 1 })) as isize),
                             stride2y as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_left,
                             a,
                             b,
-                            0 as c_int,
+                            0,
                             (*h).loopf.deblock_luma_intra[0],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 0 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 0 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma_intra[0],
                             );
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(uvdiff as isize).offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 0 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 0 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma_intra[0],
                             );
-                        } else if chroma_format == CHROMA_420 as c_int
-                            && 0 as c_int & 1 as c_int == 0
-                        {
+                        } else if chroma_format == CHROMA_420 as c_int && 0 & 1 == 0 {
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
-                                    (0 as c_int
-                                        * (if 0 as c_int != 0 {
-                                            2 as c_int * stride2uv
-                                        } else {
-                                            4 as c_int
-                                        })) as isize,
+                                    (0 * (if 0 != 0 { 2 * stride2uv } else { 4 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
-                                1 as c_int,
+                                1,
                                 (*h).loopf.deblock_chroma_intra[0],
                             );
                         }
                     }
-                    if chroma_format == CHROMA_422 as c_int
-                        && (0 as c_int != 0 || 0 as c_int & 1 as c_int == 0)
-                    {
+                    if chroma_format == CHROMA_422 as c_int && (0 != 0 || 0 & 1 == 0) {
                         deblock_edge_intra(
                             h,
-                            pixuv.offset(
-                                (0 as c_int
-                                    * (if 0 as c_int != 0 {
-                                        4 as c_int * stride2uv
-                                    } else {
-                                        4 as c_int
-                                    })) as isize,
-                            ),
+                            pixuv.offset((0 * (if 0 != 0 { 4 * stride2uv } else { 4 })) as isize),
                             stride2uv as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_left,
                             a,
                             b,
-                            1 as c_int,
+                            1,
                             (*h).loopf.deblock_chroma_intra[0],
                         );
                     }
                 } else {
-                    if 0 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+                    if 0 & 1 == 0 || transform_8x8 == 0 {
                         deblock_edge(
                             h,
-                            pixy.offset(
-                                (4 as c_int
-                                    * 0 as c_int
-                                    * (if 0 as c_int != 0 {
-                                        stride2y
-                                    } else {
-                                        1 as c_int
-                                    })) as isize,
-                            ),
+                            pixy.offset((4 * 0 * (if 0 != 0 { stride2y } else { 1 })) as isize),
                             stride2y as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_left,
                             a,
                             b,
-                            0 as c_int,
+                            0,
                             (*h).loopf.deblock_luma[0],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge(
                                 h,
                                 pixuv.offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 0 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 0 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma[0],
                             );
                             deblock_edge(
                                 h,
                                 pixuv.offset(uvdiff as isize).offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 0 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 0 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma[0],
                             );
-                        } else if chroma_format == CHROMA_420 as c_int
-                            && 0 as c_int & 1 as c_int == 0
-                        {
+                        } else if chroma_format == CHROMA_420 as c_int && 0 & 1 == 0 {
                             deblock_edge(
                                 h,
                                 pixuv.offset(
-                                    (0 as c_int
-                                        * (if 0 as c_int != 0 {
-                                            2 as c_int * stride2uv
-                                        } else {
-                                            4 as c_int
-                                        })) as isize,
+                                    (0 * (if 0 != 0 { 2 * stride2uv } else { 4 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_left,
                                 a,
                                 b,
-                                1 as c_int,
+                                1,
                                 (*h).loopf.deblock_chroma[0],
                             );
                         }
                     }
-                    if chroma_format == CHROMA_422 as c_int
-                        && (0 as c_int != 0 || 0 as c_int & 1 as c_int == 0)
-                    {
+                    if chroma_format == CHROMA_422 as c_int && (0 != 0 || 0 & 1 == 0) {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (0 as c_int
-                                    * (if 0 as c_int != 0 {
-                                        4 as c_int * stride2uv
-                                    } else {
-                                        4 as c_int
-                                    })) as isize,
-                            ),
+                            pixuv.offset((0 * (if 0 != 0 { 4 * stride2uv } else { 4 })) as isize),
                             stride2uv as intptr_t,
                             (*(*bs.offset(0)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_left,
                             a,
                             b,
-                            1 as c_int,
+                            1,
                             (*h).loopf.deblock_chroma[0],
                         );
                     }
@@ -1873,309 +1120,195 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
             }
         }
         if first_edge_only == 0 {
-            if 1 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+            if 1 & 1 == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy.offset(
-                        (4 as c_int
-                            * 1 as c_int
-                            * (if 0 as c_int != 0 {
-                                stride2y
-                            } else {
-                                1 as c_int
-                            })) as isize,
-                    ),
+                    pixy.offset((4 * 1 * (if 0 != 0 { stride2y } else { 1 })) as isize),
                     stride2y as intptr_t,
                     (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qp,
                     a,
                     b,
-                    0 as c_int,
+                    0,
                     (*h).loopf.deblock_luma[0],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (4 as c_int
-                                * 1 as c_int
-                                * (if 0 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((4 * 1 * (if 0 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[0],
                     );
                     deblock_edge(
                         h,
-                        pixuv.offset(uvdiff as isize).offset(
-                            (4 as c_int
-                                * 1 as c_int
-                                * (if 0 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv
+                            .offset(uvdiff as isize)
+                            .offset((4 * 1 * (if 0 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[0],
                     );
-                } else if chroma_format == CHROMA_420 as c_int && 1 as c_int & 1 as c_int == 0 {
+                } else if chroma_format == CHROMA_420 as c_int && 1 & 1 == 0 {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (1 as c_int
-                                * (if 0 as c_int != 0 {
-                                    2 as c_int * stride2uv
-                                } else {
-                                    4 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((1 * (if 0 != 0 { 2 * stride2uv } else { 4 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        1 as c_int,
+                        1,
                         (*h).loopf.deblock_chroma[0],
                     );
                 }
             }
-            if chroma_format == CHROMA_422 as c_int
-                && (0 as c_int != 0 || 1 as c_int & 1 as c_int == 0)
-            {
+            if chroma_format == CHROMA_422 as c_int && (0 != 0 || 1 & 1 == 0) {
                 deblock_edge(
                     h,
-                    pixuv.offset(
-                        (1 as c_int
-                            * (if 0 as c_int != 0 {
-                                4 as c_int * stride2uv
-                            } else {
-                                4 as c_int
-                            })) as isize,
-                    ),
+                    pixuv.offset((1 * (if 0 != 0 { 4 * stride2uv } else { 4 })) as isize),
                     stride2uv as intptr_t,
                     (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
-                    1 as c_int,
+                    1,
                     (*h).loopf.deblock_chroma[0],
                 );
             }
-            if 2 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+            if 2 & 1 == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy.offset(
-                        (4 as c_int
-                            * 2 as c_int
-                            * (if 0 as c_int != 0 {
-                                stride2y
-                            } else {
-                                1 as c_int
-                            })) as isize,
-                    ),
+                    pixy.offset((4 * 2 * (if 0 != 0 { stride2y } else { 1 })) as isize),
                     stride2y as intptr_t,
                     (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qp,
                     a,
                     b,
-                    0 as c_int,
+                    0,
                     (*h).loopf.deblock_luma[0],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (4 as c_int
-                                * 2 as c_int
-                                * (if 0 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((4 * 2 * (if 0 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[0],
                     );
                     deblock_edge(
                         h,
-                        pixuv.offset(uvdiff as isize).offset(
-                            (4 as c_int
-                                * 2 as c_int
-                                * (if 0 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv
+                            .offset(uvdiff as isize)
+                            .offset((4 * 2 * (if 0 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[0],
                     );
-                } else if chroma_format == CHROMA_420 as c_int && 2 as c_int & 1 as c_int == 0 {
+                } else if chroma_format == CHROMA_420 as c_int && 2 & 1 == 0 {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (2 as c_int
-                                * (if 0 as c_int != 0 {
-                                    2 as c_int * stride2uv
-                                } else {
-                                    4 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((2 * (if 0 != 0 { 2 * stride2uv } else { 4 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        1 as c_int,
+                        1,
                         (*h).loopf.deblock_chroma[0],
                     );
                 }
             }
-            if chroma_format == CHROMA_422 as c_int
-                && (0 as c_int != 0 || 2 as c_int & 1 as c_int == 0)
-            {
+            if chroma_format == CHROMA_422 as c_int && (0 != 0 || 2 & 1 == 0) {
                 deblock_edge(
                     h,
-                    pixuv.offset(
-                        (2 as c_int
-                            * (if 0 as c_int != 0 {
-                                4 as c_int * stride2uv
-                            } else {
-                                4 as c_int
-                            })) as isize,
-                    ),
+                    pixuv.offset((2 * (if 0 != 0 { 4 * stride2uv } else { 4 })) as isize),
                     stride2uv as intptr_t,
                     (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
-                    1 as c_int,
+                    1,
                     (*h).loopf.deblock_chroma[0],
                 );
             }
-            if 3 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+            if 3 & 1 == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy.offset(
-                        (4 as c_int
-                            * 3 as c_int
-                            * (if 0 as c_int != 0 {
-                                stride2y
-                            } else {
-                                1 as c_int
-                            })) as isize,
-                    ),
+                    pixy.offset((4 * 3 * (if 0 != 0 { stride2y } else { 1 })) as isize),
                     stride2y as intptr_t,
                     (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qp,
                     a,
                     b,
-                    0 as c_int,
+                    0,
                     (*h).loopf.deblock_luma[0],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (4 as c_int
-                                * 3 as c_int
-                                * (if 0 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((4 * 3 * (if 0 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[0],
                     );
                     deblock_edge(
                         h,
-                        pixuv.offset(uvdiff as isize).offset(
-                            (4 as c_int
-                                * 3 as c_int
-                                * (if 0 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv
+                            .offset(uvdiff as isize)
+                            .offset((4 * 3 * (if 0 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[0],
                     );
-                } else if chroma_format == CHROMA_420 as c_int && 3 as c_int & 1 as c_int == 0 {
+                } else if chroma_format == CHROMA_420 as c_int && 3 & 1 == 0 {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (3 as c_int
-                                * (if 0 as c_int != 0 {
-                                    2 as c_int * stride2uv
-                                } else {
-                                    4 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((3 * (if 0 != 0 { 2 * stride2uv } else { 4 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        1 as c_int,
+                        1,
                         (*h).loopf.deblock_chroma[0],
                     );
                 }
             }
-            if chroma_format == CHROMA_422 as c_int
-                && (0 as c_int != 0 || 3 as c_int & 1 as c_int == 0)
-            {
+            if chroma_format == CHROMA_422 as c_int && (0 != 0 || 3 & 1 == 0) {
                 deblock_edge(
                     h,
-                    pixuv.offset(
-                        (3 as c_int
-                            * (if 0 as c_int != 0 {
-                                4 as c_int * stride2uv
-                            } else {
-                                4 as c_int
-                            })) as isize,
-                    ),
+                    pixuv.offset((3 * (if 0 != 0 { 4 * stride2uv } else { 4 })) as isize),
                     stride2uv as intptr_t,
                     (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
-                    1 as c_int,
+                    1,
                     (*h).loopf.deblock_chroma[0],
                 );
             }
@@ -2186,14 +1319,13 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                 && !(*h).mb.interlaced
                 && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) != 0
             {
-                let mut mbn_xy: c_int = mb_xy - 2 as c_int * (*h).mb.i_mb_stride;
-                let mut j: c_int = 0 as c_int;
-                while j < 2 as c_int {
+                let mut mbn_xy: c_int = mb_xy - 2 * (*h).mb.i_mb_stride;
+                let mut j: c_int = 0;
+                while j < 2 {
                     let mut qpt: c_int = *(*h).mb.qp.offset(mbn_xy as isize) as c_int;
-                    let mut qp_top: c_int = qp + qpt + 1 as c_int >> 1 as c_int;
+                    let mut qp_top: c_int = qp + qpt + 1 >> 1;
                     let mut qpc_top: c_int =
-                        qpc + *(*h).chroma_qp_table.offset(qpt as isize) as c_int + 1 as c_int
-                            >> 1 as c_int;
+                        qpc + *(*h).chroma_qp_table.offset(qpt as isize) as c_int + 1 >> 1;
                     let mut intra_top: c_int = (*(*h).mb.type_0.offset(mbn_xy as isize) as c_int
                         == I_4x4 as c_int
                         || *(*h).mb.type_0.offset(mbn_xy as isize) as c_int == I_8x8 as c_int
@@ -2201,39 +1333,31 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         || *(*h).mb.type_0.offset(mbn_xy as isize) as c_int == I_PCM as c_int)
                         as c_int;
                     if intra_cur != 0 || intra_top != 0 {
-                        (*((*(*bs.offset(1))
-                            .as_mut_ptr()
-                            .offset((4 as c_int * j) as isize))
-                        .as_mut_ptr() as *mut x264_union32_t))
+                        (*((*(*bs.offset(1)).as_mut_ptr().offset((4 * j) as isize)).as_mut_ptr()
+                            as *mut x264_union32_t))
                             .i = 0x3030303 as uint32_t;
                     }
                     deblock_edge(
                         h,
                         pixy.offset((j * stridey) as isize),
-                        (2 as c_int * stridey) as intptr_t,
-                        (*(*bs.offset(1))
-                            .as_mut_ptr()
-                            .offset((4 as c_int * j) as isize))
-                        .as_mut_ptr(),
+                        (2 * stridey) as intptr_t,
+                        (*(*bs.offset(1)).as_mut_ptr().offset((4 * j) as isize)).as_mut_ptr(),
                         qp_top,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[1],
                     );
                     if chroma444 != 0 {
                         deblock_edge(
                             h,
                             pixuv.offset((j * strideuv) as isize),
-                            (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(1))
-                                .as_mut_ptr()
-                                .offset((4 as c_int * j) as isize))
-                            .as_mut_ptr(),
+                            (2 * strideuv) as intptr_t,
+                            (*(*bs.offset(1)).as_mut_ptr().offset((4 * j) as isize)).as_mut_ptr(),
                             qpc_top,
                             a,
                             b,
-                            0 as c_int,
+                            0,
                             (*h).loopf.deblock_luma[1],
                         );
                         deblock_edge(
@@ -2241,30 +1365,24 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             pixuv
                                 .offset(uvdiff as isize)
                                 .offset((j * strideuv) as isize),
-                            (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(1))
-                                .as_mut_ptr()
-                                .offset((4 as c_int * j) as isize))
-                            .as_mut_ptr(),
+                            (2 * strideuv) as intptr_t,
+                            (*(*bs.offset(1)).as_mut_ptr().offset((4 * j) as isize)).as_mut_ptr(),
                             qpc_top,
                             a,
                             b,
-                            0 as c_int,
+                            0,
                             (*h).loopf.deblock_luma[1],
                         );
                     } else if chroma_format != 0 {
                         deblock_edge(
                             h,
                             pixuv.offset((j * strideuv) as isize),
-                            (2 as c_int * strideuv) as intptr_t,
-                            (*(*bs.offset(1))
-                                .as_mut_ptr()
-                                .offset((4 as c_int * j) as isize))
-                            .as_mut_ptr(),
+                            (2 * strideuv) as intptr_t,
+                            (*(*bs.offset(1)).as_mut_ptr().offset((4 * j) as isize)).as_mut_ptr(),
                             qpc_top,
                             a,
                             b,
-                            1 as c_int,
+                            1,
                             (*h).loopf.deblock_chroma[1],
                         );
                     }
@@ -2273,10 +1391,9 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                 }
             } else {
                 let mut qpt_0: c_int = *(*h).mb.qp.offset((*h).mb.i_mb_top_xy as isize) as c_int;
-                let mut qp_top_0: c_int = qp + qpt_0 + 1 as c_int >> 1 as c_int;
+                let mut qp_top_0: c_int = qp + qpt_0 + 1 >> 1;
                 let mut qpc_top_0: c_int =
-                    qpc + *(*h).chroma_qp_table.offset(qpt_0 as isize) as c_int + 1 as c_int
-                        >> 1 as c_int;
+                    qpc + *(*h).chroma_qp_table.offset(qpt_0 as isize) as c_int + 1 >> 1;
                 let mut intra_top_0: c_int = (*(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
                     as c_int
                     == I_4x4 as c_int
@@ -2313,107 +1430,71 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                         && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) == 0)
                     && intra_deblock_0 != 0
                 {
-                    if 0 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+                    if 0 & 1 == 0 || transform_8x8 == 0 {
                         deblock_edge_intra(
                             h,
-                            pixy.offset(
-                                (4 as c_int
-                                    * 0 as c_int
-                                    * (if 1 as c_int != 0 {
-                                        stride2y
-                                    } else {
-                                        1 as c_int
-                                    })) as isize,
-                            ),
+                            pixy.offset((4 * 0 * (if 1 != 0 { stride2y } else { 1 })) as isize),
                             stride2y as intptr_t,
                             (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_top_0,
                             a,
                             b,
-                            0 as c_int,
+                            0,
                             (*h).loopf.deblock_luma_intra[1],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 1 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 1 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma_intra[1],
                             );
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(uvdiff as isize).offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 1 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 1 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma_intra[1],
                             );
-                        } else if chroma_format == CHROMA_420 as c_int
-                            && 0 as c_int & 1 as c_int == 0
-                        {
+                        } else if chroma_format == CHROMA_420 as c_int && 0 & 1 == 0 {
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
-                                    (0 as c_int
-                                        * (if 1 as c_int != 0 {
-                                            2 as c_int * stride2uv
-                                        } else {
-                                            4 as c_int
-                                        })) as isize,
+                                    (0 * (if 1 != 0 { 2 * stride2uv } else { 4 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
-                                1 as c_int,
+                                1,
                                 (*h).loopf.deblock_chroma_intra[1],
                             );
                         }
                     }
-                    if chroma_format == CHROMA_422 as c_int
-                        && (1 as c_int != 0 || 0 as c_int & 1 as c_int == 0)
-                    {
+                    if chroma_format == CHROMA_422 as c_int && (1 != 0 || 0 & 1 == 0) {
                         deblock_edge_intra(
                             h,
-                            pixuv.offset(
-                                (0 as c_int
-                                    * (if 1 as c_int != 0 {
-                                        4 as c_int * stride2uv
-                                    } else {
-                                        4 as c_int
-                                    })) as isize,
-                            ),
+                            pixuv.offset((0 * (if 1 != 0 { 4 * stride2uv } else { 4 })) as isize),
                             stride2uv as intptr_t,
                             (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_top_0,
                             a,
                             b,
-                            1 as c_int,
+                            1,
                             (*h).loopf.deblock_chroma_intra[1],
                         );
                     }
@@ -2423,107 +1504,71 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
                             as *mut x264_union32_t))
                             .i = 0x3030303 as uint32_t;
                     }
-                    if 0 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+                    if 0 & 1 == 0 || transform_8x8 == 0 {
                         deblock_edge(
                             h,
-                            pixy.offset(
-                                (4 as c_int
-                                    * 0 as c_int
-                                    * (if 1 as c_int != 0 {
-                                        stride2y
-                                    } else {
-                                        1 as c_int
-                                    })) as isize,
-                            ),
+                            pixy.offset((4 * 0 * (if 1 != 0 { stride2y } else { 1 })) as isize),
                             stride2y as intptr_t,
                             (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qp_top_0,
                             a,
                             b,
-                            0 as c_int,
+                            0,
                             (*h).loopf.deblock_luma[1],
                         );
                         if chroma_format == CHROMA_444 as c_int {
                             deblock_edge(
                                 h,
                                 pixuv.offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 1 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 1 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma[1],
                             );
                             deblock_edge(
                                 h,
                                 pixuv.offset(uvdiff as isize).offset(
-                                    (4 as c_int
-                                        * 0 as c_int
-                                        * (if 1 as c_int != 0 {
-                                            stride2uv
-                                        } else {
-                                            1 as c_int
-                                        })) as isize,
+                                    (4 * 0 * (if 1 != 0 { stride2uv } else { 1 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
-                                0 as c_int,
+                                0,
                                 (*h).loopf.deblock_luma[1],
                             );
-                        } else if chroma_format == CHROMA_420 as c_int
-                            && 0 as c_int & 1 as c_int == 0
-                        {
+                        } else if chroma_format == CHROMA_420 as c_int && 0 & 1 == 0 {
                             deblock_edge(
                                 h,
                                 pixuv.offset(
-                                    (0 as c_int
-                                        * (if 1 as c_int != 0 {
-                                            2 as c_int * stride2uv
-                                        } else {
-                                            4 as c_int
-                                        })) as isize,
+                                    (0 * (if 1 != 0 { 2 * stride2uv } else { 4 })) as isize,
                                 ),
                                 stride2uv as intptr_t,
                                 (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                                 qpc_top_0,
                                 a,
                                 b,
-                                1 as c_int,
+                                1,
                                 (*h).loopf.deblock_chroma[1],
                             );
                         }
                     }
-                    if chroma_format == CHROMA_422 as c_int
-                        && (1 as c_int != 0 || 0 as c_int & 1 as c_int == 0)
-                    {
+                    if chroma_format == CHROMA_422 as c_int && (1 != 0 || 0 & 1 == 0) {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (0 as c_int
-                                    * (if 1 as c_int != 0 {
-                                        4 as c_int * stride2uv
-                                    } else {
-                                        4 as c_int
-                                    })) as isize,
-                            ),
+                            pixuv.offset((0 * (if 1 != 0 { 4 * stride2uv } else { 4 })) as isize),
                             stride2uv as intptr_t,
                             (*(*bs.offset(1)).as_mut_ptr().offset(0)).as_mut_ptr(),
                             qpc_top_0,
                             a,
                             b,
-                            1 as c_int,
+                            1,
                             (*h).loopf.deblock_chroma[1],
                         );
                     }
@@ -2531,309 +1576,195 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
             }
         }
         if first_edge_only == 0 {
-            if 1 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+            if 1 & 1 == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy.offset(
-                        (4 as c_int
-                            * 1 as c_int
-                            * (if 1 as c_int != 0 {
-                                stride2y
-                            } else {
-                                1 as c_int
-                            })) as isize,
-                    ),
+                    pixy.offset((4 * 1 * (if 1 != 0 { stride2y } else { 1 })) as isize),
                     stride2y as intptr_t,
                     (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qp,
                     a,
                     b,
-                    0 as c_int,
+                    0,
                     (*h).loopf.deblock_luma[1],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (4 as c_int
-                                * 1 as c_int
-                                * (if 1 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((4 * 1 * (if 1 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[1],
                     );
                     deblock_edge(
                         h,
-                        pixuv.offset(uvdiff as isize).offset(
-                            (4 as c_int
-                                * 1 as c_int
-                                * (if 1 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv
+                            .offset(uvdiff as isize)
+                            .offset((4 * 1 * (if 1 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[1],
                     );
-                } else if chroma_format == CHROMA_420 as c_int && 1 as c_int & 1 as c_int == 0 {
+                } else if chroma_format == CHROMA_420 as c_int && 1 & 1 == 0 {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (1 as c_int
-                                * (if 1 as c_int != 0 {
-                                    2 as c_int * stride2uv
-                                } else {
-                                    4 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((1 * (if 1 != 0 { 2 * stride2uv } else { 4 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        1 as c_int,
+                        1,
                         (*h).loopf.deblock_chroma[1],
                     );
                 }
             }
-            if chroma_format == CHROMA_422 as c_int
-                && (1 as c_int != 0 || 1 as c_int & 1 as c_int == 0)
-            {
+            if chroma_format == CHROMA_422 as c_int && (1 != 0 || 1 & 1 == 0) {
                 deblock_edge(
                     h,
-                    pixuv.offset(
-                        (1 as c_int
-                            * (if 1 as c_int != 0 {
-                                4 as c_int * stride2uv
-                            } else {
-                                4 as c_int
-                            })) as isize,
-                    ),
+                    pixuv.offset((1 * (if 1 != 0 { 4 * stride2uv } else { 4 })) as isize),
                     stride2uv as intptr_t,
                     (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
-                    1 as c_int,
+                    1,
                     (*h).loopf.deblock_chroma[1],
                 );
             }
-            if 2 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+            if 2 & 1 == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy.offset(
-                        (4 as c_int
-                            * 2 as c_int
-                            * (if 1 as c_int != 0 {
-                                stride2y
-                            } else {
-                                1 as c_int
-                            })) as isize,
-                    ),
+                    pixy.offset((4 * 2 * (if 1 != 0 { stride2y } else { 1 })) as isize),
                     stride2y as intptr_t,
                     (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qp,
                     a,
                     b,
-                    0 as c_int,
+                    0,
                     (*h).loopf.deblock_luma[1],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (4 as c_int
-                                * 2 as c_int
-                                * (if 1 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((4 * 2 * (if 1 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[1],
                     );
                     deblock_edge(
                         h,
-                        pixuv.offset(uvdiff as isize).offset(
-                            (4 as c_int
-                                * 2 as c_int
-                                * (if 1 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv
+                            .offset(uvdiff as isize)
+                            .offset((4 * 2 * (if 1 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[1],
                     );
-                } else if chroma_format == CHROMA_420 as c_int && 2 as c_int & 1 as c_int == 0 {
+                } else if chroma_format == CHROMA_420 as c_int && 2 & 1 == 0 {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (2 as c_int
-                                * (if 1 as c_int != 0 {
-                                    2 as c_int * stride2uv
-                                } else {
-                                    4 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((2 * (if 1 != 0 { 2 * stride2uv } else { 4 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        1 as c_int,
+                        1,
                         (*h).loopf.deblock_chroma[1],
                     );
                 }
             }
-            if chroma_format == CHROMA_422 as c_int
-                && (1 as c_int != 0 || 2 as c_int & 1 as c_int == 0)
-            {
+            if chroma_format == CHROMA_422 as c_int && (1 != 0 || 2 & 1 == 0) {
                 deblock_edge(
                     h,
-                    pixuv.offset(
-                        (2 as c_int
-                            * (if 1 as c_int != 0 {
-                                4 as c_int * stride2uv
-                            } else {
-                                4 as c_int
-                            })) as isize,
-                    ),
+                    pixuv.offset((2 * (if 1 != 0 { 4 * stride2uv } else { 4 })) as isize),
                     stride2uv as intptr_t,
                     (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
-                    1 as c_int,
+                    1,
                     (*h).loopf.deblock_chroma[1],
                 );
             }
-            if 3 as c_int & 1 as c_int == 0 || transform_8x8 == 0 {
+            if 3 & 1 == 0 || transform_8x8 == 0 {
                 deblock_edge(
                     h,
-                    pixy.offset(
-                        (4 as c_int
-                            * 3 as c_int
-                            * (if 1 as c_int != 0 {
-                                stride2y
-                            } else {
-                                1 as c_int
-                            })) as isize,
-                    ),
+                    pixy.offset((4 * 3 * (if 1 != 0 { stride2y } else { 1 })) as isize),
                     stride2y as intptr_t,
                     (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qp,
                     a,
                     b,
-                    0 as c_int,
+                    0,
                     (*h).loopf.deblock_luma[1],
                 );
                 if chroma_format == CHROMA_444 as c_int {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (4 as c_int
-                                * 3 as c_int
-                                * (if 1 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((4 * 3 * (if 1 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[1],
                     );
                     deblock_edge(
                         h,
-                        pixuv.offset(uvdiff as isize).offset(
-                            (4 as c_int
-                                * 3 as c_int
-                                * (if 1 as c_int != 0 {
-                                    stride2uv
-                                } else {
-                                    1 as c_int
-                                })) as isize,
-                        ),
+                        pixuv
+                            .offset(uvdiff as isize)
+                            .offset((4 * 3 * (if 1 != 0 { stride2uv } else { 1 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        0 as c_int,
+                        0,
                         (*h).loopf.deblock_luma[1],
                     );
-                } else if chroma_format == CHROMA_420 as c_int && 3 as c_int & 1 as c_int == 0 {
+                } else if chroma_format == CHROMA_420 as c_int && 3 & 1 == 0 {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (3 as c_int
-                                * (if 1 as c_int != 0 {
-                                    2 as c_int * stride2uv
-                                } else {
-                                    4 as c_int
-                                })) as isize,
-                        ),
+                        pixuv.offset((3 * (if 1 != 0 { 2 * stride2uv } else { 4 })) as isize),
                         stride2uv as intptr_t,
                         (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                         qpc,
                         a,
                         b,
-                        1 as c_int,
+                        1,
                         (*h).loopf.deblock_chroma[1],
                     );
                 }
             }
-            if chroma_format == CHROMA_422 as c_int
-                && (1 as c_int != 0 || 3 as c_int & 1 as c_int == 0)
-            {
+            if chroma_format == CHROMA_422 as c_int && (1 != 0 || 3 & 1 == 0) {
                 deblock_edge(
                     h,
-                    pixuv.offset(
-                        (3 as c_int
-                            * (if 1 as c_int != 0 {
-                                4 as c_int * stride2uv
-                            } else {
-                                4 as c_int
-                            })) as isize,
-                    ),
+                    pixuv.offset((3 * (if 1 != 0 { 4 * stride2uv } else { 4 })) as isize),
                     stride2uv as intptr_t,
                     (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                     qpc,
                     a,
                     b,
-                    1 as c_int,
+                    1,
                     (*h).loopf.deblock_chroma[1],
                 );
             }
@@ -2847,10 +1778,10 @@ unsafe extern "C" fn x264_10_frame_deblock_row(mut h: *mut x264_t, mut mb_y: c_i
 unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     let mut a: c_int = (*h).sh.i_alpha_c0_offset - QP_BD_OFFSET;
     let mut b: c_int = (*h).sh.i_beta_offset - QP_BD_OFFSET;
-    let mut qp_thresh: c_int = 15 as c_int
+    let mut qp_thresh: c_int = 15
         - (if a < b { a } else { b })
-        - (if 0 as c_int > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset {
-            0 as c_int
+        - (if 0 > (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset {
+            0
         } else {
             (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset
         });
@@ -2891,180 +1822,112 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0].offset(
-                (4 as c_int
-                    * 1 as c_int
-                    * (if 0 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[0].offset((4 * 1 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
             qp,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[0],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1].offset(
-                    (4 as c_int
-                        * 1 as c_int
-                        * (if 0 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[1]
+                    .offset((4 * 1 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[0],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2].offset(
-                    (4 as c_int
-                        * 1 as c_int
-                        * (if 0 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[2]
+                    .offset((4 * 1 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[0],
             );
         }
     }
     deblock_edge(
         h,
-        (*h).mb.pic.p_fdec[0].offset(
-            (4 as c_int
-                * 2 as c_int
-                * (if 0 as c_int != 0 {
-                    FDEC_STRIDE
-                } else {
-                    1 as c_int
-                })) as isize,
-        ),
+        (*h).mb.pic.p_fdec[0].offset((4 * 2 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
         FDEC_STRIDE as intptr_t,
         (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
         qp,
         a,
         b,
-        0 as c_int,
+        0,
         (*h).loopf.deblock_luma[0],
     );
     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[1].offset(
-                (4 as c_int
-                    * 2 as c_int
-                    * (if 0 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[1].offset((4 * 2 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[0],
         );
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[2].offset(
-                (4 as c_int
-                    * 2 as c_int
-                    * (if 0 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[2].offset((4 * 2 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[0],
         );
     }
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0].offset(
-                (4 as c_int
-                    * 3 as c_int
-                    * (if 0 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[0].offset((4 * 3 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
             qp,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[0],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1].offset(
-                    (4 as c_int
-                        * 3 as c_int
-                        * (if 0 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[1]
+                    .offset((4 * 3 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[0],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2].offset(
-                    (4 as c_int
-                        * 3 as c_int
-                        * (if 0 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[2]
+                    .offset((4 * 3 * (if 0 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(0)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[0],
             );
         }
@@ -3072,180 +1935,112 @@ unsafe extern "C" fn x264_10_macroblock_deblock(mut h: *mut x264_t) {
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0].offset(
-                (4 as c_int
-                    * 1 as c_int
-                    * (if 1 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[0].offset((4 * 1 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
             qp,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[1],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1].offset(
-                    (4 as c_int
-                        * 1 as c_int
-                        * (if 1 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[1]
+                    .offset((4 * 1 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[1],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2].offset(
-                    (4 as c_int
-                        * 1 as c_int
-                        * (if 1 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[2]
+                    .offset((4 * 1 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1)).as_mut_ptr().offset(1)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[1],
             );
         }
     }
     deblock_edge(
         h,
-        (*h).mb.pic.p_fdec[0].offset(
-            (4 as c_int
-                * 2 as c_int
-                * (if 1 as c_int != 0 {
-                    FDEC_STRIDE
-                } else {
-                    1 as c_int
-                })) as isize,
-        ),
+        (*h).mb.pic.p_fdec[0].offset((4 * 2 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
         FDEC_STRIDE as intptr_t,
         (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
         qp,
         a,
         b,
-        0 as c_int,
+        0,
         (*h).loopf.deblock_luma[1],
     );
     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[1].offset(
-                (4 as c_int
-                    * 2 as c_int
-                    * (if 1 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[1].offset((4 * 2 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[1],
         );
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[2].offset(
-                (4 as c_int
-                    * 2 as c_int
-                    * (if 1 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[2].offset((4 * 2 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1)).as_mut_ptr().offset(2)).as_mut_ptr(),
             qpc,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[1],
         );
     }
     if transform_8x8 == 0 {
         deblock_edge(
             h,
-            (*h).mb.pic.p_fdec[0].offset(
-                (4 as c_int
-                    * 3 as c_int
-                    * (if 1 as c_int != 0 {
-                        FDEC_STRIDE
-                    } else {
-                        1 as c_int
-                    })) as isize,
-            ),
+            (*h).mb.pic.p_fdec[0].offset((4 * 3 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
             FDEC_STRIDE as intptr_t,
             (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
             qp,
             a,
             b,
-            0 as c_int,
+            0,
             (*h).loopf.deblock_luma[1],
         );
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[1].offset(
-                    (4 as c_int
-                        * 3 as c_int
-                        * (if 1 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[1]
+                    .offset((4 * 3 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[1],
             );
             deblock_edge(
                 h,
-                (*h).mb.pic.p_fdec[2].offset(
-                    (4 as c_int
-                        * 3 as c_int
-                        * (if 1 as c_int != 0 {
-                            FDEC_STRIDE
-                        } else {
-                            1 as c_int
-                        })) as isize,
-                ),
+                (*h).mb.pic.p_fdec[2]
+                    .offset((4 * 3 * (if 1 != 0 { FDEC_STRIDE } else { 1 })) as isize),
                 FDEC_STRIDE as intptr_t,
                 (*(*bs.offset(1)).as_mut_ptr().offset(3)).as_mut_ptr(),
                 qpc,
                 a,
                 b,
-                0 as c_int,
+                0,
                 (*h).loopf.deblock_luma[1],
             );
         }

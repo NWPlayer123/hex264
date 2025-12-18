@@ -151,14 +151,14 @@ const OPT_LONGHELP: C2RustUnnamed_6 = 262;
 #[c2rust::src_loc = "979:9"]
 type C2RustUnnamed_6 = c_uint;
 #[c2rust::src_loc = "51:9"]
-const QP_MAX_SPEC: c_int = 51 as c_int + 6 as c_int * 2 as c_int;
+const QP_MAX_SPEC: c_int = 51 + 6 * 2;
 #[c2rust::src_loc = "52:9"]
-const QP_MAX: c_int = QP_MAX_SPEC + 18 as c_int;
+const QP_MAX: c_int = QP_MAX_SPEC + 18;
 #[c2rust::src_loc = "123:21"]
-static mut b_ctrl_c: c_int = 0 as c_int;
+static mut b_ctrl_c: c_int = 0;
 #[c2rust::src_loc = "124:1"]
 unsafe extern "C" fn sigint_handler(mut _a: c_int) {
-    ::core::ptr::write_volatile(addr_of_mut!(b_ctrl_c) as *mut c_int, 1 as c_int);
+    ::core::ptr::write_volatile(addr_of_mut!(b_ctrl_c) as *mut c_int, 1);
 }
 #[no_mangle]
 #[c2rust::src_loc = "141:13"]
@@ -313,7 +313,7 @@ static mut pulldown_values: [cli_pulldown_t; 7] = [
     },
     {
         let mut init = cli_pulldown_t {
-            mod_0: 1 as c_int,
+            mod_0: 1,
             pattern: [
                 PIC_STRUCT_TOP_BOTTOM as c_int as uint8_t,
                 0,
@@ -346,7 +346,7 @@ static mut pulldown_values: [cli_pulldown_t; 7] = [
     },
     {
         let mut init = cli_pulldown_t {
-            mod_0: 4 as c_int,
+            mod_0: 4,
             pattern: [
                 PIC_STRUCT_TOP_BOTTOM_TOP as c_int as uint8_t,
                 PIC_STRUCT_BOTTOM_TOP as c_int as uint8_t,
@@ -379,7 +379,7 @@ static mut pulldown_values: [cli_pulldown_t; 7] = [
     },
     {
         let mut init = cli_pulldown_t {
-            mod_0: 2 as c_int,
+            mod_0: 2,
             pattern: [
                 PIC_STRUCT_DOUBLE as c_int as uint8_t,
                 PIC_STRUCT_TRIPLE as c_int as uint8_t,
@@ -412,7 +412,7 @@ static mut pulldown_values: [cli_pulldown_t; 7] = [
     },
     {
         let mut init = cli_pulldown_t {
-            mod_0: 1 as c_int,
+            mod_0: 1,
             pattern: [
                 PIC_STRUCT_DOUBLE as c_int as uint8_t,
                 0,
@@ -445,7 +445,7 @@ static mut pulldown_values: [cli_pulldown_t; 7] = [
     },
     {
         let mut init = cli_pulldown_t {
-            mod_0: 1 as c_int,
+            mod_0: 1,
             pattern: [
                 PIC_STRUCT_TRIPLE as c_int as uint8_t,
                 0,
@@ -478,7 +478,7 @@ static mut pulldown_values: [cli_pulldown_t; 7] = [
     },
     {
         let mut init = cli_pulldown_t {
-            mod_0: 24 as c_int,
+            mod_0: 24,
             pattern: [
                 PIC_STRUCT_TOP_BOTTOM_TOP as c_int as uint8_t,
                 PIC_STRUCT_BOTTOM_TOP as c_int as uint8_t,
@@ -513,15 +513,15 @@ static mut pulldown_values: [cli_pulldown_t; 7] = [
 #[c2rust::src_loc = "262:20"]
 static mut pulldown_frame_duration: [c_float; 10] = [
     0.0f64 as c_float,
-    1 as c_int as c_float,
+    1 as c_float,
     0.5f64 as c_float,
     0.5f64 as c_float,
-    1 as c_int as c_float,
-    1 as c_int as c_float,
+    1 as c_float,
+    1 as c_float,
     1.5f64 as c_float,
     1.5f64 as c_float,
-    2 as c_int as c_float,
-    3 as c_int as c_float,
+    2 as c_float,
+    3 as c_float,
 ];
 #[c2rust::src_loc = "269:12"]
 static mut cli_log_level: c_int = X264_LOG_INFO;
@@ -641,7 +641,7 @@ unsafe extern "C" fn print_version_info() {
 }
 #[c2rust::src_loc = "362:1"]
 unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
-    /*if argc == 4 as c_int
+    /*if argc == 4
         && strcmp(
             *argv.offset(1),
             b"--autocomplete\0" as *const u8 as *const c_char,
@@ -804,7 +804,7 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
     };
     let mut opt: cli_opt_t = {
         let mut init = cli_opt_t {
-            b_progress: 0 as c_int,
+            b_progress: 0,
             i_seek: 0,
             hin: 0 as *mut c_void,
             hout: 0 as *mut c_void,
@@ -815,9 +815,9 @@ unsafe fn main_0(mut argc: c_int, mut argv: *mut *mut c_char) -> c_int {
         };
         init
     };
-    let mut ret: c_int = 0 as c_int;
+    let mut ret: c_int = 0;
     x264_param_default(&mut param);
-    if parse(argc, argv, &mut param, &mut opt) < 0 as c_int {
+    if parse(argc, argv, &mut param, &mut opt) < 0 {
         ret = -1;
     }
     signal(
@@ -853,11 +853,11 @@ unsafe extern "C" fn strtable_lookup(
     mut table: *const *const c_char,
     mut idx: c_int,
 ) -> *const c_char {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while !(*table.offset(i as isize)).is_null() {
         i += 1;
     }
-    return if idx >= 0 as c_int && idx < i && **table.offset(idx as isize) as c_int != 0 {
+    return if idx >= 0 && idx < i && **table.offset(idx as isize) as c_int != 0 {
         *table.offset(idx as isize)
     } else {
         b"???\0" as *const u8 as *const c_char
@@ -868,7 +868,7 @@ unsafe extern "C" fn stringify_names(
     mut buf: *mut c_char,
     mut names: *const *const c_char,
 ) -> *mut c_char {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     let mut p: *mut c_char = buf;
     *p.offset(0) = 0 as c_char;
     while !(*names.offset(i as isize)).is_null() {
@@ -891,11 +891,11 @@ const INDENT: [c_char; 33] = unsafe {
     ::core::mem::transmute::<[u8; 33], [c_char; 33]>(*b"                                \0")
 };
 #[c2rust::src_loc = "440:9"]
-const INDENT_LEN: c_int = 32 as c_int;
+const INDENT_LEN: c_int = 32;
 #[c2rust::src_loc = "441:9"]
 const SEPARATOR: [c_char; 3] = unsafe { ::core::mem::transmute::<[u8; 3], [c_char; 3]>(*b", \0") };
 #[c2rust::src_loc = "442:9"]
-const SEPARATOR_LEN: c_int = 2 as c_int;
+const SEPARATOR_LEN: c_int = 2;
 #[c2rust::src_loc = "444:1"]
 unsafe extern "C" fn print_csp_name_internal(
     mut name: *const c_char,
@@ -904,7 +904,7 @@ unsafe extern "C" fn print_csp_name_internal(
 ) {
     if !name.is_null() {
         let mut name_len: size_t = strlen(name);
-        if (*line_len).wrapping_add(name_len) > (80 as c_int - SEPARATOR_LEN) as size_t {
+        if (*line_len).wrapping_add(name_len) > (80 - SEPARATOR_LEN) as size_t {
             printf(b"\n                                \0" as *const u8 as *const c_char);
             *line_len = INDENT_LEN as size_t;
         }
@@ -918,7 +918,7 @@ unsafe extern "C" fn print_csp_name_internal(
 }
 #[c2rust::src_loc = "464:1"]
 unsafe extern "C" fn print_csp_names(mut longhelp: c_int) {
-    if longhelp < 2 as c_int {
+    if longhelp < 2 {
         return;
     }
     printf(
@@ -927,12 +927,12 @@ unsafe extern "C" fn print_csp_names(mut longhelp: c_int) {
     );
     printf(INDENT.as_ptr());
     let mut line_len: size_t = INDENT_LEN as size_t;
-    let mut i: c_int = X264_CSP_NONE + 1 as c_int;
+    let mut i: c_int = X264_CSP_NONE + 1;
     while i < X264_CSP_CLI_MAX {
         print_csp_name_internal(
             (*x264_cli_csps.as_ptr().offset(i as isize)).name,
             &mut line_len,
-            (i == X264_CSP_CLI_MAX - 1 as c_int) as c_int,
+            (i == X264_CSP_CLI_MAX - 1) as c_int,
         );
         i += 1;
     }
@@ -943,12 +943,12 @@ unsafe extern "C" fn print_csp_names(mut longhelp: c_int) {
     );
     printf(INDENT.as_ptr());
     line_len = INDENT_LEN as size_t;
-    let mut i_0: AVPixelFormat = (AV_PIX_FMT_NONE as c_int + 1 as c_int) as AVPixelFormat;
+    let mut i_0: AVPixelFormat = (AV_PIX_FMT_NONE as c_int + 1) as AVPixelFormat;
     while (i_0 as c_int) < AV_PIX_FMT_NB as c_int {
         print_csp_name_internal(
             av_get_pix_fmt_name(i_0),
             &mut line_len,
-            (i_0 as c_int == AV_PIX_FMT_NB as c_int - 1 as c_int) as c_int,
+            (i_0 as c_int == AV_PIX_FMT_NB as c_int - 1) as c_int,
         );
         i_0 += 1;
     }
@@ -1096,7 +1096,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         b"      --tune <string>         Tune the settings for a particular type of source\n                              or situation\n                                  Overridden by user settings.\n                                  Multiple tunings are separated by commas.\n                                  Only one psy tuning can be used at a time.\n\0"
             as *const u8 as *const c_char,
     );
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"                                  - film (psy tuning):\n                                    --deblock -1:-1 --psy-rd <unset>:0.15\n                                  - animation (psy tuning):\n                                    --bframes {+2} --deblock 1:1\n                                    --psy-rd 0.4:<unset> --aq-strength 0.6\n                                    --ref {Double if >1 else 1}\n                                  - grain (psy tuning):\n                                    --aq-strength 0.5 --no-dct-decimate\n                                    --deadzone-inter 6 --deadzone-intra 6\n                                    --deblock -2:-2 --ipratio 1.1\n                                    --pbratio 1.1 --psy-rd <unset>:0.25\n                                    --qcomp 0.8\n                                  - stillimage (psy tuning):\n                                    --aq-strength 1.2 --deblock -3:-3\n                                    --psy-rd 2.0:0.7\n                                  - psnr (psy tuning):\n                                    --aq-mode 0 --no-psy\n                                  - ssim (psy tuning):\n                                    --aq-mode 2 --no-psy\n                                  - fastdecode:\n                                    --no-cabac --no-deblock --no-weightb\n                                    --weightp 0\n                                  - zerolatency:\n                                    --bframes 0 --force-cfr --no-mbtree\n                                    --sync-lookahead 0 --sliced-threads\n                                    --rc-lookahead 0\n\0"
                 as *const u8 as *const c_char,
@@ -1107,12 +1107,12 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --slow-firstpass        Don't force these faster settings with --pass 1:\n                                  --no-8x8dct --me dia --partitions none\n                                  --ref 1 --subme {2 if >2 else unchanged}\n                                  --trellis 0 --fast-pskip\n\0"
                 as *const u8 as *const c_char,
         );
-    } else if longhelp >= 1 as c_int {
+    } else if longhelp >= 1 {
         printf(
             b"      --slow-firstpass        Don't force faster settings with --pass 1\n\0"
                 as *const u8 as *const c_char,
@@ -1126,53 +1126,53 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             as *const c_char,
         (*defaults).i_keyint_max,
     );
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"  -i, --min-keyint <integer>  Minimum GOP size [auto]\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-scenecut           Disable adaptive I-frame decision\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --scenecut <integer>    How aggressively to insert extra I-frames [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).i_scenecut_threshold,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --intra-refresh         Use Periodic Intra Refresh instead of IDR frames\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -b, --bframes <integer>     Number of B-frames between I and P [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).i_bframe,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --b-adapt <integer>     Adaptive B-frame decision method [%d]\n                                  Higher values may lower threading efficiency.\n                                  - 0: Disabled\n                                  - 1: Fast\n                                  - 2: Optimal (slow with high --bframes)\n\0"
                 as *const u8 as *const c_char,
             (*defaults).i_bframe_adaptive,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --b-bias <integer>      Influences how often B-frames are used [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).i_bframe_bias,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             c"      --b-pyramid <string>    Keep some B-frames as references [%s]\n
                                   - none: Disabled\n
@@ -1182,28 +1182,28 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             BPyramid::default().as_ref(),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --open-gop              Use recovery points to close GOPs\n                              Only available with b-frames\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(b"      --no-cabac              Disable CABAC\n\0" as *const u8 as *const c_char);
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -r, --ref <integer>         Number of reference frames [%d]\n\0" as *const u8
                 as *const c_char,
             (*defaults).i_frame_reference,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --no-deblock            Disable loop filter\n\0" as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -f, --deblock <alpha:beta>  Loop filter parameters [%d:%d]\n\0" as *const u8
                 as *const c_char,
@@ -1211,36 +1211,36 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             (*defaults).i_deblocking_filter_beta,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --slices <integer>      Number of slices per frame; forces rectangular\n                              slices and is overridden by other slicing options\n\0"
                 as *const u8 as *const c_char,
         );
-    } else if longhelp >= 1 as c_int {
+    } else if longhelp >= 1 {
         printf(
             b"      --slices <integer>      Number of slices per frame\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --slices-max <integer>  Absolute maximum slices per frame; overrides\n                              slice-max-size/slice-max-mbs when necessary\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --slice-max-size <integer> Limit the size of each slice in bytes\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --slice-max-mbs <integer> Limit the size of each slice in macroblocks (max)\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --slice-min-mbs <integer> Limit the size of each slice in macroblocks (min)\n\0"
                 as *const u8 as *const c_char,
@@ -1254,7 +1254,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         b"      --bff                   Enable interlaced mode (bottom field first)\n\0"
             as *const u8 as *const c_char,
     );
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --constrained-intra     Enable constrained intra prediction.\n\0" as *const u8
                 as *const c_char,
@@ -1265,13 +1265,13 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             as *const u8 as *const c_char,
         stringify_names(buf.as_mut_ptr(), x264_pulldown_names.as_ptr()),
     );
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --fake-interlaced       Flag stream as interlaced but encode progressive.\n                              Makes it possible to encode 25p and 30p Blu-Ray\n                              streams. Ignored in interlaced mode.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --frame-packing <integer> For stereoscopic videos define frame arrangement\n                                  - 0: checkerboard - pixels are alternatively from L and R\n                                  - 1: column alternation - L and R are interlaced by column\n                                  - 2: row alternation - L and R are interlaced by row\n                                  - 3: side by side - L is on the left, R on the right\n                                  - 4: top bottom - L is on top, R on bottom\n                                  - 5: frame alternation - one view per frame\n                                  - 6: mono - 2D frame without any frame packing\n                                  - 7: tile format - L is on top-left, R split across\n\0"
                 as *const u8 as *const c_char,
@@ -1280,7 +1280,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
     printf(b"\n\0" as *const u8 as *const c_char);
     printf(b"Ratecontrol:\n\0" as *const u8 as *const c_char);
     printf(b"\n\0" as *const u8 as *const c_char);
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -q, --qp <integer>          Force constant QP (0-%d, 0=lossless)\n\0" as *const u8
                 as *const c_char,
@@ -1291,10 +1291,10 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
     printf(
         b"      --crf <float>           Quality-based VBR (%d-51) [%.1f]\n\0" as *const u8
             as *const c_char,
-        51 as c_int - QP_MAX_SPEC,
+        51 - QP_MAX_SPEC,
         (*defaults).rc.f_rf_constant as c_double,
     );
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --rc-lookahead <integer> Number of frames for frametype lookahead [%d]\n\0"
                 as *const u8 as *const c_char,
@@ -1311,165 +1311,165 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             as *const c_char,
         (*defaults).rc.i_vbv_buffer_size,
     );
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --vbv-init <float>      Initial VBV buffer occupancy [%.1f]\n\0" as *const u8
                 as *const c_char,
             (*defaults).rc.f_vbv_buffer_init as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --crf-max <float>       With CRF+VBV, limit RF to this value\n                                  May cause VBV underflows!\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --qpmin <integer>       Set min QP [%d]\n\0" as *const u8 as *const c_char,
             (*defaults).rc.i_qp_min,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --qpmax <integer>       Set max QP [%d]\n\0" as *const u8 as *const c_char,
-            if (*defaults).rc.i_qp_max < 51 as c_int + 6 as c_int * 2 as c_int + 18 as c_int {
+            if (*defaults).rc.i_qp_max < 51 + 6 * 2 + 18 {
                 (*defaults).rc.i_qp_max
             } else {
-                51 as c_int + 6 as c_int * 2 as c_int + 18 as c_int
+                51 + 6 * 2 + 18
             },
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --qpstep <integer>      Set max QP step [%d]\n\0" as *const u8 as *const c_char,
             (*defaults).rc.i_qp_step,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --ratetol <float>       Tolerance of ABR ratecontrol and VBV [%.1f]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).rc.f_rate_tolerance as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --ipratio <float>       QP factor between I and P [%.2f]\n\0" as *const u8
                 as *const c_char,
             (*defaults).rc.f_ip_factor as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --pbratio <float>       QP factor between P and B [%.2f]\n\0" as *const u8
                 as *const c_char,
             (*defaults).rc.f_pb_factor as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --chroma-qp-offset <integer>  QP difference between chroma and luma [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).analyse.i_chroma_qp_offset,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --aq-mode <integer>     AQ method [%d]\n                                  - 0: Disabled\n                                  - 1: Variance AQ (complexity mask)\n                                  - 2: Auto-variance AQ\n                                  - 3: Auto-variance AQ with bias to dark scenes\n\0"
                 as *const u8 as *const c_char,
             (*defaults).rc.i_aq_mode,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --aq-strength <float>   Reduces blocking and blurring in flat and\n                              textured areas. [%.1f]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).rc.f_aq_strength as c_double,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(b"\n\0" as *const u8 as *const c_char);
     }
     printf(
         b"  -p, --pass <integer>        Enable multipass ratecontrol\n                                  - 1: First pass, creates stats file\n                                  - 2: Last pass, does not overwrite stats file\n\0"
             as *const u8 as *const c_char,
     );
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"                                  - 3: Nth pass, overwrites stats file\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --stats <string>        Filename for 2 pass stats [\"%s\"]\n\0" as *const u8
                 as *const c_char,
             (*defaults).rc.psz_stat_out,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-mbtree             Disable mb-tree ratecontrol.\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --qcomp <float>         QP curve compression [%.2f]\n\0" as *const u8
                 as *const c_char,
             (*defaults).rc.f_qcompress as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cplxblur <float>      Reduce fluctuations in QP (before curve compression) [%.1f]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).rc.f_complexity_blur as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --qblur <float>         Reduce fluctuations in QP (after curve compression) [%.1f]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).rc.f_qblur as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --zones <zone0>/<zone1>/...  Tweak the bitrate of regions of the video\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"                              Each zone is of the form\n                                  <start frame>,<end frame>,<option>\n                                  where <option> is either\n                                      q=<integer> (force QP)\n                                  or  b=<float> (bitrate multiplier)\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --qpfile <string>       Force frametypes and QPs for some or all frames\n                              Format of each line: framenumber frametype QP\n                              QP is optional (none lets x264 choose). Frametypes: I,i,K,P,B,b.\n                                  K=<I or i> depending on open-gop setting\n                              QPs are restricted by qpmin/qpmax.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(b"\n\0" as *const u8 as *const c_char);
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(b"Analysis:\n\0" as *const u8 as *const c_char);
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(b"\n\0" as *const u8 as *const c_char);
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -A, --partitions <string>   Partitions to consider [\"p8x8,b8x8,i8x8,i4x4\"]\n                                  - %s\n                                  (p4x4 requires p8x8. i8x8 requires --8x8dct.)\n\0"
                 as *const u8 as *const c_char,
             stringify_names(buf.as_mut_ptr(), x264_partition_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             c"      --direct <string>       Direct MV prediction mode [\"%s\"]\n
                                   - none, spatial, temporal, auto\n"
@@ -1477,27 +1477,27 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             (*defaults).analyse.direct_mv_pred.as_ref(),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-weightb            Disable weighted prediction for B-frames\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --weightp <integer>     Weighted prediction for P-frames [%d]\n                                  - 0: Disabled\n                                  - 1: Weighted refs\n                                  - 2: Weighted refs + Duplicates\n\0"
                 as *const u8 as *const c_char,
             (*defaults).analyse.i_weighted_pred,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             c"      --me <string>           Integer pixel motion estimation method [\"%s\"]\n"
                 .as_ptr(),
             (*defaults).analyse.me_method.as_ref(),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             c"                                  - dia: diamond search, radius 1 (fast)\n
                                   - hex: hexagonal search, radius 2\n
@@ -1506,49 +1506,49 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
                                   - tesa: hadamard exhaustive search (slow)\n"
                 .as_ptr(),
         );
-    } else if longhelp >= 1 as c_int {
+    } else if longhelp >= 1 {
         printf(
             b"                                  - dia, hex, umh\n\0" as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --merange <integer>     Maximum motion vector search range [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).analyse.i_me_range,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --mvrange <integer>     Maximum motion vector length [-1 (auto)]\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --mvrange-thread <int>  Minimum buffer between threads [-1 (auto)]\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -m, --subme <integer>       Subpixel motion estimation and mode decision [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).analyse.i_subpel_refine,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"                                  - 0: fullpel only (not recommended)\n                                  - 1: SAD mode decision, one qpel iteration\n                                  - 2: SATD mode decision\n                                  - 3-5: Progressively more qpel\n                                  - 6: RD mode decision for I/P-frames\n                                  - 7: RD mode decision for all frames\n                                  - 8: RD refinement for I/P-frames\n                                  - 9: RD refinement for all frames\n                                  - 10: QP-RD - requires trellis=2, aq-mode>0\n                                  - 11: Full RD: disable all early terminations\n\0"
                 as *const u8 as *const c_char,
         );
-    } else if longhelp >= 1 as c_int {
+    } else if longhelp >= 1 {
         printf(
             b"                                  decision quality: 1=fast, 11=best\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --psy-rd <float:float>  Strength of psychovisual optimization [\"%.1f:%.1f\"]\n                                  #1: RD (requires subme>=6)\n                                  #2: Trellis (requires trellis, experimental)\n\0"
                 as *const u8 as *const c_char,
@@ -1556,79 +1556,79 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             (*defaults).analyse.f_psy_trellis as c_double,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-psy                Disable all visual optimizations that worsen\n                              both PSNR and SSIM.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-mixed-refs         Don't decide references on a per partition basis\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-chroma-me          Ignore chroma in motion estimation\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --no-8x8dct             Disable adaptive spatial transform size\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -t, --trellis <integer>     Trellis RD quantization. [%d]\n                                  - 0: disabled\n                                  - 1: enabled only on the final encode of a MB\n                                  - 2: enabled on all mode decisions\n\0"
                 as *const u8 as *const c_char,
             (*defaults).analyse.i_trellis,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-fast-pskip         Disables early SKIP detection on P-frames\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-dct-decimate       Disables coefficient thresholding on P-frames\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --nr <integer>          Noise reduction [%d]\n\0" as *const u8 as *const c_char,
             (*defaults).analyse.i_noise_reduction,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(b"\n\0" as *const u8 as *const c_char);
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --deadzone-inter <int>  Set the size of the inter luma quantization deadzone [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).analyse.i_luma_deadzone[0],
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --deadzone-intra <int>  Set the size of the intra luma quantization deadzone [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).analyse.i_luma_deadzone[1],
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"                                  Deadzones should be in the range 0 - 32.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cqm <string>          Preset quant matrices [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1636,78 +1636,78 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_cqm_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --cqmfile <string>      Read custom quant matrices from a JM-compatible file\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"                                  Overrides any other --cqm* options.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cqm4 <list>           Set all 4x4 quant matrices\n                                  Takes a comma-separated list of 16 integers.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cqm8 <list>           Set all 8x8 quant matrices\n                                  Takes a comma-separated list of 64 integers.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cqm4i, --cqm4p, --cqm8i, --cqm8p <list>\n                              Set both luma and chroma quant matrices\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cqm4iy, --cqm4ic, --cqm4py, --cqm4pc <list>\n                              Set individual quant matrices\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(b"\n\0" as *const u8 as *const c_char);
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(b"Video Usability Info (Annex E):\n\0" as *const u8 as *const c_char);
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"The VUI settings are not used by the encoder but are merely suggestions to\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"the playback equipment. See doc/vui.txt for details. Use at your own risk.\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(b"\n\0" as *const u8 as *const c_char);
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --overscan <string>     Specify crop overscan setting [\"%s\"]\n                                  - undef, show, crop\n\0"
                 as *const u8 as *const c_char,
             strtable_lookup(x264_overscan_names.as_ptr(), (*defaults).vui.i_overscan),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --videoformat <string>  Specify video format [\"%s\"]\n                                  - component, pal, ntsc, secam, mac, undef\n\0"
                 as *const u8 as *const c_char,
             strtable_lookup(x264_vidformat_names.as_ptr(), (*defaults).vui.i_vidformat),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --range <string>        Specify color range [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1715,47 +1715,47 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_range_names.as_ptr()),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --colorprim <string>    Specify color primaries [\"%s\"]\n                                  - undef, bt709, bt470m, bt470bg, smpte170m,\n                                    smpte240m, film, bt2020, smpte428,\n                                    smpte431, smpte432\n\0"
                 as *const u8 as *const c_char,
             strtable_lookup(x264_colorprim_names.as_ptr(), (*defaults).vui.i_colorprim),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --transfer <string>     Specify transfer characteristics [\"%s\"]\n                                  - undef, bt709, bt470m, bt470bg, smpte170m,\n                                    smpte240m, linear, log100, log316,\n                                    iec61966-2-4, bt1361e, iec61966-2-1,\n                                    bt2020-10, bt2020-12, smpte2084, smpte428,\n                                    arib-std-b67\n\0"
                 as *const u8 as *const c_char,
             strtable_lookup(x264_transfer_names.as_ptr(), (*defaults).vui.i_transfer),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --colormatrix <string>  Specify color matrix setting [\"%s\"]\n                                  - undef, bt709, fcc, bt470bg, smpte170m,\n                                    smpte240m, GBR, YCgCo, bt2020nc, bt2020c,\n                                    smpte2085, chroma-derived-nc,\n                                    chroma-derived-c, ICtCp\n\0"
                 as *const u8 as *const c_char,
             strtable_lookup(x264_colmatrix_names.as_ptr(), (*defaults).vui.i_colmatrix),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --chromaloc <integer>   Specify chroma sample location (0 to 5) [%d]\n\0"
                 as *const u8 as *const c_char,
             (*defaults).vui.i_chroma_loc,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --mastering-display <string> Specify 'G(x,y)B(x,y)R(x,y)WP(x,y)L(max,min)'\n                              for primaries, white point, and display brightness\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cll <string>          Specify 'max_content,max_frame_average' content\n                              light levels\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --alternative-transfer <string> Specify an alternative transfer\n                              characteristics [\"%s\"]\n                                  - same values as --transfer\n\0"
                 as *const u8 as *const c_char,
@@ -1765,25 +1765,25 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             ),
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --nal-hrd <string>      Signal HRD information (requires vbv-bufsize)\n                                  - none, vbr, cbr (cbr not allowed in .mp4)\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --filler                Force hard-CBR and generate filler (implied by\n                              --nal-hrd cbr)\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --pic-struct            Force pic_struct in Picture Timing SEI\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --crop-rect <string>    Add 'left,top,right,bottom' to the bitstream-level\n                              cropping rectangle\n\0"
                 as *const u8 as *const c_char,
@@ -1793,7 +1793,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
     printf(b"Input/Output:\n\0" as *const u8 as *const c_char);
     printf(b"\n\0" as *const u8 as *const c_char);
     printf(b"  -o, --output <string>       Specify output file\n\0" as *const u8 as *const c_char);
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --muxer <string>        Specify output container format [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1801,7 +1801,7 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_muxer_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --demuxer <string>      Specify input container format [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1809,20 +1809,20 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_demuxer_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --input-fmt <string>    Specify input file format (requires lavf support)\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --input-csp <string>    Specify input colorspace format for raw input\n\0"
                 as *const u8 as *const c_char,
         );
     }
     print_csp_names(longhelp);
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --output-csp <string>   Specify output colorspace [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1830,19 +1830,19 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_output_csp_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --input-depth <integer> Specify input bit depth for raw input\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --output-depth <integer> Specify output bit depth\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --input-range <string>  Specify input color range [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1850,13 +1850,13 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_range_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --input-res <intxint>   Specify input resolution (width x height)\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --index <string>        Filename for input index file\n\0" as *const u8
                 as *const c_char,
@@ -1878,20 +1878,20 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
         b"      --level <string>        Specify level (as defined by Annex A)\n\0" as *const u8
             as *const c_char,
     );
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --bluray-compat         Enable compatibility hacks for Blu-ray support\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --avcintra-class <integer> Use compatibility hacks for AVC-Intra class\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
             stringify_names(buf.as_mut_ptr(), x264_avcintra_class_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --avcintra-flavor <string> AVC-Intra flavor [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1899,29 +1899,29 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_avcintra_flavor_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --stitchable            Don't optimize headers based on video content\n                              Ensures ability to recombine a segmented encode\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(b"\n\0" as *const u8 as *const c_char);
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"  -v, --verbose               Print stats for each frame\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --no-progress           Don't show the progress indicator while encoding\n\0"
                 as *const u8 as *const c_char,
         );
     }
     printf(b"      --quiet                 Quiet Mode\n\0" as *const u8 as *const c_char);
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --log-level <string>    Specify the maximum level of logging [\"%s\"]\n                                  - %s\n\0"
                 as *const u8 as *const c_char,
@@ -1932,133 +1932,133 @@ unsafe extern "C" fn help(mut defaults: *mut x264_param_t, mut longhelp: c_int) 
             stringify_names(buf.as_mut_ptr(), x264_log_level_names.as_ptr()),
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --psnr                  Enable PSNR computation\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --ssim                  Enable SSIM computation\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp >= 1 as c_int {
+    if longhelp >= 1 {
         printf(
             b"      --threads <integer>     Force a specific number of threads\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --lookahead-threads <integer> Force a specific number of lookahead threads\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --sliced-threads        Low-latency but lower-efficiency threading\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --thread-input          Run Avisynth in its own thread\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --sync-lookahead <integer> Number of buffer frames for threaded lookahead\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --non-deterministic     Slightly improve quality of SMP, at the cost of repeatability\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --cpu-independent       Ensure exact reproducibility across different cpus,\n                                  as opposed to letting them select different algorithms\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --asm <integer>         Override CPU detection\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --no-asm                Disable all CPU optimizations\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --opencl                Enable use of OpenCL\n\0" as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --opencl-clbin <string> Specify path of compiled OpenCL kernel cache\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --opencl-device <integer> Specify OpenCL device ordinal\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --dump-yuv <string>     Save reconstructed frames\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --sps-id <integer>      Set SPS and PPS id numbers [%d]\n\0" as *const u8
                 as *const c_char,
             (*defaults).i_sps_id,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --aud                   Use access unit delimiters\n\0" as *const u8
                 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --force-cfr             Force constant framerate timestamp generation\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --tcfile-in <string>    Force timestamp generation with timecode file\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --tcfile-out <string>   Output timecode v2 file from input timestamps\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --timebase <int/int>    Specify timebase numerator and denominator\n                 <integer>    Specify timebase numerator for input timecode file\n                              or specify timebase denominator for other input\n\0"
                 as *const u8 as *const c_char,
         );
     }
-    if longhelp == 2 as c_int {
+    if longhelp == 2 {
         printf(
             b"      --dts-compress          Eliminate initial delay with container DTS hack\n\0"
                 as *const u8 as *const c_char,
@@ -2183,7 +2183,7 @@ static mut long_options: [option; 169] = [
             name: b"b-adapt\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2192,7 +2192,7 @@ static mut long_options: [option; 169] = [
             name: b"no-b-adapt\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2201,7 +2201,7 @@ static mut long_options: [option; 169] = [
             name: b"b-bias\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2210,7 +2210,7 @@ static mut long_options: [option; 169] = [
             name: b"b-pyramid\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2219,7 +2219,7 @@ static mut long_options: [option; 169] = [
             name: b"open-gop\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2228,7 +2228,7 @@ static mut long_options: [option; 169] = [
             name: b"bluray-compat\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2237,7 +2237,7 @@ static mut long_options: [option; 169] = [
             name: b"avcintra-class\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2246,7 +2246,7 @@ static mut long_options: [option; 169] = [
             name: b"avcintra-flavor\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2273,7 +2273,7 @@ static mut long_options: [option; 169] = [
             name: b"intra-refresh\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2282,7 +2282,7 @@ static mut long_options: [option; 169] = [
             name: b"scenecut\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2291,7 +2291,7 @@ static mut long_options: [option; 169] = [
             name: b"no-scenecut\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2300,7 +2300,7 @@ static mut long_options: [option; 169] = [
             name: b"nf\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2309,7 +2309,7 @@ static mut long_options: [option; 169] = [
             name: b"no-deblock\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2318,7 +2318,7 @@ static mut long_options: [option; 169] = [
             name: b"filter\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2372,7 +2372,7 @@ static mut long_options: [option; 169] = [
             name: b"constrained-intra\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2381,7 +2381,7 @@ static mut long_options: [option; 169] = [
             name: b"cabac\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2390,7 +2390,7 @@ static mut long_options: [option; 169] = [
             name: b"no-cabac\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2408,7 +2408,7 @@ static mut long_options: [option; 169] = [
             name: b"qpmin\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2417,7 +2417,7 @@ static mut long_options: [option; 169] = [
             name: b"qpmax\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2426,7 +2426,7 @@ static mut long_options: [option; 169] = [
             name: b"qpstep\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2435,7 +2435,7 @@ static mut long_options: [option; 169] = [
             name: b"crf\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2444,7 +2444,7 @@ static mut long_options: [option; 169] = [
             name: b"rc-lookahead\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2462,7 +2462,7 @@ static mut long_options: [option; 169] = [
             name: b"asm\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2471,7 +2471,7 @@ static mut long_options: [option; 169] = [
             name: b"no-asm\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2480,7 +2480,7 @@ static mut long_options: [option; 169] = [
             name: b"opencl\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 1 as c_int,
+            val: 1,
         };
         init
     },
@@ -2489,7 +2489,7 @@ static mut long_options: [option; 169] = [
             name: b"opencl-clbin\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2498,7 +2498,7 @@ static mut long_options: [option; 169] = [
             name: b"opencl-device\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2507,7 +2507,7 @@ static mut long_options: [option; 169] = [
             name: b"sar\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2597,7 +2597,7 @@ static mut long_options: [option; 169] = [
             name: b"analyse\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2615,7 +2615,7 @@ static mut long_options: [option; 169] = [
             name: b"direct\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2633,7 +2633,7 @@ static mut long_options: [option; 169] = [
             name: b"no-weightb\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2642,7 +2642,7 @@ static mut long_options: [option; 169] = [
             name: b"weightp\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2651,7 +2651,7 @@ static mut long_options: [option; 169] = [
             name: b"me\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2660,7 +2660,7 @@ static mut long_options: [option; 169] = [
             name: b"merange\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2669,7 +2669,7 @@ static mut long_options: [option; 169] = [
             name: b"mvrange\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2678,7 +2678,7 @@ static mut long_options: [option; 169] = [
             name: b"mvrange-thread\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2696,7 +2696,7 @@ static mut long_options: [option; 169] = [
             name: b"psy-rd\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2705,7 +2705,7 @@ static mut long_options: [option; 169] = [
             name: b"no-psy\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2714,7 +2714,7 @@ static mut long_options: [option; 169] = [
             name: b"psy\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2723,7 +2723,7 @@ static mut long_options: [option; 169] = [
             name: b"mixed-refs\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2732,7 +2732,7 @@ static mut long_options: [option; 169] = [
             name: b"no-mixed-refs\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2741,7 +2741,7 @@ static mut long_options: [option; 169] = [
             name: b"no-chroma-me\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2759,7 +2759,7 @@ static mut long_options: [option; 169] = [
             name: b"no-8x8dct\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2777,7 +2777,7 @@ static mut long_options: [option; 169] = [
             name: b"fast-pskip\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2786,7 +2786,7 @@ static mut long_options: [option; 169] = [
             name: b"no-fast-pskip\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2795,7 +2795,7 @@ static mut long_options: [option; 169] = [
             name: b"no-dct-decimate\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2804,7 +2804,7 @@ static mut long_options: [option; 169] = [
             name: b"aq-strength\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2813,7 +2813,7 @@ static mut long_options: [option; 169] = [
             name: b"aq-mode\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2822,7 +2822,7 @@ static mut long_options: [option; 169] = [
             name: b"deadzone-inter\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2831,7 +2831,7 @@ static mut long_options: [option; 169] = [
             name: b"deadzone-intra\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2840,7 +2840,7 @@ static mut long_options: [option; 169] = [
             name: b"level\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2849,7 +2849,7 @@ static mut long_options: [option; 169] = [
             name: b"ratetol\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2858,7 +2858,7 @@ static mut long_options: [option; 169] = [
             name: b"vbv-maxrate\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2867,7 +2867,7 @@ static mut long_options: [option; 169] = [
             name: b"vbv-bufsize\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2876,7 +2876,7 @@ static mut long_options: [option; 169] = [
             name: b"vbv-init\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2885,7 +2885,7 @@ static mut long_options: [option; 169] = [
             name: b"crf-max\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2894,7 +2894,7 @@ static mut long_options: [option; 169] = [
             name: b"ipratio\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2903,7 +2903,7 @@ static mut long_options: [option; 169] = [
             name: b"pbratio\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2912,7 +2912,7 @@ static mut long_options: [option; 169] = [
             name: b"chroma-qp-offset\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2930,7 +2930,7 @@ static mut long_options: [option; 169] = [
             name: b"stats\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2939,7 +2939,7 @@ static mut long_options: [option; 169] = [
             name: b"qcomp\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2948,7 +2948,7 @@ static mut long_options: [option; 169] = [
             name: b"mbtree\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2957,7 +2957,7 @@ static mut long_options: [option; 169] = [
             name: b"no-mbtree\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2966,7 +2966,7 @@ static mut long_options: [option; 169] = [
             name: b"qblur\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2975,7 +2975,7 @@ static mut long_options: [option; 169] = [
             name: b"cplxblur\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -2984,7 +2984,7 @@ static mut long_options: [option; 169] = [
             name: b"zones\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3002,7 +3002,7 @@ static mut long_options: [option; 169] = [
             name: b"threads\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3011,7 +3011,7 @@ static mut long_options: [option; 169] = [
             name: b"lookahead-threads\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3020,7 +3020,7 @@ static mut long_options: [option; 169] = [
             name: b"sliced-threads\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3029,7 +3029,7 @@ static mut long_options: [option; 169] = [
             name: b"no-sliced-threads\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3038,7 +3038,7 @@ static mut long_options: [option; 169] = [
             name: b"slice-max-size\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3047,7 +3047,7 @@ static mut long_options: [option; 169] = [
             name: b"slice-max-mbs\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3056,7 +3056,7 @@ static mut long_options: [option; 169] = [
             name: b"slice-min-mbs\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3065,7 +3065,7 @@ static mut long_options: [option; 169] = [
             name: b"slices\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3074,7 +3074,7 @@ static mut long_options: [option; 169] = [
             name: b"slices-max\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3092,7 +3092,7 @@ static mut long_options: [option; 169] = [
             name: b"sync-lookahead\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3101,7 +3101,7 @@ static mut long_options: [option; 169] = [
             name: b"non-deterministic\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3110,7 +3110,7 @@ static mut long_options: [option; 169] = [
             name: b"cpu-independent\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3119,7 +3119,7 @@ static mut long_options: [option; 169] = [
             name: b"psnr\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3128,7 +3128,7 @@ static mut long_options: [option; 169] = [
             name: b"ssim\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3173,7 +3173,7 @@ static mut long_options: [option; 169] = [
             name: b"dump-yuv\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3182,7 +3182,7 @@ static mut long_options: [option; 169] = [
             name: b"sps-id\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3191,7 +3191,7 @@ static mut long_options: [option; 169] = [
             name: b"aud\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3200,7 +3200,7 @@ static mut long_options: [option; 169] = [
             name: b"nr\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3209,7 +3209,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3218,7 +3218,7 @@ static mut long_options: [option; 169] = [
             name: b"cqmfile\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3227,7 +3227,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm4\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3236,7 +3236,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm4i\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3245,7 +3245,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm4iy\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3254,7 +3254,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm4ic\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3263,7 +3263,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm4p\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3272,7 +3272,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm4py\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3281,7 +3281,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm4pc\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3290,7 +3290,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm8\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3299,7 +3299,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm8i\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3308,7 +3308,7 @@ static mut long_options: [option; 169] = [
             name: b"cqm8p\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3317,7 +3317,7 @@ static mut long_options: [option; 169] = [
             name: b"overscan\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3326,7 +3326,7 @@ static mut long_options: [option; 169] = [
             name: b"videoformat\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3344,7 +3344,7 @@ static mut long_options: [option; 169] = [
             name: b"colorprim\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3353,7 +3353,7 @@ static mut long_options: [option; 169] = [
             name: b"transfer\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3362,7 +3362,7 @@ static mut long_options: [option; 169] = [
             name: b"colormatrix\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3371,7 +3371,7 @@ static mut long_options: [option; 169] = [
             name: b"chromaloc\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3380,7 +3380,7 @@ static mut long_options: [option; 169] = [
             name: b"force-cfr\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3416,7 +3416,7 @@ static mut long_options: [option; 169] = [
             name: b"pic-struct\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3425,7 +3425,7 @@ static mut long_options: [option; 169] = [
             name: b"crop-rect\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3434,7 +3434,7 @@ static mut long_options: [option; 169] = [
             name: b"nal-hrd\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3452,7 +3452,7 @@ static mut long_options: [option; 169] = [
             name: b"fake-interlaced\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3461,7 +3461,7 @@ static mut long_options: [option; 169] = [
             name: b"frame-packing\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3470,7 +3470,7 @@ static mut long_options: [option; 169] = [
             name: b"mastering-display\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3479,7 +3479,7 @@ static mut long_options: [option; 169] = [
             name: b"cll\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3488,7 +3488,7 @@ static mut long_options: [option; 169] = [
             name: b"alternative-transfer\0" as *const u8 as *const c_char,
             has_arg: required_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3587,7 +3587,7 @@ static mut long_options: [option; 169] = [
             name: b"stitchable\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3596,16 +3596,16 @@ static mut long_options: [option; 169] = [
             name: b"filler\0" as *const u8 as *const c_char,
             has_arg: no_argument,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
     {
         let mut init = option {
             name: 0 as *const c_char,
-            has_arg: 0 as c_int,
+            has_arg: 0,
             flag: 0 as *const c_int as *mut c_int,
-            val: 0 as c_int,
+            val: 0,
         };
         init
     },
@@ -3641,7 +3641,7 @@ unsafe extern "C" fn select_output(
     } else {
         cli_output = raw_output;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "1228:1"]
 unsafe extern "C" fn select_input(
@@ -3691,7 +3691,7 @@ unsafe extern "C" fn select_input(
             ) == 0
         {
             module = b"lavf\0" as *const u8 as *const c_char;
-            b_auto = 0 as c_int;
+            b_auto = 0;
             cli_input = lavf_input;
         }
         if b_regular != 0
@@ -3701,7 +3701,7 @@ unsafe extern "C" fn select_input(
             ) == 0
         {
             module = b"avs\0" as *const u8 as *const c_char;
-            b_auto = 0 as c_int;
+            b_auto = 0;
             cli_input = avs_input;
         }
         if b_auto != 0
@@ -3710,7 +3710,7 @@ unsafe extern "C" fn select_input(
             ) == 0
         {
             module = b"raw\0" as *const u8 as *const c_char;
-            b_auto = 0 as c_int;
+            b_auto = 0;
             cli_input = raw_input;
         }
         if (*p_handle).is_null() {
@@ -3719,7 +3719,7 @@ unsafe extern "C" fn select_input(
         }
     }
     strcpy(used_demuxer, module);
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "1305:1"]
 unsafe extern "C" fn init_vid_filters(
@@ -3783,8 +3783,8 @@ unsafe extern "C" fn init_vid_filters(
             return -1;
         }
         p = p.offset(
-            (if (tok_len + 1 as c_int) < p_len {
-                tok_len + 1 as c_int
+            (if (tok_len + 1) < p_len {
+                tok_len + 1
             } else {
                 p_len
             }) as isize,
@@ -3845,7 +3845,7 @@ unsafe extern "C" fn init_vid_filters(
     {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "1368:1"]
 unsafe extern "C" fn parse_enum_name(
@@ -3853,13 +3853,13 @@ unsafe extern "C" fn parse_enum_name(
     mut names: *const *const c_char,
     mut dst: *mut *const c_char,
 ) -> c_int {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while !(*names.offset(i as isize)).is_null() {
         if **names.offset(i as isize) as c_int != 0
             && strcasecmp(arg, *names.offset(i as isize)) == 0
         {
             *dst = *names.offset(i as isize);
-            return 0 as c_int;
+            return 0;
         }
         i += 1;
     }
@@ -3871,13 +3871,13 @@ unsafe extern "C" fn parse_enum_value(
     mut names: *const *const c_char,
     mut dst: *mut c_int,
 ) -> c_int {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while !(*names.offset(i as isize)).is_null() {
         if **names.offset(i as isize) as c_int != 0
             && strcasecmp(arg, *names.offset(i as isize)) == 0
         {
             *dst = i;
-            return 0 as c_int;
+            return 0;
         }
         i += 1;
     }
@@ -4058,11 +4058,11 @@ unsafe extern "C" fn parse(
     };
     let mut profile: *mut c_char = 0 as *mut c_char;
     let mut vid_filters: *mut c_char = 0 as *mut c_char;
-    let mut b_thread_input: c_int = 0 as c_int;
-    let mut b_turbo: c_int = 1 as c_int;
-    let mut b_user_ref: c_int = 0 as c_int;
-    let mut b_user_fps: c_int = 0 as c_int;
-    let mut b_user_interlaced: c_int = 0 as c_int;
+    let mut b_thread_input: c_int = 0;
+    let mut b_turbo: c_int = 1;
+    let mut b_user_ref: c_int = 0;
+    let mut b_user_fps: c_int = 0;
+    let mut b_user_interlaced: c_int = 0;
     let mut input_opt: cli_input_opt_t = cli_input_opt_t {
         index_file: 0 as *mut c_char,
         format: 0 as *mut c_char,
@@ -4081,7 +4081,7 @@ unsafe extern "C" fn parse(
     };
     let mut preset: *mut c_char = 0 as *mut c_char;
     let mut tune: *mut c_char = 0 as *mut c_char;
-    optind = 0 as c_int;
+    optind = 0;
     loop {
         let mut c: c_int = getopt_long(
             argc,
@@ -4103,10 +4103,9 @@ unsafe extern "C" fn parse(
         }
     }
     if !preset.is_null() && strcasecmp(preset, b"placebo\0" as *const u8 as *const c_char) == 0 {
-        b_turbo = 0 as c_int;
+        b_turbo = 0;
     }
-    if (!preset.is_null() || !tune.is_null())
-        && x264_param_default_preset(param, preset, tune) < 0 as c_int
+    if (!preset.is_null() || !tune.is_null()) && x264_param_default_preset(param, preset, tune) < 0
     {
         return -1;
     }
@@ -4114,23 +4113,23 @@ unsafe extern "C" fn parse(
     cli_log_level = defaults.i_log_level;
     memset(
         &mut input_opt as *mut cli_input_opt_t as *mut c_void,
-        0 as c_int,
+        0,
         size_of::<cli_input_opt_t>() as size_t,
     );
     memset(
         &mut output_opt as *mut cli_output_opt_t as *mut c_void,
-        0 as c_int,
+        0,
         size_of::<cli_output_opt_t>() as size_t,
     );
-    input_opt.bit_depth = 8 as c_int;
+    input_opt.bit_depth = 8;
     (*param).vui.b_fullrange = RANGE_AUTO as c_int;
     input_opt.output_range = (*param).vui.b_fullrange;
     input_opt.input_range = input_opt.output_range;
     let mut output_csp: c_int = defaults.i_csp;
-    (*opt).b_progress = 1 as c_int;
-    optind = 0 as c_int;
+    (*opt).b_progress = 1;
+    optind = 0;
     loop {
-        let mut b_error: c_int = 0 as c_int;
+        let mut b_error: c_int = 0;
         let mut long_options_index: c_int = -1;
         let mut c_0: c_int = getopt_long(
             argc,
@@ -4144,35 +4143,27 @@ unsafe extern "C" fn parse(
         }
         match c_0 {
             104 => {
-                help(&mut defaults, 0 as c_int);
-                exit(0 as c_int);
+                help(&mut defaults, 0);
+                exit(0);
             }
             262 => {
-                help(&mut defaults, 1 as c_int);
-                exit(0 as c_int);
+                help(&mut defaults, 1);
+                exit(0);
             }
             267 => {
-                help(&mut defaults, 2 as c_int);
-                exit(0 as c_int);
+                help(&mut defaults, 2);
+                exit(0);
             }
             86 => {
                 print_version_info();
-                exit(0 as c_int);
+                exit(0);
             }
             256 => {
-                (*param).i_frame_total = if atoi(optarg) > 0 as c_int {
-                    atoi(optarg)
-                } else {
-                    0 as c_int
-                };
+                (*param).i_frame_total = if atoi(optarg) > 0 { atoi(optarg) } else { 0 };
                 current_block = 11702799181856929651;
             }
             257 => {
-                (*opt).i_seek = if atoi(optarg) > 0 as c_int {
-                    atoi(optarg)
-                } else {
-                    0 as c_int
-                };
+                (*opt).i_seek = if atoi(optarg) > 0 { atoi(optarg) } else { 0 };
                 current_block = 11702799181856929651;
             }
             111 => {
@@ -4232,7 +4223,7 @@ unsafe extern "C" fn parse(
                 current_block = 11702799181856929651;
             }
             259 => {
-                b_thread_input = 1 as c_int;
+                b_thread_input = 1;
                 current_block = 11702799181856929651;
             }
             260 => {
@@ -4260,7 +4251,7 @@ unsafe extern "C" fn parse(
                 current_block = 11702799181856929651;
             }
             261 => {
-                (*opt).b_progress = 0 as c_int;
+                (*opt).b_progress = 0;
                 current_block = 11702799181856929651;
             }
             265 | 264 => {
@@ -4271,20 +4262,20 @@ unsafe extern "C" fn parse(
                 current_block = 11702799181856929651;
             }
             266 => {
-                b_turbo = 0 as c_int;
+                b_turbo = 0;
                 current_block = 11702799181856929651;
             }
             114 => {
-                b_user_ref = 1 as c_int;
+                b_user_ref = 1;
                 current_block = 3419397958955478856;
             }
             268 => {
-                b_user_fps = 1 as c_int;
+                b_user_fps = 1;
                 (*param).vfr_input = false;
                 current_block = 3419397958955478856;
             }
             272 => {
-                b_user_interlaced = 1 as c_int;
+                b_user_interlaced = 1;
                 current_block = 3419397958955478856;
             }
             273 => {
@@ -4348,7 +4339,7 @@ unsafe extern "C" fn parse(
                 current_block = 11702799181856929651;
             }
             284 => {
-                output_opt.use_dts_compress = 1 as c_int;
+                output_opt.use_dts_compress = 1;
                 current_block = 11702799181856929651;
             }
             285 => {
@@ -4408,8 +4399,8 @@ unsafe extern "C" fn parse(
         }
         match current_block {
             3419397958955478856 => {
-                if long_options_index < 0 as c_int {
-                    let mut i: c_int = 0 as c_int;
+                if long_options_index < 0 {
+                    let mut i: c_int = 0;
                     while !long_options[i as usize].name.is_null() {
                         if long_options[i as usize].val == c_0 {
                             long_options_index = i;
@@ -4418,7 +4409,7 @@ unsafe extern "C" fn parse(
                             i += 1;
                         }
                     }
-                    if long_options_index < 0 as c_int {
+                    if long_options_index < 0 {
                         return -1;
                     }
                 }
@@ -4431,7 +4422,7 @@ unsafe extern "C" fn parse(
             _ => {}
         }
         if b_error != 0 {
-            let mut name: *const c_char = if long_options_index > 0 as c_int {
+            let mut name: *const c_char = if long_options_index > 0 {
                 long_options[long_options_index as usize].name
             } else {
                 *argv.offset((optind - 2) as isize) as *const c_char
@@ -4449,15 +4440,15 @@ unsafe extern "C" fn parse(
     if b_turbo != 0 {
         x264_param_apply_fastfirstpass(param);
     }
-    if x264_param_apply_profile(param, profile) < 0 as c_int {
+    if x264_param_apply_profile(param, profile) < 0 {
         return -1;
     }
-    if optind > argc - 1 as c_int || output_filename.is_null() {
+    if optind > argc - 1 || output_filename.is_null() {
         x264_cli_log(
             b"x264\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
             b"No %s file. Run x264 --help for a list of options.\n\0" as *const u8 as *const c_char,
-            if optind > argc - 1 as c_int {
+            if optind > argc - 1 {
                 b"input\0" as *const u8 as *const c_char
             } else {
                 b"output\0" as *const u8 as *const c_char
@@ -4482,7 +4473,7 @@ unsafe extern "C" fn parse(
     input_filename = *argv.offset(fresh0 as isize);
     let mut info: video_info_t = {
         let mut init = video_info_t {
-            csp: 0 as c_int,
+            csp: 0,
             fps_num: 0,
             fps_den: 0,
             fullrange: 0,
@@ -4506,7 +4497,7 @@ unsafe extern "C" fn parse(
     info.fps_den = (*param).i_fps_den;
     info.fullrange = (input_opt.input_range == RANGE_PC as c_int) as c_int;
     info.interlaced = (*param).interlaced;
-    if (*param).vui.i_sar_width > 0 as c_int && (*param).vui.i_sar_height > 0 as c_int {
+    if (*param).vui.i_sar_width > 0 && (*param).vui.i_sar_height > 0 {
         info.sar_width = (*param).vui.i_sar_width as uint32_t;
         info.sar_height = (*param).vui.i_sar_height as uint32_t;
     }
@@ -4604,9 +4595,9 @@ unsafe extern "C" fn parse(
         return -1;
     }
     let mut thread_input: *const cli_input_t = 0 as *const cli_input_t;
-    if (*param).i_bitdepth == 8 as c_int {
+    if (*param).i_bitdepth == 8 {
         thread_input = &thread_8_input;
-    } else if (*param).i_bitdepth == 10 as c_int {
+    } else if (*param).i_bitdepth == 10 {
         thread_input = &thread_10_input;
     } else {
         thread_input = 0 as *const cli_input_t;
@@ -4634,7 +4625,7 @@ unsafe extern "C" fn parse(
         }
         cli_input = *thread_input;
     }
-    if (*param).vui.i_sar_width > 0 as c_int && (*param).vui.i_sar_height > 0 as c_int {
+    if (*param).vui.i_sar_width > 0 && (*param).vui.i_sar_height > 0 {
         info.sar_width = (*param).vui.i_sar_width as uint32_t;
         info.sar_height = (*param).vui.i_sar_height as uint32_t;
     }
@@ -4664,10 +4655,10 @@ unsafe extern "C" fn parse(
             );
             return -1;
         }
-        if ret == 1 as c_int {
+        if ret == 1 {
             i_user_timebase_num = info.timebase_num as uint64_t;
             i_user_timebase_den =
-                strtoul(input_opt.timebase, 0 as *mut *mut c_char, 10 as c_int) as uint64_t;
+                strtoul(input_opt.timebase, 0 as *mut *mut c_char, 10) as uint64_t;
         }
         if i_user_timebase_num > 4294967295 as uint64_t
             || i_user_timebase_den > 4294967295 as uint64_t
@@ -4703,13 +4694,13 @@ unsafe extern "C" fn parse(
     (*param).i_timebase_den = info.timebase_den;
     (*param).vui.i_sar_width = info.sar_width as c_int;
     (*param).vui.i_sar_height = info.sar_height as c_int;
-    info.num_frames = if info.num_frames - (*opt).i_seek > 0 as c_int {
+    info.num_frames = if info.num_frames - (*opt).i_seek > 0 {
         info.num_frames - (*opt).i_seek
     } else {
-        0 as c_int
+        0
     };
     if (info.num_frames == 0 || (*param).i_frame_total < info.num_frames)
-        && (*param).i_frame_total > 0 as c_int
+        && (*param).i_frame_total > 0
     {
         info.num_frames = (*param).i_frame_total;
     }
@@ -4743,13 +4734,13 @@ unsafe extern "C" fn parse(
     if b_user_ref == 0 {
         let mut mbs: c_int = (((*param).width + 15 >> 4) * ((*param).height + 15 >> 4)) as c_int;
         let mut i_0: c_int = 0;
-        while (*x264_levels.as_ptr().offset(i_0 as isize)).level_idc as c_int != 0 as c_int {
+        while (*x264_levels.as_ptr().offset(i_0 as isize)).level_idc as c_int != 0 {
             if (*param).i_level_idc
                 == (*x264_levels.as_ptr().offset(i_0 as isize)).level_idc as c_int
             {
                 while mbs as int32_t * (*param).i_frame_reference as int32_t
                     > (*x264_levels.as_ptr().offset(i_0 as isize)).dpb
-                    && (*param).i_frame_reference > 1 as c_int
+                    && (*param).i_frame_reference > 1
                 {
                     (*param).i_frame_reference -= 1;
                 }
@@ -4759,7 +4750,7 @@ unsafe extern "C" fn parse(
             }
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "1805:1"]
 unsafe extern "C" fn parse_qpfile(
@@ -4778,7 +4769,7 @@ unsafe extern "C" fn parse_qpfile(
             b" %99[^\n]\n\0" as *const u8 as *const c_char,
             buf.as_mut_ptr(),
         );
-        if ret == 1 as c_int {
+        if ret == 1 {
             ret = sscanf(
                 buf.as_mut_ptr(),
                 b"%d %c %d\0" as *const u8 as *const c_char,
@@ -4787,7 +4778,7 @@ unsafe extern "C" fn parse_qpfile(
                 &mut qp as *mut c_int,
             );
             if ret == EOF {
-                ret = 0 as c_int;
+                ret = 0;
             }
         }
         (*pic).i_type = X264_TYPE_AUTO;
@@ -4809,7 +4800,7 @@ unsafe extern "C" fn parse_qpfile(
             }
             break;
         } else {
-            if num < i_frame && ret >= 2 as c_int {
+            if num < i_frame && ret >= 2 {
                 continue;
             }
             if type_0 as c_int == 'I' as i32 {
@@ -4825,9 +4816,9 @@ unsafe extern "C" fn parse_qpfile(
             } else if type_0 as c_int == 'b' as i32 {
                 (*pic).i_type = X264_TYPE_B;
             } else {
-                ret = 0 as c_int;
+                ret = 0;
             }
-            if ret < 2 as c_int || qp < -1 || qp > QP_MAX {
+            if ret < 2 || qp < -1 || qp > QP_MAX {
                 x264_cli_log(
                     b"x264\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -4837,8 +4828,8 @@ unsafe extern "C" fn parse_qpfile(
                 fclose((*opt).qpfile);
                 (*opt).qpfile = 0 as *mut FILE;
                 break;
-            } else if ret == 3 as c_int && qp >= 0 as c_int {
-                (*pic).i_qpplus1 = qp + 1 as c_int;
+            } else if ret == 3 && qp >= 0 {
+                (*pic).i_qpplus1 = qp + 1;
             }
         }
     }
@@ -4889,9 +4880,9 @@ unsafe extern "C" fn encode_frame(
     };
     let mut nal: *mut x264_nal_t = 0 as *mut x264_nal_t;
     let mut i_nal: c_int = 0;
-    let mut i_frame_size: c_int = 0 as c_int;
+    let mut i_frame_size: c_int = 0;
     i_frame_size = x264_encoder_encode(h, &mut nal, &mut i_nal, pic, &mut pic_out);
-    if i_frame_size < 0 as c_int {
+    if i_frame_size < 0 {
         x264_cli_log(
             b"x264\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
@@ -4929,19 +4920,16 @@ unsafe extern "C" fn print_status(
     let mut fps: c_double = if i_elapsed > 0 as int64_t {
         i_frame as c_double * 1000000.0f64 / i_elapsed as c_double
     } else {
-        0 as c_int as c_double
+        0 as c_double
     };
     let mut bitrate: c_double = 0.;
     if last_ts != 0 {
-        bitrate = i_file as c_double * 8 as c_int as c_double
-            / (last_ts as c_double
-                * 1000 as c_int as c_double
-                * (*param).i_timebase_num as c_double
+        bitrate = i_file as c_double * 8 as c_double
+            / (last_ts as c_double * 1000 as c_double * (*param).i_timebase_num as c_double
                 / (*param).i_timebase_den as c_double);
     } else {
-        bitrate = i_file as c_double * 8 as c_int as c_double
-            / (1000 as c_int as c_double * (*param).i_fps_den as c_double
-                / (*param).i_fps_num as c_double);
+        bitrate = i_file as c_double * 8 as c_double
+            / (1000 as c_double * (*param).i_fps_den as c_double / (*param).i_fps_num as c_double);
     }
     if i_frame_total != 0 {
         let mut eta: c_int = (i_elapsed * (i_frame_total - i_frame) as int64_t
@@ -4955,9 +4943,9 @@ unsafe extern "C" fn print_status(
             i_frame_total,
             fps,
             bitrate,
-            eta / 3600 as c_int,
-            eta / 60 as c_int % 60 as c_int,
-            eta % 60 as c_int,
+            eta / 3600,
+            eta / 60 % 60,
+            eta % 60,
         );
     } else {
         sprintf(
@@ -5047,8 +5035,8 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
         opaque: 0 as *mut c_void,
     };
     let mut pulldown: *const cli_pulldown_t = 0 as *const cli_pulldown_t;
-    let mut i_frame: c_int = 0 as c_int;
-    let mut i_frame_output: c_int = 0 as c_int;
+    let mut i_frame: c_int = 0;
+    let mut i_frame_output: c_int = 0;
     let mut i_end: int64_t = 0;
     let mut i_previous: int64_t = 0 as int64_t;
     let mut i_start: int64_t = 0 as int64_t;
@@ -5057,13 +5045,13 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
     let mut last_dts: int64_t = 0 as int64_t;
     let mut prev_dts: int64_t = 0 as int64_t;
     let mut first_dts: int64_t = 0 as int64_t;
-    let mut pts_warning_cnt: c_int = 0 as c_int;
+    let mut pts_warning_cnt: c_int = 0;
     let mut largest_pts: int64_t = -1 as int64_t;
     let mut second_largest_pts: int64_t = -1 as int64_t;
     let mut ticks_per_frame: int64_t = 0;
     let mut duration: c_double = 0.;
-    let mut pulldown_pts: c_double = 0 as c_int as c_double;
-    let mut retval: c_int = 0 as c_int;
+    let mut pulldown_pts: c_double = 0 as c_double;
+    let mut retval: c_int = 0;
     (*opt).b_progress &= ((*param).i_log_level < X264_LOG_DEBUG) as c_int;
     if (*opt).i_pulldown != 0 && !(*param).vfr_input {
         (*param).pulldown = true;
@@ -5073,7 +5061,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
         (*param).i_timebase_num = (*param).i_fps_den;
         if fmod(
             ((*param).i_fps_num as c_float * (*pulldown).fps_factor) as c_double,
-            1 as c_int as c_double,
+            1 as c_double,
         ) != 0.
         {
             x264_cli_log(
@@ -5134,7 +5122,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                         if !(*param).repeat_headers {
                             let mut headers: *mut x264_nal_t = 0 as *mut x264_nal_t;
                             let mut i_nal: c_int = 0;
-                            if x264_encoder_headers(h, &mut headers, &mut i_nal) < 0 as c_int {
+                            if x264_encoder_headers(h, &mut headers, &mut i_nal) < 0 {
                                 x264_cli_log(
                                     b"x264\0" as *const u8 as *const c_char,
                                     X264_LOG_ERROR,
@@ -5247,16 +5235,16 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                     prev_dts = last_dts;
                                     i_frame_size =
                                         encode_frame(h, (*opt).hout, &mut pic, &mut last_dts);
-                                    if i_frame_size < 0 as c_int {
+                                    if i_frame_size < 0 {
                                         ::core::ptr::write_volatile(
                                             addr_of_mut!(b_ctrl_c) as *mut c_int,
-                                            1 as c_int,
+                                            1,
                                         );
                                         retval = -1;
                                     } else if i_frame_size != 0 {
                                         i_file += i_frame_size as int64_t;
                                         i_frame_output += 1;
-                                        if i_frame_output == 1 as c_int {
+                                        if i_frame_output == 1 {
                                             prev_dts = last_dts;
                                             first_dts = prev_dts;
                                         }
@@ -5290,16 +5278,16 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
                                         0 as *mut x264_picture_t,
                                         &mut last_dts,
                                     );
-                                    if i_frame_size < 0 as c_int {
+                                    if i_frame_size < 0 {
                                         ::core::ptr::write_volatile(
                                             addr_of_mut!(b_ctrl_c) as *mut c_int,
-                                            1 as c_int,
+                                            1,
                                         );
                                         retval = -1;
                                     } else if i_frame_size != 0 {
                                         i_file += i_frame_size as int64_t;
                                         i_frame_output += 1;
-                                        if i_frame_output == 1 as c_int {
+                                        if i_frame_output == 1 {
                                             prev_dts = last_dts;
                                             first_dts = prev_dts;
                                         }
@@ -5332,7 +5320,7 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
             pts_warning_cnt - MAX_PTS_WARNING,
         );
     }
-    if i_frame_output == 1 as c_int {
+    if i_frame_output == 1 {
         duration = (*param).i_fps_den as c_double / (*param).i_fps_num as c_double;
     } else if b_ctrl_c != 0 {
         duration = (2 as int64_t * last_dts - prev_dts - first_dts) as c_double
@@ -5369,21 +5357,21 @@ unsafe extern "C" fn encode(mut param: *mut x264_param_t, mut opt: *mut cli_opt_
         second_largest_pts,
     );
     (*opt).hout = NULL_0 as hnd_t;
-    if i_frame_output > 0 as c_int {
-        let mut fps: c_double = i_frame_output as c_double * 1000000 as c_int as c_double
-            / (i_end - i_start) as c_double;
+    if i_frame_output > 0 {
+        let mut fps: c_double =
+            i_frame_output as c_double * 1000000 as c_double / (i_end - i_start) as c_double;
         fprintf(
             stderr,
             b"encoded %d frames, %.2f fps, %.2f kb/s\n\0" as *const u8 as *const c_char,
             i_frame_output,
             fps,
-            i_file as c_double * 8 as c_int as c_double / (1000 as c_int as c_double * duration),
+            i_file as c_double * 8 as c_double / (1000 as c_double * duration),
         );
     }
     return retval;
 }
 #[c2rust::src_loc = "1938:13"]
-const MAX_PTS_WARNING: c_int = 3 as c_int;
+const MAX_PTS_WARNING: c_int = 3;
 /*
 fn main() {
     let mut args: Vec<*mut c_char> = Vec::new();

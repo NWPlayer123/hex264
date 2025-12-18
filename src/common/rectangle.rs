@@ -1,10 +1,10 @@
-use core::ffi::{c_int, c_void};
+use core::ffi::c_void;
 
 use crate::rectangle_h::x264_macroblock_cache_rect;
 use crate::stdint_uintn_h::uint32_t;
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_4_4(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 4 as c_int * 4 as c_int, 4 as c_int, 4 as c_int, val);
+    x264_macroblock_cache_rect(target, 4 * 4, 4, 4, val);
 }
 #[no_mangle]
 #[c2rust::src_loc = "56:1"]
@@ -24,35 +24,35 @@ static mut x264_10_cache_mv_func_table: [Option<
 ];
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_4_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 4 as c_int * 4 as c_int, 2 as c_int, 4 as c_int, val);
+    x264_macroblock_cache_rect(target, 4 * 4, 2, 4, val);
 }
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_2_4(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 4 as c_int, 4 as c_int, 4 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 4, 4, 4, val);
 }
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_1_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 1 as c_int * 4 as c_int, 2 as c_int, 4 as c_int, val);
+    x264_macroblock_cache_rect(target, 1 * 4, 2, 4, val);
 }
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_2_1(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 4 as c_int, 1 as c_int, 4 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 4, 1, 4, val);
 }
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_1_1(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 1 as c_int * 4 as c_int, 1 as c_int, 4 as c_int, val);
+    x264_macroblock_cache_rect(target, 1 * 4, 1, 4, val);
 }
 #[c2rust::src_loc = "56:1"]
 unsafe extern "C" fn macroblock_cache_mv_2_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 4 as c_int, 2 as c_int, 4 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 4, 2, 4, val);
 }
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn macroblock_cache_mvd_1_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 1 as c_int * 2 as c_int, 2 as c_int, 2 as c_int, val);
+    x264_macroblock_cache_rect(target, 1 * 2, 2, 2, val);
 }
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn macroblock_cache_mvd_4_4(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 4 as c_int * 2 as c_int, 4 as c_int, 2 as c_int, val);
+    x264_macroblock_cache_rect(target, 4 * 2, 4, 2, val);
 }
 #[no_mangle]
 #[c2rust::src_loc = "57:1"]
@@ -72,27 +72,27 @@ static mut x264_10_cache_mvd_func_table: [Option<
 ];
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn macroblock_cache_mvd_2_4(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 2 as c_int, 4 as c_int, 2 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 2, 4, 2, val);
 }
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn macroblock_cache_mvd_4_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 4 as c_int * 2 as c_int, 2 as c_int, 2 as c_int, val);
+    x264_macroblock_cache_rect(target, 4 * 2, 2, 2, val);
 }
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn macroblock_cache_mvd_2_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 2 as c_int, 2 as c_int, 2 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 2, 2, 2, val);
 }
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn macroblock_cache_mvd_2_1(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 2 as c_int, 1 as c_int, 2 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 2, 1, 2, val);
 }
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn macroblock_cache_mvd_1_1(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 1 as c_int * 2 as c_int, 1 as c_int, 2 as c_int, val);
+    x264_macroblock_cache_rect(target, 1 * 2, 1, 2, val);
 }
 #[c2rust::src_loc = "58:1"]
 unsafe extern "C" fn macroblock_cache_ref_4_4(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 4 as c_int * 1 as c_int, 4 as c_int, 1 as c_int, val);
+    x264_macroblock_cache_rect(target, 4 * 1, 4, 1, val);
 }
 #[no_mangle]
 #[c2rust::src_loc = "58:1"]
@@ -112,25 +112,25 @@ static mut x264_10_cache_ref_func_table: [Option<
 ];
 #[c2rust::src_loc = "58:1"]
 unsafe extern "C" fn macroblock_cache_ref_4_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 4 as c_int * 1 as c_int, 2 as c_int, 1 as c_int, val);
+    x264_macroblock_cache_rect(target, 4 * 1, 2, 1, val);
 }
 #[c2rust::src_loc = "58:1"]
 unsafe extern "C" fn macroblock_cache_ref_2_4(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 1 as c_int, 4 as c_int, 1 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 1, 4, 1, val);
 }
 #[c2rust::src_loc = "58:1"]
 unsafe extern "C" fn macroblock_cache_ref_2_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 1 as c_int, 2 as c_int, 1 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 1, 2, 1, val);
 }
 #[c2rust::src_loc = "58:1"]
 unsafe extern "C" fn macroblock_cache_ref_2_1(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 2 as c_int * 1 as c_int, 1 as c_int, 1 as c_int, val);
+    x264_macroblock_cache_rect(target, 2 * 1, 1, 1, val);
 }
 #[c2rust::src_loc = "58:1"]
 unsafe extern "C" fn macroblock_cache_ref_1_2(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 1 as c_int * 1 as c_int, 2 as c_int, 1 as c_int, val);
+    x264_macroblock_cache_rect(target, 1 * 1, 2, 1, val);
 }
 #[c2rust::src_loc = "58:1"]
 unsafe extern "C" fn macroblock_cache_ref_1_1(mut target: *mut c_void, mut val: uint32_t) {
-    x264_macroblock_cache_rect(target, 1 as c_int * 1 as c_int, 1 as c_int, 1 as c_int, val);
+    x264_macroblock_cache_rect(target, 1 * 1, 1, 1, val);
 }

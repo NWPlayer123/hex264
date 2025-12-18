@@ -42,18 +42,7 @@ struct C2RustUnnamed_19 {
     sar: uint8_t,
 }
 #[c2rust::src_loc = "33:22"]
-static mut num_clock_ts: [uint8_t; 10] = [
-    0 as c_int as uint8_t,
-    1 as c_int as uint8_t,
-    1 as c_int as uint8_t,
-    1 as c_int as uint8_t,
-    2 as c_int as uint8_t,
-    2 as c_int as uint8_t,
-    3 as c_int as uint8_t,
-    3 as c_int as uint8_t,
-    2 as c_int as uint8_t,
-    3 as c_int as uint8_t,
-];
+static mut num_clock_ts: [uint8_t; 10] = [0, 1, 1, 1, 2, 2, 3, 3, 2, 3];
 #[c2rust::src_loc = "34:22"]
 static mut avcintra_uuid: [uint8_t; 16] = [
     0xf7 as c_int as uint8_t,
@@ -61,7 +50,7 @@ static mut avcintra_uuid: [uint8_t; 16] = [
     0x3e as c_int as uint8_t,
     0xb3 as c_int as uint8_t,
     0xd4 as c_int as uint8_t,
-    0 as c_int as uint8_t,
+    0,
     0x47 as c_int as uint8_t,
     0x96 as c_int as uint8_t,
     0x86 as c_int as uint8_t,
@@ -75,9 +64,9 @@ static mut avcintra_uuid: [uint8_t; 16] = [
 ];
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn transpose(mut buf: *mut uint8_t, mut w: c_int) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < w {
-        let mut j: c_int = 0 as c_int;
+        let mut j: c_int = 0;
         while j < i {
             let mut t: uint8_t = *buf.offset((w * i + j) as isize);
             *buf.offset((w * i + j) as isize) = *buf.offset((w * j + i) as isize);
@@ -93,12 +82,8 @@ unsafe extern "C" fn scaling_list_write(
     mut sps: *mut x264_sps_t,
     mut idx: c_int,
 ) {
-    let len: c_int = if idx < 4 as c_int {
-        16 as c_int
-    } else {
-        64 as c_int
-    };
-    let mut zigzag: *const uint8_t = if idx < 4 as c_int {
+    let len: c_int = if idx < 4 { 16 } else { 64 };
+    let mut zigzag: *const uint8_t = if idx < 4 {
         (*x264_zigzag_scan4.as_ptr().offset(0)).as_ptr()
     } else {
         (*x264_zigzag_scan8.as_ptr().offset(0)).as_ptr()
@@ -108,10 +93,10 @@ unsafe extern "C" fn scaling_list_write(
         (*sps).scaling_list[CQM_4IY as c_int as usize]
     } else if idx == CQM_4PC as c_int {
         (*sps).scaling_list[CQM_4PY as c_int as usize]
-    } else if idx == CQM_8IC as c_int + 4 as c_int {
-        (*sps).scaling_list[(CQM_8IY as c_int + 4 as c_int) as usize]
-    } else if idx == CQM_8PC as c_int + 4 as c_int {
-        (*sps).scaling_list[(CQM_8PY as c_int + 4 as c_int) as usize]
+    } else if idx == CQM_8IC as c_int + 4 {
+        (*sps).scaling_list[(CQM_8IY as c_int + 4) as usize]
+    } else if idx == CQM_8PC as c_int + 4 {
+        (*sps).scaling_list[(CQM_8PY as c_int + 4) as usize]
     } else {
         x264_cqm_jvt[idx as usize]
     };
@@ -129,14 +114,14 @@ unsafe extern "C" fn scaling_list_write(
     ) == 0
     {
         bs_write1(s, 1 as uint32_t);
-        bs_write_se(s, -(8 as c_int));
+        bs_write_se(s, -(8));
     } else {
         let mut run: c_int = 0;
         bs_write1(s, 1 as uint32_t);
         run = len;
-        while run > 1 as c_int {
-            if *list.offset(*zigzag.offset((run - 1 as c_int) as isize) as isize) as c_int
-                != *list.offset(*zigzag.offset((run - 2 as c_int) as isize) as isize) as c_int
+        while run > 1 {
+            if *list.offset(*zigzag.offset((run - 1) as isize) as isize) as c_int
+                != *list.offset(*zigzag.offset((run - 2) as isize) as isize) as c_int
             {
                 break;
             }
@@ -151,15 +136,15 @@ unsafe extern "C" fn scaling_list_write(
         {
             run = len;
         }
-        let mut j: c_int = 0 as c_int;
+        let mut j: c_int = 0;
         while j < run {
             bs_write_se(
                 s,
                 (*list.offset(*zigzag.offset(j as isize) as isize) as c_int
-                    - (if j > 0 as c_int {
-                        *list.offset(*zigzag.offset((j - 1 as c_int) as isize) as isize) as c_int
+                    - (if j > 0 {
+                        *list.offset(*zigzag.offset((j - 1) as isize) as isize) as c_int
                     } else {
-                        8 as c_int
+                        8
                     })) as int8_t as c_int,
             );
             j += 1;
@@ -182,21 +167,21 @@ unsafe extern "C" fn x264_10_sei_write(
 ) {
     let mut i: c_int = 0;
     bs_realign(s);
-    i = 0 as c_int;
-    while i <= payload_type - 255 as c_int {
-        bs_write(s, 8 as c_int, 255 as uint32_t);
-        i += 255 as c_int;
+    i = 0;
+    while i <= payload_type - 255 {
+        bs_write(s, 8, 255 as uint32_t);
+        i += 255;
     }
-    bs_write(s, 8 as c_int, (payload_type - i) as uint32_t);
-    i = 0 as c_int;
-    while i <= payload_size - 255 as c_int {
-        bs_write(s, 8 as c_int, 255 as uint32_t);
-        i += 255 as c_int;
+    bs_write(s, 8, (payload_type - i) as uint32_t);
+    i = 0;
+    while i <= payload_size - 255 {
+        bs_write(s, 8, 255 as uint32_t);
+        i += 255;
     }
-    bs_write(s, 8 as c_int, (payload_size - i) as uint32_t);
-    i = 0 as c_int;
+    bs_write(s, 8, (payload_size - i) as uint32_t);
+    i = 0;
     while i < payload_size {
-        bs_write(s, 8 as c_int, *payload.offset(i as isize) as uint32_t);
+        bs_write(s, 8, *payload.offset(i as isize) as uint32_t);
         i += 1;
     }
     bs_rbsp_trailing(s);
@@ -211,11 +196,11 @@ unsafe extern "C" fn x264_10_sps_init(
 ) {
     let mut csp: c_int = (*param).i_csp & X264_CSP_MASK;
     (*sps).i_id = i_id;
-    (*sps).i_mb_width = ((*param).width as c_int + 15 as c_int) / 16 as c_int;
-    (*sps).i_mb_height = ((*param).height as c_int + 15 as c_int) / 16 as c_int;
+    (*sps).i_mb_width = ((*param).width as c_int + 15) / 16;
+    (*sps).i_mb_height = ((*param).height as c_int + 15) / 16;
     (*sps).b_frame_mbs_only = !((*param).interlaced || (*param).fake_interlaced) as c_int;
     if (*sps).b_frame_mbs_only == 0 {
-        (*sps).i_mb_height = (*sps).i_mb_height + 1 as c_int & !(1 as c_int);
+        (*sps).i_mb_height = (*sps).i_mb_height + 1 & !(1);
     }
     (*sps).i_chroma_format_idc = if csp >= X264_CSP_I444 {
         CHROMA_444 as c_int
@@ -227,15 +212,14 @@ unsafe extern "C" fn x264_10_sps_init(
         CHROMA_400 as c_int
     };
     (*sps).b_qpprime_y_zero_transform_bypass = ((*param).rc.i_rc_method == RateControlMode::CQP
-        && (*param).rc.i_qp_constant == 0 as c_int)
-        as c_int;
+        && (*param).rc.i_qp_constant == 0) as c_int;
     if (*sps).b_qpprime_y_zero_transform_bypass != 0
         || (*sps).i_chroma_format_idc == CHROMA_444 as c_int
     {
         (*sps).i_profile_idc = PROFILE_HIGH444_PREDICTIVE as c_int;
     } else if (*sps).i_chroma_format_idc == CHROMA_422 as c_int {
         (*sps).i_profile_idc = PROFILE_HIGH422 as c_int;
-    } else if BIT_DEPTH > 8 as c_int {
+    } else if BIT_DEPTH > 8 {
         (*sps).i_profile_idc = PROFILE_HIGH10 as c_int;
     } else if (*param).analyse.transform_8x8
         || (*param).i_cqm_preset != X264_CQM_FLAT
@@ -243,10 +227,10 @@ unsafe extern "C" fn x264_10_sps_init(
     {
         (*sps).i_profile_idc = PROFILE_HIGH as c_int;
     } else if (*param).cabac
-        || (*param).i_bframe > 0 as c_int
+        || (*param).i_bframe > 0
         || (*param).interlaced
         || (*param).fake_interlaced
-        || (*param).analyse.i_weighted_pred > 0 as c_int
+        || (*param).analyse.i_weighted_pred > 0
     {
         (*sps).i_profile_idc = PROFILE_MAIN as c_int;
     } else {
@@ -254,56 +238,56 @@ unsafe extern "C" fn x264_10_sps_init(
     }
     (*sps).b_constraint_set0 = ((*sps).i_profile_idc == PROFILE_BASELINE as c_int) as c_int;
     (*sps).b_constraint_set1 = ((*sps).i_profile_idc <= PROFILE_MAIN as c_int) as c_int;
-    (*sps).b_constraint_set2 = 0 as c_int;
-    (*sps).b_constraint_set3 = 0 as c_int;
+    (*sps).b_constraint_set2 = 0;
+    (*sps).b_constraint_set3 = 0;
     (*sps).i_level_idc = (*param).i_level_idc;
-    if (*param).i_level_idc == 9 as c_int
+    if (*param).i_level_idc == 9
         && ((*sps).i_profile_idc == PROFILE_BASELINE as c_int
             || (*sps).i_profile_idc == PROFILE_MAIN as c_int)
     {
-        (*sps).b_constraint_set3 = 1 as c_int;
-        (*sps).i_level_idc = 11 as c_int;
+        (*sps).b_constraint_set3 = 1;
+        (*sps).i_level_idc = 11;
     }
-    if (*param).i_keyint_max == 1 as c_int && (*sps).i_profile_idc >= PROFILE_HIGH as c_int {
-        (*sps).b_constraint_set3 = 1 as c_int;
+    if (*param).i_keyint_max == 1 && (*sps).i_profile_idc >= PROFILE_HIGH as c_int {
+        (*sps).b_constraint_set3 = 1;
     }
     (*sps).vui.i_num_reorder_frames = if (*param).bframe_pyramid != BPyramid::None {
-        2 as c_int
+        2
     } else if (*param).i_bframe != 0 {
-        1 as c_int
+        1
     } else {
-        0 as c_int
+        0
     };
-    (*sps).i_num_ref_frames = if (16 as c_int)
+    (*sps).i_num_ref_frames = if (16)
         < (if (*param).i_frame_reference
-            > (if 1 as c_int + (*sps).vui.i_num_reorder_frames
+            > (if 1 + (*sps).vui.i_num_reorder_frames
                 > (if (if (*param).bframe_pyramid != BPyramid::None {
-                    4 as c_int
+                    4
                 } else {
-                    1 as c_int
+                    1
                 }) > (*param).i_dpb_size
                 {
                     if (*param).bframe_pyramid != BPyramid::None {
-                        4 as c_int
+                        4
                     } else {
-                        1 as c_int
+                        1
                     }
                 } else {
                     (*param).i_dpb_size
                 })
             {
-                1 as c_int + (*sps).vui.i_num_reorder_frames
+                1 + (*sps).vui.i_num_reorder_frames
             } else {
                 if (if (*param).bframe_pyramid != BPyramid::None {
-                    4 as c_int
+                    4
                 } else {
-                    1 as c_int
+                    1
                 }) > (*param).i_dpb_size
                 {
                     if (*param).bframe_pyramid != BPyramid::None {
-                        4 as c_int
+                        4
                     } else {
-                        1 as c_int
+                        1
                     }
                 } else {
                     (*param).i_dpb_size
@@ -312,70 +296,70 @@ unsafe extern "C" fn x264_10_sps_init(
         {
             (*param).i_frame_reference
         } else {
-            if 1 as c_int + (*sps).vui.i_num_reorder_frames
+            if 1 + (*sps).vui.i_num_reorder_frames
                 > (if (if (*param).bframe_pyramid != BPyramid::None {
-                    4 as c_int
+                    4
                 } else {
-                    1 as c_int
+                    1
                 }) > (*param).i_dpb_size
                 {
                     if (*param).bframe_pyramid != BPyramid::None {
-                        4 as c_int
+                        4
                     } else {
-                        1 as c_int
+                        1
                     }
                 } else {
                     (*param).i_dpb_size
                 })
             {
-                1 as c_int + (*sps).vui.i_num_reorder_frames
+                1 + (*sps).vui.i_num_reorder_frames
             } else {
                 if (if (*param).bframe_pyramid != BPyramid::None {
-                    4 as c_int
+                    4
                 } else {
-                    1 as c_int
+                    1
                 }) > (*param).i_dpb_size
                 {
                     if (*param).bframe_pyramid != BPyramid::None {
-                        4 as c_int
+                        4
                     } else {
-                        1 as c_int
+                        1
                     }
                 } else {
                     (*param).i_dpb_size
                 }
             }
         }) {
-        16 as c_int
+        16
     } else if (*param).i_frame_reference
-        > (if 1 as c_int + (*sps).vui.i_num_reorder_frames
+        > (if 1 + (*sps).vui.i_num_reorder_frames
             > (if (if (*param).bframe_pyramid != BPyramid::None {
-                4 as c_int
+                4
             } else {
-                1 as c_int
+                1
             }) > (*param).i_dpb_size
             {
                 if (*param).bframe_pyramid != BPyramid::None {
-                    4 as c_int
+                    4
                 } else {
-                    1 as c_int
+                    1
                 }
             } else {
                 (*param).i_dpb_size
             })
         {
-            1 as c_int + (*sps).vui.i_num_reorder_frames
+            1 + (*sps).vui.i_num_reorder_frames
         } else {
             if (if (*param).bframe_pyramid != BPyramid::None {
-                4 as c_int
+                4
             } else {
-                1 as c_int
+                1
             }) > (*param).i_dpb_size
             {
                 if (*param).bframe_pyramid != BPyramid::None {
-                    4 as c_int
+                    4
                 } else {
-                    1 as c_int
+                    1
                 }
             } else {
                 (*param).i_dpb_size
@@ -383,143 +367,130 @@ unsafe extern "C" fn x264_10_sps_init(
         })
     {
         (*param).i_frame_reference
-    } else if 1 as c_int + (*sps).vui.i_num_reorder_frames
+    } else if 1 + (*sps).vui.i_num_reorder_frames
         > (if (if (*param).bframe_pyramid != BPyramid::None {
-            4 as c_int
+            4
         } else {
-            1 as c_int
+            1
         }) > (*param).i_dpb_size
         {
             if (*param).bframe_pyramid != BPyramid::None {
-                4 as c_int
+                4
             } else {
-                1 as c_int
+                1
             }
         } else {
             (*param).i_dpb_size
         })
     {
-        1 as c_int + (*sps).vui.i_num_reorder_frames
+        1 + (*sps).vui.i_num_reorder_frames
     } else if (if (*param).bframe_pyramid != BPyramid::None {
-        4 as c_int
+        4
     } else {
-        1 as c_int
+        1
     }) > (*param).i_dpb_size
     {
         if (*param).bframe_pyramid != BPyramid::None {
-            4 as c_int
+            4
         } else {
-            1 as c_int
+            1
         }
     } else {
         (*param).i_dpb_size
     };
     (*sps).vui.i_max_dec_frame_buffering = (*sps).i_num_ref_frames;
     (*sps).i_num_ref_frames -= ((*param).bframe_pyramid == BPyramid::Strict) as c_int;
-    if (*param).i_keyint_max == 1 as c_int {
-        (*sps).i_num_ref_frames = 0 as c_int;
-        (*sps).vui.i_max_dec_frame_buffering = 0 as c_int;
+    if (*param).i_keyint_max == 1 {
+        (*sps).i_num_ref_frames = 0;
+        (*sps).vui.i_max_dec_frame_buffering = 0;
     }
     let mut max_frame_num: c_int = (*sps).vui.i_max_dec_frame_buffering
-        * (((*param).bframe_pyramid != BPyramid::None) as c_int + 1 as c_int)
-        + 1 as c_int;
+        * (((*param).bframe_pyramid != BPyramid::None) as c_int + 1)
+        + 1;
     if (*param).intra_refresh {
-        let mut time_to_recovery: c_int =
-            (if ((*sps).i_mb_width - 1 as c_int) < (*param).i_keyint_max {
-                (*sps).i_mb_width - 1 as c_int
-            } else {
-                (*param).i_keyint_max
-            }) + (*param).i_bframe
-                - 1 as c_int;
-        max_frame_num = if max_frame_num > time_to_recovery + 1 as c_int {
+        let mut time_to_recovery: c_int = (if ((*sps).i_mb_width - 1) < (*param).i_keyint_max {
+            (*sps).i_mb_width - 1
+        } else {
+            (*param).i_keyint_max
+        }) + (*param).i_bframe
+            - 1;
+        max_frame_num = if max_frame_num > time_to_recovery + 1 {
             max_frame_num
         } else {
-            time_to_recovery + 1 as c_int
+            time_to_recovery + 1
         };
     }
-    (*sps).i_log2_max_frame_num = 4 as c_int;
-    while (1 as c_int) << (*sps).i_log2_max_frame_num <= max_frame_num {
+    (*sps).i_log2_max_frame_num = 4;
+    while (1) << (*sps).i_log2_max_frame_num <= max_frame_num {
         (*sps).i_log2_max_frame_num += 1;
     }
     (*sps).i_poc_type =
         if (*param).i_bframe != 0 || (*param).interlaced || (*param).i_avcintra_class != 0 {
-            0 as c_int
+            0
         } else {
-            2 as c_int
+            2
         };
-    if (*sps).i_poc_type == 0 as c_int {
-        let mut max_delta_poc: c_int = ((*param).i_bframe + 2 as c_int)
-            * (((*param).bframe_pyramid != BPyramid::None) as c_int + 1 as c_int)
-            * 2 as c_int;
-        (*sps).i_log2_max_poc_lsb = 4 as c_int;
-        while (1 as c_int) << (*sps).i_log2_max_poc_lsb <= max_delta_poc * 2 as c_int {
+    if (*sps).i_poc_type == 0 {
+        let mut max_delta_poc: c_int = ((*param).i_bframe + 2)
+            * (((*param).bframe_pyramid != BPyramid::None) as c_int + 1)
+            * 2;
+        (*sps).i_log2_max_poc_lsb = 4;
+        while (1) << (*sps).i_log2_max_poc_lsb <= max_delta_poc * 2 {
             (*sps).i_log2_max_poc_lsb += 1;
         }
     }
-    (*sps).b_vui = 1 as c_int;
-    (*sps).b_gaps_in_frame_num_value_allowed = 0 as c_int;
+    (*sps).b_vui = 1;
+    (*sps).b_gaps_in_frame_num_value_allowed = 0;
     (*sps).mb_adaptive_frame_field = (*param).interlaced;
-    (*sps).b_direct8x8_inference = 1 as c_int;
+    (*sps).b_direct8x8_inference = 1;
     x264_10_sps_init_reconfigurable(sps, param);
     (*sps).vui.b_overscan_info_present =
-        ((*param).vui.i_overscan > 0 as c_int && (*param).vui.i_overscan <= 2 as c_int) as c_int;
+        ((*param).vui.i_overscan > 0 && (*param).vui.i_overscan <= 2) as c_int;
     if (*sps).vui.b_overscan_info_present != 0 {
-        (*sps).vui.b_overscan_info = if (*param).vui.i_overscan == 2 as c_int {
-            1 as c_int
-        } else {
-            0 as c_int
-        };
+        (*sps).vui.b_overscan_info = if (*param).vui.i_overscan == 2 { 1 } else { 0 };
     }
-    (*sps).vui.b_signal_type_present = 0 as c_int;
-    (*sps).vui.i_vidformat =
-        if (*param).vui.i_vidformat >= 0 as c_int && (*param).vui.i_vidformat <= 5 as c_int {
-            (*param).vui.i_vidformat
-        } else {
-            5 as c_int
-        };
-    (*sps).vui.b_fullrange =
-        if (*param).vui.b_fullrange >= 0 as c_int && (*param).vui.b_fullrange <= 1 as c_int {
-            (*param).vui.b_fullrange
-        } else if csp >= X264_CSP_BGR {
-            1 as c_int
-        } else {
-            0 as c_int
-        };
-    (*sps).vui.b_color_description_present = 0 as c_int;
-    (*sps).vui.i_colorprim =
-        if (*param).vui.i_colorprim >= 0 as c_int && (*param).vui.i_colorprim <= 12 as c_int {
-            (*param).vui.i_colorprim
-        } else {
-            2 as c_int
-        };
-    (*sps).vui.i_transfer =
-        if (*param).vui.i_transfer >= 0 as c_int && (*param).vui.i_transfer <= 18 as c_int {
-            (*param).vui.i_transfer
-        } else {
-            2 as c_int
-        };
-    (*sps).vui.i_colmatrix =
-        if (*param).vui.i_colmatrix >= 0 as c_int && (*param).vui.i_colmatrix <= 14 as c_int {
-            (*param).vui.i_colmatrix
-        } else if csp >= X264_CSP_BGR {
-            0 as c_int
-        } else {
-            2 as c_int
-        };
-    if (*sps).vui.i_colorprim != 2 as c_int
-        || (*sps).vui.i_transfer != 2 as c_int
-        || (*sps).vui.i_colmatrix != 2 as c_int
-    {
-        (*sps).vui.b_color_description_present = 1 as c_int;
+    (*sps).vui.b_signal_type_present = 0;
+    (*sps).vui.i_vidformat = if (*param).vui.i_vidformat >= 0 && (*param).vui.i_vidformat <= 5 {
+        (*param).vui.i_vidformat
+    } else {
+        5
+    };
+    (*sps).vui.b_fullrange = if (*param).vui.b_fullrange >= 0 && (*param).vui.b_fullrange <= 1 {
+        (*param).vui.b_fullrange
+    } else if csp >= X264_CSP_BGR {
+        1
+    } else {
+        0
+    };
+    (*sps).vui.b_color_description_present = 0;
+    (*sps).vui.i_colorprim = if (*param).vui.i_colorprim >= 0 && (*param).vui.i_colorprim <= 12 {
+        (*param).vui.i_colorprim
+    } else {
+        2
+    };
+    (*sps).vui.i_transfer = if (*param).vui.i_transfer >= 0 && (*param).vui.i_transfer <= 18 {
+        (*param).vui.i_transfer
+    } else {
+        2
+    };
+    (*sps).vui.i_colmatrix = if (*param).vui.i_colmatrix >= 0 && (*param).vui.i_colmatrix <= 14 {
+        (*param).vui.i_colmatrix
+    } else if csp >= X264_CSP_BGR {
+        0
+    } else {
+        2
+    };
+    if (*sps).vui.i_colorprim != 2 || (*sps).vui.i_transfer != 2 || (*sps).vui.i_colmatrix != 2 {
+        (*sps).vui.b_color_description_present = 1;
     }
-    if (*sps).vui.i_vidformat != 5 as c_int
+    if (*sps).vui.i_vidformat != 5
         || (*sps).vui.b_fullrange != 0
         || (*sps).vui.b_color_description_present != 0
     {
-        (*sps).vui.b_signal_type_present = 1 as c_int;
+        (*sps).vui.b_signal_type_present = 1;
     }
-    (*sps).vui.b_chroma_loc_info_present = ((*param).vui.i_chroma_loc > 0 as c_int
-        && (*param).vui.i_chroma_loc <= 5 as c_int
+    (*sps).vui.b_chroma_loc_info_present = ((*param).vui.i_chroma_loc > 0
+        && (*param).vui.i_chroma_loc <= 5
         && (*sps).i_chroma_format_idc == CHROMA_420 as c_int)
         as c_int;
     if (*sps).vui.b_chroma_loc_info_present != 0 {
@@ -533,28 +504,28 @@ unsafe extern "C" fn x264_10_sps_init(
         (*sps).vui.i_time_scale = (*param).i_timebase_den.wrapping_mul(2 as uint32_t);
         (*sps).vui.b_fixed_frame_rate = (!(*param).vfr_input) as c_int;
     }
-    (*sps).vui.b_vcl_hrd_parameters_present = 0 as c_int;
+    (*sps).vui.b_vcl_hrd_parameters_present = 0;
     (*sps).vui.b_nal_hrd_parameters_present = ((*param).i_nal_hrd != 0) as c_int;
     (*sps).vui.pic_struct_present = (*param).pic_struct;
     (*sps).vui.b_bitstream_restriction =
         !((*sps).b_constraint_set3 != 0 && (*sps).i_profile_idc >= PROFILE_HIGH as c_int) as c_int;
     if (*sps).vui.b_bitstream_restriction != 0 {
-        (*sps).vui.b_motion_vectors_over_pic_boundaries = 1 as c_int;
-        (*sps).vui.i_max_bytes_per_pic_denom = 0 as c_int;
-        (*sps).vui.i_max_bits_per_mb_denom = 0 as c_int;
+        (*sps).vui.b_motion_vectors_over_pic_boundaries = 1;
+        (*sps).vui.i_max_bytes_per_pic_denom = 0;
+        (*sps).vui.i_max_bits_per_mb_denom = 0;
         (*sps).vui.i_log2_max_mv_length_vertical = log2f(
-            (if 1 as c_int > (*param).analyse.i_mv_range * 4 as c_int - 1 as c_int {
-                1 as c_int
+            (if 1 > (*param).analyse.i_mv_range * 4 - 1 {
+                1
             } else {
-                (*param).analyse.i_mv_range * 4 as c_int - 1 as c_int
+                (*param).analyse.i_mv_range * 4 - 1
             }) as c_float,
         ) as c_int
-            + 1 as c_int;
+            + 1;
         (*sps).vui.i_log2_max_mv_length_horizontal = (*sps).vui.i_log2_max_mv_length_vertical;
     }
     (*sps).b_avcintra_hd =
-        ((*param).i_avcintra_class != 0 && (*param).i_avcintra_class <= 200 as c_int) as c_int;
-    (*sps).b_avcintra_4k = ((*param).i_avcintra_class > 200 as c_int) as c_int;
+        ((*param).i_avcintra_class != 0 && (*param).i_avcintra_class <= 200) as c_int;
+    (*sps).b_avcintra_4k = ((*param).i_avcintra_class > 200) as c_int;
     (*sps).i_cqm_preset = (*param).i_cqm_preset;
 }
 #[no_mangle]
@@ -573,9 +544,9 @@ unsafe extern "C" fn x264_10_sps_init_reconfigurable(
         || (*sps).crop.i_top != 0
         || (*sps).crop.i_right != 0
         || (*sps).crop.i_bottom != 0) as c_int;
-    (*sps).vui.b_aspect_ratio_info_present = 0 as c_int;
-    if (*param).vui.i_sar_width > 0 as c_int && (*param).vui.i_sar_height > 0 as c_int {
-        (*sps).vui.b_aspect_ratio_info_present = 1 as c_int;
+    (*sps).vui.b_aspect_ratio_info_present = 0;
+    if (*param).vui.i_sar_width > 0 && (*param).vui.i_sar_height > 0 {
+        (*sps).vui.b_aspect_ratio_info_present = 1;
         (*sps).vui.i_sar_width = (*param).vui.i_sar_width;
         (*sps).vui.i_sar_height = (*param).vui.i_sar_height;
     }
@@ -588,52 +559,41 @@ unsafe extern "C" fn x264_10_sps_init_scaling_list(
 ) {
     match (*sps).i_cqm_preset {
         X264_CQM_FLAT => {
-            let mut i: c_int = 0 as c_int;
-            while i < 8 as c_int {
+            let mut i: c_int = 0;
+            while i < 8 {
                 (*sps).scaling_list[i as usize] = x264_cqm_flat16.as_ptr();
                 i += 1;
             }
         }
         X264_CQM_JVT => {
-            let mut i_0: c_int = 0 as c_int;
-            while i_0 < 8 as c_int {
+            let mut i_0: c_int = 0;
+            while i_0 < 8 {
                 (*sps).scaling_list[i_0 as usize] = x264_cqm_jvt[i_0 as usize];
                 i_0 += 1;
             }
         }
         X264_CQM_CUSTOM => {
-            transpose((*param).cqm_4iy.as_mut_ptr(), 4 as c_int);
-            transpose((*param).cqm_4py.as_mut_ptr(), 4 as c_int);
-            transpose((*param).cqm_4ic.as_mut_ptr(), 4 as c_int);
-            transpose((*param).cqm_4pc.as_mut_ptr(), 4 as c_int);
-            transpose((*param).cqm_8iy.as_mut_ptr(), 8 as c_int);
-            transpose((*param).cqm_8py.as_mut_ptr(), 8 as c_int);
-            transpose((*param).cqm_8ic.as_mut_ptr(), 8 as c_int);
-            transpose((*param).cqm_8pc.as_mut_ptr(), 8 as c_int);
+            transpose((*param).cqm_4iy.as_mut_ptr(), 4);
+            transpose((*param).cqm_4py.as_mut_ptr(), 4);
+            transpose((*param).cqm_4ic.as_mut_ptr(), 4);
+            transpose((*param).cqm_4pc.as_mut_ptr(), 4);
+            transpose((*param).cqm_8iy.as_mut_ptr(), 8);
+            transpose((*param).cqm_8py.as_mut_ptr(), 8);
+            transpose((*param).cqm_8ic.as_mut_ptr(), 8);
+            transpose((*param).cqm_8pc.as_mut_ptr(), 8);
             (*sps).scaling_list[CQM_4IY as c_int as usize] = (*param).cqm_4iy.as_mut_ptr();
             (*sps).scaling_list[CQM_4PY as c_int as usize] = (*param).cqm_4py.as_mut_ptr();
             (*sps).scaling_list[CQM_4IC as c_int as usize] = (*param).cqm_4ic.as_mut_ptr();
             (*sps).scaling_list[CQM_4PC as c_int as usize] = (*param).cqm_4pc.as_mut_ptr();
-            (*sps).scaling_list[(CQM_8IY as c_int + 4 as c_int) as usize] =
-                (*param).cqm_8iy.as_mut_ptr();
-            (*sps).scaling_list[(CQM_8PY as c_int + 4 as c_int) as usize] =
-                (*param).cqm_8py.as_mut_ptr();
-            (*sps).scaling_list[(CQM_8IC as c_int + 4 as c_int) as usize] =
-                (*param).cqm_8ic.as_mut_ptr();
-            (*sps).scaling_list[(CQM_8PC as c_int + 4 as c_int) as usize] =
-                (*param).cqm_8pc.as_mut_ptr();
-            let mut i_1: c_int = 0 as c_int;
-            while i_1 < 8 as c_int {
-                let mut j: c_int = 0 as c_int;
-                while j
-                    < (if i_1 < 4 as c_int {
-                        16 as c_int
-                    } else {
-                        64 as c_int
-                    })
-                {
-                    if *(*sps).scaling_list[i_1 as usize].offset(j as isize) as c_int == 0 as c_int
-                    {
+            (*sps).scaling_list[(CQM_8IY as c_int + 4) as usize] = (*param).cqm_8iy.as_mut_ptr();
+            (*sps).scaling_list[(CQM_8PY as c_int + 4) as usize] = (*param).cqm_8py.as_mut_ptr();
+            (*sps).scaling_list[(CQM_8IC as c_int + 4) as usize] = (*param).cqm_8ic.as_mut_ptr();
+            (*sps).scaling_list[(CQM_8PC as c_int + 4) as usize] = (*param).cqm_8pc.as_mut_ptr();
+            let mut i_1: c_int = 0;
+            while i_1 < 8 {
+                let mut j: c_int = 0;
+                while j < (if i_1 < 4 { 16 } else { 64 }) {
+                    if *(*sps).scaling_list[i_1 as usize].offset(j as isize) as c_int == 0 {
                         (*sps).scaling_list[i_1 as usize] = x264_cqm_jvt[i_1 as usize];
                     }
                     j += 1;
@@ -648,21 +608,21 @@ unsafe extern "C" fn x264_10_sps_init_scaling_list(
 #[c2rust::src_loc = "305:1"]
 unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_t) {
     bs_realign(s);
-    bs_write(s, 8 as c_int, (*sps).i_profile_idc as uint32_t);
+    bs_write(s, 8, (*sps).i_profile_idc as uint32_t);
     bs_write1(s, (*sps).b_constraint_set0 as uint32_t);
     bs_write1(s, (*sps).b_constraint_set1 as uint32_t);
     bs_write1(s, (*sps).b_constraint_set2 as uint32_t);
     bs_write1(s, (*sps).b_constraint_set3 as uint32_t);
-    bs_write(s, 4 as c_int, 0 as uint32_t);
-    bs_write(s, 8 as c_int, (*sps).i_level_idc as uint32_t);
+    bs_write(s, 4, 0 as uint32_t);
+    bs_write(s, 8, (*sps).i_level_idc as uint32_t);
     bs_write_ue_big(s, (*sps).i_id as c_uint);
     if (*sps).i_profile_idc >= PROFILE_HIGH as c_int {
         bs_write_ue_big(s, (*sps).i_chroma_format_idc as c_uint);
         if (*sps).i_chroma_format_idc == CHROMA_444 as c_int {
             bs_write1(s, 0 as uint32_t);
         }
-        bs_write_ue_big(s, (BIT_DEPTH - 8 as c_int) as c_uint);
-        bs_write_ue_big(s, (BIT_DEPTH - 8 as c_int) as c_uint);
+        bs_write_ue_big(s, (BIT_DEPTH - 8) as c_uint);
+        bs_write_ue_big(s, (BIT_DEPTH - 8) as c_uint);
         bs_write1(s, (*sps).b_qpprime_y_zero_transform_bypass as uint32_t);
         bs_write1(s, (*sps).b_avcintra_hd as uint32_t);
         if (*sps).b_avcintra_hd != 0 {
@@ -672,27 +632,27 @@ unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_
             bs_write1(s, 0 as uint32_t);
             bs_write1(s, 0 as uint32_t);
             bs_write1(s, 0 as uint32_t);
-            scaling_list_write(s, sps, CQM_8IY as c_int + 4 as c_int);
+            scaling_list_write(s, sps, CQM_8IY as c_int + 4);
             bs_write1(s, 0 as uint32_t);
             if (*sps).i_chroma_format_idc == CHROMA_444 as c_int {
-                scaling_list_write(s, sps, CQM_8IC as c_int + 4 as c_int);
+                scaling_list_write(s, sps, CQM_8IC as c_int + 4);
                 bs_write1(s, 0 as uint32_t);
-                scaling_list_write(s, sps, CQM_8IC as c_int + 4 as c_int);
+                scaling_list_write(s, sps, CQM_8IC as c_int + 4);
                 bs_write1(s, 0 as uint32_t);
             }
         }
     }
-    bs_write_ue_big(s, ((*sps).i_log2_max_frame_num - 4 as c_int) as c_uint);
+    bs_write_ue_big(s, ((*sps).i_log2_max_frame_num - 4) as c_uint);
     bs_write_ue_big(s, (*sps).i_poc_type as c_uint);
-    if (*sps).i_poc_type == 0 as c_int {
-        bs_write_ue_big(s, ((*sps).i_log2_max_poc_lsb - 4 as c_int) as c_uint);
+    if (*sps).i_poc_type == 0 {
+        bs_write_ue_big(s, ((*sps).i_log2_max_poc_lsb - 4) as c_uint);
     }
     bs_write_ue_big(s, (*sps).i_num_ref_frames as c_uint);
     bs_write1(s, (*sps).b_gaps_in_frame_num_value_allowed as uint32_t);
-    bs_write_ue_big(s, ((*sps).i_mb_width - 1 as c_int) as c_uint);
+    bs_write_ue_big(s, ((*sps).i_mb_width - 1) as c_uint);
     bs_write_ue_big(
         s,
-        (((*sps).i_mb_height >> ((*sps).b_frame_mbs_only == 0) as c_int) - 1 as c_int) as c_uint,
+        (((*sps).i_mb_height >> ((*sps).b_frame_mbs_only == 0) as c_int) - 1) as c_uint,
     );
     bs_write1(s, (*sps).b_frame_mbs_only as uint32_t);
     if (*sps).b_frame_mbs_only == 0 {
@@ -718,144 +678,140 @@ unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_
             let mut i: c_int = 0;
             static mut sar: [C2RustUnnamed_19; 17] = [
                 {
+                    let mut init = C2RustUnnamed_19 { w: 1, h: 1, sar: 1 };
+                    init
+                },
+                {
                     let mut init = C2RustUnnamed_19 {
-                        w: 1 as uint8_t,
-                        h: 1 as uint8_t,
-                        sar: 1 as uint8_t,
+                        w: 12,
+                        h: 11,
+                        sar: 2,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 12 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 2 as uint8_t,
+                        w: 10,
+                        h: 11,
+                        sar: 3,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 10 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 3 as uint8_t,
+                        w: 16,
+                        h: 11,
+                        sar: 4,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 16 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 4 as uint8_t,
+                        w: 40,
+                        h: 33,
+                        sar: 5,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 40 as uint8_t,
-                        h: 33 as uint8_t,
-                        sar: 5 as uint8_t,
+                        w: 24,
+                        h: 11,
+                        sar: 6,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 24 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 6 as uint8_t,
+                        w: 20,
+                        h: 11,
+                        sar: 7,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 20 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 7 as uint8_t,
+                        w: 32,
+                        h: 11,
+                        sar: 8,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 32 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 8 as uint8_t,
+                        w: 80,
+                        h: 33,
+                        sar: 9,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 80 as uint8_t,
-                        h: 33 as uint8_t,
-                        sar: 9 as uint8_t,
+                        w: 18,
+                        h: 11,
+                        sar: 10,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 18 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 10 as uint8_t,
+                        w: 15,
+                        h: 11,
+                        sar: 11,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 15 as uint8_t,
-                        h: 11 as uint8_t,
-                        sar: 11 as uint8_t,
+                        w: 64,
+                        h: 33,
+                        sar: 12,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 64 as uint8_t,
-                        h: 33 as uint8_t,
-                        sar: 12 as uint8_t,
+                        w: 160,
+                        h: 99,
+                        sar: 13,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 160 as uint8_t,
-                        h: 99 as uint8_t,
-                        sar: 13 as uint8_t,
+                        w: 4,
+                        h: 3,
+                        sar: 14,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 4 as uint8_t,
-                        h: 3 as uint8_t,
-                        sar: 14 as uint8_t,
+                        w: 3,
+                        h: 2,
+                        sar: 15,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 3 as uint8_t,
-                        h: 2 as uint8_t,
-                        sar: 15 as uint8_t,
+                        w: 2,
+                        h: 1,
+                        sar: 16,
                     };
                     init
                 },
                 {
                     let mut init = C2RustUnnamed_19 {
-                        w: 2 as uint8_t,
-                        h: 1 as uint8_t,
-                        sar: 16 as uint8_t,
-                    };
-                    init
-                },
-                {
-                    let mut init = C2RustUnnamed_19 {
-                        w: 0 as uint8_t,
-                        h: 0 as uint8_t,
-                        sar: 255 as uint8_t,
+                        w: 0,
+                        h: 0,
+                        sar: 255,
                     };
                     init
                 },
             ];
-            i = 0 as c_int;
-            while sar[i as usize].sar as c_int != 255 as c_int {
+            i = 0;
+            while sar[i as usize].sar as c_int != 255 {
                 if sar[i as usize].w as c_int == (*sps).vui.i_sar_width
                     && sar[i as usize].h as c_int == (*sps).vui.i_sar_height
                 {
@@ -863,10 +819,10 @@ unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_
                 }
                 i += 1;
             }
-            bs_write(s, 8 as c_int, sar[i as usize].sar as uint32_t);
-            if sar[i as usize].sar as c_int == 255 as c_int {
-                bs_write(s, 16 as c_int, (*sps).vui.i_sar_width as uint32_t);
-                bs_write(s, 16 as c_int, (*sps).vui.i_sar_height as uint32_t);
+            bs_write(s, 8, sar[i as usize].sar as uint32_t);
+            if sar[i as usize].sar as c_int == 255 {
+                bs_write(s, 16, (*sps).vui.i_sar_width as uint32_t);
+                bs_write(s, 16, (*sps).vui.i_sar_height as uint32_t);
             }
         }
         bs_write1(s, (*sps).vui.b_overscan_info_present as uint32_t);
@@ -875,13 +831,13 @@ unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_
         }
         bs_write1(s, (*sps).vui.b_signal_type_present as uint32_t);
         if (*sps).vui.b_signal_type_present != 0 {
-            bs_write(s, 3 as c_int, (*sps).vui.i_vidformat as uint32_t);
+            bs_write(s, 3, (*sps).vui.i_vidformat as uint32_t);
             bs_write1(s, (*sps).vui.b_fullrange as uint32_t);
             bs_write1(s, (*sps).vui.b_color_description_present as uint32_t);
             if (*sps).vui.b_color_description_present != 0 {
-                bs_write(s, 8 as c_int, (*sps).vui.i_colorprim as uint32_t);
-                bs_write(s, 8 as c_int, (*sps).vui.i_transfer as uint32_t);
-                bs_write(s, 8 as c_int, (*sps).vui.i_colmatrix as uint32_t);
+                bs_write(s, 8, (*sps).vui.i_colorprim as uint32_t);
+                bs_write(s, 8, (*sps).vui.i_transfer as uint32_t);
+                bs_write(s, 8, (*sps).vui.i_colmatrix as uint32_t);
             }
         }
         bs_write1(s, (*sps).vui.b_chroma_loc_info_present as uint32_t);
@@ -897,32 +853,28 @@ unsafe extern "C" fn x264_10_sps_write(mut s: *mut bs_t, mut sps: *mut x264_sps_
         }
         bs_write1(s, (*sps).vui.b_nal_hrd_parameters_present as uint32_t);
         if (*sps).vui.b_nal_hrd_parameters_present != 0 {
-            bs_write_ue_big(s, ((*sps).vui.hrd.i_cpb_cnt - 1 as c_int) as c_uint);
-            bs_write(s, 4 as c_int, (*sps).vui.hrd.i_bit_rate_scale as uint32_t);
-            bs_write(s, 4 as c_int, (*sps).vui.hrd.i_cpb_size_scale as uint32_t);
-            bs_write_ue_big(s, ((*sps).vui.hrd.i_bit_rate_value - 1 as c_int) as c_uint);
-            bs_write_ue_big(s, ((*sps).vui.hrd.i_cpb_size_value - 1 as c_int) as c_uint);
+            bs_write_ue_big(s, ((*sps).vui.hrd.i_cpb_cnt - 1) as c_uint);
+            bs_write(s, 4, (*sps).vui.hrd.i_bit_rate_scale as uint32_t);
+            bs_write(s, 4, (*sps).vui.hrd.i_cpb_size_scale as uint32_t);
+            bs_write_ue_big(s, ((*sps).vui.hrd.i_bit_rate_value - 1) as c_uint);
+            bs_write_ue_big(s, ((*sps).vui.hrd.i_cpb_size_value - 1) as c_uint);
             bs_write1(s, (*sps).vui.hrd.b_cbr_hrd as uint32_t);
             bs_write(
                 s,
-                5 as c_int,
-                ((*sps).vui.hrd.i_initial_cpb_removal_delay_length - 1 as c_int) as uint32_t,
+                5,
+                ((*sps).vui.hrd.i_initial_cpb_removal_delay_length - 1) as uint32_t,
             );
             bs_write(
                 s,
-                5 as c_int,
-                ((*sps).vui.hrd.i_cpb_removal_delay_length - 1 as c_int) as uint32_t,
+                5,
+                ((*sps).vui.hrd.i_cpb_removal_delay_length - 1) as uint32_t,
             );
             bs_write(
                 s,
-                5 as c_int,
-                ((*sps).vui.hrd.i_dpb_output_delay_length - 1 as c_int) as uint32_t,
+                5,
+                ((*sps).vui.hrd.i_dpb_output_delay_length - 1) as uint32_t,
             );
-            bs_write(
-                s,
-                5 as c_int,
-                (*sps).vui.hrd.i_time_offset_length as uint32_t,
-            );
+            bs_write(s, 5, (*sps).vui.hrd.i_time_offset_length as uint32_t);
         }
         bs_write1(s, (*sps).vui.b_vcl_hrd_parameters_present as uint32_t);
         if (*sps).vui.b_nal_hrd_parameters_present != 0
@@ -960,10 +912,10 @@ unsafe extern "C" fn x264_10_pps_init(
     (*pps).i_sps_id = (*sps).i_id;
     (*pps).cabac = (*param).cabac;
     (*pps).b_pic_order = ((*param).i_avcintra_class == 0 && (*param).interlaced) as c_int;
-    (*pps).i_num_slice_groups = 1 as c_int;
+    (*pps).i_num_slice_groups = 1;
     (*pps).i_num_ref_idx_l0_default_active = (*param).i_frame_reference;
-    (*pps).i_num_ref_idx_l1_default_active = 1 as c_int;
-    (*pps).b_weighted_pred = ((*param).analyse.i_weighted_pred > 0 as c_int) as c_int;
+    (*pps).i_num_ref_idx_l1_default_active = 1;
+    (*pps).b_weighted_pred = ((*param).analyse.i_weighted_pred > 0) as c_int;
     (*pps).b_weighted_bipred = if (*param).analyse.weighted_bipred {
         2
     } else {
@@ -977,11 +929,11 @@ unsafe extern "C" fn x264_10_pps_init(
     } else {
         51 + 6 * (10 - 8)
     };
-    (*pps).i_pic_init_qs = 26 as c_int + QP_BD_OFFSET;
+    (*pps).i_pic_init_qs = 26 + QP_BD_OFFSET;
     (*pps).i_chroma_qp_index_offset = (*param).analyse.i_chroma_qp_offset;
-    (*pps).b_deblocking_filter_control = 1 as c_int;
+    (*pps).b_deblocking_filter_control = 1;
     (*pps).constrained_intra_pred = (*param).constrained_intra;
-    (*pps).b_redundant_pic_cnt = 0 as c_int;
+    (*pps).b_redundant_pic_cnt = 0;
     (*pps).b_transform_8x8_mode = if (*param).analyse.transform_8x8 { 1 } else { 0 };
 }
 #[no_mangle]
@@ -996,19 +948,13 @@ unsafe extern "C" fn x264_10_pps_write(
     bs_write_ue_big(s, (*pps).i_sps_id as c_uint);
     bs_write1(s, (*pps).cabac as uint32_t);
     bs_write1(s, (*pps).b_pic_order as uint32_t);
-    bs_write_ue_big(s, ((*pps).i_num_slice_groups - 1 as c_int) as c_uint);
-    bs_write_ue_big(
-        s,
-        ((*pps).i_num_ref_idx_l0_default_active - 1 as c_int) as c_uint,
-    );
-    bs_write_ue_big(
-        s,
-        ((*pps).i_num_ref_idx_l1_default_active - 1 as c_int) as c_uint,
-    );
+    bs_write_ue_big(s, ((*pps).i_num_slice_groups - 1) as c_uint);
+    bs_write_ue_big(s, ((*pps).i_num_ref_idx_l0_default_active - 1) as c_uint);
+    bs_write_ue_big(s, ((*pps).i_num_ref_idx_l1_default_active - 1) as c_uint);
     bs_write1(s, (*pps).b_weighted_pred as uint32_t);
-    bs_write(s, 2 as c_int, (*pps).b_weighted_bipred as uint32_t);
-    bs_write_se(s, (*pps).i_pic_init_qp - 26 as c_int - QP_BD_OFFSET);
-    bs_write_se(s, (*pps).i_pic_init_qs - 26 as c_int - QP_BD_OFFSET);
+    bs_write(s, 2, (*pps).b_weighted_bipred as uint32_t);
+    bs_write_se(s, (*pps).i_pic_init_qp - 26 - QP_BD_OFFSET);
+    bs_write_se(s, (*pps).i_pic_init_qs - 26 - QP_BD_OFFSET);
     bs_write_se(s, (*pps).i_chroma_qp_index_offset);
     bs_write1(s, (*pps).b_deblocking_filter_control as uint32_t);
     bs_write1(s, (*pps).constrained_intra_pred as uint32_t);
@@ -1033,15 +979,15 @@ unsafe extern "C" fn x264_10_pps_write(
                 bs_write1(s, 0 as uint32_t);
             }
             if (*pps).b_transform_8x8_mode != 0 {
-                scaling_list_write(s, sps, CQM_8IY as c_int + 4 as c_int);
+                scaling_list_write(s, sps, CQM_8IY as c_int + 4);
                 if (*sps).b_avcintra_4k != 0 {
                     bs_write1(s, 0 as uint32_t);
                 } else {
-                    scaling_list_write(s, sps, CQM_8PY as c_int + 4 as c_int);
+                    scaling_list_write(s, sps, CQM_8PY as c_int + 4);
                 }
                 if (*sps).i_chroma_format_idc == CHROMA_444 as c_int {
-                    scaling_list_write(s, sps, CQM_8IC as c_int + 4 as c_int);
-                    scaling_list_write(s, sps, CQM_8PC as c_int + 4 as c_int);
+                    scaling_list_write(s, sps, CQM_8IC as c_int + 4);
+                    scaling_list_write(s, sps, CQM_8PC as c_int + 4);
                     bs_write1(s, 0 as uint32_t);
                     bs_write1(s, 0 as uint32_t);
                 }
@@ -1069,17 +1015,17 @@ unsafe extern "C" fn x264_10_sei_recovery_point_write(
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
     bs_write_ue_big(&mut q, recovery_frame_cnt as c_uint);
     bs_write1(&mut q, 1 as uint32_t);
     bs_write1(&mut q, 0 as uint32_t);
-    bs_write(&mut q, 2 as c_int, 0 as uint32_t);
+    bs_write(&mut q, 2, 0 as uint32_t);
     bs_align_10(&mut q);
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_RECOVERY_POINT as c_int,
     );
 }
@@ -1104,7 +1050,7 @@ unsafe extern "C" fn x264_10_sei_version_write(mut h: *mut x264_t, mut s: *mut b
         0xee as c_int as uint8_t,
         0xef as c_int as uint8_t,
     ];
-    let mut opts: *mut c_char = x264_param2string(&mut (*h).param, 0 as c_int);
+    let mut opts: *mut c_char = x264_param2string(&mut (*h).param, 0);
     let mut payload: *mut c_char = 0 as *mut c_char;
     let mut length: c_int = 0;
     if opts.is_null() {
@@ -1121,7 +1067,7 @@ unsafe extern "C" fn x264_10_sei_version_write(mut h: *mut x264_t, mut s: *mut b
             16 as size_t,
         );
         sprintf(
-            payload.offset(16 as c_int as isize),
+            payload.offset(16 as isize),
             b"x264 - core %d%s - H.264/MPEG-4 AVC codec - Copy%s 2003-2025 - http://www.videolan.org/x264.html - options: %s\0"
                 as *const u8 as *const c_char,
             X264_BUILD,
@@ -1142,7 +1088,7 @@ unsafe extern "C" fn x264_10_sei_version_write(mut h: *mut x264_t, mut s: *mut b
         );
         x264_free(opts as *mut c_void);
         x264_free(payload as *mut c_void);
-        return 0 as c_int;
+        return 0;
     };
 }
 #[no_mangle]
@@ -1159,7 +1105,7 @@ unsafe extern "C" fn x264_10_sei_buffering_period_write(mut h: *mut x264_t, mut 
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
     bs_write_ue_big(&mut q, (*sps).i_id as c_uint);
     if (*sps).vui.b_nal_hrd_parameters_present != 0 {
@@ -1178,7 +1124,7 @@ unsafe extern "C" fn x264_10_sei_buffering_period_write(mut h: *mut x264_t, mut 
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_BUFFERING_PERIOD as c_int,
     );
 }
@@ -1196,7 +1142,7 @@ unsafe extern "C" fn x264_10_sei_pic_timing_write(mut h: *mut x264_t, mut s: *mu
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
     if (*sps).vui.b_nal_hrd_parameters_present != 0 || (*sps).vui.b_vcl_hrd_parameters_present != 0
     {
@@ -1212,12 +1158,8 @@ unsafe extern "C" fn x264_10_sei_pic_timing_write(mut h: *mut x264_t, mut s: *mu
         );
     }
     if (*sps).vui.pic_struct_present {
-        bs_write(
-            &mut q,
-            4 as c_int,
-            ((*(*h).fenc).i_pic_struct - 1 as c_int) as uint32_t,
-        );
-        let mut i: c_int = 0 as c_int;
+        bs_write(&mut q, 4, ((*(*h).fenc).i_pic_struct - 1) as uint32_t);
+        let mut i: c_int = 0;
         while i < num_clock_ts[(*(*h).fenc).i_pic_struct as usize] as c_int {
             bs_write1(&mut q, 0 as uint32_t);
             i += 1;
@@ -1227,7 +1169,7 @@ unsafe extern "C" fn x264_10_sei_pic_timing_write(mut h: *mut x264_t, mut s: *mu
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_PIC_TIMING as c_int,
     );
 }
@@ -1248,15 +1190,15 @@ pub unsafe fn x264_sei_frame_packing_write(
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
-    bs_write_ue_big(&mut q, 0 as c_uint);
+    bs_write_ue_big(&mut q, 0);
     bs_write1(&mut q, 0 as uint32_t);
-    bs_write(&mut q, 7 as c_int, frame_packing as u32);
+    bs_write(&mut q, 7, frame_packing as u32);
     bs_write1(&mut q, quincunx_sampling_flag as uint32_t);
     bs_write(
         &mut q,
-        6 as c_int,
+        6,
         (frame_packing != FramePacking::Packing2D) as c_int as uint32_t,
     );
     bs_write1(&mut q, 0 as uint32_t);
@@ -1264,18 +1206,18 @@ pub unsafe fn x264_sei_frame_packing_write(
     bs_write1(&mut q, 0 as uint32_t);
     bs_write1(
         &mut q,
-        (frame_packing == FramePacking::TemporalInterleaved && i_frame & 1 as c_int == 0) as c_int
+        (frame_packing == FramePacking::TemporalInterleaved && i_frame & 1 == 0) as c_int
             as uint32_t,
     );
     bs_write1(&mut q, 0 as uint32_t);
     bs_write1(&mut q, 0 as uint32_t);
-    if quincunx_sampling_flag == 0 as c_int && frame_packing != FramePacking::TemporalInterleaved {
-        bs_write(&mut q, 4 as c_int, 0 as uint32_t);
-        bs_write(&mut q, 4 as c_int, 0 as uint32_t);
-        bs_write(&mut q, 4 as c_int, 0 as uint32_t);
-        bs_write(&mut q, 4 as c_int, 0 as uint32_t);
+    if quincunx_sampling_flag == 0 && frame_packing != FramePacking::TemporalInterleaved {
+        bs_write(&mut q, 4, 0 as uint32_t);
+        bs_write(&mut q, 4, 0 as uint32_t);
+        bs_write(&mut q, 4, 0 as uint32_t);
+        bs_write(&mut q, 4, 0 as uint32_t);
     }
-    bs_write(&mut q, 8 as c_int, 0 as uint32_t);
+    bs_write(&mut q, 8, 0 as uint32_t);
     bs_write_ue_big(
         &mut q,
         (frame_packing != FramePacking::TemporalInterleaved) as c_int as c_uint,
@@ -1285,7 +1227,7 @@ pub unsafe fn x264_sei_frame_packing_write(
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_FRAME_PACKING as c_int,
     );
 }
@@ -1305,23 +1247,23 @@ pub unsafe fn x264_sei_mastering_display_write(
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
-    bs_write(&mut q, 16 as c_int, mastering_display.green.0.into());
-    bs_write(&mut q, 16 as c_int, mastering_display.green.1.into());
-    bs_write(&mut q, 16 as c_int, mastering_display.blue.0.into());
-    bs_write(&mut q, 16 as c_int, mastering_display.blue.1.into());
-    bs_write(&mut q, 16 as c_int, mastering_display.red.0.into());
-    bs_write(&mut q, 16 as c_int, mastering_display.red.1.into());
-    bs_write(&mut q, 16 as c_int, mastering_display.white.0.into());
-    bs_write(&mut q, 16 as c_int, mastering_display.white.1.into());
+    bs_write(&mut q, 16, mastering_display.green.0.into());
+    bs_write(&mut q, 16, mastering_display.green.1.into());
+    bs_write(&mut q, 16, mastering_display.blue.0.into());
+    bs_write(&mut q, 16, mastering_display.blue.1.into());
+    bs_write(&mut q, 16, mastering_display.red.0.into());
+    bs_write(&mut q, 16, mastering_display.red.1.into());
+    bs_write(&mut q, 16, mastering_display.white.0.into());
+    bs_write(&mut q, 16, mastering_display.white.1.into());
     bs_write32(&mut q, mastering_display.display_max);
     bs_write32(&mut q, mastering_display.display_min);
     bs_align_10(&mut q);
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_MASTERING_DISPLAY as c_int,
     );
 }
@@ -1342,15 +1284,15 @@ pub unsafe extern "C" fn x264_sei_content_light_level_write(
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
-    bs_write(&mut q, 16 as c_int, light_level.max_cll as uint32_t);
-    bs_write(&mut q, 16 as c_int, light_level.max_fall as uint32_t);
+    bs_write(&mut q, 16, light_level.max_cll as uint32_t);
+    bs_write(&mut q, 16, light_level.max_fall as uint32_t);
     bs_align_10(&mut q);
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_CONTENT_LIGHT_LEVEL as c_int,
     );
 }
@@ -1367,18 +1309,14 @@ unsafe extern "C" fn x264_10_sei_alternative_transfer_write(mut h: *mut x264_t, 
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
-    bs_write(
-        &mut q,
-        8 as c_int,
-        (*h).param.i_alternative_transfer as uint32_t,
-    );
+    bs_write(&mut q, 8, (*h).param.i_alternative_transfer as uint32_t);
     bs_align_10(&mut q);
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_ALTERNATIVE_TRANSFER as c_int,
     );
 }
@@ -1390,9 +1328,9 @@ unsafe extern "C" fn x264_10_filler_write(
     mut filler: c_int,
 ) {
     bs_realign(s);
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < filler {
-        bs_write(s, 8 as c_int, 0xff as uint32_t);
+        bs_write(s, 8, 0xff as uint32_t);
         i += 1;
     }
     bs_rbsp_trailing(s);
@@ -1412,7 +1350,7 @@ unsafe extern "C" fn x264_10_sei_dec_ref_pic_marking_write(mut h: *mut x264_t, m
     };
     let mut tmp_buf: [uint8_t; 100] = [0; 100];
     (*(tmp_buf.as_mut_ptr() as *mut x264_union32_t)).i = 0 as uint32_t;
-    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100 as c_int);
+    bs_init(&mut q, tmp_buf.as_mut_ptr() as *mut c_void, 100);
     bs_realign(&mut q);
     bs_write1(&mut q, 0 as uint32_t);
     bs_write_ue_big(&mut q, (*sh).i_frame_num as c_uint);
@@ -1421,25 +1359,25 @@ unsafe extern "C" fn x264_10_sei_dec_ref_pic_marking_write(mut h: *mut x264_t, m
     }
     bs_write1(
         &mut q,
-        ((*sh).i_mmco_command_count > 0 as c_int) as c_int as uint32_t,
+        ((*sh).i_mmco_command_count > 0) as c_int as uint32_t,
     );
-    if (*sh).i_mmco_command_count > 0 as c_int {
-        let mut i: c_int = 0 as c_int;
+    if (*sh).i_mmco_command_count > 0 {
+        let mut i: c_int = 0;
         while i < (*sh).i_mmco_command_count {
-            bs_write_ue_big(&mut q, 1 as c_uint);
+            bs_write_ue_big(&mut q, 1);
             bs_write_ue_big(
                 &mut q,
-                ((*sh).mmco[i as usize].i_difference_of_pic_nums - 1 as c_int) as c_uint,
+                ((*sh).mmco[i as usize].i_difference_of_pic_nums - 1) as c_uint,
             );
             i += 1;
         }
-        bs_write_ue_big(&mut q, 0 as c_uint);
+        bs_write_ue_big(&mut q, 0);
     }
     bs_align_10(&mut q);
     x264_10_sei_write(
         s,
         tmp_buf.as_mut_ptr(),
-        bs_pos(&mut q) / 8 as c_int,
+        bs_pos(&mut q) / 8,
         SEI_DEC_REF_PIC_MARKING as c_int,
     );
 }
@@ -1451,7 +1389,7 @@ unsafe extern "C" fn x264_10_sei_avcintra_umid_write(
 ) -> c_int {
     let mut data: [uint8_t; 512] = [0; 512];
     let mut msg: *const c_char = b"UMID\0" as *const u8 as *const c_char;
-    let len: c_int = 497 as c_int;
+    let len: c_int = 497;
     memset(
         data.as_mut_ptr() as *mut c_void,
         0xff as c_int,
@@ -1463,39 +1401,39 @@ unsafe extern "C" fn x264_10_sei_avcintra_umid_write(
         size_of::<[uint8_t; 16]>() as size_t,
     );
     memcpy(
-        data.as_mut_ptr().offset(16 as c_int as isize) as *mut c_void,
+        data.as_mut_ptr().offset(16 as isize) as *mut c_void,
         msg as *const c_void,
         strlen(msg),
     );
-    data[20 as c_int as usize] = 0x13 as uint8_t;
-    data[26 as c_int as usize] = 0 as uint8_t;
-    data[25 as c_int as usize] = data[26 as c_int as usize];
-    data[23 as c_int as usize] = data[25 as c_int as usize];
-    data[22 as c_int as usize] = data[23 as c_int as usize];
-    data[28 as c_int as usize] = 0x14 as uint8_t;
-    data[34 as c_int as usize] = 0 as uint8_t;
-    data[33 as c_int as usize] = data[34 as c_int as usize];
-    data[31] = data[33 as c_int as usize];
-    data[30 as c_int as usize] = data[31];
-    data[36 as c_int as usize] = 0x60 as uint8_t;
-    data[41 as c_int as usize] = 0x22 as uint8_t;
-    data[60 as c_int as usize] = 0x62 as uint8_t;
-    data[66 as c_int as usize] = 0 as uint8_t;
-    data[65] = data[66 as c_int as usize];
+    data[20 as usize] = 0x13 as uint8_t;
+    data[26 as usize] = 0;
+    data[25 as usize] = data[26 as usize];
+    data[23 as usize] = data[25 as usize];
+    data[22 as usize] = data[23 as usize];
+    data[28 as usize] = 0x14 as uint8_t;
+    data[34 as usize] = 0;
+    data[33 as usize] = data[34 as usize];
+    data[31] = data[33 as usize];
+    data[30 as usize] = data[31];
+    data[36 as usize] = 0x60 as uint8_t;
+    data[41 as usize] = 0x22 as uint8_t;
+    data[60 as usize] = 0x62 as uint8_t;
+    data[66 as usize] = 0;
+    data[65] = data[66 as usize];
     data[63] = data[65];
-    data[62 as c_int as usize] = data[63];
-    data[68 as c_int as usize] = 0x63 as uint8_t;
-    data[74 as c_int as usize] = 0 as uint8_t;
-    data[73 as c_int as usize] = data[74 as c_int as usize];
-    data[71 as c_int as usize] = data[73 as c_int as usize];
-    data[70 as c_int as usize] = data[71 as c_int as usize];
+    data[62 as usize] = data[63];
+    data[68 as usize] = 0x63 as uint8_t;
+    data[74 as usize] = 0;
+    data[73 as usize] = data[74 as usize];
+    data[71 as usize] = data[73 as usize];
+    data[70 as usize] = data[71 as usize];
     x264_10_sei_write(
         &mut (*h).out.bs,
         data.as_mut_ptr(),
         len,
         SEI_USER_DATA_UNREGISTERED as c_int,
     );
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "849:1"]
@@ -1506,7 +1444,7 @@ unsafe extern "C" fn x264_10_sei_avcintra_vanc_write(
 ) -> c_int {
     let mut data: [uint8_t; 6000] = [0; 6000];
     let mut msg: *const c_char = b"VANC\0" as *const u8 as *const c_char;
-    if len < 0 as c_int || len as c_uint as usize > size_of::<[uint8_t; 6000]>() as usize {
+    if len < 0 || len as c_uint as usize > size_of::<[uint8_t; 6000]>() as usize {
         x264_10_log(
             h,
             X264_LOG_ERROR,
@@ -1522,7 +1460,7 @@ unsafe extern "C" fn x264_10_sei_avcintra_vanc_write(
         size_of::<[u8; 16]>(),
     );
     memcpy(
-        data.as_mut_ptr().offset(16 as c_int as isize) as *mut c_void,
+        data.as_mut_ptr().offset(16 as isize) as *mut c_void,
         msg as *const c_void,
         strlen(msg),
     );
@@ -1532,27 +1470,26 @@ unsafe extern "C" fn x264_10_sei_avcintra_vanc_write(
         len,
         SEI_USER_DATA_UNREGISTERED as c_int,
     );
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "876:1"]
 unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_int) -> c_int {
-    let mut ret: c_int = 0 as c_int;
+    let mut ret: c_int = 0;
     let mut mbs: c_int = (*(*h).sps.as_mut_ptr()).i_mb_width * (*(*h).sps.as_mut_ptr()).i_mb_height;
     let mut dpb: c_int = mbs * (*(*h).sps.as_mut_ptr()).vui.i_max_dec_frame_buffering;
     let mut cbp_factor: c_int =
         if (*(*h).sps.as_mut_ptr()).i_profile_idc >= PROFILE_HIGH422 as c_int {
-            16 as c_int
+            16
         } else if (*(*h).sps.as_mut_ptr()).i_profile_idc == PROFILE_HIGH10 as c_int {
-            12 as c_int
+            12
         } else if (*(*h).sps.as_mut_ptr()).i_profile_idc == PROFILE_HIGH as c_int {
-            5 as c_int
+            5
         } else {
-            4 as c_int
+            4
         };
     let mut l: *const x264_level_t = x264_levels.as_ptr();
-    while (*l).level_idc as c_int != 0 as c_int && (*l).level_idc as c_int != (*h).param.i_level_idc
-    {
+    while (*l).level_idc as c_int != 0 && (*l).level_idc as c_int != (*h).param.i_level_idc {
         l = l.offset(1);
     }
     if (*l).frame_size < mbs as int32_t
@@ -1573,7 +1510,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                 (*l).frame_size,
             );
         }
-        ret = 1 as c_int;
+        ret = 1;
     }
     if dpb as int32_t > (*l).dpb {
         if verbose != 0 {
@@ -1588,7 +1525,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                 (*l).dpb,
             );
         }
-        ret = 1 as c_int;
+        ret = 1;
     }
     if (*h).param.rc.i_vbv_max_bitrate as int32_t
         > (*l).bitrate * cbp_factor as int32_t / 4 as int32_t
@@ -1602,7 +1539,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                 (*l).bitrate * cbp_factor as int32_t / 4 as int32_t,
             );
         }
-        ret = 1 as c_int;
+        ret = 1;
     }
     if (*h).param.rc.i_vbv_buffer_size as int32_t > (*l).cpb * cbp_factor as int32_t / 4 as int32_t
     {
@@ -1615,7 +1552,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                 (*l).cpb * cbp_factor as int32_t / 4 as int32_t,
             );
         }
-        ret = 1 as c_int;
+        ret = 1;
     }
     if (*h).param.analyse.i_mv_range > (*l).mv_range as c_int {
         if verbose != 0 {
@@ -1627,7 +1564,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                 (*l).mv_range as c_int,
             );
         }
-        ret = 1 as c_int;
+        ret = 1;
     }
     if (*h).param.interlaced as i32 > ((*l).frame_only == 0) as c_int {
         if verbose != 0 {
@@ -1639,7 +1576,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                 ((*l).frame_only == 0) as c_int,
             );
         }
-        ret = 1 as c_int;
+        ret = 1;
     }
     if (*h).param.fake_interlaced as i32 > ((*l).frame_only == 0) as c_int {
         if verbose != 0 {
@@ -1651,7 +1588,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                 ((*l).frame_only == 0) as c_int,
             );
         }
-        ret = 1 as c_int;
+        ret = 1;
     }
     if (*h).param.i_fps_den > 0 as uint32_t {
         if mbs as int64_t * (*h).param.i_fps_num as int64_t / (*h).param.i_fps_den as int64_t
@@ -1667,7 +1604,7 @@ unsafe extern "C" fn x264_10_validate_levels(mut h: *mut x264_t, mut verbose: c_
                     (*l).mbps,
                 );
             }
-            ret = 1 as c_int;
+            ret = 1;
         }
     }
     return ret;

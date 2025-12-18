@@ -56,7 +56,7 @@ unsafe extern "C" fn x264_cli_pic_copy(mut out: *mut cli_pic_t, mut in_0: *mut c
     (*out).duration = (*in_0).duration;
     (*out).pts = (*in_0).pts;
     (*out).opaque = (*in_0).opaque;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*out).img.planes {
         let mut height: c_int = ((*in_0).img.height as c_float
             * (*x264_cli_csps.as_ptr().offset(csp as isize)).height[i as usize])
@@ -75,5 +75,5 @@ unsafe extern "C" fn x264_cli_pic_copy(mut out: *mut cli_pic_t, mut in_0: *mut c
         );
         i += 1;
     }
-    return 0 as c_int;
+    return 0;
 }

@@ -57,15 +57,15 @@ unsafe extern "C" fn depth_filter_csp_is_supported(mut csp: c_int) -> c_int {
 unsafe extern "C" fn csp_num_interleaved(mut csp: c_int, mut plane: c_int) -> c_int {
     let mut csp_mask: c_int = csp & X264_CSP_MASK;
     return if (csp_mask == X264_CSP_NV12 || csp_mask == X264_CSP_NV21 || csp_mask == X264_CSP_NV16)
-        && plane == 1 as c_int
+        && plane == 1
     {
-        2 as c_int
+        2
     } else if csp_mask == X264_CSP_BGR || csp_mask == X264_CSP_RGB {
-        3 as c_int
+        3
     } else if csp_mask == X264_CSP_BGRA {
-        4 as c_int
+        4
     } else {
-        1 as c_int
+        1
     };
 }
 #[c2rust::src_loc = "103:1"]
@@ -78,31 +78,30 @@ unsafe extern "C" fn dither_plane_1(
     mut height: c_int,
     mut errors: *mut int16_t,
 ) {
-    let lshift: c_int = 16 as c_int - BIT_DEPTH;
-    let rshift: c_int = 16 as c_int - BIT_DEPTH + 2 as c_int;
-    let half: c_int = (1 as c_int) << 16 as c_int - BIT_DEPTH + 1 as c_int;
-    let pixel_max: c_int = ((1 as c_int) << BIT_DEPTH) - 1 as c_int;
+    let lshift: c_int = 16 - BIT_DEPTH;
+    let rshift: c_int = 16 - BIT_DEPTH + 2;
+    let half: c_int = (1) << 16 - BIT_DEPTH + 1;
+    let pixel_max: c_int = ((1) << BIT_DEPTH) - 1;
     memset(
         errors as *mut c_void,
-        0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
+        0,
+        ((width + 1) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
-        let mut err: c_int = 0 as c_int;
-        let mut x: c_int = 0 as c_int;
+        let mut err: c_int = 0;
+        let mut x: c_int = 0;
         while x < width {
-            err = err * 2 as c_int
+            err = err * 2
                 + *errors.offset(x as isize) as c_int
-                + *errors.offset((x + 1 as c_int) as isize) as c_int;
-            *dst.offset((x * 1 as c_int) as isize) = x264_clip3(
-                ((*src.offset((x * 1 as c_int) as isize) as c_int) << 2 as c_int) + err + half
-                    >> rshift,
-                0 as c_int,
+                + *errors.offset((x + 1) as isize) as c_int;
+            *dst.offset((x * 1) as isize) = x264_clip3(
+                ((*src.offset((x * 1) as isize) as c_int) << 2) + err + half >> rshift,
+                0,
                 pixel_max,
             ) as pixel;
-            err = *src.offset((x * 1 as c_int) as isize) as c_int
-                - ((*dst.offset((x * 1 as c_int) as isize) as c_int) << lshift);
+            err = *src.offset((x * 1) as isize) as c_int
+                - ((*dst.offset((x * 1) as isize) as c_int) << lshift);
             *errors.offset(x as isize) = err as int16_t;
             x += 1;
         }
@@ -121,31 +120,30 @@ unsafe extern "C" fn dither_plane_2(
     mut height: c_int,
     mut errors: *mut int16_t,
 ) {
-    let lshift: c_int = 16 as c_int - BIT_DEPTH;
-    let rshift: c_int = 16 as c_int - BIT_DEPTH + 2 as c_int;
-    let half: c_int = (1 as c_int) << 16 as c_int - BIT_DEPTH + 1 as c_int;
-    let pixel_max: c_int = ((1 as c_int) << BIT_DEPTH) - 1 as c_int;
+    let lshift: c_int = 16 - BIT_DEPTH;
+    let rshift: c_int = 16 - BIT_DEPTH + 2;
+    let half: c_int = (1) << 16 - BIT_DEPTH + 1;
+    let pixel_max: c_int = ((1) << BIT_DEPTH) - 1;
     memset(
         errors as *mut c_void,
-        0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
+        0,
+        ((width + 1) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
-        let mut err: c_int = 0 as c_int;
-        let mut x: c_int = 0 as c_int;
+        let mut err: c_int = 0;
+        let mut x: c_int = 0;
         while x < width {
-            err = err * 2 as c_int
+            err = err * 2
                 + *errors.offset(x as isize) as c_int
-                + *errors.offset((x + 1 as c_int) as isize) as c_int;
-            *dst.offset((x * 2 as c_int) as isize) = x264_clip3(
-                ((*src.offset((x * 2 as c_int) as isize) as c_int) << 2 as c_int) + err + half
-                    >> rshift,
-                0 as c_int,
+                + *errors.offset((x + 1) as isize) as c_int;
+            *dst.offset((x * 2) as isize) = x264_clip3(
+                ((*src.offset((x * 2) as isize) as c_int) << 2) + err + half >> rshift,
+                0,
                 pixel_max,
             ) as pixel;
-            err = *src.offset((x * 2 as c_int) as isize) as c_int
-                - ((*dst.offset((x * 2 as c_int) as isize) as c_int) << lshift);
+            err = *src.offset((x * 2) as isize) as c_int
+                - ((*dst.offset((x * 2) as isize) as c_int) << lshift);
             *errors.offset(x as isize) = err as int16_t;
             x += 1;
         }
@@ -164,31 +162,30 @@ unsafe extern "C" fn dither_plane_3(
     mut height: c_int,
     mut errors: *mut int16_t,
 ) {
-    let lshift: c_int = 16 as c_int - BIT_DEPTH;
-    let rshift: c_int = 16 as c_int - BIT_DEPTH + 2 as c_int;
-    let half: c_int = (1 as c_int) << 16 as c_int - BIT_DEPTH + 1 as c_int;
-    let pixel_max: c_int = ((1 as c_int) << BIT_DEPTH) - 1 as c_int;
+    let lshift: c_int = 16 - BIT_DEPTH;
+    let rshift: c_int = 16 - BIT_DEPTH + 2;
+    let half: c_int = (1) << 16 - BIT_DEPTH + 1;
+    let pixel_max: c_int = ((1) << BIT_DEPTH) - 1;
     memset(
         errors as *mut c_void,
-        0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
+        0,
+        ((width + 1) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
-        let mut err: c_int = 0 as c_int;
-        let mut x: c_int = 0 as c_int;
+        let mut err: c_int = 0;
+        let mut x: c_int = 0;
         while x < width {
-            err = err * 2 as c_int
+            err = err * 2
                 + *errors.offset(x as isize) as c_int
-                + *errors.offset((x + 1 as c_int) as isize) as c_int;
-            *dst.offset((x * 3 as c_int) as isize) = x264_clip3(
-                ((*src.offset((x * 3 as c_int) as isize) as c_int) << 2 as c_int) + err + half
-                    >> rshift,
-                0 as c_int,
+                + *errors.offset((x + 1) as isize) as c_int;
+            *dst.offset((x * 3) as isize) = x264_clip3(
+                ((*src.offset((x * 3) as isize) as c_int) << 2) + err + half >> rshift,
+                0,
                 pixel_max,
             ) as pixel;
-            err = *src.offset((x * 3 as c_int) as isize) as c_int
-                - ((*dst.offset((x * 3 as c_int) as isize) as c_int) << lshift);
+            err = *src.offset((x * 3) as isize) as c_int
+                - ((*dst.offset((x * 3) as isize) as c_int) << lshift);
             *errors.offset(x as isize) = err as int16_t;
             x += 1;
         }
@@ -207,31 +204,30 @@ unsafe extern "C" fn dither_plane_4(
     mut height: c_int,
     mut errors: *mut int16_t,
 ) {
-    let lshift: c_int = 16 as c_int - BIT_DEPTH;
-    let rshift: c_int = 16 as c_int - BIT_DEPTH + 2 as c_int;
-    let half: c_int = (1 as c_int) << 16 as c_int - BIT_DEPTH + 1 as c_int;
-    let pixel_max: c_int = ((1 as c_int) << BIT_DEPTH) - 1 as c_int;
+    let lshift: c_int = 16 - BIT_DEPTH;
+    let rshift: c_int = 16 - BIT_DEPTH + 2;
+    let half: c_int = (1) << 16 - BIT_DEPTH + 1;
+    let pixel_max: c_int = ((1) << BIT_DEPTH) - 1;
     memset(
         errors as *mut c_void,
-        0 as c_int,
-        ((width + 1 as c_int) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
+        0,
+        ((width + 1) as size_t).wrapping_mul(size_of::<int16_t>() as size_t),
     );
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
-        let mut err: c_int = 0 as c_int;
-        let mut x: c_int = 0 as c_int;
+        let mut err: c_int = 0;
+        let mut x: c_int = 0;
         while x < width {
-            err = err * 2 as c_int
+            err = err * 2
                 + *errors.offset(x as isize) as c_int
-                + *errors.offset((x + 1 as c_int) as isize) as c_int;
-            *dst.offset((x * 4 as c_int) as isize) = x264_clip3(
-                ((*src.offset((x * 4 as c_int) as isize) as c_int) << 2 as c_int) + err + half
-                    >> rshift,
-                0 as c_int,
+                + *errors.offset((x + 1) as isize) as c_int;
+            *dst.offset((x * 4) as isize) = x264_clip3(
+                ((*src.offset((x * 4) as isize) as c_int) << 2) + err + half >> rshift,
+                0,
                 pixel_max,
             ) as pixel;
-            err = *src.offset((x * 4 as c_int) as isize) as c_int
-                - ((*dst.offset((x * 4 as c_int) as isize) as c_int) << lshift);
+            err = *src.offset((x * 4) as isize) as c_int
+                - ((*dst.offset((x * 4) as isize) as c_int) << lshift);
             *errors.offset(x as isize) = err as int16_t;
             x += 1;
         }
@@ -247,7 +243,7 @@ unsafe extern "C" fn dither_image(
     mut error_buf: *mut int16_t,
 ) {
     let mut csp_mask: c_int = (*img).csp & X264_CSP_MASK;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*img).planes {
         let mut num_interleaved: c_int = csp_num_interleaved((*img).csp, i);
         let mut height: c_int = ((*x264_cli_csps.as_ptr().offset(csp_mask as isize)).height
@@ -257,12 +253,12 @@ unsafe extern "C" fn dither_image(
             [i as usize]
             * (*img).width as c_float
             / num_interleaved as c_float) as c_int;
-        if num_interleaved == 4 as c_int {
+        if num_interleaved == 4 {
             dither_plane_4(
                 ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(0),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -271,7 +267,7 @@ unsafe extern "C" fn dither_image(
                 ((*out).plane[i as usize] as *mut pixel).offset(1),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(1),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -280,7 +276,7 @@ unsafe extern "C" fn dither_image(
                 ((*out).plane[i as usize] as *mut pixel).offset(2),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(2),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -289,17 +285,17 @@ unsafe extern "C" fn dither_image(
                 ((*out).plane[i as usize] as *mut pixel).offset(3),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(3),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
             );
-        } else if num_interleaved == 3 as c_int {
+        } else if num_interleaved == 3 {
             dither_plane_3(
                 ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(0),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -308,7 +304,7 @@ unsafe extern "C" fn dither_image(
                 ((*out).plane[i as usize] as *mut pixel).offset(1),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(1),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -317,17 +313,17 @@ unsafe extern "C" fn dither_image(
                 ((*out).plane[i as usize] as *mut pixel).offset(2),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(2),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
             );
-        } else if num_interleaved == 2 as c_int {
+        } else if num_interleaved == 2 {
             dither_plane_2(
                 ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(0),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -336,7 +332,7 @@ unsafe extern "C" fn dither_image(
                 ((*out).plane[i as usize] as *mut pixel).offset(1),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(1),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -346,7 +342,7 @@ unsafe extern "C" fn dither_image(
                 ((*out).plane[i as usize] as *mut pixel).offset(0),
                 (*out).stride[i as usize] / SIZEOF_PIXEL,
                 ((*img).plane[i as usize] as *mut uint16_t).offset(0),
-                (*img).stride[i as usize] / 2 as c_int,
+                (*img).stride[i as usize] / 2,
                 width,
                 height,
                 error_buf,
@@ -358,8 +354,8 @@ unsafe extern "C" fn dither_image(
 #[c2rust::src_loc = "146:1"]
 unsafe extern "C" fn scale_image(mut output: *mut cli_image_t, mut img: *mut cli_image_t) {
     let mut csp_mask: c_int = (*img).csp & X264_CSP_MASK;
-    let shift: c_int = BIT_DEPTH - 8 as c_int;
-    let mut i: c_int = 0 as c_int;
+    let shift: c_int = BIT_DEPTH - 8;
+    let mut i: c_int = 0;
     while i < (*img).planes {
         let mut src: *mut uint8_t = (*img).plane[i as usize];
         let mut dst: *mut uint16_t = (*output).plane[i as usize] as *mut uint16_t;
@@ -369,15 +365,15 @@ unsafe extern "C" fn scale_image(mut output: *mut cli_image_t, mut img: *mut cli
         let mut width: c_int = ((*x264_cli_csps.as_ptr().offset(csp_mask as isize)).width
             [i as usize]
             * (*img).width as c_float) as c_int;
-        let mut j: c_int = 0 as c_int;
+        let mut j: c_int = 0;
         while j < height {
-            let mut k: c_int = 0 as c_int;
+            let mut k: c_int = 0;
             while k < width {
                 *dst.offset(k as isize) = ((*src.offset(k as isize) as c_int) << shift) as uint16_t;
                 k += 1;
             }
             src = src.offset((*img).stride[i as usize] as isize);
-            dst = dst.offset(((*output).stride[i as usize] / 2 as c_int) as isize);
+            dst = dst.offset(((*output).stride[i as usize] / 2) as isize);
             j += 1;
         }
         i += 1;
@@ -398,14 +394,14 @@ unsafe extern "C" fn get_frame(
     {
         return -1;
     }
-    if (*h).bit_depth < 16 as c_int && (*output).img.csp & X264_CSP_HIGH_DEPTH != 0 {
+    if (*h).bit_depth < 16 && (*output).img.csp & X264_CSP_HIGH_DEPTH != 0 {
         dither_image(&mut (*h).buffer.img, &mut (*output).img, (*h).error_buf);
         (*output).img = (*h).buffer.img;
-    } else if (*h).bit_depth > 8 as c_int && (*output).img.csp & X264_CSP_HIGH_DEPTH == 0 {
+    } else if (*h).bit_depth > 8 && (*output).img.csp & X264_CSP_HIGH_DEPTH == 0 {
         scale_image(&mut (*h).buffer.img, &mut (*output).img);
         (*output).img = (*h).buffer.img;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "188:1"]
 unsafe extern "C" fn release_frame(
@@ -434,10 +430,10 @@ unsafe extern "C" fn init(
     mut param: *mut x264_param_t,
     mut opt_string: *mut c_char,
 ) -> c_int {
-    let mut ret: c_int = 0 as c_int;
+    let mut ret: c_int = 0;
     let mut change_fmt: c_int = ((*info).csp ^ (*param).i_csp) & X264_CSP_HIGH_DEPTH;
     let mut csp: c_int = !(!(*info).csp ^ change_fmt);
-    let mut bit_depth: c_int = 8 as c_int * x264_cli_csp_depth_factor(csp);
+    let mut bit_depth: c_int = 8 * x264_cli_csp_depth_factor(csp);
     if !opt_string.is_null() {
         static mut optlist: [*const c_char; 2] = [
             b"bit_depth\0" as *const u8 as *const c_char,
@@ -448,8 +444,8 @@ unsafe extern "C" fn init(
             let mut str_bit_depth: *mut c_char =
                 x264_get_option(b"bit_depth\0" as *const u8 as *const c_char, opts);
             bit_depth = x264_otoi(str_bit_depth, -1);
-            ret = (bit_depth < 8 as c_int || bit_depth > 16 as c_int) as c_int;
-            csp = if bit_depth > 8 as c_int {
+            ret = (bit_depth < 8 || bit_depth > 16) as c_int;
+            csp = if bit_depth > 8 {
                 csp | X264_CSP_HIGH_DEPTH
             } else {
                 csp & !X264_CSP_HIGH_DEPTH
@@ -457,15 +453,15 @@ unsafe extern "C" fn init(
             change_fmt = ((*info).csp ^ csp) & X264_CSP_HIGH_DEPTH;
             free(opts as *mut c_void);
         } else {
-            ret = 1 as c_int;
+            ret = 1;
         }
     }
-    if bit_depth != 10 as c_int {
+    if bit_depth != 10 {
         x264_cli_log(
             b"depth_10\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
             b"this filter supports only bit depth %d\n\0" as *const u8 as *const c_char,
-            10 as c_int,
+            10,
         );
         return -1;
     }
@@ -477,7 +473,7 @@ unsafe extern "C" fn init(
         );
         return -1;
     }
-    if change_fmt != 0 || bit_depth != 8 as c_int * x264_cli_csp_depth_factor(csp) {
+    if change_fmt != 0 || bit_depth != 8 * x264_cli_csp_depth_factor(csp) {
         if depth_filter_csp_is_supported(csp) == 0 {
             x264_cli_log(
                 b"depth_10\0" as *const u8 as *const c_char,
@@ -511,7 +507,7 @@ unsafe extern "C" fn init(
         *filter = depth_10_filter;
         (*info).csp = (*h).dst_csp;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "261:18"]

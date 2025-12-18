@@ -23,11 +23,11 @@ unsafe extern "C" fn open_file(
             return -1;
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "39:1"]
 unsafe extern "C" fn set_param(mut _handle: hnd_t, mut _p_param: *mut x264_param_t) -> c_int {
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "44:1"]
 unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t) -> c_int {
@@ -69,7 +69,7 @@ unsafe extern "C" fn close_file(
     mut _second_largest_pts: int64_t,
 ) -> c_int {
     if handle.is_null() || handle == stdout as hnd_t {
-        return 0 as c_int;
+        return 0;
     }
     return fclose(handle as *mut FILE);
 }

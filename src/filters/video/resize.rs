@@ -83,7 +83,7 @@ unsafe extern "C" fn full_check(
     mut info: *mut video_info_t,
     mut param: *mut x264_param_t,
 ) -> c_int {
-    let mut required: c_int = 0 as c_int;
+    let mut required: c_int = 0;
     required |= ((*info).csp != (*param).i_csp) as c_int;
     required |= ((*info).width != (*param).width) as c_int;
     required |= ((*info).height != (*param).height) as c_int;
@@ -103,14 +103,14 @@ unsafe extern "C" fn help(mut longhelp: c_int) {
         b"            resizes frames based on the given criteria:\n            - resolution only: resizes and adapts sar to avoid stretching\n            - sar only: sets the sar and resizes to avoid stretching\n            - resolution and sar: resizes to given resolution and sets the sar\n            - fittobox: resizes the video based on the desired constraints\n               - width, height, both\n            - fittobox and sar: same as above except with specified sar\n            - csp: convert to the given csp. syntax: [name][:depth]\n               - valid csp names [keep current]: \0"
             as *const u8 as *const c_char,
     );
-    let mut i: c_int = X264_CSP_NONE + 1 as c_int;
+    let mut i: c_int = X264_CSP_NONE + 1;
     while i < X264_CSP_CLI_MAX {
         if !(*x264_cli_csps.as_ptr().offset(i as isize)).name.is_null() {
             printf(
                 b"%s\0" as *const u8 as *const c_char,
                 (*x264_cli_csps.as_ptr().offset(i as isize)).name,
             );
-            if (i + 1 as c_int) < X264_CSP_CLI_MAX {
+            if (i + 1) < X264_CSP_CLI_MAX {
                 printf(b", \0" as *const u8 as *const c_char);
             }
         }
@@ -239,10 +239,10 @@ unsafe extern "C" fn convert_csp_to_pix_fmt(mut csp: c_int) -> c_int {
 }
 #[c2rust::src_loc = "171:1"]
 unsafe extern "C" fn pix_number_of_planes(mut pix_desc: *const AVPixFmtDescriptor) -> c_int {
-    let mut num_planes: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
+    let mut num_planes: c_int = 0;
+    let mut i: c_int = 0;
     while i < (*pix_desc).nb_components as c_int {
-        let mut plane_plus1: c_int = (*pix_desc).comp[i as usize].plane + 1 as c_int;
+        let mut plane_plus1: c_int = (*pix_desc).comp[i as usize].plane + 1;
         num_planes = if plane_plus1 > num_planes {
             plane_plus1
         } else {
@@ -266,19 +266,17 @@ unsafe extern "C" fn pick_closest_supported_csp(mut csp: c_int) -> c_int {
     let mut is_bgr: c_int =
         !strstr(pix_fmt_name, b"bgr\0" as *const u8 as *const c_char).is_null() as c_int;
     if is_bgr != 0 || is_rgb != 0 {
-        if (*pix_desc).nb_components as c_int == 4 as c_int {
+        if (*pix_desc).nb_components as c_int == 4 {
             ret = X264_CSP_BGRA;
         } else if is_bgr != 0 {
             ret = X264_CSP_BGR;
         } else {
             ret = X264_CSP_RGB;
         }
-    } else if (*pix_desc).nb_components as c_int == 1 as c_int
-        || (*pix_desc).nb_components as c_int == 2 as c_int
-    {
+    } else if (*pix_desc).nb_components as c_int == 1 || (*pix_desc).nb_components as c_int == 2 {
         ret = X264_CSP_I400;
     } else if (*pix_desc).log2_chroma_w as c_int != 0 && (*pix_desc).log2_chroma_h as c_int != 0 {
-        ret = if pix_number_of_planes(pix_desc) == 2 as c_int {
+        ret = if pix_number_of_planes(pix_desc) == 2 {
             X264_CSP_NV12
         } else {
             X264_CSP_I420
@@ -288,9 +286,9 @@ unsafe extern "C" fn pick_closest_supported_csp(mut csp: c_int) -> c_int {
     } else {
         ret = X264_CSP_I444;
     }
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*pix_desc).nb_components as c_int {
-        if (*pix_desc).comp[i as usize].depth > 8 as c_int {
+        if (*pix_desc).comp[i as usize].depth > 8 {
             ret |= X264_CSP_HIGH_DEPTH;
         }
         i += 1;
@@ -313,18 +311,18 @@ unsafe extern "C" fn handle_opts(
     let mut str_csp: *mut c_char = x264_get_option(*optlist.offset(4), opts);
     let mut width: c_int = x264_otoi(str_width, -1);
     let mut height: c_int = x264_otoi(str_height, -1);
-    let mut csp_only: c_int = 0 as c_int;
+    let mut csp_only: c_int = 0;
     let mut in_sar_w: uint32_t = (*info).sar_width;
     let mut in_sar_h: uint32_t = (*info).sar_height;
     if !str_csp.is_null() {
         let mut str_depth: *mut c_char = strchr(str_csp, ':' as i32);
-        let mut depth: c_int = x264_cli_csp_depth_factor((*info).csp) * 8 as c_int;
+        let mut depth: c_int = x264_cli_csp_depth_factor((*info).csp) * 8;
         if !str_depth.is_null() {
             let fresh0 = str_depth;
             str_depth = str_depth.offset(1);
             *fresh0 = '\0' as i32 as c_char;
             depth = x264_otoi(str_depth, -1);
-            if depth != 8 as c_int && depth != 16 as c_int {
+            if depth != 8 && depth != 16 {
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -338,7 +336,7 @@ unsafe extern "C" fn handle_opts(
         if strlen(str_csp) == 0 as size_t {
             csp = (*info).csp & X264_CSP_MASK;
         } else {
-            csp = X264_CSP_CLI_MAX - 1 as c_int;
+            csp = X264_CSP_CLI_MAX - 1;
             while csp > X264_CSP_NONE {
                 if !(*x264_cli_csps.as_ptr().offset(csp as isize))
                     .name
@@ -350,7 +348,7 @@ unsafe extern "C" fn handle_opts(
                 csp -= 1;
             }
         }
-        if csp == 0 as c_int {
+        if csp == 0 {
             x264_cli_log(
                 b"resize\0" as *const u8 as *const c_char,
                 X264_LOG_ERROR,
@@ -360,7 +358,7 @@ unsafe extern "C" fn handle_opts(
             return -1;
         }
         (*h).dst_csp = csp;
-        if depth == 16 as c_int {
+        if depth == 16 {
             (*h).dst_csp |= X264_CSP_HIGH_DEPTH;
         }
     }
@@ -369,20 +367,18 @@ unsafe extern "C" fn handle_opts(
         in_sar_w = in_sar_h;
     }
     if !str_sar.is_null() {
-        if 2 as c_int
+        if 2 != sscanf(
+            str_sar,
+            b"%u:%u\0" as *const u8 as *const c_char,
+            &mut out_sar_w as *mut uint32_t,
+            &mut out_sar_h as *mut uint32_t,
+        ) && 2
             != sscanf(
                 str_sar,
-                b"%u:%u\0" as *const u8 as *const c_char,
+                b"%u/%u\0" as *const u8 as *const c_char,
                 &mut out_sar_w as *mut uint32_t,
                 &mut out_sar_h as *mut uint32_t,
             )
-            && 2 as c_int
-                != sscanf(
-                    str_sar,
-                    b"%u/%u\0" as *const u8 as *const c_char,
-                    &mut out_sar_w as *mut uint32_t,
-                    &mut out_sar_h as *mut uint32_t,
-                )
         {
             x264_cli_log(
                 b"resize\0" as *const u8 as *const c_char,
@@ -398,7 +394,7 @@ unsafe extern "C" fn handle_opts(
     }
     if !fittobox.is_null() {
         if strcasecmp(fittobox, b"both\0" as *const u8 as *const c_char) == 0 {
-            if width <= 0 as c_int || height <= 0 as c_int {
+            if width <= 0 || height <= 0 {
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -415,7 +411,7 @@ unsafe extern "C" fn handle_opts(
                 return -1;
             }
         } else if strcasecmp(fittobox, b"width\0" as *const u8 as *const c_char) == 0 {
-            if width <= 0 as c_int {
+            if width <= 0 {
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -429,7 +425,7 @@ unsafe extern "C" fn handle_opts(
             }
             height = INT_MAX;
         } else if strcasecmp(fittobox, b"height\0" as *const u8 as *const c_char) == 0 {
-            if height <= 0 as c_int {
+            if height <= 0 {
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -476,7 +472,7 @@ unsafe extern "C" fn handle_opts(
             };
         }
     } else if !str_width.is_null() || !str_height.is_null() {
-        if width <= 0 as c_int || height <= 0 as c_int {
+        if width <= 0 || height <= 0 {
             x264_cli_log(
                 b"resize\0" as *const u8 as *const c_char,
                 X264_LOG_ERROR,
@@ -530,7 +526,7 @@ unsafe extern "C" fn handle_opts(
         (*h).dst.width = width;
         (*h).dst.height = height;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "368:1"]
 unsafe extern "C" fn init_sws_context(mut h: *mut resizer_hnd_t) -> c_int {
@@ -545,55 +541,55 @@ unsafe extern "C" fn init_sws_context(mut h: *mut resizer_hnd_t) -> c_int {
         (*h).ctx as *mut c_void,
         b"sws_flags\0" as *const u8 as *const c_char,
         (*h).ctx_flags as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"dstw\0" as *const u8 as *const c_char,
         (*h).dst.width as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"dsth\0" as *const u8 as *const c_char,
         (*h).dst.height as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"dst_format\0" as *const u8 as *const c_char,
         (*h).dst.pix_fmt as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"dst_range\0" as *const u8 as *const c_char,
         (*h).dst.range as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"srcw\0" as *const u8 as *const c_char,
         (*h).scale.width as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"srch\0" as *const u8 as *const c_char,
         (*h).scale.height as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"src_format\0" as *const u8 as *const c_char,
         (*h).scale.pix_fmt as int64_t,
-        0 as c_int,
+        0,
     );
     av_opt_set_int(
         (*h).ctx as *mut c_void,
         b"src_range\0" as *const u8 as *const c_char,
         (*h).scale.range as int64_t,
-        0 as c_int,
+        0,
     );
     sws_setColorspaceDetails(
         (*h).ctx as *mut SwsContext,
@@ -601,15 +597,15 @@ unsafe extern "C" fn init_sws_context(mut h: *mut resizer_hnd_t) -> c_int {
         (*h).scale.range,
         sws_getCoefficients(SWS_CS_DEFAULT) as *const c_int,
         (*h).dst.range,
-        0 as c_int,
-        (1 as c_int) << 16 as c_int,
-        (1 as c_int) << 16 as c_int,
+        0,
+        (1) << 16,
+        (1) << 16,
     );
     return (sws_init_context(
         (*h).ctx as *mut SwsContext,
         0 as *mut SwsFilter,
         0 as *mut SwsFilter,
-    ) < 0 as c_int) as c_int;
+    ) < 0) as c_int;
 }
 #[c2rust::src_loc = "396:1"]
 unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli_pic_t) -> c_int {
@@ -628,7 +624,7 @@ unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli
         size_of::<frame_prop_t>() as size_t,
     ) == 0
     {
-        return 0 as c_int;
+        return 0;
     }
     if !(*h).ctx.is_null() || (*h).working != 0 {
         x264_cli_log(
@@ -637,7 +633,7 @@ unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli
             b"stream properties changed at pts %ld\n\0" as *const u8 as *const c_char,
             (*in_0).pts,
         );
-        (*h).fast_mono = 0 as c_int;
+        (*h).fast_mono = 0;
     }
     (*h).scale = input_prop;
     if (*h).buffer_allocated == 0 && (*h).fast_mono == 0 {
@@ -650,7 +646,7 @@ unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli
         {
             return -1;
         }
-        (*h).buffer_allocated = 1 as c_int;
+        (*h).buffer_allocated = 1;
     }
     if init_sws_context(h) != 0 {
         x264_cli_log(
@@ -660,7 +656,7 @@ unsafe extern "C" fn check_resizer(mut h: *mut resizer_hnd_t, mut in_0: *mut cli
         );
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "418:1"]
 unsafe extern "C" fn init(
@@ -674,10 +670,10 @@ unsafe extern "C" fn init(
         && strcmp(opt_string, b"normcsp\0" as *const u8 as *const c_char) == 0
         && (*info).csp & X264_CSP_OTHER == 0
     {
-        return 0 as c_int;
+        return 0;
     }
     if opt_string.is_null() && full_check(info, param) == 0 {
-        return 0 as c_int;
+        return 0;
     }
     static mut optlist: [*const c_char; 7] = [
         b"width\0" as *const u8 as *const c_char,
@@ -707,9 +703,9 @@ unsafe extern "C" fn init(
         (*h).dst.range = (*info).fullrange;
         if strcmp(opt_string, b"normcsp\0" as *const u8 as *const c_char) == 0 {
             free(opts as *mut c_void);
-            (*h).variable_input = 1 as c_int;
+            (*h).variable_input = 1;
             (*h).dst_csp = pick_closest_supported_csp((*info).csp);
-            if (*h).dst_csp == 0 as c_int {
+            if (*h).dst_csp == 0 {
                 x264_cli_log(
                     b"resize\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -750,10 +746,10 @@ unsafe extern "C" fn init(
     let mut src_pix_fmt: c_int = convert_csp_to_pix_fmt((*info).csp);
     let mut src_pix_fmt_inv: c_int = convert_csp_to_pix_fmt((*info).csp ^ X264_CSP_HIGH_DEPTH);
     let mut dst_pix_fmt_inv: c_int = convert_csp_to_pix_fmt((*h).dst_csp ^ X264_CSP_HIGH_DEPTH);
-    if (*h).dst.width <= 0 as c_int
-        || (*h).dst.height <= 0 as c_int
-        || (*h).dst.width > 16384 as c_int
-        || (*h).dst.height > 16384 as c_int
+    if (*h).dst.width <= 0
+        || (*h).dst.height <= 0
+        || (*h).dst.width > 16384
+        || (*h).dst.height > 16384
     {
         x264_cli_log(
             b"resize\0" as *const u8 as *const c_char,
@@ -772,9 +768,9 @@ unsafe extern "C" fn init(
                 as *const c_char,
             av_get_pix_fmt_name(src_pix_fmt_inv as AVPixelFormat),
             if (*info).csp & 0x2000 as c_int != 0 {
-                16 as c_int
+                16
             } else {
-                8 as c_int
+                8
             },
         );
         return -1;
@@ -796,9 +792,9 @@ unsafe extern "C" fn init(
                 as *const c_char,
             av_get_pix_fmt_name(dst_pix_fmt_inv as AVPixelFormat),
             if (*h).dst_csp & 0x2000 as c_int != 0 {
-                16 as c_int
+                16
             } else {
-                8 as c_int
+                8
             },
         );
         return -1;
@@ -877,7 +873,7 @@ unsafe extern "C" fn init(
         && (*h).dst.height == (*info).height as c_int
         && (*h).dst.range == (*h).input_range
     {
-        (*h).fast_mono = 1 as c_int;
+        (*h).fast_mono = 1;
     }
     if (*h).variable_input == 0 {
         let mut input_pic: cli_pic_t = {
@@ -887,7 +883,7 @@ unsafe extern "C" fn init(
                         csp: (*info).csp,
                         width: (*info).width as c_int,
                         height: (*info).height as c_int,
-                        planes: 0 as c_int,
+                        planes: 0,
                         plane: [0 as *mut uint8_t; 4],
                         stride: [0; 4],
                     };
@@ -911,7 +907,7 @@ unsafe extern "C" fn init(
     (*h).prev_hnd = *handle;
     *handle = h as hnd_t;
     *filter = resize_filter;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "543:1"]
 unsafe extern "C" fn get_frame(
@@ -931,7 +927,7 @@ unsafe extern "C" fn get_frame(
     if (*h).variable_input != 0 && check_resizer(h, output) != 0 {
         return -1;
     }
-    (*h).working = 1 as c_int;
+    (*h).working = 1;
     if (*h).pre_swap_chroma != 0 {
         let mut t: *mut uint8_t = (*output).img.plane[1];
         (*output).img.plane[1] = (*output).img.plane[2];
@@ -942,7 +938,7 @@ unsafe extern "C" fn get_frame(
             (*h).ctx as *mut SwsContext,
             (*output).img.plane.as_mut_ptr() as *const *const uint8_t,
             (*output).img.stride.as_mut_ptr() as *const c_int,
-            0 as c_int,
+            0,
             (*output).img.height,
             (*h).buffer.img.plane.as_mut_ptr() as *const *mut uint8_t,
             (*h).buffer.img.stride.as_mut_ptr() as *const c_int,
@@ -956,7 +952,7 @@ unsafe extern "C" fn get_frame(
         (*output).img.plane[1] = (*output).img.plane[2];
         (*output).img.plane[2] = t_0;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "567:1"]
 unsafe extern "C" fn release_frame(

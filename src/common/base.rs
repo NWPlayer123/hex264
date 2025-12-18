@@ -158,13 +158,12 @@ unsafe extern "C" fn x264_malloc(mut i_size: int64_t) -> *mut c_void {
         return NULL;
     }
     let mut align_buf: *mut uint8_t = 0 as *mut uint8_t;
-    if i_size >= (HUGE_PAGE_SIZE * 7 as c_int / 8 as c_int) as int64_t {
+    if i_size >= (HUGE_PAGE_SIZE * 7 / 8) as int64_t {
         align_buf = memalign(HUGE_PAGE_SIZE as size_t, i_size as size_t) as *mut uint8_t;
         if !align_buf.is_null() {
-            let mut madv_size: size_t = (i_size + HUGE_PAGE_SIZE as int64_t
-                - (HUGE_PAGE_SIZE * 7 as c_int / 8 as c_int) as int64_t
-                & !(HUGE_PAGE_SIZE - 1 as c_int) as int64_t)
-                as size_t;
+            let mut madv_size: size_t =
+                (i_size + HUGE_PAGE_SIZE as int64_t - (HUGE_PAGE_SIZE * 7 / 8) as int64_t
+                    & !(HUGE_PAGE_SIZE - 1) as int64_t) as size_t;
             madvise(align_buf as *mut c_void, madv_size, MADV_HUGEPAGE);
         }
     } else {
@@ -180,7 +179,7 @@ unsafe extern "C" fn x264_malloc(mut i_size: int64_t) -> *mut c_void {
     return align_buf as *mut c_void;
 }
 #[c2rust::src_loc = "106:9"]
-const HUGE_PAGE_SIZE: c_int = 2 as c_int * 1024 as c_int * 1024 as c_int;
+const HUGE_PAGE_SIZE: c_int = 2 * 1024 * 1024;
 #[no_mangle]
 #[c2rust::src_loc = "149:1"]
 unsafe extern "C" fn x264_free(mut p: *mut c_void) {
@@ -191,20 +190,20 @@ unsafe extern "C" fn x264_free(mut p: *mut c_void) {
 #[no_mangle]
 #[c2rust::src_loc = "164:1"]
 unsafe extern "C" fn x264_slurp_file(mut filename: *const c_char) -> *mut c_char {
-    let mut b_error: c_int = 0 as c_int;
+    let mut b_error: c_int = 0;
     let mut i_size: int64_t = 0;
     let mut buf: *mut c_char = 0 as *mut c_char;
     let mut fh: *mut FILE = fopen(filename, b"rb\0" as *const u8 as *const c_char) as *mut FILE;
     if fh.is_null() {
         return 0 as *mut c_char;
     }
-    b_error |= (fseeko(fh, 0 as __off64_t, SEEK_END) < 0 as c_int) as c_int;
+    b_error |= (fseeko(fh, 0 as __off64_t, SEEK_END) < 0) as c_int;
     i_size = ftello(fh) as int64_t;
     b_error |= (i_size <= 0 as int64_t) as c_int;
     if WORD_SIZE == 4 as uint64_t {
         b_error |= (i_size > INT32_MAX as int64_t) as c_int;
     }
-    b_error |= (fseeko(fh, 0 as __off64_t, SEEK_SET) < 0 as c_int) as c_int;
+    b_error |= (fseeko(fh, 0 as __off64_t, SEEK_SET) < 0) as c_int;
     if !(b_error != 0) {
         buf = x264_malloc(i_size + 2 as int64_t) as *mut c_char;
         if !buf.is_null() {
@@ -228,7 +227,7 @@ unsafe extern "C" fn x264_slurp_file(mut filename: *const c_char) -> *mut c_char
     return 0 as *mut c_char;
 }
 #[c2rust::src_loc = "213:9"]
-const BUFFER_DEFAULT_SIZE: c_int = 16 as c_int;
+const BUFFER_DEFAULT_SIZE: c_int = 16;
 #[no_mangle]
 #[c2rust::src_loc = "215:1"]
 unsafe extern "C" fn x264_param_strdup(
@@ -246,17 +245,15 @@ unsafe extern "C" fn x264_param_strdup(
             current_block = 14623623056652471472;
         } else {
             (*buf).size = BUFFER_DEFAULT_SIZE;
-            (*buf).count = 0 as c_int;
+            (*buf).count = 0;
             (*param).opaque = buf as *mut c_void;
             current_block = 11650488183268122163;
         }
     } else if (*buf).count == (*buf).size {
-        if (*buf).size
-            > (INT_MAX - 8 as c_ulong as c_int) / 2 as c_int / size_of::<*mut c_void>() as c_int
-        {
+        if (*buf).size > (INT_MAX - 8 as c_ulong as c_int) / 2 / size_of::<*mut c_void>() as c_int {
             current_block = 14623623056652471472;
         } else {
-            let mut new_size: c_int = (*buf).size * 2 as c_int;
+            let mut new_size: c_int = (*buf).size * 2;
             buf = realloc(
                 buf as *mut c_void,
                 (8 as c_ulong as c_int as size_t).wrapping_add(
@@ -298,7 +295,7 @@ unsafe extern "C" fn x264_param_strdup(
 unsafe extern "C" fn x264_param_cleanup(mut param: *mut x264_param_t) {
     let mut buf: *mut strdup_buffer = (*param).opaque as *mut strdup_buffer;
     if !buf.is_null() {
-        let mut i: c_int = 0 as c_int;
+        let mut i: c_int = 0;
         while i < (*buf).count {
             free(*(*buf).ptr.as_mut_ptr().offset(i as isize));
             i += 1;
@@ -310,11 +307,7 @@ unsafe extern "C" fn x264_param_cleanup(mut param: *mut x264_param_t) {
 #[no_mangle]
 #[c2rust::src_loc = "266:1"]
 unsafe extern "C" fn x264_picture_init(mut pic: *mut x264_picture_t) {
-    memset(
-        pic as *mut c_void,
-        0 as c_int,
-        size_of::<x264_picture_t>() as size_t,
-    );
+    memset(pic as *mut c_void, 0, size_of::<x264_picture_t>() as size_t);
     (*pic).i_type = X264_TYPE_AUTO;
     (*pic).i_qpplus1 = X264_QP_AUTO;
     (*pic).i_pic_struct = PIC_STRUCT_AUTO as c_int;
@@ -335,113 +328,81 @@ unsafe extern "C" fn x264_picture_alloc(
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 1 as c_int,
-                width_fix8: [256 as c_int * 1 as c_int, 0, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 0, 0],
+                planes: 1,
+                width_fix8: [256 * 1, 0, 0],
+                height_fix8: [256 * 1, 0, 0],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 3 as c_int,
-                width_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int / 2 as c_int,
-                    256 as c_int / 2 as c_int,
-                ],
-                height_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int / 2 as c_int,
-                    256 as c_int / 2 as c_int,
-                ],
+                planes: 3,
+                width_fix8: [256 * 1, 256 / 2, 256 / 2],
+                height_fix8: [256 * 1, 256 / 2, 256 / 2],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 3 as c_int,
-                width_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int / 2 as c_int,
-                    256 as c_int / 2 as c_int,
-                ],
-                height_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int / 2 as c_int,
-                    256 as c_int / 2 as c_int,
-                ],
+                planes: 3,
+                width_fix8: [256 * 1, 256 / 2, 256 / 2],
+                height_fix8: [256 * 1, 256 / 2, 256 / 2],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 2 as c_int,
-                width_fix8: [256 as c_int * 1 as c_int, 256 as c_int * 1 as c_int, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 256 as c_int / 2 as c_int, 0],
+                planes: 2,
+                width_fix8: [256 * 1, 256 * 1, 0],
+                height_fix8: [256 * 1, 256 / 2, 0],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 2 as c_int,
-                width_fix8: [256 as c_int * 1 as c_int, 256 as c_int * 1 as c_int, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 256 as c_int / 2 as c_int, 0],
+                planes: 2,
+                width_fix8: [256 * 1, 256 * 1, 0],
+                height_fix8: [256 * 1, 256 / 2, 0],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 3 as c_int,
-                width_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int / 2 as c_int,
-                    256 as c_int / 2 as c_int,
-                ],
-                height_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                ],
+                planes: 3,
+                width_fix8: [256 * 1, 256 / 2, 256 / 2],
+                height_fix8: [256 * 1, 256 * 1, 256 * 1],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 3 as c_int,
-                width_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int / 2 as c_int,
-                    256 as c_int / 2 as c_int,
-                ],
-                height_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                ],
+                planes: 3,
+                width_fix8: [256 * 1, 256 / 2, 256 / 2],
+                height_fix8: [256 * 1, 256 * 1, 256 * 1],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 2 as c_int,
-                width_fix8: [256 as c_int * 1 as c_int, 256 as c_int * 1 as c_int, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 256 as c_int * 1 as c_int, 0],
+                planes: 2,
+                width_fix8: [256 * 1, 256 * 1, 0],
+                height_fix8: [256 * 1, 256 * 1, 0],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 1 as c_int,
-                width_fix8: [256 as c_int * 2 as c_int, 0, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 0, 0],
+                planes: 1,
+                width_fix8: [256 * 2, 0, 0],
+                height_fix8: [256 * 1, 0, 0],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 1 as c_int,
-                width_fix8: [256 as c_int * 2 as c_int, 0, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 0, 0],
+                planes: 1,
+                width_fix8: [256 * 2, 0, 0],
+                height_fix8: [256 * 1, 0, 0],
             };
             init
         },
@@ -452,57 +413,41 @@ unsafe extern "C" fn x264_picture_alloc(
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 3 as c_int,
-                width_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                ],
-                height_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                ],
+                planes: 3,
+                width_fix8: [256 * 1, 256 * 1, 256 * 1],
+                height_fix8: [256 * 1, 256 * 1, 256 * 1],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 3 as c_int,
-                width_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                ],
-                height_fix8: [
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                    256 as c_int * 1 as c_int,
-                ],
+                planes: 3,
+                width_fix8: [256 * 1, 256 * 1, 256 * 1],
+                height_fix8: [256 * 1, 256 * 1, 256 * 1],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 1 as c_int,
-                width_fix8: [256 as c_int * 3 as c_int, 0, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 0, 0],
+                planes: 1,
+                width_fix8: [256 * 3, 0, 0],
+                height_fix8: [256 * 1, 0, 0],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 1 as c_int,
-                width_fix8: [256 as c_int * 4 as c_int, 0, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 0, 0],
+                planes: 1,
+                width_fix8: [256 * 4, 0, 0],
+                height_fix8: [256 * 1, 0, 0],
             };
             init
         },
         {
             let mut init = x264_csp_tab_t {
-                planes: 1 as c_int,
-                width_fix8: [256 as c_int * 3 as c_int, 0, 0],
-                height_fix8: [256 as c_int * 1 as c_int, 0, 0],
+                planes: 1,
+                width_fix8: [256 * 3, 0, 0],
+                height_fix8: [256 * 1, 0, 0],
             };
             init
         },
@@ -515,22 +460,20 @@ unsafe extern "C" fn x264_picture_alloc(
     (*pic).img.i_csp = i_csp;
     (*pic).img.i_plane = csp_tab[csp as usize].planes;
     let mut depth_factor: c_int = if i_csp & X264_CSP_HIGH_DEPTH != 0 {
-        2 as c_int
+        2
     } else {
-        1 as c_int
+        1
     };
-    let mut plane_offset: [int64_t; 3] = [0 as c_int as int64_t, 0, 0];
+    let mut plane_offset: [int64_t; 3] = [0 as int64_t, 0, 0];
     let mut frame_size: int64_t = 0 as int64_t;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*pic).img.i_plane {
-        let mut stride: c_int = ((i_width as int64_t
-            * csp_tab[csp as usize].width_fix8[i as usize] as int64_t
-            >> 8 as c_int)
-            * depth_factor as int64_t) as c_int;
-        let mut plane_size: int64_t = (i_height as int64_t
-            * csp_tab[csp as usize].height_fix8[i as usize] as int64_t
-            >> 8 as c_int)
-            * stride as int64_t;
+        let mut stride: c_int =
+            ((i_width as int64_t * csp_tab[csp as usize].width_fix8[i as usize] as int64_t >> 8)
+                * depth_factor as int64_t) as c_int;
+        let mut plane_size: int64_t =
+            (i_height as int64_t * csp_tab[csp as usize].height_fix8[i as usize] as int64_t >> 8)
+                * stride as int64_t;
         (*pic).img.i_stride[i as usize] = stride;
         plane_offset[i as usize] = frame_size;
         frame_size += plane_size;
@@ -540,32 +483,24 @@ unsafe extern "C" fn x264_picture_alloc(
     if (*pic).img.plane[0].is_null() {
         return -1;
     }
-    let mut i_0: c_int = 1 as c_int;
+    let mut i_0: c_int = 1;
     while i_0 < (*pic).img.i_plane {
         (*pic).img.plane[i_0 as usize] =
             (*pic).img.plane[0].offset(plane_offset[i_0 as usize] as isize);
         i_0 += 1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "333:1"]
 unsafe extern "C" fn x264_picture_clean(mut pic: *mut x264_picture_t) {
     x264_free((*pic).img.plane[0] as *mut c_void);
-    memset(
-        pic as *mut c_void,
-        0 as c_int,
-        size_of::<x264_picture_t>() as size_t,
-    );
+    memset(pic as *mut c_void, 0, size_of::<x264_picture_t>() as size_t);
 }
 #[no_mangle]
 #[c2rust::src_loc = "344:1"]
 pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
-    memset(
-        param as *mut c_void,
-        0 as c_int,
-        size_of::<x264_param_t>() as size_t,
-    );
+    memset(param as *mut c_void, 0, size_of::<x264_param_t>() as size_t);
     (*param).cpu = x264_cpu_detect();
     (*param).threads = ThreadCount::AUTO;
     (*param).lookahead_threads = ThreadCount::AUTO;
@@ -578,61 +513,61 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     };
     (*param).width = 0;
     (*param).height = 0;
-    (*param).vui.i_sar_width = 0 as c_int;
-    (*param).vui.i_sar_height = 0 as c_int;
-    (*param).vui.i_overscan = 0 as c_int;
-    (*param).vui.i_vidformat = 5 as c_int;
+    (*param).vui.i_sar_width = 0;
+    (*param).vui.i_sar_height = 0;
+    (*param).vui.i_overscan = 0;
+    (*param).vui.i_vidformat = 5;
     (*param).vui.b_fullrange = -1;
-    (*param).vui.i_colorprim = 2 as c_int;
-    (*param).vui.i_transfer = 2 as c_int;
+    (*param).vui.i_colorprim = 2;
+    (*param).vui.i_transfer = 2;
     (*param).vui.i_colmatrix = -1;
-    (*param).vui.i_chroma_loc = 0 as c_int;
+    (*param).vui.i_chroma_loc = 0;
     (*param).i_fps_num = 25 as uint32_t;
     (*param).i_fps_den = 1 as uint32_t;
     (*param).i_level_idc = -1;
-    (*param).i_slice_max_size = 0 as c_int;
-    (*param).i_slice_max_mbs = 0 as c_int;
-    (*param).i_slice_count = 0 as c_int;
-    (*param).i_bitdepth = 8 as c_int;
-    (*param).i_frame_reference = 3 as c_int;
-    (*param).i_keyint_max = 250 as c_int;
+    (*param).i_slice_max_size = 0;
+    (*param).i_slice_max_mbs = 0;
+    (*param).i_slice_count = 0;
+    (*param).i_bitdepth = 8;
+    (*param).i_frame_reference = 3;
+    (*param).i_keyint_max = 250;
     (*param).i_keyint_min = X264_KEYINT_MIN_AUTO;
-    (*param).i_bframe = 3 as c_int;
-    (*param).i_scenecut_threshold = 40 as c_int;
+    (*param).i_bframe = 3;
+    (*param).i_scenecut_threshold = 40;
     (*param).i_bframe_adaptive = X264_B_ADAPT_FAST;
-    (*param).i_bframe_bias = 0 as c_int;
+    (*param).i_bframe_bias = 0;
     (*param).bframe_pyramid = BPyramid::default();
     (*param).interlaced = false;
     (*param).constrained_intra = false;
     (*param).deblocking_filter = true;
-    (*param).i_deblocking_filter_alphac0 = 0 as c_int;
-    (*param).i_deblocking_filter_beta = 0 as c_int;
+    (*param).i_deblocking_filter_alphac0 = 0;
+    (*param).i_deblocking_filter_beta = 0;
     (*param).cabac = true;
-    (*param).i_cabac_init_idc = 0 as c_int;
+    (*param).i_cabac_init_idc = 0;
     (*param).rc.i_rc_method = RateControlMode::default();
-    (*param).rc.i_bitrate = 0 as c_int;
+    (*param).rc.i_bitrate = 0;
     (*param).rc.f_rate_tolerance = 1.0f32;
-    (*param).rc.i_vbv_max_bitrate = 0 as c_int;
-    (*param).rc.i_vbv_buffer_size = 0 as c_int;
+    (*param).rc.i_vbv_max_bitrate = 0;
+    (*param).rc.i_vbv_buffer_size = 0;
     (*param).rc.f_vbv_buffer_init = 0.9f32;
     (*param).rc.i_qp_constant = -1;
-    (*param).rc.f_rf_constant = 23 as c_int as c_float;
-    (*param).rc.i_qp_min = 0 as c_int;
+    (*param).rc.f_rf_constant = 23 as c_float;
+    (*param).rc.i_qp_min = 0;
     (*param).rc.i_qp_max = INT_MAX;
-    (*param).rc.i_qp_step = 4 as c_int;
+    (*param).rc.i_qp_step = 4;
     (*param).rc.f_ip_factor = 1.4f32;
     (*param).rc.f_pb_factor = 1.3f32;
     (*param).rc.i_aq_mode = X264_AQ_VARIANCE;
     (*param).rc.f_aq_strength = 1.0f32;
-    (*param).rc.i_lookahead = 40 as c_int;
+    (*param).rc.i_lookahead = 40;
     (*param).rc.stat_write = false;
     (*param).rc.psz_stat_out = b"x264_2pass.log\0" as *const u8 as *const c_char as *mut c_char;
     (*param).rc.stat_read = false;
     (*param).rc.psz_stat_in = b"x264_2pass.log\0" as *const u8 as *const c_char as *mut c_char;
     (*param).rc.f_qcompress = 0.6f32;
     (*param).rc.f_qblur = 0.5f32;
-    (*param).rc.f_complexity_blur = 20 as c_int as c_float;
-    (*param).rc.i_zones = 0 as c_int;
+    (*param).rc.f_complexity_blur = 20 as c_float;
+    (*param).rc.i_zones = 0;
     (*param).rc.mb_tree = true;
     (*param).pf_log = Some(
         x264_log_default
@@ -650,63 +585,63 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     (*param).analyse.me_method = MotionEstimation::default();
     (*param).analyse.f_psy_rd = 1.0f32;
     (*param).analyse.psy = true;
-    (*param).analyse.f_psy_trellis = 0 as c_int as c_float;
-    (*param).analyse.i_me_range = 16 as c_int;
-    (*param).analyse.i_subpel_refine = 7 as c_int;
+    (*param).analyse.f_psy_trellis = 0 as c_float;
+    (*param).analyse.i_me_range = 16;
+    (*param).analyse.i_subpel_refine = 7;
     (*param).analyse.mixed_references = true;
     (*param).analyse.chroma_me = true;
     (*param).analyse.i_mv_range_thread = -1;
     (*param).analyse.i_mv_range = -1;
-    (*param).analyse.i_chroma_qp_offset = 0 as c_int;
+    (*param).analyse.i_chroma_qp_offset = 0;
     (*param).analyse.fast_pskip = true;
     (*param).analyse.weighted_bipred = true;
     (*param).analyse.i_weighted_pred = X264_WEIGHTP_SMART;
     (*param).analyse.dct_decimate = true;
     (*param).analyse.transform_8x8 = true;
-    (*param).analyse.i_trellis = 1 as c_int;
-    (*param).analyse.i_luma_deadzone[0] = 21 as c_int;
-    (*param).analyse.i_luma_deadzone[1] = 11 as c_int;
+    (*param).analyse.i_trellis = 1;
+    (*param).analyse.i_luma_deadzone[0] = 21;
+    (*param).analyse.i_luma_deadzone[1] = 11;
     (*param).analyse.psnr = false;
     (*param).analyse.ssim = false;
     (*param).i_cqm_preset = X264_CQM_FLAT;
     memset(
         (*param).cqm_4iy.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_4py.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_4ic.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_4pc.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 16]>() as size_t,
     );
     memset(
         (*param).cqm_8iy.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 64]>() as size_t,
     );
     memset(
         (*param).cqm_8py.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 64]>() as size_t,
     );
     memset(
         (*param).cqm_8ic.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 64]>() as size_t,
     );
     memset(
         (*param).cqm_8pc.as_mut_ptr() as *mut c_void,
-        16 as c_int,
+        16,
         size_of::<[uint8_t; 64]>() as size_t,
     );
     (*param).repeat_headers = true;
@@ -718,12 +653,12 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
     (*param).pic_struct = false;
     (*param).fake_interlaced = false;
     (*param).frame_packing = None;
-    (*param).i_alternative_transfer = 2 as c_int;
+    (*param).i_alternative_transfer = 2;
     (*param).opencl = false;
-    (*param).i_opencl_device = 0 as c_int;
+    (*param).i_opencl_device = 0;
     (*param).opencl_device_id = NULL;
     (*param).psz_clbin_file = 0 as *mut c_char;
-    (*param).i_avcintra_class = 0 as c_int;
+    (*param).i_avcintra_class = 0;
     (*param).i_avcintra_flavor = X264_AVCINTRA_FLAVOR_PANASONIC;
 }
 #[c2rust::src_loc = "489:1"]
@@ -732,101 +667,101 @@ unsafe extern "C" fn param_apply_preset(
     mut preset: *const c_char,
 ) -> c_int {
     let mut end: *mut c_char = 0 as *mut c_char;
-    let mut i: c_int = strtol(preset, &mut end, 10 as c_int) as c_int;
-    if *end as c_int == 0 as c_int
-        && i >= 0 as c_int
+    let mut i: c_int = strtol(preset, &mut end, 10) as c_int;
+    if *end as c_int == 0
+        && i >= 0
         && i < (size_of::<[*const c_char; 11]>() as usize)
             .wrapping_div(size_of::<*const c_char>() as usize) as c_int
-            - 1 as c_int
+            - 1
     {
         preset = x264_preset_names[i as usize];
     }
     if strcasecmp(preset, b"ultrafast\0" as *const u8 as *const c_char) == 0 {
-        (*param).i_frame_reference = 1 as c_int;
-        (*param).i_scenecut_threshold = 0 as c_int;
+        (*param).i_frame_reference = 1;
+        (*param).i_scenecut_threshold = 0;
         (*param).deblocking_filter = false;
         (*param).cabac = false;
-        (*param).i_bframe = 0 as c_int;
-        (*param).analyse.intra = 0 as c_uint;
-        (*param).analyse.inter = 0 as c_uint;
+        (*param).i_bframe = 0;
+        (*param).analyse.intra = 0;
+        (*param).analyse.inter = 0;
         (*param).analyse.transform_8x8 = false;
         (*param).analyse.me_method = MotionEstimation::Dia;
-        (*param).analyse.i_subpel_refine = 0 as c_int;
-        (*param).rc.i_aq_mode = 0 as c_int;
+        (*param).analyse.i_subpel_refine = 0;
+        (*param).rc.i_aq_mode = 0;
         (*param).analyse.mixed_references = false;
-        (*param).analyse.i_trellis = 0 as c_int;
+        (*param).analyse.i_trellis = 0;
         (*param).i_bframe_adaptive = X264_B_ADAPT_NONE;
         (*param).rc.mb_tree = false;
         (*param).analyse.i_weighted_pred = X264_WEIGHTP_NONE;
         (*param).analyse.weighted_bipred = false;
-        (*param).rc.i_lookahead = 0 as c_int;
+        (*param).rc.i_lookahead = 0;
     } else if strcasecmp(preset, b"superfast\0" as *const u8 as *const c_char) == 0 {
         (*param).analyse.inter = X264_ANALYSE_I8x8 | X264_ANALYSE_I4x4;
         (*param).analyse.me_method = MotionEstimation::Dia;
-        (*param).analyse.i_subpel_refine = 1 as c_int;
-        (*param).i_frame_reference = 1 as c_int;
+        (*param).analyse.i_subpel_refine = 1;
+        (*param).i_frame_reference = 1;
         (*param).analyse.mixed_references = false;
-        (*param).analyse.i_trellis = 0 as c_int;
+        (*param).analyse.i_trellis = 0;
         (*param).rc.mb_tree = false;
         (*param).analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        (*param).rc.i_lookahead = 0 as c_int;
+        (*param).rc.i_lookahead = 0;
     } else if strcasecmp(preset, b"veryfast\0" as *const u8 as *const c_char) == 0 {
-        (*param).analyse.i_subpel_refine = 2 as c_int;
-        (*param).i_frame_reference = 1 as c_int;
+        (*param).analyse.i_subpel_refine = 2;
+        (*param).i_frame_reference = 1;
         (*param).analyse.mixed_references = false;
-        (*param).analyse.i_trellis = 0 as c_int;
+        (*param).analyse.i_trellis = 0;
         (*param).analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        (*param).rc.i_lookahead = 10 as c_int;
+        (*param).rc.i_lookahead = 10;
     } else if strcasecmp(preset, b"faster\0" as *const u8 as *const c_char) == 0 {
         (*param).analyse.mixed_references = false;
-        (*param).i_frame_reference = 2 as c_int;
-        (*param).analyse.i_subpel_refine = 4 as c_int;
+        (*param).i_frame_reference = 2;
+        (*param).analyse.i_subpel_refine = 4;
         (*param).analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        (*param).rc.i_lookahead = 20 as c_int;
+        (*param).rc.i_lookahead = 20;
     } else if strcasecmp(preset, b"fast\0" as *const u8 as *const c_char) == 0 {
-        (*param).i_frame_reference = 2 as c_int;
-        (*param).analyse.i_subpel_refine = 6 as c_int;
+        (*param).i_frame_reference = 2;
+        (*param).analyse.i_subpel_refine = 6;
         (*param).analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
-        (*param).rc.i_lookahead = 30 as c_int;
+        (*param).rc.i_lookahead = 30;
     } else if !(strcasecmp(preset, b"medium\0" as *const u8 as *const c_char) == 0) {
         if strcasecmp(preset, b"slow\0" as *const u8 as *const c_char) == 0 {
-            (*param).analyse.i_subpel_refine = 8 as c_int;
-            (*param).i_frame_reference = 5 as c_int;
+            (*param).analyse.i_subpel_refine = 8;
+            (*param).i_frame_reference = 5;
             (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
-            (*param).analyse.i_trellis = 2 as c_int;
-            (*param).rc.i_lookahead = 50 as c_int;
+            (*param).analyse.i_trellis = 2;
+            (*param).rc.i_lookahead = 50;
         } else if strcasecmp(preset, b"slower\0" as *const u8 as *const c_char) == 0 {
             (*param).analyse.me_method = MotionEstimation::Umh;
-            (*param).analyse.i_subpel_refine = 9 as c_int;
-            (*param).i_frame_reference = 8 as c_int;
+            (*param).analyse.i_subpel_refine = 9;
+            (*param).i_frame_reference = 8;
             (*param).i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
             (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
             (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
-            (*param).analyse.i_trellis = 2 as c_int;
-            (*param).rc.i_lookahead = 60 as c_int;
+            (*param).analyse.i_trellis = 2;
+            (*param).rc.i_lookahead = 60;
         } else if strcasecmp(preset, b"veryslow\0" as *const u8 as *const c_char) == 0 {
             (*param).analyse.me_method = MotionEstimation::Umh;
-            (*param).analyse.i_subpel_refine = 10 as c_int;
-            (*param).analyse.i_me_range = 24 as c_int;
-            (*param).i_frame_reference = 16 as c_int;
+            (*param).analyse.i_subpel_refine = 10;
+            (*param).analyse.i_me_range = 24;
+            (*param).i_frame_reference = 16;
             (*param).i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
             (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
             (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
-            (*param).analyse.i_trellis = 2 as c_int;
-            (*param).i_bframe = 8 as c_int;
-            (*param).rc.i_lookahead = 60 as c_int;
+            (*param).analyse.i_trellis = 2;
+            (*param).i_bframe = 8;
+            (*param).rc.i_lookahead = 60;
         } else if strcasecmp(preset, b"placebo\0" as *const u8 as *const c_char) == 0 {
             (*param).analyse.me_method = MotionEstimation::Tesa;
-            (*param).analyse.i_subpel_refine = 11 as c_int;
-            (*param).analyse.i_me_range = 24 as c_int;
-            (*param).i_frame_reference = 16 as c_int;
+            (*param).analyse.i_subpel_refine = 11;
+            (*param).analyse.i_me_range = 24;
+            (*param).i_frame_reference = 16;
             (*param).i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
             (*param).analyse.direct_mv_pred = DirectPrediction::Auto;
             (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
             (*param).analyse.fast_pskip = false;
-            (*param).analyse.i_trellis = 2 as c_int;
-            (*param).i_bframe = 16 as c_int;
-            (*param).rc.i_lookahead = 60 as c_int;
+            (*param).analyse.i_trellis = 2;
+            (*param).i_bframe = 16;
+            (*param).rc.i_lookahead = 60;
         } else {
             x264_log_internal(
                 X264_LOG_ERROR,
@@ -836,7 +771,7 @@ unsafe extern "C" fn param_apply_preset(
             return -1;
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "611:1"]
 unsafe extern "C" fn param_apply_tune(
@@ -844,7 +779,7 @@ unsafe extern "C" fn param_apply_tune(
     mut tune: *const c_char,
 ) -> c_int {
     let mut current_block: u64;
-    let mut psy_tuning_used: c_int = 0 as c_int;
+    let mut psy_tuning_used: c_int = 0;
     let mut len: c_int = 0;
     loop {
         tune = tune.offset(strspn(tune, b",./-+\0" as *const u8 as *const c_char) as isize);
@@ -852,8 +787,7 @@ unsafe extern "C" fn param_apply_tune(
         if !(len != 0) {
             break;
         }
-        if len == 4 as c_int
-            && strncasecmp(tune, b"film\0" as *const u8 as *const c_char, 4 as size_t) == 0
+        if len == 4 && strncasecmp(tune, b"film\0" as *const u8 as *const c_char, 4 as size_t) == 0
         {
             let fresh4 = psy_tuning_used;
             psy_tuning_used = psy_tuning_used + 1;
@@ -865,7 +799,7 @@ unsafe extern "C" fn param_apply_tune(
                 (*param).analyse.f_psy_trellis = 0.15f32;
                 current_block = 11174649648027449784;
             }
-        } else if len == 9 as c_int
+        } else if len == 9
             && strncasecmp(
                 tune,
                 b"animation\0" as *const u8 as *const c_char,
@@ -877,19 +811,19 @@ unsafe extern "C" fn param_apply_tune(
             if fresh5 != 0 {
                 current_block = 11494378617088087400;
             } else {
-                (*param).i_frame_reference = if (*param).i_frame_reference > 1 as c_int {
-                    (*param).i_frame_reference * 2 as c_int
+                (*param).i_frame_reference = if (*param).i_frame_reference > 1 {
+                    (*param).i_frame_reference * 2
                 } else {
-                    1 as c_int
+                    1
                 };
-                (*param).i_deblocking_filter_alphac0 = 1 as c_int;
-                (*param).i_deblocking_filter_beta = 1 as c_int;
+                (*param).i_deblocking_filter_alphac0 = 1;
+                (*param).i_deblocking_filter_beta = 1;
                 (*param).analyse.f_psy_rd = 0.4f32;
                 (*param).rc.f_aq_strength = 0.6f32;
-                (*param).i_bframe += 2 as c_int;
+                (*param).i_bframe += 2;
                 current_block = 11174649648027449784;
             }
-        } else if len == 5 as c_int
+        } else if len == 5
             && strncasecmp(tune, b"grain\0" as *const u8 as *const c_char, 5 as size_t) == 0
         {
             let fresh6 = psy_tuning_used;
@@ -897,19 +831,19 @@ unsafe extern "C" fn param_apply_tune(
             if fresh6 != 0 {
                 current_block = 11494378617088087400;
             } else {
-                (*param).i_deblocking_filter_alphac0 = -(2 as c_int);
-                (*param).i_deblocking_filter_beta = -(2 as c_int);
+                (*param).i_deblocking_filter_alphac0 = -(2);
+                (*param).i_deblocking_filter_beta = -(2);
                 (*param).analyse.f_psy_trellis = 0.25f32;
                 (*param).analyse.dct_decimate = false;
                 (*param).rc.f_pb_factor = 1.1f32;
                 (*param).rc.f_ip_factor = 1.1f32;
                 (*param).rc.f_aq_strength = 0.5f32;
-                (*param).analyse.i_luma_deadzone[0] = 6 as c_int;
-                (*param).analyse.i_luma_deadzone[1] = 6 as c_int;
+                (*param).analyse.i_luma_deadzone[0] = 6;
+                (*param).analyse.i_luma_deadzone[1] = 6;
                 (*param).rc.f_qcompress = 0.8f32;
                 current_block = 11174649648027449784;
             }
-        } else if len == 10 as c_int
+        } else if len == 10
             && strncasecmp(
                 tune,
                 b"stillimage\0" as *const u8 as *const c_char,
@@ -921,14 +855,14 @@ unsafe extern "C" fn param_apply_tune(
             if fresh7 != 0 {
                 current_block = 11494378617088087400;
             } else {
-                (*param).i_deblocking_filter_alphac0 = -(3 as c_int);
-                (*param).i_deblocking_filter_beta = -(3 as c_int);
+                (*param).i_deblocking_filter_alphac0 = -(3);
+                (*param).i_deblocking_filter_beta = -(3);
                 (*param).analyse.f_psy_rd = 2.0f32;
                 (*param).analyse.f_psy_trellis = 0.7f32;
                 (*param).rc.f_aq_strength = 1.2f32;
                 current_block = 11174649648027449784;
             }
-        } else if len == 4 as c_int
+        } else if len == 4
             && strncasecmp(tune, b"psnr\0" as *const u8 as *const c_char, 4 as size_t) == 0
         {
             let fresh8 = psy_tuning_used;
@@ -940,7 +874,7 @@ unsafe extern "C" fn param_apply_tune(
                 (*param).analyse.psy = false;
                 current_block = 11174649648027449784;
             }
-        } else if len == 4 as c_int
+        } else if len == 4
             && strncasecmp(tune, b"ssim\0" as *const u8 as *const c_char, 4 as size_t) == 0
         {
             let fresh9 = psy_tuning_used;
@@ -952,7 +886,7 @@ unsafe extern "C" fn param_apply_tune(
                 (*param).analyse.psy = false;
                 current_block = 11174649648027449784;
             }
-        } else if len == 10 as c_int
+        } else if len == 10
             && strncasecmp(
                 tune,
                 b"fastdecode\0" as *const u8 as *const c_char,
@@ -964,21 +898,21 @@ unsafe extern "C" fn param_apply_tune(
             (*param).analyse.weighted_bipred = false;
             (*param).analyse.i_weighted_pred = X264_WEIGHTP_NONE;
             current_block = 11174649648027449784;
-        } else if len == 11 as c_int
+        } else if len == 11
             && strncasecmp(
                 tune,
                 b"zerolatency\0" as *const u8 as *const c_char,
                 11 as size_t,
             ) == 0
         {
-            (*param).rc.i_lookahead = 0 as c_int;
-            (*param).i_sync_lookahead = 0 as c_int;
-            (*param).i_bframe = 0 as c_int;
+            (*param).rc.i_lookahead = 0;
+            (*param).i_sync_lookahead = 0;
+            (*param).i_bframe = 0;
             (*param).sliced_threads = true;
             (*param).vfr_input = false;
             (*param).rc.mb_tree = false;
             current_block = 11174649648027449784;
-        } else if len == 6 as c_int
+        } else if len == 6
             && strncasecmp(tune, b"touhou\0" as *const u8 as *const c_char, 6 as size_t) == 0
         {
             let fresh10 = psy_tuning_used;
@@ -986,10 +920,10 @@ unsafe extern "C" fn param_apply_tune(
             if fresh10 != 0 {
                 current_block = 11494378617088087400;
             } else {
-                (*param).i_frame_reference = if (*param).i_frame_reference > 1 as c_int {
-                    (*param).i_frame_reference * 2 as c_int
+                (*param).i_frame_reference = if (*param).i_frame_reference > 1 {
+                    (*param).i_frame_reference * 2
                 } else {
-                    1 as c_int
+                    1
                 };
                 (*param).i_deblocking_filter_alphac0 = -1;
                 (*param).i_deblocking_filter_beta = -1;
@@ -1023,7 +957,7 @@ unsafe extern "C" fn param_apply_tune(
         }
         tune = tune.offset(len as isize);
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "706:1"]
@@ -1033,13 +967,13 @@ pub unsafe extern "C" fn x264_param_default_preset(
     mut tune: *const c_char,
 ) -> c_int {
     x264_param_default(param);
-    if !preset.is_null() && param_apply_preset(param, preset) < 0 as c_int {
+    if !preset.is_null() && param_apply_preset(param, preset) < 0 {
         return -1;
     }
-    if !tune.is_null() && param_apply_tune(param, tune) < 0 as c_int {
+    if !tune.is_null() && param_apply_tune(param, tune) < 0 {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "717:1"]
@@ -1083,11 +1017,11 @@ unsafe extern "C" fn x264_param_apply_profile(
     mut profile: *const c_char,
 ) -> c_int {
     if profile.is_null() {
-        return 0 as c_int;
+        return 0;
     }
-    let qp_bd_offset: c_int = 6 as c_int * ((*param).i_bitdepth - 8 as c_int);
+    let qp_bd_offset: c_int = 6 * ((*param).i_bitdepth - 8);
     let mut p: c_int = profile_string_to_int(profile);
-    if p < 0 as c_int {
+    if p < 0 {
         x264_log_internal(
             X264_LOG_ERROR,
             b"invalid profile: %s\n\0" as *const u8 as *const c_char,
@@ -1098,7 +1032,7 @@ unsafe extern "C" fn x264_param_apply_profile(
     if p < PROFILE_HIGH444_PREDICTIVE as c_int
         && ((*param).rc.i_rc_method == RateControlMode::CQP && (*param).rc.i_qp_constant <= 0
             || (*param).rc.i_rc_method == RateControlMode::CRF
-                && ((*param).rc.f_rf_constant + qp_bd_offset as c_float) as c_int <= 0 as c_int)
+                && ((*param).rc.f_rf_constant + qp_bd_offset as c_float) as c_int <= 0)
     {
         x264_log_internal(
             X264_LOG_ERROR,
@@ -1123,7 +1057,7 @@ unsafe extern "C" fn x264_param_apply_profile(
         );
         return -1;
     }
-    if p < PROFILE_HIGH10 as c_int && (*param).i_bitdepth > 8 as c_int {
+    if p < PROFILE_HIGH10 as c_int && (*param).i_bitdepth > 8 {
         x264_log_internal(
             X264_LOG_ERROR,
             b"%s profile doesn't support a bit depth of %d\n\0" as *const u8 as *const c_char,
@@ -1145,7 +1079,7 @@ unsafe extern "C" fn x264_param_apply_profile(
         (*param).cabac = false;
         (*param).i_cqm_preset = X264_CQM_FLAT;
         (*param).psz_cqm_file = 0 as *mut c_char;
-        (*param).i_bframe = 0 as c_int;
+        (*param).i_bframe = 0;
         (*param).analyse.i_weighted_pred = X264_WEIGHTP_NONE;
         if (*param).interlaced {
             error!("baseline profile doesn't support interlacing");
@@ -1160,7 +1094,7 @@ unsafe extern "C" fn x264_param_apply_profile(
         (*param).i_cqm_preset = X264_CQM_FLAT;
         (*param).psz_cqm_file = 0 as *mut c_char;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "816:1"]
 unsafe extern "C" fn parse_enum(
@@ -1200,7 +1134,7 @@ unsafe extern "C" fn parse_cqm(
     mut cqm: *mut uint8_t,
     mut length: c_int,
 ) -> c_int {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     loop {
         let mut coef: c_int = 0;
         if sscanf(
@@ -1208,8 +1142,8 @@ unsafe extern "C" fn parse_cqm(
             b"%d\0" as *const u8 as *const c_char,
             &mut coef as *mut c_int,
         ) == 0
-            || coef < 1 as c_int
-            || coef > 255 as c_int
+            || coef < 1
+            || coef > 255
         {
             return -1;
         }
@@ -1230,7 +1164,7 @@ unsafe extern "C" fn parse_cqm(
             break;
         }
     }
-    return if i == length { 0 as c_int } else { -1 };
+    return if i == length { 0 } else { -1 };
 }
 #[c2rust::src_loc = "839:1"]
 unsafe extern "C" fn atobool_internal(mut str: *const c_char, mut b_error: *mut c_int) -> bool {
@@ -1246,15 +1180,15 @@ unsafe extern "C" fn atobool_internal(mut str: *const c_char, mut b_error: *mut 
     {
         return false;
     }
-    *b_error = 1 as c_int;
+    *b_error = 1;
     return false;
 }
 #[c2rust::src_loc = "853:1"]
 unsafe extern "C" fn atoi_internal(mut str: *const c_char, mut b_error: *mut c_int) -> c_int {
     let mut end: *mut c_char = 0 as *mut c_char;
-    let mut v: c_int = strtol(str, &mut end, 0 as c_int) as c_int;
+    let mut v: c_int = strtol(str, &mut end, 0) as c_int;
     if end == str as *mut c_char || *end as c_int != '\0' as i32 {
-        *b_error = 1 as c_int;
+        *b_error = 1;
     }
     return v;
 }
@@ -1263,7 +1197,7 @@ unsafe extern "C" fn atof_internal(mut str: *const c_char, mut b_error: *mut c_i
     let mut end: *mut c_char = 0 as *mut c_char;
     let mut v: c_double = strtod(str, &mut end);
     if end == str as *mut c_char || *end as c_int != '\0' as i32 {
-        *b_error = 1 as c_int;
+        *b_error = 1;
     }
     return v;
 }
@@ -1275,7 +1209,7 @@ pub unsafe extern "C" fn x264_param_parse(
     mut value: *const c_char,
 ) -> c_int {
     let mut name_buf: *mut c_char = 0 as *mut c_char;
-    let mut b_error: c_int = 0 as c_int;
+    let mut b_error: c_int = 0;
     let mut errortype: c_int = X264_PARAM_BAD_VALUE;
     let mut name_was_bool: c_int = 0;
     let mut value_was_null: c_int = value.is_null() as c_int;
@@ -1308,14 +1242,14 @@ pub unsafe extern "C" fn x264_param_parse(
         if *name.offset(0) as c_int == '-' as i32 {
             name = name.offset(1);
         }
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         value = if atobool_internal(value, &mut b_error) {
             b"false\0" as *const u8 as *const c_char
         } else {
             b"true\0" as *const u8 as *const c_char
         };
     }
-    name_was_bool = 0 as c_int;
+    name_was_bool = 0;
     if strcmp(name, b"asm\0" as *const u8 as *const c_char) == 0 {
         (*p).cpu = if *(*__ctype_b_loc()).offset(*value.offset(0) as c_uchar as c_int as isize)
             as c_int
@@ -1324,7 +1258,7 @@ pub unsafe extern "C" fn x264_param_parse(
         {
             atoi_internal(value, &mut b_error) as uint32_t
         } else if strcasecmp(value, b"auto\0" as *const u8 as *const c_char) == 0 || {
-            name_was_bool = 1 as c_int;
+            name_was_bool = 1;
             atobool_internal(value, &mut b_error)
         } {
             x264_cpu_detect()
@@ -1337,7 +1271,7 @@ pub unsafe extern "C" fn x264_param_parse(
                 let mut tok: *mut c_char = 0 as *mut c_char;
                 let mut saveptr: *mut c_char = 0 as *mut c_char;
                 let mut init: *mut c_char = 0 as *mut c_char;
-                b_error = 0 as c_int;
+                b_error = 0;
                 (*p).cpu = 0 as uint32_t;
                 init = buf;
                 loop {
@@ -1345,7 +1279,7 @@ pub unsafe extern "C" fn x264_param_parse(
                     if tok.is_null() {
                         break;
                     }
-                    let mut i: c_int = 0 as c_int;
+                    let mut i: c_int = 0;
                     while (*x264_cpu_names.as_ptr().offset(i as isize)).flags != 0
                         && strcasecmp(tok, (*x264_cpu_names.as_ptr().offset(i as isize)).name) != 0
                     {
@@ -1353,7 +1287,7 @@ pub unsafe extern "C" fn x264_param_parse(
                     }
                     (*p).cpu |= (*x264_cpu_names.as_ptr().offset(i as isize)).flags;
                     if (*x264_cpu_names.as_ptr().offset(i as isize)).flags == 0 {
-                        b_error = 1 as c_int;
+                        b_error = 1;
                     }
                     init = 0 as *mut c_char;
                 }
@@ -1380,7 +1314,7 @@ pub unsafe extern "C" fn x264_param_parse(
             (*p).lookahead_threads = ThreadCount::new(atoi_internal(value, &mut b_error) as u32);
         }
     } else if strcmp(name, b"sliced-threads\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).sliced_threads = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"sync-lookahead\0" as *const u8 as *const c_char) == 0 {
         if strcasecmp(value, b"auto\0" as *const u8 as *const c_char) == 0 {
@@ -1391,24 +1325,24 @@ pub unsafe extern "C" fn x264_param_parse(
     } else if strcmp(name, b"deterministic\0" as *const u8 as *const c_char) == 0
         || strcmp(name, b"n-deterministic\0" as *const u8 as *const c_char) == 0
     {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).deterministic = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"cpu-independent\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).cpu_independent = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"level\0" as *const u8 as *const c_char) == 0
         || strcmp(name, b"level-idc\0" as *const u8 as *const c_char) == 0
     {
         if strcmp(value, b"1b\0" as *const u8 as *const c_char) == 0 {
-            (*p).i_level_idc = 9 as c_int;
-        } else if atof_internal(value, &mut b_error) < 7 as c_int as c_double {
+            (*p).i_level_idc = 9;
+        } else if atof_internal(value, &mut b_error) < 7 as c_double {
             (*p).i_level_idc =
-                (10 as c_int as c_double * atof_internal(value, &mut b_error) + 0.5f64) as c_int;
+                (10 as c_double * atof_internal(value, &mut b_error) + 0.5f64) as c_int;
         } else {
             (*p).i_level_idc = atoi_internal(value, &mut b_error);
         }
     } else if strcmp(name, b"bluray-compat\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).bluray_compat = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"avcintra-class\0" as *const u8 as *const c_char) == 0 {
         (*p).i_avcintra_class = atoi_internal(value, &mut b_error);
@@ -1419,20 +1353,19 @@ pub unsafe extern "C" fn x264_param_parse(
             &mut (*p).i_avcintra_flavor,
         );
     } else if strcmp(name, b"sar\0" as *const u8 as *const c_char) == 0 {
-        b_error |= (2 as c_int
+        b_error |= (2
             != sscanf(
                 value,
                 b"%d:%d\0" as *const u8 as *const c_char,
                 &mut (*p).vui.i_sar_width as *mut c_int,
                 &mut (*p).vui.i_sar_height as *mut c_int,
             )
-            && 2 as c_int
-                != sscanf(
-                    value,
-                    b"%d/%d\0" as *const u8 as *const c_char,
-                    &mut (*p).vui.i_sar_width as *mut c_int,
-                    &mut (*p).vui.i_sar_height as *mut c_int,
-                )) as c_int;
+            && 2 != sscanf(
+                value,
+                b"%d/%d\0" as *const u8 as *const c_char,
+                &mut (*p).vui.i_sar_width as *mut c_int,
+                &mut (*p).vui.i_sar_height as *mut c_int,
+            )) as c_int;
     } else if strcmp(name, b"overscan\0" as *const u8 as *const c_char) == 0 {
         b_error |= parse_enum(
             value,
@@ -1471,8 +1404,7 @@ pub unsafe extern "C" fn x264_param_parse(
         );
     } else if strcmp(name, b"chromaloc\0" as *const u8 as *const c_char) == 0 {
         (*p).vui.i_chroma_loc = atoi_internal(value, &mut b_error);
-        b_error |=
-            ((*p).vui.i_chroma_loc < 0 as c_int || (*p).vui.i_chroma_loc > 5 as c_int) as c_int;
+        b_error |= ((*p).vui.i_chroma_loc < 0 || (*p).vui.i_chroma_loc > 5) as c_int;
     } else if strcmp(name, b"mastering-display\0" as *const u8 as *const c_char) == 0 {
         if strcasecmp(value, b"undef\0" as *const u8 as *const c_char) != 0 {
             let mut green_x: i32 = 0;
@@ -1567,7 +1499,7 @@ pub unsafe extern "C" fn x264_param_parse(
             b"%ld/%ld\0" as *const u8 as *const c_char,
             &mut i_fps_num as *mut int64_t,
             &mut i_fps_den as *mut int64_t,
-        ) == 2 as c_int
+        ) == 2
         {
             (*p).i_fps_num = i_fps_num as uint32_t;
             (*p).i_fps_den = i_fps_den as uint32_t;
@@ -1578,7 +1510,7 @@ pub unsafe extern "C" fn x264_param_parse(
         } else {
             let mut fps: c_double = atof_internal(value, &mut b_error);
             if fps < 0.0005f64 || fps > INT_MAX as c_double {
-                b_error = 1 as c_int;
+                b_error = 1;
             } else if fps <= INT_MAX as c_double / 1000.0f64 {
                 (*p).i_fps_num = (fps * 1000.0f64 + 0.5f64) as c_int as uint32_t;
                 (*p).i_fps_den = 1000 as uint32_t;
@@ -1607,22 +1539,22 @@ pub unsafe extern "C" fn x264_param_parse(
             (*p).i_keyint_max = (*p).i_keyint_min;
         }
     } else if strcmp(name, b"scenecut\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).i_scenecut_threshold = atobool_internal(value, &mut b_error) as i32;
         if b_error != 0 || (*p).i_scenecut_threshold != 0 {
-            b_error = 0 as c_int;
+            b_error = 0;
             (*p).i_scenecut_threshold = atoi_internal(value, &mut b_error);
         }
     } else if strcmp(name, b"intra-refresh\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).intra_refresh = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"bframes\0" as *const u8 as *const c_char) == 0 {
         (*p).i_bframe = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"b-adapt\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).i_bframe_adaptive = atobool_internal(value, &mut b_error) as i32;
         if b_error != 0 {
-            b_error = 0 as c_int;
+            b_error = 0;
             (*p).i_bframe_adaptive = atoi_internal(value, &mut b_error);
         }
     } else if strcmp(name, b"b-bias\0" as *const u8 as *const c_char) == 0 {
@@ -1633,35 +1565,33 @@ pub unsafe extern "C" fn x264_param_parse(
             BPyramid::None
         });
     } else if strcmp(name, b"open-gop\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).open_gop = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"nf\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).deblocking_filter = !atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"filter\0" as *const u8 as *const c_char) == 0
         || strcmp(name, b"deblock\0" as *const u8 as *const c_char) == 0
     {
-        if 2 as c_int
+        if 2 == sscanf(
+            value,
+            b"%d:%d\0" as *const u8 as *const c_char,
+            &mut (*p).i_deblocking_filter_alphac0 as *mut c_int,
+            &mut (*p).i_deblocking_filter_beta as *mut c_int,
+        ) || 2
             == sscanf(
                 value,
-                b"%d:%d\0" as *const u8 as *const c_char,
+                b"%d,%d\0" as *const u8 as *const c_char,
                 &mut (*p).i_deblocking_filter_alphac0 as *mut c_int,
                 &mut (*p).i_deblocking_filter_beta as *mut c_int,
             )
-            || 2 as c_int
-                == sscanf(
-                    value,
-                    b"%d,%d\0" as *const u8 as *const c_char,
-                    &mut (*p).i_deblocking_filter_alphac0 as *mut c_int,
-                    &mut (*p).i_deblocking_filter_beta as *mut c_int,
-                )
         {
             (*p).deblocking_filter = true;
         } else if sscanf(value, c"%d".as_ptr(), &mut (*p).i_deblocking_filter_alphac0) != 0 {
             (*p).deblocking_filter = true;
             (*p).i_deblocking_filter_beta = (*p).i_deblocking_filter_alphac0;
         } else {
-            name_was_bool = 1 as c_int;
+            name_was_bool = 1;
             (*p).deblocking_filter = atobool_internal(value, &mut b_error);
         }
     } else if strcmp(name, b"slice-max-size\0" as *const u8 as *const c_char) == 0 {
@@ -1675,23 +1605,23 @@ pub unsafe extern "C" fn x264_param_parse(
     } else if strcmp(name, b"slices-max\0" as *const u8 as *const c_char) == 0 {
         (*p).i_slice_count_max = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"cabac\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).cabac = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"cabac-idc\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cabac_init_idc = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"interlaced\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).interlaced = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"tff\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).tff = atobool_internal(value, &mut b_error);
         (*p).interlaced = (*p).tff;
     } else if strcmp(name, b"bff\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).interlaced = atobool_internal(value, &mut b_error);
         (*p).tff = !(*p).interlaced;
     } else if strcmp(name, b"constrained-intra\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).constrained_intra = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"cqm\0" as *const u8 as *const c_char) == 0 {
         if !strstr(value, b"flat\0" as *const u8 as *const c_char).is_null() {
@@ -1701,73 +1631,73 @@ pub unsafe extern "C" fn x264_param_parse(
         } else {
             (*p).psz_cqm_file = x264_param_strdup(p, value);
             if (*p).psz_cqm_file.is_null() {
-                b_error = 1 as c_int;
+                b_error = 1;
                 errortype = X264_PARAM_ALLOC_FAILED;
             }
         }
     } else if strcmp(name, b"cqmfile\0" as *const u8 as *const c_char) == 0 {
         (*p).psz_cqm_file = x264_param_strdup(p, value);
         if (*p).psz_cqm_file.is_null() {
-            b_error = 1 as c_int;
+            b_error = 1;
             errortype = X264_PARAM_ALLOC_FAILED;
         }
     } else if strcmp(name, b"cqm4\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_4iy.as_mut_ptr(), 16 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_4py.as_mut_ptr(), 16 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_4ic.as_mut_ptr(), 16 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_4pc.as_mut_ptr(), 16 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_4iy.as_mut_ptr(), 16);
+        b_error |= parse_cqm(value, (*p).cqm_4py.as_mut_ptr(), 16);
+        b_error |= parse_cqm(value, (*p).cqm_4ic.as_mut_ptr(), 16);
+        b_error |= parse_cqm(value, (*p).cqm_4pc.as_mut_ptr(), 16);
     } else if strcmp(name, b"cqm8\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_8iy.as_mut_ptr(), 64 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_8py.as_mut_ptr(), 64 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_8ic.as_mut_ptr(), 64 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_8pc.as_mut_ptr(), 64 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_8iy.as_mut_ptr(), 64);
+        b_error |= parse_cqm(value, (*p).cqm_8py.as_mut_ptr(), 64);
+        b_error |= parse_cqm(value, (*p).cqm_8ic.as_mut_ptr(), 64);
+        b_error |= parse_cqm(value, (*p).cqm_8pc.as_mut_ptr(), 64);
     } else if strcmp(name, b"cqm4i\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_4iy.as_mut_ptr(), 16 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_4ic.as_mut_ptr(), 16 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_4iy.as_mut_ptr(), 16);
+        b_error |= parse_cqm(value, (*p).cqm_4ic.as_mut_ptr(), 16);
     } else if strcmp(name, b"cqm4p\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_4py.as_mut_ptr(), 16 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_4pc.as_mut_ptr(), 16 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_4py.as_mut_ptr(), 16);
+        b_error |= parse_cqm(value, (*p).cqm_4pc.as_mut_ptr(), 16);
     } else if strcmp(name, b"cqm4iy\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_4iy.as_mut_ptr(), 16 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_4iy.as_mut_ptr(), 16);
     } else if strcmp(name, b"cqm4ic\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_4ic.as_mut_ptr(), 16 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_4ic.as_mut_ptr(), 16);
     } else if strcmp(name, b"cqm4py\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_4py.as_mut_ptr(), 16 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_4py.as_mut_ptr(), 16);
     } else if strcmp(name, b"cqm4pc\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_4pc.as_mut_ptr(), 16 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_4pc.as_mut_ptr(), 16);
     } else if strcmp(name, b"cqm8i\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_8iy.as_mut_ptr(), 64 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_8ic.as_mut_ptr(), 64 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_8iy.as_mut_ptr(), 64);
+        b_error |= parse_cqm(value, (*p).cqm_8ic.as_mut_ptr(), 64);
     } else if strcmp(name, b"cqm8p\0" as *const u8 as *const c_char) == 0 {
         (*p).i_cqm_preset = X264_CQM_CUSTOM;
-        b_error |= parse_cqm(value, (*p).cqm_8py.as_mut_ptr(), 64 as c_int);
-        b_error |= parse_cqm(value, (*p).cqm_8pc.as_mut_ptr(), 64 as c_int);
+        b_error |= parse_cqm(value, (*p).cqm_8py.as_mut_ptr(), 64);
+        b_error |= parse_cqm(value, (*p).cqm_8pc.as_mut_ptr(), 64);
     } else if strcmp(name, b"log\0" as *const u8 as *const c_char) == 0 {
         (*p).i_log_level = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"dump-yuv\0" as *const u8 as *const c_char) == 0 {
         (*p).psz_dump_yuv = x264_param_strdup(p, value);
         if (*p).psz_dump_yuv.is_null() {
-            b_error = 1 as c_int;
+            b_error = 1;
             errortype = X264_PARAM_ALLOC_FAILED;
         }
     } else if strcmp(name, b"analyse\0" as *const u8 as *const c_char) == 0
         || strcmp(name, b"partitions\0" as *const u8 as *const c_char) == 0
     {
-        (*p).analyse.inter = 0 as c_uint;
+        (*p).analyse.inter = 0;
         if !strstr(value, b"none\0" as *const u8 as *const c_char).is_null() {
-            (*p).analyse.inter = 0 as c_uint;
+            (*p).analyse.inter = 0;
         }
         if !strstr(value, b"all\0" as *const u8 as *const c_char).is_null() {
-            (*p).analyse.inter = !(0 as c_int) as c_uint;
+            (*p).analyse.inter = !(0) as c_uint;
         }
         if !strstr(value, b"i4x4\0" as *const u8 as *const c_char).is_null() {
             (*p).analyse.inter |= X264_ANALYSE_I4x4;
@@ -1785,12 +1715,12 @@ pub unsafe extern "C" fn x264_param_parse(
             (*p).analyse.inter |= X264_ANALYSE_BSUB16x16;
         }
     } else if strcmp(name, b"8x8dct\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.transform_8x8 = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"weightb\0" as *const u8 as *const c_char) == 0
         || strcmp(name, b"weight-b\0" as *const u8 as *const c_char) == 0
     {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.weighted_bipred = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"weightp\0" as *const u8 as *const c_char) == 0 {
         (*p).analyse.i_weighted_pred = atoi_internal(value, &mut b_error);
@@ -1833,27 +1763,25 @@ pub unsafe extern "C" fn x264_param_parse(
     {
         (*p).analyse.i_subpel_refine = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"psy-rd\0" as *const u8 as *const c_char) == 0 {
-        if !(2 as c_int
+        if !(2
             == sscanf(
                 value,
                 b"%f:%f\0" as *const u8 as *const c_char,
                 &mut (*p).analyse.f_psy_rd as *mut c_float,
                 &mut (*p).analyse.f_psy_trellis as *mut c_float,
             )
-            || 2 as c_int
-                == sscanf(
-                    value,
-                    b"%f,%f\0" as *const u8 as *const c_char,
-                    &mut (*p).analyse.f_psy_rd as *mut c_float,
-                    &mut (*p).analyse.f_psy_trellis as *mut c_float,
-                )
-            || 2 as c_int
-                == sscanf(
-                    value,
-                    b"%f|%f\0" as *const u8 as *const c_char,
-                    &mut (*p).analyse.f_psy_rd as *mut c_float,
-                    &mut (*p).analyse.f_psy_trellis as *mut c_float,
-                ))
+            || 2 == sscanf(
+                value,
+                b"%f,%f\0" as *const u8 as *const c_char,
+                &mut (*p).analyse.f_psy_rd as *mut c_float,
+                &mut (*p).analyse.f_psy_trellis as *mut c_float,
+            )
+            || 2 == sscanf(
+                value,
+                b"%f|%f\0" as *const u8 as *const c_char,
+                &mut (*p).analyse.f_psy_rd as *mut c_float,
+                &mut (*p).analyse.f_psy_trellis as *mut c_float,
+            ))
         {
             if sscanf(
                 value,
@@ -1861,28 +1789,28 @@ pub unsafe extern "C" fn x264_param_parse(
                 &mut (*p).analyse.f_psy_rd as *mut c_float,
             ) != 0
             {
-                (*p).analyse.f_psy_trellis = 0 as c_int as c_float;
+                (*p).analyse.f_psy_trellis = 0 as c_float;
             } else {
-                (*p).analyse.f_psy_rd = 0 as c_int as c_float;
-                (*p).analyse.f_psy_trellis = 0 as c_int as c_float;
+                (*p).analyse.f_psy_rd = 0 as c_float;
+                (*p).analyse.f_psy_trellis = 0 as c_float;
             }
         }
     } else if strcmp(name, b"psy\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.psy = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"chroma-me\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.chroma_me = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"mixed-refs\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.mixed_references = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"trellis\0" as *const u8 as *const c_char) == 0 {
         (*p).analyse.i_trellis = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"fast-pskip\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.fast_pskip = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"dct-decimate\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.dct_decimate = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"deadzone-inter\0" as *const u8 as *const c_char) == 0 {
         (*p).analyse.i_luma_deadzone[0] = atoi_internal(value, &mut b_error);
@@ -1949,18 +1877,18 @@ pub unsafe extern "C" fn x264_param_parse(
     } else if strcmp(name, b"stats\0" as *const u8 as *const c_char) == 0 {
         (*p).rc.psz_stat_in = x264_param_strdup(p, value);
         if (*p).rc.psz_stat_in.is_null() {
-            b_error = 1 as c_int;
+            b_error = 1;
             errortype = X264_PARAM_ALLOC_FAILED;
         }
         (*p).rc.psz_stat_out = x264_param_strdup(p, value);
         if (*p).rc.psz_stat_out.is_null() {
-            b_error = 1 as c_int;
+            b_error = 1;
             errortype = X264_PARAM_ALLOC_FAILED;
         }
     } else if strcmp(name, b"qcomp\0" as *const u8 as *const c_char) == 0 {
         (*p).rc.f_qcompress = atof_internal(value, &mut b_error) as c_float;
     } else if strcmp(name, b"mbtree\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).rc.mb_tree = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"qblur\0" as *const u8 as *const c_char) == 0 {
         (*p).rc.f_qblur = atof_internal(value, &mut b_error) as c_float;
@@ -1971,7 +1899,7 @@ pub unsafe extern "C" fn x264_param_parse(
     } else if strcmp(name, b"zones\0" as *const u8 as *const c_char) == 0 {
         (*p).rc.psz_zones = x264_param_strdup(p, value);
         if (*p).rc.psz_zones.is_null() {
-            b_error = 1 as c_int;
+            b_error = 1;
             errortype = X264_PARAM_ALLOC_FAILED;
         }
     } else if strcmp(name, b"crop-rect\0" as *const u8 as *const c_char) == 0 {
@@ -2005,69 +1933,69 @@ pub unsafe extern "C" fn x264_param_parse(
             };
         }
     } else if strcmp(name, b"psnr\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.psnr = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"ssim\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).analyse.ssim = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"aud\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).aud = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"sps-id\0" as *const u8 as *const c_char) == 0 {
         (*p).i_sps_id = atoi_internal(value, &mut b_error);
     } else if strcmp(name, b"global-header\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).repeat_headers = !atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"repeat-headers\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).repeat_headers = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"annexb\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).annexb = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"force-cfr\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).vfr_input = !atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"nal-hrd\0" as *const u8 as *const c_char) == 0 {
         b_error |= parse_enum(value, x264_nal_hrd_names.as_ptr(), &mut (*p).i_nal_hrd);
     } else if strcmp(name, b"filler\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).rc.filler = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"pic-struct\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).pic_struct = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"fake-interlaced\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).fake_interlaced = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"frame-packing\0" as *const u8 as *const c_char) == 0 {
         (*p).frame_packing = FramePacking::from_i32(atoi_internal(value, &mut b_error));
     } else if strcmp(name, b"stitchable\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).stitchable = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"opencl\0" as *const u8 as *const c_char) == 0 {
-        name_was_bool = 1 as c_int;
+        name_was_bool = 1;
         (*p).opencl = atobool_internal(value, &mut b_error);
     } else if strcmp(name, b"opencl-clbin\0" as *const u8 as *const c_char) == 0 {
         (*p).psz_clbin_file = x264_param_strdup(p, value);
         if (*p).psz_clbin_file.is_null() {
-            b_error = 1 as c_int;
+            b_error = 1;
             errortype = X264_PARAM_ALLOC_FAILED;
         }
     } else if strcmp(name, b"opencl-device\0" as *const u8 as *const c_char) == 0 {
         (*p).i_opencl_device = atoi_internal(value, &mut b_error);
     } else {
-        b_error = 1 as c_int;
+        b_error = 1;
         errortype = X264_PARAM_BAD_NAME;
     }
     if !name_buf.is_null() {
         free(name_buf as *mut c_void);
     }
     b_error |= (value_was_null != 0 && name_was_bool == 0) as c_int;
-    return if b_error != 0 { errortype } else { 0 as c_int };
+    return if b_error != 0 { errortype } else { 0 };
 }
 #[no_mangle]
 #[c2rust::src_loc = "1428:1"]
 unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_int) -> *mut c_char {
-    let mut len: c_int = 2000 as c_int;
+    let mut len: c_int = 2000;
     let mut buf: *mut c_char = 0 as *mut c_char;
     let mut s: *mut c_char = 0 as *mut c_char;
     if !(*p).rc.psz_zones.is_null() {
@@ -2277,10 +2205,10 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
     s = s.offset(sprintf(
         s,
         b" weightp=%d\0" as *const u8 as *const c_char,
-        if (*p).analyse.i_weighted_pred > 0 as c_int {
+        if (*p).analyse.i_weighted_pred > 0 {
             (*p).analyse.i_weighted_pred
         } else {
-            0 as c_int
+            0
         },
     ) as isize);
     if (*p).i_keyint_max == X264_KEYINT_MAX_INFINITE {
@@ -2423,7 +2351,7 @@ unsafe extern "C" fn x264_param2string(mut p: *mut x264_param_t, mut b_res: c_in
     if let Some(frame_packing) = (*p).frame_packing {
         s = s.offset(sprintf(s, c" frame-packing=%d".as_ptr(), frame_packing as i32) as isize);
     }
-    if !((*p).rc.i_rc_method == RateControlMode::CQP && (*p).rc.i_qp_constant == 0 as c_int) {
+    if !((*p).rc.i_rc_method == RateControlMode::CQP && (*p).rc.i_qp_constant == 0) {
         s = s.offset(sprintf(
             s,
             b" ip_ratio=%.2f\0" as *const u8 as *const c_char,

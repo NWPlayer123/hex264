@@ -64,13 +64,13 @@ unsafe extern "C" fn open_file(
         return -1;
     }
     (*(*h).next_args).h = h;
-    (*(*h).next_args).status = 0 as c_int;
+    (*(*h).next_args).status = 0;
     (*h).frame_total = (*info).num_frames;
-    if x264_10_threadpool_init(&mut (*h).pool, 1 as c_int) != 0 {
+    if x264_10_threadpool_init(&mut (*h).pool, 1) != 0 {
         return -1;
     }
     *p_handle = h as hnd_t;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "73:1"]
 unsafe extern "C" fn read_frame_thread_int(mut i: *mut thread_input_arg_t) {
@@ -87,8 +87,8 @@ unsafe extern "C" fn read_frame(
     mut i_frame: c_int,
 ) -> c_int {
     let mut h: *mut thread_hnd_t = handle as *mut thread_hnd_t;
-    let mut ret: c_int = 0 as c_int;
-    if (*h).next_frame >= 0 as c_int {
+    let mut ret: c_int = 0;
+    if (*h).next_frame >= 0 {
         x264_10_threadpool_wait((*h).pool, (*h).next_args as *mut c_void);
         ret |= (*(*h).next_args).status;
     }
@@ -97,7 +97,7 @@ unsafe extern "C" fn read_frame(
         *p_pic = (*h).pic;
         (*h).pic = t;
     } else {
-        if (*h).next_frame >= 0 as c_int {
+        if (*h).next_frame >= 0 {
             thread_10_input
                 .release_frame
                 .expect("non-null function pointer")(&mut (*h).pic, handle);
@@ -108,8 +108,8 @@ unsafe extern "C" fn read_frame(
             i_frame,
         );
     }
-    if (*h).frame_total == 0 || (i_frame + 1 as c_int) < (*h).frame_total {
-        (*(*h).next_args).i_frame = i_frame + 1 as c_int;
+    if (*h).frame_total == 0 || (i_frame + 1) < (*h).frame_total {
+        (*(*h).next_args).i_frame = i_frame + 1;
         (*h).next_frame = (*(*h).next_args).i_frame;
         (*(*h).next_args).pic = &mut (*h).pic;
         x264_10_threadpool_run(
@@ -136,7 +136,7 @@ unsafe extern "C" fn release_frame(mut pic: *mut cli_pic_t, mut handle: hnd_t) -
     if (*h).input.release_frame.is_some() {
         return (*h).input.release_frame.expect("non-null function pointer")(pic, (*h).p_handle);
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "119:1"]
 unsafe extern "C" fn picture_alloc(
@@ -168,7 +168,7 @@ unsafe extern "C" fn close_file(mut handle: hnd_t) -> c_int {
     (*h).input.close_file.expect("non-null function pointer")((*h).p_handle);
     free((*h).next_args as *mut c_void);
     free(h as *mut c_void);
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "142:19"]

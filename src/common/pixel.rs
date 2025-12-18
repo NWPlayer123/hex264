@@ -29,11 +29,11 @@ unsafe extern "C" fn x264_pixel_sad_16x16(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 16 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 16 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -50,11 +50,11 @@ unsafe extern "C" fn x264_pixel_sad_16x8(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 16 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 16 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -71,11 +71,11 @@ unsafe extern "C" fn x264_pixel_sad_8x16(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 8 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -92,11 +92,11 @@ unsafe extern "C" fn x264_pixel_sad_8x8(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 8 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -113,11 +113,11 @@ unsafe extern "C" fn x264_pixel_sad_8x4(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 4 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 4 {
+        let mut x: c_int = 0;
+        while x < 8 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -134,11 +134,11 @@ unsafe extern "C" fn x264_pixel_sad_4x16(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 4 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 4 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -155,11 +155,11 @@ unsafe extern "C" fn x264_pixel_sad_4x8(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 4 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 4 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -176,11 +176,11 @@ unsafe extern "C" fn x264_pixel_sad_4x4(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 4 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 4 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 4 {
+        let mut x: c_int = 0;
+        while x < 4 {
             i_sum += abs(*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int);
             x += 1;
         }
@@ -197,11 +197,11 @@ unsafe extern "C" fn x264_pixel_ssd_16x16(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 16 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 16 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -220,11 +220,11 @@ unsafe extern "C" fn x264_pixel_ssd_16x8(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 16 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 16 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -243,11 +243,11 @@ unsafe extern "C" fn x264_pixel_ssd_8x16(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 8 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -266,11 +266,11 @@ unsafe extern "C" fn x264_pixel_ssd_8x8(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 8 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -289,11 +289,11 @@ unsafe extern "C" fn x264_pixel_ssd_8x4(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 4 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 4 {
+        let mut x: c_int = 0;
+        while x < 8 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -312,11 +312,11 @@ unsafe extern "C" fn x264_pixel_ssd_4x16(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 4 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 4 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -335,11 +335,11 @@ unsafe extern "C" fn x264_pixel_ssd_4x8(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 4 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 4 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -358,11 +358,11 @@ unsafe extern "C" fn x264_pixel_ssd_4x4(
     mut pix2: *mut pixel,
     mut i_stride_pix2: intptr_t,
 ) -> c_int {
-    let mut i_sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 4 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 4 as c_int {
+    let mut i_sum: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 4 {
+        let mut x: c_int = 0;
+        while x < 4 {
             let mut d: c_int =
                 *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             i_sum += d * d;
@@ -389,11 +389,11 @@ unsafe extern "C" fn x264_10_pixel_ssd_wxh(
     let mut y: c_int = 0;
     let mut align: c_int =
         ((pix1 as intptr_t | pix2 as intptr_t | i_pix1 | i_pix2) & 15 as intptr_t == 0) as c_int;
-    y = 0 as c_int;
-    while y < i_height - 15 as c_int {
-        let mut x: c_int = 0 as c_int;
+    y = 0;
+    while y < i_height - 15 {
+        let mut x: c_int = 0;
         if align != 0 {
-            while x < i_width - 15 as c_int {
+            while x < i_width - 15 {
                 i_ssd = i_ssd.wrapping_add((*pf).ssd[PIXEL_16x16 as c_int as usize]
                     .expect("non-null function pointer")(
                     pix1.offset((y as intptr_t * i_pix1) as isize)
@@ -403,10 +403,10 @@ unsafe extern "C" fn x264_10_pixel_ssd_wxh(
                         .offset(x as isize),
                     i_pix2,
                 ) as uint64_t);
-                x += 16 as c_int;
+                x += 16;
             }
         }
-        while x < i_width - 7 as c_int {
+        while x < i_width - 7 {
             i_ssd = i_ssd.wrapping_add((*pf).ssd[PIXEL_8x16 as c_int as usize]
                 .expect("non-null function pointer")(
                 pix1.offset((y as intptr_t * i_pix1) as isize)
@@ -416,13 +416,13 @@ unsafe extern "C" fn x264_10_pixel_ssd_wxh(
                     .offset(x as isize),
                 i_pix2,
             ) as uint64_t);
-            x += 8 as c_int;
+            x += 8;
         }
-        y += 16 as c_int;
+        y += 16;
     }
-    if y < i_height - 7 as c_int {
-        let mut x_0: c_int = 0 as c_int;
-        while x_0 < i_width - 7 as c_int {
+    if y < i_height - 7 {
+        let mut x_0: c_int = 0;
+        while x_0 < i_width - 7 {
             i_ssd = i_ssd.wrapping_add((*pf).ssd[PIXEL_8x8 as c_int as usize]
                 .expect("non-null function pointer")(
                 pix1.offset((y as intptr_t * i_pix1) as isize)
@@ -432,13 +432,13 @@ unsafe extern "C" fn x264_10_pixel_ssd_wxh(
                     .offset(x_0 as isize),
                 i_pix2,
             ) as uint64_t);
-            x_0 += 8 as c_int;
+            x_0 += 8;
         }
     }
-    if i_width & 7 as c_int != 0 {
-        y = 0 as c_int;
-        while y < i_height & !(7 as c_int) {
-            let mut x_1: c_int = i_width & !(7 as c_int);
+    if i_width & 7 != 0 {
+        y = 0;
+        while y < i_height & !(7) {
+            let mut x_1: c_int = i_width & !(7);
             while x_1 < i_width {
                 let mut d: c_int = *pix1.offset((y as intptr_t * i_pix1 + x_1 as intptr_t) as isize)
                     as c_int
@@ -449,10 +449,10 @@ unsafe extern "C" fn x264_10_pixel_ssd_wxh(
             y += 1;
         }
     }
-    if i_height & 7 as c_int != 0 {
-        y = i_height & !(7 as c_int);
+    if i_height & 7 != 0 {
+        y = i_height & !(7);
         while y < i_height {
-            let mut x_2: c_int = 0 as c_int;
+            let mut x_2: c_int = 0;
             while x_2 < i_width {
                 let mut d_0: c_int = *pix1
                     .offset((y as intptr_t * i_pix1 + x_2 as intptr_t) as isize)
@@ -479,14 +479,14 @@ unsafe extern "C" fn pixel_ssd_nv12_core(
 ) {
     *ssd_u = 0 as uint64_t;
     *ssd_v = 0 as uint64_t;
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < width {
-            let mut du: c_int = *pixuv1.offset((2 as c_int * x) as isize) as c_int
-                - *pixuv2.offset((2 as c_int * x) as isize) as c_int;
-            let mut dv: c_int = *pixuv1.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                - *pixuv2.offset((2 as c_int * x + 1 as c_int) as isize) as c_int;
+            let mut du: c_int = *pixuv1.offset((2 * x) as isize) as c_int
+                - *pixuv2.offset((2 * x) as isize) as c_int;
+            let mut dv: c_int = *pixuv1.offset((2 * x + 1) as isize) as c_int
+                - *pixuv2.offset((2 * x + 1) as isize) as c_int;
             *ssd_u = (*ssd_u).wrapping_add((du * du) as uint64_t);
             *ssd_v = (*ssd_v).wrapping_add((dv * dv) as uint64_t);
             x += 1;
@@ -514,19 +514,19 @@ unsafe extern "C" fn x264_10_pixel_ssd_nv12(
         i_pix1,
         pix2,
         i_pix2,
-        i_width & !(7 as c_int),
+        i_width & !(7),
         i_height,
         ssd_u,
         ssd_v,
     );
-    if i_width & 7 as c_int != 0 {
+    if i_width & 7 != 0 {
         let mut tmp: [uint64_t; 2] = [0; 2];
         pixel_ssd_nv12_core(
-            pix1.offset((i_width & !(7 as c_int)) as isize),
+            pix1.offset((i_width & !(7)) as isize),
             i_pix1,
-            pix2.offset((i_width & !(7 as c_int)) as isize),
+            pix2.offset((i_width & !(7)) as isize),
             i_pix2,
-            i_width & 7 as c_int,
+            i_width & 7,
             i_height,
             &mut *tmp.as_mut_ptr().offset(0),
             &mut *tmp.as_mut_ptr().offset(1),
@@ -539,10 +539,10 @@ unsafe extern "C" fn x264_10_pixel_ssd_nv12(
 unsafe extern "C" fn pixel_var_16x16(mut pix: *mut pixel, mut i_stride: intptr_t) -> uint64_t {
     let mut sum: uint32_t = 0 as uint32_t;
     let mut sqr: uint32_t = 0 as uint32_t;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 16 as c_int {
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 16 {
             sum = sum.wrapping_add(*pix.offset(x as isize) as uint32_t);
             sqr = sqr.wrapping_add(
                 (*pix.offset(x as isize) as c_int * *pix.offset(x as isize) as c_int) as uint32_t,
@@ -552,16 +552,16 @@ unsafe extern "C" fn pixel_var_16x16(mut pix: *mut pixel, mut i_stride: intptr_t
         pix = pix.offset(i_stride as isize);
         y += 1;
     }
-    return (sum as uint64_t).wrapping_add((sqr as uint64_t) << 32 as c_int);
+    return (sum as uint64_t).wrapping_add((sqr as uint64_t) << 32);
 }
 #[c2rust::src_loc = "200:1"]
 unsafe extern "C" fn pixel_var_8x16(mut pix: *mut pixel, mut i_stride: intptr_t) -> uint64_t {
     let mut sum: uint32_t = 0 as uint32_t;
     let mut sqr: uint32_t = 0 as uint32_t;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 8 {
             sum = sum.wrapping_add(*pix.offset(x as isize) as uint32_t);
             sqr = sqr.wrapping_add(
                 (*pix.offset(x as isize) as c_int * *pix.offset(x as isize) as c_int) as uint32_t,
@@ -571,16 +571,16 @@ unsafe extern "C" fn pixel_var_8x16(mut pix: *mut pixel, mut i_stride: intptr_t)
         pix = pix.offset(i_stride as isize);
         y += 1;
     }
-    return (sum as uint64_t).wrapping_add((sqr as uint64_t) << 32 as c_int);
+    return (sum as uint64_t).wrapping_add((sqr as uint64_t) << 32);
 }
 #[c2rust::src_loc = "201:1"]
 unsafe extern "C" fn pixel_var_8x8(mut pix: *mut pixel, mut i_stride: intptr_t) -> uint64_t {
     let mut sum: uint32_t = 0 as uint32_t;
     let mut sqr: uint32_t = 0 as uint32_t;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 8 {
             sum = sum.wrapping_add(*pix.offset(x as isize) as uint32_t);
             sqr = sqr.wrapping_add(
                 (*pix.offset(x as isize) as c_int * *pix.offset(x as isize) as c_int) as uint32_t,
@@ -590,7 +590,7 @@ unsafe extern "C" fn pixel_var_8x8(mut pix: *mut pixel, mut i_stride: intptr_t) 
         pix = pix.offset(i_stride as isize);
         y += 1;
     }
-    return (sum as uint64_t).wrapping_add((sqr as uint64_t) << 32 as c_int);
+    return (sum as uint64_t).wrapping_add((sqr as uint64_t) << 32);
 }
 #[c2rust::src_loc = "230:1"]
 unsafe extern "C" fn pixel_var2_8x16(
@@ -598,18 +598,18 @@ unsafe extern "C" fn pixel_var2_8x16(
     mut fdec: *mut pixel,
     mut ssd: *mut c_int,
 ) -> c_int {
-    let mut sum_u: c_int = 0 as c_int;
-    let mut sum_v: c_int = 0 as c_int;
-    let mut sqr_u: c_int = 0 as c_int;
-    let mut sqr_v: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 16 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut sum_u: c_int = 0;
+    let mut sum_v: c_int = 0;
+    let mut sqr_u: c_int = 0;
+    let mut sqr_v: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 16 {
+        let mut x: c_int = 0;
+        while x < 8 {
             let mut diff_u: c_int =
                 *fenc.offset(x as isize) as c_int - *fdec.offset(x as isize) as c_int;
-            let mut diff_v: c_int = *fenc.offset((x + FENC_STRIDE / 2 as c_int) as isize) as c_int
-                - *fdec.offset((x + FDEC_STRIDE / 2 as c_int) as isize) as c_int;
+            let mut diff_v: c_int = *fenc.offset((x + FENC_STRIDE / 2) as isize) as c_int
+                - *fdec.offset((x + FDEC_STRIDE / 2) as isize) as c_int;
             sum_u += diff_u;
             sum_v += diff_v;
             sqr_u += diff_u * diff_u;
@@ -622,9 +622,8 @@ unsafe extern "C" fn pixel_var2_8x16(
     }
     *ssd.offset(0) = sqr_u;
     *ssd.offset(1) = sqr_v;
-    return (sqr_u as int64_t - (sum_u as int64_t * sum_u as int64_t >> 7 as c_int)
-        + sqr_v as int64_t
-        - (sum_v as int64_t * sum_v as int64_t >> 7 as c_int)) as c_int;
+    return (sqr_u as int64_t - (sum_u as int64_t * sum_u as int64_t >> 7) + sqr_v as int64_t
+        - (sum_v as int64_t * sum_v as int64_t >> 7)) as c_int;
 }
 #[c2rust::src_loc = "231:1"]
 unsafe extern "C" fn pixel_var2_8x8(
@@ -632,18 +631,18 @@ unsafe extern "C" fn pixel_var2_8x8(
     mut fdec: *mut pixel,
     mut ssd: *mut c_int,
 ) -> c_int {
-    let mut sum_u: c_int = 0 as c_int;
-    let mut sum_v: c_int = 0 as c_int;
-    let mut sqr_u: c_int = 0 as c_int;
-    let mut sqr_v: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
-    while y < 8 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+    let mut sum_u: c_int = 0;
+    let mut sum_v: c_int = 0;
+    let mut sqr_u: c_int = 0;
+    let mut sqr_v: c_int = 0;
+    let mut y: c_int = 0;
+    while y < 8 {
+        let mut x: c_int = 0;
+        while x < 8 {
             let mut diff_u: c_int =
                 *fenc.offset(x as isize) as c_int - *fdec.offset(x as isize) as c_int;
-            let mut diff_v: c_int = *fenc.offset((x + FENC_STRIDE / 2 as c_int) as isize) as c_int
-                - *fdec.offset((x + FDEC_STRIDE / 2 as c_int) as isize) as c_int;
+            let mut diff_v: c_int = *fenc.offset((x + FENC_STRIDE / 2) as isize) as c_int
+                - *fdec.offset((x + FDEC_STRIDE / 2) as isize) as c_int;
             sum_u += diff_u;
             sum_v += diff_v;
             sqr_u += diff_u * diff_u;
@@ -656,9 +655,8 @@ unsafe extern "C" fn pixel_var2_8x8(
     }
     *ssd.offset(0) = sqr_u;
     *ssd.offset(1) = sqr_v;
-    return (sqr_u as int64_t - (sum_u as int64_t * sum_u as int64_t >> 6 as c_int)
-        + sqr_v as int64_t
-        - (sum_v as int64_t * sum_v as int64_t >> 6 as c_int)) as c_int;
+    return (sqr_u as int64_t - (sum_u as int64_t * sum_u as int64_t >> 6) + sqr_v as int64_t
+        - (sum_v as int64_t * sum_v as int64_t >> 6)) as c_int;
 }
 #[c2rust::src_loc = "240:9"]
 const BITS_PER_SUM: usize = (8 as usize).wrapping_mul(::core::mem::size_of::<sum_t>() as usize);
@@ -666,7 +664,7 @@ const BITS_PER_SUM: usize = (8 as usize).wrapping_mul(::core::mem::size_of::<sum
 #[c2rust::src_loc = "255:1"]
 unsafe extern "C" fn abs2(mut a: sum2_t) -> sum2_t {
     let mut s: sum2_t = (a >> BITS_PER_SUM.wrapping_sub(1 as usize)
-        & ((1 as c_int as sum2_t) << BITS_PER_SUM).wrapping_add(1 as sum2_t))
+        & ((1 as sum2_t) << BITS_PER_SUM).wrapping_add(1 as sum2_t))
     .wrapping_mul(u32::MAX as sum_t as sum2_t);
     return a.wrapping_add(s) ^ s;
 }
@@ -686,8 +684,8 @@ unsafe extern "C" fn x264_pixel_satd_4x4(
     let mut b0: sum2_t = 0;
     let mut b1: sum2_t = 0;
     let mut sum: sum2_t = 0 as sum2_t;
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
+    let mut i: c_int = 0;
+    while i < 4 {
         a0 = (*pix1.offset(0) as c_int - *pix2.offset(0) as c_int) as sum2_t;
         a1 = (*pix1.offset(1) as c_int - *pix2.offset(1) as c_int) as sum2_t;
         b0 = a0
@@ -704,8 +702,8 @@ unsafe extern "C" fn x264_pixel_satd_4x4(
         pix1 = pix1.offset(i_pix1 as isize);
         pix2 = pix2.offset(i_pix2 as isize);
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 2 as c_int {
+    let mut i_0: c_int = 0;
+    while i_0 < 2 {
         let mut t0: sum2_t = tmp[0][i_0 as usize].wrapping_add(tmp[1][i_0 as usize]);
         let mut t1: sum2_t = tmp[0][i_0 as usize].wrapping_sub(tmp[1][i_0 as usize]);
         let mut t2: sum2_t = tmp[2][i_0 as usize].wrapping_add(tmp[3][i_0 as usize]);
@@ -721,7 +719,7 @@ unsafe extern "C" fn x264_pixel_satd_4x4(
         sum = sum.wrapping_add((a0 as sum_t as sum2_t).wrapping_add(a0 >> BITS_PER_SUM));
         i_0 += 1;
     }
-    return (sum >> 1 as c_int) as c_int;
+    return (sum >> 1) as c_int;
 }
 #[inline(never)]
 #[c2rust::src_loc = "290:1"]
@@ -737,8 +735,8 @@ unsafe extern "C" fn x264_pixel_satd_8x4(
     let mut a2: sum2_t = 0;
     let mut a3: sum2_t = 0;
     let mut sum: sum2_t = 0 as sum2_t;
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
+    let mut i: c_int = 0;
+    while i < 4 {
         a0 = ((*pix1.offset(0) as c_int - *pix2.offset(0) as c_int) as sum2_t).wrapping_add(
             ((*pix1.offset(4) as c_int - *pix2.offset(4) as c_int) as sum2_t) << BITS_PER_SUM,
         );
@@ -763,8 +761,8 @@ unsafe extern "C" fn x264_pixel_satd_8x4(
         pix1 = pix1.offset(i_pix1 as isize);
         pix2 = pix2.offset(i_pix2 as isize);
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 4 as c_int {
+    let mut i_0: c_int = 0;
+    while i_0 < 4 {
         let mut t0_0: sum2_t = tmp[0][i_0 as usize].wrapping_add(tmp[1][i_0 as usize]);
         let mut t1_0: sum2_t = tmp[0][i_0 as usize].wrapping_sub(tmp[1][i_0 as usize]);
         let mut t2_0: sum2_t = tmp[2][i_0 as usize].wrapping_add(tmp[3][i_0 as usize]);
@@ -781,7 +779,7 @@ unsafe extern "C" fn x264_pixel_satd_8x4(
         );
         i_0 += 1;
     }
-    return ((sum as sum_t as sum2_t).wrapping_add(sum >> BITS_PER_SUM) >> 1 as c_int) as c_int;
+    return ((sum as sum_t as sum2_t).wrapping_add(sum >> BITS_PER_SUM) >> 1) as c_int;
 }
 #[c2rust::src_loc = "327:1"]
 unsafe extern "C" fn x264_pixel_satd_16x16(
@@ -797,7 +795,7 @@ unsafe extern "C" fn x264_pixel_satd_16x16(
             pix2.offset((4 as intptr_t * i_pix2) as isize),
             i_pix2,
         );
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum += x264_pixel_satd_8x4(pix1.offset(8), i_pix1, pix2.offset(8), i_pix2)
             + x264_pixel_satd_8x4(
                 pix1.offset(8).offset((4 as intptr_t * i_pix1) as isize),
@@ -806,7 +804,7 @@ unsafe extern "C" fn x264_pixel_satd_16x16(
                 i_pix2,
             );
     }
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -819,7 +817,7 @@ unsafe extern "C" fn x264_pixel_satd_16x16(
             i_pix2,
         );
     }
-    if 16 as c_int == 16 as c_int && 16 as c_int == 16 as c_int {
+    if 16 == 16 && 16 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset(8).offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -848,7 +846,7 @@ unsafe extern "C" fn x264_pixel_satd_16x8(
             pix2.offset((4 as intptr_t * i_pix2) as isize),
             i_pix2,
         );
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum += x264_pixel_satd_8x4(pix1.offset(8), i_pix1, pix2.offset(8), i_pix2)
             + x264_pixel_satd_8x4(
                 pix1.offset(8).offset((4 as intptr_t * i_pix1) as isize),
@@ -857,7 +855,7 @@ unsafe extern "C" fn x264_pixel_satd_16x8(
                 i_pix2,
             );
     }
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -870,7 +868,7 @@ unsafe extern "C" fn x264_pixel_satd_16x8(
             i_pix2,
         );
     }
-    if 16 as c_int == 16 as c_int && 8 as c_int == 16 as c_int {
+    if 16 == 16 && 8 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset(8).offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -899,7 +897,7 @@ unsafe extern "C" fn x264_pixel_satd_8x16(
             pix2.offset((4 as intptr_t * i_pix2) as isize),
             i_pix2,
         );
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum += x264_pixel_satd_8x4(pix1.offset(8), i_pix1, pix2.offset(8), i_pix2)
             + x264_pixel_satd_8x4(
                 pix1.offset(8).offset((4 as intptr_t * i_pix1) as isize),
@@ -908,7 +906,7 @@ unsafe extern "C" fn x264_pixel_satd_8x16(
                 i_pix2,
             );
     }
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -921,7 +919,7 @@ unsafe extern "C" fn x264_pixel_satd_8x16(
             i_pix2,
         );
     }
-    if 8 as c_int == 16 as c_int && 16 as c_int == 16 as c_int {
+    if 8 == 16 && 16 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset(8).offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -950,7 +948,7 @@ unsafe extern "C" fn x264_pixel_satd_8x8(
             pix2.offset((4 as intptr_t * i_pix2) as isize),
             i_pix2,
         );
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum += x264_pixel_satd_8x4(pix1.offset(8), i_pix1, pix2.offset(8), i_pix2)
             + x264_pixel_satd_8x4(
                 pix1.offset(8).offset((4 as intptr_t * i_pix1) as isize),
@@ -959,7 +957,7 @@ unsafe extern "C" fn x264_pixel_satd_8x8(
                 i_pix2,
             );
     }
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -972,7 +970,7 @@ unsafe extern "C" fn x264_pixel_satd_8x8(
             i_pix2,
         );
     }
-    if 8 as c_int == 16 as c_int && 8 as c_int == 16 as c_int {
+    if 8 == 16 && 8 == 16 {
         sum += x264_pixel_satd_8x4(
             pix1.offset(8).offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -1001,7 +999,7 @@ unsafe extern "C" fn x264_pixel_satd_4x16(
             pix2.offset((4 as intptr_t * i_pix2) as isize),
             i_pix2,
         );
-    if 4 as c_int == 16 as c_int {
+    if 4 == 16 {
         sum += x264_pixel_satd_4x4(pix1.offset(8), i_pix1, pix2.offset(8), i_pix2)
             + x264_pixel_satd_4x4(
                 pix1.offset(8).offset((4 as intptr_t * i_pix1) as isize),
@@ -1010,7 +1008,7 @@ unsafe extern "C" fn x264_pixel_satd_4x16(
                 i_pix2,
             );
     }
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum += x264_pixel_satd_4x4(
             pix1.offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -1023,7 +1021,7 @@ unsafe extern "C" fn x264_pixel_satd_4x16(
             i_pix2,
         );
     }
-    if 4 as c_int == 16 as c_int && 16 as c_int == 16 as c_int {
+    if 4 == 16 && 16 == 16 {
         sum += x264_pixel_satd_4x4(
             pix1.offset(8).offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -1052,7 +1050,7 @@ unsafe extern "C" fn x264_pixel_satd_4x8(
             pix2.offset((4 as intptr_t * i_pix2) as isize),
             i_pix2,
         );
-    if 4 as c_int == 16 as c_int {
+    if 4 == 16 {
         sum += x264_pixel_satd_4x4(pix1.offset(8), i_pix1, pix2.offset(8), i_pix2)
             + x264_pixel_satd_4x4(
                 pix1.offset(8).offset((4 as intptr_t * i_pix1) as isize),
@@ -1061,7 +1059,7 @@ unsafe extern "C" fn x264_pixel_satd_4x8(
                 i_pix2,
             );
     }
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum += x264_pixel_satd_4x4(
             pix1.offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -1074,7 +1072,7 @@ unsafe extern "C" fn x264_pixel_satd_4x8(
             i_pix2,
         );
     }
-    if 4 as c_int == 16 as c_int && 8 as c_int == 16 as c_int {
+    if 4 == 16 && 8 == 16 {
         sum += x264_pixel_satd_4x4(
             pix1.offset(8).offset((8 as intptr_t * i_pix1) as isize),
             i_pix1,
@@ -1111,8 +1109,8 @@ unsafe extern "C" fn sa8d_8x8(
     let mut b2: sum2_t = 0;
     let mut b3: sum2_t = 0;
     let mut sum: sum2_t = 0 as sum2_t;
-    let mut i: c_int = 0 as c_int;
-    while i < 8 as c_int {
+    let mut i: c_int = 0;
+    while i < 8 {
         a0 = (*pix1.offset(0) as c_int - *pix2.offset(0) as c_int) as sum2_t;
         a1 = (*pix1.offset(1) as c_int - *pix2.offset(1) as c_int) as sum2_t;
         b0 = a0
@@ -1145,8 +1143,8 @@ unsafe extern "C" fn sa8d_8x8(
         pix1 = pix1.offset(i_pix1 as isize);
         pix2 = pix2.offset(i_pix2 as isize);
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 4 as c_int {
+    let mut i_0: c_int = 0;
+    while i_0 < 4 {
         let mut t0_0: sum2_t = tmp[0][i_0 as usize].wrapping_add(tmp[1][i_0 as usize]);
         let mut t1_0: sum2_t = tmp[0][i_0 as usize].wrapping_sub(tmp[1][i_0 as usize]);
         let mut t2_0: sum2_t = tmp[2][i_0 as usize].wrapping_add(tmp[3][i_0 as usize]);
@@ -1180,7 +1178,7 @@ unsafe extern "C" fn x264_pixel_sa8d_8x8(
     mut i_pix2: intptr_t,
 ) -> c_int {
     let mut sum: c_int = sa8d_8x8(pix1, i_pix1, pix2, i_pix2);
-    return sum + 2 as c_int >> 2 as c_int;
+    return sum + 2 >> 2;
 }
 #[c2rust::src_loc = "374:1"]
 unsafe extern "C" fn x264_pixel_sa8d_16x16(
@@ -1203,7 +1201,7 @@ unsafe extern "C" fn x264_pixel_sa8d_16x16(
             pix2.offset(8).offset((8 as intptr_t * i_pix2) as isize),
             i_pix2,
         );
-    return sum + 2 as c_int >> 2 as c_int;
+    return sum + 2 >> 2;
 }
 #[inline(never)]
 #[c2rust::src_loc = "383:1"]
@@ -1216,12 +1214,12 @@ unsafe extern "C" fn pixel_hadamard_ac(mut pix: *mut pixel, mut stride: intptr_t
     let mut dc: sum2_t = 0;
     let mut sum4: sum2_t = 0 as sum2_t;
     let mut sum8: sum2_t = 0 as sum2_t;
-    let mut i: c_int = 0 as c_int;
-    while i < 8 as c_int {
+    let mut i: c_int = 0;
+    while i < 8 {
         let mut t: *mut sum2_t = tmp
             .as_mut_ptr()
-            .offset((i & 3 as c_int) as isize)
-            .offset(((i & 4 as c_int) * 4 as c_int) as isize);
+            .offset((i & 3) as isize)
+            .offset(((i & 4) * 4) as isize);
         a0 = ((*pix.offset(0) as c_int + *pix.offset(1) as c_int) as sum2_t).wrapping_add(
             ((*pix.offset(0) as c_int - *pix.offset(1) as c_int) as sum2_t) << BITS_PER_SUM,
         );
@@ -1237,28 +1235,24 @@ unsafe extern "C" fn pixel_hadamard_ac(mut pix: *mut pixel, mut stride: intptr_t
             ((*pix.offset(6) as c_int - *pix.offset(7) as c_int) as sum2_t) << BITS_PER_SUM,
         );
         *t.offset(8) = a2.wrapping_add(a3);
-        *t.offset(12 as c_int as isize) = a2.wrapping_sub(a3);
+        *t.offset(12 as isize) = a2.wrapping_sub(a3);
         i += 1;
         pix = pix.offset(stride as isize);
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 8 as c_int {
-        let mut t0: sum2_t = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            .wrapping_add(tmp[(i_0 * 4 as c_int + 1 as c_int) as usize]);
-        let mut t1: sum2_t = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            .wrapping_sub(tmp[(i_0 * 4 as c_int + 1 as c_int) as usize]);
-        let mut t2: sum2_t = tmp[(i_0 * 4 as c_int + 2 as c_int) as usize]
-            .wrapping_add(tmp[(i_0 * 4 as c_int + 3 as c_int) as usize]);
-        let mut t3: sum2_t = tmp[(i_0 * 4 as c_int + 2 as c_int) as usize]
-            .wrapping_sub(tmp[(i_0 * 4 as c_int + 3 as c_int) as usize]);
+    let mut i_0: c_int = 0;
+    while i_0 < 8 {
+        let mut t0: sum2_t = tmp[(i_0 * 4 + 0) as usize].wrapping_add(tmp[(i_0 * 4 + 1) as usize]);
+        let mut t1: sum2_t = tmp[(i_0 * 4 + 0) as usize].wrapping_sub(tmp[(i_0 * 4 + 1) as usize]);
+        let mut t2: sum2_t = tmp[(i_0 * 4 + 2) as usize].wrapping_add(tmp[(i_0 * 4 + 3) as usize]);
+        let mut t3: sum2_t = tmp[(i_0 * 4 + 2) as usize].wrapping_sub(tmp[(i_0 * 4 + 3) as usize]);
         a0 = t0.wrapping_add(t2);
         a2 = t0.wrapping_sub(t2);
         a1 = t1.wrapping_add(t3);
         a3 = t1.wrapping_sub(t3);
-        tmp[(i_0 * 4 as c_int + 0 as c_int) as usize] = a0;
-        tmp[(i_0 * 4 as c_int + 1 as c_int) as usize] = a1;
-        tmp[(i_0 * 4 as c_int + 2 as c_int) as usize] = a2;
-        tmp[(i_0 * 4 as c_int + 3 as c_int) as usize] = a3;
+        tmp[(i_0 * 4 + 0) as usize] = a0;
+        tmp[(i_0 * 4 + 1) as usize] = a1;
+        tmp[(i_0 * 4 + 2) as usize] = a2;
+        tmp[(i_0 * 4 + 3) as usize] = a3;
         sum4 = sum4.wrapping_add(
             abs2(a0)
                 .wrapping_add(abs2(a1))
@@ -1267,14 +1261,12 @@ unsafe extern "C" fn pixel_hadamard_ac(mut pix: *mut pixel, mut stride: intptr_t
         );
         i_0 += 1;
     }
-    let mut i_1: c_int = 0 as c_int;
-    while i_1 < 8 as c_int {
-        let mut t0_0: sum2_t = tmp[i_1 as usize].wrapping_add(tmp[(8 as c_int + i_1) as usize]);
-        let mut t1_0: sum2_t = tmp[i_1 as usize].wrapping_sub(tmp[(8 as c_int + i_1) as usize]);
-        let mut t2_0: sum2_t =
-            tmp[(16 as c_int + i_1) as usize].wrapping_add(tmp[(24 as c_int + i_1) as usize]);
-        let mut t3_0: sum2_t =
-            tmp[(16 as c_int + i_1) as usize].wrapping_sub(tmp[(24 as c_int + i_1) as usize]);
+    let mut i_1: c_int = 0;
+    while i_1 < 8 {
+        let mut t0_0: sum2_t = tmp[i_1 as usize].wrapping_add(tmp[(8 + i_1) as usize]);
+        let mut t1_0: sum2_t = tmp[i_1 as usize].wrapping_sub(tmp[(8 + i_1) as usize]);
+        let mut t2_0: sum2_t = tmp[(16 + i_1) as usize].wrapping_add(tmp[(24 + i_1) as usize]);
+        let mut t3_0: sum2_t = tmp[(16 + i_1) as usize].wrapping_sub(tmp[(24 + i_1) as usize]);
         a0 = t0_0.wrapping_add(t2_0);
         a2 = t0_0.wrapping_sub(t2_0);
         a1 = t1_0.wrapping_add(t3_0);
@@ -1297,7 +1289,7 @@ unsafe extern "C" fn pixel_hadamard_ac(mut pix: *mut pixel, mut stride: intptr_t
     sum8 = (sum8 as sum_t as sum2_t)
         .wrapping_add(sum8 >> BITS_PER_SUM)
         .wrapping_sub(dc);
-    return (sum8 << 32 as c_int).wrapping_add(sum4 as uint64_t);
+    return (sum8 << 32).wrapping_add(sum4 as uint64_t);
 }
 #[c2rust::src_loc = "432:1"]
 unsafe extern "C" fn x264_pixel_hadamard_ac_16x16(
@@ -1305,23 +1297,22 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_16x16(
     mut stride: intptr_t,
 ) -> uint64_t {
     let mut sum: uint64_t = pixel_hadamard_ac(pix, stride);
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(pix.offset(8), stride));
     }
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize),
             stride,
         ));
     }
-    if 16 as c_int == 16 as c_int && 16 as c_int == 16 as c_int {
+    if 16 == 16 && 16 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize).offset(8),
             stride,
         ));
     }
-    return ((sum >> 34 as c_int) << 32 as c_int)
-        .wrapping_add((sum as uint32_t >> 1 as c_int) as uint64_t);
+    return ((sum >> 34) << 32).wrapping_add((sum as uint32_t >> 1) as uint64_t);
 }
 #[c2rust::src_loc = "433:1"]
 unsafe extern "C" fn x264_pixel_hadamard_ac_16x8(
@@ -1329,23 +1320,22 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_16x8(
     mut stride: intptr_t,
 ) -> uint64_t {
     let mut sum: uint64_t = pixel_hadamard_ac(pix, stride);
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(pix.offset(8), stride));
     }
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize),
             stride,
         ));
     }
-    if 16 as c_int == 16 as c_int && 8 as c_int == 16 as c_int {
+    if 16 == 16 && 8 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize).offset(8),
             stride,
         ));
     }
-    return ((sum >> 34 as c_int) << 32 as c_int)
-        .wrapping_add((sum as uint32_t >> 1 as c_int) as uint64_t);
+    return ((sum >> 34) << 32).wrapping_add((sum as uint32_t >> 1) as uint64_t);
 }
 #[c2rust::src_loc = "434:1"]
 unsafe extern "C" fn x264_pixel_hadamard_ac_8x16(
@@ -1353,23 +1343,22 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_8x16(
     mut stride: intptr_t,
 ) -> uint64_t {
     let mut sum: uint64_t = pixel_hadamard_ac(pix, stride);
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(pix.offset(8), stride));
     }
-    if 16 as c_int == 16 as c_int {
+    if 16 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize),
             stride,
         ));
     }
-    if 8 as c_int == 16 as c_int && 16 as c_int == 16 as c_int {
+    if 8 == 16 && 16 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize).offset(8),
             stride,
         ));
     }
-    return ((sum >> 34 as c_int) << 32 as c_int)
-        .wrapping_add((sum as uint32_t >> 1 as c_int) as uint64_t);
+    return ((sum >> 34) << 32).wrapping_add((sum as uint32_t >> 1) as uint64_t);
 }
 #[c2rust::src_loc = "435:1"]
 unsafe extern "C" fn x264_pixel_hadamard_ac_8x8(
@@ -1377,23 +1366,22 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_8x8(
     mut stride: intptr_t,
 ) -> uint64_t {
     let mut sum: uint64_t = pixel_hadamard_ac(pix, stride);
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(pix.offset(8), stride));
     }
-    if 8 as c_int == 16 as c_int {
+    if 8 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize),
             stride,
         ));
     }
-    if 8 as c_int == 16 as c_int && 8 as c_int == 16 as c_int {
+    if 8 == 16 && 8 == 16 {
         sum = sum.wrapping_add(pixel_hadamard_ac(
             pix.offset((8 as intptr_t * stride) as isize).offset(8),
             stride,
         ));
     }
-    return ((sum >> 34 as c_int) << 32 as c_int)
-        .wrapping_add((sum as uint32_t >> 1 as c_int) as uint64_t);
+    return ((sum >> 34) << 32).wrapping_add((sum as uint32_t >> 1) as uint64_t);
 }
 #[c2rust::src_loc = "458:1"]
 unsafe extern "C" fn x264_pixel_sad_x3_16x16(
@@ -1981,16 +1969,16 @@ unsafe extern "C" fn ssim_4x4x2_core(
     mut stride2: intptr_t,
     mut sums: *mut [c_int; 4],
 ) {
-    let mut z: c_int = 0 as c_int;
-    while z < 2 as c_int {
+    let mut z: c_int = 0;
+    while z < 2 {
         let mut s1: uint32_t = 0 as uint32_t;
         let mut s2: uint32_t = 0 as uint32_t;
         let mut ss: uint32_t = 0 as uint32_t;
         let mut s12: uint32_t = 0 as uint32_t;
-        let mut y: c_int = 0 as c_int;
-        while y < 4 as c_int {
-            let mut x: c_int = 0 as c_int;
-            while x < 4 as c_int {
+        let mut y: c_int = 0;
+        while y < 4 {
+            let mut x: c_int = 0;
+            while x < 4 {
                 let mut a: c_int =
                     *pix1.offset((x as intptr_t + y as intptr_t * stride1) as isize) as c_int;
                 let mut b: c_int =
@@ -2020,25 +2008,22 @@ unsafe extern "C" fn ssim_end1(
     mut ss: c_int,
     mut s12: c_int,
 ) -> c_float {
-    static mut ssim_c1: c_float = (0.01f64
-        * 0.01f64
-        * PIXEL_MAX as c_double
-        * PIXEL_MAX as c_double
-        * 64 as c_int as c_double) as c_float;
+    static mut ssim_c1: c_float =
+        (0.01f64 * 0.01f64 * PIXEL_MAX as c_double * PIXEL_MAX as c_double * 64 as c_double)
+            as c_float;
     static mut ssim_c2: c_float = (0.03f64
         * 0.03f64
         * PIXEL_MAX as c_double
         * PIXEL_MAX as c_double
-        * 64 as c_int as c_double
-        * 63 as c_int as c_double) as c_float;
+        * 64 as c_double
+        * 63 as c_double) as c_float;
     let mut fs1: c_float = s1 as c_float;
     let mut fs2: c_float = s2 as c_float;
     let mut fss: c_float = ss as c_float;
     let mut fs12: c_float = s12 as c_float;
-    let mut vars: c_float = fss * 64 as c_int as c_float - fs1 * fs1 - fs2 * fs2;
-    let mut covar: c_float = fs12 * 64 as c_int as c_float - fs1 * fs2;
-    return (2 as c_int as c_float * fs1 * fs2 + ssim_c1)
-        * (2 as c_int as c_float * covar + ssim_c2)
+    let mut vars: c_float = fss * 64 as c_float - fs1 * fs1 - fs2 * fs2;
+    let mut covar: c_float = fs12 * 64 as c_float - fs1 * fs2;
+    return (2 as c_float * fs1 * fs2 + ssim_c1) * (2 as c_float * covar + ssim_c2)
         / ((fs1 * fs1 + fs2 * fs2 + ssim_c1) * (vars + ssim_c2));
 }
 #[c2rust::src_loc = "679:1"]
@@ -2048,25 +2033,25 @@ unsafe extern "C" fn ssim_end4(
     mut width: c_int,
 ) -> c_float {
     let mut ssim: c_float = 0.0f32;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < width {
         ssim += ssim_end1(
             (*sum0.offset(i as isize))[0]
-                + (*sum0.offset((i + 1 as c_int) as isize))[0]
+                + (*sum0.offset((i + 1) as isize))[0]
                 + (*sum1.offset(i as isize))[0]
-                + (*sum1.offset((i + 1 as c_int) as isize))[0],
+                + (*sum1.offset((i + 1) as isize))[0],
             (*sum0.offset(i as isize))[1]
-                + (*sum0.offset((i + 1 as c_int) as isize))[1]
+                + (*sum0.offset((i + 1) as isize))[1]
                 + (*sum1.offset(i as isize))[1]
-                + (*sum1.offset((i + 1 as c_int) as isize))[1],
+                + (*sum1.offset((i + 1) as isize))[1],
             (*sum0.offset(i as isize))[2]
-                + (*sum0.offset((i + 1 as c_int) as isize))[2]
+                + (*sum0.offset((i + 1) as isize))[2]
                 + (*sum1.offset(i as isize))[2]
-                + (*sum1.offset((i + 1 as c_int) as isize))[2],
+                + (*sum1.offset((i + 1) as isize))[2],
             (*sum0.offset(i as isize))[3]
-                + (*sum0.offset((i + 1 as c_int) as isize))[3]
+                + (*sum0.offset((i + 1) as isize))[3]
                 + (*sum1.offset(i as isize))[3]
-                + (*sum1.offset((i + 1 as c_int) as isize))[3],
+                + (*sum1.offset((i + 1) as isize))[3],
         );
         i += 1;
     }
@@ -2085,19 +2070,19 @@ unsafe extern "C" fn x264_10_pixel_ssim_wxh(
     mut buf: *mut c_void,
     mut cnt: *mut c_int,
 ) -> c_float {
-    let mut z: c_int = 0 as c_int;
+    let mut z: c_int = 0;
     let mut ssim: c_float = 0.0f32;
     let mut sum0: *mut [c_int; 4] = buf as *mut [c_int; 4];
-    let mut sum1: *mut [c_int; 4] = sum0.offset((width >> 2 as c_int) as isize).offset(3);
-    width >>= 2 as c_int;
-    height >>= 2 as c_int;
-    let mut y: c_int = 1 as c_int;
+    let mut sum1: *mut [c_int; 4] = sum0.offset((width >> 2) as isize).offset(3);
+    width >>= 2;
+    height >>= 2;
+    let mut y: c_int = 1;
     while y < height {
         while z <= y {
             let mut t: *mut c_void = sum0 as *mut c_void;
             sum0 = sum1;
             sum1 = t as *mut [c_int; 4];
-            let mut x: c_int = 0 as c_int;
+            let mut x: c_int = 0;
             while x < width {
                 (*pf).ssim_4x4x2_core.expect("non-null function pointer")(
                     &mut *pix1.offset(
@@ -2110,26 +2095,26 @@ unsafe extern "C" fn x264_10_pixel_ssim_wxh(
                     stride2,
                     &mut *sum0.offset(x as isize),
                 );
-                x += 2 as c_int;
+                x += 2;
             }
             z += 1;
         }
-        let mut x_0: c_int = 0 as c_int;
-        while x_0 < width - 1 as c_int {
+        let mut x_0: c_int = 0;
+        while x_0 < width - 1 {
             ssim += (*pf).ssim_end4.expect("non-null function pointer")(
                 sum0.offset(x_0 as isize),
                 sum1.offset(x_0 as isize),
-                if (4 as c_int) < width - x_0 - 1 as c_int {
-                    4 as c_int
+                if (4) < width - x_0 - 1 {
+                    4
                 } else {
-                    width - x_0 - 1 as c_int
+                    width - x_0 - 1
                 },
             );
-            x_0 += 4 as c_int;
+            x_0 += 4;
         }
         y += 1;
     }
-    *cnt = (height - 1 as c_int) * (width - 1 as c_int);
+    *cnt = (height - 1) * (width - 1);
     return ssim;
 }
 #[c2rust::src_loc = "716:1"]
@@ -2138,11 +2123,11 @@ unsafe extern "C" fn pixel_vsad(
     mut stride: intptr_t,
     mut height: c_int,
 ) -> c_int {
-    let mut score: c_int = 0 as c_int;
-    let mut i: c_int = 1 as c_int;
+    let mut score: c_int = 0;
+    let mut i: c_int = 1;
     while i < height {
-        let mut j: c_int = 0 as c_int;
-        while j < 16 as c_int {
+        let mut j: c_int = 0;
+        while j < 16 {
             score += abs(*src.offset(j as isize) as c_int
                 - *src.offset((j as intptr_t + stride) as isize) as c_int);
             j += 1;
@@ -2163,8 +2148,7 @@ unsafe extern "C" fn x264_10_field_vsad(
     let mut score_frame: c_int = 0;
     let mut stride: c_int = (*(*h).fenc).i_stride[0];
     let mut mb_stride: c_int = (*h).mb.i_mb_stride;
-    let mut fenc: *mut pixel =
-        (*(*h).fenc).plane[0].offset((16 as c_int * (mb_x + mb_y * stride)) as isize);
+    let mut fenc: *mut pixel = (*(*h).fenc).plane[0].offset((16 * (mb_x + mb_y * stride)) as isize);
     let mut mb_xy: c_int = mb_x + mb_y * mb_stride;
     let mut mbpair_height: c_int = if ((*h).param.height as c_int - mb_y * 16) < 32 {
         (*h).param.height as c_int - mb_y * 16
@@ -2175,21 +2159,19 @@ unsafe extern "C" fn x264_10_field_vsad(
         (*h).pixf.vsad.expect("non-null function pointer")(fenc, stride as intptr_t, mbpair_height);
     score_field = (*h).pixf.vsad.expect("non-null function pointer")(
         fenc,
-        (stride * 2 as c_int) as intptr_t,
-        mbpair_height >> 1 as c_int,
+        (stride * 2) as intptr_t,
+        mbpair_height >> 1,
     );
     score_field += (*h).pixf.vsad.expect("non-null function pointer")(
         fenc.offset(stride as isize),
-        (stride * 2 as c_int) as intptr_t,
-        mbpair_height >> 1 as c_int,
+        (stride * 2) as intptr_t,
+        mbpair_height >> 1,
     );
-    if mb_x > 0 as c_int {
-        score_field += 512 as c_int
-            - *(*h).mb.field.offset((mb_xy - 1 as c_int) as isize) as c_int * 1024 as c_int;
+    if mb_x > 0 {
+        score_field += 512 - *(*h).mb.field.offset((mb_xy - 1) as isize) as c_int * 1024;
     }
-    if mb_y > 0 as c_int {
-        score_field += 512 as c_int
-            - *(*h).mb.field.offset((mb_xy - mb_stride) as isize) as c_int * 1024 as c_int;
+    if mb_y > 0 {
+        score_field += 512 - *(*h).mb.field.offset((mb_xy - mb_stride) as isize) as c_int * 1024;
     }
     return (score_field < score_frame) as c_int;
 }
@@ -2201,11 +2183,11 @@ unsafe extern "C" fn pixel_asd8(
     mut stride2: intptr_t,
     mut height: c_int,
 ) -> c_int {
-    let mut sum: c_int = 0 as c_int;
-    let mut y: c_int = 0 as c_int;
+    let mut sum: c_int = 0;
+    let mut y: c_int = 0;
     while y < height {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
+        let mut x: c_int = 0;
+        while x < 8 {
             sum += *pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int;
             x += 1;
         }
@@ -2225,13 +2207,13 @@ unsafe extern "C" fn x264_pixel_ads4(
     mut width: c_int,
     mut thresh: c_int,
 ) -> c_int {
-    let mut nmv: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
+    let mut nmv: c_int = 0;
+    let mut i: c_int = 0;
     while i < width {
         let mut ads: c_int = abs(*enc_dc.offset(0) - *sums.offset(0) as c_int)
             + abs(*enc_dc.offset(1) - *sums.offset(8) as c_int)
             + abs(*enc_dc.offset(2) - *sums.offset(delta as isize) as c_int)
-            + abs(*enc_dc.offset(3) - *sums.offset((delta + 8 as c_int) as isize) as c_int)
+            + abs(*enc_dc.offset(3) - *sums.offset((delta + 8) as isize) as c_int)
             + *cost_mvx.offset(i as isize) as c_int;
         if ads < thresh {
             let fresh2 = nmv;
@@ -2253,8 +2235,8 @@ unsafe extern "C" fn x264_pixel_ads2(
     mut width: c_int,
     mut thresh: c_int,
 ) -> c_int {
-    let mut nmv: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
+    let mut nmv: c_int = 0;
+    let mut i: c_int = 0;
     while i < width {
         let mut ads: c_int = abs(*enc_dc.offset(0) - *sums.offset(0) as c_int)
             + abs(*enc_dc.offset(1) - *sums.offset(delta as isize) as c_int)
@@ -2279,8 +2261,8 @@ unsafe extern "C" fn x264_pixel_ads1(
     mut width: c_int,
     mut thresh: c_int,
 ) -> c_int {
-    let mut nmv: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
+    let mut nmv: c_int = 0;
+    let mut i: c_int = 0;
     while i < width {
         let mut ads: c_int = abs(*enc_dc.offset(0) - *sums.offset(0) as c_int)
             + *cost_mvx.offset(i as isize) as c_int;
@@ -2299,7 +2281,7 @@ unsafe extern "C" fn x264_pixel_ads1(
 unsafe extern "C" fn x264_10_pixel_init(mut _cpu: uint32_t, mut pixf: *mut x264_pixel_function_t) {
     memset(
         pixf as *mut c_void,
-        0 as c_int,
+        0,
         ::core::mem::size_of::<x264_pixel_function_t>() as size_t,
     );
     (*pixf).sad[PIXEL_16x16 as c_int as usize] = Some(

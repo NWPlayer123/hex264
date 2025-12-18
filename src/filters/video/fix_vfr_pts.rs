@@ -31,7 +31,7 @@ unsafe extern "C" fn init(
     mut _opt_string: *mut c_char,
 ) -> c_int {
     if !(*info).vfr {
-        return 0 as c_int;
+        return 0;
     }
     let mut h: *mut fix_vfr_pts_hnd_t = calloc(
         1 as size_t,
@@ -45,7 +45,7 @@ unsafe extern "C" fn init(
     (*h).prev_filter = *filter;
     *handle = h as hnd_t;
     *filter = fix_vfr_pts_filter;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "69:1"]
 unsafe extern "C" fn get_frame(
@@ -59,7 +59,7 @@ unsafe extern "C" fn get_frame(
             return (*h).holder_ret;
         }
     } else {
-        if (*h).holder_frame > 0 as c_int
+        if (*h).holder_frame > 0
             && (*h).holder_frame < frame
             && (*h)
                 .prev_filter
@@ -93,9 +93,9 @@ unsafe extern "C" fn get_frame(
             {
                 return -1;
             }
-            (*h).buffer_allocated = 1 as c_int;
+            (*h).buffer_allocated = 1;
         }
-        (*h).holder_frame = frame + 1 as c_int;
+        (*h).holder_frame = frame + 1;
         if x264_cli_pic_copy(&mut (*h).buffer, &mut (*h).holder) != 0
             || (*h)
                 .prev_filter
@@ -128,7 +128,7 @@ unsafe extern "C" fn get_frame(
     }
     (*output).pts = (*h).pts;
     (*h).pts += (*output).duration;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "118:1"]
 unsafe extern "C" fn release_frame(
@@ -137,8 +137,8 @@ unsafe extern "C" fn release_frame(
     mut frame: c_int,
 ) -> c_int {
     let mut h: *mut fix_vfr_pts_hnd_t = handle as *mut fix_vfr_pts_hnd_t;
-    if frame == (*h).holder_frame - 1 as c_int {
-        return 0 as c_int;
+    if frame == (*h).holder_frame - 1 {
+        return 0;
     }
     return (*h)
         .prev_filter

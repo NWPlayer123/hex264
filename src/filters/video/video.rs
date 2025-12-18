@@ -87,7 +87,7 @@ pub unsafe extern "C" fn x264_init_vid_filter(
     {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "78:1"]

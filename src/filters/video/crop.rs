@@ -42,8 +42,8 @@ unsafe extern "C" fn handle_opts(
     mut opts: *mut *mut c_char,
     mut optlist: *const *const c_char,
 ) -> c_int {
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
+    let mut i: c_int = 0;
+    while i < 4 {
         let mut opt: *mut c_char = x264_get_option(*optlist.offset(i as isize), opts);
         if opt.is_null() {
             x264_cli_log(
@@ -66,7 +66,7 @@ unsafe extern "C" fn handle_opts(
             );
             return -1;
         }
-        let mut dim_mod: c_int = if i & 1 as c_int != 0 {
+        let mut dim_mod: c_int = if i & 1 != 0 {
             (*(*h).csp).mod_height << (*info).interlaced as i32
         } else {
             (*(*h).csp).mod_width
@@ -84,7 +84,7 @@ unsafe extern "C" fn handle_opts(
         }
         i += 1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "65:1"]
 unsafe extern "C" fn init(
@@ -147,7 +147,7 @@ unsafe extern "C" fn init(
         );
     } else {
         free(h as *mut c_void);
-        return 0 as c_int;
+        return 0;
     }
     (*info).width = (*h).dims[2];
     (*info).height = (*h).dims[3];
@@ -155,7 +155,7 @@ unsafe extern "C" fn init(
     (*h).prev_hnd = *handle;
     *handle = h as hnd_t;
     *filter = crop_filter;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "107:1"]
 unsafe extern "C" fn get_frame(
@@ -174,7 +174,7 @@ unsafe extern "C" fn get_frame(
     }
     (*output).img.width = (*h).dims[2] as c_int;
     (*output).img.height = (*h).dims[3] as c_int;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*output).img.planes {
         let mut offset: intptr_t = (((*output).img.stride[i as usize] as u32 * (*h).dims[1])
             as c_float
@@ -187,7 +187,7 @@ unsafe extern "C" fn get_frame(
         (*output).img.plane[i as usize] = (*output).img.plane[i as usize].offset(offset as isize);
         i += 1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "124:1"]
 unsafe extern "C" fn release_frame(

@@ -74,7 +74,7 @@ struct mp4_hnd_t {
     i_numframe: c_int,
 }
 #[c2rust::src_loc = "33:9"]
-const H264_NALU_LENGTH_SIZE: c_int = 4 as c_int;
+const H264_NALU_LENGTH_SIZE: c_int = 4;
 #[c2rust::src_loc = "93:1"]
 unsafe extern "C" fn remove_mp4_hnd(mut handle: hnd_t) {
     let mut p_mp4: *mut mp4_hnd_t = handle as *mut mp4_hnd_t;
@@ -95,10 +95,10 @@ unsafe extern "C" fn close_file(
 ) -> c_int {
     let mut p_mp4: *mut mp4_hnd_t = handle as *mut mp4_hnd_t;
     if p_mp4.is_null() {
-        return 0 as c_int;
+        return 0;
     }
     if !(*p_mp4).p_root.is_null() {
-        let mut actual_duration: c_double = 0 as c_int as c_double;
+        let mut actual_duration: c_double = 0 as c_double;
         if (*p_mp4).i_track != 0 {
             let mut last_delta: uint32_t = (largest_pts - second_largest_pts) as uint32_t;
             if lsmash_flush_pooled_samples(
@@ -147,7 +147,7 @@ unsafe extern "C" fn close_file(
         }
     }
     remove_mp4_hnd(p_mp4 as hnd_t);
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "163:1"]
 unsafe extern "C" fn open_file(
@@ -179,7 +179,7 @@ unsafe extern "C" fn open_file(
         return -1;
     }
     (*p_mp4).b_dts_compress = (*opt).use_dts_compress;
-    (*p_mp4).b_use_recovery = 0 as c_int;
+    (*p_mp4).b_use_recovery = 0;
     (*p_mp4).b_fragments = (b_regular == 0) as c_int;
     (*p_mp4).b_stdout = (strcmp(psz_filename, b"-\0" as *const u8 as *const c_char) == 0) as c_int;
     (*p_mp4).p_root = lsmash_create_root();
@@ -192,7 +192,7 @@ unsafe extern "C" fn open_file(
         );
         return -1;
     }
-    if lsmash_open_file(psz_filename, 0 as c_int, &mut (*p_mp4).file_param) < 0 as c_int {
+    if lsmash_open_file(psz_filename, 0, &mut (*p_mp4).file_param) < 0 {
         remove_mp4_hnd(p_mp4 as hnd_t);
         x264_cli_log(
             b"mp4\0" as *const u8 as *const c_char,
@@ -220,7 +220,7 @@ unsafe extern "C" fn open_file(
     }
     (*(*p_mp4).summary).sample_type = ISOM_CODEC_TYPE_AVC1_VIDEO;
     *p_handle = p_mp4 as hnd_t;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "202:1"]
 unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t) -> c_int {
@@ -228,15 +228,14 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     let mut i_media_timescale: uint64_t = 0;
     (*p_mp4).i_delay_frames = if (*p_param).i_bframe != 0 {
         if (*p_param).bframe_pyramid != BPyramid::None {
-            2 as c_int
+            2
         } else {
-            1 as c_int
+            1
         }
     } else {
-        0 as c_int
+        0
     };
-    (*p_mp4).i_dts_compress_multiplier =
-        (*p_mp4).b_dts_compress * (*p_mp4).i_delay_frames + 1 as c_int;
+    (*p_mp4).i_dts_compress_multiplier = (*p_mp4).b_dts_compress * (*p_mp4).i_delay_frames + 1;
     i_media_timescale = ((*p_param).i_timebase_den as uint64_t)
         .wrapping_mul((*p_mp4).i_dts_compress_multiplier as uint64_t);
     (*p_mp4).frame_duration =
@@ -330,8 +329,8 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     }
     (*(*p_mp4).summary).width = (*p_param).width as uint32_t;
     (*(*p_mp4).summary).height = (*p_param).height as uint32_t;
-    let mut i_display_width: uint32_t = ((*p_param).width << 16 as c_int) as uint32_t;
-    let mut i_display_height: uint32_t = ((*p_param).height << 16 as c_int) as uint32_t;
+    let mut i_display_width: uint32_t = ((*p_param).width << 16) as uint32_t;
+    let mut i_display_height: uint32_t = ((*p_param).height << 16) as uint32_t;
     if (*p_param).vui.i_sar_width != 0 && (*p_param).vui.i_sar_height != 0 {
         let mut sar: c_double =
             (*p_param).vui.i_sar_width as c_double / (*p_param).vui.i_sar_height as c_double;
@@ -345,15 +344,15 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     }
     (*(*p_mp4).summary).color.primaries_index = (*p_param).vui.i_colorprim as uint16_t;
     (*(*p_mp4).summary).color.transfer_index = (*p_param).vui.i_transfer as uint16_t;
-    (*(*p_mp4).summary).color.matrix_index = (if (*p_param).vui.i_colmatrix >= 0 as c_int {
+    (*(*p_mp4).summary).color.matrix_index = (if (*p_param).vui.i_colmatrix >= 0 {
         (*p_param).vui.i_colmatrix
     } else {
         ISOM_MATRIX_INDEX_UNSPECIFIED as c_int
     }) as uint16_t;
-    (*(*p_mp4).summary).color.full_range = (if (*p_param).vui.b_fullrange >= 0 as c_int {
+    (*(*p_mp4).summary).color.full_range = (if (*p_param).vui.b_fullrange >= 0 {
         (*p_param).vui.b_fullrange
     } else {
-        0 as c_int
+        0
     }) as uint8_t;
     let mut track_param: lsmash_track_parameters_t = lsmash_track_parameters_t {
         mode: 0 as lsmash_track_mode,
@@ -424,7 +423,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
         );
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "294:1"]
 unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t) -> c_int {
@@ -547,7 +546,7 @@ unsafe extern "C" fn write_frame(
     );
     (*p_mp4).i_sei_size = 0 as uint32_t;
     if (*p_mp4).b_dts_compress != 0 {
-        if (*p_mp4).i_numframe == 1 as c_int {
+        if (*p_mp4).i_numframe == 1 {
             (*p_mp4).i_init_delta = ((((*p_picture).i_dts + (*p_mp4).i_start_offset) as uint64_t)
                 * u64::from((*p_mp4).frame_duration))
                 as int64_t;

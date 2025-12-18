@@ -52,15 +52,15 @@ struct lavf_hnd_t {
 unsafe extern "C" fn handle_jpeg(mut csp: c_int, mut fullrange: *mut c_int) -> c_int {
     match csp {
         12 => {
-            *fullrange = 1 as c_int;
+            *fullrange = 1;
             return AV_PIX_FMT_YUV420P as c_int;
         }
         13 => {
-            *fullrange = 1 as c_int;
+            *fullrange = 1;
             return AV_PIX_FMT_YUV422P as c_int;
         }
         14 => {
-            *fullrange = 1 as c_int;
+            *fullrange = 1;
             return AV_PIX_FMT_YUV444P as c_int;
         }
         _ => return csp,
@@ -77,7 +77,7 @@ unsafe extern "C" fn codec_from_stream(mut stream: *mut AVStream) -> *mut AVCode
     if c.is_null() {
         return 0 as *mut AVCodecContext;
     }
-    if avcodec_parameters_to_context(c, (*stream).codecpar) < 0 as c_int {
+    if avcodec_parameters_to_context(c, (*stream).codecpar) < 0 {
         avcodec_free_context(&mut c);
         return 0 as *mut AVCodecContext;
     }
@@ -101,7 +101,7 @@ unsafe extern "C" fn read_frame_internal(
         free((*h).first_pic as *mut c_void);
         (*h).first_pic = 0 as *mut cli_pic_t;
         if i_frame == 0 {
-            return 0 as c_int;
+            return 0;
         }
     }
     let mut pkt: *mut AVPacket = (*h).pkt;
@@ -112,7 +112,7 @@ unsafe extern "C" fn read_frame_internal(
             if !(ret != 0) {
                 break;
             }
-            if ret == -(11 as c_int) {
+            if ret == -(11) {
                 loop {
                     ret = av_read_frame((*h).lavf, pkt);
                     if !(ret == 0 && (*pkt).stream_index != (*h).stream_id) {
@@ -151,7 +151,7 @@ unsafe extern "C" fn read_frame_internal(
         (*(*h).frame).data.as_mut_ptr() as *const c_void,
         size_of::<[*mut uint8_t; 4]>() as size_t,
     );
-    let mut is_fullrange: c_int = 0 as c_int;
+    let mut is_fullrange: c_int = 0;
     (*p_pic).img.width = (*(*h).lavc).width;
     (*p_pic).img.height = (*(*h).lavc).height;
     (*p_pic).img.csp =
@@ -171,10 +171,10 @@ unsafe extern "C" fn read_frame_internal(
         } else if !info.is_null() {
             (*info).vfr = false;
             (*h).vfr_input = (*info).vfr;
-            return 0 as c_int;
+            return 0;
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "171:1"]
 unsafe extern "C" fn open_file(
@@ -205,7 +205,7 @@ unsafe extern "C" fn open_file(
             &mut options,
             b"video_size\0" as *const u8 as *const c_char,
             (*opt).resolution,
-            0 as c_int,
+            0,
         );
         let mut csp: *const c_char = if !(*opt).colorspace.is_null() {
             (*opt).colorspace as *const c_char
@@ -216,7 +216,7 @@ unsafe extern "C" fn open_file(
             &mut options,
             b"pixel_format\0" as *const u8 as *const c_char,
             csp,
-            0 as c_int,
+            0,
         );
     }
     let mut format: *mut AVInputFormat = 0 as *mut AVInputFormat;
@@ -243,7 +243,7 @@ unsafe extern "C" fn open_file(
     if !options.is_null() {
         av_dict_free(&mut options);
     }
-    if avformat_find_stream_info((*h).lavf, 0 as *mut *mut AVDictionary) < 0 as c_int {
+    if avformat_find_stream_info((*h).lavf, 0 as *mut *mut AVDictionary) < 0 {
         x264_cli_log(
             b"lavf\0" as *const u8 as *const c_char,
             X264_LOG_ERROR,
@@ -251,7 +251,7 @@ unsafe extern "C" fn open_file(
         );
         return -1;
     }
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while (i as c_uint) < (*(*h).lavf).nb_streams
         && (*(**(*(*h).lavf).streams.offset(i as isize)).codecpar).codec_type as c_int
             != AVMEDIA_TYPE_VIDEO as c_int
@@ -267,7 +267,7 @@ unsafe extern "C" fn open_file(
         return -1;
     }
     (*h).stream_id = i;
-    (*h).next_frame = 0 as c_int;
+    (*h).next_frame = 0;
     (*h).lavc = codec_from_stream(*(*(*h).lavf).streams.offset(i as isize));
     if (*h).lavc.is_null() {
         return -1;
@@ -280,7 +280,7 @@ unsafe extern "C" fn open_file(
         .den as uint32_t;
     (*info).timebase_num = (**(*(*h).lavf).streams.offset(i as isize)).time_base.num as uint32_t;
     (*info).timebase_den = (**(*(*h).lavf).streams.offset(i as isize)).time_base.den as uint32_t;
-    (*info).thread_safe = 0 as c_int;
+    (*info).thread_safe = 0;
     (*h).vfr_input = (*info).vfr;
     if avcodec_open2(
         (*h).lavc,
@@ -312,7 +312,7 @@ unsafe extern "C" fn open_file(
         );
         return -1;
     }
-    if read_frame_internal((*h).first_pic, h, 0 as c_int, info) != 0 {
+    if read_frame_internal((*h).first_pic, h, 0, info) != 0 {
         return -1;
     }
     (*info).width = (*(*h).lavc).width as u32;
@@ -333,7 +333,7 @@ unsafe extern "C" fn open_file(
         (*info).csp |= X264_CSP_VFLIP;
     }
     *p_handle = h as hnd_t;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "250:1"]
 unsafe extern "C" fn picture_alloc(
@@ -347,8 +347,8 @@ unsafe extern "C" fn picture_alloc(
         return -1;
     }
     (*pic).img.csp = csp;
-    (*pic).img.planes = 4 as c_int;
-    return 0 as c_int;
+    (*pic).img.planes = 4;
+    return 0;
 }
 #[c2rust::src_loc = "259:1"]
 unsafe extern "C" fn read_frame(
@@ -365,11 +365,7 @@ unsafe extern "C" fn read_frame(
 }
 #[c2rust::src_loc = "264:1"]
 unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut _handle: hnd_t) {
-    memset(
-        pic as *mut c_void,
-        0 as c_int,
-        size_of::<cli_pic_t>() as size_t,
-    );
+    memset(pic as *mut c_void, 0, size_of::<cli_pic_t>() as size_t);
 }
 #[c2rust::src_loc = "269:1"]
 unsafe extern "C" fn close_file(mut handle: hnd_t) -> c_int {
@@ -379,7 +375,7 @@ unsafe extern "C" fn close_file(mut handle: hnd_t) -> c_int {
     av_packet_free(&mut (*h).pkt);
     av_frame_free(&mut (*h).frame);
     free(h as *mut c_void);
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "280:19"]

@@ -52,7 +52,7 @@ union C2RustUnnamed {
     u: uint32_t,
 }
 #[c2rust::src_loc = "29:9"]
-const CLSIZE: c_int = 1048576 as c_int;
+const CLSIZE: c_int = 1048576;
 #[c2rust::src_loc = "66:1"]
 unsafe extern "C" fn mk_create_context(
     mut w: *mut mk_writer,
@@ -89,13 +89,9 @@ unsafe extern "C" fn mk_append_context_data(
     let mut ns: c_uint = (*c).d_cur.wrapping_add(size);
     if ns > (*c).d_max {
         let mut dp: *mut c_void = 0 as *mut c_void;
-        let mut dn: c_uint = if (*c).d_max != 0 {
-            (*c).d_max << 1 as c_int
-        } else {
-            16 as c_uint
-        };
+        let mut dn: c_uint = if (*c).d_max != 0 { (*c).d_max << 1 } else { 16 };
         while ns > dn {
-            dn <<= 1 as c_int;
+            dn <<= 1;
         }
         dp = realloc((*c).data, dn as size_t);
         if dp.is_null() {
@@ -110,107 +106,81 @@ unsafe extern "C" fn mk_append_context_data(
         size as size_t,
     );
     (*c).d_cur = ns;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "121:1"]
 unsafe extern "C" fn mk_write_id(mut c: *mut mk_context, mut id: c_uint) -> c_int {
     let mut c_id: [uint8_t; 4] = [
-        (id >> 24 as c_int) as uint8_t,
-        (id >> 16 as c_int) as uint8_t,
-        (id >> 8 as c_int) as uint8_t,
+        (id >> 24) as uint8_t,
+        (id >> 16) as uint8_t,
+        (id >> 8) as uint8_t,
         id as uint8_t,
     ];
     if c_id[0] != 0 {
-        return mk_append_context_data(c, c_id.as_mut_ptr() as *const c_void, 4 as c_uint);
+        return mk_append_context_data(c, c_id.as_mut_ptr() as *const c_void, 4);
     }
     if c_id[1] != 0 {
-        return mk_append_context_data(
-            c,
-            c_id.as_mut_ptr().offset(1) as *const c_void,
-            3 as c_uint,
-        );
+        return mk_append_context_data(c, c_id.as_mut_ptr().offset(1) as *const c_void, 3);
     }
     if c_id[2] != 0 {
-        return mk_append_context_data(
-            c,
-            c_id.as_mut_ptr().offset(2) as *const c_void,
-            2 as c_uint,
-        );
+        return mk_append_context_data(c, c_id.as_mut_ptr().offset(2) as *const c_void, 2);
     }
-    return mk_append_context_data(c, c_id.as_mut_ptr().offset(3) as *const c_void, 1 as c_uint);
+    return mk_append_context_data(c, c_id.as_mut_ptr().offset(3) as *const c_void, 1);
 }
 #[c2rust::src_loc = "134:1"]
 unsafe extern "C" fn mk_write_size(mut c: *mut mk_context, mut size: c_uint) -> c_int {
     let mut c_size: [uint8_t; 5] = [
         0x8 as c_int as uint8_t,
-        (size >> 24 as c_int) as uint8_t,
-        (size >> 16 as c_int) as uint8_t,
-        (size >> 8 as c_int) as uint8_t,
+        (size >> 24) as uint8_t,
+        (size >> 16) as uint8_t,
+        (size >> 8) as uint8_t,
         size as uint8_t,
     ];
     if size < 0x7f as c_uint {
         c_size[4] = (c_size[4] as c_int | 0x80 as c_int) as uint8_t;
-        return mk_append_context_data(
-            c,
-            c_size.as_mut_ptr().offset(4) as *const c_void,
-            1 as c_uint,
-        );
+        return mk_append_context_data(c, c_size.as_mut_ptr().offset(4) as *const c_void, 1);
     }
     if size < 0x3fff as c_uint {
         c_size[3] = (c_size[3] as c_int | 0x40 as c_int) as uint8_t;
-        return mk_append_context_data(
-            c,
-            c_size.as_mut_ptr().offset(3) as *const c_void,
-            2 as c_uint,
-        );
+        return mk_append_context_data(c, c_size.as_mut_ptr().offset(3) as *const c_void, 2);
     }
     if size < 0x1fffff as c_uint {
         c_size[2] = (c_size[2] as c_int | 0x20 as c_int) as uint8_t;
-        return mk_append_context_data(
-            c,
-            c_size.as_mut_ptr().offset(2) as *const c_void,
-            3 as c_uint,
-        );
+        return mk_append_context_data(c, c_size.as_mut_ptr().offset(2) as *const c_void, 3);
     }
     if size < 0xfffffff as c_uint {
         c_size[1] = (c_size[1] as c_int | 0x10 as c_int) as uint8_t;
-        return mk_append_context_data(
-            c,
-            c_size.as_mut_ptr().offset(1) as *const c_void,
-            4 as c_uint,
-        );
+        return mk_append_context_data(c, c_size.as_mut_ptr().offset(1) as *const c_void, 4);
     }
-    return mk_append_context_data(c, c_size.as_mut_ptr() as *const c_void, 5 as c_uint);
+    return mk_append_context_data(c, c_size.as_mut_ptr() as *const c_void, 5);
 }
 #[c2rust::src_loc = "161:1"]
 unsafe extern "C" fn mk_flush_context_id(mut c: *mut mk_context) -> c_int {
     let mut ff: uint8_t = 0xff as uint8_t;
     if (*c).id == 0 {
-        return 0 as c_int;
+        return 0;
     }
-    if mk_write_id((*c).parent as *mut mk_context, (*c).id) < 0 as c_int {
+    if mk_write_id((*c).parent as *mut mk_context, (*c).id) < 0 {
         return -1;
     }
     if mk_append_context_data(
         (*c).parent as *mut mk_context,
         &mut ff as *mut uint8_t as *const c_void,
-        1 as c_uint,
-    ) < 0 as c_int
+        1,
+    ) < 0
     {
         return -1;
     }
-    (*c).id = 0 as c_uint;
-    return 0 as c_int;
+    (*c).id = 0;
+    return 0;
 }
 #[c2rust::src_loc = "176:1"]
 unsafe extern "C" fn mk_flush_context_data(mut c: *mut mk_context) -> c_int {
     if (*c).d_cur == 0 {
-        return 0 as c_int;
+        return 0;
     }
     if !(*c).parent.is_null() {
-        if mk_append_context_data((*c).parent as *mut mk_context, (*c).data, (*c).d_cur)
-            < 0 as c_int
-        {
+        if mk_append_context_data((*c).parent as *mut mk_context, (*c).data, (*c).d_cur) < 0 {
             return -1;
         }
     } else if fwrite(
@@ -222,23 +192,23 @@ unsafe extern "C" fn mk_flush_context_data(mut c: *mut mk_context) -> c_int {
     {
         return -1;
     }
-    (*c).d_cur = 0 as c_uint;
-    return 0 as c_int;
+    (*c).d_cur = 0;
+    return 0;
 }
 #[c2rust::src_loc = "191:1"]
 unsafe extern "C" fn mk_close_context(mut c: *mut mk_context, mut off: *mut c_uint) -> c_int {
     if (*c).id != 0 {
-        if mk_write_id((*c).parent as *mut mk_context, (*c).id) < 0 as c_int {
+        if mk_write_id((*c).parent as *mut mk_context, (*c).id) < 0 {
             return -1;
         }
-        if mk_write_size((*c).parent as *mut mk_context, (*c).d_cur) < 0 as c_int {
+        if mk_write_size((*c).parent as *mut mk_context, (*c).d_cur) < 0 {
             return -1;
         }
     }
     if !(*c).parent.is_null() && !off.is_null() {
         *off = (*off).wrapping_add((*(*c).parent).d_cur);
     }
-    if mk_flush_context_data(c) < 0 as c_int {
+    if mk_flush_context_data(c) < 0 {
         return -1;
     }
     if !(*c).next.is_null() {
@@ -247,7 +217,7 @@ unsafe extern "C" fn mk_close_context(mut c: *mut mk_context, mut off: *mut c_ui
     *(*c).prev = (*c).next;
     (*c).next = (*(*c).owner).freelist as *mut mk_context;
     (*(*c).owner).freelist = c;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "213:1"]
 unsafe extern "C" fn mk_destroy_contexts(mut w: *mut mk_writer) {
@@ -277,16 +247,16 @@ unsafe extern "C" fn mk_write_string(
     mut str: *const c_char,
 ) -> c_int {
     let mut len: size_t = strlen(str);
-    if mk_write_id(c, id) < 0 as c_int {
+    if mk_write_id(c, id) < 0 {
         return -1;
     }
-    if mk_write_size(c, len as c_uint) < 0 as c_int {
+    if mk_write_size(c, len as c_uint) < 0 {
         return -1;
     }
-    if mk_append_context_data(c, str as *const c_void, len as c_uint) < 0 as c_int {
+    if mk_append_context_data(c, str as *const c_void, len as c_uint) < 0 {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "244:1"]
 unsafe extern "C" fn mk_write_bin(
@@ -295,16 +265,16 @@ unsafe extern "C" fn mk_write_bin(
     mut data: *const c_void,
     mut size: c_uint,
 ) -> c_int {
-    if mk_write_id(c, id) < 0 as c_int {
+    if mk_write_id(c, id) < 0 {
         return -1;
     }
-    if mk_write_size(c, size) < 0 as c_int {
+    if mk_write_size(c, size) < 0 {
         return -1;
     }
-    if mk_append_context_data(c, data, size) < 0 as c_int {
+    if mk_append_context_data(c, data, size) < 0 {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "252:1"]
 unsafe extern "C" fn mk_write_uint(
@@ -313,45 +283,45 @@ unsafe extern "C" fn mk_write_uint(
     mut ui: uint64_t,
 ) -> c_int {
     let mut c_ui: [uint8_t; 8] = [
-        (ui >> 56 as c_int) as uint8_t,
-        (ui >> 48 as c_int) as uint8_t,
-        (ui >> 40 as c_int) as uint8_t,
-        (ui >> 32 as c_int) as uint8_t,
-        (ui >> 24 as c_int) as uint8_t,
-        (ui >> 16 as c_int) as uint8_t,
-        (ui >> 8 as c_int) as uint8_t,
+        (ui >> 56) as uint8_t,
+        (ui >> 48) as uint8_t,
+        (ui >> 40) as uint8_t,
+        (ui >> 32) as uint8_t,
+        (ui >> 24) as uint8_t,
+        (ui >> 16) as uint8_t,
+        (ui >> 8) as uint8_t,
         ui as uint8_t,
     ];
-    let mut i: c_uint = 0 as c_uint;
-    if mk_write_id(c, id) < 0 as c_int {
+    let mut i: c_uint = 0;
+    if mk_write_id(c, id) < 0 {
         return -1;
     }
-    while i < 7 as c_uint && c_ui[i as usize] == 0 {
+    while i < 7 && c_ui[i as usize] == 0 {
         i = i.wrapping_add(1);
     }
-    if mk_write_size(c, (8 as c_uint).wrapping_sub(i)) < 0 as c_int {
+    if mk_write_size(c, (8u32).wrapping_sub(i)) < 0 {
         return -1;
     }
     if mk_append_context_data(
         c,
         c_ui.as_mut_ptr().offset(i as isize) as *const c_void,
-        (8 as c_uint).wrapping_sub(i),
-    ) < 0 as c_int
+        (8u32).wrapping_sub(i),
+    ) < 0
     {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "265:1"]
 unsafe extern "C" fn mk_write_float_raw(mut c: *mut mk_context, mut f: c_float) -> c_int {
     let mut u: C2RustUnnamed = C2RustUnnamed { f: 0. };
     let mut c_f: [uint8_t; 4] = [0; 4];
     u.f = f;
-    c_f[0] = (u.u >> 24 as c_int) as uint8_t;
-    c_f[1] = (u.u >> 16 as c_int) as uint8_t;
-    c_f[2] = (u.u >> 8 as c_int) as uint8_t;
+    c_f[0] = (u.u >> 24) as uint8_t;
+    c_f[1] = (u.u >> 16) as uint8_t;
+    c_f[2] = (u.u >> 8) as uint8_t;
     c_f[3] = u.u as uint8_t;
-    return mk_append_context_data(c, c_f.as_mut_ptr() as *const c_void, 4 as c_uint);
+    return mk_append_context_data(c, c_f.as_mut_ptr() as *const c_void, 4);
 }
 #[c2rust::src_loc = "283:1"]
 unsafe extern "C" fn mk_write_float(
@@ -359,16 +329,16 @@ unsafe extern "C" fn mk_write_float(
     mut id: c_uint,
     mut f: c_float,
 ) -> c_int {
-    if mk_write_id(c, id) < 0 as c_int {
+    if mk_write_id(c, id) < 0 {
         return -1;
     }
-    if mk_write_size(c, 4 as c_uint) < 0 as c_int {
+    if mk_write_size(c, 4) < 0 {
         return -1;
     }
-    if mk_write_float_raw(c, f) < 0 as c_int {
+    if mk_write_float_raw(c, f) < 0 {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "291:1"]
@@ -378,7 +348,7 @@ unsafe extern "C" fn mk_create_writer(mut filename: *const c_char) -> *mut mk_wr
     if w.is_null() {
         return 0 as *mut mk_writer;
     }
-    (*w).root = mk_create_context(w, 0 as *mut mk_context, 0 as c_uint);
+    (*w).root = mk_create_context(w, 0 as *mut mk_context, 0);
     if (*w).root.is_null() {
         free(w as *mut c_void);
         return 0 as *mut mk_writer;
@@ -425,52 +395,48 @@ unsafe extern "C" fn mk_write_header(
     if c.is_null() {
         return -1;
     }
-    if mk_write_uint(c, 0x4286 as c_uint, 1 as uint64_t) < 0 as c_int {
+    if mk_write_uint(c, 0x4286 as c_uint, 1 as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(c, 0x42f7 as c_uint, 1 as uint64_t) < 0 as c_int {
+    if mk_write_uint(c, 0x42f7 as c_uint, 1 as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(c, 0x42f2 as c_uint, 4 as uint64_t) < 0 as c_int {
+    if mk_write_uint(c, 0x42f2 as c_uint, 4 as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(c, 0x42f3 as c_uint, 8 as uint64_t) < 0 as c_int {
+    if mk_write_uint(c, 0x42f3 as c_uint, 8 as uint64_t) < 0 {
         return -1;
     }
     if mk_write_string(
         c,
         0x4282 as c_uint,
         b"matroska\0" as *const u8 as *const c_char,
-    ) < 0 as c_int
+    ) < 0
     {
         return -1;
     }
     if mk_write_uint(
         c,
         0x4287 as c_uint,
-        (if stereo_mode >= 0 as c_int {
-            3 as c_int
-        } else {
-            2 as c_int
-        }) as uint64_t,
-    ) < 0 as c_int
+        (if stereo_mode >= 0 { 3 } else { 2 }) as uint64_t,
+    ) < 0
     {
         return -1;
     }
-    if mk_write_uint(c, 0x4285 as c_uint, 2 as uint64_t) < 0 as c_int {
+    if mk_write_uint(c, 0x4285 as c_uint, 2 as uint64_t) < 0 {
         return -1;
     }
-    if mk_close_context(c, 0 as *mut c_uint) < 0 as c_int {
+    if mk_close_context(c, 0 as *mut c_uint) < 0 {
         return -1;
     }
     c = mk_create_context(w, (*w).root, 0x18538067 as c_uint);
     if c.is_null() {
         return -1;
     }
-    if mk_flush_context_id(c) < 0 as c_int {
+    if mk_flush_context_id(c) < 0 {
         return -1;
     }
-    if mk_close_context(c, 0 as *mut c_uint) < 0 as c_int {
+    if mk_close_context(c, 0 as *mut c_uint) < 0 {
         return -1;
     }
     c = mk_create_context(w, (*w).root, 0x1549a966 as c_uint);
@@ -481,21 +447,21 @@ unsafe extern "C" fn mk_write_header(
         c,
         0x4d80 as c_uint,
         b"Haali Matroska Writer b0\0" as *const u8 as *const c_char,
-    ) < 0 as c_int
+    ) < 0
     {
         return -1;
     }
-    if mk_write_string(c, 0x5741 as c_uint, writing_app) < 0 as c_int {
+    if mk_write_string(c, 0x5741 as c_uint, writing_app) < 0 {
         return -1;
     }
-    if mk_write_uint(c, 0x2ad7b1 as c_uint, (*w).timescale as uint64_t) < 0 as c_int {
+    if mk_write_uint(c, 0x2ad7b1 as c_uint, (*w).timescale as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_float(c, 0x4489 as c_uint, 0 as c_int as c_float) < 0 as c_int {
+    if mk_write_float(c, 0x4489 as c_uint, 0 as c_float) < 0 {
         return -1;
     }
-    (*w).duration_ptr = (*c).d_cur.wrapping_sub(4 as c_uint);
-    if mk_close_context(c, &mut (*w).duration_ptr) < 0 as c_int {
+    (*w).duration_ptr = (*c).d_cur.wrapping_sub(4);
+    if mk_close_context(c, &mut (*w).duration_ptr) < 0 {
         return -1;
     }
     c = mk_create_context(w, (*w).root, 0x1654ae6b as c_uint);
@@ -506,28 +472,28 @@ unsafe extern "C" fn mk_write_header(
     if ti.is_null() {
         return -1;
     }
-    if mk_write_uint(ti, 0xd7 as c_uint, 1 as uint64_t) < 0 as c_int {
+    if mk_write_uint(ti, 0xd7 as c_uint, 1 as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(ti, 0x73c5 as c_uint, 1 as uint64_t) < 0 as c_int {
+    if mk_write_uint(ti, 0x73c5 as c_uint, 1 as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(ti, 0x83 as c_uint, 1 as uint64_t) < 0 as c_int {
+    if mk_write_uint(ti, 0x83 as c_uint, 1 as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(ti, 0x9c as c_uint, 0 as uint64_t) < 0 as c_int {
+    if mk_write_uint(ti, 0x9c as c_uint, 0 as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_string(ti, 0x86 as c_uint, codec_id) < 0 as c_int {
+    if mk_write_string(ti, 0x86 as c_uint, codec_id) < 0 {
         return -1;
     }
     if codec_private_size != 0 {
-        if mk_write_bin(ti, 0x63a2 as c_uint, codec_private, codec_private_size) < 0 as c_int {
+        if mk_write_bin(ti, 0x63a2 as c_uint, codec_private, codec_private_size) < 0 {
             return -1;
         }
     }
     if default_frame_duration != 0 {
-        if mk_write_uint(ti, 0x23e383 as c_uint, default_frame_duration as uint64_t) < 0 as c_int {
+        if mk_write_uint(ti, 0x23e383 as c_uint, default_frame_duration as uint64_t) < 0 {
             return -1;
         }
     }
@@ -535,54 +501,54 @@ unsafe extern "C" fn mk_write_header(
     if v.is_null() {
         return -1;
     }
-    if mk_write_uint(v, 0xb0 as c_uint, width as uint64_t) < 0 as c_int {
+    if mk_write_uint(v, 0xb0 as c_uint, width as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(v, 0xba as c_uint, height as uint64_t) < 0 as c_int {
+    if mk_write_uint(v, 0xba as c_uint, height as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(v, 0x54b2 as c_uint, display_size_units as uint64_t) < 0 as c_int {
+    if mk_write_uint(v, 0x54b2 as c_uint, display_size_units as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(v, 0x54b0 as c_uint, d_width as uint64_t) < 0 as c_int {
+    if mk_write_uint(v, 0x54b0 as c_uint, d_width as uint64_t) < 0 {
         return -1;
     }
-    if mk_write_uint(v, 0x54ba as c_uint, d_height as uint64_t) < 0 as c_int {
+    if mk_write_uint(v, 0x54ba as c_uint, d_height as uint64_t) < 0 {
         return -1;
     }
-    if stereo_mode >= 0 as c_int {
-        if mk_write_uint(v, 0x53b8 as c_uint, stereo_mode as uint64_t) < 0 as c_int {
+    if stereo_mode >= 0 {
+        if mk_write_uint(v, 0x53b8 as c_uint, stereo_mode as uint64_t) < 0 {
             return -1;
         }
     }
-    if mk_close_context(v, 0 as *mut c_uint) < 0 as c_int {
+    if mk_close_context(v, 0 as *mut c_uint) < 0 {
         return -1;
     }
-    if mk_close_context(ti, 0 as *mut c_uint) < 0 as c_int {
+    if mk_close_context(ti, 0 as *mut c_uint) < 0 {
         return -1;
     }
-    if mk_close_context(c, 0 as *mut c_uint) < 0 as c_int {
+    if mk_close_context(c, 0 as *mut c_uint) < 0 {
         return -1;
     }
-    if mk_flush_context_data((*w).root) < 0 as c_int {
+    if mk_flush_context_data((*w).root) < 0 {
         return -1;
     }
     (*w).wrote_header = 1 as int8_t;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "397:1"]
 unsafe extern "C" fn mk_close_cluster(mut w: *mut mk_writer) -> c_int {
     if (*w).cluster.is_null() {
-        return 0 as c_int;
+        return 0;
     }
-    if mk_close_context((*w).cluster, 0 as *mut c_uint) < 0 as c_int {
+    if mk_close_context((*w).cluster, 0 as *mut c_uint) < 0 {
         return -1;
     }
     (*w).cluster = 0 as *mut mk_context;
-    if mk_flush_context_data((*w).root) < 0 as c_int {
+    if mk_flush_context_data((*w).root) < 0 {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "407:1"]
 unsafe extern "C" fn mk_flush_frame(mut w: *mut mk_writer) -> c_int {
@@ -590,11 +556,11 @@ unsafe extern "C" fn mk_flush_frame(mut w: *mut mk_writer) -> c_int {
     let mut fsize: c_uint = 0;
     let mut c_delta_flags: [uint8_t; 3] = [0; 3];
     if (*w).in_frame == 0 {
-        return 0 as c_int;
+        return 0;
     }
     delta = (*w).frame_tc / (*w).timescale - (*w).cluster_tc_scaled;
     if delta as c_longlong > 32767 as c_longlong || (delta as c_longlong) < -(32768 as c_longlong) {
-        if mk_close_cluster(w) < 0 as c_int {
+        if mk_close_cluster(w) < 0 {
             return -1;
         }
     }
@@ -608,7 +574,7 @@ unsafe extern "C" fn mk_flush_frame(mut w: *mut mk_writer) -> c_int {
             (*w).cluster,
             0xe7 as c_uint,
             (*w).cluster_tc_scaled as uint64_t,
-        ) < 0 as c_int
+        ) < 0
         {
             return -1;
         }
@@ -617,55 +583,47 @@ unsafe extern "C" fn mk_flush_frame(mut w: *mut mk_writer) -> c_int {
     fsize = if !(*w).frame.is_null() {
         (*(*w).frame).d_cur
     } else {
-        0 as c_uint
+        0
     };
-    if mk_write_id((*w).cluster, 0xa3 as c_uint) < 0 as c_int {
+    if mk_write_id((*w).cluster, 0xa3 as c_uint) < 0 {
         return -1;
     }
-    if mk_write_size((*w).cluster, fsize.wrapping_add(4 as c_uint)) < 0 as c_int {
+    if mk_write_size((*w).cluster, fsize.wrapping_add(4)) < 0 {
         return -1;
     }
-    if mk_write_size((*w).cluster, 1 as c_uint) < 0 as c_int {
+    if mk_write_size((*w).cluster, 1) < 0 {
         return -1;
     }
-    c_delta_flags[0] = (delta >> 8 as c_int) as uint8_t;
+    c_delta_flags[0] = (delta >> 8) as uint8_t;
     c_delta_flags[1] = delta as uint8_t;
-    c_delta_flags[2] =
-        (((*w).keyframe as c_int) << 7 as c_int | (*w).skippable as c_int) as uint8_t;
-    if mk_append_context_data(
-        (*w).cluster,
-        c_delta_flags.as_mut_ptr() as *const c_void,
-        3 as c_uint,
-    ) < 0 as c_int
-    {
+    c_delta_flags[2] = (((*w).keyframe as c_int) << 7 | (*w).skippable as c_int) as uint8_t;
+    if mk_append_context_data((*w).cluster, c_delta_flags.as_mut_ptr() as *const c_void, 3) < 0 {
         return -1;
     }
     if !(*w).frame.is_null() {
-        if mk_append_context_data((*w).cluster, (*(*w).frame).data, (*(*w).frame).d_cur)
-            < 0 as c_int
-        {
+        if mk_append_context_data((*w).cluster, (*(*w).frame).data, (*(*w).frame).d_cur) < 0 {
             return -1;
         }
-        (*(*w).frame).d_cur = 0 as c_uint;
+        (*(*w).frame).d_cur = 0;
     }
     (*w).in_frame = 0 as int8_t;
     if (*(*w).cluster).d_cur > CLSIZE as c_uint {
-        if mk_close_cluster(w) < 0 as c_int {
+        if mk_close_cluster(w) < 0 {
             return -1;
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "456:1"]
 unsafe extern "C" fn mk_start_frame(mut w: *mut mk_writer) -> c_int {
-    if mk_flush_frame(w) < 0 as c_int {
+    if mk_flush_frame(w) < 0 {
         return -1;
     }
     (*w).in_frame = 1 as int8_t;
     (*w).keyframe = 0 as int8_t;
     (*w).skippable = 0 as int8_t;
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "468:1"]
@@ -679,12 +637,12 @@ unsafe extern "C" fn mk_set_frame_flags(
         return -1;
     }
     (*w).frame_tc = timestamp;
-    (*w).keyframe = (keyframe != 0 as c_int) as c_int as int8_t;
-    (*w).skippable = (skippable != 0 as c_int) as c_int as int8_t;
+    (*w).keyframe = (keyframe != 0) as c_int as int8_t;
+    (*w).skippable = (skippable != 0) as c_int as int8_t;
     if (*w).max_frame_tc < timestamp {
         (*w).max_frame_tc = timestamp;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "483:1"]
@@ -697,7 +655,7 @@ unsafe extern "C" fn mk_add_frame_data(
         return -1;
     }
     if (*w).frame.is_null() {
-        (*w).frame = mk_create_context(w, 0 as *mut mk_context, 0 as c_uint);
+        (*w).frame = mk_create_context(w, 0 as *mut mk_context, 0);
         if (*w).frame.is_null() {
             return -1;
         }
@@ -707,8 +665,8 @@ unsafe extern "C" fn mk_add_frame_data(
 #[no_mangle]
 #[c2rust::src_loc = "495:1"]
 unsafe extern "C" fn mk_close(mut w: *mut mk_writer, mut last_delta: int64_t) -> c_int {
-    let mut ret: c_int = 0 as c_int;
-    if mk_flush_frame(w) < 0 as c_int || mk_close_cluster(w) < 0 as c_int {
+    let mut ret: c_int = 0;
+    if mk_flush_frame(w) < 0 || mk_close_cluster(w) < 0 {
         ret = -1;
     }
     if (*w).wrote_header as c_int != 0 && x264_is_regular_file((*w).fp) != 0 {
@@ -722,8 +680,8 @@ unsafe extern "C" fn mk_close(mut w: *mut mk_writer, mut last_delta: int64_t) ->
             || mk_write_float_raw(
                 (*w).root,
                 (total_duration as c_double / (*w).timescale as c_double) as c_float,
-            ) < 0 as c_int
-            || mk_flush_context_data((*w).root) < 0 as c_int
+            ) < 0
+            || mk_flush_context_data((*w).root) < 0
         {
             ret = -1;
         }

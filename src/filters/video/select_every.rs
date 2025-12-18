@@ -54,8 +54,8 @@ unsafe extern "C" fn init(
     if h.is_null() {
         return -1;
     }
-    (*h).pattern_len = 0 as c_int;
-    (*h).step_size = 0 as c_int;
+    (*h).pattern_len = 0;
+    (*h).step_size = 0;
     let mut offsets: [c_int; 100] = [0; 100];
     let mut tok: *mut c_char = 0 as *mut c_char;
     let mut p: *mut c_char = opt_string;
@@ -67,7 +67,7 @@ unsafe extern "C" fn init(
         }
         let mut val: c_int = x264_otoi(tok, -1);
         if !p.is_null() {
-            if val <= 0 as c_int {
+            if val <= 0 {
                 x264_cli_log(
                     b"select_every\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -78,7 +78,7 @@ unsafe extern "C" fn init(
             }
             (*h).step_size = val;
         } else {
-            if val < 0 as c_int || val >= (*h).step_size {
+            if val < 0 || val >= (*h).step_size {
                 x264_cli_log(
                     b"select_every\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
@@ -87,12 +87,12 @@ unsafe extern "C" fn init(
                 );
                 return -1;
             }
-            if (*h).pattern_len >= 100 as c_int {
+            if (*h).pattern_len >= 100 {
                 x264_cli_log(
                     b"select_every\0" as *const u8 as *const c_char,
                     X264_LOG_ERROR,
                     b"max pattern size %d reached\n\0" as *const u8 as *const c_char,
-                    100 as c_int,
+                    100,
                 );
                 return -1;
             }
@@ -130,20 +130,18 @@ unsafe extern "C" fn init(
     );
     let mut max_rewind: intptr_t = 0 as intptr_t;
     let mut min: c_int = (*h).step_size;
-    let mut i: c_int = (*h).pattern_len - 1 as c_int;
-    while i >= 0 as c_int {
+    let mut i: c_int = (*h).pattern_len - 1;
+    while i >= 0 {
         min = if min < offsets[i as usize] {
             min
         } else {
             offsets[i as usize]
         };
         if i != 0 {
-            max_rewind = if max_rewind
-                > (offsets[(i - 1 as c_int) as usize] - min + 1 as c_int) as intptr_t
-            {
+            max_rewind = if max_rewind > (offsets[(i - 1) as usize] - min + 1) as intptr_t {
                 max_rewind
             } else {
-                (offsets[(i - 1 as c_int) as usize] - min + 1 as c_int) as intptr_t
+                (offsets[(i - 1) as usize] - min + 1) as intptr_t
             };
         }
         if max_rewind == (*h).step_size as intptr_t {
@@ -191,7 +189,7 @@ unsafe extern "C" fn init(
     (*h).prev_hnd = *handle;
     *filter = select_every_filter;
     *handle = h as hnd_t;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "129:1"]
 unsafe extern "C" fn get_frame(
@@ -214,7 +212,7 @@ unsafe extern "C" fn get_frame(
         (*output).pts = (*h).pts;
         (*h).pts += (*output).duration;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "143:1"]
 unsafe extern "C" fn release_frame(

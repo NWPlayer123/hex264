@@ -28,7 +28,7 @@ unsafe extern "C" fn nal_escape_c(
     }
     while src < end {
         if *src.offset(0) as c_int <= 0x3 as c_int
-            && *dst.offset(-(2 as c_int) as isize) == 0
+            && *dst.offset(-(2) as isize) == 0
             && *dst.offset(-1 as isize) == 0
         {
             let fresh4 = dst;
@@ -57,14 +57,14 @@ unsafe extern "C" fn x264_10_nal_encode(
         if (*nal).b_long_startcode != 0 {
             let fresh7 = dst;
             dst = dst.offset(1);
-            *fresh7 = 0 as uint8_t;
+            *fresh7 = 0;
         }
         let fresh8 = dst;
         dst = dst.offset(1);
-        *fresh8 = 0 as uint8_t;
+        *fresh8 = 0;
         let fresh9 = dst;
         dst = dst.offset(1);
-        *fresh9 = 0 as uint8_t;
+        *fresh9 = 0;
         let fresh10 = dst;
         dst = dst.offset(1);
         *fresh10 = 0x1 as uint8_t;
@@ -73,28 +73,23 @@ unsafe extern "C" fn x264_10_nal_encode(
     }
     let fresh11 = dst;
     dst = dst.offset(1);
-    *fresh11 =
-        ((0 as c_int) << 7 as c_int | (*nal).i_ref_idc << 5 as c_int | (*nal).i_type) as uint8_t;
+    *fresh11 = ((0) << 7 | (*nal).i_ref_idc << 5 | (*nal).i_type) as uint8_t;
     dst = (*h).bsf.nal_escape.expect("non-null function pointer")(dst, src, end);
     let mut size: c_int = dst.offset_from(orig_dst) as c_long as c_int;
     if (*h).param.i_avcintra_class != 0 {
         let mut padding: c_int = (*nal).i_payload + (*nal).i_padding + NALU_OVERHEAD - size;
-        if padding > 0 as c_int {
-            memset(dst as *mut c_void, 0 as c_int, padding as size_t);
+        if padding > 0 {
+            memset(dst as *mut c_void, 0, padding as size_t);
             size += padding;
         }
-        (*nal).i_padding = if padding > 0 as c_int {
-            padding
-        } else {
-            0 as c_int
-        };
+        (*nal).i_padding = if padding > 0 { padding } else { 0 };
     }
     if !(*h).param.annexb {
-        let mut chunk_size: c_int = size - 4 as c_int;
-        *orig_dst.offset(0) = (chunk_size >> 24 as c_int) as uint8_t;
-        *orig_dst.offset(1) = (chunk_size >> 16 as c_int) as uint8_t;
-        *orig_dst.offset(2) = (chunk_size >> 8 as c_int) as uint8_t;
-        *orig_dst.offset(3) = (chunk_size >> 0 as c_int) as uint8_t;
+        let mut chunk_size: c_int = size - 4;
+        *orig_dst.offset(0) = (chunk_size >> 24) as uint8_t;
+        *orig_dst.offset(1) = (chunk_size >> 16) as uint8_t;
+        *orig_dst.offset(2) = (chunk_size >> 8) as uint8_t;
+        *orig_dst.offset(3) = (chunk_size >> 0) as uint8_t;
     }
     (*nal).i_payload = size;
     (*nal).p_payload = orig_dst;
@@ -107,7 +102,7 @@ unsafe extern "C" fn x264_10_bitstream_init(
 ) {
     memset(
         pf as *mut c_void,
-        0 as c_int,
+        0,
         ::core::mem::size_of::<x264_bitstream_function_t>() as size_t,
     );
     (*pf).nal_escape = Some(

@@ -224,12 +224,12 @@ unsafe extern "C" fn list_contains(mut list: *const *const c_char, mut s: *const
     if *s != 0 {
         while !(*list).is_null() {
             if strcmp(*list, s) == 0 {
-                return 1 as c_int;
+                return 1;
             }
             list = list.offset(1);
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "240:1"]
 unsafe extern "C" fn suggest(mut s: *const c_char, mut cur: *const c_char, mut cur_len: c_int) {
@@ -317,7 +317,7 @@ unsafe extern "C" fn x264_cli_autocomplete(
             s = s.offset(1);
         }
     } else if strcmp(prev, b"--aq-mode\0" as *const u8 as *const c_char) == 0 {
-        suggest_num_range(0 as c_int, 3 as c_int, cur, cur_len);
+        suggest_num_range(0, 3, cur, cur_len);
     } else if strcmp(prev, b"--asm\0" as *const u8 as *const c_char) == 0 {
         let mut cpu: *const x264_cpu_name_t = x264_cpu_names.as_ptr();
         while (*cpu).flags != 0 {
@@ -337,7 +337,7 @@ unsafe extern "C" fn x264_cli_autocomplete(
             s_1 = s_1.offset(1);
         }
     } else if strcmp(prev, b"--b-adapt\0" as *const u8 as *const c_char) == 0 {
-        suggest_num_range(0 as c_int, 2 as c_int, cur, cur_len);
+        suggest_num_range(0, 2, cur, cur_len);
     } else if strcmp(prev, b"--b-pyramid\0" as *const u8 as *const c_char) == 0 {
         for variant in BPyramid::VARIANTS {
             suggest(*variant, cur, cur_len);
@@ -378,9 +378,9 @@ unsafe extern "C" fn x264_cli_autocomplete(
             s_7 = s_7.offset(1);
         }
     } else if strcmp(prev, b"--frame-packing\0" as *const u8 as *const c_char) == 0 {
-        suggest_num_range(0 as c_int, 7 as c_int, cur, cur_len);
+        suggest_num_range(0, 7, cur, cur_len);
     } else if strcmp(prev, b"--input-csp\0" as *const u8 as *const c_char) == 0 {
-        let mut i: c_int = X264_CSP_NONE + 1 as c_int;
+        let mut i: c_int = X264_CSP_NONE + 1;
         while i < X264_CSP_CLI_MAX {
             suggest(
                 (*x264_cli_csps.as_ptr().offset(i as isize)).name,
@@ -467,7 +467,7 @@ unsafe extern "C" fn x264_cli_autocomplete(
     } else if strcmp(prev, b"--pass\0" as *const u8 as *const c_char) == 0
         || strcmp(prev, b"-p\0" as *const u8 as *const c_char) == 0
     {
-        suggest_num_range(1 as c_int, 3 as c_int, cur, cur_len);
+        suggest_num_range(1, 3, cur, cur_len);
     } else if strcmp(prev, b"--preset\0" as *const u8 as *const c_char) == 0 {
         let mut s_17: *const *const c_char = x264_preset_names.as_ptr();
         while !(*s_17).is_null() {
@@ -495,7 +495,7 @@ unsafe extern "C" fn x264_cli_autocomplete(
     } else if strcmp(prev, b"--subme\0" as *const u8 as *const c_char) == 0
         || strcmp(prev, b"-m\0" as *const u8 as *const c_char) == 0
     {
-        suggest_num_range(0 as c_int, 11 as c_int, cur, cur_len);
+        suggest_num_range(0, 11, cur, cur_len);
     } else if strcmp(prev, b"--transfer\0" as *const u8 as *const c_char) == 0 {
         let mut s_21: *const *const c_char = x264_transfer_names.as_ptr();
         while !(*s_21).is_null() {
@@ -505,7 +505,7 @@ unsafe extern "C" fn x264_cli_autocomplete(
     } else if strcmp(prev, b"--trellis\0" as *const u8 as *const c_char) == 0
         || strcmp(prev, b"-t\0" as *const u8 as *const c_char) == 0
     {
-        suggest_num_range(0 as c_int, 2 as c_int, cur, cur_len);
+        suggest_num_range(0, 2, cur, cur_len);
     } else if strcmp(prev, b"--tune\0" as *const u8 as *const c_char) == 0 {
         let mut s_22: *const *const c_char = x264_tune_names.as_ptr();
         while !(*s_22).is_null() {
@@ -519,14 +519,14 @@ unsafe extern "C" fn x264_cli_autocomplete(
             s_23 = s_23.offset(1);
         }
     } else if strcmp(prev, b"--weightp\0" as *const u8 as *const c_char) == 0 {
-        suggest_num_range(0 as c_int, 2 as c_int, cur, cur_len);
+        suggest_num_range(0, 2, cur, cur_len);
     } else if list_contains(opts_nosuggest.as_ptr(), prev) == 0
         && list_contains(opts_special.as_ptr(), prev) == 0
     {
         if list_contains(opts_filename.as_ptr(), prev) != 0
             || strncmp(cur, b"--\0" as *const u8 as *const c_char, 2 as size_t) != 0
         {
-            return 1 as c_int;
+            return 1;
         }
         let mut s_24: *const *const c_char = opts_suggest.as_ptr();
         while !(*s_24).is_null() {
@@ -557,6 +557,6 @@ unsafe extern "C" fn x264_cli_autocomplete(
         }
     }
     putchar('\n' as i32);
-    return 0 as c_int;
+    return 0;
 }
 */

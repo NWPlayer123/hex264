@@ -22,32 +22,32 @@ unsafe extern "C" fn flv_dbl2int(mut value: c_double) -> uint64_t {
 #[no_mangle]
 #[c2rust::src_loc = "36:1"]
 unsafe extern "C" fn flv_put_byte(mut c: *mut flv_buffer, mut b: uint8_t) {
-    flv_append_data(c, &mut b, 1 as c_uint);
+    flv_append_data(c, &mut b, 1);
 }
 #[no_mangle]
 #[c2rust::src_loc = "41:1"]
 unsafe extern "C" fn flv_put_be32(mut c: *mut flv_buffer, mut val: uint32_t) {
-    flv_put_byte(c, (val >> 24 as c_int) as uint8_t);
-    flv_put_byte(c, (val >> 16 as c_int) as uint8_t);
-    flv_put_byte(c, (val >> 8 as c_int) as uint8_t);
+    flv_put_byte(c, (val >> 24) as uint8_t);
+    flv_put_byte(c, (val >> 16) as uint8_t);
+    flv_put_byte(c, (val >> 8) as uint8_t);
     flv_put_byte(c, val as uint8_t);
 }
 #[no_mangle]
 #[c2rust::src_loc = "49:1"]
 unsafe extern "C" fn flv_put_be64(mut c: *mut flv_buffer, mut val: uint64_t) {
-    flv_put_be32(c, (val >> 32 as c_int) as uint32_t);
+    flv_put_be32(c, (val >> 32) as uint32_t);
     flv_put_be32(c, val as uint32_t);
 }
 #[no_mangle]
 #[c2rust::src_loc = "55:1"]
 unsafe extern "C" fn flv_put_be16(mut c: *mut flv_buffer, mut val: uint16_t) {
-    flv_put_byte(c, (val as c_int >> 8 as c_int) as uint8_t);
+    flv_put_byte(c, (val as c_int >> 8) as uint8_t);
     flv_put_byte(c, val as uint8_t);
 }
 #[no_mangle]
 #[c2rust::src_loc = "61:1"]
 unsafe extern "C" fn flv_put_be24(mut c: *mut flv_buffer, mut val: uint32_t) {
-    flv_put_be16(c, (val >> 8 as c_int) as uint16_t);
+    flv_put_be16(c, (val >> 8) as uint16_t);
     flv_put_byte(c, val as uint8_t);
 }
 #[no_mangle]
@@ -101,9 +101,9 @@ unsafe extern "C" fn flv_append_data(
     let mut ns: c_uint = (*c).d_cur.wrapping_add(size);
     if ns > (*c).d_max {
         let mut dp: *mut c_void = 0 as *mut c_void;
-        let mut dn: c_uint = 16 as c_uint;
+        let mut dn: c_uint = 16;
         while ns > dn {
-            dn <<= 1 as c_int;
+            dn <<= 1;
         }
         dp = realloc((*c).data as *mut c_void, dn as size_t);
         if dp.is_null() {
@@ -118,7 +118,7 @@ unsafe extern "C" fn flv_append_data(
         size as size_t,
     );
     (*c).d_cur = ns;
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "133:1"]
@@ -127,15 +127,15 @@ unsafe extern "C" fn flv_rewrite_amf_be24(
     mut length: c_uint,
     mut start: c_uint,
 ) {
-    *(*c).data.offset(start as isize).offset(0) = (length >> 16 as c_int) as uint8_t;
-    *(*c).data.offset(start as isize).offset(1) = (length >> 8 as c_int) as uint8_t;
-    *(*c).data.offset(start as isize).offset(2) = (length >> 0 as c_int) as uint8_t;
+    *(*c).data.offset(start as isize).offset(0) = (length >> 16) as uint8_t;
+    *(*c).data.offset(start as isize).offset(1) = (length >> 8) as uint8_t;
+    *(*c).data.offset(start as isize).offset(2) = (length >> 0) as uint8_t;
 }
 #[no_mangle]
 #[c2rust::src_loc = "140:1"]
 unsafe extern "C" fn flv_flush_data(mut c: *mut flv_buffer) -> c_int {
     if (*c).d_cur == 0 {
-        return 0 as c_int;
+        return 0;
     }
     if fwrite(
         (*c).data as *const c_void,
@@ -147,6 +147,6 @@ unsafe extern "C" fn flv_flush_data(mut c: *mut flv_buffer) -> c_int {
         return -1;
     }
     (*c).d_total = (*c).d_total.wrapping_add((*c).d_cur as uint64_t);
-    (*c).d_cur = 0 as c_uint;
-    return 0 as c_int;
+    (*c).d_cur = 0;
+    return 0;
 }

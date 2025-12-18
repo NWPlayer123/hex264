@@ -35,150 +35,110 @@ static mut x264_cli_csps: [x264_cli_csp_t; 17] = [
     {
         let mut init = x264_cli_csp_t {
             name: b"i400\0" as *const u8 as *const c_char,
-            planes: 1 as c_int,
-            width: [1 as c_int as c_float, 0., 0., 0.],
-            height: [1 as c_int as c_float, 0., 0., 0.],
-            mod_width: 1 as c_int,
-            mod_height: 1 as c_int,
+            planes: 1,
+            width: [1 as c_float, 0., 0., 0.],
+            height: [1 as c_float, 0., 0., 0.],
+            mod_width: 1,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"i420\0" as *const u8 as *const c_char,
-            planes: 3 as c_int,
-            width: [
-                1 as c_int as c_float,
-                0.5f64 as c_float,
-                0.5f64 as c_float,
-                0.,
-            ],
-            height: [
-                1 as c_int as c_float,
-                0.5f64 as c_float,
-                0.5f64 as c_float,
-                0.,
-            ],
-            mod_width: 2 as c_int,
-            mod_height: 2 as c_int,
+            planes: 3,
+            width: [1 as c_float, 0.5f64 as c_float, 0.5f64 as c_float, 0.],
+            height: [1 as c_float, 0.5f64 as c_float, 0.5f64 as c_float, 0.],
+            mod_width: 2,
+            mod_height: 2,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"yv12\0" as *const u8 as *const c_char,
-            planes: 3 as c_int,
-            width: [
-                1 as c_int as c_float,
-                0.5f64 as c_float,
-                0.5f64 as c_float,
-                0.,
-            ],
-            height: [
-                1 as c_int as c_float,
-                0.5f64 as c_float,
-                0.5f64 as c_float,
-                0.,
-            ],
-            mod_width: 2 as c_int,
-            mod_height: 2 as c_int,
+            planes: 3,
+            width: [1 as c_float, 0.5f64 as c_float, 0.5f64 as c_float, 0.],
+            height: [1 as c_float, 0.5f64 as c_float, 0.5f64 as c_float, 0.],
+            mod_width: 2,
+            mod_height: 2,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"nv12\0" as *const u8 as *const c_char,
-            planes: 2 as c_int,
-            width: [1 as c_int as c_float, 1 as c_int as c_float, 0., 0.],
-            height: [1 as c_int as c_float, 0.5f64 as c_float, 0., 0.],
-            mod_width: 2 as c_int,
-            mod_height: 2 as c_int,
+            planes: 2,
+            width: [1 as c_float, 1 as c_float, 0., 0.],
+            height: [1 as c_float, 0.5f64 as c_float, 0., 0.],
+            mod_width: 2,
+            mod_height: 2,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"nv21\0" as *const u8 as *const c_char,
-            planes: 2 as c_int,
-            width: [1 as c_int as c_float, 1 as c_int as c_float, 0., 0.],
-            height: [1 as c_int as c_float, 0.5f64 as c_float, 0., 0.],
-            mod_width: 2 as c_int,
-            mod_height: 2 as c_int,
+            planes: 2,
+            width: [1 as c_float, 1 as c_float, 0., 0.],
+            height: [1 as c_float, 0.5f64 as c_float, 0., 0.],
+            mod_width: 2,
+            mod_height: 2,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"i422\0" as *const u8 as *const c_char,
-            planes: 3 as c_int,
-            width: [
-                1 as c_int as c_float,
-                0.5f64 as c_float,
-                0.5f64 as c_float,
-                0.,
-            ],
-            height: [
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                0.,
-            ],
-            mod_width: 2 as c_int,
-            mod_height: 1 as c_int,
+            planes: 3,
+            width: [1 as c_float, 0.5f64 as c_float, 0.5f64 as c_float, 0.],
+            height: [1 as c_float, 1 as c_float, 1 as c_float, 0.],
+            mod_width: 2,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"yv16\0" as *const u8 as *const c_char,
-            planes: 3 as c_int,
-            width: [
-                1 as c_int as c_float,
-                0.5f64 as c_float,
-                0.5f64 as c_float,
-                0.,
-            ],
-            height: [
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                0.,
-            ],
-            mod_width: 2 as c_int,
-            mod_height: 1 as c_int,
+            planes: 3,
+            width: [1 as c_float, 0.5f64 as c_float, 0.5f64 as c_float, 0.],
+            height: [1 as c_float, 1 as c_float, 1 as c_float, 0.],
+            mod_width: 2,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"nv16\0" as *const u8 as *const c_char,
-            planes: 2 as c_int,
-            width: [1 as c_int as c_float, 1 as c_int as c_float, 0., 0.],
-            height: [1 as c_int as c_float, 1 as c_int as c_float, 0., 0.],
-            mod_width: 2 as c_int,
-            mod_height: 1 as c_int,
+            planes: 2,
+            width: [1 as c_float, 1 as c_float, 0., 0.],
+            height: [1 as c_float, 1 as c_float, 0., 0.],
+            mod_width: 2,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"yuyv\0" as *const u8 as *const c_char,
-            planes: 1 as c_int,
-            width: [2 as c_int as c_float, 0., 0., 0.],
-            height: [1 as c_int as c_float, 0., 0., 0.],
-            mod_width: 2 as c_int,
-            mod_height: 1 as c_int,
+            planes: 1,
+            width: [2 as c_float, 0., 0., 0.],
+            height: [1 as c_float, 0., 0., 0.],
+            mod_width: 2,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"uyvy\0" as *const u8 as *const c_char,
-            planes: 1 as c_int,
-            width: [2 as c_int as c_float, 0., 0., 0.],
-            height: [1 as c_int as c_float, 0., 0., 0.],
-            mod_width: 2 as c_int,
-            mod_height: 1 as c_int,
+            planes: 1,
+            width: [2 as c_float, 0., 0., 0.],
+            height: [1 as c_float, 0., 0., 0.],
+            mod_width: 2,
+            mod_height: 1,
         };
         init
     },
@@ -193,75 +153,55 @@ static mut x264_cli_csps: [x264_cli_csp_t; 17] = [
     {
         let mut init = x264_cli_csp_t {
             name: b"i444\0" as *const u8 as *const c_char,
-            planes: 3 as c_int,
-            width: [
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                0.,
-            ],
-            height: [
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                0.,
-            ],
-            mod_width: 1 as c_int,
-            mod_height: 1 as c_int,
+            planes: 3,
+            width: [1 as c_float, 1 as c_float, 1 as c_float, 0.],
+            height: [1 as c_float, 1 as c_float, 1 as c_float, 0.],
+            mod_width: 1,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"yv24\0" as *const u8 as *const c_char,
-            planes: 3 as c_int,
-            width: [
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                0.,
-            ],
-            height: [
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                1 as c_int as c_float,
-                0.,
-            ],
-            mod_width: 1 as c_int,
-            mod_height: 1 as c_int,
+            planes: 3,
+            width: [1 as c_float, 1 as c_float, 1 as c_float, 0.],
+            height: [1 as c_float, 1 as c_float, 1 as c_float, 0.],
+            mod_width: 1,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"bgr\0" as *const u8 as *const c_char,
-            planes: 1 as c_int,
-            width: [3 as c_int as c_float, 0., 0., 0.],
-            height: [1 as c_int as c_float, 0., 0., 0.],
-            mod_width: 1 as c_int,
-            mod_height: 1 as c_int,
+            planes: 1,
+            width: [3 as c_float, 0., 0., 0.],
+            height: [1 as c_float, 0., 0., 0.],
+            mod_width: 1,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"bgra\0" as *const u8 as *const c_char,
-            planes: 1 as c_int,
-            width: [4 as c_int as c_float, 0., 0., 0.],
-            height: [1 as c_int as c_float, 0., 0., 0.],
-            mod_width: 1 as c_int,
-            mod_height: 1 as c_int,
+            planes: 1,
+            width: [4 as c_float, 0., 0., 0.],
+            height: [1 as c_float, 0., 0., 0.],
+            mod_width: 1,
+            mod_height: 1,
         };
         init
     },
     {
         let mut init = x264_cli_csp_t {
             name: b"rgb\0" as *const u8 as *const c_char,
-            planes: 1 as c_int,
-            width: [3 as c_int as c_float, 0., 0., 0.],
-            height: [1 as c_int as c_float, 0., 0., 0.],
-            mod_width: 1 as c_int,
-            mod_height: 1 as c_int,
+            planes: 1,
+            width: [3 as c_float, 0., 0., 0.],
+            height: [1 as c_float, 0., 0., 0.],
+            mod_width: 1,
+            mod_height: 1,
         };
         init
     },
@@ -279,13 +219,9 @@ unsafe extern "C" fn x264_cli_csp_is_invalid(mut csp: c_int) -> c_int {
 #[c2rust::src_loc = "61:1"]
 unsafe extern "C" fn x264_cli_csp_depth_factor(mut csp: c_int) -> c_int {
     if x264_cli_csp_is_invalid(csp) != 0 {
-        return 0 as c_int;
+        return 0;
     }
-    return if csp & X264_CSP_HIGH_DEPTH != 0 {
-        2 as c_int
-    } else {
-        1 as c_int
-    };
+    return if csp & X264_CSP_HIGH_DEPTH != 0 { 2 } else { 1 };
 }
 #[no_mangle]
 #[c2rust::src_loc = "68:1"]
@@ -297,7 +233,7 @@ unsafe extern "C" fn x264_cli_pic_plane_size(
 ) -> int64_t {
     let mut csp_mask: c_int = csp & X264_CSP_MASK;
     if x264_cli_csp_is_invalid(csp) != 0
-        || plane < 0 as c_int
+        || plane < 0
         || plane >= x264_cli_csps[csp_mask as usize].planes
     {
         return 0 as int64_t;
@@ -321,7 +257,7 @@ unsafe extern "C" fn x264_cli_pic_size(
     }
     let mut size: int64_t = 0 as int64_t;
     let mut csp_mask: c_int = csp & X264_CSP_MASK;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < x264_cli_csps[csp_mask as usize].planes {
         size += x264_cli_pic_plane_size(csp, width, height, i);
         i += 1;
@@ -337,26 +273,22 @@ unsafe extern "C" fn cli_pic_init_internal(
     mut align: c_int,
     mut alloc: c_int,
 ) -> c_int {
-    memset(
-        pic as *mut c_void,
-        0 as c_int,
-        size_of::<cli_pic_t>() as size_t,
-    );
+    memset(pic as *mut c_void, 0, size_of::<cli_pic_t>() as size_t);
     let mut csp_mask: c_int = csp & X264_CSP_MASK;
     if x264_cli_csp_is_invalid(csp) != 0 {
-        (*pic).img.planes = 0 as c_int;
+        (*pic).img.planes = 0;
     } else {
         (*pic).img.planes = x264_cli_csps[csp_mask as usize].planes;
     }
     (*pic).img.csp = csp;
     (*pic).img.width = width;
     (*pic).img.height = height;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*pic).img.planes {
         let mut stride: c_int =
             (width as c_float * x264_cli_csps[csp_mask as usize].width[i as usize]) as c_int;
         stride *= x264_cli_csp_depth_factor(csp);
-        stride = stride + (align - 1 as c_int) & !(align - 1 as c_int);
+        stride = stride + (align - 1) & !(align - 1);
         (*pic).img.stride[i as usize] = stride;
         if alloc != 0 {
             let mut size: int64_t = (height as c_float
@@ -370,7 +302,7 @@ unsafe extern "C" fn cli_pic_init_internal(
         }
         i += 1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "120:1"]
@@ -380,7 +312,7 @@ unsafe extern "C" fn x264_cli_pic_alloc(
     mut width: c_int,
     mut height: c_int,
 ) -> c_int {
-    return cli_pic_init_internal(pic, csp, width, height, 1 as c_int, 1 as c_int);
+    return cli_pic_init_internal(pic, csp, width, height, 1, 1);
 }
 #[no_mangle]
 #[c2rust::src_loc = "125:1"]
@@ -390,7 +322,7 @@ unsafe extern "C" fn x264_cli_pic_alloc_aligned(
     mut width: c_int,
     mut height: c_int,
 ) -> c_int {
-    return cli_pic_init_internal(pic, csp, width, height, NATIVE_ALIGN, 1 as c_int);
+    return cli_pic_init_internal(pic, csp, width, height, NATIVE_ALIGN, 1);
 }
 #[no_mangle]
 #[c2rust::src_loc = "130:1"]
@@ -400,21 +332,17 @@ unsafe extern "C" fn x264_cli_pic_init_noalloc(
     mut width: c_int,
     mut height: c_int,
 ) -> c_int {
-    return cli_pic_init_internal(pic, csp, width, height, 1 as c_int, 0 as c_int);
+    return cli_pic_init_internal(pic, csp, width, height, 1, 0);
 }
 #[no_mangle]
 #[c2rust::src_loc = "135:1"]
 unsafe extern "C" fn x264_cli_pic_clean(mut pic: *mut cli_pic_t) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*pic).img.planes {
         x264_free((*pic).img.plane[i as usize] as *mut c_void);
         i += 1;
     }
-    memset(
-        pic as *mut c_void,
-        0 as c_int,
-        size_of::<cli_pic_t>() as size_t,
-    );
+    memset(pic as *mut c_void, 0, size_of::<cli_pic_t>() as size_t);
 }
 #[no_mangle]
 #[c2rust::src_loc = "142:1"]
@@ -460,12 +388,12 @@ unsafe extern "C" fn x264_cli_mmap_init(mut h: *mut cli_mmap_t, mut fh: *mut FIL
         (*h).file_size = file_stat.st_size as int64_t;
         (*h).align_mask = (sysconf(_SC_PAGESIZE as c_int) - 1 as c_long) as c_int;
         (*h).fd = fd;
-        return ((*h).align_mask < 0 as c_int || fd < 0 as c_int) as c_int;
+        return ((*h).align_mask < 0 || fd < 0) as c_int;
     }
     return -1;
 }
 #[c2rust::src_loc = "183:9"]
-const MMAP_PADDING: c_int = 64 as c_int;
+const MMAP_PADDING: c_int = 64;
 #[no_mangle]
 #[c2rust::src_loc = "185:1"]
 unsafe extern "C" fn x264_cli_mmap(

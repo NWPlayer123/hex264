@@ -1,5 +1,5 @@
 use ::core::mem::size_of;
-use core::ffi::{c_char, c_int, c_uint, c_void};
+use core::ffi::{c_char, c_int, c_void};
 
 use crate::__stddef_null_h::NULL;
 use crate::__stddef_size_t_h::size_t;
@@ -44,7 +44,7 @@ unsafe extern "C" fn lookahead_shift(
                 b"dst->i_size < dst->i_max_size\0" as *const u8
                     as *const c_char,
                 b"encoder/lookahead.c\0" as *const u8 as *const c_char,
-                47 as c_uint,
+                47,
                 ::core::mem::transmute::<
                     [u8; 78],
                     [c_char; 78],
@@ -59,7 +59,7 @@ unsafe extern "C" fn lookahead_shift(
             __assert_fail(
                 b"src->i_size\0" as *const u8 as *const c_char,
                 b"encoder/lookahead.c\0" as *const u8 as *const c_char,
-                48 as c_uint,
+                48,
                 ::core::mem::transmute::<
                     [u8; 78],
                     [c_char; 78],
@@ -95,8 +95,7 @@ unsafe extern "C" fn lookahead_update_last_nonb(
 unsafe extern "C" fn lookahead_slicetype_decide(mut h: *mut x264_t) {
     x264_10_slicetype_decide(h);
     lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0));
-    let mut shift_frames: c_int =
-        (**(*(*h).lookahead).next.list.offset(0)).i_bframes as c_int + 1 as c_int;
+    let mut shift_frames: c_int = (**(*(*h).lookahead).next.list.offset(0)).i_bframes as c_int + 1;
     pthread_mutex_lock(&mut (*(*h).lookahead).ofbuf.mutex);
     while (*(*h).lookahead).ofbuf.i_size == (*(*h).lookahead).ofbuf.i_max_size {
         pthread_cond_wait(
@@ -172,7 +171,7 @@ unsafe extern "C" fn lookahead_thread(mut h: *mut x264_t) -> *mut c_void {
         lookahead_slicetype_decide(h);
     }
     pthread_mutex_lock(&mut (*(*h).lookahead).ofbuf.mutex);
-    (*(*h).lookahead).b_thread_active = 0 as uint8_t;
+    (*(*h).lookahead).b_thread_active = 0;
     pthread_cond_broadcast(&mut (*(*h).lookahead).ofbuf.cv_fill);
     pthread_mutex_unlock(&mut (*(*h).lookahead).ofbuf.mutex);
     return NULL;
@@ -189,7 +188,7 @@ unsafe extern "C" fn x264_10_lookahead_init(
     if !look.is_null() {
         memset(
             look as *mut c_void,
-            0 as c_int,
+            0,
             size_of::<x264_lookahead_t>() as size_t,
         );
         for n in 0..*(*h).param.threads as usize {
@@ -200,22 +199,17 @@ unsafe extern "C" fn x264_10_lookahead_init(
             || (*h).param.rc.i_vbv_buffer_size != 0 && (*h).param.rc.i_lookahead != 0)
             && !(*h).param.rc.stat_read) as c_int as uint8_t;
         (*look).i_slicetype_length = i_slicetype_length;
-        if !(x264_10_sync_frame_list_init(
-            &mut (*look).ifbuf,
-            (*h).param.i_sync_lookahead + 3 as c_int,
-        ) != 0
-            || x264_10_sync_frame_list_init(&mut (*look).next, (*h).frames.i_delay + 3 as c_int)
-                != 0
-            || x264_10_sync_frame_list_init(&mut (*look).ofbuf, (*h).frames.i_delay + 3 as c_int)
-                != 0)
+        if !(x264_10_sync_frame_list_init(&mut (*look).ifbuf, (*h).param.i_sync_lookahead + 3) != 0
+            || x264_10_sync_frame_list_init(&mut (*look).next, (*h).frames.i_delay + 3) != 0
+            || x264_10_sync_frame_list_init(&mut (*look).ofbuf, (*h).frames.i_delay + 3) != 0)
         {
             if (*h).param.i_sync_lookahead == 0 {
-                return 0 as c_int;
+                return 0;
             }
             look_h = (*h).thread[*(*h).param.threads as usize];
             *look_h = *h;
             if !(x264_10_macroblock_cache_allocate(look_h) != 0) {
-                if !(x264_10_macroblock_thread_allocate(look_h, 1 as c_int) < 0 as c_int) {
+                if !(x264_10_macroblock_thread_allocate(look_h, 1) < 0) {
                     if !(pthread_create(
                         &mut (*look).thread_handle,
                         0 as *const pthread_attr_t,
@@ -231,8 +225,8 @@ unsafe extern "C" fn x264_10_lookahead_init(
                         look_h as *mut c_void,
                     ) != 0)
                     {
-                        (*look).b_thread_active = 1 as uint8_t;
-                        return 0 as c_int;
+                        (*look).b_thread_active = 1;
+                        return 0;
                     }
                 }
             }
@@ -247,10 +241,7 @@ unsafe extern "C" fn x264_10_lookahead_delete(mut h: *mut x264_t) {
     if (*h).param.i_sync_lookahead != 0 {
         let threads = *(*h).param.threads as usize;
         pthread_mutex_lock(&mut (*(*h).lookahead).ifbuf.mutex);
-        ::core::ptr::write_volatile(
-            &mut (*(*h).lookahead).b_exit_thread as *mut uint8_t,
-            1 as uint8_t,
-        );
+        ::core::ptr::write_volatile(&mut (*(*h).lookahead).b_exit_thread as *mut uint8_t, 1);
         pthread_cond_broadcast(&mut (*(*h).lookahead).ifbuf.cv_fill);
         pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
         pthread_join((*(*h).lookahead).thread_handle, core::ptr::null_mut());
@@ -291,8 +282,7 @@ unsafe extern "C" fn lookahead_encoder_shift(mut h: *mut x264_t) {
     if (*(*h).lookahead).ofbuf.i_size == 0 {
         return;
     }
-    let mut i_frames: c_int =
-        (**(*(*h).lookahead).ofbuf.list.offset(0)).i_bframes as c_int + 1 as c_int;
+    let mut i_frames: c_int = (**(*(*h).lookahead).ofbuf.list.offset(0)).i_bframes as c_int + 1;
     loop {
         let fresh3 = i_frames;
         i_frames = i_frames - 1;
@@ -328,7 +318,7 @@ unsafe extern "C" fn x264_10_lookahead_get_frames(mut h: *mut x264_t) {
         x264_10_slicetype_decide(h);
         lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0));
         let mut shift_frames: c_int =
-            (**(*(*h).lookahead).next.list.offset(0)).i_bframes as c_int + 1 as c_int;
+            (**(*(*h).lookahead).next.list.offset(0)).i_bframes as c_int + 1;
         lookahead_shift(
             &mut (*(*h).lookahead).ofbuf,
             &mut (*(*h).lookahead).next,

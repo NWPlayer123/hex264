@@ -9,76 +9,56 @@ use crate::string_h::memcpy;
 #[c2rust::src_loc = "47:1"]
 unsafe extern "C" fn dct4x4dc(mut d: *mut dctcoef) {
     let mut tmp: [dctcoef; 16] = [0; 16];
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
-        let mut s01: c_int = *d.offset((i * 4 as c_int + 0 as c_int) as isize)
-            + *d.offset((i * 4 as c_int + 1 as c_int) as isize);
-        let mut d01: c_int = *d.offset((i * 4 as c_int + 0 as c_int) as isize)
-            - *d.offset((i * 4 as c_int + 1 as c_int) as isize);
-        let mut s23: c_int = *d.offset((i * 4 as c_int + 2 as c_int) as isize)
-            + *d.offset((i * 4 as c_int + 3 as c_int) as isize);
-        let mut d23: c_int = *d.offset((i * 4 as c_int + 2 as c_int) as isize)
-            - *d.offset((i * 4 as c_int + 3 as c_int) as isize);
-        tmp[(0 as c_int * 4 as c_int + i) as usize] = (s01 + s23) as dctcoef;
-        tmp[(1 as c_int * 4 as c_int + i) as usize] = (s01 - s23) as dctcoef;
-        tmp[(2 as c_int * 4 as c_int + i) as usize] = (d01 - d23) as dctcoef;
-        tmp[(3 as c_int * 4 as c_int + i) as usize] = (d01 + d23) as dctcoef;
+    let mut i: c_int = 0;
+    while i < 4 {
+        let mut s01: c_int = *d.offset((i * 4 + 0) as isize) + *d.offset((i * 4 + 1) as isize);
+        let mut d01: c_int = *d.offset((i * 4 + 0) as isize) - *d.offset((i * 4 + 1) as isize);
+        let mut s23: c_int = *d.offset((i * 4 + 2) as isize) + *d.offset((i * 4 + 3) as isize);
+        let mut d23: c_int = *d.offset((i * 4 + 2) as isize) - *d.offset((i * 4 + 3) as isize);
+        tmp[(0 * 4 + i) as usize] = (s01 + s23) as dctcoef;
+        tmp[(1 * 4 + i) as usize] = (s01 - s23) as dctcoef;
+        tmp[(2 * 4 + i) as usize] = (d01 - d23) as dctcoef;
+        tmp[(3 * 4 + i) as usize] = (d01 + d23) as dctcoef;
         i += 1;
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 4 as c_int {
-        let mut s01_0: c_int = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            + tmp[(i_0 * 4 as c_int + 1 as c_int) as usize];
-        let mut d01_0: c_int = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            - tmp[(i_0 * 4 as c_int + 1 as c_int) as usize];
-        let mut s23_0: c_int = tmp[(i_0 * 4 as c_int + 2 as c_int) as usize]
-            + tmp[(i_0 * 4 as c_int + 3 as c_int) as usize];
-        let mut d23_0: c_int = tmp[(i_0 * 4 as c_int + 2 as c_int) as usize]
-            - tmp[(i_0 * 4 as c_int + 3 as c_int) as usize];
-        *d.offset((i_0 * 4 as c_int + 0 as c_int) as isize) =
-            (s01_0 + s23_0 + 1 as c_int >> 1 as c_int) as dctcoef;
-        *d.offset((i_0 * 4 as c_int + 1 as c_int) as isize) =
-            (s01_0 - s23_0 + 1 as c_int >> 1 as c_int) as dctcoef;
-        *d.offset((i_0 * 4 as c_int + 2 as c_int) as isize) =
-            (d01_0 - d23_0 + 1 as c_int >> 1 as c_int) as dctcoef;
-        *d.offset((i_0 * 4 as c_int + 3 as c_int) as isize) =
-            (d01_0 + d23_0 + 1 as c_int >> 1 as c_int) as dctcoef;
+    let mut i_0: c_int = 0;
+    while i_0 < 4 {
+        let mut s01_0: c_int = tmp[(i_0 * 4 + 0) as usize] + tmp[(i_0 * 4 + 1) as usize];
+        let mut d01_0: c_int = tmp[(i_0 * 4 + 0) as usize] - tmp[(i_0 * 4 + 1) as usize];
+        let mut s23_0: c_int = tmp[(i_0 * 4 + 2) as usize] + tmp[(i_0 * 4 + 3) as usize];
+        let mut d23_0: c_int = tmp[(i_0 * 4 + 2) as usize] - tmp[(i_0 * 4 + 3) as usize];
+        *d.offset((i_0 * 4 + 0) as isize) = (s01_0 + s23_0 + 1 >> 1) as dctcoef;
+        *d.offset((i_0 * 4 + 1) as isize) = (s01_0 - s23_0 + 1 >> 1) as dctcoef;
+        *d.offset((i_0 * 4 + 2) as isize) = (d01_0 - d23_0 + 1 >> 1) as dctcoef;
+        *d.offset((i_0 * 4 + 3) as isize) = (d01_0 + d23_0 + 1 >> 1) as dctcoef;
         i_0 += 1;
     }
 }
 #[c2rust::src_loc = "78:1"]
 unsafe extern "C" fn idct4x4dc(mut d: *mut dctcoef) {
     let mut tmp: [dctcoef; 16] = [0; 16];
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
-        let mut s01: c_int = *d.offset((i * 4 as c_int + 0 as c_int) as isize)
-            + *d.offset((i * 4 as c_int + 1 as c_int) as isize);
-        let mut d01: c_int = *d.offset((i * 4 as c_int + 0 as c_int) as isize)
-            - *d.offset((i * 4 as c_int + 1 as c_int) as isize);
-        let mut s23: c_int = *d.offset((i * 4 as c_int + 2 as c_int) as isize)
-            + *d.offset((i * 4 as c_int + 3 as c_int) as isize);
-        let mut d23: c_int = *d.offset((i * 4 as c_int + 2 as c_int) as isize)
-            - *d.offset((i * 4 as c_int + 3 as c_int) as isize);
-        tmp[(0 as c_int * 4 as c_int + i) as usize] = (s01 + s23) as dctcoef;
-        tmp[(1 as c_int * 4 as c_int + i) as usize] = (s01 - s23) as dctcoef;
-        tmp[(2 as c_int * 4 as c_int + i) as usize] = (d01 - d23) as dctcoef;
-        tmp[(3 as c_int * 4 as c_int + i) as usize] = (d01 + d23) as dctcoef;
+    let mut i: c_int = 0;
+    while i < 4 {
+        let mut s01: c_int = *d.offset((i * 4 + 0) as isize) + *d.offset((i * 4 + 1) as isize);
+        let mut d01: c_int = *d.offset((i * 4 + 0) as isize) - *d.offset((i * 4 + 1) as isize);
+        let mut s23: c_int = *d.offset((i * 4 + 2) as isize) + *d.offset((i * 4 + 3) as isize);
+        let mut d23: c_int = *d.offset((i * 4 + 2) as isize) - *d.offset((i * 4 + 3) as isize);
+        tmp[(0 * 4 + i) as usize] = (s01 + s23) as dctcoef;
+        tmp[(1 * 4 + i) as usize] = (s01 - s23) as dctcoef;
+        tmp[(2 * 4 + i) as usize] = (d01 - d23) as dctcoef;
+        tmp[(3 * 4 + i) as usize] = (d01 + d23) as dctcoef;
         i += 1;
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 4 as c_int {
-        let mut s01_0: c_int = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            + tmp[(i_0 * 4 as c_int + 1 as c_int) as usize];
-        let mut d01_0: c_int = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            - tmp[(i_0 * 4 as c_int + 1 as c_int) as usize];
-        let mut s23_0: c_int = tmp[(i_0 * 4 as c_int + 2 as c_int) as usize]
-            + tmp[(i_0 * 4 as c_int + 3 as c_int) as usize];
-        let mut d23_0: c_int = tmp[(i_0 * 4 as c_int + 2 as c_int) as usize]
-            - tmp[(i_0 * 4 as c_int + 3 as c_int) as usize];
-        *d.offset((i_0 * 4 as c_int + 0 as c_int) as isize) = (s01_0 + s23_0) as dctcoef;
-        *d.offset((i_0 * 4 as c_int + 1 as c_int) as isize) = (s01_0 - s23_0) as dctcoef;
-        *d.offset((i_0 * 4 as c_int + 2 as c_int) as isize) = (d01_0 - d23_0) as dctcoef;
-        *d.offset((i_0 * 4 as c_int + 3 as c_int) as isize) = (d01_0 + d23_0) as dctcoef;
+    let mut i_0: c_int = 0;
+    while i_0 < 4 {
+        let mut s01_0: c_int = tmp[(i_0 * 4 + 0) as usize] + tmp[(i_0 * 4 + 1) as usize];
+        let mut d01_0: c_int = tmp[(i_0 * 4 + 0) as usize] - tmp[(i_0 * 4 + 1) as usize];
+        let mut s23_0: c_int = tmp[(i_0 * 4 + 2) as usize] + tmp[(i_0 * 4 + 3) as usize];
+        let mut d23_0: c_int = tmp[(i_0 * 4 + 2) as usize] - tmp[(i_0 * 4 + 3) as usize];
+        *d.offset((i_0 * 4 + 0) as isize) = (s01_0 + s23_0) as dctcoef;
+        *d.offset((i_0 * 4 + 1) as isize) = (s01_0 - s23_0) as dctcoef;
+        *d.offset((i_0 * 4 + 2) as isize) = (d01_0 - d23_0) as dctcoef;
+        *d.offset((i_0 * 4 + 3) as isize) = (d01_0 + d23_0) as dctcoef;
         i_0 += 1;
     }
 }
@@ -108,14 +88,14 @@ unsafe extern "C" fn dct2x4dc(mut dct: *mut dctcoef, mut dct4x4: *mut [dctcoef; 
     *dct.offset(5) = (b6 - b7) as dctcoef;
     *dct.offset(6) = (b4 + b5) as dctcoef;
     *dct.offset(7) = (b6 + b7) as dctcoef;
-    (*dct4x4.offset(0))[0] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(1))[0] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(2))[0] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(3))[0] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(4))[0] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(5))[0] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(6))[0] = 0 as c_int as dctcoef;
-    (*dct4x4.offset(7))[0] = 0 as c_int as dctcoef;
+    (*dct4x4.offset(0))[0] = 0 as dctcoef;
+    (*dct4x4.offset(1))[0] = 0 as dctcoef;
+    (*dct4x4.offset(2))[0] = 0 as dctcoef;
+    (*dct4x4.offset(3))[0] = 0 as dctcoef;
+    (*dct4x4.offset(4))[0] = 0 as dctcoef;
+    (*dct4x4.offset(5))[0] = 0 as dctcoef;
+    (*dct4x4.offset(6))[0] = 0 as dctcoef;
+    (*dct4x4.offset(7))[0] = 0 as dctcoef;
 }
 #[inline]
 #[c2rust::src_loc = "145:1"]
@@ -127,9 +107,9 @@ unsafe extern "C" fn pixel_sub_wxh(
     mut pix2: *mut pixel,
     mut i_pix2: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < i_size {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < i_size {
             *diff.offset((x + y * i_size) as isize) =
                 (*pix1.offset(x as isize) as c_int - *pix2.offset(x as isize) as c_int) as dctcoef;
@@ -144,46 +124,29 @@ unsafe extern "C" fn pixel_sub_wxh(
 unsafe extern "C" fn sub4x4_dct(mut dct: *mut dctcoef, mut pix1: *mut pixel, mut pix2: *mut pixel) {
     let mut d: [dctcoef; 16] = [0; 16];
     let mut tmp: [dctcoef; 16] = [0; 16];
-    pixel_sub_wxh(
-        d.as_mut_ptr(),
-        4 as c_int,
-        pix1,
-        FENC_STRIDE,
-        pix2,
-        FDEC_STRIDE,
-    );
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
-        let mut s03: c_int =
-            d[(i * 4 as c_int + 0 as c_int) as usize] + d[(i * 4 as c_int + 3 as c_int) as usize];
-        let mut s12: c_int =
-            d[(i * 4 as c_int + 1 as c_int) as usize] + d[(i * 4 as c_int + 2 as c_int) as usize];
-        let mut d03: c_int =
-            d[(i * 4 as c_int + 0 as c_int) as usize] - d[(i * 4 as c_int + 3 as c_int) as usize];
-        let mut d12: c_int =
-            d[(i * 4 as c_int + 1 as c_int) as usize] - d[(i * 4 as c_int + 2 as c_int) as usize];
-        tmp[(0 as c_int * 4 as c_int + i) as usize] = (s03 + s12) as dctcoef;
-        tmp[(1 as c_int * 4 as c_int + i) as usize] = (2 as c_int * d03 + d12) as dctcoef;
-        tmp[(2 as c_int * 4 as c_int + i) as usize] = (s03 - s12) as dctcoef;
-        tmp[(3 as c_int * 4 as c_int + i) as usize] = (d03 - 2 as c_int * d12) as dctcoef;
+    pixel_sub_wxh(d.as_mut_ptr(), 4, pix1, FENC_STRIDE, pix2, FDEC_STRIDE);
+    let mut i: c_int = 0;
+    while i < 4 {
+        let mut s03: c_int = d[(i * 4 + 0) as usize] + d[(i * 4 + 3) as usize];
+        let mut s12: c_int = d[(i * 4 + 1) as usize] + d[(i * 4 + 2) as usize];
+        let mut d03: c_int = d[(i * 4 + 0) as usize] - d[(i * 4 + 3) as usize];
+        let mut d12: c_int = d[(i * 4 + 1) as usize] - d[(i * 4 + 2) as usize];
+        tmp[(0 * 4 + i) as usize] = (s03 + s12) as dctcoef;
+        tmp[(1 * 4 + i) as usize] = (2 * d03 + d12) as dctcoef;
+        tmp[(2 * 4 + i) as usize] = (s03 - s12) as dctcoef;
+        tmp[(3 * 4 + i) as usize] = (d03 - 2 * d12) as dctcoef;
         i += 1;
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 4 as c_int {
-        let mut s03_0: c_int = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            + tmp[(i_0 * 4 as c_int + 3 as c_int) as usize];
-        let mut s12_0: c_int = tmp[(i_0 * 4 as c_int + 1 as c_int) as usize]
-            + tmp[(i_0 * 4 as c_int + 2 as c_int) as usize];
-        let mut d03_0: c_int = tmp[(i_0 * 4 as c_int + 0 as c_int) as usize]
-            - tmp[(i_0 * 4 as c_int + 3 as c_int) as usize];
-        let mut d12_0: c_int = tmp[(i_0 * 4 as c_int + 1 as c_int) as usize]
-            - tmp[(i_0 * 4 as c_int + 2 as c_int) as usize];
-        *dct.offset((i_0 * 4 as c_int + 0 as c_int) as isize) = (s03_0 + s12_0) as dctcoef;
-        *dct.offset((i_0 * 4 as c_int + 1 as c_int) as isize) =
-            (2 as c_int * d03_0 + d12_0) as dctcoef;
-        *dct.offset((i_0 * 4 as c_int + 2 as c_int) as isize) = (s03_0 - s12_0) as dctcoef;
-        *dct.offset((i_0 * 4 as c_int + 3 as c_int) as isize) =
-            (d03_0 - 2 as c_int * d12_0) as dctcoef;
+    let mut i_0: c_int = 0;
+    while i_0 < 4 {
+        let mut s03_0: c_int = tmp[(i_0 * 4 + 0) as usize] + tmp[(i_0 * 4 + 3) as usize];
+        let mut s12_0: c_int = tmp[(i_0 * 4 + 1) as usize] + tmp[(i_0 * 4 + 2) as usize];
+        let mut d03_0: c_int = tmp[(i_0 * 4 + 0) as usize] - tmp[(i_0 * 4 + 3) as usize];
+        let mut d12_0: c_int = tmp[(i_0 * 4 + 1) as usize] - tmp[(i_0 * 4 + 2) as usize];
+        *dct.offset((i_0 * 4 + 0) as isize) = (s03_0 + s12_0) as dctcoef;
+        *dct.offset((i_0 * 4 + 1) as isize) = (2 * d03_0 + d12_0) as dctcoef;
+        *dct.offset((i_0 * 4 + 2) as isize) = (s03_0 - s12_0) as dctcoef;
+        *dct.offset((i_0 * 4 + 3) as isize) = (d03_0 - 2 * d12_0) as dctcoef;
         i_0 += 1;
     }
 }
@@ -205,13 +168,13 @@ unsafe extern "C" fn sub8x8_dct(
     );
     sub4x4_dct(
         (*dct.offset(2)).as_mut_ptr(),
-        &mut *pix1.offset((4 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((4 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((4 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((4 * FDEC_STRIDE + 0) as isize),
     );
     sub4x4_dct(
         (*dct.offset(3)).as_mut_ptr(),
-        &mut *pix1.offset((4 as c_int * FENC_STRIDE + 4 as c_int) as isize),
-        &mut *pix2.offset((4 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *pix1.offset((4 * FENC_STRIDE + 4) as isize),
+        &mut *pix2.offset((4 * FDEC_STRIDE + 4) as isize),
     );
 }
 #[c2rust::src_loc = "199:1"]
@@ -232,20 +195,20 @@ unsafe extern "C" fn sub16x16_dct(
     );
     sub8x8_dct(
         &mut *dct.offset(8),
-        &mut *pix1.offset((8 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((8 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((8 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((8 * FDEC_STRIDE + 0) as isize),
     );
     sub8x8_dct(
-        &mut *dct.offset(12 as c_int as isize),
-        &mut *pix1.offset((8 as c_int * FENC_STRIDE + 8 as c_int) as isize),
-        &mut *pix2.offset((8 as c_int * FDEC_STRIDE + 8 as c_int) as isize),
+        &mut *dct.offset(12 as isize),
+        &mut *pix1.offset((8 * FENC_STRIDE + 8) as isize),
+        &mut *pix2.offset((8 * FDEC_STRIDE + 8) as isize),
     );
 }
 #[c2rust::src_loc = "207:1"]
 unsafe extern "C" fn sub4x4_dct_dc(mut pix1: *mut pixel, mut pix2: *mut pixel) -> c_int {
-    let mut sum: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
+    let mut sum: c_int = 0;
+    let mut i: c_int = 0;
+    while i < 4 {
         sum += *pix1.offset(0) as c_int
             + *pix1.offset(1) as c_int
             + *pix1.offset(2) as c_int
@@ -269,12 +232,12 @@ unsafe extern "C" fn sub8x8_dct_dc(
     *dct.offset(0) = sub4x4_dct_dc(&mut *pix1.offset(0), &mut *pix2.offset(0)) as dctcoef;
     *dct.offset(1) = sub4x4_dct_dc(&mut *pix1.offset(4), &mut *pix2.offset(4)) as dctcoef;
     *dct.offset(2) = sub4x4_dct_dc(
-        &mut *pix1.offset((4 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((4 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((4 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((4 * FDEC_STRIDE + 0) as isize),
     ) as dctcoef;
     *dct.offset(3) = sub4x4_dct_dc(
-        &mut *pix1.offset((4 as c_int * FENC_STRIDE + 4 as c_int) as isize),
-        &mut *pix2.offset((4 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *pix1.offset((4 * FENC_STRIDE + 4) as isize),
+        &mut *pix2.offset((4 * FDEC_STRIDE + 4) as isize),
     ) as dctcoef;
     let mut d0: c_int = *dct.offset(0) + *dct.offset(1);
     let mut d1: c_int = *dct.offset(2) + *dct.offset(3);
@@ -292,36 +255,36 @@ unsafe extern "C" fn sub8x16_dct_dc(
     mut pix2: *mut pixel,
 ) {
     let mut a0: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((0 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((0 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((0 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((0 * FDEC_STRIDE + 0) as isize),
     );
     let mut a1: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((0 as c_int * FENC_STRIDE + 4 as c_int) as isize),
-        &mut *pix2.offset((0 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *pix1.offset((0 * FENC_STRIDE + 4) as isize),
+        &mut *pix2.offset((0 * FDEC_STRIDE + 4) as isize),
     );
     let mut a2: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((4 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((4 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((4 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((4 * FDEC_STRIDE + 0) as isize),
     );
     let mut a3: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((4 as c_int * FENC_STRIDE + 4 as c_int) as isize),
-        &mut *pix2.offset((4 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *pix1.offset((4 * FENC_STRIDE + 4) as isize),
+        &mut *pix2.offset((4 * FDEC_STRIDE + 4) as isize),
     );
     let mut a4: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((8 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((8 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((8 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((8 * FDEC_STRIDE + 0) as isize),
     );
     let mut a5: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((8 as c_int * FENC_STRIDE + 4 as c_int) as isize),
-        &mut *pix2.offset((8 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *pix1.offset((8 * FENC_STRIDE + 4) as isize),
+        &mut *pix2.offset((8 * FDEC_STRIDE + 4) as isize),
     );
     let mut a6: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((12 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((12 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((12 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((12 * FDEC_STRIDE + 0) as isize),
     );
     let mut a7: c_int = sub4x4_dct_dc(
-        &mut *pix1.offset((12 as c_int * FENC_STRIDE + 4 as c_int) as isize),
-        &mut *pix2.offset((12 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *pix1.offset((12 * FENC_STRIDE + 4) as isize),
+        &mut *pix2.offset((12 * FDEC_STRIDE + 4) as isize),
     );
     let mut b0: c_int = a0 + a1;
     let mut b1: c_int = a2 + a3;
@@ -352,49 +315,38 @@ unsafe extern "C" fn sub8x16_dct_dc(
 unsafe extern "C" fn add4x4_idct(mut p_dst: *mut pixel, mut dct: *mut dctcoef) {
     let mut d: [dctcoef; 16] = [0; 16];
     let mut tmp: [dctcoef; 16] = [0; 16];
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
-        let mut s02: c_int = *dct.offset((0 as c_int * 4 as c_int + i) as isize)
-            + *dct.offset((2 as c_int * 4 as c_int + i) as isize);
-        let mut d02: c_int = *dct.offset((0 as c_int * 4 as c_int + i) as isize)
-            - *dct.offset((2 as c_int * 4 as c_int + i) as isize);
-        let mut s13: c_int = *dct.offset((1 as c_int * 4 as c_int + i) as isize)
-            + (*dct.offset((3 as c_int * 4 as c_int + i) as isize) >> 1 as c_int);
-        let mut d13: c_int = (*dct.offset((1 as c_int * 4 as c_int + i) as isize) >> 1 as c_int)
-            - *dct.offset((3 as c_int * 4 as c_int + i) as isize);
-        tmp[(i * 4 as c_int + 0 as c_int) as usize] = (s02 + s13) as dctcoef;
-        tmp[(i * 4 as c_int + 1 as c_int) as usize] = (d02 + d13) as dctcoef;
-        tmp[(i * 4 as c_int + 2 as c_int) as usize] = (d02 - d13) as dctcoef;
-        tmp[(i * 4 as c_int + 3 as c_int) as usize] = (s02 - s13) as dctcoef;
+    let mut i: c_int = 0;
+    while i < 4 {
+        let mut s02: c_int = *dct.offset((0 * 4 + i) as isize) + *dct.offset((2 * 4 + i) as isize);
+        let mut d02: c_int = *dct.offset((0 * 4 + i) as isize) - *dct.offset((2 * 4 + i) as isize);
+        let mut s13: c_int =
+            *dct.offset((1 * 4 + i) as isize) + (*dct.offset((3 * 4 + i) as isize) >> 1);
+        let mut d13: c_int =
+            (*dct.offset((1 * 4 + i) as isize) >> 1) - *dct.offset((3 * 4 + i) as isize);
+        tmp[(i * 4 + 0) as usize] = (s02 + s13) as dctcoef;
+        tmp[(i * 4 + 1) as usize] = (d02 + d13) as dctcoef;
+        tmp[(i * 4 + 2) as usize] = (d02 - d13) as dctcoef;
+        tmp[(i * 4 + 3) as usize] = (s02 - s13) as dctcoef;
         i += 1;
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 4 as c_int {
-        let mut s02_0: c_int = tmp[(0 as c_int * 4 as c_int + i_0) as usize]
-            + tmp[(2 as c_int * 4 as c_int + i_0) as usize];
-        let mut d02_0: c_int = tmp[(0 as c_int * 4 as c_int + i_0) as usize]
-            - tmp[(2 as c_int * 4 as c_int + i_0) as usize];
-        let mut s13_0: c_int = tmp[(1 as c_int * 4 as c_int + i_0) as usize]
-            + (tmp[(3 as c_int * 4 as c_int + i_0) as usize] >> 1 as c_int);
-        let mut d13_0: c_int = (tmp[(1 as c_int * 4 as c_int + i_0) as usize] >> 1 as c_int)
-            - tmp[(3 as c_int * 4 as c_int + i_0) as usize];
-        d[(0 as c_int * 4 as c_int + i_0) as usize] =
-            (s02_0 + s13_0 + 32 as c_int >> 6 as c_int) as dctcoef;
-        d[(1 as c_int * 4 as c_int + i_0) as usize] =
-            (d02_0 + d13_0 + 32 as c_int >> 6 as c_int) as dctcoef;
-        d[(2 as c_int * 4 as c_int + i_0) as usize] =
-            (d02_0 - d13_0 + 32 as c_int >> 6 as c_int) as dctcoef;
-        d[(3 as c_int * 4 as c_int + i_0) as usize] =
-            (s02_0 - s13_0 + 32 as c_int >> 6 as c_int) as dctcoef;
+    let mut i_0: c_int = 0;
+    while i_0 < 4 {
+        let mut s02_0: c_int = tmp[(0 * 4 + i_0) as usize] + tmp[(2 * 4 + i_0) as usize];
+        let mut d02_0: c_int = tmp[(0 * 4 + i_0) as usize] - tmp[(2 * 4 + i_0) as usize];
+        let mut s13_0: c_int = tmp[(1 * 4 + i_0) as usize] + (tmp[(3 * 4 + i_0) as usize] >> 1);
+        let mut d13_0: c_int = (tmp[(1 * 4 + i_0) as usize] >> 1) - tmp[(3 * 4 + i_0) as usize];
+        d[(0 * 4 + i_0) as usize] = (s02_0 + s13_0 + 32 >> 6) as dctcoef;
+        d[(1 * 4 + i_0) as usize] = (d02_0 + d13_0 + 32 >> 6) as dctcoef;
+        d[(2 * 4 + i_0) as usize] = (d02_0 - d13_0 + 32 >> 6) as dctcoef;
+        d[(3 * 4 + i_0) as usize] = (s02_0 - s13_0 + 32 >> 6) as dctcoef;
         i_0 += 1;
     }
-    let mut y: c_int = 0 as c_int;
-    while y < 4 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < 4 as c_int {
-            *p_dst.offset(x as isize) = x264_clip_pixel(
-                *p_dst.offset(x as isize) as c_int + d[(y * 4 as c_int + x) as usize],
-            );
+    let mut y: c_int = 0;
+    while y < 4 {
+        let mut x: c_int = 0;
+        while x < 4 {
+            *p_dst.offset(x as isize) =
+                x264_clip_pixel(*p_dst.offset(x as isize) as c_int + d[(y * 4 + x) as usize]);
             x += 1;
         }
         p_dst = p_dst.offset(FDEC_STRIDE as isize);
@@ -406,11 +358,11 @@ unsafe extern "C" fn add8x8_idct(mut p_dst: *mut pixel, mut dct: *mut [dctcoef; 
     add4x4_idct(&mut *p_dst.offset(0), (*dct.offset(0)).as_mut_ptr());
     add4x4_idct(&mut *p_dst.offset(4), (*dct.offset(1)).as_mut_ptr());
     add4x4_idct(
-        &mut *p_dst.offset((4 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *p_dst.offset((4 * FDEC_STRIDE + 0) as isize),
         (*dct.offset(2)).as_mut_ptr(),
     );
     add4x4_idct(
-        &mut *p_dst.offset((4 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *p_dst.offset((4 * FDEC_STRIDE + 4) as isize),
         (*dct.offset(3)).as_mut_ptr(),
     );
 }
@@ -419,12 +371,12 @@ unsafe extern "C" fn add16x16_idct(mut p_dst: *mut pixel, mut dct: *mut [dctcoef
     add8x8_idct(&mut *p_dst.offset(0), &mut *dct.offset(0));
     add8x8_idct(&mut *p_dst.offset(8), &mut *dct.offset(4));
     add8x8_idct(
-        &mut *p_dst.offset((8 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *p_dst.offset((8 * FDEC_STRIDE + 0) as isize),
         &mut *dct.offset(8),
     );
     add8x8_idct(
-        &mut *p_dst.offset((8 as c_int * FDEC_STRIDE + 8 as c_int) as isize),
-        &mut *dct.offset(12 as c_int as isize),
+        &mut *p_dst.offset((8 * FDEC_STRIDE + 8) as isize),
+        &mut *dct.offset(12 as isize),
     );
 }
 #[c2rust::src_loc = "359:1"]
@@ -434,90 +386,61 @@ unsafe extern "C" fn sub8x8_dct8(
     mut pix2: *mut pixel,
 ) {
     let mut tmp: [dctcoef; 64] = [0; 64];
-    pixel_sub_wxh(
-        tmp.as_mut_ptr(),
-        8 as c_int,
-        pix1,
-        FENC_STRIDE,
-        pix2,
-        FDEC_STRIDE,
-    );
-    let mut i: c_int = 0 as c_int;
-    while i < 8 as c_int {
-        let mut s07: c_int = tmp[(0 as c_int * 8 as c_int + i) as usize]
-            + tmp[(7 as c_int * 8 as c_int + i) as usize];
-        let mut s16: c_int = tmp[(1 as c_int * 8 as c_int + i) as usize]
-            + tmp[(6 as c_int * 8 as c_int + i) as usize];
-        let mut s25: c_int = tmp[(2 as c_int * 8 as c_int + i) as usize]
-            + tmp[(5 as c_int * 8 as c_int + i) as usize];
-        let mut s34: c_int = tmp[(3 as c_int * 8 as c_int + i) as usize]
-            + tmp[(4 as c_int * 8 as c_int + i) as usize];
+    pixel_sub_wxh(tmp.as_mut_ptr(), 8, pix1, FENC_STRIDE, pix2, FDEC_STRIDE);
+    let mut i: c_int = 0;
+    while i < 8 {
+        let mut s07: c_int = tmp[(0 * 8 + i) as usize] + tmp[(7 * 8 + i) as usize];
+        let mut s16: c_int = tmp[(1 * 8 + i) as usize] + tmp[(6 * 8 + i) as usize];
+        let mut s25: c_int = tmp[(2 * 8 + i) as usize] + tmp[(5 * 8 + i) as usize];
+        let mut s34: c_int = tmp[(3 * 8 + i) as usize] + tmp[(4 * 8 + i) as usize];
         let mut a0: c_int = s07 + s34;
         let mut a1: c_int = s16 + s25;
         let mut a2: c_int = s07 - s34;
         let mut a3: c_int = s16 - s25;
-        let mut d07: c_int = tmp[(0 as c_int * 8 as c_int + i) as usize]
-            - tmp[(7 as c_int * 8 as c_int + i) as usize];
-        let mut d16: c_int = tmp[(1 as c_int * 8 as c_int + i) as usize]
-            - tmp[(6 as c_int * 8 as c_int + i) as usize];
-        let mut d25: c_int = tmp[(2 as c_int * 8 as c_int + i) as usize]
-            - tmp[(5 as c_int * 8 as c_int + i) as usize];
-        let mut d34: c_int = tmp[(3 as c_int * 8 as c_int + i) as usize]
-            - tmp[(4 as c_int * 8 as c_int + i) as usize];
-        let mut a4: c_int = d16 + d25 + (d07 + (d07 >> 1 as c_int));
-        let mut a5: c_int = d07 - d34 - (d25 + (d25 >> 1 as c_int));
-        let mut a6: c_int = d07 + d34 - (d16 + (d16 >> 1 as c_int));
-        let mut a7: c_int = d16 - d25 + (d34 + (d34 >> 1 as c_int));
-        tmp[(0 as c_int * 8 as c_int + i) as usize] = (a0 + a1) as dctcoef;
-        tmp[(1 as c_int * 8 as c_int + i) as usize] = (a4 + (a7 >> 2 as c_int)) as dctcoef;
-        tmp[(2 as c_int * 8 as c_int + i) as usize] = (a2 + (a3 >> 1 as c_int)) as dctcoef;
-        tmp[(3 as c_int * 8 as c_int + i) as usize] = (a5 + (a6 >> 2 as c_int)) as dctcoef;
-        tmp[(4 as c_int * 8 as c_int + i) as usize] = (a0 - a1) as dctcoef;
-        tmp[(5 as c_int * 8 as c_int + i) as usize] = (a6 - (a5 >> 2 as c_int)) as dctcoef;
-        tmp[(6 as c_int * 8 as c_int + i) as usize] = ((a2 >> 1 as c_int) - a3) as dctcoef;
-        tmp[(7 as c_int * 8 as c_int + i) as usize] = ((a4 >> 2 as c_int) - a7) as dctcoef;
+        let mut d07: c_int = tmp[(0 * 8 + i) as usize] - tmp[(7 * 8 + i) as usize];
+        let mut d16: c_int = tmp[(1 * 8 + i) as usize] - tmp[(6 * 8 + i) as usize];
+        let mut d25: c_int = tmp[(2 * 8 + i) as usize] - tmp[(5 * 8 + i) as usize];
+        let mut d34: c_int = tmp[(3 * 8 + i) as usize] - tmp[(4 * 8 + i) as usize];
+        let mut a4: c_int = d16 + d25 + (d07 + (d07 >> 1));
+        let mut a5: c_int = d07 - d34 - (d25 + (d25 >> 1));
+        let mut a6: c_int = d07 + d34 - (d16 + (d16 >> 1));
+        let mut a7: c_int = d16 - d25 + (d34 + (d34 >> 1));
+        tmp[(0 * 8 + i) as usize] = (a0 + a1) as dctcoef;
+        tmp[(1 * 8 + i) as usize] = (a4 + (a7 >> 2)) as dctcoef;
+        tmp[(2 * 8 + i) as usize] = (a2 + (a3 >> 1)) as dctcoef;
+        tmp[(3 * 8 + i) as usize] = (a5 + (a6 >> 2)) as dctcoef;
+        tmp[(4 * 8 + i) as usize] = (a0 - a1) as dctcoef;
+        tmp[(5 * 8 + i) as usize] = (a6 - (a5 >> 2)) as dctcoef;
+        tmp[(6 * 8 + i) as usize] = ((a2 >> 1) - a3) as dctcoef;
+        tmp[(7 * 8 + i) as usize] = ((a4 >> 2) - a7) as dctcoef;
         i += 1;
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 8 as c_int {
-        let mut s07_0: c_int = tmp[(i_0 * 8 as c_int + 0 as c_int) as usize]
-            + tmp[(i_0 * 8 as c_int + 7 as c_int) as usize];
-        let mut s16_0: c_int = tmp[(i_0 * 8 as c_int + 1 as c_int) as usize]
-            + tmp[(i_0 * 8 as c_int + 6 as c_int) as usize];
-        let mut s25_0: c_int = tmp[(i_0 * 8 as c_int + 2 as c_int) as usize]
-            + tmp[(i_0 * 8 as c_int + 5 as c_int) as usize];
-        let mut s34_0: c_int = tmp[(i_0 * 8 as c_int + 3 as c_int) as usize]
-            + tmp[(i_0 * 8 as c_int + 4 as c_int) as usize];
+    let mut i_0: c_int = 0;
+    while i_0 < 8 {
+        let mut s07_0: c_int = tmp[(i_0 * 8 + 0) as usize] + tmp[(i_0 * 8 + 7) as usize];
+        let mut s16_0: c_int = tmp[(i_0 * 8 + 1) as usize] + tmp[(i_0 * 8 + 6) as usize];
+        let mut s25_0: c_int = tmp[(i_0 * 8 + 2) as usize] + tmp[(i_0 * 8 + 5) as usize];
+        let mut s34_0: c_int = tmp[(i_0 * 8 + 3) as usize] + tmp[(i_0 * 8 + 4) as usize];
         let mut a0_0: c_int = s07_0 + s34_0;
         let mut a1_0: c_int = s16_0 + s25_0;
         let mut a2_0: c_int = s07_0 - s34_0;
         let mut a3_0: c_int = s16_0 - s25_0;
-        let mut d07_0: c_int = tmp[(i_0 * 8 as c_int + 0 as c_int) as usize]
-            - tmp[(i_0 * 8 as c_int + 7 as c_int) as usize];
-        let mut d16_0: c_int = tmp[(i_0 * 8 as c_int + 1 as c_int) as usize]
-            - tmp[(i_0 * 8 as c_int + 6 as c_int) as usize];
-        let mut d25_0: c_int = tmp[(i_0 * 8 as c_int + 2 as c_int) as usize]
-            - tmp[(i_0 * 8 as c_int + 5 as c_int) as usize];
-        let mut d34_0: c_int = tmp[(i_0 * 8 as c_int + 3 as c_int) as usize]
-            - tmp[(i_0 * 8 as c_int + 4 as c_int) as usize];
-        let mut a4_0: c_int = d16_0 + d25_0 + (d07_0 + (d07_0 >> 1 as c_int));
-        let mut a5_0: c_int = d07_0 - d34_0 - (d25_0 + (d25_0 >> 1 as c_int));
-        let mut a6_0: c_int = d07_0 + d34_0 - (d16_0 + (d16_0 >> 1 as c_int));
-        let mut a7_0: c_int = d16_0 - d25_0 + (d34_0 + (d34_0 >> 1 as c_int));
-        *dct.offset((0 as c_int * 8 as c_int + i_0) as isize) = (a0_0 + a1_0) as dctcoef;
-        *dct.offset((1 as c_int * 8 as c_int + i_0) as isize) =
-            (a4_0 + (a7_0 >> 2 as c_int)) as dctcoef;
-        *dct.offset((2 as c_int * 8 as c_int + i_0) as isize) =
-            (a2_0 + (a3_0 >> 1 as c_int)) as dctcoef;
-        *dct.offset((3 as c_int * 8 as c_int + i_0) as isize) =
-            (a5_0 + (a6_0 >> 2 as c_int)) as dctcoef;
-        *dct.offset((4 as c_int * 8 as c_int + i_0) as isize) = (a0_0 - a1_0) as dctcoef;
-        *dct.offset((5 as c_int * 8 as c_int + i_0) as isize) =
-            (a6_0 - (a5_0 >> 2 as c_int)) as dctcoef;
-        *dct.offset((6 as c_int * 8 as c_int + i_0) as isize) =
-            ((a2_0 >> 1 as c_int) - a3_0) as dctcoef;
-        *dct.offset((7 as c_int * 8 as c_int + i_0) as isize) =
-            ((a4_0 >> 2 as c_int) - a7_0) as dctcoef;
+        let mut d07_0: c_int = tmp[(i_0 * 8 + 0) as usize] - tmp[(i_0 * 8 + 7) as usize];
+        let mut d16_0: c_int = tmp[(i_0 * 8 + 1) as usize] - tmp[(i_0 * 8 + 6) as usize];
+        let mut d25_0: c_int = tmp[(i_0 * 8 + 2) as usize] - tmp[(i_0 * 8 + 5) as usize];
+        let mut d34_0: c_int = tmp[(i_0 * 8 + 3) as usize] - tmp[(i_0 * 8 + 4) as usize];
+        let mut a4_0: c_int = d16_0 + d25_0 + (d07_0 + (d07_0 >> 1));
+        let mut a5_0: c_int = d07_0 - d34_0 - (d25_0 + (d25_0 >> 1));
+        let mut a6_0: c_int = d07_0 + d34_0 - (d16_0 + (d16_0 >> 1));
+        let mut a7_0: c_int = d16_0 - d25_0 + (d34_0 + (d34_0 >> 1));
+        *dct.offset((0 * 8 + i_0) as isize) = (a0_0 + a1_0) as dctcoef;
+        *dct.offset((1 * 8 + i_0) as isize) = (a4_0 + (a7_0 >> 2)) as dctcoef;
+        *dct.offset((2 * 8 + i_0) as isize) = (a2_0 + (a3_0 >> 1)) as dctcoef;
+        *dct.offset((3 * 8 + i_0) as isize) = (a5_0 + (a6_0 >> 2)) as dctcoef;
+        *dct.offset((4 * 8 + i_0) as isize) = (a0_0 - a1_0) as dctcoef;
+        *dct.offset((5 * 8 + i_0) as isize) = (a6_0 - (a5_0 >> 2)) as dctcoef;
+        *dct.offset((6 * 8 + i_0) as isize) = ((a2_0 >> 1) - a3_0) as dctcoef;
+        *dct.offset((7 * 8 + i_0) as isize) = ((a4_0 >> 2) - a7_0) as dctcoef;
         i_0 += 1;
     }
 }
@@ -539,128 +462,116 @@ unsafe extern "C" fn sub16x16_dct8(
     );
     sub8x8_dct8(
         (*dct.offset(2)).as_mut_ptr(),
-        &mut *pix1.offset((8 as c_int * FENC_STRIDE + 0 as c_int) as isize),
-        &mut *pix2.offset((8 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *pix1.offset((8 * FENC_STRIDE + 0) as isize),
+        &mut *pix2.offset((8 * FDEC_STRIDE + 0) as isize),
     );
     sub8x8_dct8(
         (*dct.offset(3)).as_mut_ptr(),
-        &mut *pix1.offset((8 as c_int * FENC_STRIDE + 8 as c_int) as isize),
-        &mut *pix2.offset((8 as c_int * FDEC_STRIDE + 8 as c_int) as isize),
+        &mut *pix1.offset((8 * FENC_STRIDE + 8) as isize),
+        &mut *pix2.offset((8 * FDEC_STRIDE + 8) as isize),
     );
 }
 #[c2rust::src_loc = "415:1"]
 unsafe extern "C" fn add8x8_idct8(mut dst: *mut pixel, mut dct: *mut dctcoef) {
     let ref mut fresh0 = *dct.offset(0);
-    *fresh0 = (*fresh0 as c_int + 32 as c_int) as dctcoef;
-    let mut i: c_int = 0 as c_int;
-    while i < 8 as c_int {
-        let mut a0: c_int = *dct.offset((0 as c_int * 8 as c_int + i) as isize)
-            + *dct.offset((4 as c_int * 8 as c_int + i) as isize);
-        let mut a2: c_int = *dct.offset((0 as c_int * 8 as c_int + i) as isize)
-            - *dct.offset((4 as c_int * 8 as c_int + i) as isize);
-        let mut a4: c_int = (*dct.offset((2 as c_int * 8 as c_int + i) as isize) >> 1 as c_int)
-            - *dct.offset((6 as c_int * 8 as c_int + i) as isize);
-        let mut a6: c_int = (*dct.offset((6 as c_int * 8 as c_int + i) as isize) >> 1 as c_int)
-            + *dct.offset((2 as c_int * 8 as c_int + i) as isize);
+    *fresh0 = (*fresh0 as c_int + 32) as dctcoef;
+    let mut i: c_int = 0;
+    while i < 8 {
+        let mut a0: c_int = *dct.offset((0 * 8 + i) as isize) + *dct.offset((4 * 8 + i) as isize);
+        let mut a2: c_int = *dct.offset((0 * 8 + i) as isize) - *dct.offset((4 * 8 + i) as isize);
+        let mut a4: c_int =
+            (*dct.offset((2 * 8 + i) as isize) >> 1) - *dct.offset((6 * 8 + i) as isize);
+        let mut a6: c_int =
+            (*dct.offset((6 * 8 + i) as isize) >> 1) + *dct.offset((2 * 8 + i) as isize);
         let mut b0: c_int = a0 + a6;
         let mut b2: c_int = a2 + a4;
         let mut b4: c_int = a2 - a4;
         let mut b6: c_int = a0 - a6;
-        let mut a1: c_int = -*dct.offset((3 as c_int * 8 as c_int + i) as isize)
-            + *dct.offset((5 as c_int * 8 as c_int + i) as isize)
-            - *dct.offset((7 as c_int * 8 as c_int + i) as isize)
-            - (*dct.offset((7 as c_int * 8 as c_int + i) as isize) >> 1 as c_int);
-        let mut a3: c_int = *dct.offset((1 as c_int * 8 as c_int + i) as isize)
-            + *dct.offset((7 as c_int * 8 as c_int + i) as isize)
-            - *dct.offset((3 as c_int * 8 as c_int + i) as isize)
-            - (*dct.offset((3 as c_int * 8 as c_int + i) as isize) >> 1 as c_int);
-        let mut a5: c_int = -*dct.offset((1 as c_int * 8 as c_int + i) as isize)
-            + *dct.offset((7 as c_int * 8 as c_int + i) as isize)
-            + *dct.offset((5 as c_int * 8 as c_int + i) as isize)
-            + (*dct.offset((5 as c_int * 8 as c_int + i) as isize) >> 1 as c_int);
-        let mut a7: c_int = *dct.offset((3 as c_int * 8 as c_int + i) as isize)
-            + *dct.offset((5 as c_int * 8 as c_int + i) as isize)
-            + *dct.offset((1 as c_int * 8 as c_int + i) as isize)
-            + (*dct.offset((1 as c_int * 8 as c_int + i) as isize) >> 1 as c_int);
-        let mut b1: c_int = (a7 >> 2 as c_int) + a1;
-        let mut b3: c_int = a3 + (a5 >> 2 as c_int);
-        let mut b5: c_int = (a3 >> 2 as c_int) - a5;
-        let mut b7: c_int = a7 - (a1 >> 2 as c_int);
-        *dct.offset((0 as c_int * 8 as c_int + i) as isize) = (b0 + b7) as dctcoef;
-        *dct.offset((1 as c_int * 8 as c_int + i) as isize) = (b2 + b5) as dctcoef;
-        *dct.offset((2 as c_int * 8 as c_int + i) as isize) = (b4 + b3) as dctcoef;
-        *dct.offset((3 as c_int * 8 as c_int + i) as isize) = (b6 + b1) as dctcoef;
-        *dct.offset((4 as c_int * 8 as c_int + i) as isize) = (b6 - b1) as dctcoef;
-        *dct.offset((5 as c_int * 8 as c_int + i) as isize) = (b4 - b3) as dctcoef;
-        *dct.offset((6 as c_int * 8 as c_int + i) as isize) = (b2 - b5) as dctcoef;
-        *dct.offset((7 as c_int * 8 as c_int + i) as isize) = (b0 - b7) as dctcoef;
+        let mut a1: c_int = -*dct.offset((3 * 8 + i) as isize) + *dct.offset((5 * 8 + i) as isize)
+            - *dct.offset((7 * 8 + i) as isize)
+            - (*dct.offset((7 * 8 + i) as isize) >> 1);
+        let mut a3: c_int = *dct.offset((1 * 8 + i) as isize) + *dct.offset((7 * 8 + i) as isize)
+            - *dct.offset((3 * 8 + i) as isize)
+            - (*dct.offset((3 * 8 + i) as isize) >> 1);
+        let mut a5: c_int = -*dct.offset((1 * 8 + i) as isize)
+            + *dct.offset((7 * 8 + i) as isize)
+            + *dct.offset((5 * 8 + i) as isize)
+            + (*dct.offset((5 * 8 + i) as isize) >> 1);
+        let mut a7: c_int = *dct.offset((3 * 8 + i) as isize)
+            + *dct.offset((5 * 8 + i) as isize)
+            + *dct.offset((1 * 8 + i) as isize)
+            + (*dct.offset((1 * 8 + i) as isize) >> 1);
+        let mut b1: c_int = (a7 >> 2) + a1;
+        let mut b3: c_int = a3 + (a5 >> 2);
+        let mut b5: c_int = (a3 >> 2) - a5;
+        let mut b7: c_int = a7 - (a1 >> 2);
+        *dct.offset((0 * 8 + i) as isize) = (b0 + b7) as dctcoef;
+        *dct.offset((1 * 8 + i) as isize) = (b2 + b5) as dctcoef;
+        *dct.offset((2 * 8 + i) as isize) = (b4 + b3) as dctcoef;
+        *dct.offset((3 * 8 + i) as isize) = (b6 + b1) as dctcoef;
+        *dct.offset((4 * 8 + i) as isize) = (b6 - b1) as dctcoef;
+        *dct.offset((5 * 8 + i) as isize) = (b4 - b3) as dctcoef;
+        *dct.offset((6 * 8 + i) as isize) = (b2 - b5) as dctcoef;
+        *dct.offset((7 * 8 + i) as isize) = (b0 - b7) as dctcoef;
         i += 1;
     }
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 8 as c_int {
-        let mut a0_0: c_int = *dct.offset((i_0 * 8 as c_int + 0 as c_int) as isize)
-            + *dct.offset((i_0 * 8 as c_int + 4 as c_int) as isize);
-        let mut a2_0: c_int = *dct.offset((i_0 * 8 as c_int + 0 as c_int) as isize)
-            - *dct.offset((i_0 * 8 as c_int + 4 as c_int) as isize);
-        let mut a4_0: c_int = (*dct.offset((i_0 * 8 as c_int + 2 as c_int) as isize) >> 1 as c_int)
-            - *dct.offset((i_0 * 8 as c_int + 6 as c_int) as isize);
-        let mut a6_0: c_int = (*dct.offset((i_0 * 8 as c_int + 6 as c_int) as isize) >> 1 as c_int)
-            + *dct.offset((i_0 * 8 as c_int + 2 as c_int) as isize);
+    let mut i_0: c_int = 0;
+    while i_0 < 8 {
+        let mut a0_0: c_int =
+            *dct.offset((i_0 * 8 + 0) as isize) + *dct.offset((i_0 * 8 + 4) as isize);
+        let mut a2_0: c_int =
+            *dct.offset((i_0 * 8 + 0) as isize) - *dct.offset((i_0 * 8 + 4) as isize);
+        let mut a4_0: c_int =
+            (*dct.offset((i_0 * 8 + 2) as isize) >> 1) - *dct.offset((i_0 * 8 + 6) as isize);
+        let mut a6_0: c_int =
+            (*dct.offset((i_0 * 8 + 6) as isize) >> 1) + *dct.offset((i_0 * 8 + 2) as isize);
         let mut b0_0: c_int = a0_0 + a6_0;
         let mut b2_0: c_int = a2_0 + a4_0;
         let mut b4_0: c_int = a2_0 - a4_0;
         let mut b6_0: c_int = a0_0 - a6_0;
-        let mut a1_0: c_int = -*dct.offset((i_0 * 8 as c_int + 3 as c_int) as isize)
-            + *dct.offset((i_0 * 8 as c_int + 5 as c_int) as isize)
-            - *dct.offset((i_0 * 8 as c_int + 7 as c_int) as isize)
-            - (*dct.offset((i_0 * 8 as c_int + 7 as c_int) as isize) >> 1 as c_int);
-        let mut a3_0: c_int = *dct.offset((i_0 * 8 as c_int + 1 as c_int) as isize)
-            + *dct.offset((i_0 * 8 as c_int + 7 as c_int) as isize)
-            - *dct.offset((i_0 * 8 as c_int + 3 as c_int) as isize)
-            - (*dct.offset((i_0 * 8 as c_int + 3 as c_int) as isize) >> 1 as c_int);
-        let mut a5_0: c_int = -*dct.offset((i_0 * 8 as c_int + 1 as c_int) as isize)
-            + *dct.offset((i_0 * 8 as c_int + 7 as c_int) as isize)
-            + *dct.offset((i_0 * 8 as c_int + 5 as c_int) as isize)
-            + (*dct.offset((i_0 * 8 as c_int + 5 as c_int) as isize) >> 1 as c_int);
-        let mut a7_0: c_int = *dct.offset((i_0 * 8 as c_int + 3 as c_int) as isize)
-            + *dct.offset((i_0 * 8 as c_int + 5 as c_int) as isize)
-            + *dct.offset((i_0 * 8 as c_int + 1 as c_int) as isize)
-            + (*dct.offset((i_0 * 8 as c_int + 1 as c_int) as isize) >> 1 as c_int);
-        let mut b1_0: c_int = (a7_0 >> 2 as c_int) + a1_0;
-        let mut b3_0: c_int = a3_0 + (a5_0 >> 2 as c_int);
-        let mut b5_0: c_int = (a3_0 >> 2 as c_int) - a5_0;
-        let mut b7_0: c_int = a7_0 - (a1_0 >> 2 as c_int);
-        *dst.offset((i_0 + 0 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 0 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b0_0 + b7_0 >> 6 as c_int),
+        let mut a1_0: c_int = -*dct.offset((i_0 * 8 + 3) as isize)
+            + *dct.offset((i_0 * 8 + 5) as isize)
+            - *dct.offset((i_0 * 8 + 7) as isize)
+            - (*dct.offset((i_0 * 8 + 7) as isize) >> 1);
+        let mut a3_0: c_int = *dct.offset((i_0 * 8 + 1) as isize)
+            + *dct.offset((i_0 * 8 + 7) as isize)
+            - *dct.offset((i_0 * 8 + 3) as isize)
+            - (*dct.offset((i_0 * 8 + 3) as isize) >> 1);
+        let mut a5_0: c_int = -*dct.offset((i_0 * 8 + 1) as isize)
+            + *dct.offset((i_0 * 8 + 7) as isize)
+            + *dct.offset((i_0 * 8 + 5) as isize)
+            + (*dct.offset((i_0 * 8 + 5) as isize) >> 1);
+        let mut a7_0: c_int = *dct.offset((i_0 * 8 + 3) as isize)
+            + *dct.offset((i_0 * 8 + 5) as isize)
+            + *dct.offset((i_0 * 8 + 1) as isize)
+            + (*dct.offset((i_0 * 8 + 1) as isize) >> 1);
+        let mut b1_0: c_int = (a7_0 >> 2) + a1_0;
+        let mut b3_0: c_int = a3_0 + (a5_0 >> 2);
+        let mut b5_0: c_int = (a3_0 >> 2) - a5_0;
+        let mut b7_0: c_int = a7_0 - (a1_0 >> 2);
+        *dst.offset((i_0 + 0 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 0 * FDEC_STRIDE) as isize) as c_int + (b0_0 + b7_0 >> 6),
         );
-        *dst.offset((i_0 + 1 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 1 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b2_0 + b5_0 >> 6 as c_int),
+        *dst.offset((i_0 + 1 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 1 * FDEC_STRIDE) as isize) as c_int + (b2_0 + b5_0 >> 6),
         );
-        *dst.offset((i_0 + 2 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 2 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b4_0 + b3_0 >> 6 as c_int),
+        *dst.offset((i_0 + 2 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 2 * FDEC_STRIDE) as isize) as c_int + (b4_0 + b3_0 >> 6),
         );
-        *dst.offset((i_0 + 3 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 3 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b6_0 + b1_0 >> 6 as c_int),
+        *dst.offset((i_0 + 3 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 3 * FDEC_STRIDE) as isize) as c_int + (b6_0 + b1_0 >> 6),
         );
-        *dst.offset((i_0 + 4 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 4 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b6_0 - b1_0 >> 6 as c_int),
+        *dst.offset((i_0 + 4 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 4 * FDEC_STRIDE) as isize) as c_int + (b6_0 - b1_0 >> 6),
         );
-        *dst.offset((i_0 + 5 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 5 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b4_0 - b3_0 >> 6 as c_int),
+        *dst.offset((i_0 + 5 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 5 * FDEC_STRIDE) as isize) as c_int + (b4_0 - b3_0 >> 6),
         );
-        *dst.offset((i_0 + 6 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 6 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b2_0 - b5_0 >> 6 as c_int),
+        *dst.offset((i_0 + 6 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 6 * FDEC_STRIDE) as isize) as c_int + (b2_0 - b5_0 >> 6),
         );
-        *dst.offset((i_0 + 7 as c_int * FDEC_STRIDE) as isize) = x264_clip_pixel(
-            *dst.offset((i_0 + 7 as c_int * FDEC_STRIDE) as isize) as c_int
-                + (b0_0 - b7_0 >> 6 as c_int),
+        *dst.offset((i_0 + 7 * FDEC_STRIDE) as isize) = x264_clip_pixel(
+            *dst.offset((i_0 + 7 * FDEC_STRIDE) as isize) as c_int + (b0_0 - b7_0 >> 6),
         );
         i_0 += 1;
     }
@@ -670,20 +581,20 @@ unsafe extern "C" fn add16x16_idct8(mut dst: *mut pixel, mut dct: *mut [dctcoef;
     add8x8_idct8(&mut *dst.offset(0), (*dct.offset(0)).as_mut_ptr());
     add8x8_idct8(&mut *dst.offset(8), (*dct.offset(1)).as_mut_ptr());
     add8x8_idct8(
-        &mut *dst.offset((8 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *dst.offset((8 * FDEC_STRIDE + 0) as isize),
         (*dct.offset(2)).as_mut_ptr(),
     );
     add8x8_idct8(
-        &mut *dst.offset((8 as c_int * FDEC_STRIDE + 8 as c_int) as isize),
+        &mut *dst.offset((8 * FDEC_STRIDE + 8) as isize),
         (*dct.offset(3)).as_mut_ptr(),
     );
 }
 #[inline]
 #[c2rust::src_loc = "442:1"]
 unsafe extern "C" fn add4x4_idct_dc(mut p_dst: *mut pixel, mut dc: dctcoef) {
-    dc = dc + 32 as dctcoef >> 6 as c_int;
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
+    dc = dc + 32 as dctcoef >> 6;
+    let mut i: c_int = 0;
+    while i < 4 {
         *p_dst.offset(0) = x264_clip_pixel(*p_dst.offset(0) as c_int + dc as c_int);
         *p_dst.offset(1) = x264_clip_pixel(*p_dst.offset(1) as c_int + dc as c_int);
         *p_dst.offset(2) = x264_clip_pixel(*p_dst.offset(2) as c_int + dc as c_int);
@@ -697,25 +608,25 @@ unsafe extern "C" fn add8x8_idct_dc(mut p_dst: *mut pixel, mut dct: *mut dctcoef
     add4x4_idct_dc(&mut *p_dst.offset(0), *dct.offset(0));
     add4x4_idct_dc(&mut *p_dst.offset(4), *dct.offset(1));
     add4x4_idct_dc(
-        &mut *p_dst.offset((4 as c_int * FDEC_STRIDE + 0 as c_int) as isize),
+        &mut *p_dst.offset((4 * FDEC_STRIDE + 0) as isize),
         *dct.offset(2),
     );
     add4x4_idct_dc(
-        &mut *p_dst.offset((4 as c_int * FDEC_STRIDE + 4 as c_int) as isize),
+        &mut *p_dst.offset((4 * FDEC_STRIDE + 4) as isize),
         *dct.offset(3),
     );
 }
 #[c2rust::src_loc = "462:1"]
 unsafe extern "C" fn add16x16_idct_dc(mut p_dst: *mut pixel, mut dct: *mut dctcoef) {
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
+    let mut i: c_int = 0;
+    while i < 4 {
         add4x4_idct_dc(&mut *p_dst.offset(0), *dct.offset(0));
         add4x4_idct_dc(&mut *p_dst.offset(4), *dct.offset(1));
         add4x4_idct_dc(&mut *p_dst.offset(8), *dct.offset(2));
-        add4x4_idct_dc(&mut *p_dst.offset(12 as c_int as isize), *dct.offset(3));
+        add4x4_idct_dc(&mut *p_dst.offset(12 as isize), *dct.offset(3));
         i += 1;
         dct = dct.offset(4);
-        p_dst = p_dst.offset((4 as c_int * FDEC_STRIDE) as isize);
+        p_dst = p_dst.offset((4 * FDEC_STRIDE) as isize);
     }
 }
 #[no_mangle]
@@ -774,273 +685,156 @@ unsafe extern "C" fn x264_10_dct_init(mut _cpu: uint32_t, mut dctf: *mut x264_dc
 }
 #[c2rust::src_loc = "829:1"]
 unsafe extern "C" fn zigzag_scan_8x8_frame(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
-    *level.offset(0) = *dct.offset((0 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(1) = *dct.offset((1 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(2) = *dct.offset((0 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(3) = *dct.offset((0 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(4) = *dct.offset((1 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(5) = *dct.offset((2 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(6) = *dct.offset((3 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(7) = *dct.offset((2 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(8) = *dct.offset((1 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(9 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(10 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(11 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(12 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(13 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(14 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(15 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(16 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(17 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(18 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(19 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(20 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(21 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(22 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(23 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(24 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(25 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(26 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(27 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(28 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(29 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(30 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(31 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(32 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(33 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(34 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(35 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(36 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(37 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(38 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(39 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(40 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(41 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(42 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(43 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(44 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(45 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(46 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(47 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(48 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(49 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(50 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(51 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(52 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(53 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(54 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(55 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(56 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(57 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(58 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(59 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(60 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(61 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(62 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(63 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 7 as c_int) as isize);
+    *level.offset(0) = *dct.offset((0 * 8 + 0) as isize);
+    *level.offset(1) = *dct.offset((1 * 8 + 0) as isize);
+    *level.offset(2) = *dct.offset((0 * 8 + 1) as isize);
+    *level.offset(3) = *dct.offset((0 * 8 + 2) as isize);
+    *level.offset(4) = *dct.offset((1 * 8 + 1) as isize);
+    *level.offset(5) = *dct.offset((2 * 8 + 0) as isize);
+    *level.offset(6) = *dct.offset((3 * 8 + 0) as isize);
+    *level.offset(7) = *dct.offset((2 * 8 + 1) as isize);
+    *level.offset(8) = *dct.offset((1 * 8 + 2) as isize);
+    *level.offset(9 as isize) = *dct.offset((0 * 8 + 3) as isize);
+    *level.offset(10 as isize) = *dct.offset((0 * 8 + 4) as isize);
+    *level.offset(11 as isize) = *dct.offset((1 * 8 + 3) as isize);
+    *level.offset(12 as isize) = *dct.offset((2 * 8 + 2) as isize);
+    *level.offset(13 as isize) = *dct.offset((3 * 8 + 1) as isize);
+    *level.offset(14 as isize) = *dct.offset((4 * 8 + 0) as isize);
+    *level.offset(15 as isize) = *dct.offset((5 * 8 + 0) as isize);
+    *level.offset(16 as isize) = *dct.offset((4 * 8 + 1) as isize);
+    *level.offset(17 as isize) = *dct.offset((3 * 8 + 2) as isize);
+    *level.offset(18 as isize) = *dct.offset((2 * 8 + 3) as isize);
+    *level.offset(19 as isize) = *dct.offset((1 * 8 + 4) as isize);
+    *level.offset(20 as isize) = *dct.offset((0 * 8 + 5) as isize);
+    *level.offset(21 as isize) = *dct.offset((0 * 8 + 6) as isize);
+    *level.offset(22 as isize) = *dct.offset((1 * 8 + 5) as isize);
+    *level.offset(23 as isize) = *dct.offset((2 * 8 + 4) as isize);
+    *level.offset(24 as isize) = *dct.offset((3 * 8 + 3) as isize);
+    *level.offset(25 as isize) = *dct.offset((4 * 8 + 2) as isize);
+    *level.offset(26 as isize) = *dct.offset((5 * 8 + 1) as isize);
+    *level.offset(27 as isize) = *dct.offset((6 * 8 + 0) as isize);
+    *level.offset(28 as isize) = *dct.offset((7 * 8 + 0) as isize);
+    *level.offset(29 as isize) = *dct.offset((6 * 8 + 1) as isize);
+    *level.offset(30 as isize) = *dct.offset((5 * 8 + 2) as isize);
+    *level.offset(31 as isize) = *dct.offset((4 * 8 + 3) as isize);
+    *level.offset(32 as isize) = *dct.offset((3 * 8 + 4) as isize);
+    *level.offset(33 as isize) = *dct.offset((2 * 8 + 5) as isize);
+    *level.offset(34 as isize) = *dct.offset((1 * 8 + 6) as isize);
+    *level.offset(35 as isize) = *dct.offset((0 * 8 + 7) as isize);
+    *level.offset(36 as isize) = *dct.offset((1 * 8 + 7) as isize);
+    *level.offset(37 as isize) = *dct.offset((2 * 8 + 6) as isize);
+    *level.offset(38 as isize) = *dct.offset((3 * 8 + 5) as isize);
+    *level.offset(39 as isize) = *dct.offset((4 * 8 + 4) as isize);
+    *level.offset(40 as isize) = *dct.offset((5 * 8 + 3) as isize);
+    *level.offset(41 as isize) = *dct.offset((6 * 8 + 2) as isize);
+    *level.offset(42 as isize) = *dct.offset((7 * 8 + 1) as isize);
+    *level.offset(43 as isize) = *dct.offset((7 * 8 + 2) as isize);
+    *level.offset(44 as isize) = *dct.offset((6 * 8 + 3) as isize);
+    *level.offset(45 as isize) = *dct.offset((5 * 8 + 4) as isize);
+    *level.offset(46 as isize) = *dct.offset((4 * 8 + 5) as isize);
+    *level.offset(47 as isize) = *dct.offset((3 * 8 + 6) as isize);
+    *level.offset(48 as isize) = *dct.offset((2 * 8 + 7) as isize);
+    *level.offset(49 as isize) = *dct.offset((3 * 8 + 7) as isize);
+    *level.offset(50 as isize) = *dct.offset((4 * 8 + 6) as isize);
+    *level.offset(51 as isize) = *dct.offset((5 * 8 + 5) as isize);
+    *level.offset(52 as isize) = *dct.offset((6 * 8 + 4) as isize);
+    *level.offset(53 as isize) = *dct.offset((7 * 8 + 3) as isize);
+    *level.offset(54 as isize) = *dct.offset((7 * 8 + 4) as isize);
+    *level.offset(55 as isize) = *dct.offset((6 * 8 + 5) as isize);
+    *level.offset(56 as isize) = *dct.offset((5 * 8 + 6) as isize);
+    *level.offset(57 as isize) = *dct.offset((4 * 8 + 7) as isize);
+    *level.offset(58 as isize) = *dct.offset((5 * 8 + 7) as isize);
+    *level.offset(59 as isize) = *dct.offset((6 * 8 + 6) as isize);
+    *level.offset(60 as isize) = *dct.offset((7 * 8 + 5) as isize);
+    *level.offset(61 as isize) = *dct.offset((7 * 8 + 6) as isize);
+    *level.offset(62 as isize) = *dct.offset((6 * 8 + 7) as isize);
+    *level.offset(63 as isize) = *dct.offset((7 * 8 + 7) as isize);
 }
 #[c2rust::src_loc = "834:1"]
 unsafe extern "C" fn zigzag_scan_8x8_field(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
-    *level.offset(0) = *dct.offset((0 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(1) = *dct.offset((0 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(2) = *dct.offset((0 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(3) = *dct.offset((1 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(4) = *dct.offset((1 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(5) = *dct.offset((0 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(6) = *dct.offset((0 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(7) = *dct.offset((1 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(8) = *dct.offset((2 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(9 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(10 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(11 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(12 as c_int as isize) =
-        *dct.offset((0 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(13 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(14 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(15 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(16 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(17 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(18 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(19 as c_int as isize) =
-        *dct.offset((1 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(20 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(21 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(22 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(23 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(24 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(25 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(26 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(27 as c_int as isize) =
-        *dct.offset((2 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(28 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(29 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(30 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(31 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(32 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(33 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(34 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(35 as c_int as isize) =
-        *dct.offset((3 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(36 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(37 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(38 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(39 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(40 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(41 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(42 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(43 as c_int as isize) =
-        *dct.offset((4 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(44 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(45 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(46 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(47 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(48 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(49 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(50 as c_int as isize) =
-        *dct.offset((5 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(51 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(52 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 0 as c_int) as isize);
-    *level.offset(53 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 1 as c_int) as isize);
-    *level.offset(54 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(55 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(56 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(57 as c_int as isize) =
-        *dct.offset((6 as c_int * 8 as c_int + 7 as c_int) as isize);
-    *level.offset(58 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 2 as c_int) as isize);
-    *level.offset(59 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 3 as c_int) as isize);
-    *level.offset(60 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 4 as c_int) as isize);
-    *level.offset(61 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 5 as c_int) as isize);
-    *level.offset(62 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 6 as c_int) as isize);
-    *level.offset(63 as c_int as isize) =
-        *dct.offset((7 as c_int * 8 as c_int + 7 as c_int) as isize);
+    *level.offset(0) = *dct.offset((0 * 8 + 0) as isize);
+    *level.offset(1) = *dct.offset((0 * 8 + 1) as isize);
+    *level.offset(2) = *dct.offset((0 * 8 + 2) as isize);
+    *level.offset(3) = *dct.offset((1 * 8 + 0) as isize);
+    *level.offset(4) = *dct.offset((1 * 8 + 1) as isize);
+    *level.offset(5) = *dct.offset((0 * 8 + 3) as isize);
+    *level.offset(6) = *dct.offset((0 * 8 + 4) as isize);
+    *level.offset(7) = *dct.offset((1 * 8 + 2) as isize);
+    *level.offset(8) = *dct.offset((2 * 8 + 0) as isize);
+    *level.offset(9 as isize) = *dct.offset((1 * 8 + 3) as isize);
+    *level.offset(10 as isize) = *dct.offset((0 * 8 + 5) as isize);
+    *level.offset(11 as isize) = *dct.offset((0 * 8 + 6) as isize);
+    *level.offset(12 as isize) = *dct.offset((0 * 8 + 7) as isize);
+    *level.offset(13 as isize) = *dct.offset((1 * 8 + 4) as isize);
+    *level.offset(14 as isize) = *dct.offset((2 * 8 + 1) as isize);
+    *level.offset(15 as isize) = *dct.offset((3 * 8 + 0) as isize);
+    *level.offset(16 as isize) = *dct.offset((2 * 8 + 2) as isize);
+    *level.offset(17 as isize) = *dct.offset((1 * 8 + 5) as isize);
+    *level.offset(18 as isize) = *dct.offset((1 * 8 + 6) as isize);
+    *level.offset(19 as isize) = *dct.offset((1 * 8 + 7) as isize);
+    *level.offset(20 as isize) = *dct.offset((2 * 8 + 3) as isize);
+    *level.offset(21 as isize) = *dct.offset((3 * 8 + 1) as isize);
+    *level.offset(22 as isize) = *dct.offset((4 * 8 + 0) as isize);
+    *level.offset(23 as isize) = *dct.offset((3 * 8 + 2) as isize);
+    *level.offset(24 as isize) = *dct.offset((2 * 8 + 4) as isize);
+    *level.offset(25 as isize) = *dct.offset((2 * 8 + 5) as isize);
+    *level.offset(26 as isize) = *dct.offset((2 * 8 + 6) as isize);
+    *level.offset(27 as isize) = *dct.offset((2 * 8 + 7) as isize);
+    *level.offset(28 as isize) = *dct.offset((3 * 8 + 3) as isize);
+    *level.offset(29 as isize) = *dct.offset((4 * 8 + 1) as isize);
+    *level.offset(30 as isize) = *dct.offset((5 * 8 + 0) as isize);
+    *level.offset(31 as isize) = *dct.offset((4 * 8 + 2) as isize);
+    *level.offset(32 as isize) = *dct.offset((3 * 8 + 4) as isize);
+    *level.offset(33 as isize) = *dct.offset((3 * 8 + 5) as isize);
+    *level.offset(34 as isize) = *dct.offset((3 * 8 + 6) as isize);
+    *level.offset(35 as isize) = *dct.offset((3 * 8 + 7) as isize);
+    *level.offset(36 as isize) = *dct.offset((4 * 8 + 3) as isize);
+    *level.offset(37 as isize) = *dct.offset((5 * 8 + 1) as isize);
+    *level.offset(38 as isize) = *dct.offset((6 * 8 + 0) as isize);
+    *level.offset(39 as isize) = *dct.offset((5 * 8 + 2) as isize);
+    *level.offset(40 as isize) = *dct.offset((4 * 8 + 4) as isize);
+    *level.offset(41 as isize) = *dct.offset((4 * 8 + 5) as isize);
+    *level.offset(42 as isize) = *dct.offset((4 * 8 + 6) as isize);
+    *level.offset(43 as isize) = *dct.offset((4 * 8 + 7) as isize);
+    *level.offset(44 as isize) = *dct.offset((5 * 8 + 3) as isize);
+    *level.offset(45 as isize) = *dct.offset((6 * 8 + 1) as isize);
+    *level.offset(46 as isize) = *dct.offset((6 * 8 + 2) as isize);
+    *level.offset(47 as isize) = *dct.offset((5 * 8 + 4) as isize);
+    *level.offset(48 as isize) = *dct.offset((5 * 8 + 5) as isize);
+    *level.offset(49 as isize) = *dct.offset((5 * 8 + 6) as isize);
+    *level.offset(50 as isize) = *dct.offset((5 * 8 + 7) as isize);
+    *level.offset(51 as isize) = *dct.offset((6 * 8 + 3) as isize);
+    *level.offset(52 as isize) = *dct.offset((7 * 8 + 0) as isize);
+    *level.offset(53 as isize) = *dct.offset((7 * 8 + 1) as isize);
+    *level.offset(54 as isize) = *dct.offset((6 * 8 + 4) as isize);
+    *level.offset(55 as isize) = *dct.offset((6 * 8 + 5) as isize);
+    *level.offset(56 as isize) = *dct.offset((6 * 8 + 6) as isize);
+    *level.offset(57 as isize) = *dct.offset((6 * 8 + 7) as isize);
+    *level.offset(58 as isize) = *dct.offset((7 * 8 + 2) as isize);
+    *level.offset(59 as isize) = *dct.offset((7 * 8 + 3) as isize);
+    *level.offset(60 as isize) = *dct.offset((7 * 8 + 4) as isize);
+    *level.offset(61 as isize) = *dct.offset((7 * 8 + 5) as isize);
+    *level.offset(62 as isize) = *dct.offset((7 * 8 + 6) as isize);
+    *level.offset(63 as isize) = *dct.offset((7 * 8 + 7) as isize);
 }
 #[c2rust::src_loc = "843:1"]
 unsafe extern "C" fn zigzag_scan_4x4_frame(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
-    *level.offset(0) = *dct.offset((0 as c_int * 4 as c_int + 0 as c_int) as isize);
-    *level.offset(1) = *dct.offset((1 as c_int * 4 as c_int + 0 as c_int) as isize);
-    *level.offset(2) = *dct.offset((0 as c_int * 4 as c_int + 1 as c_int) as isize);
-    *level.offset(3) = *dct.offset((0 as c_int * 4 as c_int + 2 as c_int) as isize);
-    *level.offset(4) = *dct.offset((1 as c_int * 4 as c_int + 1 as c_int) as isize);
-    *level.offset(5) = *dct.offset((2 as c_int * 4 as c_int + 0 as c_int) as isize);
-    *level.offset(6) = *dct.offset((3 as c_int * 4 as c_int + 0 as c_int) as isize);
-    *level.offset(7) = *dct.offset((2 as c_int * 4 as c_int + 1 as c_int) as isize);
-    *level.offset(8) = *dct.offset((1 as c_int * 4 as c_int + 2 as c_int) as isize);
-    *level.offset(9 as c_int as isize) =
-        *dct.offset((0 as c_int * 4 as c_int + 3 as c_int) as isize);
-    *level.offset(10 as c_int as isize) =
-        *dct.offset((1 as c_int * 4 as c_int + 3 as c_int) as isize);
-    *level.offset(11 as c_int as isize) =
-        *dct.offset((2 as c_int * 4 as c_int + 2 as c_int) as isize);
-    *level.offset(12 as c_int as isize) =
-        *dct.offset((3 as c_int * 4 as c_int + 1 as c_int) as isize);
-    *level.offset(13 as c_int as isize) =
-        *dct.offset((3 as c_int * 4 as c_int + 2 as c_int) as isize);
-    *level.offset(14 as c_int as isize) =
-        *dct.offset((2 as c_int * 4 as c_int + 3 as c_int) as isize);
-    *level.offset(15 as c_int as isize) =
-        *dct.offset((3 as c_int * 4 as c_int + 3 as c_int) as isize);
+    *level.offset(0) = *dct.offset((0 * 4 + 0) as isize);
+    *level.offset(1) = *dct.offset((1 * 4 + 0) as isize);
+    *level.offset(2) = *dct.offset((0 * 4 + 1) as isize);
+    *level.offset(3) = *dct.offset((0 * 4 + 2) as isize);
+    *level.offset(4) = *dct.offset((1 * 4 + 1) as isize);
+    *level.offset(5) = *dct.offset((2 * 4 + 0) as isize);
+    *level.offset(6) = *dct.offset((3 * 4 + 0) as isize);
+    *level.offset(7) = *dct.offset((2 * 4 + 1) as isize);
+    *level.offset(8) = *dct.offset((1 * 4 + 2) as isize);
+    *level.offset(9 as isize) = *dct.offset((0 * 4 + 3) as isize);
+    *level.offset(10 as isize) = *dct.offset((1 * 4 + 3) as isize);
+    *level.offset(11 as isize) = *dct.offset((2 * 4 + 2) as isize);
+    *level.offset(12 as isize) = *dct.offset((3 * 4 + 1) as isize);
+    *level.offset(13 as isize) = *dct.offset((3 * 4 + 2) as isize);
+    *level.offset(14 as isize) = *dct.offset((2 * 4 + 3) as isize);
+    *level.offset(15 as isize) = *dct.offset((3 * 4 + 3) as isize);
 }
 #[c2rust::src_loc = "848:1"]
 unsafe extern "C" fn zigzag_scan_4x4_field(mut level: *mut dctcoef, mut dct: *mut dctcoef) {
@@ -1049,10 +843,10 @@ unsafe extern "C" fn zigzag_scan_4x4_field(mut level: *mut dctcoef, mut dct: *mu
         dct as *const c_void,
         (2 as size_t).wrapping_mul(::core::mem::size_of::<dctcoef>() as size_t),
     );
-    *level.offset(2) = *dct.offset((1 as c_int * 4 as c_int + 0 as c_int) as isize);
-    *level.offset(3) = *dct.offset((0 as c_int * 4 as c_int + 2 as c_int) as isize);
-    *level.offset(4) = *dct.offset((0 as c_int * 4 as c_int + 3 as c_int) as isize);
-    *level.offset(5) = *dct.offset((1 as c_int * 4 as c_int + 1 as c_int) as isize);
+    *level.offset(2) = *dct.offset((1 * 4 + 0) as isize);
+    *level.offset(3) = *dct.offset((0 * 4 + 2) as isize);
+    *level.offset(4) = *dct.offset((0 * 4 + 3) as isize);
+    *level.offset(5) = *dct.offset((1 * 4 + 1) as isize);
     memcpy(
         level.offset(6) as *mut c_void,
         dct.offset(6) as *const c_void,
@@ -1065,100 +859,95 @@ unsafe extern "C" fn zigzag_sub_4x4_frame(
     mut p_src: *const pixel,
     mut p_dst: *mut pixel,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut oe: c_int = 0 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od: c_int = 0 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut nz: c_int = 0;
+    let mut oe: c_int = 0 + 0 * FENC_STRIDE;
+    let mut od: c_int = 0 + 0 * FDEC_STRIDE;
     *level.offset(0) =
         (*p_src.offset(oe as isize) as c_int - *p_dst.offset(od as isize) as c_int) as dctcoef;
     nz |= *level.offset(0) as c_int;
-    let mut oe_0: c_int = 1 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_0: c_int = 1 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_0: c_int = 1 + 0 * FENC_STRIDE;
+    let mut od_0: c_int = 1 + 0 * FDEC_STRIDE;
     *level.offset(1) =
         (*p_src.offset(oe_0 as isize) as c_int - *p_dst.offset(od_0 as isize) as c_int) as dctcoef;
     nz |= *level.offset(1) as c_int;
-    let mut oe_1: c_int = 0 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_1: c_int = 0 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_1: c_int = 0 + 1 * FENC_STRIDE;
+    let mut od_1: c_int = 0 + 1 * FDEC_STRIDE;
     *level.offset(2) =
         (*p_src.offset(oe_1 as isize) as c_int - *p_dst.offset(od_1 as isize) as c_int) as dctcoef;
     nz |= *level.offset(2) as c_int;
-    let mut oe_2: c_int = 0 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_2: c_int = 0 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_2: c_int = 0 + 2 * FENC_STRIDE;
+    let mut od_2: c_int = 0 + 2 * FDEC_STRIDE;
     *level.offset(3) =
         (*p_src.offset(oe_2 as isize) as c_int - *p_dst.offset(od_2 as isize) as c_int) as dctcoef;
     nz |= *level.offset(3) as c_int;
-    let mut oe_3: c_int = 1 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_3: c_int = 1 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_3: c_int = 1 + 1 * FENC_STRIDE;
+    let mut od_3: c_int = 1 + 1 * FDEC_STRIDE;
     *level.offset(4) =
         (*p_src.offset(oe_3 as isize) as c_int - *p_dst.offset(od_3 as isize) as c_int) as dctcoef;
     nz |= *level.offset(4) as c_int;
-    let mut oe_4: c_int = 2 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_4: c_int = 2 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_4: c_int = 2 + 0 * FENC_STRIDE;
+    let mut od_4: c_int = 2 + 0 * FDEC_STRIDE;
     *level.offset(5) =
         (*p_src.offset(oe_4 as isize) as c_int - *p_dst.offset(od_4 as isize) as c_int) as dctcoef;
     nz |= *level.offset(5) as c_int;
-    let mut oe_5: c_int = 3 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_5: c_int = 3 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_5: c_int = 3 + 0 * FENC_STRIDE;
+    let mut od_5: c_int = 3 + 0 * FDEC_STRIDE;
     *level.offset(6) =
         (*p_src.offset(oe_5 as isize) as c_int - *p_dst.offset(od_5 as isize) as c_int) as dctcoef;
     nz |= *level.offset(6) as c_int;
-    let mut oe_6: c_int = 2 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_6: c_int = 2 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_6: c_int = 2 + 1 * FENC_STRIDE;
+    let mut od_6: c_int = 2 + 1 * FDEC_STRIDE;
     *level.offset(7) =
         (*p_src.offset(oe_6 as isize) as c_int - *p_dst.offset(od_6 as isize) as c_int) as dctcoef;
     nz |= *level.offset(7) as c_int;
-    let mut oe_7: c_int = 1 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_7: c_int = 1 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_7: c_int = 1 + 2 * FENC_STRIDE;
+    let mut od_7: c_int = 1 + 2 * FDEC_STRIDE;
     *level.offset(8) =
         (*p_src.offset(oe_7 as isize) as c_int - *p_dst.offset(od_7 as isize) as c_int) as dctcoef;
     nz |= *level.offset(8) as c_int;
-    let mut oe_8: c_int = 0 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_8: c_int = 0 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(9 as c_int as isize) =
+    let mut oe_8: c_int = 0 + 3 * FENC_STRIDE;
+    let mut od_8: c_int = 0 + 3 * FDEC_STRIDE;
+    *level.offset(9 as isize) =
         (*p_src.offset(oe_8 as isize) as c_int - *p_dst.offset(od_8 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(9 as c_int as isize) as c_int;
-    let mut oe_9: c_int = 1 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_9: c_int = 1 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(10 as c_int as isize) =
+    nz |= *level.offset(9 as isize) as c_int;
+    let mut oe_9: c_int = 1 + 3 * FENC_STRIDE;
+    let mut od_9: c_int = 1 + 3 * FDEC_STRIDE;
+    *level.offset(10 as isize) =
         (*p_src.offset(oe_9 as isize) as c_int - *p_dst.offset(od_9 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(10 as c_int as isize) as c_int;
-    let mut oe_10: c_int = 2 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_10: c_int = 2 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(11 as c_int as isize) = (*p_src.offset(oe_10 as isize) as c_int
-        - *p_dst.offset(od_10 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(11 as c_int as isize) as c_int;
-    let mut oe_11: c_int = 3 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_11: c_int = 3 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(12 as c_int as isize) = (*p_src.offset(oe_11 as isize) as c_int
-        - *p_dst.offset(od_11 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(12 as c_int as isize) as c_int;
-    let mut oe_12: c_int = 3 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_12: c_int = 3 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(13 as c_int as isize) = (*p_src.offset(oe_12 as isize) as c_int
-        - *p_dst.offset(od_12 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(13 as c_int as isize) as c_int;
-    let mut oe_13: c_int = 2 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_13: c_int = 2 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(14 as c_int as isize) = (*p_src.offset(oe_13 as isize) as c_int
-        - *p_dst.offset(od_13 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(14 as c_int as isize) as c_int;
-    let mut oe_14: c_int = 3 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_14: c_int = 3 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(15 as c_int as isize) = (*p_src.offset(oe_14 as isize) as c_int
-        - *p_dst.offset(od_14 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(15 as c_int as isize) as c_int;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
+    nz |= *level.offset(10 as isize) as c_int;
+    let mut oe_10: c_int = 2 + 2 * FENC_STRIDE;
+    let mut od_10: c_int = 2 + 2 * FDEC_STRIDE;
+    *level.offset(11 as isize) = (*p_src.offset(oe_10 as isize) as c_int
+        - *p_dst.offset(od_10 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(11 as isize) as c_int;
+    let mut oe_11: c_int = 3 + 1 * FENC_STRIDE;
+    let mut od_11: c_int = 3 + 1 * FDEC_STRIDE;
+    *level.offset(12 as isize) = (*p_src.offset(oe_11 as isize) as c_int
+        - *p_dst.offset(od_11 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(12 as isize) as c_int;
+    let mut oe_12: c_int = 3 + 2 * FENC_STRIDE;
+    let mut od_12: c_int = 3 + 2 * FDEC_STRIDE;
+    *level.offset(13 as isize) = (*p_src.offset(oe_12 as isize) as c_int
+        - *p_dst.offset(od_12 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(13 as isize) as c_int;
+    let mut oe_13: c_int = 2 + 3 * FENC_STRIDE;
+    let mut od_13: c_int = 2 + 3 * FDEC_STRIDE;
+    *level.offset(14 as isize) = (*p_src.offset(oe_13 as isize) as c_int
+        - *p_dst.offset(od_13 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(14 as isize) as c_int;
+    let mut oe_14: c_int = 3 + 3 * FENC_STRIDE;
+    let mut od_14: c_int = 3 + 3 * FDEC_STRIDE;
+    *level.offset(15 as isize) = (*p_src.offset(oe_14 as isize) as c_int
+        - *p_dst.offset(od_14 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(15 as isize) as c_int;
+    (*(p_dst.offset((0 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize) as *mut x264_union64_t)).i;
     return (nz != 0) as c_int;
 }
 #[c2rust::src_loc = "886:1"]
@@ -1167,100 +956,95 @@ unsafe extern "C" fn zigzag_sub_4x4_field(
     mut p_src: *const pixel,
     mut p_dst: *mut pixel,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut oe: c_int = 0 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od: c_int = 0 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut nz: c_int = 0;
+    let mut oe: c_int = 0 + 0 * FENC_STRIDE;
+    let mut od: c_int = 0 + 0 * FDEC_STRIDE;
     *level.offset(0) =
         (*p_src.offset(oe as isize) as c_int - *p_dst.offset(od as isize) as c_int) as dctcoef;
     nz |= *level.offset(0) as c_int;
-    let mut oe_0: c_int = 0 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_0: c_int = 0 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_0: c_int = 0 + 1 * FENC_STRIDE;
+    let mut od_0: c_int = 0 + 1 * FDEC_STRIDE;
     *level.offset(1) =
         (*p_src.offset(oe_0 as isize) as c_int - *p_dst.offset(od_0 as isize) as c_int) as dctcoef;
     nz |= *level.offset(1) as c_int;
-    let mut oe_1: c_int = 1 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_1: c_int = 1 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_1: c_int = 1 + 0 * FENC_STRIDE;
+    let mut od_1: c_int = 1 + 0 * FDEC_STRIDE;
     *level.offset(2) =
         (*p_src.offset(oe_1 as isize) as c_int - *p_dst.offset(od_1 as isize) as c_int) as dctcoef;
     nz |= *level.offset(2) as c_int;
-    let mut oe_2: c_int = 0 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_2: c_int = 0 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_2: c_int = 0 + 2 * FENC_STRIDE;
+    let mut od_2: c_int = 0 + 2 * FDEC_STRIDE;
     *level.offset(3) =
         (*p_src.offset(oe_2 as isize) as c_int - *p_dst.offset(od_2 as isize) as c_int) as dctcoef;
     nz |= *level.offset(3) as c_int;
-    let mut oe_3: c_int = 0 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_3: c_int = 0 as c_int + 3 as c_int * FDEC_STRIDE;
+    let mut oe_3: c_int = 0 + 3 * FENC_STRIDE;
+    let mut od_3: c_int = 0 + 3 * FDEC_STRIDE;
     *level.offset(4) =
         (*p_src.offset(oe_3 as isize) as c_int - *p_dst.offset(od_3 as isize) as c_int) as dctcoef;
     nz |= *level.offset(4) as c_int;
-    let mut oe_4: c_int = 1 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_4: c_int = 1 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_4: c_int = 1 + 1 * FENC_STRIDE;
+    let mut od_4: c_int = 1 + 1 * FDEC_STRIDE;
     *level.offset(5) =
         (*p_src.offset(oe_4 as isize) as c_int - *p_dst.offset(od_4 as isize) as c_int) as dctcoef;
     nz |= *level.offset(5) as c_int;
-    let mut oe_5: c_int = 1 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_5: c_int = 1 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_5: c_int = 1 + 2 * FENC_STRIDE;
+    let mut od_5: c_int = 1 + 2 * FDEC_STRIDE;
     *level.offset(6) =
         (*p_src.offset(oe_5 as isize) as c_int - *p_dst.offset(od_5 as isize) as c_int) as dctcoef;
     nz |= *level.offset(6) as c_int;
-    let mut oe_6: c_int = 1 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_6: c_int = 1 as c_int + 3 as c_int * FDEC_STRIDE;
+    let mut oe_6: c_int = 1 + 3 * FENC_STRIDE;
+    let mut od_6: c_int = 1 + 3 * FDEC_STRIDE;
     *level.offset(7) =
         (*p_src.offset(oe_6 as isize) as c_int - *p_dst.offset(od_6 as isize) as c_int) as dctcoef;
     nz |= *level.offset(7) as c_int;
-    let mut oe_7: c_int = 2 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_7: c_int = 2 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_7: c_int = 2 + 0 * FENC_STRIDE;
+    let mut od_7: c_int = 2 + 0 * FDEC_STRIDE;
     *level.offset(8) =
         (*p_src.offset(oe_7 as isize) as c_int - *p_dst.offset(od_7 as isize) as c_int) as dctcoef;
     nz |= *level.offset(8) as c_int;
-    let mut oe_8: c_int = 2 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_8: c_int = 2 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(9 as c_int as isize) =
+    let mut oe_8: c_int = 2 + 1 * FENC_STRIDE;
+    let mut od_8: c_int = 2 + 1 * FDEC_STRIDE;
+    *level.offset(9 as isize) =
         (*p_src.offset(oe_8 as isize) as c_int - *p_dst.offset(od_8 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(9 as c_int as isize) as c_int;
-    let mut oe_9: c_int = 2 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_9: c_int = 2 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(10 as c_int as isize) =
+    nz |= *level.offset(9 as isize) as c_int;
+    let mut oe_9: c_int = 2 + 2 * FENC_STRIDE;
+    let mut od_9: c_int = 2 + 2 * FDEC_STRIDE;
+    *level.offset(10 as isize) =
         (*p_src.offset(oe_9 as isize) as c_int - *p_dst.offset(od_9 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(10 as c_int as isize) as c_int;
-    let mut oe_10: c_int = 2 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_10: c_int = 2 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(11 as c_int as isize) = (*p_src.offset(oe_10 as isize) as c_int
-        - *p_dst.offset(od_10 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(11 as c_int as isize) as c_int;
-    let mut oe_11: c_int = 3 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_11: c_int = 3 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(12 as c_int as isize) = (*p_src.offset(oe_11 as isize) as c_int
-        - *p_dst.offset(od_11 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(12 as c_int as isize) as c_int;
-    let mut oe_12: c_int = 3 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_12: c_int = 3 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(13 as c_int as isize) = (*p_src.offset(oe_12 as isize) as c_int
-        - *p_dst.offset(od_12 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(13 as c_int as isize) as c_int;
-    let mut oe_13: c_int = 3 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_13: c_int = 3 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(14 as c_int as isize) = (*p_src.offset(oe_13 as isize) as c_int
-        - *p_dst.offset(od_13 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(14 as c_int as isize) as c_int;
-    let mut oe_14: c_int = 3 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_14: c_int = 3 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(15 as c_int as isize) = (*p_src.offset(oe_14 as isize) as c_int
-        - *p_dst.offset(od_14 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(15 as c_int as isize) as c_int;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
+    nz |= *level.offset(10 as isize) as c_int;
+    let mut oe_10: c_int = 2 + 3 * FENC_STRIDE;
+    let mut od_10: c_int = 2 + 3 * FDEC_STRIDE;
+    *level.offset(11 as isize) = (*p_src.offset(oe_10 as isize) as c_int
+        - *p_dst.offset(od_10 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(11 as isize) as c_int;
+    let mut oe_11: c_int = 3 + 0 * FENC_STRIDE;
+    let mut od_11: c_int = 3 + 0 * FDEC_STRIDE;
+    *level.offset(12 as isize) = (*p_src.offset(oe_11 as isize) as c_int
+        - *p_dst.offset(od_11 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(12 as isize) as c_int;
+    let mut oe_12: c_int = 3 + 1 * FENC_STRIDE;
+    let mut od_12: c_int = 3 + 1 * FDEC_STRIDE;
+    *level.offset(13 as isize) = (*p_src.offset(oe_12 as isize) as c_int
+        - *p_dst.offset(od_12 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(13 as isize) as c_int;
+    let mut oe_13: c_int = 3 + 2 * FENC_STRIDE;
+    let mut od_13: c_int = 3 + 2 * FDEC_STRIDE;
+    *level.offset(14 as isize) = (*p_src.offset(oe_13 as isize) as c_int
+        - *p_dst.offset(od_13 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(14 as isize) as c_int;
+    let mut oe_14: c_int = 3 + 3 * FENC_STRIDE;
+    let mut od_14: c_int = 3 + 3 * FDEC_STRIDE;
+    *level.offset(15 as isize) = (*p_src.offset(oe_14 as isize) as c_int
+        - *p_dst.offset(od_14 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(15 as isize) as c_int;
+    (*(p_dst.offset((0 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize) as *mut x264_union64_t)).i;
     return (nz != 0) as c_int;
 }
 #[c2rust::src_loc = "902:1"]
@@ -1270,99 +1054,94 @@ unsafe extern "C" fn zigzag_sub_4x4ac_frame(
     mut p_dst: *mut pixel,
     mut dc: *mut dctcoef,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut oe: c_int = 0 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od: c_int = 0 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut nz: c_int = 0;
+    let mut oe: c_int = 0 + 0 * FENC_STRIDE;
+    let mut od: c_int = 0 + 0 * FDEC_STRIDE;
     *dc = (*p_src.offset(oe as isize) as c_int - *p_dst.offset(od as isize) as c_int) as dctcoef;
-    *level.offset(0) = 0 as c_int as dctcoef;
-    let mut oe_0: c_int = 1 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_0: c_int = 1 as c_int + 0 as c_int * FDEC_STRIDE;
+    *level.offset(0) = 0 as dctcoef;
+    let mut oe_0: c_int = 1 + 0 * FENC_STRIDE;
+    let mut od_0: c_int = 1 + 0 * FDEC_STRIDE;
     *level.offset(1) =
         (*p_src.offset(oe_0 as isize) as c_int - *p_dst.offset(od_0 as isize) as c_int) as dctcoef;
     nz |= *level.offset(1) as c_int;
-    let mut oe_1: c_int = 0 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_1: c_int = 0 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_1: c_int = 0 + 1 * FENC_STRIDE;
+    let mut od_1: c_int = 0 + 1 * FDEC_STRIDE;
     *level.offset(2) =
         (*p_src.offset(oe_1 as isize) as c_int - *p_dst.offset(od_1 as isize) as c_int) as dctcoef;
     nz |= *level.offset(2) as c_int;
-    let mut oe_2: c_int = 0 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_2: c_int = 0 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_2: c_int = 0 + 2 * FENC_STRIDE;
+    let mut od_2: c_int = 0 + 2 * FDEC_STRIDE;
     *level.offset(3) =
         (*p_src.offset(oe_2 as isize) as c_int - *p_dst.offset(od_2 as isize) as c_int) as dctcoef;
     nz |= *level.offset(3) as c_int;
-    let mut oe_3: c_int = 1 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_3: c_int = 1 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_3: c_int = 1 + 1 * FENC_STRIDE;
+    let mut od_3: c_int = 1 + 1 * FDEC_STRIDE;
     *level.offset(4) =
         (*p_src.offset(oe_3 as isize) as c_int - *p_dst.offset(od_3 as isize) as c_int) as dctcoef;
     nz |= *level.offset(4) as c_int;
-    let mut oe_4: c_int = 2 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_4: c_int = 2 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_4: c_int = 2 + 0 * FENC_STRIDE;
+    let mut od_4: c_int = 2 + 0 * FDEC_STRIDE;
     *level.offset(5) =
         (*p_src.offset(oe_4 as isize) as c_int - *p_dst.offset(od_4 as isize) as c_int) as dctcoef;
     nz |= *level.offset(5) as c_int;
-    let mut oe_5: c_int = 3 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_5: c_int = 3 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_5: c_int = 3 + 0 * FENC_STRIDE;
+    let mut od_5: c_int = 3 + 0 * FDEC_STRIDE;
     *level.offset(6) =
         (*p_src.offset(oe_5 as isize) as c_int - *p_dst.offset(od_5 as isize) as c_int) as dctcoef;
     nz |= *level.offset(6) as c_int;
-    let mut oe_6: c_int = 2 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_6: c_int = 2 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_6: c_int = 2 + 1 * FENC_STRIDE;
+    let mut od_6: c_int = 2 + 1 * FDEC_STRIDE;
     *level.offset(7) =
         (*p_src.offset(oe_6 as isize) as c_int - *p_dst.offset(od_6 as isize) as c_int) as dctcoef;
     nz |= *level.offset(7) as c_int;
-    let mut oe_7: c_int = 1 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_7: c_int = 1 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_7: c_int = 1 + 2 * FENC_STRIDE;
+    let mut od_7: c_int = 1 + 2 * FDEC_STRIDE;
     *level.offset(8) =
         (*p_src.offset(oe_7 as isize) as c_int - *p_dst.offset(od_7 as isize) as c_int) as dctcoef;
     nz |= *level.offset(8) as c_int;
-    let mut oe_8: c_int = 0 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_8: c_int = 0 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(9 as c_int as isize) =
+    let mut oe_8: c_int = 0 + 3 * FENC_STRIDE;
+    let mut od_8: c_int = 0 + 3 * FDEC_STRIDE;
+    *level.offset(9 as isize) =
         (*p_src.offset(oe_8 as isize) as c_int - *p_dst.offset(od_8 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(9 as c_int as isize) as c_int;
-    let mut oe_9: c_int = 1 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_9: c_int = 1 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(10 as c_int as isize) =
+    nz |= *level.offset(9 as isize) as c_int;
+    let mut oe_9: c_int = 1 + 3 * FENC_STRIDE;
+    let mut od_9: c_int = 1 + 3 * FDEC_STRIDE;
+    *level.offset(10 as isize) =
         (*p_src.offset(oe_9 as isize) as c_int - *p_dst.offset(od_9 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(10 as c_int as isize) as c_int;
-    let mut oe_10: c_int = 2 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_10: c_int = 2 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(11 as c_int as isize) = (*p_src.offset(oe_10 as isize) as c_int
-        - *p_dst.offset(od_10 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(11 as c_int as isize) as c_int;
-    let mut oe_11: c_int = 3 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_11: c_int = 3 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(12 as c_int as isize) = (*p_src.offset(oe_11 as isize) as c_int
-        - *p_dst.offset(od_11 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(12 as c_int as isize) as c_int;
-    let mut oe_12: c_int = 3 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_12: c_int = 3 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(13 as c_int as isize) = (*p_src.offset(oe_12 as isize) as c_int
-        - *p_dst.offset(od_12 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(13 as c_int as isize) as c_int;
-    let mut oe_13: c_int = 2 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_13: c_int = 2 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(14 as c_int as isize) = (*p_src.offset(oe_13 as isize) as c_int
-        - *p_dst.offset(od_13 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(14 as c_int as isize) as c_int;
-    let mut oe_14: c_int = 3 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_14: c_int = 3 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(15 as c_int as isize) = (*p_src.offset(oe_14 as isize) as c_int
-        - *p_dst.offset(od_14 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(15 as c_int as isize) as c_int;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
+    nz |= *level.offset(10 as isize) as c_int;
+    let mut oe_10: c_int = 2 + 2 * FENC_STRIDE;
+    let mut od_10: c_int = 2 + 2 * FDEC_STRIDE;
+    *level.offset(11 as isize) = (*p_src.offset(oe_10 as isize) as c_int
+        - *p_dst.offset(od_10 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(11 as isize) as c_int;
+    let mut oe_11: c_int = 3 + 1 * FENC_STRIDE;
+    let mut od_11: c_int = 3 + 1 * FDEC_STRIDE;
+    *level.offset(12 as isize) = (*p_src.offset(oe_11 as isize) as c_int
+        - *p_dst.offset(od_11 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(12 as isize) as c_int;
+    let mut oe_12: c_int = 3 + 2 * FENC_STRIDE;
+    let mut od_12: c_int = 3 + 2 * FDEC_STRIDE;
+    *level.offset(13 as isize) = (*p_src.offset(oe_12 as isize) as c_int
+        - *p_dst.offset(od_12 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(13 as isize) as c_int;
+    let mut oe_13: c_int = 2 + 3 * FENC_STRIDE;
+    let mut od_13: c_int = 2 + 3 * FDEC_STRIDE;
+    *level.offset(14 as isize) = (*p_src.offset(oe_13 as isize) as c_int
+        - *p_dst.offset(od_13 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(14 as isize) as c_int;
+    let mut oe_14: c_int = 3 + 3 * FENC_STRIDE;
+    let mut od_14: c_int = 3 + 3 * FDEC_STRIDE;
+    *level.offset(15 as isize) = (*p_src.offset(oe_14 as isize) as c_int
+        - *p_dst.offset(od_14 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(15 as isize) as c_int;
+    (*(p_dst.offset((0 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize) as *mut x264_union64_t)).i;
     return (nz != 0) as c_int;
 }
 #[c2rust::src_loc = "910:1"]
@@ -1372,99 +1151,94 @@ unsafe extern "C" fn zigzag_sub_4x4ac_field(
     mut p_dst: *mut pixel,
     mut dc: *mut dctcoef,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut oe: c_int = 0 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od: c_int = 0 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut nz: c_int = 0;
+    let mut oe: c_int = 0 + 0 * FENC_STRIDE;
+    let mut od: c_int = 0 + 0 * FDEC_STRIDE;
     *dc = (*p_src.offset(oe as isize) as c_int - *p_dst.offset(od as isize) as c_int) as dctcoef;
-    *level.offset(0) = 0 as c_int as dctcoef;
-    let mut oe_0: c_int = 0 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_0: c_int = 0 as c_int + 1 as c_int * FDEC_STRIDE;
+    *level.offset(0) = 0 as dctcoef;
+    let mut oe_0: c_int = 0 + 1 * FENC_STRIDE;
+    let mut od_0: c_int = 0 + 1 * FDEC_STRIDE;
     *level.offset(1) =
         (*p_src.offset(oe_0 as isize) as c_int - *p_dst.offset(od_0 as isize) as c_int) as dctcoef;
     nz |= *level.offset(1) as c_int;
-    let mut oe_1: c_int = 1 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_1: c_int = 1 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_1: c_int = 1 + 0 * FENC_STRIDE;
+    let mut od_1: c_int = 1 + 0 * FDEC_STRIDE;
     *level.offset(2) =
         (*p_src.offset(oe_1 as isize) as c_int - *p_dst.offset(od_1 as isize) as c_int) as dctcoef;
     nz |= *level.offset(2) as c_int;
-    let mut oe_2: c_int = 0 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_2: c_int = 0 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_2: c_int = 0 + 2 * FENC_STRIDE;
+    let mut od_2: c_int = 0 + 2 * FDEC_STRIDE;
     *level.offset(3) =
         (*p_src.offset(oe_2 as isize) as c_int - *p_dst.offset(od_2 as isize) as c_int) as dctcoef;
     nz |= *level.offset(3) as c_int;
-    let mut oe_3: c_int = 0 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_3: c_int = 0 as c_int + 3 as c_int * FDEC_STRIDE;
+    let mut oe_3: c_int = 0 + 3 * FENC_STRIDE;
+    let mut od_3: c_int = 0 + 3 * FDEC_STRIDE;
     *level.offset(4) =
         (*p_src.offset(oe_3 as isize) as c_int - *p_dst.offset(od_3 as isize) as c_int) as dctcoef;
     nz |= *level.offset(4) as c_int;
-    let mut oe_4: c_int = 1 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_4: c_int = 1 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_4: c_int = 1 + 1 * FENC_STRIDE;
+    let mut od_4: c_int = 1 + 1 * FDEC_STRIDE;
     *level.offset(5) =
         (*p_src.offset(oe_4 as isize) as c_int - *p_dst.offset(od_4 as isize) as c_int) as dctcoef;
     nz |= *level.offset(5) as c_int;
-    let mut oe_5: c_int = 1 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_5: c_int = 1 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_5: c_int = 1 + 2 * FENC_STRIDE;
+    let mut od_5: c_int = 1 + 2 * FDEC_STRIDE;
     *level.offset(6) =
         (*p_src.offset(oe_5 as isize) as c_int - *p_dst.offset(od_5 as isize) as c_int) as dctcoef;
     nz |= *level.offset(6) as c_int;
-    let mut oe_6: c_int = 1 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_6: c_int = 1 as c_int + 3 as c_int * FDEC_STRIDE;
+    let mut oe_6: c_int = 1 + 3 * FENC_STRIDE;
+    let mut od_6: c_int = 1 + 3 * FDEC_STRIDE;
     *level.offset(7) =
         (*p_src.offset(oe_6 as isize) as c_int - *p_dst.offset(od_6 as isize) as c_int) as dctcoef;
     nz |= *level.offset(7) as c_int;
-    let mut oe_7: c_int = 2 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_7: c_int = 2 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_7: c_int = 2 + 0 * FENC_STRIDE;
+    let mut od_7: c_int = 2 + 0 * FDEC_STRIDE;
     *level.offset(8) =
         (*p_src.offset(oe_7 as isize) as c_int - *p_dst.offset(od_7 as isize) as c_int) as dctcoef;
     nz |= *level.offset(8) as c_int;
-    let mut oe_8: c_int = 2 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_8: c_int = 2 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(9 as c_int as isize) =
+    let mut oe_8: c_int = 2 + 1 * FENC_STRIDE;
+    let mut od_8: c_int = 2 + 1 * FDEC_STRIDE;
+    *level.offset(9 as isize) =
         (*p_src.offset(oe_8 as isize) as c_int - *p_dst.offset(od_8 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(9 as c_int as isize) as c_int;
-    let mut oe_9: c_int = 2 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_9: c_int = 2 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(10 as c_int as isize) =
+    nz |= *level.offset(9 as isize) as c_int;
+    let mut oe_9: c_int = 2 + 2 * FENC_STRIDE;
+    let mut od_9: c_int = 2 + 2 * FDEC_STRIDE;
+    *level.offset(10 as isize) =
         (*p_src.offset(oe_9 as isize) as c_int - *p_dst.offset(od_9 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(10 as c_int as isize) as c_int;
-    let mut oe_10: c_int = 2 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_10: c_int = 2 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(11 as c_int as isize) = (*p_src.offset(oe_10 as isize) as c_int
-        - *p_dst.offset(od_10 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(11 as c_int as isize) as c_int;
-    let mut oe_11: c_int = 3 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_11: c_int = 3 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(12 as c_int as isize) = (*p_src.offset(oe_11 as isize) as c_int
-        - *p_dst.offset(od_11 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(12 as c_int as isize) as c_int;
-    let mut oe_12: c_int = 3 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_12: c_int = 3 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(13 as c_int as isize) = (*p_src.offset(oe_12 as isize) as c_int
-        - *p_dst.offset(od_12 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(13 as c_int as isize) as c_int;
-    let mut oe_13: c_int = 3 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_13: c_int = 3 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(14 as c_int as isize) = (*p_src.offset(oe_13 as isize) as c_int
-        - *p_dst.offset(od_13 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(14 as c_int as isize) as c_int;
-    let mut oe_14: c_int = 3 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_14: c_int = 3 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(15 as c_int as isize) = (*p_src.offset(oe_14 as isize) as c_int
-        - *p_dst.offset(od_14 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(15 as c_int as isize) as c_int;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
+    nz |= *level.offset(10 as isize) as c_int;
+    let mut oe_10: c_int = 2 + 3 * FENC_STRIDE;
+    let mut od_10: c_int = 2 + 3 * FDEC_STRIDE;
+    *level.offset(11 as isize) = (*p_src.offset(oe_10 as isize) as c_int
+        - *p_dst.offset(od_10 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(11 as isize) as c_int;
+    let mut oe_11: c_int = 3 + 0 * FENC_STRIDE;
+    let mut od_11: c_int = 3 + 0 * FDEC_STRIDE;
+    *level.offset(12 as isize) = (*p_src.offset(oe_11 as isize) as c_int
+        - *p_dst.offset(od_11 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(12 as isize) as c_int;
+    let mut oe_12: c_int = 3 + 1 * FENC_STRIDE;
+    let mut od_12: c_int = 3 + 1 * FDEC_STRIDE;
+    *level.offset(13 as isize) = (*p_src.offset(oe_12 as isize) as c_int
+        - *p_dst.offset(od_12 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(13 as isize) as c_int;
+    let mut oe_13: c_int = 3 + 2 * FENC_STRIDE;
+    let mut od_13: c_int = 3 + 2 * FDEC_STRIDE;
+    *level.offset(14 as isize) = (*p_src.offset(oe_13 as isize) as c_int
+        - *p_dst.offset(od_13 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(14 as isize) as c_int;
+    let mut oe_14: c_int = 3 + 3 * FENC_STRIDE;
+    let mut od_14: c_int = 3 + 3 * FDEC_STRIDE;
+    *level.offset(15 as isize) = (*p_src.offset(oe_14 as isize) as c_int
+        - *p_dst.offset(od_14 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(15 as isize) as c_int;
+    (*(p_dst.offset((0 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize) as *mut x264_union64_t)).i;
     return (nz != 0) as c_int;
 }
 #[c2rust::src_loc = "918:1"]
@@ -1473,412 +1247,359 @@ unsafe extern "C" fn zigzag_sub_8x8_frame(
     mut p_src: *const pixel,
     mut p_dst: *mut pixel,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut oe: c_int = 0 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od: c_int = 0 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut nz: c_int = 0;
+    let mut oe: c_int = 0 + 0 * FENC_STRIDE;
+    let mut od: c_int = 0 + 0 * FDEC_STRIDE;
     *level.offset(0) =
         (*p_src.offset(oe as isize) as c_int - *p_dst.offset(od as isize) as c_int) as dctcoef;
     nz |= *level.offset(0) as c_int;
-    let mut oe_0: c_int = 1 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_0: c_int = 1 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_0: c_int = 1 + 0 * FENC_STRIDE;
+    let mut od_0: c_int = 1 + 0 * FDEC_STRIDE;
     *level.offset(1) =
         (*p_src.offset(oe_0 as isize) as c_int - *p_dst.offset(od_0 as isize) as c_int) as dctcoef;
     nz |= *level.offset(1) as c_int;
-    let mut oe_1: c_int = 0 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_1: c_int = 0 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_1: c_int = 0 + 1 * FENC_STRIDE;
+    let mut od_1: c_int = 0 + 1 * FDEC_STRIDE;
     *level.offset(2) =
         (*p_src.offset(oe_1 as isize) as c_int - *p_dst.offset(od_1 as isize) as c_int) as dctcoef;
     nz |= *level.offset(2) as c_int;
-    let mut oe_2: c_int = 0 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_2: c_int = 0 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_2: c_int = 0 + 2 * FENC_STRIDE;
+    let mut od_2: c_int = 0 + 2 * FDEC_STRIDE;
     *level.offset(3) =
         (*p_src.offset(oe_2 as isize) as c_int - *p_dst.offset(od_2 as isize) as c_int) as dctcoef;
     nz |= *level.offset(3) as c_int;
-    let mut oe_3: c_int = 1 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_3: c_int = 1 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_3: c_int = 1 + 1 * FENC_STRIDE;
+    let mut od_3: c_int = 1 + 1 * FDEC_STRIDE;
     *level.offset(4) =
         (*p_src.offset(oe_3 as isize) as c_int - *p_dst.offset(od_3 as isize) as c_int) as dctcoef;
     nz |= *level.offset(4) as c_int;
-    let mut oe_4: c_int = 2 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_4: c_int = 2 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_4: c_int = 2 + 0 * FENC_STRIDE;
+    let mut od_4: c_int = 2 + 0 * FDEC_STRIDE;
     *level.offset(5) =
         (*p_src.offset(oe_4 as isize) as c_int - *p_dst.offset(od_4 as isize) as c_int) as dctcoef;
     nz |= *level.offset(5) as c_int;
-    let mut oe_5: c_int = 3 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_5: c_int = 3 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_5: c_int = 3 + 0 * FENC_STRIDE;
+    let mut od_5: c_int = 3 + 0 * FDEC_STRIDE;
     *level.offset(6) =
         (*p_src.offset(oe_5 as isize) as c_int - *p_dst.offset(od_5 as isize) as c_int) as dctcoef;
     nz |= *level.offset(6) as c_int;
-    let mut oe_6: c_int = 2 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_6: c_int = 2 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_6: c_int = 2 + 1 * FENC_STRIDE;
+    let mut od_6: c_int = 2 + 1 * FDEC_STRIDE;
     *level.offset(7) =
         (*p_src.offset(oe_6 as isize) as c_int - *p_dst.offset(od_6 as isize) as c_int) as dctcoef;
     nz |= *level.offset(7) as c_int;
-    let mut oe_7: c_int = 1 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_7: c_int = 1 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_7: c_int = 1 + 2 * FENC_STRIDE;
+    let mut od_7: c_int = 1 + 2 * FDEC_STRIDE;
     *level.offset(8) =
         (*p_src.offset(oe_7 as isize) as c_int - *p_dst.offset(od_7 as isize) as c_int) as dctcoef;
     nz |= *level.offset(8) as c_int;
-    let mut oe_8: c_int = 0 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_8: c_int = 0 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(9 as c_int as isize) =
+    let mut oe_8: c_int = 0 + 3 * FENC_STRIDE;
+    let mut od_8: c_int = 0 + 3 * FDEC_STRIDE;
+    *level.offset(9 as isize) =
         (*p_src.offset(oe_8 as isize) as c_int - *p_dst.offset(od_8 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(9 as c_int as isize) as c_int;
-    let mut oe_9: c_int = 0 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_9: c_int = 0 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(10 as c_int as isize) =
+    nz |= *level.offset(9 as isize) as c_int;
+    let mut oe_9: c_int = 0 + 4 * FENC_STRIDE;
+    let mut od_9: c_int = 0 + 4 * FDEC_STRIDE;
+    *level.offset(10 as isize) =
         (*p_src.offset(oe_9 as isize) as c_int - *p_dst.offset(od_9 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(10 as c_int as isize) as c_int;
-    let mut oe_10: c_int = 1 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_10: c_int = 1 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(11 as c_int as isize) = (*p_src.offset(oe_10 as isize) as c_int
-        - *p_dst.offset(od_10 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(11 as c_int as isize) as c_int;
-    let mut oe_11: c_int = 2 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_11: c_int = 2 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(12 as c_int as isize) = (*p_src.offset(oe_11 as isize) as c_int
-        - *p_dst.offset(od_11 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(12 as c_int as isize) as c_int;
-    let mut oe_12: c_int = 3 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_12: c_int = 3 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(13 as c_int as isize) = (*p_src.offset(oe_12 as isize) as c_int
-        - *p_dst.offset(od_12 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(13 as c_int as isize) as c_int;
-    let mut oe_13: c_int = 4 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_13: c_int = 4 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(14 as c_int as isize) = (*p_src.offset(oe_13 as isize) as c_int
-        - *p_dst.offset(od_13 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(14 as c_int as isize) as c_int;
-    let mut oe_14: c_int = 5 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_14: c_int = 5 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(15 as c_int as isize) = (*p_src.offset(oe_14 as isize) as c_int
-        - *p_dst.offset(od_14 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(15 as c_int as isize) as c_int;
-    let mut oe_15: c_int = 4 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_15: c_int = 4 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(16 as c_int as isize) = (*p_src.offset(oe_15 as isize) as c_int
-        - *p_dst.offset(od_15 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(16 as c_int as isize) as c_int;
-    let mut oe_16: c_int = 3 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_16: c_int = 3 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(17 as c_int as isize) = (*p_src.offset(oe_16 as isize) as c_int
-        - *p_dst.offset(od_16 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(17 as c_int as isize) as c_int;
-    let mut oe_17: c_int = 2 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_17: c_int = 2 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(18 as c_int as isize) = (*p_src.offset(oe_17 as isize) as c_int
-        - *p_dst.offset(od_17 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(18 as c_int as isize) as c_int;
-    let mut oe_18: c_int = 1 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_18: c_int = 1 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(19 as c_int as isize) = (*p_src.offset(oe_18 as isize) as c_int
-        - *p_dst.offset(od_18 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(19 as c_int as isize) as c_int;
-    let mut oe_19: c_int = 0 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_19: c_int = 0 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(20 as c_int as isize) = (*p_src.offset(oe_19 as isize) as c_int
-        - *p_dst.offset(od_19 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(20 as c_int as isize) as c_int;
-    let mut oe_20: c_int = 0 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_20: c_int = 0 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(21 as c_int as isize) = (*p_src.offset(oe_20 as isize) as c_int
-        - *p_dst.offset(od_20 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(21 as c_int as isize) as c_int;
-    let mut oe_21: c_int = 1 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_21: c_int = 1 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(22 as c_int as isize) = (*p_src.offset(oe_21 as isize) as c_int
-        - *p_dst.offset(od_21 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(22 as c_int as isize) as c_int;
-    let mut oe_22: c_int = 2 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_22: c_int = 2 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(23 as c_int as isize) = (*p_src.offset(oe_22 as isize) as c_int
-        - *p_dst.offset(od_22 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(23 as c_int as isize) as c_int;
-    let mut oe_23: c_int = 3 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_23: c_int = 3 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(24 as c_int as isize) = (*p_src.offset(oe_23 as isize) as c_int
-        - *p_dst.offset(od_23 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(24 as c_int as isize) as c_int;
-    let mut oe_24: c_int = 4 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_24: c_int = 4 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(25 as c_int as isize) = (*p_src.offset(oe_24 as isize) as c_int
-        - *p_dst.offset(od_24 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(25 as c_int as isize) as c_int;
-    let mut oe_25: c_int = 5 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_25: c_int = 5 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(26 as c_int as isize) = (*p_src.offset(oe_25 as isize) as c_int
-        - *p_dst.offset(od_25 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(26 as c_int as isize) as c_int;
-    let mut oe_26: c_int = 6 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_26: c_int = 6 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(27 as c_int as isize) = (*p_src.offset(oe_26 as isize) as c_int
-        - *p_dst.offset(od_26 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(27 as c_int as isize) as c_int;
-    let mut oe_27: c_int = 7 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_27: c_int = 7 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(28 as c_int as isize) = (*p_src.offset(oe_27 as isize) as c_int
-        - *p_dst.offset(od_27 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(28 as c_int as isize) as c_int;
-    let mut oe_28: c_int = 6 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_28: c_int = 6 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(29 as c_int as isize) = (*p_src.offset(oe_28 as isize) as c_int
-        - *p_dst.offset(od_28 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(29 as c_int as isize) as c_int;
-    let mut oe_29: c_int = 5 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_29: c_int = 5 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(30 as c_int as isize) = (*p_src.offset(oe_29 as isize) as c_int
-        - *p_dst.offset(od_29 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(30 as c_int as isize) as c_int;
-    let mut oe_30: c_int = 4 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_30: c_int = 4 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(31 as c_int as isize) = (*p_src.offset(oe_30 as isize) as c_int
-        - *p_dst.offset(od_30 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(31 as c_int as isize) as c_int;
-    let mut oe_31: c_int = 3 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_31: c_int = 3 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(32 as c_int as isize) = (*p_src.offset(oe_31 as isize) as c_int
-        - *p_dst.offset(od_31 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(32 as c_int as isize) as c_int;
-    let mut oe_32: c_int = 2 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_32: c_int = 2 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(33 as c_int as isize) = (*p_src.offset(oe_32 as isize) as c_int
-        - *p_dst.offset(od_32 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(33 as c_int as isize) as c_int;
-    let mut oe_33: c_int = 1 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_33: c_int = 1 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(34 as c_int as isize) = (*p_src.offset(oe_33 as isize) as c_int
-        - *p_dst.offset(od_33 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(34 as c_int as isize) as c_int;
-    let mut oe_34: c_int = 0 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_34: c_int = 0 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(35 as c_int as isize) = (*p_src.offset(oe_34 as isize) as c_int
-        - *p_dst.offset(od_34 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(35 as c_int as isize) as c_int;
-    let mut oe_35: c_int = 1 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_35: c_int = 1 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(36 as c_int as isize) = (*p_src.offset(oe_35 as isize) as c_int
-        - *p_dst.offset(od_35 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(36 as c_int as isize) as c_int;
-    let mut oe_36: c_int = 2 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_36: c_int = 2 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(37 as c_int as isize) = (*p_src.offset(oe_36 as isize) as c_int
-        - *p_dst.offset(od_36 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(37 as c_int as isize) as c_int;
-    let mut oe_37: c_int = 3 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_37: c_int = 3 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(38 as c_int as isize) = (*p_src.offset(oe_37 as isize) as c_int
-        - *p_dst.offset(od_37 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(38 as c_int as isize) as c_int;
-    let mut oe_38: c_int = 4 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_38: c_int = 4 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(39 as c_int as isize) = (*p_src.offset(oe_38 as isize) as c_int
-        - *p_dst.offset(od_38 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(39 as c_int as isize) as c_int;
-    let mut oe_39: c_int = 5 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_39: c_int = 5 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(40 as c_int as isize) = (*p_src.offset(oe_39 as isize) as c_int
-        - *p_dst.offset(od_39 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(40 as c_int as isize) as c_int;
-    let mut oe_40: c_int = 6 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_40: c_int = 6 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(41 as c_int as isize) = (*p_src.offset(oe_40 as isize) as c_int
-        - *p_dst.offset(od_40 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(41 as c_int as isize) as c_int;
-    let mut oe_41: c_int = 7 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_41: c_int = 7 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(42 as c_int as isize) = (*p_src.offset(oe_41 as isize) as c_int
-        - *p_dst.offset(od_41 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(42 as c_int as isize) as c_int;
-    let mut oe_42: c_int = 7 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_42: c_int = 7 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(43 as c_int as isize) = (*p_src.offset(oe_42 as isize) as c_int
-        - *p_dst.offset(od_42 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(43 as c_int as isize) as c_int;
-    let mut oe_43: c_int = 6 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_43: c_int = 6 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(44 as c_int as isize) = (*p_src.offset(oe_43 as isize) as c_int
-        - *p_dst.offset(od_43 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(44 as c_int as isize) as c_int;
-    let mut oe_44: c_int = 5 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_44: c_int = 5 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(45 as c_int as isize) = (*p_src.offset(oe_44 as isize) as c_int
-        - *p_dst.offset(od_44 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(45 as c_int as isize) as c_int;
-    let mut oe_45: c_int = 4 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_45: c_int = 4 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(46 as c_int as isize) = (*p_src.offset(oe_45 as isize) as c_int
-        - *p_dst.offset(od_45 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(46 as c_int as isize) as c_int;
-    let mut oe_46: c_int = 3 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_46: c_int = 3 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(47 as c_int as isize) = (*p_src.offset(oe_46 as isize) as c_int
-        - *p_dst.offset(od_46 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(47 as c_int as isize) as c_int;
-    let mut oe_47: c_int = 2 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_47: c_int = 2 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(48 as c_int as isize) = (*p_src.offset(oe_47 as isize) as c_int
-        - *p_dst.offset(od_47 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(48 as c_int as isize) as c_int;
-    let mut oe_48: c_int = 3 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_48: c_int = 3 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(49 as c_int as isize) = (*p_src.offset(oe_48 as isize) as c_int
-        - *p_dst.offset(od_48 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(49 as c_int as isize) as c_int;
-    let mut oe_49: c_int = 4 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_49: c_int = 4 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(50 as c_int as isize) = (*p_src.offset(oe_49 as isize) as c_int
-        - *p_dst.offset(od_49 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(50 as c_int as isize) as c_int;
-    let mut oe_50: c_int = 5 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_50: c_int = 5 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(51 as c_int as isize) = (*p_src.offset(oe_50 as isize) as c_int
-        - *p_dst.offset(od_50 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(51 as c_int as isize) as c_int;
-    let mut oe_51: c_int = 6 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_51: c_int = 6 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(52 as c_int as isize) = (*p_src.offset(oe_51 as isize) as c_int
-        - *p_dst.offset(od_51 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(52 as c_int as isize) as c_int;
-    let mut oe_52: c_int = 7 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_52: c_int = 7 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(53 as c_int as isize) = (*p_src.offset(oe_52 as isize) as c_int
-        - *p_dst.offset(od_52 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(53 as c_int as isize) as c_int;
-    let mut oe_53: c_int = 7 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_53: c_int = 7 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(54 as c_int as isize) = (*p_src.offset(oe_53 as isize) as c_int
-        - *p_dst.offset(od_53 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(54 as c_int as isize) as c_int;
-    let mut oe_54: c_int = 6 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_54: c_int = 6 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(55 as c_int as isize) = (*p_src.offset(oe_54 as isize) as c_int
-        - *p_dst.offset(od_54 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(55 as c_int as isize) as c_int;
-    let mut oe_55: c_int = 5 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_55: c_int = 5 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(56 as c_int as isize) = (*p_src.offset(oe_55 as isize) as c_int
-        - *p_dst.offset(od_55 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(56 as c_int as isize) as c_int;
-    let mut oe_56: c_int = 4 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_56: c_int = 4 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(57 as c_int as isize) = (*p_src.offset(oe_56 as isize) as c_int
-        - *p_dst.offset(od_56 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(57 as c_int as isize) as c_int;
-    let mut oe_57: c_int = 5 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_57: c_int = 5 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(58 as c_int as isize) = (*p_src.offset(oe_57 as isize) as c_int
-        - *p_dst.offset(od_57 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(58 as c_int as isize) as c_int;
-    let mut oe_58: c_int = 6 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_58: c_int = 6 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(59 as c_int as isize) = (*p_src.offset(oe_58 as isize) as c_int
-        - *p_dst.offset(od_58 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(59 as c_int as isize) as c_int;
-    let mut oe_59: c_int = 7 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_59: c_int = 7 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(60 as c_int as isize) = (*p_src.offset(oe_59 as isize) as c_int
-        - *p_dst.offset(od_59 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(60 as c_int as isize) as c_int;
-    let mut oe_60: c_int = 7 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_60: c_int = 7 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(61 as c_int as isize) = (*p_src.offset(oe_60 as isize) as c_int
-        - *p_dst.offset(od_60 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(61 as c_int as isize) as c_int;
-    let mut oe_61: c_int = 6 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_61: c_int = 6 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(62 as c_int as isize) = (*p_src.offset(oe_61 as isize) as c_int
-        - *p_dst.offset(od_61 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(62 as c_int as isize) as c_int;
-    let mut oe_62: c_int = 7 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_62: c_int = 7 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(63 as c_int as isize) = (*p_src.offset(oe_62 as isize) as c_int
-        - *p_dst.offset(od_62 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(63 as c_int as isize) as c_int;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((4 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((4 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((4 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((4 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((5 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((5 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((5 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((5 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((6 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((6 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((6 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((6 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((7 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((7 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((7 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((7 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
+    nz |= *level.offset(10 as isize) as c_int;
+    let mut oe_10: c_int = 1 + 3 * FENC_STRIDE;
+    let mut od_10: c_int = 1 + 3 * FDEC_STRIDE;
+    *level.offset(11 as isize) = (*p_src.offset(oe_10 as isize) as c_int
+        - *p_dst.offset(od_10 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(11 as isize) as c_int;
+    let mut oe_11: c_int = 2 + 2 * FENC_STRIDE;
+    let mut od_11: c_int = 2 + 2 * FDEC_STRIDE;
+    *level.offset(12 as isize) = (*p_src.offset(oe_11 as isize) as c_int
+        - *p_dst.offset(od_11 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(12 as isize) as c_int;
+    let mut oe_12: c_int = 3 + 1 * FENC_STRIDE;
+    let mut od_12: c_int = 3 + 1 * FDEC_STRIDE;
+    *level.offset(13 as isize) = (*p_src.offset(oe_12 as isize) as c_int
+        - *p_dst.offset(od_12 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(13 as isize) as c_int;
+    let mut oe_13: c_int = 4 + 0 * FENC_STRIDE;
+    let mut od_13: c_int = 4 + 0 * FDEC_STRIDE;
+    *level.offset(14 as isize) = (*p_src.offset(oe_13 as isize) as c_int
+        - *p_dst.offset(od_13 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(14 as isize) as c_int;
+    let mut oe_14: c_int = 5 + 0 * FENC_STRIDE;
+    let mut od_14: c_int = 5 + 0 * FDEC_STRIDE;
+    *level.offset(15 as isize) = (*p_src.offset(oe_14 as isize) as c_int
+        - *p_dst.offset(od_14 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(15 as isize) as c_int;
+    let mut oe_15: c_int = 4 + 1 * FENC_STRIDE;
+    let mut od_15: c_int = 4 + 1 * FDEC_STRIDE;
+    *level.offset(16 as isize) = (*p_src.offset(oe_15 as isize) as c_int
+        - *p_dst.offset(od_15 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(16 as isize) as c_int;
+    let mut oe_16: c_int = 3 + 2 * FENC_STRIDE;
+    let mut od_16: c_int = 3 + 2 * FDEC_STRIDE;
+    *level.offset(17 as isize) = (*p_src.offset(oe_16 as isize) as c_int
+        - *p_dst.offset(od_16 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(17 as isize) as c_int;
+    let mut oe_17: c_int = 2 + 3 * FENC_STRIDE;
+    let mut od_17: c_int = 2 + 3 * FDEC_STRIDE;
+    *level.offset(18 as isize) = (*p_src.offset(oe_17 as isize) as c_int
+        - *p_dst.offset(od_17 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(18 as isize) as c_int;
+    let mut oe_18: c_int = 1 + 4 * FENC_STRIDE;
+    let mut od_18: c_int = 1 + 4 * FDEC_STRIDE;
+    *level.offset(19 as isize) = (*p_src.offset(oe_18 as isize) as c_int
+        - *p_dst.offset(od_18 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(19 as isize) as c_int;
+    let mut oe_19: c_int = 0 + 5 * FENC_STRIDE;
+    let mut od_19: c_int = 0 + 5 * FDEC_STRIDE;
+    *level.offset(20 as isize) = (*p_src.offset(oe_19 as isize) as c_int
+        - *p_dst.offset(od_19 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(20 as isize) as c_int;
+    let mut oe_20: c_int = 0 + 6 * FENC_STRIDE;
+    let mut od_20: c_int = 0 + 6 * FDEC_STRIDE;
+    *level.offset(21 as isize) = (*p_src.offset(oe_20 as isize) as c_int
+        - *p_dst.offset(od_20 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(21 as isize) as c_int;
+    let mut oe_21: c_int = 1 + 5 * FENC_STRIDE;
+    let mut od_21: c_int = 1 + 5 * FDEC_STRIDE;
+    *level.offset(22 as isize) = (*p_src.offset(oe_21 as isize) as c_int
+        - *p_dst.offset(od_21 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(22 as isize) as c_int;
+    let mut oe_22: c_int = 2 + 4 * FENC_STRIDE;
+    let mut od_22: c_int = 2 + 4 * FDEC_STRIDE;
+    *level.offset(23 as isize) = (*p_src.offset(oe_22 as isize) as c_int
+        - *p_dst.offset(od_22 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(23 as isize) as c_int;
+    let mut oe_23: c_int = 3 + 3 * FENC_STRIDE;
+    let mut od_23: c_int = 3 + 3 * FDEC_STRIDE;
+    *level.offset(24 as isize) = (*p_src.offset(oe_23 as isize) as c_int
+        - *p_dst.offset(od_23 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(24 as isize) as c_int;
+    let mut oe_24: c_int = 4 + 2 * FENC_STRIDE;
+    let mut od_24: c_int = 4 + 2 * FDEC_STRIDE;
+    *level.offset(25 as isize) = (*p_src.offset(oe_24 as isize) as c_int
+        - *p_dst.offset(od_24 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(25 as isize) as c_int;
+    let mut oe_25: c_int = 5 + 1 * FENC_STRIDE;
+    let mut od_25: c_int = 5 + 1 * FDEC_STRIDE;
+    *level.offset(26 as isize) = (*p_src.offset(oe_25 as isize) as c_int
+        - *p_dst.offset(od_25 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(26 as isize) as c_int;
+    let mut oe_26: c_int = 6 + 0 * FENC_STRIDE;
+    let mut od_26: c_int = 6 + 0 * FDEC_STRIDE;
+    *level.offset(27 as isize) = (*p_src.offset(oe_26 as isize) as c_int
+        - *p_dst.offset(od_26 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(27 as isize) as c_int;
+    let mut oe_27: c_int = 7 + 0 * FENC_STRIDE;
+    let mut od_27: c_int = 7 + 0 * FDEC_STRIDE;
+    *level.offset(28 as isize) = (*p_src.offset(oe_27 as isize) as c_int
+        - *p_dst.offset(od_27 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(28 as isize) as c_int;
+    let mut oe_28: c_int = 6 + 1 * FENC_STRIDE;
+    let mut od_28: c_int = 6 + 1 * FDEC_STRIDE;
+    *level.offset(29 as isize) = (*p_src.offset(oe_28 as isize) as c_int
+        - *p_dst.offset(od_28 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(29 as isize) as c_int;
+    let mut oe_29: c_int = 5 + 2 * FENC_STRIDE;
+    let mut od_29: c_int = 5 + 2 * FDEC_STRIDE;
+    *level.offset(30 as isize) = (*p_src.offset(oe_29 as isize) as c_int
+        - *p_dst.offset(od_29 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(30 as isize) as c_int;
+    let mut oe_30: c_int = 4 + 3 * FENC_STRIDE;
+    let mut od_30: c_int = 4 + 3 * FDEC_STRIDE;
+    *level.offset(31 as isize) = (*p_src.offset(oe_30 as isize) as c_int
+        - *p_dst.offset(od_30 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(31 as isize) as c_int;
+    let mut oe_31: c_int = 3 + 4 * FENC_STRIDE;
+    let mut od_31: c_int = 3 + 4 * FDEC_STRIDE;
+    *level.offset(32 as isize) = (*p_src.offset(oe_31 as isize) as c_int
+        - *p_dst.offset(od_31 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(32 as isize) as c_int;
+    let mut oe_32: c_int = 2 + 5 * FENC_STRIDE;
+    let mut od_32: c_int = 2 + 5 * FDEC_STRIDE;
+    *level.offset(33 as isize) = (*p_src.offset(oe_32 as isize) as c_int
+        - *p_dst.offset(od_32 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(33 as isize) as c_int;
+    let mut oe_33: c_int = 1 + 6 * FENC_STRIDE;
+    let mut od_33: c_int = 1 + 6 * FDEC_STRIDE;
+    *level.offset(34 as isize) = (*p_src.offset(oe_33 as isize) as c_int
+        - *p_dst.offset(od_33 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(34 as isize) as c_int;
+    let mut oe_34: c_int = 0 + 7 * FENC_STRIDE;
+    let mut od_34: c_int = 0 + 7 * FDEC_STRIDE;
+    *level.offset(35 as isize) = (*p_src.offset(oe_34 as isize) as c_int
+        - *p_dst.offset(od_34 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(35 as isize) as c_int;
+    let mut oe_35: c_int = 1 + 7 * FENC_STRIDE;
+    let mut od_35: c_int = 1 + 7 * FDEC_STRIDE;
+    *level.offset(36 as isize) = (*p_src.offset(oe_35 as isize) as c_int
+        - *p_dst.offset(od_35 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(36 as isize) as c_int;
+    let mut oe_36: c_int = 2 + 6 * FENC_STRIDE;
+    let mut od_36: c_int = 2 + 6 * FDEC_STRIDE;
+    *level.offset(37 as isize) = (*p_src.offset(oe_36 as isize) as c_int
+        - *p_dst.offset(od_36 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(37 as isize) as c_int;
+    let mut oe_37: c_int = 3 + 5 * FENC_STRIDE;
+    let mut od_37: c_int = 3 + 5 * FDEC_STRIDE;
+    *level.offset(38 as isize) = (*p_src.offset(oe_37 as isize) as c_int
+        - *p_dst.offset(od_37 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(38 as isize) as c_int;
+    let mut oe_38: c_int = 4 + 4 * FENC_STRIDE;
+    let mut od_38: c_int = 4 + 4 * FDEC_STRIDE;
+    *level.offset(39 as isize) = (*p_src.offset(oe_38 as isize) as c_int
+        - *p_dst.offset(od_38 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(39 as isize) as c_int;
+    let mut oe_39: c_int = 5 + 3 * FENC_STRIDE;
+    let mut od_39: c_int = 5 + 3 * FDEC_STRIDE;
+    *level.offset(40 as isize) = (*p_src.offset(oe_39 as isize) as c_int
+        - *p_dst.offset(od_39 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(40 as isize) as c_int;
+    let mut oe_40: c_int = 6 + 2 * FENC_STRIDE;
+    let mut od_40: c_int = 6 + 2 * FDEC_STRIDE;
+    *level.offset(41 as isize) = (*p_src.offset(oe_40 as isize) as c_int
+        - *p_dst.offset(od_40 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(41 as isize) as c_int;
+    let mut oe_41: c_int = 7 + 1 * FENC_STRIDE;
+    let mut od_41: c_int = 7 + 1 * FDEC_STRIDE;
+    *level.offset(42 as isize) = (*p_src.offset(oe_41 as isize) as c_int
+        - *p_dst.offset(od_41 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(42 as isize) as c_int;
+    let mut oe_42: c_int = 7 + 2 * FENC_STRIDE;
+    let mut od_42: c_int = 7 + 2 * FDEC_STRIDE;
+    *level.offset(43 as isize) = (*p_src.offset(oe_42 as isize) as c_int
+        - *p_dst.offset(od_42 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(43 as isize) as c_int;
+    let mut oe_43: c_int = 6 + 3 * FENC_STRIDE;
+    let mut od_43: c_int = 6 + 3 * FDEC_STRIDE;
+    *level.offset(44 as isize) = (*p_src.offset(oe_43 as isize) as c_int
+        - *p_dst.offset(od_43 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(44 as isize) as c_int;
+    let mut oe_44: c_int = 5 + 4 * FENC_STRIDE;
+    let mut od_44: c_int = 5 + 4 * FDEC_STRIDE;
+    *level.offset(45 as isize) = (*p_src.offset(oe_44 as isize) as c_int
+        - *p_dst.offset(od_44 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(45 as isize) as c_int;
+    let mut oe_45: c_int = 4 + 5 * FENC_STRIDE;
+    let mut od_45: c_int = 4 + 5 * FDEC_STRIDE;
+    *level.offset(46 as isize) = (*p_src.offset(oe_45 as isize) as c_int
+        - *p_dst.offset(od_45 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(46 as isize) as c_int;
+    let mut oe_46: c_int = 3 + 6 * FENC_STRIDE;
+    let mut od_46: c_int = 3 + 6 * FDEC_STRIDE;
+    *level.offset(47 as isize) = (*p_src.offset(oe_46 as isize) as c_int
+        - *p_dst.offset(od_46 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(47 as isize) as c_int;
+    let mut oe_47: c_int = 2 + 7 * FENC_STRIDE;
+    let mut od_47: c_int = 2 + 7 * FDEC_STRIDE;
+    *level.offset(48 as isize) = (*p_src.offset(oe_47 as isize) as c_int
+        - *p_dst.offset(od_47 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(48 as isize) as c_int;
+    let mut oe_48: c_int = 3 + 7 * FENC_STRIDE;
+    let mut od_48: c_int = 3 + 7 * FDEC_STRIDE;
+    *level.offset(49 as isize) = (*p_src.offset(oe_48 as isize) as c_int
+        - *p_dst.offset(od_48 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(49 as isize) as c_int;
+    let mut oe_49: c_int = 4 + 6 * FENC_STRIDE;
+    let mut od_49: c_int = 4 + 6 * FDEC_STRIDE;
+    *level.offset(50 as isize) = (*p_src.offset(oe_49 as isize) as c_int
+        - *p_dst.offset(od_49 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(50 as isize) as c_int;
+    let mut oe_50: c_int = 5 + 5 * FENC_STRIDE;
+    let mut od_50: c_int = 5 + 5 * FDEC_STRIDE;
+    *level.offset(51 as isize) = (*p_src.offset(oe_50 as isize) as c_int
+        - *p_dst.offset(od_50 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(51 as isize) as c_int;
+    let mut oe_51: c_int = 6 + 4 * FENC_STRIDE;
+    let mut od_51: c_int = 6 + 4 * FDEC_STRIDE;
+    *level.offset(52 as isize) = (*p_src.offset(oe_51 as isize) as c_int
+        - *p_dst.offset(od_51 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(52 as isize) as c_int;
+    let mut oe_52: c_int = 7 + 3 * FENC_STRIDE;
+    let mut od_52: c_int = 7 + 3 * FDEC_STRIDE;
+    *level.offset(53 as isize) = (*p_src.offset(oe_52 as isize) as c_int
+        - *p_dst.offset(od_52 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(53 as isize) as c_int;
+    let mut oe_53: c_int = 7 + 4 * FENC_STRIDE;
+    let mut od_53: c_int = 7 + 4 * FDEC_STRIDE;
+    *level.offset(54 as isize) = (*p_src.offset(oe_53 as isize) as c_int
+        - *p_dst.offset(od_53 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(54 as isize) as c_int;
+    let mut oe_54: c_int = 6 + 5 * FENC_STRIDE;
+    let mut od_54: c_int = 6 + 5 * FDEC_STRIDE;
+    *level.offset(55 as isize) = (*p_src.offset(oe_54 as isize) as c_int
+        - *p_dst.offset(od_54 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(55 as isize) as c_int;
+    let mut oe_55: c_int = 5 + 6 * FENC_STRIDE;
+    let mut od_55: c_int = 5 + 6 * FDEC_STRIDE;
+    *level.offset(56 as isize) = (*p_src.offset(oe_55 as isize) as c_int
+        - *p_dst.offset(od_55 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(56 as isize) as c_int;
+    let mut oe_56: c_int = 4 + 7 * FENC_STRIDE;
+    let mut od_56: c_int = 4 + 7 * FDEC_STRIDE;
+    *level.offset(57 as isize) = (*p_src.offset(oe_56 as isize) as c_int
+        - *p_dst.offset(od_56 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(57 as isize) as c_int;
+    let mut oe_57: c_int = 5 + 7 * FENC_STRIDE;
+    let mut od_57: c_int = 5 + 7 * FDEC_STRIDE;
+    *level.offset(58 as isize) = (*p_src.offset(oe_57 as isize) as c_int
+        - *p_dst.offset(od_57 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(58 as isize) as c_int;
+    let mut oe_58: c_int = 6 + 6 * FENC_STRIDE;
+    let mut od_58: c_int = 6 + 6 * FDEC_STRIDE;
+    *level.offset(59 as isize) = (*p_src.offset(oe_58 as isize) as c_int
+        - *p_dst.offset(od_58 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(59 as isize) as c_int;
+    let mut oe_59: c_int = 7 + 5 * FENC_STRIDE;
+    let mut od_59: c_int = 7 + 5 * FDEC_STRIDE;
+    *level.offset(60 as isize) = (*p_src.offset(oe_59 as isize) as c_int
+        - *p_dst.offset(od_59 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(60 as isize) as c_int;
+    let mut oe_60: c_int = 7 + 6 * FENC_STRIDE;
+    let mut od_60: c_int = 7 + 6 * FDEC_STRIDE;
+    *level.offset(61 as isize) = (*p_src.offset(oe_60 as isize) as c_int
+        - *p_dst.offset(od_60 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(61 as isize) as c_int;
+    let mut oe_61: c_int = 6 + 7 * FENC_STRIDE;
+    let mut od_61: c_int = 6 + 7 * FDEC_STRIDE;
+    *level.offset(62 as isize) = (*p_src.offset(oe_61 as isize) as c_int
+        - *p_dst.offset(od_61 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(62 as isize) as c_int;
+    let mut oe_62: c_int = 7 + 7 * FENC_STRIDE;
+    let mut od_62: c_int = 7 + 7 * FDEC_STRIDE;
+    *level.offset(63 as isize) = (*p_src.offset(oe_62 as isize) as c_int
+        - *p_dst.offset(od_62 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(63 as isize) as c_int;
+    (*(p_dst.offset((0 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((0 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((4 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((4 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((4 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((4 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((5 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((5 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((5 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((5 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((6 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((6 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((6 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((6 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((7 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((7 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((7 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((7 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
     return (nz != 0) as c_int;
 }
 #[c2rust::src_loc = "925:1"]
@@ -1887,412 +1608,359 @@ unsafe extern "C" fn zigzag_sub_8x8_field(
     mut p_src: *const pixel,
     mut p_dst: *mut pixel,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut oe: c_int = 0 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od: c_int = 0 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut nz: c_int = 0;
+    let mut oe: c_int = 0 + 0 * FENC_STRIDE;
+    let mut od: c_int = 0 + 0 * FDEC_STRIDE;
     *level.offset(0) =
         (*p_src.offset(oe as isize) as c_int - *p_dst.offset(od as isize) as c_int) as dctcoef;
     nz |= *level.offset(0) as c_int;
-    let mut oe_0: c_int = 0 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_0: c_int = 0 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_0: c_int = 0 + 1 * FENC_STRIDE;
+    let mut od_0: c_int = 0 + 1 * FDEC_STRIDE;
     *level.offset(1) =
         (*p_src.offset(oe_0 as isize) as c_int - *p_dst.offset(od_0 as isize) as c_int) as dctcoef;
     nz |= *level.offset(1) as c_int;
-    let mut oe_1: c_int = 0 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_1: c_int = 0 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_1: c_int = 0 + 2 * FENC_STRIDE;
+    let mut od_1: c_int = 0 + 2 * FDEC_STRIDE;
     *level.offset(2) =
         (*p_src.offset(oe_1 as isize) as c_int - *p_dst.offset(od_1 as isize) as c_int) as dctcoef;
     nz |= *level.offset(2) as c_int;
-    let mut oe_2: c_int = 1 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_2: c_int = 1 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_2: c_int = 1 + 0 * FENC_STRIDE;
+    let mut od_2: c_int = 1 + 0 * FDEC_STRIDE;
     *level.offset(3) =
         (*p_src.offset(oe_2 as isize) as c_int - *p_dst.offset(od_2 as isize) as c_int) as dctcoef;
     nz |= *level.offset(3) as c_int;
-    let mut oe_3: c_int = 1 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_3: c_int = 1 as c_int + 1 as c_int * FDEC_STRIDE;
+    let mut oe_3: c_int = 1 + 1 * FENC_STRIDE;
+    let mut od_3: c_int = 1 + 1 * FDEC_STRIDE;
     *level.offset(4) =
         (*p_src.offset(oe_3 as isize) as c_int - *p_dst.offset(od_3 as isize) as c_int) as dctcoef;
     nz |= *level.offset(4) as c_int;
-    let mut oe_4: c_int = 0 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_4: c_int = 0 as c_int + 3 as c_int * FDEC_STRIDE;
+    let mut oe_4: c_int = 0 + 3 * FENC_STRIDE;
+    let mut od_4: c_int = 0 + 3 * FDEC_STRIDE;
     *level.offset(5) =
         (*p_src.offset(oe_4 as isize) as c_int - *p_dst.offset(od_4 as isize) as c_int) as dctcoef;
     nz |= *level.offset(5) as c_int;
-    let mut oe_5: c_int = 0 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_5: c_int = 0 as c_int + 4 as c_int * FDEC_STRIDE;
+    let mut oe_5: c_int = 0 + 4 * FENC_STRIDE;
+    let mut od_5: c_int = 0 + 4 * FDEC_STRIDE;
     *level.offset(6) =
         (*p_src.offset(oe_5 as isize) as c_int - *p_dst.offset(od_5 as isize) as c_int) as dctcoef;
     nz |= *level.offset(6) as c_int;
-    let mut oe_6: c_int = 1 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_6: c_int = 1 as c_int + 2 as c_int * FDEC_STRIDE;
+    let mut oe_6: c_int = 1 + 2 * FENC_STRIDE;
+    let mut od_6: c_int = 1 + 2 * FDEC_STRIDE;
     *level.offset(7) =
         (*p_src.offset(oe_6 as isize) as c_int - *p_dst.offset(od_6 as isize) as c_int) as dctcoef;
     nz |= *level.offset(7) as c_int;
-    let mut oe_7: c_int = 2 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_7: c_int = 2 as c_int + 0 as c_int * FDEC_STRIDE;
+    let mut oe_7: c_int = 2 + 0 * FENC_STRIDE;
+    let mut od_7: c_int = 2 + 0 * FDEC_STRIDE;
     *level.offset(8) =
         (*p_src.offset(oe_7 as isize) as c_int - *p_dst.offset(od_7 as isize) as c_int) as dctcoef;
     nz |= *level.offset(8) as c_int;
-    let mut oe_8: c_int = 1 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_8: c_int = 1 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(9 as c_int as isize) =
+    let mut oe_8: c_int = 1 + 3 * FENC_STRIDE;
+    let mut od_8: c_int = 1 + 3 * FDEC_STRIDE;
+    *level.offset(9 as isize) =
         (*p_src.offset(oe_8 as isize) as c_int - *p_dst.offset(od_8 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(9 as c_int as isize) as c_int;
-    let mut oe_9: c_int = 0 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_9: c_int = 0 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(10 as c_int as isize) =
+    nz |= *level.offset(9 as isize) as c_int;
+    let mut oe_9: c_int = 0 + 5 * FENC_STRIDE;
+    let mut od_9: c_int = 0 + 5 * FDEC_STRIDE;
+    *level.offset(10 as isize) =
         (*p_src.offset(oe_9 as isize) as c_int - *p_dst.offset(od_9 as isize) as c_int) as dctcoef;
-    nz |= *level.offset(10 as c_int as isize) as c_int;
-    let mut oe_10: c_int = 0 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_10: c_int = 0 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(11 as c_int as isize) = (*p_src.offset(oe_10 as isize) as c_int
-        - *p_dst.offset(od_10 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(11 as c_int as isize) as c_int;
-    let mut oe_11: c_int = 0 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_11: c_int = 0 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(12 as c_int as isize) = (*p_src.offset(oe_11 as isize) as c_int
-        - *p_dst.offset(od_11 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(12 as c_int as isize) as c_int;
-    let mut oe_12: c_int = 1 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_12: c_int = 1 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(13 as c_int as isize) = (*p_src.offset(oe_12 as isize) as c_int
-        - *p_dst.offset(od_12 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(13 as c_int as isize) as c_int;
-    let mut oe_13: c_int = 2 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_13: c_int = 2 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(14 as c_int as isize) = (*p_src.offset(oe_13 as isize) as c_int
-        - *p_dst.offset(od_13 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(14 as c_int as isize) as c_int;
-    let mut oe_14: c_int = 3 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_14: c_int = 3 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(15 as c_int as isize) = (*p_src.offset(oe_14 as isize) as c_int
-        - *p_dst.offset(od_14 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(15 as c_int as isize) as c_int;
-    let mut oe_15: c_int = 2 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_15: c_int = 2 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(16 as c_int as isize) = (*p_src.offset(oe_15 as isize) as c_int
-        - *p_dst.offset(od_15 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(16 as c_int as isize) as c_int;
-    let mut oe_16: c_int = 1 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_16: c_int = 1 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(17 as c_int as isize) = (*p_src.offset(oe_16 as isize) as c_int
-        - *p_dst.offset(od_16 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(17 as c_int as isize) as c_int;
-    let mut oe_17: c_int = 1 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_17: c_int = 1 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(18 as c_int as isize) = (*p_src.offset(oe_17 as isize) as c_int
-        - *p_dst.offset(od_17 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(18 as c_int as isize) as c_int;
-    let mut oe_18: c_int = 1 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_18: c_int = 1 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(19 as c_int as isize) = (*p_src.offset(oe_18 as isize) as c_int
-        - *p_dst.offset(od_18 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(19 as c_int as isize) as c_int;
-    let mut oe_19: c_int = 2 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_19: c_int = 2 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(20 as c_int as isize) = (*p_src.offset(oe_19 as isize) as c_int
-        - *p_dst.offset(od_19 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(20 as c_int as isize) as c_int;
-    let mut oe_20: c_int = 3 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_20: c_int = 3 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(21 as c_int as isize) = (*p_src.offset(oe_20 as isize) as c_int
-        - *p_dst.offset(od_20 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(21 as c_int as isize) as c_int;
-    let mut oe_21: c_int = 4 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_21: c_int = 4 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(22 as c_int as isize) = (*p_src.offset(oe_21 as isize) as c_int
-        - *p_dst.offset(od_21 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(22 as c_int as isize) as c_int;
-    let mut oe_22: c_int = 3 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_22: c_int = 3 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(23 as c_int as isize) = (*p_src.offset(oe_22 as isize) as c_int
-        - *p_dst.offset(od_22 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(23 as c_int as isize) as c_int;
-    let mut oe_23: c_int = 2 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_23: c_int = 2 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(24 as c_int as isize) = (*p_src.offset(oe_23 as isize) as c_int
-        - *p_dst.offset(od_23 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(24 as c_int as isize) as c_int;
-    let mut oe_24: c_int = 2 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_24: c_int = 2 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(25 as c_int as isize) = (*p_src.offset(oe_24 as isize) as c_int
-        - *p_dst.offset(od_24 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(25 as c_int as isize) as c_int;
-    let mut oe_25: c_int = 2 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_25: c_int = 2 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(26 as c_int as isize) = (*p_src.offset(oe_25 as isize) as c_int
-        - *p_dst.offset(od_25 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(26 as c_int as isize) as c_int;
-    let mut oe_26: c_int = 2 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_26: c_int = 2 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(27 as c_int as isize) = (*p_src.offset(oe_26 as isize) as c_int
-        - *p_dst.offset(od_26 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(27 as c_int as isize) as c_int;
-    let mut oe_27: c_int = 3 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_27: c_int = 3 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(28 as c_int as isize) = (*p_src.offset(oe_27 as isize) as c_int
-        - *p_dst.offset(od_27 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(28 as c_int as isize) as c_int;
-    let mut oe_28: c_int = 4 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_28: c_int = 4 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(29 as c_int as isize) = (*p_src.offset(oe_28 as isize) as c_int
-        - *p_dst.offset(od_28 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(29 as c_int as isize) as c_int;
-    let mut oe_29: c_int = 5 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_29: c_int = 5 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(30 as c_int as isize) = (*p_src.offset(oe_29 as isize) as c_int
-        - *p_dst.offset(od_29 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(30 as c_int as isize) as c_int;
-    let mut oe_30: c_int = 4 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_30: c_int = 4 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(31 as c_int as isize) = (*p_src.offset(oe_30 as isize) as c_int
-        - *p_dst.offset(od_30 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(31 as c_int as isize) as c_int;
-    let mut oe_31: c_int = 3 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_31: c_int = 3 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(32 as c_int as isize) = (*p_src.offset(oe_31 as isize) as c_int
-        - *p_dst.offset(od_31 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(32 as c_int as isize) as c_int;
-    let mut oe_32: c_int = 3 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_32: c_int = 3 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(33 as c_int as isize) = (*p_src.offset(oe_32 as isize) as c_int
-        - *p_dst.offset(od_32 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(33 as c_int as isize) as c_int;
-    let mut oe_33: c_int = 3 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_33: c_int = 3 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(34 as c_int as isize) = (*p_src.offset(oe_33 as isize) as c_int
-        - *p_dst.offset(od_33 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(34 as c_int as isize) as c_int;
-    let mut oe_34: c_int = 3 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_34: c_int = 3 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(35 as c_int as isize) = (*p_src.offset(oe_34 as isize) as c_int
-        - *p_dst.offset(od_34 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(35 as c_int as isize) as c_int;
-    let mut oe_35: c_int = 4 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_35: c_int = 4 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(36 as c_int as isize) = (*p_src.offset(oe_35 as isize) as c_int
-        - *p_dst.offset(od_35 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(36 as c_int as isize) as c_int;
-    let mut oe_36: c_int = 5 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_36: c_int = 5 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(37 as c_int as isize) = (*p_src.offset(oe_36 as isize) as c_int
-        - *p_dst.offset(od_36 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(37 as c_int as isize) as c_int;
-    let mut oe_37: c_int = 6 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_37: c_int = 6 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(38 as c_int as isize) = (*p_src.offset(oe_37 as isize) as c_int
-        - *p_dst.offset(od_37 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(38 as c_int as isize) as c_int;
-    let mut oe_38: c_int = 5 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_38: c_int = 5 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(39 as c_int as isize) = (*p_src.offset(oe_38 as isize) as c_int
-        - *p_dst.offset(od_38 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(39 as c_int as isize) as c_int;
-    let mut oe_39: c_int = 4 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_39: c_int = 4 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(40 as c_int as isize) = (*p_src.offset(oe_39 as isize) as c_int
-        - *p_dst.offset(od_39 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(40 as c_int as isize) as c_int;
-    let mut oe_40: c_int = 4 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_40: c_int = 4 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(41 as c_int as isize) = (*p_src.offset(oe_40 as isize) as c_int
-        - *p_dst.offset(od_40 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(41 as c_int as isize) as c_int;
-    let mut oe_41: c_int = 4 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_41: c_int = 4 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(42 as c_int as isize) = (*p_src.offset(oe_41 as isize) as c_int
-        - *p_dst.offset(od_41 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(42 as c_int as isize) as c_int;
-    let mut oe_42: c_int = 4 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_42: c_int = 4 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(43 as c_int as isize) = (*p_src.offset(oe_42 as isize) as c_int
-        - *p_dst.offset(od_42 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(43 as c_int as isize) as c_int;
-    let mut oe_43: c_int = 5 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_43: c_int = 5 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(44 as c_int as isize) = (*p_src.offset(oe_43 as isize) as c_int
-        - *p_dst.offset(od_43 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(44 as c_int as isize) as c_int;
-    let mut oe_44: c_int = 6 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_44: c_int = 6 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(45 as c_int as isize) = (*p_src.offset(oe_44 as isize) as c_int
-        - *p_dst.offset(od_44 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(45 as c_int as isize) as c_int;
-    let mut oe_45: c_int = 6 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_45: c_int = 6 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(46 as c_int as isize) = (*p_src.offset(oe_45 as isize) as c_int
-        - *p_dst.offset(od_45 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(46 as c_int as isize) as c_int;
-    let mut oe_46: c_int = 5 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_46: c_int = 5 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(47 as c_int as isize) = (*p_src.offset(oe_46 as isize) as c_int
-        - *p_dst.offset(od_46 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(47 as c_int as isize) as c_int;
-    let mut oe_47: c_int = 5 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_47: c_int = 5 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(48 as c_int as isize) = (*p_src.offset(oe_47 as isize) as c_int
-        - *p_dst.offset(od_47 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(48 as c_int as isize) as c_int;
-    let mut oe_48: c_int = 5 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_48: c_int = 5 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(49 as c_int as isize) = (*p_src.offset(oe_48 as isize) as c_int
-        - *p_dst.offset(od_48 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(49 as c_int as isize) as c_int;
-    let mut oe_49: c_int = 5 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_49: c_int = 5 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(50 as c_int as isize) = (*p_src.offset(oe_49 as isize) as c_int
-        - *p_dst.offset(od_49 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(50 as c_int as isize) as c_int;
-    let mut oe_50: c_int = 6 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_50: c_int = 6 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(51 as c_int as isize) = (*p_src.offset(oe_50 as isize) as c_int
-        - *p_dst.offset(od_50 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(51 as c_int as isize) as c_int;
-    let mut oe_51: c_int = 7 as c_int + 0 as c_int * FENC_STRIDE;
-    let mut od_51: c_int = 7 as c_int + 0 as c_int * FDEC_STRIDE;
-    *level.offset(52 as c_int as isize) = (*p_src.offset(oe_51 as isize) as c_int
-        - *p_dst.offset(od_51 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(52 as c_int as isize) as c_int;
-    let mut oe_52: c_int = 7 as c_int + 1 as c_int * FENC_STRIDE;
-    let mut od_52: c_int = 7 as c_int + 1 as c_int * FDEC_STRIDE;
-    *level.offset(53 as c_int as isize) = (*p_src.offset(oe_52 as isize) as c_int
-        - *p_dst.offset(od_52 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(53 as c_int as isize) as c_int;
-    let mut oe_53: c_int = 6 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_53: c_int = 6 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(54 as c_int as isize) = (*p_src.offset(oe_53 as isize) as c_int
-        - *p_dst.offset(od_53 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(54 as c_int as isize) as c_int;
-    let mut oe_54: c_int = 6 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_54: c_int = 6 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(55 as c_int as isize) = (*p_src.offset(oe_54 as isize) as c_int
-        - *p_dst.offset(od_54 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(55 as c_int as isize) as c_int;
-    let mut oe_55: c_int = 6 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_55: c_int = 6 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(56 as c_int as isize) = (*p_src.offset(oe_55 as isize) as c_int
-        - *p_dst.offset(od_55 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(56 as c_int as isize) as c_int;
-    let mut oe_56: c_int = 6 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_56: c_int = 6 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(57 as c_int as isize) = (*p_src.offset(oe_56 as isize) as c_int
-        - *p_dst.offset(od_56 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(57 as c_int as isize) as c_int;
-    let mut oe_57: c_int = 7 as c_int + 2 as c_int * FENC_STRIDE;
-    let mut od_57: c_int = 7 as c_int + 2 as c_int * FDEC_STRIDE;
-    *level.offset(58 as c_int as isize) = (*p_src.offset(oe_57 as isize) as c_int
-        - *p_dst.offset(od_57 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(58 as c_int as isize) as c_int;
-    let mut oe_58: c_int = 7 as c_int + 3 as c_int * FENC_STRIDE;
-    let mut od_58: c_int = 7 as c_int + 3 as c_int * FDEC_STRIDE;
-    *level.offset(59 as c_int as isize) = (*p_src.offset(oe_58 as isize) as c_int
-        - *p_dst.offset(od_58 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(59 as c_int as isize) as c_int;
-    let mut oe_59: c_int = 7 as c_int + 4 as c_int * FENC_STRIDE;
-    let mut od_59: c_int = 7 as c_int + 4 as c_int * FDEC_STRIDE;
-    *level.offset(60 as c_int as isize) = (*p_src.offset(oe_59 as isize) as c_int
-        - *p_dst.offset(od_59 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(60 as c_int as isize) as c_int;
-    let mut oe_60: c_int = 7 as c_int + 5 as c_int * FENC_STRIDE;
-    let mut od_60: c_int = 7 as c_int + 5 as c_int * FDEC_STRIDE;
-    *level.offset(61 as c_int as isize) = (*p_src.offset(oe_60 as isize) as c_int
-        - *p_dst.offset(od_60 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(61 as c_int as isize) as c_int;
-    let mut oe_61: c_int = 7 as c_int + 6 as c_int * FENC_STRIDE;
-    let mut od_61: c_int = 7 as c_int + 6 as c_int * FDEC_STRIDE;
-    *level.offset(62 as c_int as isize) = (*p_src.offset(oe_61 as isize) as c_int
-        - *p_dst.offset(od_61 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(62 as c_int as isize) as c_int;
-    let mut oe_62: c_int = 7 as c_int + 7 as c_int * FENC_STRIDE;
-    let mut od_62: c_int = 7 as c_int + 7 as c_int * FDEC_STRIDE;
-    *level.offset(63 as c_int as isize) = (*p_src.offset(oe_62 as isize) as c_int
-        - *p_dst.offset(od_62 as isize) as c_int)
-        as dctcoef;
-    nz |= *level.offset(63 as c_int as isize) as c_int;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((0 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((0 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((1 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((1 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((2 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((2 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((3 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((3 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((4 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((4 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((4 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((4 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((5 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((5 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((5 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((5 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((6 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((6 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((6 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((6 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((7 as c_int * 32 as c_int) as isize) as *mut x264_union64_t)).i =
-        (*(p_src.offset((7 as c_int * 16 as c_int) as isize) as *mut x264_union64_t)).i;
-    (*(p_dst.offset((7 as c_int * 32 as c_int) as isize).offset(4) as *mut x264_union64_t)).i =
-        (*(p_src.offset((7 as c_int * 16 as c_int) as isize).offset(4) as *mut x264_union64_t)).i;
+    nz |= *level.offset(10 as isize) as c_int;
+    let mut oe_10: c_int = 0 + 6 * FENC_STRIDE;
+    let mut od_10: c_int = 0 + 6 * FDEC_STRIDE;
+    *level.offset(11 as isize) = (*p_src.offset(oe_10 as isize) as c_int
+        - *p_dst.offset(od_10 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(11 as isize) as c_int;
+    let mut oe_11: c_int = 0 + 7 * FENC_STRIDE;
+    let mut od_11: c_int = 0 + 7 * FDEC_STRIDE;
+    *level.offset(12 as isize) = (*p_src.offset(oe_11 as isize) as c_int
+        - *p_dst.offset(od_11 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(12 as isize) as c_int;
+    let mut oe_12: c_int = 1 + 4 * FENC_STRIDE;
+    let mut od_12: c_int = 1 + 4 * FDEC_STRIDE;
+    *level.offset(13 as isize) = (*p_src.offset(oe_12 as isize) as c_int
+        - *p_dst.offset(od_12 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(13 as isize) as c_int;
+    let mut oe_13: c_int = 2 + 1 * FENC_STRIDE;
+    let mut od_13: c_int = 2 + 1 * FDEC_STRIDE;
+    *level.offset(14 as isize) = (*p_src.offset(oe_13 as isize) as c_int
+        - *p_dst.offset(od_13 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(14 as isize) as c_int;
+    let mut oe_14: c_int = 3 + 0 * FENC_STRIDE;
+    let mut od_14: c_int = 3 + 0 * FDEC_STRIDE;
+    *level.offset(15 as isize) = (*p_src.offset(oe_14 as isize) as c_int
+        - *p_dst.offset(od_14 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(15 as isize) as c_int;
+    let mut oe_15: c_int = 2 + 2 * FENC_STRIDE;
+    let mut od_15: c_int = 2 + 2 * FDEC_STRIDE;
+    *level.offset(16 as isize) = (*p_src.offset(oe_15 as isize) as c_int
+        - *p_dst.offset(od_15 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(16 as isize) as c_int;
+    let mut oe_16: c_int = 1 + 5 * FENC_STRIDE;
+    let mut od_16: c_int = 1 + 5 * FDEC_STRIDE;
+    *level.offset(17 as isize) = (*p_src.offset(oe_16 as isize) as c_int
+        - *p_dst.offset(od_16 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(17 as isize) as c_int;
+    let mut oe_17: c_int = 1 + 6 * FENC_STRIDE;
+    let mut od_17: c_int = 1 + 6 * FDEC_STRIDE;
+    *level.offset(18 as isize) = (*p_src.offset(oe_17 as isize) as c_int
+        - *p_dst.offset(od_17 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(18 as isize) as c_int;
+    let mut oe_18: c_int = 1 + 7 * FENC_STRIDE;
+    let mut od_18: c_int = 1 + 7 * FDEC_STRIDE;
+    *level.offset(19 as isize) = (*p_src.offset(oe_18 as isize) as c_int
+        - *p_dst.offset(od_18 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(19 as isize) as c_int;
+    let mut oe_19: c_int = 2 + 3 * FENC_STRIDE;
+    let mut od_19: c_int = 2 + 3 * FDEC_STRIDE;
+    *level.offset(20 as isize) = (*p_src.offset(oe_19 as isize) as c_int
+        - *p_dst.offset(od_19 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(20 as isize) as c_int;
+    let mut oe_20: c_int = 3 + 1 * FENC_STRIDE;
+    let mut od_20: c_int = 3 + 1 * FDEC_STRIDE;
+    *level.offset(21 as isize) = (*p_src.offset(oe_20 as isize) as c_int
+        - *p_dst.offset(od_20 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(21 as isize) as c_int;
+    let mut oe_21: c_int = 4 + 0 * FENC_STRIDE;
+    let mut od_21: c_int = 4 + 0 * FDEC_STRIDE;
+    *level.offset(22 as isize) = (*p_src.offset(oe_21 as isize) as c_int
+        - *p_dst.offset(od_21 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(22 as isize) as c_int;
+    let mut oe_22: c_int = 3 + 2 * FENC_STRIDE;
+    let mut od_22: c_int = 3 + 2 * FDEC_STRIDE;
+    *level.offset(23 as isize) = (*p_src.offset(oe_22 as isize) as c_int
+        - *p_dst.offset(od_22 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(23 as isize) as c_int;
+    let mut oe_23: c_int = 2 + 4 * FENC_STRIDE;
+    let mut od_23: c_int = 2 + 4 * FDEC_STRIDE;
+    *level.offset(24 as isize) = (*p_src.offset(oe_23 as isize) as c_int
+        - *p_dst.offset(od_23 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(24 as isize) as c_int;
+    let mut oe_24: c_int = 2 + 5 * FENC_STRIDE;
+    let mut od_24: c_int = 2 + 5 * FDEC_STRIDE;
+    *level.offset(25 as isize) = (*p_src.offset(oe_24 as isize) as c_int
+        - *p_dst.offset(od_24 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(25 as isize) as c_int;
+    let mut oe_25: c_int = 2 + 6 * FENC_STRIDE;
+    let mut od_25: c_int = 2 + 6 * FDEC_STRIDE;
+    *level.offset(26 as isize) = (*p_src.offset(oe_25 as isize) as c_int
+        - *p_dst.offset(od_25 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(26 as isize) as c_int;
+    let mut oe_26: c_int = 2 + 7 * FENC_STRIDE;
+    let mut od_26: c_int = 2 + 7 * FDEC_STRIDE;
+    *level.offset(27 as isize) = (*p_src.offset(oe_26 as isize) as c_int
+        - *p_dst.offset(od_26 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(27 as isize) as c_int;
+    let mut oe_27: c_int = 3 + 3 * FENC_STRIDE;
+    let mut od_27: c_int = 3 + 3 * FDEC_STRIDE;
+    *level.offset(28 as isize) = (*p_src.offset(oe_27 as isize) as c_int
+        - *p_dst.offset(od_27 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(28 as isize) as c_int;
+    let mut oe_28: c_int = 4 + 1 * FENC_STRIDE;
+    let mut od_28: c_int = 4 + 1 * FDEC_STRIDE;
+    *level.offset(29 as isize) = (*p_src.offset(oe_28 as isize) as c_int
+        - *p_dst.offset(od_28 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(29 as isize) as c_int;
+    let mut oe_29: c_int = 5 + 0 * FENC_STRIDE;
+    let mut od_29: c_int = 5 + 0 * FDEC_STRIDE;
+    *level.offset(30 as isize) = (*p_src.offset(oe_29 as isize) as c_int
+        - *p_dst.offset(od_29 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(30 as isize) as c_int;
+    let mut oe_30: c_int = 4 + 2 * FENC_STRIDE;
+    let mut od_30: c_int = 4 + 2 * FDEC_STRIDE;
+    *level.offset(31 as isize) = (*p_src.offset(oe_30 as isize) as c_int
+        - *p_dst.offset(od_30 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(31 as isize) as c_int;
+    let mut oe_31: c_int = 3 + 4 * FENC_STRIDE;
+    let mut od_31: c_int = 3 + 4 * FDEC_STRIDE;
+    *level.offset(32 as isize) = (*p_src.offset(oe_31 as isize) as c_int
+        - *p_dst.offset(od_31 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(32 as isize) as c_int;
+    let mut oe_32: c_int = 3 + 5 * FENC_STRIDE;
+    let mut od_32: c_int = 3 + 5 * FDEC_STRIDE;
+    *level.offset(33 as isize) = (*p_src.offset(oe_32 as isize) as c_int
+        - *p_dst.offset(od_32 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(33 as isize) as c_int;
+    let mut oe_33: c_int = 3 + 6 * FENC_STRIDE;
+    let mut od_33: c_int = 3 + 6 * FDEC_STRIDE;
+    *level.offset(34 as isize) = (*p_src.offset(oe_33 as isize) as c_int
+        - *p_dst.offset(od_33 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(34 as isize) as c_int;
+    let mut oe_34: c_int = 3 + 7 * FENC_STRIDE;
+    let mut od_34: c_int = 3 + 7 * FDEC_STRIDE;
+    *level.offset(35 as isize) = (*p_src.offset(oe_34 as isize) as c_int
+        - *p_dst.offset(od_34 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(35 as isize) as c_int;
+    let mut oe_35: c_int = 4 + 3 * FENC_STRIDE;
+    let mut od_35: c_int = 4 + 3 * FDEC_STRIDE;
+    *level.offset(36 as isize) = (*p_src.offset(oe_35 as isize) as c_int
+        - *p_dst.offset(od_35 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(36 as isize) as c_int;
+    let mut oe_36: c_int = 5 + 1 * FENC_STRIDE;
+    let mut od_36: c_int = 5 + 1 * FDEC_STRIDE;
+    *level.offset(37 as isize) = (*p_src.offset(oe_36 as isize) as c_int
+        - *p_dst.offset(od_36 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(37 as isize) as c_int;
+    let mut oe_37: c_int = 6 + 0 * FENC_STRIDE;
+    let mut od_37: c_int = 6 + 0 * FDEC_STRIDE;
+    *level.offset(38 as isize) = (*p_src.offset(oe_37 as isize) as c_int
+        - *p_dst.offset(od_37 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(38 as isize) as c_int;
+    let mut oe_38: c_int = 5 + 2 * FENC_STRIDE;
+    let mut od_38: c_int = 5 + 2 * FDEC_STRIDE;
+    *level.offset(39 as isize) = (*p_src.offset(oe_38 as isize) as c_int
+        - *p_dst.offset(od_38 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(39 as isize) as c_int;
+    let mut oe_39: c_int = 4 + 4 * FENC_STRIDE;
+    let mut od_39: c_int = 4 + 4 * FDEC_STRIDE;
+    *level.offset(40 as isize) = (*p_src.offset(oe_39 as isize) as c_int
+        - *p_dst.offset(od_39 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(40 as isize) as c_int;
+    let mut oe_40: c_int = 4 + 5 * FENC_STRIDE;
+    let mut od_40: c_int = 4 + 5 * FDEC_STRIDE;
+    *level.offset(41 as isize) = (*p_src.offset(oe_40 as isize) as c_int
+        - *p_dst.offset(od_40 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(41 as isize) as c_int;
+    let mut oe_41: c_int = 4 + 6 * FENC_STRIDE;
+    let mut od_41: c_int = 4 + 6 * FDEC_STRIDE;
+    *level.offset(42 as isize) = (*p_src.offset(oe_41 as isize) as c_int
+        - *p_dst.offset(od_41 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(42 as isize) as c_int;
+    let mut oe_42: c_int = 4 + 7 * FENC_STRIDE;
+    let mut od_42: c_int = 4 + 7 * FDEC_STRIDE;
+    *level.offset(43 as isize) = (*p_src.offset(oe_42 as isize) as c_int
+        - *p_dst.offset(od_42 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(43 as isize) as c_int;
+    let mut oe_43: c_int = 5 + 3 * FENC_STRIDE;
+    let mut od_43: c_int = 5 + 3 * FDEC_STRIDE;
+    *level.offset(44 as isize) = (*p_src.offset(oe_43 as isize) as c_int
+        - *p_dst.offset(od_43 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(44 as isize) as c_int;
+    let mut oe_44: c_int = 6 + 1 * FENC_STRIDE;
+    let mut od_44: c_int = 6 + 1 * FDEC_STRIDE;
+    *level.offset(45 as isize) = (*p_src.offset(oe_44 as isize) as c_int
+        - *p_dst.offset(od_44 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(45 as isize) as c_int;
+    let mut oe_45: c_int = 6 + 2 * FENC_STRIDE;
+    let mut od_45: c_int = 6 + 2 * FDEC_STRIDE;
+    *level.offset(46 as isize) = (*p_src.offset(oe_45 as isize) as c_int
+        - *p_dst.offset(od_45 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(46 as isize) as c_int;
+    let mut oe_46: c_int = 5 + 4 * FENC_STRIDE;
+    let mut od_46: c_int = 5 + 4 * FDEC_STRIDE;
+    *level.offset(47 as isize) = (*p_src.offset(oe_46 as isize) as c_int
+        - *p_dst.offset(od_46 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(47 as isize) as c_int;
+    let mut oe_47: c_int = 5 + 5 * FENC_STRIDE;
+    let mut od_47: c_int = 5 + 5 * FDEC_STRIDE;
+    *level.offset(48 as isize) = (*p_src.offset(oe_47 as isize) as c_int
+        - *p_dst.offset(od_47 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(48 as isize) as c_int;
+    let mut oe_48: c_int = 5 + 6 * FENC_STRIDE;
+    let mut od_48: c_int = 5 + 6 * FDEC_STRIDE;
+    *level.offset(49 as isize) = (*p_src.offset(oe_48 as isize) as c_int
+        - *p_dst.offset(od_48 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(49 as isize) as c_int;
+    let mut oe_49: c_int = 5 + 7 * FENC_STRIDE;
+    let mut od_49: c_int = 5 + 7 * FDEC_STRIDE;
+    *level.offset(50 as isize) = (*p_src.offset(oe_49 as isize) as c_int
+        - *p_dst.offset(od_49 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(50 as isize) as c_int;
+    let mut oe_50: c_int = 6 + 3 * FENC_STRIDE;
+    let mut od_50: c_int = 6 + 3 * FDEC_STRIDE;
+    *level.offset(51 as isize) = (*p_src.offset(oe_50 as isize) as c_int
+        - *p_dst.offset(od_50 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(51 as isize) as c_int;
+    let mut oe_51: c_int = 7 + 0 * FENC_STRIDE;
+    let mut od_51: c_int = 7 + 0 * FDEC_STRIDE;
+    *level.offset(52 as isize) = (*p_src.offset(oe_51 as isize) as c_int
+        - *p_dst.offset(od_51 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(52 as isize) as c_int;
+    let mut oe_52: c_int = 7 + 1 * FENC_STRIDE;
+    let mut od_52: c_int = 7 + 1 * FDEC_STRIDE;
+    *level.offset(53 as isize) = (*p_src.offset(oe_52 as isize) as c_int
+        - *p_dst.offset(od_52 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(53 as isize) as c_int;
+    let mut oe_53: c_int = 6 + 4 * FENC_STRIDE;
+    let mut od_53: c_int = 6 + 4 * FDEC_STRIDE;
+    *level.offset(54 as isize) = (*p_src.offset(oe_53 as isize) as c_int
+        - *p_dst.offset(od_53 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(54 as isize) as c_int;
+    let mut oe_54: c_int = 6 + 5 * FENC_STRIDE;
+    let mut od_54: c_int = 6 + 5 * FDEC_STRIDE;
+    *level.offset(55 as isize) = (*p_src.offset(oe_54 as isize) as c_int
+        - *p_dst.offset(od_54 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(55 as isize) as c_int;
+    let mut oe_55: c_int = 6 + 6 * FENC_STRIDE;
+    let mut od_55: c_int = 6 + 6 * FDEC_STRIDE;
+    *level.offset(56 as isize) = (*p_src.offset(oe_55 as isize) as c_int
+        - *p_dst.offset(od_55 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(56 as isize) as c_int;
+    let mut oe_56: c_int = 6 + 7 * FENC_STRIDE;
+    let mut od_56: c_int = 6 + 7 * FDEC_STRIDE;
+    *level.offset(57 as isize) = (*p_src.offset(oe_56 as isize) as c_int
+        - *p_dst.offset(od_56 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(57 as isize) as c_int;
+    let mut oe_57: c_int = 7 + 2 * FENC_STRIDE;
+    let mut od_57: c_int = 7 + 2 * FDEC_STRIDE;
+    *level.offset(58 as isize) = (*p_src.offset(oe_57 as isize) as c_int
+        - *p_dst.offset(od_57 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(58 as isize) as c_int;
+    let mut oe_58: c_int = 7 + 3 * FENC_STRIDE;
+    let mut od_58: c_int = 7 + 3 * FDEC_STRIDE;
+    *level.offset(59 as isize) = (*p_src.offset(oe_58 as isize) as c_int
+        - *p_dst.offset(od_58 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(59 as isize) as c_int;
+    let mut oe_59: c_int = 7 + 4 * FENC_STRIDE;
+    let mut od_59: c_int = 7 + 4 * FDEC_STRIDE;
+    *level.offset(60 as isize) = (*p_src.offset(oe_59 as isize) as c_int
+        - *p_dst.offset(od_59 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(60 as isize) as c_int;
+    let mut oe_60: c_int = 7 + 5 * FENC_STRIDE;
+    let mut od_60: c_int = 7 + 5 * FDEC_STRIDE;
+    *level.offset(61 as isize) = (*p_src.offset(oe_60 as isize) as c_int
+        - *p_dst.offset(od_60 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(61 as isize) as c_int;
+    let mut oe_61: c_int = 7 + 6 * FENC_STRIDE;
+    let mut od_61: c_int = 7 + 6 * FDEC_STRIDE;
+    *level.offset(62 as isize) = (*p_src.offset(oe_61 as isize) as c_int
+        - *p_dst.offset(od_61 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(62 as isize) as c_int;
+    let mut oe_62: c_int = 7 + 7 * FENC_STRIDE;
+    let mut od_62: c_int = 7 + 7 * FDEC_STRIDE;
+    *level.offset(63 as isize) = (*p_src.offset(oe_62 as isize) as c_int
+        - *p_dst.offset(od_62 as isize) as c_int) as dctcoef;
+    nz |= *level.offset(63 as isize) as c_int;
+    (*(p_dst.offset((0 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((0 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((0 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((1 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((1 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((2 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((2 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((3 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((3 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((4 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((4 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((4 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((4 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((5 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((5 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((5 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((5 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((6 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((6 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((6 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((6 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((7 * 32) as isize) as *mut x264_union64_t)).i =
+        (*(p_src.offset((7 * 16) as isize) as *mut x264_union64_t)).i;
+    (*(p_dst.offset((7 * 32) as isize).offset(4) as *mut x264_union64_t)).i =
+        (*(p_src.offset((7 * 16) as isize).offset(4) as *mut x264_union64_t)).i;
     return (nz != 0) as c_int;
 }
 #[c2rust::src_loc = "936:1"]
@@ -2301,18 +1969,16 @@ unsafe extern "C" fn zigzag_interleave_8x8_cavlc(
     mut src: *mut dctcoef,
     mut nnz: *mut uint8_t,
 ) {
-    let mut i: c_int = 0 as c_int;
-    while i < 4 as c_int {
-        let mut nz: c_int = 0 as c_int;
-        let mut j: c_int = 0 as c_int;
-        while j < 16 as c_int {
-            nz |= *src.offset((i + j * 4 as c_int) as isize) as c_int;
-            *dst.offset((i * 16 as c_int + j) as isize) =
-                *src.offset((i + j * 4 as c_int) as isize);
+    let mut i: c_int = 0;
+    while i < 4 {
+        let mut nz: c_int = 0;
+        let mut j: c_int = 0;
+        while j < 16 {
+            nz |= *src.offset((i + j * 4) as isize) as c_int;
+            *dst.offset((i * 16 + j) as isize) = *src.offset((i + j * 4) as isize);
             j += 1;
         }
-        *nnz.offset(((i & 1 as c_int) + (i >> 1 as c_int) * 8 as c_int) as isize) =
-            (nz != 0) as c_int as uint8_t;
+        *nnz.offset(((i & 1) + (i >> 1) * 8) as isize) = (nz != 0) as c_int as uint8_t;
         i += 1;
     }
 }

@@ -43,7 +43,7 @@ unsafe extern "C" fn init(
     (*h).hin = *handle;
     *handle = h as hnd_t;
     *filter = source_filter;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "57:1"]
 unsafe extern "C" fn get_frame(
@@ -60,7 +60,7 @@ unsafe extern "C" fn get_frame(
     }
     (*h).cur_frame = frame;
     *output = (*h).pic;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "68:1"]
 unsafe extern "C" fn release_frame(
@@ -74,7 +74,7 @@ unsafe extern "C" fn release_frame(
     {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "76:1"]
 unsafe extern "C" fn free_filter(mut handle: hnd_t) {

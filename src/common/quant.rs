@@ -154,19 +154,19 @@ unsafe extern "C" fn quant_8x8(
     mut mf: *mut udctcoef,
     mut bias: *mut udctcoef,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
-    while i < 64 as c_int {
+    let mut nz: c_int = 0;
+    let mut i: c_int = 0;
+    while i < 64 {
         if *dct.offset(i as isize) > 0 as dctcoef {
             *dct.offset(i as isize) = ((*bias.offset(i as isize))
                 .wrapping_add(*dct.offset(i as isize) as udctcoef)
                 .wrapping_mul(*mf.offset(i as isize))
-                >> 16 as c_int) as dctcoef;
+                >> 16) as dctcoef;
         } else {
             *dct.offset(i as isize) = -(((*bias.offset(i as isize))
                 .wrapping_add(-*dct.offset(i as isize) as udctcoef)
                 .wrapping_mul(*mf.offset(i as isize))
-                >> 16 as c_int) as int32_t) as dctcoef;
+                >> 16) as int32_t) as dctcoef;
         }
         nz |= *dct.offset(i as isize) as c_int;
         i += 1;
@@ -179,19 +179,19 @@ unsafe extern "C" fn quant_4x4(
     mut mf: *mut udctcoef,
     mut bias: *mut udctcoef,
 ) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
-    while i < 16 as c_int {
+    let mut nz: c_int = 0;
+    let mut i: c_int = 0;
+    while i < 16 {
         if *dct.offset(i as isize) > 0 as dctcoef {
             *dct.offset(i as isize) = ((*bias.offset(i as isize))
                 .wrapping_add(*dct.offset(i as isize) as udctcoef)
                 .wrapping_mul(*mf.offset(i as isize))
-                >> 16 as c_int) as dctcoef;
+                >> 16) as dctcoef;
         } else {
             *dct.offset(i as isize) = -(((*bias.offset(i as isize))
                 .wrapping_add(-*dct.offset(i as isize) as udctcoef)
                 .wrapping_mul(*mf.offset(i as isize))
-                >> 16 as c_int) as int32_t) as dctcoef;
+                >> 16) as int32_t) as dctcoef;
         }
         nz |= *dct.offset(i as isize) as c_int;
         i += 1;
@@ -204,24 +204,23 @@ unsafe extern "C" fn quant_4x4x4(
     mut mf: *mut udctcoef,
     mut bias: *mut udctcoef,
 ) -> c_int {
-    let mut nza: c_int = 0 as c_int;
-    let mut j: c_int = 0 as c_int;
-    while j < 4 as c_int {
-        let mut nz: c_int = 0 as c_int;
-        let mut i: c_int = 0 as c_int;
-        while i < 16 as c_int {
+    let mut nza: c_int = 0;
+    let mut j: c_int = 0;
+    while j < 4 {
+        let mut nz: c_int = 0;
+        let mut i: c_int = 0;
+        while i < 16 {
             if (*dct.offset(j as isize))[i as usize] > 0 as dctcoef {
                 (*dct.offset(j as isize))[i as usize] = ((*bias.offset(i as isize))
                     .wrapping_add((*dct.offset(j as isize))[i as usize] as udctcoef)
                     .wrapping_mul(*mf.offset(i as isize))
-                    >> 16 as c_int)
-                    as dctcoef;
+                    >> 16) as dctcoef;
             } else {
                 (*dct.offset(j as isize))[i as usize] = -(((*bias.offset(i as isize))
                     .wrapping_add(-(*dct.offset(j as isize))[i as usize] as udctcoef)
                     .wrapping_mul(*mf.offset(i as isize))
-                    >> 16 as c_int)
-                    as int32_t) as dctcoef;
+                    >> 16) as int32_t)
+                    as dctcoef;
             }
             nz |= (*dct.offset(j as isize))[i as usize] as c_int;
             i += 1;
@@ -233,19 +232,19 @@ unsafe extern "C" fn quant_4x4x4(
 }
 #[c2rust::src_loc = "88:1"]
 unsafe extern "C" fn quant_4x4_dc(mut dct: *mut dctcoef, mut mf: c_int, mut bias: c_int) -> c_int {
-    let mut nz: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
-    while i < 16 as c_int {
+    let mut nz: c_int = 0;
+    let mut i: c_int = 0;
+    while i < 16 {
         if *dct.offset(i as isize) > 0 as dctcoef {
             *dct.offset(i as isize) = ((bias as uint32_t)
                 .wrapping_add(*dct.offset(i as isize) as uint32_t)
                 .wrapping_mul(mf as uint32_t)
-                >> 16 as c_int) as dctcoef;
+                >> 16) as dctcoef;
         } else {
             *dct.offset(i as isize) = -(((bias as uint32_t)
                 .wrapping_add(-*dct.offset(i as isize) as uint32_t)
                 .wrapping_mul(mf as uint32_t)
-                >> 16 as c_int) as int32_t) as dctcoef;
+                >> 16) as int32_t) as dctcoef;
         }
         nz |= *dct.offset(i as isize) as c_int;
         i += 1;
@@ -254,53 +253,53 @@ unsafe extern "C" fn quant_4x4_dc(mut dct: *mut dctcoef, mut mf: c_int, mut bias
 }
 #[c2rust::src_loc = "96:1"]
 unsafe extern "C" fn quant_2x2_dc(mut dct: *mut dctcoef, mut mf: c_int, mut bias: c_int) -> c_int {
-    let mut nz: c_int = 0 as c_int;
+    let mut nz: c_int = 0;
     if *dct.offset(0) > 0 as dctcoef {
         *dct.offset(0) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(0) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as dctcoef;
+            >> 16) as dctcoef;
     } else {
         *dct.offset(0) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(0) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as int32_t) as dctcoef;
+            >> 16) as int32_t) as dctcoef;
     }
     nz |= *dct.offset(0) as c_int;
     if *dct.offset(1) > 0 as dctcoef {
         *dct.offset(1) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(1) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as dctcoef;
+            >> 16) as dctcoef;
     } else {
         *dct.offset(1) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(1) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as int32_t) as dctcoef;
+            >> 16) as int32_t) as dctcoef;
     }
     nz |= *dct.offset(1) as c_int;
     if *dct.offset(2) > 0 as dctcoef {
         *dct.offset(2) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(2) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as dctcoef;
+            >> 16) as dctcoef;
     } else {
         *dct.offset(2) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(2) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as int32_t) as dctcoef;
+            >> 16) as int32_t) as dctcoef;
     }
     nz |= *dct.offset(2) as c_int;
     if *dct.offset(3) > 0 as dctcoef {
         *dct.offset(3) = ((bias as uint32_t)
             .wrapping_add(*dct.offset(3) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as dctcoef;
+            >> 16) as dctcoef;
     } else {
         *dct.offset(3) = -(((bias as uint32_t)
             .wrapping_add(-*dct.offset(3) as uint32_t)
             .wrapping_mul(mf as uint32_t)
-            >> 16 as c_int) as int32_t) as dctcoef;
+            >> 16) as int32_t) as dctcoef;
     }
     nz |= *dct.offset(3) as c_int;
     return (nz != 0) as c_int;
@@ -311,20 +310,20 @@ unsafe extern "C" fn dequant_4x4(
     mut dequant_mf: *mut [c_int; 16],
     mut i_qp: c_int,
 ) {
-    let i_mf: c_int = i_qp % 6 as c_int;
-    let i_qbits: c_int = i_qp / 6 as c_int - 4 as c_int;
-    if i_qbits >= 0 as c_int {
-        let mut i: c_int = 0 as c_int;
-        while i < 16 as c_int {
+    let i_mf: c_int = i_qp % 6;
+    let i_qbits: c_int = i_qp / 6 - 4;
+    if i_qbits >= 0 {
+        let mut i: c_int = 0;
+        while i < 16 {
             *dct.offset(i as isize) = *dct.offset(i as isize)
                 * (*dequant_mf.offset(i_mf as isize))[i as usize]
                 * ((1 as dctcoef) << i_qbits);
             i += 1;
         }
     } else {
-        let f: c_int = (1 as c_int) << -i_qbits - 1 as c_int;
-        let mut i_0: c_int = 0 as c_int;
-        while i_0 < 16 as c_int {
+        let f: c_int = (1) << -i_qbits - 1;
+        let mut i_0: c_int = 0;
+        while i_0 < 16 {
             *dct.offset(i_0 as isize) = *dct.offset(i_0 as isize)
                 * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
                 + f as dctcoef
@@ -339,20 +338,20 @@ unsafe extern "C" fn dequant_8x8(
     mut dequant_mf: *mut [c_int; 64],
     mut i_qp: c_int,
 ) {
-    let i_mf: c_int = i_qp % 6 as c_int;
-    let i_qbits: c_int = i_qp / 6 as c_int - 6 as c_int;
-    if i_qbits >= 0 as c_int {
-        let mut i: c_int = 0 as c_int;
-        while i < 64 as c_int {
+    let i_mf: c_int = i_qp % 6;
+    let i_qbits: c_int = i_qp / 6 - 6;
+    if i_qbits >= 0 {
+        let mut i: c_int = 0;
+        while i < 64 {
             *dct.offset(i as isize) = *dct.offset(i as isize)
                 * (*dequant_mf.offset(i_mf as isize))[i as usize]
                 * ((1 as dctcoef) << i_qbits);
             i += 1;
         }
     } else {
-        let f: c_int = (1 as c_int) << -i_qbits - 1 as c_int;
-        let mut i_0: c_int = 0 as c_int;
-        while i_0 < 64 as c_int {
+        let f: c_int = (1) << -i_qbits - 1;
+        let mut i_0: c_int = 0;
+        while i_0 < 64 {
             *dct.offset(i_0 as isize) = *dct.offset(i_0 as isize)
                 * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
                 + f as dctcoef
@@ -367,20 +366,20 @@ unsafe extern "C" fn dequant_4x4_dc(
     mut dequant_mf: *mut [c_int; 16],
     mut i_qp: c_int,
 ) {
-    let i_qbits: c_int = i_qp / 6 as c_int - 6 as c_int;
-    if i_qbits >= 0 as c_int {
-        let i_dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0] << i_qbits;
-        let mut i: c_int = 0 as c_int;
-        while i < 16 as c_int {
+    let i_qbits: c_int = i_qp / 6 - 6;
+    if i_qbits >= 0 {
+        let i_dmf: c_int = (*dequant_mf.offset((i_qp % 6) as isize))[0] << i_qbits;
+        let mut i: c_int = 0;
+        while i < 16 {
             let ref mut fresh6 = *dct.offset(i as isize);
             *fresh6 = (*fresh6 as c_int * i_dmf) as dctcoef;
             i += 1;
         }
     } else {
-        let i_dmf_0: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0];
-        let f: c_int = (1 as c_int) << -i_qbits - 1 as c_int;
-        let mut i_0: c_int = 0 as c_int;
-        while i_0 < 16 as c_int {
+        let i_dmf_0: c_int = (*dequant_mf.offset((i_qp % 6) as isize))[0];
+        let f: c_int = (1) << -i_qbits - 1;
+        let mut i_0: c_int = 0;
+        while i_0 < 16 {
             *dct.offset(i_0 as isize) =
                 *dct.offset(i_0 as isize) * i_dmf_0 as dctcoef + f as dctcoef >> -i_qbits;
             i_0 += 1;
@@ -410,15 +409,15 @@ unsafe extern "C" fn idct_dequant_2x4_dc(
     let mut b5: c_int = a2 - a3;
     let mut b6: c_int = a4 - a5;
     let mut b7: c_int = a6 - a7;
-    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0] << i_qp / 6 as c_int;
-    (*dct4x4.offset(0))[0] = ((b0 + b1) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    (*dct4x4.offset(1))[0] = ((b2 + b3) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    (*dct4x4.offset(2))[0] = ((b0 - b1) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    (*dct4x4.offset(3))[0] = ((b2 - b3) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    (*dct4x4.offset(4))[0] = ((b4 - b5) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    (*dct4x4.offset(5))[0] = ((b6 - b7) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    (*dct4x4.offset(6))[0] = ((b4 + b5) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    (*dct4x4.offset(7))[0] = ((b6 + b7) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
+    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6) as isize))[0] << i_qp / 6;
+    (*dct4x4.offset(0))[0] = ((b0 + b1) * dmf + 32 >> 6) as dctcoef;
+    (*dct4x4.offset(1))[0] = ((b2 + b3) * dmf + 32 >> 6) as dctcoef;
+    (*dct4x4.offset(2))[0] = ((b0 - b1) * dmf + 32 >> 6) as dctcoef;
+    (*dct4x4.offset(3))[0] = ((b2 - b3) * dmf + 32 >> 6) as dctcoef;
+    (*dct4x4.offset(4))[0] = ((b4 - b5) * dmf + 32 >> 6) as dctcoef;
+    (*dct4x4.offset(5))[0] = ((b6 - b7) * dmf + 32 >> 6) as dctcoef;
+    (*dct4x4.offset(6))[0] = ((b4 + b5) * dmf + 32 >> 6) as dctcoef;
+    (*dct4x4.offset(7))[0] = ((b6 + b7) * dmf + 32 >> 6) as dctcoef;
 }
 #[c2rust::src_loc = "199:1"]
 unsafe extern "C" fn idct_dequant_2x4_dconly(
@@ -442,15 +441,15 @@ unsafe extern "C" fn idct_dequant_2x4_dconly(
     let mut b5: c_int = a2 - a3;
     let mut b6: c_int = a4 - a5;
     let mut b7: c_int = a6 - a7;
-    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6 as c_int) as isize))[0] << i_qp / 6 as c_int;
-    *dct.offset(0) = ((b0 + b1) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    *dct.offset(1) = ((b2 + b3) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    *dct.offset(2) = ((b0 - b1) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    *dct.offset(3) = ((b2 - b3) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    *dct.offset(4) = ((b4 - b5) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    *dct.offset(5) = ((b6 - b7) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    *dct.offset(6) = ((b4 + b5) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
-    *dct.offset(7) = ((b6 + b7) * dmf + 32 as c_int >> 6 as c_int) as dctcoef;
+    let mut dmf: c_int = (*dequant_mf.offset((i_qp % 6) as isize))[0] << i_qp / 6;
+    *dct.offset(0) = ((b0 + b1) * dmf + 32 >> 6) as dctcoef;
+    *dct.offset(1) = ((b2 + b3) * dmf + 32 >> 6) as dctcoef;
+    *dct.offset(2) = ((b0 - b1) * dmf + 32 >> 6) as dctcoef;
+    *dct.offset(3) = ((b2 - b3) * dmf + 32 >> 6) as dctcoef;
+    *dct.offset(4) = ((b4 - b5) * dmf + 32 >> 6) as dctcoef;
+    *dct.offset(5) = ((b6 - b7) * dmf + 32 >> 6) as dctcoef;
+    *dct.offset(6) = ((b4 + b5) * dmf + 32 >> 6) as dctcoef;
+    *dct.offset(7) = ((b6 + b7) * dmf + 32 >> 6) as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "213:1"]
@@ -475,14 +474,14 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x4(
     let mut b5: c_int = a2 - a3;
     let mut b6: c_int = a4 - a5;
     let mut b7: c_int = a6 - a7;
-    *out.offset(0) = ((b0 + b1) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
-    *out.offset(1) = ((b2 + b3) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
-    *out.offset(2) = ((b0 - b1) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
-    *out.offset(3) = ((b2 - b3) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
-    *out.offset(4) = ((b4 - b5) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
-    *out.offset(5) = ((b6 - b7) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
-    *out.offset(6) = ((b4 + b5) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
-    *out.offset(7) = ((b6 + b7) * dmf + 2080 as c_int >> 6 as c_int) as dctcoef;
+    *out.offset(0) = ((b0 + b1) * dmf + 2080 >> 6) as dctcoef;
+    *out.offset(1) = ((b2 + b3) * dmf + 2080 >> 6) as dctcoef;
+    *out.offset(2) = ((b0 - b1) * dmf + 2080 >> 6) as dctcoef;
+    *out.offset(3) = ((b2 - b3) * dmf + 2080 >> 6) as dctcoef;
+    *out.offset(4) = ((b4 - b5) * dmf + 2080 >> 6) as dctcoef;
+    *out.offset(5) = ((b6 - b7) * dmf + 2080 >> 6) as dctcoef;
+    *out.offset(6) = ((b4 + b5) * dmf + 2080 >> 6) as dctcoef;
+    *out.offset(7) = ((b6 + b7) * dmf + 2080 >> 6) as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "227:1"]
@@ -495,10 +494,10 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x2(
     let mut d1: c_int = *dct.offset(2) + *dct.offset(3);
     let mut d2: c_int = *dct.offset(0) - *dct.offset(1);
     let mut d3: c_int = *dct.offset(2) - *dct.offset(3);
-    *out.offset(0) = (((d0 + d1) * dmf >> 5 as c_int) + 32 as c_int) as dctcoef;
-    *out.offset(1) = (((d0 - d1) * dmf >> 5 as c_int) + 32 as c_int) as dctcoef;
-    *out.offset(2) = (((d2 + d3) * dmf >> 5 as c_int) + 32 as c_int) as dctcoef;
-    *out.offset(3) = (((d2 - d3) * dmf >> 5 as c_int) + 32 as c_int) as dctcoef;
+    *out.offset(0) = (((d0 + d1) * dmf >> 5) + 32) as dctcoef;
+    *out.offset(1) = (((d0 - d1) * dmf >> 5) + 32) as dctcoef;
+    *out.offset(2) = (((d2 + d3) * dmf >> 5) + 32) as dctcoef;
+    *out.offset(3) = (((d2 - d3) * dmf >> 5) + 32) as dctcoef;
 }
 #[inline(always)]
 #[c2rust::src_loc = "239:1"]
@@ -514,19 +513,13 @@ unsafe extern "C" fn optimize_chroma_round(
     } else {
         optimize_chroma_idct_dequant_2x2(out.as_mut_ptr(), dct as *mut dctcoef, dequant_mf);
     }
-    let mut sum: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
-    while i
-        < (if chroma422 != 0 {
-            8 as c_int
-        } else {
-            4 as c_int
-        })
-    {
+    let mut sum: c_int = 0;
+    let mut i: c_int = 0;
+    while i < (if chroma422 != 0 { 8 } else { 4 }) {
         sum |= (*ref_0.offset(i as isize) ^ out[i as usize]) as c_int;
         i += 1;
     }
-    return sum >> 6 as c_int;
+    return sum >> 6;
 }
 #[inline(always)]
 #[c2rust::src_loc = "254:1"]
@@ -543,34 +536,24 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
     } else {
         optimize_chroma_idct_dequant_2x2(dct_orig.as_mut_ptr(), dct as *mut dctcoef, dequant_mf);
     }
-    let mut sum: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
-    while i
-        < (if chroma422 != 0 {
-            8 as c_int
-        } else {
-            4 as c_int
-        })
-    {
+    let mut sum: c_int = 0;
+    let mut i: c_int = 0;
+    while i < (if chroma422 != 0 { 8 } else { 4 }) {
         sum |= dct_orig[i as usize] as c_int;
         i += 1;
     }
-    if sum >> 6 as c_int == 0 {
-        return 0 as c_int;
+    if sum >> 6 == 0 {
+        return 0;
     }
-    nz = 0 as c_int;
-    coeff = if chroma422 != 0 {
-        7 as c_int
-    } else {
-        3 as c_int
-    };
-    while coeff >= 0 as c_int {
+    nz = 0;
+    coeff = if chroma422 != 0 { 7 } else { 3 };
+    while coeff >= 0 {
         let mut level: c_int = *dct.offset(coeff as isize);
-        let mut sign: c_int = level >> 31 as c_int | 1 as c_int;
+        let mut sign: c_int = level >> 31 | 1;
         while level != 0 {
             *dct.offset(coeff as isize) = (level - sign) as dctcoef;
             if optimize_chroma_round(dct_orig.as_mut_ptr(), dct, dequant_mf, chroma422) != 0 {
-                nz = 1 as c_int;
+                nz = 1;
                 *dct.offset(coeff as isize) = level as dctcoef;
                 break;
             } else {
@@ -583,11 +566,11 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
 }
 #[c2rust::src_loc = "294:1"]
 unsafe extern "C" fn optimize_chroma_2x2_dc(mut dct: *mut dctcoef, mut dequant_mf: c_int) -> c_int {
-    return optimize_chroma_dc_internal(dct as *mut dctcoef, dequant_mf, 0 as c_int);
+    return optimize_chroma_dc_internal(dct as *mut dctcoef, dequant_mf, 0);
 }
 #[c2rust::src_loc = "299:1"]
 unsafe extern "C" fn optimize_chroma_2x4_dc(mut dct: *mut dctcoef, mut dequant_mf: c_int) -> c_int {
-    return optimize_chroma_dc_internal(dct as *mut dctcoef, dequant_mf, 1 as c_int);
+    return optimize_chroma_dc_internal(dct as *mut dctcoef, dequant_mf, 1);
 }
 #[c2rust::src_loc = "304:1"]
 unsafe extern "C" fn denoise_dct(
@@ -596,44 +579,40 @@ unsafe extern "C" fn denoise_dct(
     mut offset: *mut udctcoef,
     mut size: c_int,
 ) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < size {
         let mut level: c_int = *dct.offset(i as isize);
-        let mut sign: c_int = level >> 31 as c_int;
+        let mut sign: c_int = level >> 31;
         level = level + sign ^ sign;
         let ref mut fresh5 = *sum.offset(i as isize);
         *fresh5 = (*fresh5).wrapping_add(level as uint32_t);
         level = (level as udctcoef).wrapping_sub(*offset.offset(i as isize)) as c_int as c_int;
-        *dct.offset(i as isize) = (if level < 0 as c_int {
-            0 as c_int
-        } else {
-            (level ^ sign) - sign
-        }) as dctcoef;
+        *dct.offset(i as isize) = (if level < 0 { 0 } else { (level ^ sign) - sign }) as dctcoef;
         i += 1;
     }
 }
 #[inline(always)]
 #[c2rust::src_loc = "326:1"]
 unsafe extern "C" fn decimate_score_internal(mut dct: *mut dctcoef, mut i_max: c_int) -> c_int {
-    let mut ds_table: *const uint8_t = if i_max == 64 as c_int {
+    let mut ds_table: *const uint8_t = if i_max == 64 {
         x264_decimate_table8.as_ptr()
     } else {
         x264_decimate_table4.as_ptr()
     };
-    let mut i_score: c_int = 0 as c_int;
-    let mut idx: c_int = i_max - 1 as c_int;
-    while idx >= 0 as c_int && *dct.offset(idx as isize) == 0 as dctcoef {
+    let mut i_score: c_int = 0;
+    let mut idx: c_int = i_max - 1;
+    while idx >= 0 && *dct.offset(idx as isize) == 0 as dctcoef {
         idx -= 1;
     }
-    while idx >= 0 as c_int {
+    while idx >= 0 {
         let mut i_run: c_int = 0;
         let fresh4 = idx;
         idx = idx - 1;
-        if (*dct.offset(fresh4 as isize) + 1 as dctcoef) as c_uint > 2 as c_uint {
-            return 9 as c_int;
+        if (*dct.offset(fresh4 as isize) + 1 as dctcoef) as c_uint > 2 {
+            return 9;
         }
-        i_run = 0 as c_int;
-        while idx >= 0 as c_int && *dct.offset(idx as isize) == 0 as dctcoef {
+        i_run = 0;
+        while idx >= 0 && *dct.offset(idx as isize) == 0 as dctcoef {
             idx -= 1;
             i_run += 1;
         }
@@ -643,52 +622,52 @@ unsafe extern "C" fn decimate_score_internal(mut dct: *mut dctcoef, mut i_max: c
 }
 #[c2rust::src_loc = "353:1"]
 unsafe extern "C" fn decimate_score15(mut dct: *mut dctcoef) -> c_int {
-    return decimate_score_internal(dct.offset(1), 15 as c_int);
+    return decimate_score_internal(dct.offset(1), 15);
 }
 #[c2rust::src_loc = "357:1"]
 unsafe extern "C" fn decimate_score16(mut dct: *mut dctcoef) -> c_int {
-    return decimate_score_internal(dct, 16 as c_int);
+    return decimate_score_internal(dct, 16);
 }
 #[c2rust::src_loc = "361:1"]
 unsafe extern "C" fn decimate_score64(mut dct: *mut dctcoef) -> c_int {
-    return decimate_score_internal(dct, 64 as c_int);
+    return decimate_score_internal(dct, 64);
 }
 #[c2rust::src_loc = "375:1"]
 unsafe extern "C" fn coeff_last4(mut l: *mut dctcoef) -> c_int {
-    let mut i_last: c_int = 4 as c_int - 1 as c_int;
-    while i_last >= 0 as c_int && *l.offset(i_last as isize) == 0 as dctcoef {
+    let mut i_last: c_int = 4 - 1;
+    while i_last >= 0 && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "376:1"]
 unsafe extern "C" fn coeff_last8(mut l: *mut dctcoef) -> c_int {
-    let mut i_last: c_int = 8 as c_int - 1 as c_int;
-    while i_last >= 0 as c_int && *l.offset(i_last as isize) == 0 as dctcoef {
+    let mut i_last: c_int = 8 - 1;
+    while i_last >= 0 && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "377:1"]
 unsafe extern "C" fn coeff_last15(mut l: *mut dctcoef) -> c_int {
-    let mut i_last: c_int = 15 as c_int - 1 as c_int;
-    while i_last >= 0 as c_int && *l.offset(i_last as isize) == 0 as dctcoef {
+    let mut i_last: c_int = 15 - 1;
+    while i_last >= 0 && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "378:1"]
 unsafe extern "C" fn coeff_last16(mut l: *mut dctcoef) -> c_int {
-    let mut i_last: c_int = 16 as c_int - 1 as c_int;
-    while i_last >= 0 as c_int && *l.offset(i_last as isize) == 0 as dctcoef {
+    let mut i_last: c_int = 16 - 1;
+    while i_last >= 0 && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
 }
 #[c2rust::src_loc = "379:1"]
 unsafe extern "C" fn coeff_last64(mut l: *mut dctcoef) -> c_int {
-    let mut i_last: c_int = 64 as c_int - 1 as c_int;
-    while i_last >= 0 as c_int && *l.offset(i_last as isize) == 0 as dctcoef {
+    let mut i_last: c_int = 64 - 1;
+    while i_last >= 0 && *l.offset(i_last as isize) == 0 as dctcoef {
         i_last -= 1;
     }
     return i_last;
@@ -700,20 +679,20 @@ unsafe extern "C" fn coeff_level_run4(
 ) -> c_int {
     (*runlevel).last = coeff_last4(dct) as int32_t;
     let mut i_last: c_int = (*runlevel).last;
-    let mut i_total: c_int = 0 as c_int;
-    let mut mask: c_int = 0 as c_int;
+    let mut i_total: c_int = 0;
+    let mut mask: c_int = 0;
     loop {
         let fresh3 = i_total;
         i_total = i_total + 1;
         (*runlevel).level[fresh3 as usize] = *dct.offset(i_last as isize);
-        mask |= (1 as c_int) << i_last;
+        mask |= (1) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as c_int && *dct.offset(i_last as isize) == 0 as dctcoef) {
+            if !(i_last >= 0 && *dct.offset(i_last as isize) == 0 as dctcoef) {
                 break;
             }
         }
-        if !(i_last >= 0 as c_int) {
+        if !(i_last >= 0) {
             break;
         }
     }
@@ -727,20 +706,20 @@ unsafe extern "C" fn coeff_level_run8(
 ) -> c_int {
     (*runlevel).last = coeff_last8(dct) as int32_t;
     let mut i_last: c_int = (*runlevel).last;
-    let mut i_total: c_int = 0 as c_int;
-    let mut mask: c_int = 0 as c_int;
+    let mut i_total: c_int = 0;
+    let mut mask: c_int = 0;
     loop {
         let fresh2 = i_total;
         i_total = i_total + 1;
         (*runlevel).level[fresh2 as usize] = *dct.offset(i_last as isize);
-        mask |= (1 as c_int) << i_last;
+        mask |= (1) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as c_int && *dct.offset(i_last as isize) == 0 as dctcoef) {
+            if !(i_last >= 0 && *dct.offset(i_last as isize) == 0 as dctcoef) {
                 break;
             }
         }
-        if !(i_last >= 0 as c_int) {
+        if !(i_last >= 0) {
             break;
         }
     }
@@ -754,20 +733,20 @@ unsafe extern "C" fn coeff_level_run15(
 ) -> c_int {
     (*runlevel).last = coeff_last15(dct) as int32_t;
     let mut i_last: c_int = (*runlevel).last;
-    let mut i_total: c_int = 0 as c_int;
-    let mut mask: c_int = 0 as c_int;
+    let mut i_total: c_int = 0;
+    let mut mask: c_int = 0;
     loop {
         let fresh1 = i_total;
         i_total = i_total + 1;
         (*runlevel).level[fresh1 as usize] = *dct.offset(i_last as isize);
-        mask |= (1 as c_int) << i_last;
+        mask |= (1) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as c_int && *dct.offset(i_last as isize) == 0 as dctcoef) {
+            if !(i_last >= 0 && *dct.offset(i_last as isize) == 0 as dctcoef) {
                 break;
             }
         }
-        if !(i_last >= 0 as c_int) {
+        if !(i_last >= 0) {
             break;
         }
     }
@@ -781,20 +760,20 @@ unsafe extern "C" fn coeff_level_run16(
 ) -> c_int {
     (*runlevel).last = coeff_last16(dct) as int32_t;
     let mut i_last: c_int = (*runlevel).last;
-    let mut i_total: c_int = 0 as c_int;
-    let mut mask: c_int = 0 as c_int;
+    let mut i_total: c_int = 0;
+    let mut mask: c_int = 0;
     loop {
         let fresh0 = i_total;
         i_total = i_total + 1;
         (*runlevel).level[fresh0 as usize] = *dct.offset(i_last as isize);
-        mask |= (1 as c_int) << i_last;
+        mask |= (1) << i_last;
         loop {
             i_last -= 1;
-            if !(i_last >= 0 as c_int && *dct.offset(i_last as isize) == 0 as dctcoef) {
+            if !(i_last >= 0 && *dct.offset(i_last as isize) == 0 as dctcoef) {
                 break;
             }
         }
-        if !(i_last >= 0 as c_int) {
+        if !(i_last >= 0) {
             break;
         }
     }

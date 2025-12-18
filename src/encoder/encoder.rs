@@ -181,15 +181,15 @@ struct x264_bs_bak_t {
 unsafe extern "C" fn calc_psnr(mut sqe: c_double, mut size: c_double) -> c_double {
     let mut mse: c_double = sqe / ((PIXEL_MAX * PIXEL_MAX) as c_double * size);
     if mse <= 0.0000000001f64 {
-        return 100 as c_int as c_double;
+        return 100 as c_double;
     }
     return -10.0f64 * log10(mse);
 }
 #[c2rust::src_loc = "65:1"]
 unsafe extern "C" fn calc_ssim_db(mut ssim: c_double) -> c_double {
-    let mut inv_ssim: c_double = 1 as c_int as c_double - ssim;
+    let mut inv_ssim: c_double = 1 as c_double - ssim;
     if inv_ssim <= 0.0000000001f64 {
-        return 100 as c_int as c_double;
+        return 100 as c_double;
     }
     return -10.0f64 * log10(inv_ssim);
 }
@@ -197,7 +197,7 @@ unsafe extern "C" fn calc_ssim_db(mut ssim: c_double) -> c_double {
 unsafe extern "C" fn threadpool_wait_all(mut h: *mut x264_t) -> c_int {
     for n in 0..*(*h).param.threads as usize {
         if (*(*h).thread[n]).b_thread_active != 0 {
-            (*(*h).thread[n]).b_thread_active = 0 as c_int;
+            (*(*h).thread[n]).b_thread_active = 0;
             if (x264_10_threadpool_wait((*h).threadpool, (*h).thread[n] as *mut _) as intptr_t) < 0
             {
                 return -1;
@@ -231,15 +231,15 @@ unsafe extern "C" fn frame_dump(mut h: *mut x264_t) {
         SEEK_SET,
     ) == 0
     {
-        let mut p: c_int = 0 as c_int;
+        let mut p: c_int = 0;
         while p
             < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-                3 as c_int
+                3
             } else {
-                1 as c_int
+                1
             })
         {
-            let mut y: c_int = 0 as c_int;
+            let mut y: c_int = 0;
             while y < (*h).param.height as c_int {
                 fwrite(
                     &mut *(*(*(*h).fdec).plane.as_mut_ptr().offset(p as isize)).offset(
@@ -259,12 +259,11 @@ unsafe extern "C" fn frame_dump(mut h: *mut x264_t) {
             let mut cw: c_int = (*h).param.width as c_int >> 1;
             let mut ch: c_int = (*h).param.height as c_int >> (*h).mb.chroma_v_shift;
             let mut planeu: *mut pixel =
-                x264_malloc((2 as c_int * (cw * ch * SIZEOF_PIXEL + 32 as c_int)) as int64_t)
-                    as *mut pixel;
+                x264_malloc((2 * (cw * ch * SIZEOF_PIXEL + 32)) as int64_t) as *mut pixel;
             if !planeu.is_null() {
                 let mut planev: *mut pixel = planeu
                     .offset((cw * ch) as isize)
-                    .offset((32 as c_int / SIZEOF_PIXEL) as isize);
+                    .offset((32 / SIZEOF_PIXEL) as isize);
                 (*h).mc
                     .plane_copy_deinterleave
                     .expect("non-null function pointer")(
@@ -308,19 +307,19 @@ unsafe extern "C" fn slice_header_init(
     let mut param: *mut x264_param_t = &mut (*h).param;
     (*sh).sps = sps;
     (*sh).pps = pps;
-    (*sh).i_first_mb = 0 as c_int;
-    (*sh).i_last_mb = (*h).mb.i_mb_count - 1 as c_int;
+    (*sh).i_first_mb = 0;
+    (*sh).i_last_mb = (*h).mb.i_mb_count - 1;
     (*sh).i_pps_id = (*pps).i_id;
     (*sh).i_frame_num = i_frame;
     (*sh).mbaff = (*h).param.interlaced;
-    (*sh).b_field_pic = 0 as c_int;
-    (*sh).b_bottom_field = 0 as c_int;
+    (*sh).b_field_pic = 0;
+    (*sh).b_bottom_field = 0;
     (*sh).i_idr_pic_id = i_idr_pic_id;
-    (*sh).i_poc = 0 as c_int;
-    (*sh).i_delta_poc_bottom = 0 as c_int;
-    (*sh).i_delta_poc[0] = 0 as c_int;
-    (*sh).i_delta_poc[1] = 0 as c_int;
-    (*sh).i_redundant_pic_cnt = 0 as c_int;
+    (*sh).i_poc = 0;
+    (*sh).i_delta_poc_bottom = 0;
+    (*sh).i_delta_poc[0] = 0;
+    (*sh).i_delta_poc[1] = 0;
+    (*sh).i_redundant_pic_cnt = 0;
     (*h).mb.b_direct_auto_write = ((*h).param.analyse.direct_mv_pred == DirectPrediction::Auto
         && (*h).param.i_bframe != 0
         && ((*h).param.rc.stat_write || !(*h).param.rc.stat_read))
@@ -335,27 +334,26 @@ unsafe extern "C" fn slice_header_init(
                     ((*param).analyse.direct_mv_pred == DirectPrediction::Spatial) as c_int;
             }
         } else {
-            (*h).mb.b_direct_auto_write = 0 as c_int;
-            (*sh).b_direct_spatial_mv_pred = 1 as c_int;
+            (*h).mb.b_direct_auto_write = 0;
+            (*sh).b_direct_spatial_mv_pred = 1;
         }
     }
-    (*sh).b_num_ref_idx_override = 0 as c_int;
-    (*sh).i_num_ref_idx_l0_active = 1 as c_int;
-    (*sh).i_num_ref_idx_l1_active = 1 as c_int;
+    (*sh).b_num_ref_idx_override = 0;
+    (*sh).i_num_ref_idx_l0_active = 1;
+    (*sh).i_num_ref_idx_l1_active = 1;
     (*sh).b_ref_pic_list_reordering[0] = (*h).b_ref_reorder[0];
     (*sh).b_ref_pic_list_reordering[1] = (*h).b_ref_reorder[1];
-    let mut list: c_int = 0 as c_int;
-    while list < 2 as c_int {
+    let mut list: c_int = 0;
+    while list < 2 {
         if (*sh).b_ref_pic_list_reordering[list as usize] != 0 {
             let mut pred_frame_num: c_int = i_frame;
-            let mut i: c_int = 0 as c_int;
+            let mut i: c_int = 0;
             while i < (*h).i_ref[list as usize] {
                 let mut diff: c_int =
                     (*(*h).fref[list as usize][i as usize]).i_frame_num - pred_frame_num;
-                (*sh).ref_pic_list_order[list as usize][i as usize].idc =
-                    (diff > 0 as c_int) as c_int;
-                (*sh).ref_pic_list_order[list as usize][i as usize].arg = abs(diff) - 1 as c_int
-                    & ((1 as c_int) << (*sps).i_log2_max_frame_num) - 1 as c_int;
+                (*sh).ref_pic_list_order[list as usize][i as usize].idc = (diff > 0) as c_int;
+                (*sh).ref_pic_list_order[list as usize][i as usize].arg =
+                    abs(diff) - 1 & ((1) << (*sps).i_log2_max_frame_num) - 1;
                 pred_frame_num = (*(*h).fref[list as usize][i as usize]).i_frame_num;
                 i += 1;
             }
@@ -363,28 +361,27 @@ unsafe extern "C" fn slice_header_init(
         list += 1;
     }
     (*sh).i_cabac_init_idc = (*param).i_cabac_init_idc;
-    (*sh).i_qp = if i_qp < 51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) {
+    (*sh).i_qp = if i_qp < 51 + 6 * (10 - 8) {
         i_qp
     } else {
-        51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int)
+        51 + 6 * (10 - 8)
     };
     (*sh).i_qp_delta = (*sh).i_qp - (*pps).i_pic_init_qp;
-    (*sh).b_sp_for_swidth = 0 as c_int;
-    (*sh).i_qs_delta = 0 as c_int;
+    (*sh).b_sp_for_swidth = 0;
+    (*sh).i_qs_delta = 0;
     let mut deblock_thresh: c_int = i_qp
-        + 2 as c_int
-            * (if (*param).i_deblocking_filter_alphac0 < (*param).i_deblocking_filter_beta {
-                (*param).i_deblocking_filter_alphac0
-            } else {
-                (*param).i_deblocking_filter_beta
-            });
+        + 2 * (if (*param).i_deblocking_filter_alphac0 < (*param).i_deblocking_filter_beta {
+            (*param).i_deblocking_filter_alphac0
+        } else {
+            (*param).i_deblocking_filter_beta
+        });
     if (*param).deblocking_filter && ((*h).mb.b_variable_qp != 0 || 15 < deblock_thresh) {
         (*sh).i_disable_deblocking_filter_idc = if (*param).sliced_threads { 2 } else { 0 };
     } else {
         (*sh).i_disable_deblocking_filter_idc = 1;
     }
-    (*sh).i_alpha_c0_offset = (*param).i_deblocking_filter_alphac0 * 2 as c_int;
-    (*sh).i_beta_offset = (*param).i_deblocking_filter_beta * 2 as c_int;
+    (*sh).i_alpha_c0_offset = (*param).i_deblocking_filter_alphac0 * 2;
+    (*sh).i_beta_offset = (*param).i_deblocking_filter_beta * 2;
 }
 #[c2rust::src_loc = "213:1"]
 unsafe extern "C" fn slice_header_write(
@@ -395,12 +392,12 @@ unsafe extern "C" fn slice_header_write(
     if (*sh).mbaff {
         let mut first_x: c_int = (*sh).i_first_mb % (*(*sh).sps).i_mb_width;
         let mut first_y: c_int = (*sh).i_first_mb / (*(*sh).sps).i_mb_width;
-        if first_y & 1 as c_int == 0 as c_int {
+        if first_y & 1 == 0 {
         } else {
             __assert_fail(
                 b"(first_y&1) == 0\0" as *const u8 as *const c_char,
                 b"encoder/encoder.c\0" as *const u8 as *const c_char,
-                219 as c_uint,
+                219,
                 ::core::mem::transmute::<[u8; 60], [c_char; 60]>(
                     *b"void slice_header_write(bs_t *, x264_slice_header_t *, int)\0",
                 )
@@ -409,21 +406,18 @@ unsafe extern "C" fn slice_header_write(
         }
         bs_write_ue_big(
             s,
-            (2 as c_int * first_x
-                + (*(*sh).sps).i_mb_width * (first_y & !(1 as c_int))
-                + (first_y & 1 as c_int)
-                >> 1 as c_int) as c_uint,
+            (2 * first_x + (*(*sh).sps).i_mb_width * (first_y & !(1)) + (first_y & 1) >> 1)
+                as c_uint,
         );
     } else {
         bs_write_ue_big(s, (*sh).i_first_mb as c_uint);
     }
-    bs_write_ue_big(s, ((*sh).i_type + 5 as c_int) as c_uint);
+    bs_write_ue_big(s, ((*sh).i_type + 5) as c_uint);
     bs_write_ue_big(s, (*sh).i_pps_id as c_uint);
     bs_write(
         s,
         (*(*sh).sps).i_log2_max_frame_num,
-        ((*sh).i_frame_num & ((1 as c_int) << (*(*sh).sps).i_log2_max_frame_num) - 1 as c_int)
-            as uint32_t,
+        ((*sh).i_frame_num & ((1) << (*(*sh).sps).i_log2_max_frame_num) - 1) as uint32_t,
     );
     if (*(*sh).sps).b_frame_mbs_only == 0 {
         bs_write1(s, (*sh).b_field_pic as uint32_t);
@@ -431,15 +425,14 @@ unsafe extern "C" fn slice_header_write(
             bs_write1(s, (*sh).b_bottom_field as uint32_t);
         }
     }
-    if (*sh).i_idr_pic_id >= 0 as c_int {
+    if (*sh).i_idr_pic_id >= 0 {
         bs_write_ue_big(s, (*sh).i_idr_pic_id as c_uint);
     }
-    if (*(*sh).sps).i_poc_type == 0 as c_int {
+    if (*(*sh).sps).i_poc_type == 0 {
         bs_write(
             s,
             (*(*sh).sps).i_log2_max_poc_lsb,
-            ((*sh).i_poc & ((1 as c_int) << (*(*sh).sps).i_log2_max_poc_lsb) - 1 as c_int)
-                as uint32_t,
+            ((*sh).i_poc & ((1) << (*(*sh).sps).i_log2_max_poc_lsb) - 1) as uint32_t,
         );
         if (*(*sh).pps).b_pic_order != 0 && (*sh).b_field_pic == 0 {
             bs_write_se(s, (*sh).i_delta_poc_bottom);
@@ -454,37 +447,37 @@ unsafe extern "C" fn slice_header_write(
     if (*sh).i_type == SLICE_TYPE_P as c_int || (*sh).i_type == SLICE_TYPE_B as c_int {
         bs_write1(s, (*sh).b_num_ref_idx_override as uint32_t);
         if (*sh).b_num_ref_idx_override != 0 {
-            bs_write_ue_big(s, ((*sh).i_num_ref_idx_l0_active - 1 as c_int) as c_uint);
+            bs_write_ue_big(s, ((*sh).i_num_ref_idx_l0_active - 1) as c_uint);
             if (*sh).i_type == SLICE_TYPE_B as c_int {
-                bs_write_ue_big(s, ((*sh).i_num_ref_idx_l1_active - 1 as c_int) as c_uint);
+                bs_write_ue_big(s, ((*sh).i_num_ref_idx_l1_active - 1) as c_uint);
             }
         }
     }
     if (*sh).i_type != SLICE_TYPE_I as c_int {
         bs_write1(s, (*sh).b_ref_pic_list_reordering[0] as uint32_t);
         if (*sh).b_ref_pic_list_reordering[0] != 0 {
-            let mut i: c_int = 0 as c_int;
+            let mut i: c_int = 0;
             while i < (*sh).i_num_ref_idx_l0_active {
                 bs_write_ue_big(s, (*sh).ref_pic_list_order[0][i as usize].idc as c_uint);
                 bs_write_ue_big(s, (*sh).ref_pic_list_order[0][i as usize].arg as c_uint);
                 i += 1;
             }
-            bs_write_ue_big(s, 3 as c_uint);
+            bs_write_ue_big(s, 3);
         }
     }
     if (*sh).i_type == SLICE_TYPE_B as c_int {
         bs_write1(s, (*sh).b_ref_pic_list_reordering[1] as uint32_t);
         if (*sh).b_ref_pic_list_reordering[1] != 0 {
-            let mut i_0: c_int = 0 as c_int;
+            let mut i_0: c_int = 0;
             while i_0 < (*sh).i_num_ref_idx_l1_active {
                 bs_write_ue_big(s, (*sh).ref_pic_list_order[1][i_0 as usize].idc as c_uint);
                 bs_write_ue_big(s, (*sh).ref_pic_list_order[1][i_0 as usize].arg as c_uint);
                 i_0 += 1;
             }
-            bs_write_ue_big(s, 3 as c_uint);
+            bs_write_ue_big(s, 3);
         }
     }
-    (*sh).b_weighted_pred = 0 as c_int;
+    (*sh).b_weighted_pred = 0;
     if (*(*sh).pps).b_weighted_pred != 0 && (*sh).i_type == SLICE_TYPE_P as c_int {
         (*sh).b_weighted_pred = (!(*sh).weight[0][0].weightfn.is_null()
             || !(*sh).weight[0][1].weightfn.is_null()
@@ -493,7 +486,7 @@ unsafe extern "C" fn slice_header_write(
         if (*(*sh).sps).i_chroma_format_idc != 0 {
             bs_write_ue_big(s, (*sh).weight[0][1].i_denom as c_uint);
         }
-        let mut i_1: c_int = 0 as c_int;
+        let mut i_1: c_int = 0;
         while i_1 < (*sh).i_num_ref_idx_l0_active {
             let mut luma_weight_l0_flag: c_int =
                 !(*sh).weight[i_1 as usize][0].weightfn.is_null() as c_int;
@@ -509,8 +502,8 @@ unsafe extern "C" fn slice_header_write(
                         as c_int;
                 bs_write1(s, chroma_weight_l0_flag as uint32_t);
                 if chroma_weight_l0_flag != 0 {
-                    let mut j: c_int = 1 as c_int;
-                    while j < 3 as c_int {
+                    let mut j: c_int = 1;
+                    while j < 3 {
                         bs_write_se(s, (*sh).weight[i_1 as usize][j as usize].i_scale as c_int);
                         bs_write_se(s, (*sh).weight[i_1 as usize][j as usize].i_offset as c_int);
                         j += 1;
@@ -519,30 +512,26 @@ unsafe extern "C" fn slice_header_write(
             }
             i_1 += 1;
         }
-    } else if (*(*sh).pps).b_weighted_bipred == 1 as c_int && (*sh).i_type == SLICE_TYPE_B as c_int
-    {
+    } else if (*(*sh).pps).b_weighted_bipred == 1 && (*sh).i_type == SLICE_TYPE_B as c_int {
         // TODO: from original x264
     }
-    if i_nal_ref_idc != 0 as c_int {
-        if (*sh).i_idr_pic_id >= 0 as c_int {
+    if i_nal_ref_idc != 0 {
+        if (*sh).i_idr_pic_id >= 0 {
             bs_write1(s, 0 as uint32_t);
             bs_write1(s, 0 as uint32_t);
         } else {
-            bs_write1(
-                s,
-                ((*sh).i_mmco_command_count > 0 as c_int) as c_int as uint32_t,
-            );
-            if (*sh).i_mmco_command_count > 0 as c_int {
-                let mut i_2: c_int = 0 as c_int;
+            bs_write1(s, ((*sh).i_mmco_command_count > 0) as c_int as uint32_t);
+            if (*sh).i_mmco_command_count > 0 {
+                let mut i_2: c_int = 0;
                 while i_2 < (*sh).i_mmco_command_count {
-                    bs_write_ue_big(s, 1 as c_uint);
+                    bs_write_ue_big(s, 1);
                     bs_write_ue_big(
                         s,
-                        ((*sh).mmco[i_2 as usize].i_difference_of_pic_nums - 1 as c_int) as c_uint,
+                        ((*sh).mmco[i_2 as usize].i_difference_of_pic_nums - 1) as c_uint,
                     );
                     i_2 += 1;
                 }
-                bs_write_ue_big(s, 0 as c_uint);
+                bs_write_ue_big(s, 0);
             }
         }
     }
@@ -552,9 +541,9 @@ unsafe extern "C" fn slice_header_write(
     bs_write_se(s, (*sh).i_qp_delta);
     if (*(*sh).pps).b_deblocking_filter_control != 0 {
         bs_write_ue_big(s, (*sh).i_disable_deblocking_filter_idc as c_uint);
-        if (*sh).i_disable_deblocking_filter_idc != 1 as c_int {
-            bs_write_se(s, (*sh).i_alpha_c0_offset >> 1 as c_int);
-            bs_write_se(s, (*sh).i_beta_offset >> 1 as c_int);
+        if (*sh).i_disable_deblocking_filter_idc != 1 {
+            bs_write_se(s, (*sh).i_alpha_c0_offset >> 1);
+            bs_write_se(s, (*sh).i_beta_offset >> 1);
         }
     }
 }
@@ -576,7 +565,7 @@ unsafe extern "C" fn bitstream_check_buffer_internal(
         if buf.is_null() {
             return -1;
         }
-        let mut aligned_size: c_int = (*h).out.i_bitstream & !(15 as c_int);
+        let mut aligned_size: c_int = (*h).out.i_bitstream & !(15);
         (*h).mc.memcpy_aligned.expect("non-null function pointer")(
             buf as *mut c_void,
             (*h).out.p_bitstream as *const c_void,
@@ -594,7 +583,7 @@ unsafe extern "C" fn bitstream_check_buffer_internal(
         (*h).cabac.p_start = (*h).cabac.p_start.offset(delta as isize);
         (*h).cabac.p = (*h).cabac.p.offset(delta as isize);
         (*h).cabac.p_end = buf.offset(buf_size as isize);
-        let mut i: c_int = 0 as c_int;
+        let mut i: c_int = 0;
         while i <= i_nal {
             let ref mut fresh2 = (*(*h).out.nal.offset(i as isize)).p_payload;
             *fresh2 = (*fresh2).offset(delta as isize);
@@ -604,7 +593,7 @@ unsafe extern "C" fn bitstream_check_buffer_internal(
         (*h).out.p_bitstream = buf;
         (*h).out.i_bitstream = buf_size;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "403:1"]
 unsafe extern "C" fn bitstream_check_buffer(mut h: *mut x264_t) -> c_int {
@@ -618,8 +607,8 @@ unsafe extern "C" fn bitstream_check_buffer(mut h: *mut x264_t) -> c_int {
 }
 #[c2rust::src_loc = "409:1"]
 unsafe extern "C" fn bitstream_check_buffer_filler(mut h: *mut x264_t, mut filler: c_int) -> c_int {
-    filler += 32 as c_int;
-    return bitstream_check_buffer_internal(h, filler, 0 as c_int, -1);
+    filler += 32;
+    return bitstream_check_buffer_internal(h, filler, 0, -1);
 }
 #[c2rust::src_loc = "423:1"]
 unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) -> c_int {
@@ -656,13 +645,13 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     let mut w_mod: c_int = 1;
     let mut h_mod: c_int = 1 << ((*h).param.interlaced || (*h).param.fake_interlaced) as c_int;
     if i_csp == X264_CSP_I400 {
-        (*h).param.analyse.i_chroma_qp_offset = 0 as c_int;
+        (*h).param.analyse.i_chroma_qp_offset = 0;
         (*h).param.analyse.chroma_me = false;
-        (*h).param.vui.i_colmatrix = 2 as c_int;
+        (*h).param.vui.i_colmatrix = 2;
     } else if i_csp < X264_CSP_I444 {
-        w_mod = 2 as c_int;
+        w_mod = 2;
         if i_csp < X264_CSP_I422 {
-            h_mod *= 2 as c_int;
+            h_mod *= 2;
         }
     }
     if (*h).param.width as c_int % w_mod != 0 {
@@ -723,9 +712,9 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         );
         return -1;
     }
-    if (*h).param.vui.i_sar_width <= 0 as c_int || (*h).param.vui.i_sar_height <= 0 as c_int {
-        (*h).param.vui.i_sar_width = 0 as c_int;
-        (*h).param.vui.i_sar_height = 0 as c_int;
+    if (*h).param.vui.i_sar_width <= 0 || (*h).param.vui.i_sar_height <= 0 {
+        (*h).param.vui.i_sar_width = 0;
+        (*h).param.vui.i_sar_height = 0;
     }
     let cpu_count = std::thread::available_parallelism()
         .map(|n| n.get())
@@ -777,19 +766,15 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                 b"OpenCL: device id and device skip count configured; dropping skip\n\0"
                     as *const u8 as *const c_char,
             );
-            (*h).param.i_opencl_device = 0 as c_int;
+            (*h).param.i_opencl_device = 0;
         }
     }
-    (*h).param.i_keyint_max = x264_clip3(
-        (*h).param.i_keyint_max,
-        1 as c_int,
-        X264_KEYINT_MAX_INFINITE,
-    );
-    if (*h).param.i_keyint_max == 1 as c_int {
+    (*h).param.i_keyint_max = x264_clip3((*h).param.i_keyint_max, 1, X264_KEYINT_MAX_INFINITE);
+    if (*h).param.i_keyint_max == 1 {
         (*h).param.intra_refresh = false;
-        (*h).param.analyse.i_weighted_pred = 0 as c_int;
-        (*h).param.i_frame_reference = 1 as c_int;
-        (*h).param.i_dpb_size = 1 as c_int;
+        (*h).param.analyse.i_weighted_pred = 0;
+        (*h).param.i_frame_reference = 1;
+        (*h).param.i_dpb_size = 1;
     }
     if (*h).param.frame_packing == Some(FramePacking::TileFormat)
         && (((*h).param.width - (*h).param.crop_rect.left - (*h).param.crop_rect.right) % 3 != 0
@@ -817,18 +802,18 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         }
     }
     if b_open != 0 {
-        let mut score: c_int = 0 as c_int;
-        score += ((*h).param.analyse.i_me_range == 0 as c_int) as c_int;
-        score += ((*h).param.rc.i_qp_step == 3 as c_int) as c_int;
-        score += ((*h).param.i_keyint_max == 12 as c_int) as c_int;
-        score += ((*h).param.rc.i_qp_min == 2 as c_int) as c_int;
-        score += ((*h).param.rc.i_qp_max == 31 as c_int) as c_int;
+        let mut score: c_int = 0;
+        score += ((*h).param.analyse.i_me_range == 0) as c_int;
+        score += ((*h).param.rc.i_qp_step == 3) as c_int;
+        score += ((*h).param.i_keyint_max == 12) as c_int;
+        score += ((*h).param.rc.i_qp_min == 2) as c_int;
+        score += ((*h).param.rc.i_qp_max == 31) as c_int;
         score += ((*h).param.rc.f_qcompress as c_double == 0.5f64) as c_int;
         score += (fabs((*h).param.rc.f_ip_factor as c_double - 1.25f64) < 0.01f64) as c_int;
         score += (fabs((*h).param.rc.f_pb_factor as c_double - 1.25f64) < 0.01f64) as c_int;
-        score += ((*h).param.analyse.inter == 0 as c_uint
-            && (*h).param.analyse.i_subpel_refine == 8 as c_int) as c_int;
-        if score >= 5 as c_int {
+        score +=
+            ((*h).param.analyse.inter == 0 && (*h).param.analyse.i_subpel_refine == 8) as c_int;
+        if score >= 5 {
             x264_10_log(
                 h,
                 X264_LOG_ERROR,
@@ -861,7 +846,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         (*h).param.pic_struct = true;
     }
     if (*h).param.i_avcintra_class != 0 {
-        if BIT_DEPTH != 10 as c_int {
+        if BIT_DEPTH != 10 {
             x264_10_log(
                 h,
                 X264_LOG_ERROR,
@@ -908,7 +893,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 912 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -920,7 +905,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1100 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -932,7 +917,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 912 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -944,7 +929,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1100 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -956,7 +941,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 24000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 912 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -988,7 +973,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 1 as uint8_t,
+                                interlaced: 1,
                                 frame_size: 1820 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -1000,7 +985,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 1 as uint8_t,
+                                interlaced: 1,
                                 frame_size: 2196 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -1012,7 +997,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1820 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -1024,7 +1009,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1820 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -1036,7 +1021,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 2196 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -1048,7 +1033,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 2196 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -1060,7 +1045,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 24000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1820 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci50_4ic.as_ptr(),
@@ -1076,7 +1061,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1848 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_720p_4ic.as_ptr(),
@@ -1088,7 +1073,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 2224 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_720p_4ic.as_ptr(),
@@ -1100,7 +1085,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1848 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_720p_4ic.as_ptr(),
@@ -1112,7 +1097,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 2224 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_720p_4ic.as_ptr(),
@@ -1124,7 +1109,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 24000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 1848 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_720p_4ic.as_ptr(),
@@ -1156,7 +1141,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 1 as uint8_t,
+                                interlaced: 1,
                                 frame_size: 3692 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1168,7 +1153,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 1 as uint8_t,
+                                interlaced: 1,
                                 frame_size: 4444 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1180,7 +1165,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 3692 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1192,7 +1177,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 3692 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1204,7 +1189,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 4444 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1216,7 +1201,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 4444 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1228,7 +1213,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 24000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 3692 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1244,7 +1229,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 3724 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_720p_4ic.as_ptr(),
@@ -1256,7 +1241,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 4472 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_720p_4ic.as_ptr(),
@@ -1315,7 +1300,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 1 as uint8_t,
+                                interlaced: 1,
                                 frame_size: 7444 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1327,7 +1312,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 1 as uint8_t,
+                                interlaced: 1,
                                 frame_size: 8940 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1339,7 +1324,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 7444 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1351,7 +1336,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 7444 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1363,7 +1348,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 8940 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1375,7 +1360,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 8940 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1387,7 +1372,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 24000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 7444 as uint16_t,
                                 cqm_4iy: x264_cqm_jvt4i.as_ptr(),
                                 cqm_4ic: x264_cqm_avci100_1080_4ic.as_ptr(),
@@ -1403,7 +1388,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 9844 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1415,7 +1400,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 9844 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1427,7 +1412,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 9844 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1439,7 +1424,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 9844 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1451,7 +1436,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 24000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 9844 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1494,7 +1479,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 60000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 15700 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1506,7 +1491,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 50 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 15700 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1518,7 +1503,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 30000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 15700 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1530,7 +1515,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 25 as uint16_t,
                                 fps_den: 1 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 15700 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1542,7 +1527,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                             let mut init = C2RustUnnamed_20 {
                                 fps_num: 24000 as uint16_t,
                                 fps_den: 1001 as uint16_t,
-                                interlaced: 0 as uint8_t,
+                                interlaced: 0,
                                 frame_size: 15700 as uint16_t,
                                 cqm_4iy: x264_cqm_avci300_2160p_4iy.as_ptr(),
                                 cqm_4ic: x264_cqm_avci300_2160p_4ic.as_ptr(),
@@ -1584,23 +1569,23 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         let mut res: c_int = -1;
         if i_csp >= X264_CSP_I420 && i_csp < X264_CSP_I422 && type_0 == 0 {
             if (*h).param.width == 1440 && (*h).param.height == 1080 {
-                res = 1 as c_int;
+                res = 1;
             } else if (*h).param.width == 960 && (*h).param.height == 720 {
-                res = 0 as c_int;
+                res = 0;
             }
         } else if i_csp >= X264_CSP_I422 && i_csp < X264_CSP_I444 && type_0 != 0 {
-            if type_0 < 3 as c_int {
+            if type_0 < 3 {
                 if (*h).param.width == 1920 && (*h).param.height == 1080 {
-                    res = 1 as c_int;
+                    res = 1;
                 } else if (*h).param.width == 2048 && (*h).param.height == 1080 {
-                    res = 1 as c_int;
+                    res = 1;
                 } else if (*h).param.width == 1280 && (*h).param.height == 720 {
-                    res = 0 as c_int;
+                    res = 0;
                 }
             } else if (*h).param.width == 3840 && (*h).param.height == 2160 {
-                res = 0 as c_int;
+                res = 0;
             } else if (*h).param.width == 4096 && (*h).param.height == 2160 {
-                res = 0 as c_int;
+                res = 0;
             }
         } else {
             x264_10_log(
@@ -1611,7 +1596,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             );
             return -1;
         }
-        if res < 0 as c_int {
+        if res < 0 {
             x264_10_log(
                 h,
                 X264_LOG_ERROR,
@@ -1643,8 +1628,8 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         let mut fps_num: uint32_t = (*h).param.i_fps_num;
         let mut fps_den: uint32_t = (*h).param.i_fps_den;
         x264_reduce_fraction(&mut fps_num, &mut fps_den);
-        let mut i = 0 as c_int;
-        while i < 7 as c_int {
+        let mut i = 0;
+        while i < 7 {
             if avcintra_lut[type_0 as usize][res as usize][i as usize].fps_num as u32 == fps_num
                 && avcintra_lut[type_0 as usize][res as usize][i as usize].fps_den as u32 == fps_den
                 && avcintra_lut[type_0 as usize][res as usize][i as usize].interlaced
@@ -1654,7 +1639,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             }
             i += 1;
         }
-        if i == 7 as c_int {
+        if i == 7 {
             error!(
                 "FPS {}/{}{} not compatible with AVC-Intra {}",
                 (*h).param.i_fps_num,
@@ -1668,15 +1653,15 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             );
             return -1;
         }
-        (*h).param.i_keyint_max = 1 as c_int;
+        (*h).param.i_keyint_max = 1;
         (*h).param.intra_refresh = false;
-        (*h).param.analyse.i_weighted_pred = 0 as c_int;
-        (*h).param.i_frame_reference = 1 as c_int;
-        (*h).param.i_dpb_size = 1 as c_int;
+        (*h).param.analyse.i_weighted_pred = 0;
+        (*h).param.i_frame_reference = 1;
+        (*h).param.i_dpb_size = 1;
         (*h).param.bluray_compat = false;
         (*h).param.vfr_input = false;
         (*h).param.aud = true;
-        (*h).param.vui.i_chroma_loc = 0 as c_int;
+        (*h).param.vui.i_chroma_loc = 0;
         (*h).param.i_nal_hrd = X264_NAL_HRD_NONE;
         (*h).param.deblocking_filter = false;
         (*h).param.stitchable = true;
@@ -1717,14 +1702,14 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             size_of::<[uint8_t; 64]>() as size_t,
         );
         if (*h).param.i_avcintra_flavor == X264_AVCINTRA_FLAVOR_SONY {
-            (*h).param.i_slice_count = 8 as c_int;
+            (*h).param.i_slice_count = 8;
             if (*h).param.sliced_threads {
                 (*h).param.threads = ThreadCount::new((*h).param.i_slice_count as u32);
             }
         } else {
             (*h).param.i_slice_max_mbs =
                 (((*h).param.width + 15) / 16 * (((*h).param.height + 15) / 16) / 10) as i32;
-            (*h).param.i_slice_max_size = 0 as c_int;
+            (*h).param.i_slice_max_size = 0;
             if (*h).param.sliced_threads {
                 if res != 0 {
                     (*h).param.threads = if 2 < *(*h).param.threads {
@@ -1743,34 +1728,32 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                     }
                 }
             }
-            (*h).param.rc.i_qp_min =
-                if (*h).param.rc.i_qp_min > 6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int {
-                    (*h).param.rc.i_qp_min
-                } else {
-                    6 as c_int * (10 as c_int - 8 as c_int) + 1 as c_int
-                };
+            (*h).param.rc.i_qp_min = if (*h).param.rc.i_qp_min > 6 * (10 - 8) + 1 {
+                (*h).param.rc.i_qp_min
+            } else {
+                6 * (10 - 8) + 1
+            };
         }
         if type_0 != 0 {
-            (*h).param.vui.i_sar_height = 1 as c_int;
+            (*h).param.vui.i_sar_height = 1;
             (*h).param.vui.i_sar_width = (*h).param.vui.i_sar_height;
         } else {
-            (*h).param.vui.i_sar_width = 4 as c_int;
-            (*h).param.vui.i_sar_height = 3 as c_int;
+            (*h).param.vui.i_sar_width = 4;
+            (*h).param.vui.i_sar_height = 3;
         }
     }
     (*h).param.rc.f_rf_constant = x264_clip3f(
         (*h).param.rc.f_rf_constant as c_double,
         -QP_BD_OFFSET as c_double,
-        51 as c_int as c_double,
+        51 as c_double,
     ) as c_float;
     (*h).param.rc.f_rf_constant_max = x264_clip3f(
         (*h).param.rc.f_rf_constant_max as c_double,
         -QP_BD_OFFSET as c_double,
-        51 as c_int as c_double,
+        51 as c_double,
     ) as c_float;
     (*h).param.rc.i_qp_constant = x264_clip3((*h).param.rc.i_qp_constant, -1, QP_MAX);
-    (*h).param.analyse.i_subpel_refine =
-        x264_clip3((*h).param.analyse.i_subpel_refine, 0 as c_int, 11 as c_int);
+    (*h).param.analyse.i_subpel_refine = x264_clip3((*h).param.analyse.i_subpel_refine, 0, 11);
     (*h).param.rc.f_ip_factor =
         x264_clip3f((*h).param.rc.f_ip_factor as c_double, 0.01f64, 10.0f64) as c_float;
     (*h).param.rc.f_pb_factor =
@@ -1778,7 +1761,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     if (*h).param.rc.i_rc_method == RateControlMode::CRF {
         (*h).param.rc.i_qp_constant =
             ((*h).param.rc.f_rf_constant + QP_BD_OFFSET as c_float) as c_int;
-        (*h).param.rc.i_bitrate = 0 as c_int;
+        (*h).param.rc.i_bitrate = 0;
     }
     if b_open != 0
         && ((*h).param.rc.i_rc_method == RateControlMode::CQP
@@ -1789,25 +1772,25 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         (*h).param.i_cqm_preset = X264_CQM_FLAT;
         (*h).param.psz_cqm_file = 0 as *mut c_char;
         (*h).param.rc.i_rc_method = RateControlMode::CQP;
-        (*h).param.rc.f_ip_factor = 1 as c_int as c_float;
-        (*h).param.rc.f_pb_factor = 1 as c_int as c_float;
+        (*h).param.rc.f_ip_factor = 1 as c_float;
+        (*h).param.rc.f_pb_factor = 1 as c_float;
         (*h).param.analyse.psnr = false;
         (*h).param.analyse.ssim = false;
-        (*h).param.analyse.i_chroma_qp_offset = 0 as c_int;
-        (*h).param.analyse.i_trellis = 0 as c_int;
+        (*h).param.analyse.i_chroma_qp_offset = 0;
+        (*h).param.analyse.i_trellis = 0;
         (*h).param.analyse.fast_pskip = false;
-        (*h).param.analyse.i_noise_reduction = 0 as c_int;
+        (*h).param.analyse.i_noise_reduction = 0;
         (*h).param.analyse.psy = false;
-        (*h).param.i_bframe = 0 as c_int;
+        (*h).param.i_bframe = 0;
         if !(*h).param.cabac && (*h).param.analyse.i_subpel_refine < 6 {
             (*h).param.analyse.transform_8x8 = false;
         }
     }
     if (*h).param.rc.i_rc_method == RateControlMode::CQP {
         let mut qp_p: c_float = (*h).param.rc.i_qp_constant as c_float;
-        let mut qp_i: c_float = qp_p - 6 as c_int as c_float * log2f((*h).param.rc.f_ip_factor);
-        let mut qp_b: c_float = qp_p + 6 as c_int as c_float * log2f((*h).param.rc.f_pb_factor);
-        if qp_p < 0 as c_int as c_float {
+        let mut qp_i: c_float = qp_p - 6 as c_float * log2f((*h).param.rc.f_ip_factor);
+        let mut qp_b: c_float = qp_p + 6 as c_float * log2f((*h).param.rc.f_pb_factor);
+        if qp_p < 0 as c_float {
             x264_10_log(
                 h,
                 X264_LOG_ERROR,
@@ -1823,7 +1806,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             } else {
                 qp_b
             }) as c_int,
-            0 as c_int,
+            0,
             QP_MAX,
         );
         (*h).param.rc.i_qp_max = x264_clip3(
@@ -1837,48 +1820,40 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                 }
             }) as c_double
                 + 0.999f64) as c_int,
-            0 as c_int,
+            0,
             QP_MAX,
         );
-        (*h).param.rc.i_aq_mode = 0 as c_int;
+        (*h).param.rc.i_aq_mode = 0;
         (*h).param.rc.mb_tree = false;
-        (*h).param.rc.i_bitrate = 0 as c_int;
+        (*h).param.rc.i_bitrate = 0;
     }
-    (*h).param.rc.i_qp_max = x264_clip3((*h).param.rc.i_qp_max, 0 as c_int, QP_MAX);
-    (*h).param.rc.i_qp_min = x264_clip3((*h).param.rc.i_qp_min, 0 as c_int, (*h).param.rc.i_qp_max);
-    (*h).param.rc.i_qp_step = x264_clip3((*h).param.rc.i_qp_step, 2 as c_int, QP_MAX);
-    (*h).param.rc.i_bitrate = x264_clip3((*h).param.rc.i_bitrate, 0 as c_int, 2000000 as c_int);
+    (*h).param.rc.i_qp_max = x264_clip3((*h).param.rc.i_qp_max, 0, QP_MAX);
+    (*h).param.rc.i_qp_min = x264_clip3((*h).param.rc.i_qp_min, 0, (*h).param.rc.i_qp_max);
+    (*h).param.rc.i_qp_step = x264_clip3((*h).param.rc.i_qp_step, 2, QP_MAX);
+    (*h).param.rc.i_bitrate = x264_clip3((*h).param.rc.i_bitrate, 0, 2000000);
     if (*h).param.rc.i_rc_method == RateControlMode::ABR && (*h).param.rc.i_bitrate == 0 {
         error!("bitrate not specified");
         return -1;
     }
-    (*h).param.rc.i_vbv_buffer_size = x264_clip3(
-        (*h).param.rc.i_vbv_buffer_size,
-        0 as c_int,
-        2000000 as c_int,
-    );
-    (*h).param.rc.i_vbv_max_bitrate = x264_clip3(
-        (*h).param.rc.i_vbv_max_bitrate,
-        0 as c_int,
-        2000000 as c_int,
-    );
+    (*h).param.rc.i_vbv_buffer_size = x264_clip3((*h).param.rc.i_vbv_buffer_size, 0, 2000000);
+    (*h).param.rc.i_vbv_max_bitrate = x264_clip3((*h).param.rc.i_vbv_max_bitrate, 0, 2000000);
     (*h).param.rc.f_vbv_buffer_init = x264_clip3f(
         (*h).param.rc.f_vbv_buffer_init as c_double,
-        0 as c_int as c_double,
-        2000000 as c_int as c_double,
+        0 as c_double,
+        2000000 as c_double,
     ) as c_float;
     if (*h).param.rc.i_vbv_buffer_size != 0 {
         if (*h).param.rc.i_rc_method == RateControlMode::CQP {
             warn!("VBV is incompatible with constant QP, ignored.");
-            (*h).param.rc.i_vbv_max_bitrate = 0 as c_int;
-            (*h).param.rc.i_vbv_buffer_size = 0 as c_int;
-        } else if (*h).param.rc.i_vbv_max_bitrate == 0 as c_int {
+            (*h).param.rc.i_vbv_max_bitrate = 0;
+            (*h).param.rc.i_vbv_buffer_size = 0;
+        } else if (*h).param.rc.i_vbv_max_bitrate == 0 {
             if (*h).param.rc.i_rc_method == RateControlMode::ABR {
                 warn!("VBV maxrate unspecified, assuming CBR");
                 (*h).param.rc.i_vbv_max_bitrate = (*h).param.rc.i_bitrate;
             } else {
                 warn!("VBV bufsize set but maxrate unspecified, ignored");
-                (*h).param.rc.i_vbv_buffer_size = 0 as c_int;
+                (*h).param.rc.i_vbv_buffer_size = 0;
             }
         } else if (*h).param.rc.i_vbv_max_bitrate < (*h).param.rc.i_bitrate
             && (*h).param.rc.i_rc_method == RateControlMode::ABR
@@ -1892,32 +1867,32 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             X264_LOG_WARNING,
             b"VBV maxrate specified, but no bufsize, ignored\n\0" as *const u8 as *const c_char,
         );
-        (*h).param.rc.i_vbv_max_bitrate = 0 as c_int;
+        (*h).param.rc.i_vbv_max_bitrate = 0;
     }
-    (*h).param.i_slice_max_size = if (*h).param.i_slice_max_size > 0 as c_int {
+    (*h).param.i_slice_max_size = if (*h).param.i_slice_max_size > 0 {
         (*h).param.i_slice_max_size
     } else {
-        0 as c_int
+        0
     };
-    (*h).param.i_slice_max_mbs = if (*h).param.i_slice_max_mbs > 0 as c_int {
+    (*h).param.i_slice_max_mbs = if (*h).param.i_slice_max_mbs > 0 {
         (*h).param.i_slice_max_mbs
     } else {
-        0 as c_int
+        0
     };
-    (*h).param.i_slice_min_mbs = if (*h).param.i_slice_min_mbs > 0 as c_int {
+    (*h).param.i_slice_min_mbs = if (*h).param.i_slice_min_mbs > 0 {
         (*h).param.i_slice_min_mbs
     } else {
-        0 as c_int
+        0
     };
     if (*h).param.i_slice_max_mbs != 0 {
-        (*h).param.i_slice_min_mbs =
-            if (*h).param.i_slice_min_mbs < (*h).param.i_slice_max_mbs / 2 as c_int {
-                (*h).param.i_slice_min_mbs
-            } else {
-                (*h).param.i_slice_max_mbs / 2 as c_int
-            };
+        (*h).param.i_slice_min_mbs = if (*h).param.i_slice_min_mbs < (*h).param.i_slice_max_mbs / 2
+        {
+            (*h).param.i_slice_min_mbs
+        } else {
+            (*h).param.i_slice_max_mbs / 2
+        };
     } else if (*h).param.i_slice_max_size == 0 {
-        (*h).param.i_slice_min_mbs = 0 as c_int;
+        (*h).param.i_slice_min_mbs = 0;
     }
     if (*h).param.interlaced && (*h).param.i_slice_min_mbs != 0 {
         x264_10_log(
@@ -1925,9 +1900,9 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             X264_LOG_WARNING,
             b"interlace + slice-min-mbs is not implemented\n\0" as *const u8 as *const c_char,
         );
-        (*h).param.i_slice_min_mbs = 0 as c_int;
+        (*h).param.i_slice_min_mbs = 0;
     }
-    let mut mb_width: c_int = ((*h).param.width as c_int + 15 as c_int) / 16 as c_int;
+    let mut mb_width: c_int = ((*h).param.width as c_int + 15) / 16;
     if (*h).param.i_slice_min_mbs > mb_width {
         x264_10_log(
             h,
@@ -1945,10 +1920,10 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     } else {
         (*h).param.i_slice_count = x264_clip3((*h).param.i_slice_count, 0, max_slices);
         if (*h).param.i_slice_max_mbs != 0 || (*h).param.i_slice_max_size != 0 {
-            (*h).param.i_slice_count = 0 as c_int;
+            (*h).param.i_slice_count = 0;
         }
     }
-    if (*h).param.i_slice_count_max > 0 as c_int {
+    if (*h).param.i_slice_count_max > 0 {
         (*h).param.i_slice_count_max = if (*h).param.i_slice_count > (*h).param.i_slice_count_max {
             (*h).param.i_slice_count
         } else {
@@ -1960,10 +1935,10 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             BPyramid::Normal => BPyramid::Strict,
             other => other,
         };
-        (*h).param.i_bframe = if (*h).param.i_bframe < 3 as c_int {
+        (*h).param.i_bframe = if (*h).param.i_bframe < 3 {
             (*h).param.i_bframe
         } else {
-            3 as c_int
+            3
         };
         (*h).param.aud = true;
         (*h).param.i_nal_hrd = if (*h).param.i_nal_hrd > 1 {
@@ -1971,34 +1946,33 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         } else {
             1
         };
-        (*h).param.i_slice_max_size = 0 as c_int;
-        (*h).param.i_slice_max_mbs = 0 as c_int;
+        (*h).param.i_slice_max_size = 0;
+        (*h).param.i_slice_max_mbs = 0;
         (*h).param.intra_refresh = false;
-        (*h).param.i_frame_reference = if (*h).param.i_frame_reference < 6 as c_int {
+        (*h).param.i_frame_reference = if (*h).param.i_frame_reference < 6 {
             (*h).param.i_frame_reference
         } else {
-            6 as c_int
+            6
         };
-        (*h).param.i_dpb_size = if (*h).param.i_dpb_size < 6 as c_int {
+        (*h).param.i_dpb_size = if (*h).param.i_dpb_size < 6 {
             (*h).param.i_dpb_size
         } else {
-            6 as c_int
+            6
         };
-        (*h).param.i_keyint_min = 1 as c_int;
-        (*h).param.analyse.i_weighted_pred = if (*h).param.analyse.i_weighted_pred < 1 as c_int {
+        (*h).param.i_keyint_min = 1;
+        (*h).param.analyse.i_weighted_pred = if (*h).param.analyse.i_weighted_pred < 1 {
             (*h).param.analyse.i_weighted_pred
         } else {
-            1 as c_int
+            1
         };
         if (*h).param.fake_interlaced {
             (*h).param.pic_struct = true;
         }
     }
-    (*h).param.i_frame_reference =
-        x264_clip3((*h).param.i_frame_reference, 1 as c_int, X264_REF_MAX);
-    (*h).param.i_dpb_size = x264_clip3((*h).param.i_dpb_size, 1 as c_int, X264_REF_MAX);
-    if (*h).param.i_scenecut_threshold < 0 as c_int {
-        (*h).param.i_scenecut_threshold = 0 as c_int;
+    (*h).param.i_frame_reference = x264_clip3((*h).param.i_frame_reference, 1, X264_REF_MAX);
+    (*h).param.i_dpb_size = x264_clip3((*h).param.i_dpb_size, 1, X264_REF_MAX);
+    if (*h).param.i_scenecut_threshold < 0 {
+        (*h).param.i_scenecut_threshold = 0;
     }
     if (*h).param.analyse.i_subpel_refine == 0
         && matches!(
@@ -2011,15 +1985,15 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     }
     (*h).param.i_bframe = x264_clip3(
         (*h).param.i_bframe,
-        0 as c_int,
-        if (16 as c_int) < (*h).param.i_keyint_max - 1 as c_int {
-            16 as c_int
+        0,
+        if (16) < (*h).param.i_keyint_max - 1 {
+            16
         } else {
-            (*h).param.i_keyint_max - 1 as c_int
+            (*h).param.i_keyint_max - 1
         },
     );
-    (*h).param.i_bframe_bias = x264_clip3((*h).param.i_bframe_bias, -(90 as c_int), 100 as c_int);
-    if (*h).param.i_bframe <= 1 as c_int {
+    (*h).param.i_bframe_bias = x264_clip3((*h).param.i_bframe_bias, -(90), 100);
+    if (*h).param.i_bframe <= 1 {
         (*h).param.bframe_pyramid = BPyramid::None;
     }
     (*h).param.i_bframe_adaptive = x264_clip3(
@@ -2043,8 +2017,8 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             X264_LOG_WARNING,
             b"ref > 1 + intra-refresh is not supported\n\0" as *const u8 as *const c_char,
         );
-        (*h).param.i_frame_reference = 1 as c_int;
-        (*h).param.i_dpb_size = 1 as c_int;
+        (*h).param.i_frame_reference = 1;
+        (*h).param.i_dpb_size = 1;
     }
     if (*h).param.intra_refresh && (*h).param.open_gop {
         x264_10_log(
@@ -2060,19 +2034,15 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     }
     let mut fps: c_float = (*h).param.i_fps_num as c_float / (*h).param.i_fps_den as c_float;
     if (*h).param.i_keyint_min == X264_KEYINT_MIN_AUTO {
-        (*h).param.i_keyint_min = if ((*h).param.i_keyint_max / 10 as c_int) < fps as c_int {
-            (*h).param.i_keyint_max / 10 as c_int
+        (*h).param.i_keyint_min = if ((*h).param.i_keyint_max / 10) < fps as c_int {
+            (*h).param.i_keyint_max / 10
         } else {
             fps as c_int
         };
     }
-    (*h).param.i_keyint_min = x264_clip3(
-        (*h).param.i_keyint_min,
-        1 as c_int,
-        (*h).param.i_keyint_max / 2 as c_int + 1 as c_int,
-    );
-    (*h).param.rc.i_lookahead =
-        x264_clip3((*h).param.rc.i_lookahead, 0 as c_int, X264_LOOKAHEAD_MAX);
+    (*h).param.i_keyint_min =
+        x264_clip3((*h).param.i_keyint_min, 1, (*h).param.i_keyint_max / 2 + 1);
+    (*h).param.rc.i_lookahead = x264_clip3((*h).param.rc.i_lookahead, 0, X264_LOOKAHEAD_MAX);
     let mut maxrate: c_int = if (*h).param.rc.i_vbv_max_bitrate > (*h).param.rc.i_bitrate {
         (*h).param.rc.i_vbv_max_bitrate
     } else {
@@ -2081,7 +2051,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     let mut bufsize: c_float = if maxrate != 0 {
         (*h).param.rc.i_vbv_buffer_size as c_float / maxrate as c_float
     } else {
-        0 as c_int as c_float
+        0 as c_float
     };
     (*h).param.rc.i_lookahead = (if ((*h).param.rc.i_lookahead as c_float)
         < (if (*h).param.i_keyint_max as c_float > bufsize * fps {
@@ -2104,7 +2074,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     }
     (*h).param.rc.f_qcompress =
         x264_clip3f((*h).param.rc.f_qcompress as c_double, 0.0f64, 1.0f64) as c_float;
-    if (*h).param.i_keyint_max == 1 as c_int || (*h).param.rc.f_qcompress == 1 as c_int as c_float {
+    if (*h).param.i_keyint_max == 1 || (*h).param.rc.f_qcompress == 1 as c_float {
         (*h).param.rc.mb_tree = false;
     }
     if !(*h).param.intra_refresh
@@ -2134,42 +2104,28 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     if (*h).param.rc.stat_read || (*h).i_thread_frames == 1 {
         (*h).param.i_sync_lookahead = 0;
     }
-    (*h).param.i_deblocking_filter_alphac0 = x264_clip3(
-        (*h).param.i_deblocking_filter_alphac0,
-        -(6 as c_int),
-        6 as c_int,
-    );
-    (*h).param.i_deblocking_filter_beta = x264_clip3(
-        (*h).param.i_deblocking_filter_beta,
-        -(6 as c_int),
-        6 as c_int,
-    );
-    (*h).param.analyse.i_luma_deadzone[0] = x264_clip3(
-        (*h).param.analyse.i_luma_deadzone[0],
-        0 as c_int,
-        32 as c_int,
-    );
-    (*h).param.analyse.i_luma_deadzone[1] = x264_clip3(
-        (*h).param.analyse.i_luma_deadzone[1],
-        0 as c_int,
-        32 as c_int,
-    );
-    (*h).param.i_cabac_init_idc = x264_clip3((*h).param.i_cabac_init_idc, 0 as c_int, 2 as c_int);
+    (*h).param.i_deblocking_filter_alphac0 =
+        x264_clip3((*h).param.i_deblocking_filter_alphac0, -(6), 6);
+    (*h).param.i_deblocking_filter_beta = x264_clip3((*h).param.i_deblocking_filter_beta, -(6), 6);
+    (*h).param.analyse.i_luma_deadzone[0] =
+        x264_clip3((*h).param.analyse.i_luma_deadzone[0], 0, 32);
+    (*h).param.analyse.i_luma_deadzone[1] =
+        x264_clip3((*h).param.analyse.i_luma_deadzone[1], 0, 32);
+    (*h).param.i_cabac_init_idc = x264_clip3((*h).param.i_cabac_init_idc, 0, 2);
     if (*h).param.i_cqm_preset < X264_CQM_FLAT || (*h).param.i_cqm_preset > X264_CQM_CUSTOM {
         (*h).param.i_cqm_preset = X264_CQM_FLAT;
     }
-    (*h).param.analyse.i_me_range =
-        x264_clip3((*h).param.analyse.i_me_range, 4 as c_int, 1024 as c_int);
-    if (*h).param.analyse.i_me_range > 16 as c_int
+    (*h).param.analyse.i_me_range = x264_clip3((*h).param.analyse.i_me_range, 4, 1024);
+    if (*h).param.analyse.i_me_range > 16
         && matches!(
             (*h).param.analyse.me_method,
             MotionEstimation::Dia | MotionEstimation::Hex
         )
     {
-        (*h).param.analyse.i_me_range = 16 as c_int;
+        (*h).param.analyse.i_me_range = 16;
     }
     if (*h).param.analyse.me_method == MotionEstimation::Tesa
-        && ((*h).mb.lossless || (*h).param.analyse.i_subpel_refine <= 1 as c_int)
+        && ((*h).mb.lossless || (*h).param.analyse.i_subpel_refine <= 1)
     {
         (*h).param.analyse.me_method = MotionEstimation::Esa;
     }
@@ -2187,15 +2143,15 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         (*h).param.analyse.inter &= !X264_ANALYSE_I8x8;
         (*h).param.analyse.intra &= !X264_ANALYSE_I8x8;
     }
-    (*h).param.analyse.i_trellis = x264_clip3((*h).param.analyse.i_trellis, 0 as c_int, 2 as c_int);
-    (*h).param.rc.i_aq_mode = x264_clip3((*h).param.rc.i_aq_mode, 0 as c_int, 3 as c_int);
+    (*h).param.analyse.i_trellis = x264_clip3((*h).param.analyse.i_trellis, 0, 2);
+    (*h).param.rc.i_aq_mode = x264_clip3((*h).param.rc.i_aq_mode, 0, 3);
     (*h).param.rc.f_aq_strength = x264_clip3f(
         (*h).param.rc.f_aq_strength as c_double,
-        0 as c_int as c_double,
-        3 as c_int as c_double,
+        0 as c_double,
+        3 as c_double,
     ) as c_float;
-    if (*h).param.rc.f_aq_strength == 0 as c_int as c_float {
-        (*h).param.rc.i_aq_mode = 0 as c_int;
+    if (*h).param.rc.f_aq_strength == 0 as c_float {
+        (*h).param.rc.i_aq_mode = 0;
     }
     if (*h).param.i_log_level < X264_LOG_INFO {
         (*h).param.analyse.psnr = false;
@@ -2257,69 +2213,59 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         0
     };
     (*h).mb.i_psy_trellis = if (*h).param.analyse.i_trellis != 0 {
-        (((*h).param.analyse.f_psy_trellis / 4 as c_int as c_float
-            * ((1 as c_int) << 8 as c_int) as c_float) as c_double
+        (((*h).param.analyse.f_psy_trellis / 4 as c_float * ((1) << 8) as c_float) as c_double
             + 0.5f64) as c_int
     } else {
-        0 as c_int
+        0
     };
-    (*h).param.analyse.i_chroma_qp_offset = x264_clip3(
-        (*h).param.analyse.i_chroma_qp_offset,
-        -(32 as c_int),
-        32 as c_int,
-    );
+    (*h).param.analyse.i_chroma_qp_offset =
+        x264_clip3((*h).param.analyse.i_chroma_qp_offset, -(32), 32);
     if b_open != 0 && i_csp >= X264_CSP_I444 && i_csp < X264_CSP_BGR && (*h).param.analyse.psy {
         (*h).param.analyse.i_chroma_qp_offset += 6;
     }
     if b_open != 0 && (*h).mb.i_psy_rd != 0 && (*h).param.i_avcintra_class == 0 {
         (*h).param.analyse.i_chroma_qp_offset -=
             if ((*h).param.analyse.f_psy_rd as c_double) < 0.25f64 {
-                1 as c_int
+                1
             } else {
-                2 as c_int
+                2
             };
     }
     if b_open != 0 && (*h).mb.i_psy_trellis != 0 && (*h).param.i_avcintra_class == 0 {
         (*h).param.analyse.i_chroma_qp_offset -=
             if ((*h).param.analyse.f_psy_trellis as c_double) < 0.25f64 {
-                1 as c_int
+                1
             } else {
-                2 as c_int
+                2
             };
     }
-    (*h).param.analyse.i_chroma_qp_offset = x264_clip3(
-        (*h).param.analyse.i_chroma_qp_offset,
-        -(12 as c_int),
-        12 as c_int,
-    );
+    (*h).param.analyse.i_chroma_qp_offset =
+        x264_clip3((*h).param.analyse.i_chroma_qp_offset, -(12), 12);
     if (*h).param.rc.i_aq_mode == 0 && (*h).param.rc.mb_tree {
-        (*h).param.rc.i_aq_mode = 1 as c_int;
-        (*h).param.rc.f_aq_strength = 0 as c_int as c_float;
+        (*h).param.rc.i_aq_mode = 1;
+        (*h).param.rc.f_aq_strength = 0 as c_float;
     }
-    (*h).param.analyse.i_noise_reduction = x264_clip3(
-        (*h).param.analyse.i_noise_reduction,
-        0 as c_int,
-        (1 as c_int) << 16 as c_int,
-    );
-    if (*h).param.analyse.i_subpel_refine >= 10 as c_int
-        && ((*h).param.analyse.i_trellis != 2 as c_int || (*h).param.rc.i_aq_mode == 0)
+    (*h).param.analyse.i_noise_reduction =
+        x264_clip3((*h).param.analyse.i_noise_reduction, 0, (1) << 16);
+    if (*h).param.analyse.i_subpel_refine >= 10
+        && ((*h).param.analyse.i_trellis != 2 || (*h).param.rc.i_aq_mode == 0)
     {
-        (*h).param.analyse.i_subpel_refine = 9 as c_int;
+        (*h).param.analyse.i_subpel_refine = 9;
     }
     if b_open != 0 {
         let mut l: *const x264_level_t = x264_levels.as_ptr();
-        if (*h).param.i_level_idc < 0 as c_int {
+        if (*h).param.i_level_idc < 0 {
             let mut maxrate_bak: c_int = (*h).param.rc.i_vbv_max_bitrate;
             if (*h).param.rc.i_rc_method == RateControlMode::ABR
-                && (*h).param.rc.i_vbv_buffer_size <= 0 as c_int
+                && (*h).param.rc.i_vbv_buffer_size <= 0
             {
-                (*h).param.rc.i_vbv_max_bitrate = (*h).param.rc.i_bitrate * 2 as c_int;
+                (*h).param.rc.i_vbv_max_bitrate = (*h).param.rc.i_bitrate * 2;
             }
             x264_10_sps_init((*h).sps.as_mut_ptr(), (*h).param.i_sps_id, &mut (*h).param);
             loop {
                 (*h).param.i_level_idc = (*l).level_idc as c_int;
                 if !((*l.offset(1)).level_idc as c_int != 0
-                    && x264_10_validate_levels(h, 0 as c_int) != 0
+                    && x264_10_validate_levels(h, 0) != 0
                     && {
                         let fresh0 = l;
                         l = l.offset(1);
@@ -2335,7 +2281,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             {
                 l = l.offset(1);
             }
-            if (*l).level_idc as c_int == 0 as c_int {
+            if (*l).level_idc as c_int == 0 {
                 x264_10_log(
                     h,
                     X264_LOG_ERROR,
@@ -2345,7 +2291,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
                 return -1;
             }
         }
-        if (*h).param.analyse.i_mv_range <= 0 as c_int {
+        if (*h).param.analyse.i_mv_range <= 0 {
             (*h).param.analyse.i_mv_range = (*l).mv_range as c_int >> (*h).param.interlaced as i32;
         } else {
             (*h).param.analyse.i_mv_range = x264_clip3(
@@ -2365,12 +2311,11 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             (*h).param.lookahead_threads = (*h).param.threads;
         } else {
             let mut badapt: c_int = ((*h).param.i_bframe_adaptive == X264_B_ADAPT_TRELLIS) as c_int;
-            let mut subme: c_int =
-                (if ((*h).param.analyse.i_subpel_refine / 3 as c_int) < 3 as c_int {
-                    (*h).param.analyse.i_subpel_refine / 3 as c_int
-                } else {
-                    3 as c_int
-                }) + ((*h).param.analyse.i_subpel_refine > 1 as c_int) as c_int;
+            let mut subme: c_int = (if ((*h).param.analyse.i_subpel_refine / 3) < 3 {
+                (*h).param.analyse.i_subpel_refine / 3
+            } else {
+                3
+            }) + ((*h).param.analyse.i_subpel_refine > 1) as c_int;
             let mut bframes: c_int = if (((*h).param.i_bframe - 1) / 3) < 3 {
                 ((*h).param.i_bframe - 1) / 3
             } else {
@@ -2413,7 +2358,7 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
             warn!("interlace + me=esa is not implemented");
             (*h).param.analyse.me_method = MotionEstimation::Umh;
         }
-        if (*h).param.analyse.i_weighted_pred > 0 as c_int {
+        if (*h).param.analyse.i_weighted_pred > 0 {
             x264_10_log(
                 h,
                 X264_LOG_WARNING,
@@ -2425,14 +2370,14 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
     if (*h).param.analyse.i_weighted_pred == 0 && (*h).param.rc.mb_tree && (*h).param.analyse.psy {
         (*h).param.analyse.i_weighted_pred = X264_WEIGHTP_FAKE;
     }
-    if (*h).i_thread_frames > 1 as c_int {
+    if (*h).i_thread_frames > 1 {
         let mut r: c_int = (*h).param.analyse.i_mv_range_thread;
         let mut r2: c_int = 0;
-        if r <= 0 as c_int {
+        if r <= 0 {
             let mut max_range: c_int = ((*h).param.height as c_int + X264_THREAD_HEIGHT)
                 / (*h).i_thread_frames
                 - X264_THREAD_HEIGHT;
-            r = max_range / 2 as c_int;
+            r = max_range / 2;
         }
         r = if r > (*h).param.analyse.i_me_range {
             r
@@ -2444,23 +2389,23 @@ unsafe extern "C" fn validate_parameters(mut h: *mut x264_t, mut b_open: c_int) 
         } else {
             (*h).param.analyse.i_mv_range
         };
-        r2 = (r & !(15 as c_int)) + (-X264_THREAD_HEIGHT & 15 as c_int);
+        r2 = (r & !(15)) + (-X264_THREAD_HEIGHT & 15);
         if r2 < r {
-            r2 += 16 as c_int;
+            r2 += 16;
         }
         debug!("using mv_range_thread = {r2}");
         (*h).param.analyse.i_mv_range_thread = r2;
     }
-    if (*h).param.rc.f_rate_tolerance < 0 as c_int as c_float {
-        (*h).param.rc.f_rate_tolerance = 0 as c_int as c_float;
+    if (*h).param.rc.f_rate_tolerance < 0 as c_float {
+        (*h).param.rc.f_rate_tolerance = 0 as c_float;
     }
-    if (*h).param.rc.f_qblur < 0 as c_int as c_float {
-        (*h).param.rc.f_qblur = 0 as c_int as c_float;
+    if (*h).param.rc.f_qblur < 0 as c_float {
+        (*h).param.rc.f_qblur = 0 as c_float;
     }
-    if (*h).param.rc.f_complexity_blur < 0 as c_int as c_float {
-        (*h).param.rc.f_complexity_blur = 0 as c_int as c_float;
+    if (*h).param.rc.f_complexity_blur < 0 as c_float {
+        (*h).param.rc.f_complexity_blur = 0 as c_float;
     }
-    (*h).param.i_sps_id &= 31 as c_int;
+    (*h).param.i_sps_id &= 31;
     (*h).param.i_nal_hrd = x264_clip3((*h).param.i_nal_hrd, X264_NAL_HRD_NONE, X264_NAL_HRD_CBR);
     if (*h).param.i_nal_hrd != 0 && (*h).param.rc.i_vbv_buffer_size == 0 {
         warn!("NAL HRD parameters require VBV parameters");
@@ -2662,7 +2607,7 @@ unsafe extern "C" fn set_aspect_ratio(
     mut param: *mut x264_param_t,
     mut initial: c_int,
 ) {
-    if (*param).vui.i_sar_width > 0 as c_int && (*param).vui.i_sar_height > 0 as c_int {
+    if (*param).vui.i_sar_width > 0 && (*param).vui.i_sar_height > 0 {
         let mut i_w: uint32_t = (*param).vui.i_sar_width as uint32_t;
         let mut i_h: uint32_t = (*param).vui.i_sar_height as uint32_t;
         let mut old_w: uint32_t = (*h).param.vui.i_sar_width as uint32_t;
@@ -2674,8 +2619,8 @@ unsafe extern "C" fn set_aspect_ratio(
         }
         x264_reduce_fraction(&mut i_w, &mut i_h);
         if i_w != old_w || i_h != old_h || initial != 0 {
-            (*h).param.vui.i_sar_width = 0 as c_int;
-            (*h).param.vui.i_sar_height = 0 as c_int;
+            (*h).param.vui.i_sar_width = 0;
+            (*h).param.vui.i_sar_height = 0;
             if i_w == 0 as uint32_t || i_h == 0 as uint32_t {
                 x264_10_log(
                     h,
@@ -2722,7 +2667,7 @@ unsafe extern "C" fn x264_10_encoder_open(
     let mut i_slicetype_length: c_int = 0;
     h = x264_malloc(size_of::<x264_t>() as int64_t) as *mut x264_t;
     if !h.is_null() {
-        memset(h as *mut c_void, 0 as c_int, size_of::<x264_t>() as size_t);
+        memset(h as *mut c_void, 0, size_of::<x264_t>() as size_t);
         memcpy(
             &mut (*h).param as *mut x264_param_t as *mut c_void,
             param as *const c_void,
@@ -2828,14 +2773,12 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                             );
                                                         }
                                                         (*h).api = api;
-                                                        if !(validate_parameters(h, 1 as c_int)
-                                                            < 0 as c_int)
-                                                        {
+                                                        if !(validate_parameters(h, 1) < 0) {
                                                             if !(*h).param.psz_cqm_file.is_null() {
                                                                 if x264_10_cqm_parse_file(
                                                                     h,
                                                                     (*h).param.psz_cqm_file,
-                                                                ) < 0 as c_int
+                                                                ) < 0
                                                                 {
                                                                     current_block =
                                                                         17708740041508716982;
@@ -2862,22 +2805,21 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                             .i_timebase_den,
                                                                     );
                                                                     (*h).i_frame = -1;
-                                                                    (*h).i_frame_num = 0 as c_int;
+                                                                    (*h).i_frame_num = 0;
                                                                     if (*h).param.i_avcintra_class
                                                                         != 0
                                                                     {
                                                                         (*h).i_idr_pic_id = if (*h)
                                                                             .param
                                                                             .i_avcintra_class
-                                                                            > 200 as c_int
+                                                                            > 200
                                                                         {
-                                                                            4 as c_int
+                                                                            4
                                                                         } else {
-                                                                            5 as c_int
+                                                                            5
                                                                         };
                                                                     } else {
-                                                                        (*h).i_idr_pic_id =
-                                                                            0 as c_int;
+                                                                        (*h).i_idr_pic_id = 0;
                                                                     }
                                                                     if ((*h).param.i_timebase_den
                                                                         as uint64_t)
@@ -2895,7 +2837,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                         set_aspect_ratio(
                                                                             h,
                                                                             &mut (*h).param,
-                                                                            1 as c_int,
+                                                                            1,
                                                                         );
                                                                         x264_10_sps_init(
                                                                             (*h).sps.as_mut_ptr(),
@@ -2913,16 +2855,16 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                             (*h).sps.as_mut_ptr(),
                                                                         );
                                                                         x264_10_validate_levels(
-                                                                            h, 1 as c_int,
+                                                                            h, 1,
                                                                         );
                                                                         (*h).chroma_qp_table = i_chroma_qp_table
                                                                             .as_ptr()
-                                                                            .offset(12 as c_int as isize)
+                                                                            .offset(12 as isize)
                                                                             .offset(
                                                                                 (*(*h).pps.as_mut_ptr()).i_chroma_qp_index_offset as isize,
                                                                             );
                                                                         if !(x264_10_cqm_init(h)
-                                                                            < 0 as c_int)
+                                                                            < 0)
                                                                         {
                                                                             (*h).mb.i_mb_width =
                                                                                 (*(*h)
@@ -2980,7 +2922,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                 (*h).frames.i_delay;
                                                                             (*h).frames.i_delay +=
                                                                                 (*h).i_thread_frames
-                                                                                    - 1 as c_int;
+                                                                                    - 1;
                                                                             (*h).frames.i_delay += (*h).param.i_sync_lookahead;
                                                                             (*h).frames.i_delay +=
                                                                                 (*h).param.vfr_input
@@ -3026,7 +2968,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                             (*h).frames.b_have_lowres
                                                                                 |= ((*h).param.rc.stat_read
                                                                                     && (*h).param.rc.i_vbv_buffer_size
-                                                                                        > 0 as c_int) as c_int;
+                                                                                        > 0) as c_int;
                                                                             (*h).frames.b_have_sub8x8_esa = ((*h).param.analyse.inter
                                                                                 & X264_ANALYSE_PSUB8x8 != 0) as c_int;
                                                                             (*h).frames
@@ -3038,8 +2980,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                 .i_last_idr = (*h)
                                                                                 .frames
                                                                                 .i_last_keyframe;
-                                                                            (*h).frames.i_input =
-                                                                                0 as c_int;
+                                                                            (*h).frames.i_input = 0;
                                                                             (*h).frames.i_second_largest_pts = -(1
                                                                                 as c_int) as int64_t;
                                                                             (*h).frames.i_largest_pts = (*h)
@@ -3056,11 +2997,11 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                             {
                                                                                 memset(
                                                                                     (*h).cost_table as *mut c_void,
-                                                                                    0 as c_int,
+                                                                                    0,
                                                                                     size_of::<C2RustUnnamed_17>() as size_t,
                                                                                 );
                                                                                 (*h).frames.unused[0] = x264_malloc(
-                                                                                    (((*h).frames.i_delay + 3 as c_int) as usize)
+                                                                                    (((*h).frames.i_delay + 3) as usize)
                                                                                         .wrapping_mul(
                                                                                             size_of::<*mut x264_frame_t>() as usize,
                                                                                         ) as int64_t,
@@ -3068,22 +3009,21 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                 if !(*h)
                                                                                     .frames
                                                                                     .unused
-                                                                                    [0 as c_int
-                                                                                        as usize]
+                                                                                    [0 as usize]
                                                                                     .is_null()
                                                                                 {
                                                                                     memset(
                                                                                         (*h).frames.unused[0]
                                                                                             as *mut c_void,
-                                                                                        0 as c_int,
-                                                                                        (((*h).frames.i_delay + 3 as c_int) as size_t)
+                                                                                        0,
+                                                                                        (((*h).frames.i_delay + 3) as size_t)
                                                                                             .wrapping_mul(
                                                                                                 size_of::<*mut x264_frame_t>() as size_t,
                                                                                             ),
                                                                                     );
                                                                                     (*h).frames.unused[1] = x264_malloc(
-                                                                                        (((*h).i_thread_frames + 16 as c_int
-                                                                                            + 4 as c_int) as usize)
+                                                                                        (((*h).i_thread_frames + 16
+                                                                                            + 4) as usize)
                                                                                             .wrapping_mul(
                                                                                                 size_of::<*mut x264_frame_t>() as usize,
                                                                                             ) as int64_t,
@@ -3096,16 +3036,16 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                         memset(
                                                                                             (*h).frames.unused[1]
                                                                                                 as *mut c_void,
-                                                                                            0 as c_int,
-                                                                                            (((*h).i_thread_frames + 16 as c_int
-                                                                                                + 4 as c_int) as size_t)
+                                                                                            0,
+                                                                                            (((*h).i_thread_frames + 16
+                                                                                                + 4) as size_t)
                                                                                                 .wrapping_mul(
                                                                                                     size_of::<*mut x264_frame_t>() as size_t,
                                                                                                 ),
                                                                                         );
                                                                                         (*h).frames.current = x264_malloc(
                                                                                             (((*h).param.i_sync_lookahead + (*h).param.i_bframe
-                                                                                                + (*h).i_thread_frames + 3 as c_int) as usize)
+                                                                                                + (*h).i_thread_frames + 3) as usize)
                                                                                                 .wrapping_mul(
                                                                                                     size_of::<*mut x264_frame_t>() as usize,
                                                                                                 ) as int64_t,
@@ -3113,18 +3053,18 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                         if !(*h).frames.current.is_null() {
                                                                                             memset(
                                                                                                 (*h).frames.current as *mut c_void,
-                                                                                                0 as c_int,
+                                                                                                0,
                                                                                                 (((*h).param.i_sync_lookahead + (*h).param.i_bframe
-                                                                                                    + (*h).i_thread_frames + 3 as c_int) as size_t)
+                                                                                                    + (*h).i_thread_frames + 3) as size_t)
                                                                                                     .wrapping_mul(
                                                                                                         size_of::<*mut x264_frame_t>() as size_t,
                                                                                                     ),
                                                                                             );
                                                                                             if (*h).param.analyse.i_weighted_pred
-                                                                                                > 0 as c_int
+                                                                                                > 0
                                                                                             {
                                                                                                 (*h).frames.blank_unused = x264_malloc(
-                                                                                                    (((*h).i_thread_frames * 4 as c_int) as usize)
+                                                                                                    (((*h).i_thread_frames * 4) as usize)
                                                                                                         .wrapping_mul(
                                                                                                             size_of::<*mut x264_frame_t>() as usize,
                                                                                                         ) as int64_t,
@@ -3134,8 +3074,8 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                 } else {
                                                                                                     memset(
                                                                                                         (*h).frames.blank_unused as *mut c_void,
-                                                                                                        0 as c_int,
-                                                                                                        (((*h).i_thread_frames * 4 as c_int) as size_t)
+                                                                                                        0,
+                                                                                                        (((*h).i_thread_frames * 4) as size_t)
                                                                                                             .wrapping_mul(
                                                                                                                 size_of::<*mut x264_frame_t>() as size_t,
                                                                                                             ),
@@ -3235,7 +3175,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                     as *const c_char,
                                                                                                             ) as isize,
                                                                                                         );
-                                                                                                    let mut i: c_int = 0 as c_int;
+                                                                                                    let mut i: c_int = 0;
                                                                                                     while (*x264_cpu_names.as_ptr().offset(i as isize)).flags
                                                                                                         != 0
                                                                                                     {
@@ -3244,7 +3184,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                             b"SSE\0" as *const u8 as *const c_char,
                                                                                                         ) == 0
                                                                                                             && (*h).param.cpu
-                                                                                                                & (1 as uint32_t) << 3 as c_int != 0)
+                                                                                                                & (1 as uint32_t) << 3 != 0)
                                                                                                         {
                                                                                                             if !(strcmp(
                                                                                                                 (*x264_cpu_names.as_ptr().offset(i as isize)).name,
@@ -3288,7 +3228,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                             || (*x264_cpu_names.as_ptr().offset(i as isize)).flags
                                                                                                                                                 != (*x264_cpu_names
                                                                                                                                                     .as_ptr()
-                                                                                                                                                    .offset((i - 1 as c_int) as isize))
+                                                                                                                                                    .offset((i - 1) as isize))
                                                                                                                                                     .flags)
                                                                                                                                     {
                                                                                                                                         p = p
@@ -3325,9 +3265,9 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                         buf.as_mut_ptr(),
                                                                                                     );
                                                                                                     if !(x264_10_analyse_init_costs(h) != 0) {
-                                                                                                        temp = 392 as c_int;
+                                                                                                        temp = 392;
                                                                                                         if (temp as c_uint).leading_zeros() as i32
-                                                                                                            != 23 as c_int
+                                                                                                            != 23
                                                                                                         {
                                                                                                             x264_10_log(
                                                                                                                 h,
@@ -3348,7 +3288,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                     as *const c_char,
                                                                                                             );
                                                                                                         } else {
-                                                                                                            (*h).out.i_nal = 0 as c_int;
+                                                                                                            (*h).out.i_nal = 0;
                                                                                                             (*h).out.i_bitstream = x264_clip3f(
                                                                                                                 ((*h).param.width * (*h).param.height
                                                                                                                     * 4) as c_double
@@ -3362,20 +3302,20 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                             0.95f64,
                                                                                                                             (*h).param.rc.i_qp_constant as c_double,
                                                                                                                         )
-                                                                                                                            * (if 1 as c_int as c_float
+                                                                                                                            * (if 1 as c_float
                                                                                                                                 > (*h).param.rc.f_ip_factor
                                                                                                                             {
-                                                                                                                                1 as c_int as c_float
+                                                                                                                                1 as c_float
                                                                                                                             } else {
                                                                                                                                 (*h).param.rc.f_ip_factor
                                                                                                                             }) as c_double
                                                                                                                     }),
-                                                                                                                1000000 as c_int as c_double,
-                                                                                                                (INT_MAX / 3 as c_int) as c_double,
+                                                                                                                1000000 as c_double,
+                                                                                                                (INT_MAX / 3) as c_double,
                                                                                                             ) as c_int;
                                                                                                             (*h).nal_buffer_size = (*h).out.i_bitstream
-                                                                                                                * 3 as c_int / 2 as c_int
-                                                                                                                + 4 as c_int + 64 as c_int;
+                                                                                                                * 3 / 2
+                                                                                                                + 4 + 64;
                                                                                                             (*h).nal_buffer = x264_malloc(
                                                                                                                 (*h).nal_buffer_size as int64_t,
                                                                                                             ) as *mut uint8_t;
@@ -3398,7 +3338,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                             ) != 0)
                                                                                                                         {
                                                                                                                             (*h).thread[0] = h;
-                                                                                                                            let mut i_0: c_int = 1 as c_int;
+                                                                                                                            let mut i_0: c_int = 1;
                                                                                                                             loop {
                                                                                                                                 if !(i_0
                                                                                                                                     < *(*h).param.threads as i32
@@ -3421,7 +3361,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                 _ => {
                                                                                                                                     if *(*h).param.lookahead_threads > 1
                                                                                                                                     {
-                                                                                                                                        let mut i_1: c_int = 0 as c_int;
+                                                                                                                                        let mut i_1: c_int = 0;
                                                                                                                                         loop {
                                                                                                                                             if !(i_1 < *(*h).param.lookahead_threads as i32) {
                                                                                                                                                 current_block = 11735322225073324345;
@@ -3444,7 +3384,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                         17708740041508716982 => {}
                                                                                                                                         _ => {
                                                                                                                                             *(*h).reconfig_h = *h;
-                                                                                                                                            let mut i_2: c_int = 0 as c_int;
+                                                                                                                                            let mut i_2: c_int = 0;
                                                                                                                                             loop {
                                                                                                                                                 if !(i_2 < *(*h).param.threads as i32) {
                                                                                                                                                     current_block = 9702083122263515018;
@@ -3452,11 +3392,11 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                 }
                                                                                                                                                 let mut init_nal_count: c_int = (*h)
                                                                                                                                                     .param
-                                                                                                                                                    .i_slice_count + 3 as c_int;
+                                                                                                                                                    .i_slice_count + 3;
                                                                                                                                                 let mut allocate_threadlocal_data: c_int = (!(*h)
                                                                                                                                                     .param
                                                                                                                                                     .sliced_threads  || i_2 == 0) as c_int;
-                                                                                                                                                if i_2 > 0 as c_int {
+                                                                                                                                                if i_2 > 0 {
                                                                                                                                                     *(*h).thread[i_2 as usize] = *h;
                                                                                                                                                 }
                                                                                                                                                 if pthread_mutex_init(
@@ -3479,7 +3419,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                 if allocate_threadlocal_data != 0 {
                                                                                                                                                     (*(*h).thread[i_2 as usize]).fdec = x264_10_frame_pop_unused(
                                                                                                                                                         h,
-                                                                                                                                                        1 as c_int,
+                                                                                                                                                        1,
                                                                                                                                                     );
                                                                                                                                                     if (*(*h).thread[i_2 as usize]).fdec.is_null() {
                                                                                                                                                         current_block = 17708740041508716982;
@@ -3510,7 +3450,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                 if allocate_threadlocal_data != 0
                                                                                                                                                     && x264_10_macroblock_cache_allocate(
                                                                                                                                                         (*h).thread[i_2 as usize],
-                                                                                                                                                    ) < 0 as c_int
+                                                                                                                                                    ) < 0
                                                                                                                                                 {
                                                                                                                                                     current_block = 17708740041508716982;
                                                                                                                                                     break;
@@ -3521,7 +3461,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                 17708740041508716982 => {}
                                                                                                                                                 _ => {
                                                                                                                                                     if !(x264_10_lookahead_init(h, i_slicetype_length) != 0) {
-                                                                                                                                                        let mut i_3: c_int = 0 as c_int;
+                                                                                                                                                        let mut i_3: c_int = 0;
                                                                                                                                                         loop {
                                                                                                                                                             if !(i_3 < *(*h).param.threads as i32) {
                                                                                                                                                                 current_block = 9812798724717783973;
@@ -3529,8 +3469,8 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                             }
                                                                                                                                                             if x264_10_macroblock_thread_allocate(
                                                                                                                                                                 (*h).thread[i_3 as usize],
-                                                                                                                                                                0 as c_int,
-                                                                                                                                                            ) < 0 as c_int
+                                                                                                                                                                0,
+                                                                                                                                                            ) < 0
                                                                                                                                                             {
                                                                                                                                                                 current_block = 17708740041508716982;
                                                                                                                                                                 break;
@@ -3540,7 +3480,7 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                         match current_block {
                                                                                                                                                             17708740041508716982 => {}
                                                                                                                                                             _ => {
-                                                                                                                                                                if !(x264_10_ratecontrol_new(h) < 0 as c_int) {
+                                                                                                                                                                if !(x264_10_ratecontrol_new(h) < 0) {
                                                                                                                                                                     if (*h).param.i_nal_hrd != 0 {
                                                                                                                                                                         x264_10_log(
                                                                                                                                                                             h,
@@ -3631,9 +3571,9 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                                             };
                                                                                                                                                                             level = [0; 16];
                                                                                                                                                                             if (*(*h).sps.as_mut_ptr()).i_level_idc
-                                                                                                                                                                                == 9 as c_int
+                                                                                                                                                                                == 9
                                                                                                                                                                                 || (*(*h).sps.as_mut_ptr()).i_level_idc
-                                                                                                                                                                                    == 11 as c_int
+                                                                                                                                                                                    == 11
                                                                                                                                                                                     && (*(*h).sps.as_mut_ptr()).b_constraint_set3 != 0
                                                                                                                                                                                     && ((*(*h).sps.as_mut_ptr()).i_profile_idc
                                                                                                                                                                                         == PROFILE_BASELINE as c_int
@@ -3651,9 +3591,9 @@ unsafe extern "C" fn x264_10_encoder_open(
                                                                                                                                                                                         as size_t,
                                                                                                                                                                                     b"%d.%d\0" as *const u8 as *const c_char,
                                                                                                                                                                                     (*(*h).sps.as_mut_ptr()).i_level_idc
-                                                                                                                                                                                        / 10 as c_int,
+                                                                                                                                                                                        / 10,
                                                                                                                                                                                     (*(*h).sps.as_mut_ptr()).i_level_idc
-                                                                                                                                                                                        % 10 as c_int,
+                                                                                                                                                                                        % 10,
                                                                                                                                                                                 );
                                                                                                                                                                             }
                                                                                                                                                                             x264_10_log(
@@ -3719,8 +3659,8 @@ unsafe extern "C" fn encoder_try_reconfig(
     mut param: *mut x264_param_t,
     mut rc_reconfig: *mut c_int,
 ) -> c_int {
-    *rc_reconfig = 0 as c_int;
-    set_aspect_ratio(h, param, 0 as c_int);
+    *rc_reconfig = 0;
+    set_aspect_ratio(h, param, 0);
     (*h).param.i_frame_reference = (*param).i_frame_reference;
     (*h).param.i_bframe_bias = (*param).i_bframe_bias;
     if (*h).param.i_scenecut_threshold != 0 {
@@ -3764,7 +3704,7 @@ unsafe extern "C" fn encoder_try_reconfig(
     if (*(*h).pps.as_mut_ptr()).b_transform_8x8_mode != 0 {
         (*h).param.analyse.transform_8x8 = (*param).analyse.transform_8x8;
     }
-    if (*h).frames.i_max_ref1 > 1 as c_int {
+    if (*h).frames.i_max_ref1 > 1 {
         (*h).param.bframe_pyramid = (*param).bframe_pyramid;
     }
     (*h).param.i_slice_max_size = (*param).i_slice_max_size;
@@ -3773,10 +3713,10 @@ unsafe extern "C" fn encoder_try_reconfig(
     (*h).param.i_slice_count = (*param).i_slice_count;
     (*h).param.i_slice_count_max = (*param).i_slice_count_max;
     (*h).param.tff = (*param).tff;
-    if (*h).param.rc.i_vbv_max_bitrate > 0 as c_int
-        && (*h).param.rc.i_vbv_buffer_size > 0 as c_int
-        && (*param).rc.i_vbv_max_bitrate > 0 as c_int
-        && (*param).rc.i_vbv_buffer_size > 0 as c_int
+    if (*h).param.rc.i_vbv_max_bitrate > 0
+        && (*h).param.rc.i_vbv_buffer_size > 0
+        && (*param).rc.i_vbv_max_bitrate > 0
+        && (*param).rc.i_vbv_buffer_size > 0
     {
         *rc_reconfig |= ((*h).param.rc.i_vbv_max_bitrate != (*param).rc.i_vbv_max_bitrate) as c_int;
         *rc_reconfig |= ((*h).param.rc.i_vbv_buffer_size != (*param).rc.i_vbv_buffer_size) as c_int;
@@ -3789,7 +3729,7 @@ unsafe extern "C" fn encoder_try_reconfig(
     *rc_reconfig |= ((*h).param.rc.f_rf_constant_max != (*param).rc.f_rf_constant_max) as c_int;
     (*h).param.rc.f_rf_constant = (*param).rc.f_rf_constant;
     (*h).param.rc.f_rf_constant_max = (*param).rc.f_rf_constant_max;
-    return validate_parameters(h, 0 as c_int);
+    return validate_parameters(h, 0);
 }
 #[no_mangle]
 #[c2rust::src_loc = "1932:1"]
@@ -3804,7 +3744,7 @@ unsafe extern "C" fn x264_10_encoder_reconfig_apply(
         x264_10_sps_init_reconfigurable((*h).sps.as_mut_ptr(), &mut (*h).param);
     }
     if ret == 0 && rc_reconfig != 0 {
-        x264_10_ratecontrol_init_reconfigurable(h, 0 as c_int);
+        x264_10_ratecontrol_init_reconfigurable(h, 0);
     }
     return ret;
 }
@@ -3820,7 +3760,7 @@ unsafe extern "C" fn x264_10_encoder_reconfig(
     let mut rc_reconfig: c_int = 0;
     let mut ret: c_int = encoder_try_reconfig((*h).reconfig_h, param, &mut rc_reconfig);
     if ret == 0 {
-        (*h).reconfig = 1 as c_int;
+        (*h).reconfig = 1;
     } else {
         (*(*h).reconfig_h).param = param_save;
     }
@@ -3846,21 +3786,19 @@ unsafe extern "C" fn nal_start(mut h: *mut x264_t, mut i_type: c_int, mut i_ref_
         &mut *(*h).out.nal.offset((*h).out.i_nal as isize) as *mut x264_nal_t;
     (*nal).i_ref_idc = i_ref_idc;
     (*nal).i_type = i_type;
-    (*nal).b_long_startcode = 1 as c_int;
-    (*nal).i_payload = 0 as c_int;
+    (*nal).b_long_startcode = 1;
+    (*nal).i_payload = 0;
     (*nal).p_payload = &mut *(*h).out.p_bitstream.offset(
-        ((bs_pos as unsafe extern "C" fn(*mut bs_t) -> c_int)(&mut (*h).out.bs) / 8 as c_int)
-            as isize,
+        ((bs_pos as unsafe extern "C" fn(*mut bs_t) -> c_int)(&mut (*h).out.bs) / 8) as isize,
     ) as *mut uint8_t;
-    (*nal).i_padding = 0 as c_int;
+    (*nal).i_padding = 0;
 }
 #[c2rust::src_loc = "1995:1"]
 unsafe extern "C" fn nal_check_buffer(mut h: *mut x264_t) -> c_int {
     if (*h).out.i_nal >= (*h).out.i_nals_allocated {
         let mut new_out: *mut x264_nal_t = x264_malloc(
             (size_of::<x264_nal_t>() as usize)
-                .wrapping_mul(((*h).out.i_nals_allocated * 2 as c_int) as usize)
-                as int64_t,
+                .wrapping_mul(((*h).out.i_nals_allocated * 2) as usize) as int64_t,
         ) as *mut x264_nal_t;
         if new_out.is_null() {
             return -1;
@@ -3872,17 +3810,16 @@ unsafe extern "C" fn nal_check_buffer(mut h: *mut x264_t) -> c_int {
         );
         x264_free((*h).out.nal as *mut c_void);
         (*h).out.nal = new_out;
-        (*h).out.i_nals_allocated *= 2 as c_int;
+        (*h).out.i_nals_allocated *= 2;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "2010:1"]
 unsafe extern "C" fn nal_end(mut h: *mut x264_t) -> c_int {
     let mut nal: *mut x264_nal_t =
         &mut *(*h).out.nal.offset((*h).out.i_nal as isize) as *mut x264_nal_t;
     let mut end: *mut uint8_t = &mut *(*h).out.p_bitstream.offset(
-        ((bs_pos as unsafe extern "C" fn(*mut bs_t) -> c_int)(&mut (*h).out.bs) / 8 as c_int)
-            as isize,
+        ((bs_pos as unsafe extern "C" fn(*mut bs_t) -> c_int)(&mut (*h).out.bs) / 8) as isize,
     ) as *mut uint8_t;
     (*nal).i_payload = end.offset_from((*nal).p_payload) as c_long as c_int;
     memset(end as *mut c_void, 0xff as c_int, 64 as size_t);
@@ -3922,7 +3859,7 @@ unsafe extern "C" fn check_encapsulated_buffer(
             );
         }
         let mut delta: intptr_t = buf.offset_from((*h0).nal_buffer) as intptr_t;
-        let mut i: c_int = 0 as c_int;
+        let mut i: c_int = 0;
         while i < start {
             let ref mut fresh1 = (*(*h).out.nal.offset(i as isize)).p_payload;
             *fresh1 = (*fresh1).offset(delta as isize);
@@ -3932,7 +3869,7 @@ unsafe extern "C" fn check_encapsulated_buffer(
         (*h0).nal_buffer = buf;
         (*h0).nal_buffer_size = necessary_size as c_int;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "2051:1"]
 unsafe extern "C" fn encoder_encapsulate_nals(mut h: *mut x264_t, mut start: c_int) -> c_int {
@@ -3950,7 +3887,7 @@ unsafe extern "C" fn encoder_encapsulate_nals(mut h: *mut x264_t, mut start: c_i
         }
         return nal_size as c_int;
     }
-    let mut i_0: c_int = 0 as c_int;
+    let mut i_0: c_int = 0;
     while i_0 < start {
         previous_nal_size += (*(*h).out.nal.offset(i_0 as isize)).i_payload as int64_t;
         i_0 += 1;
@@ -3962,7 +3899,7 @@ unsafe extern "C" fn encoder_encapsulate_nals(mut h: *mut x264_t, mut start: c_i
     }
     let mut necessary_size: int64_t = previous_nal_size
         + nal_size * 3 as int64_t / 2 as int64_t
-        + ((*h).out.i_nal * 4 as c_int) as int64_t
+        + ((*h).out.i_nal * 4) as int64_t
         + 4 as int64_t
         + 64 as int64_t;
     let mut i_2: c_int = start;
@@ -3995,8 +3932,8 @@ unsafe extern "C" fn x264_10_encoder_headers(
     mut pp_nal: *mut *mut x264_nal_t,
     mut pi_nal: *mut c_int,
 ) -> c_int {
-    let mut frame_size: c_int = 0 as c_int;
-    (*h).out.i_nal = 0 as c_int;
+    let mut frame_size: c_int = 0;
+    (*h).out.i_nal = 0;
     bs_init(
         &mut (*h).out.bs,
         (*h).out.p_bitstream as *mut c_void,
@@ -4023,45 +3960,44 @@ unsafe extern "C" fn x264_10_encoder_headers(
     if nal_end(h) != 0 {
         return -1;
     }
-    frame_size = encoder_encapsulate_nals(h, 0 as c_int);
-    if frame_size < 0 as c_int {
+    frame_size = encoder_encapsulate_nals(h, 0);
+    if frame_size < 0 {
         return -1;
     }
     *pi_nal = (*h).out.i_nal;
     *pp_nal = &mut *(*h).out.nal.offset(0) as *mut x264_nal_t;
-    (*h).out.i_nal = 0 as c_int;
+    (*h).out.i_nal = 0;
     return frame_size;
 }
 #[inline]
 #[c2rust::src_loc = "2138:1"]
 unsafe extern "C" fn reference_check_reorder(mut h: *mut x264_t) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while !(*h).frames.reference[i as usize].is_null() {
         if (*(*h).frames.reference[i as usize]).b_corrupt != 0 {
-            (*h).b_ref_reorder[0] = 1 as c_int;
+            (*h).b_ref_reorder[0] = 1;
             return;
         }
         i += 1;
     }
-    let mut list: c_int = 0 as c_int;
+    let mut list: c_int = 0;
     while list <= ((*h).sh.i_type == SLICE_TYPE_B as c_int) as c_int {
-        let mut i_0: c_int = 0 as c_int;
-        while i_0 < (*h).i_ref[list as usize] - 1 as c_int {
-            let mut framenum_diff: c_int = (*(*h).fref[list as usize][(i_0 + 1 as c_int) as usize])
+        let mut i_0: c_int = 0;
+        while i_0 < (*h).i_ref[list as usize] - 1 {
+            let mut framenum_diff: c_int = (*(*h).fref[list as usize][(i_0 + 1) as usize])
                 .i_frame_num
                 - (*(*h).fref[list as usize][i_0 as usize]).i_frame_num;
-            let mut poc_diff: c_int = (*(*h).fref[list as usize][(i_0 + 1 as c_int) as usize])
-                .i_poc
+            let mut poc_diff: c_int = (*(*h).fref[list as usize][(i_0 + 1) as usize]).i_poc
                 - (*(*h).fref[list as usize][i_0 as usize]).i_poc;
             if if (*h).sh.i_type == SLICE_TYPE_P as c_int {
-                (framenum_diff > 0 as c_int) as c_int
-            } else if list == 1 as c_int {
-                (poc_diff < 0 as c_int) as c_int
+                (framenum_diff > 0) as c_int
+            } else if list == 1 {
+                (poc_diff < 0) as c_int
             } else {
-                (poc_diff > 0 as c_int) as c_int
+                (poc_diff > 0) as c_int
             } != 0
             {
-                (*h).b_ref_reorder[list as usize] = 1 as c_int;
+                (*h).b_ref_reorder[list as usize] = 1;
                 return;
             }
             i_0 += 1;
@@ -4076,15 +4012,15 @@ unsafe extern "C" fn weighted_reference_duplicate(
     mut w: *const x264_weight_t,
 ) -> c_int {
     let mut i: c_int = (*h).i_ref[0];
-    let mut j: c_int = 1 as c_int;
+    let mut j: c_int = 1;
     let mut newframe: *mut x264_frame_t = 0 as *mut x264_frame_t;
-    if i <= 1 as c_int {
+    if i <= 1 {
         return -1;
     }
     if (*h).param.analyse.i_weighted_pred != X264_WEIGHTP_SMART {
         return -1;
     }
-    if BIT_DEPTH > 8 as c_int && w != x264_zero.as_mut_ptr() as *const x264_weight_t {
+    if BIT_DEPTH > 8 && w != x264_zero.as_mut_ptr() as *const x264_weight_t {
         return -1;
     }
     newframe = x264_10_frame_pop_blank_unused(h);
@@ -4092,19 +4028,19 @@ unsafe extern "C" fn weighted_reference_duplicate(
         return -1;
     }
     *newframe = *(*h).fref[0][i_ref as usize];
-    (*newframe).i_reference_count = 1 as c_int;
+    (*newframe).i_reference_count = 1;
     (*newframe).orig = (*h).fref[0][i_ref as usize] as *mut x264_frame;
-    (*newframe).b_duplicate = 1 as c_int;
+    (*newframe).b_duplicate = 1;
     memcpy(
         (*(*(*h).fenc).weight.as_mut_ptr().offset(j as isize)).as_mut_ptr() as *mut c_void,
         w as *const c_void,
         size_of::<[x264_weight_t; 3]>() as size_t,
     );
-    (*h).b_ref_reorder[0] = 1 as c_int;
+    (*h).b_ref_reorder[0] = 1;
     if (*h).i_ref[0] < X264_REF_MAX {
         (*h).i_ref[0] += 1;
     }
-    (*h).fref[0][(X264_REF_MAX - 1 as c_int) as usize] = 0 as *mut x264_frame_t;
+    (*h).fref[0][(X264_REF_MAX - 1) as usize] = 0 as *mut x264_frame_t;
     x264_10_frame_unshift(
         &mut *(*(*h).fref.as_mut_ptr().offset(0))
             .as_mut_ptr()
@@ -4115,31 +4051,31 @@ unsafe extern "C" fn weighted_reference_duplicate(
 }
 #[c2rust::src_loc = "2202:1"]
 unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
-    let mut i_ref: c_int = 0 as c_int;
+    let mut i_ref: c_int = 0;
     while i_ref < (*h).i_ref[0] {
         (*(*h).fenc).weighted[i_ref as usize] = (*(*h).fref[0][i_ref as usize]).filtered[0][0];
         i_ref += 1;
     }
-    (*(*h).fenc).i_lines_weighted = 0 as c_int;
-    let mut i_ref_0: c_int = 0 as c_int;
+    (*(*h).fenc).i_lines_weighted = 0;
+    let mut i_ref_0: c_int = 0;
     while i_ref_0 < (*h).i_ref[0] << (*h).sh.mbaff as i32 {
-        let mut i: c_int = 0 as c_int;
-        while i < 3 as c_int {
+        let mut i: c_int = 0;
+        while i < 3 {
             (*h).sh.weight[i_ref_0 as usize][i as usize].weightfn = 0 as *mut weight_fn_t;
             i += 1;
         }
         i_ref_0 += 1;
     }
-    if (*h).sh.i_type != SLICE_TYPE_P as c_int || (*h).param.analyse.i_weighted_pred <= 0 as c_int {
+    if (*h).sh.i_type != SLICE_TYPE_P as c_int || (*h).param.analyse.i_weighted_pred <= 0 {
         return;
     }
     let mut i_padv: c_int = PADV << (*h).param.interlaced as i32;
     let mut denom: c_int = -1;
-    let mut weightplane: [c_int; 2] = [0 as c_int, 0 as c_int];
-    let mut buffer_next: c_int = 0 as c_int;
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 3 as c_int {
-        let mut j: c_int = 0 as c_int;
+    let mut weightplane: [c_int; 2] = [0, 0];
+    let mut buffer_next: c_int = 0;
+    let mut i_0: c_int = 0;
+    while i_0 < 3 {
+        let mut j: c_int = 0;
         while j < (*h).i_ref[0] {
             if !(*(*h).fenc).weight[j as usize][i_0 as usize]
                 .weightfn
@@ -4154,16 +4090,16 @@ unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
                     (*h).sh.weight[j as usize][i_0 as usize].weightfn = 0 as *mut weight_fn_t;
                 } else {
                     if weightplane[(i_0 != 0) as c_int as usize] == 0 {
-                        weightplane[(i_0 != 0) as c_int as usize] = 1 as c_int;
+                        weightplane[(i_0 != 0) as c_int as usize] = 1;
                         denom = (*h).sh.weight[j as usize][i_0 as usize].i_denom as c_int;
                         (*h).sh.weight[0][(i_0 != 0) as c_int as usize].i_denom = denom as int32_t;
-                        if x264_clip3(denom, 0 as c_int, 7 as c_int) == denom {
+                        if x264_clip3(denom, 0, 7) == denom {
                         } else {
                             __assert_fail(
                                 b"x264_clip3( denom, 0, 7 ) == denom\0" as *const u8
                                     as *const c_char,
                                 b"encoder/encoder.c\0" as *const u8 as *const c_char,
-                                2240 as c_uint,
+                                2240,
                                 ::core::mem::transmute::<[u8; 34], [c_char; 34]>(
                                     *b"void weighted_pred_init(x264_t *)\0",
                                 )
@@ -4176,7 +4112,7 @@ unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
                         __assert_fail(
                             b"h->sh.weight[j][i].i_denom == denom\0" as *const u8 as *const c_char,
                             b"encoder/encoder.c\0" as *const u8 as *const c_char,
-                            2243 as c_uint,
+                            2243,
                             ::core::mem::transmute::<[u8; 34], [c_char; 34]>(
                                 *b"void weighted_pred_init(x264_t *)\0",
                             )
@@ -4201,29 +4137,29 @@ unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
                                     -(((*(*h).fref[0][j as usize]).i_stride[0] * i_padv) as isize),
                                 )
                                 .offset(
-                                    -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
-                                        32 as c_int
+                                    -((if 32 > 64 / size_of::<pixel>() as c_int {
+                                        32
                                     } else {
-                                        64 as c_int / size_of::<pixel>() as c_int
+                                        64 / size_of::<pixel>() as c_int
                                     }) as isize),
                                 );
                             let mut dst: *mut pixel = (*(*h).fenc).weighted[j as usize]
                                 .offset(-(((*(*h).fenc).i_stride[0] * i_padv) as isize))
                                 .offset(
-                                    -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
-                                        32 as c_int
+                                    -((if 32 > 64 / size_of::<pixel>() as c_int {
+                                        32
                                     } else {
-                                        64 as c_int / size_of::<pixel>() as c_int
+                                        64 / size_of::<pixel>() as c_int
                                     }) as isize),
                                 );
                             let mut stride: c_int = (*(*h).fenc).i_stride[0];
                             let mut width: c_int = (*(*h).fenc).i_width[0]
-                                + ((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
-                                    32 as c_int
+                                + ((if 32 > 64 / size_of::<pixel>() as c_int {
+                                    32
                                 } else {
-                                    64 as c_int / size_of::<pixel>() as c_int
+                                    64 / size_of::<pixel>() as c_int
                                 }) + PADH);
-                            let mut height: c_int = (*(*h).fenc).i_lines[0] + i_padv * 2 as c_int;
+                            let mut height: c_int = (*(*h).fenc).i_lines[0] + i_padv * 2;
                             x264_10_weight_scale_plane(
                                 h,
                                 dst,
@@ -4246,29 +4182,29 @@ unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
         i_0 += 1;
     }
     if weightplane[1] != 0 {
-        let mut i_1: c_int = 0 as c_int;
+        let mut i_1: c_int = 0;
         while i_1 < (*h).i_ref[0] {
             if !(*h).sh.weight[i_1 as usize][1].weightfn.is_null()
                 && (*h).sh.weight[i_1 as usize][2].weightfn.is_null()
             {
                 (*h).sh.weight[i_1 as usize][2].i_scale =
-                    ((1 as c_int) << (*h).sh.weight[0][1].i_denom) as int32_t;
-                (*h).sh.weight[i_1 as usize][2].i_offset = 0 as c_int as int32_t;
+                    ((1) << (*h).sh.weight[0][1].i_denom) as int32_t;
+                (*h).sh.weight[i_1 as usize][2].i_offset = 0 as int32_t;
             } else if !(*h).sh.weight[i_1 as usize][2].weightfn.is_null()
                 && (*h).sh.weight[i_1 as usize][1].weightfn.is_null()
             {
                 (*h).sh.weight[i_1 as usize][1].i_scale =
-                    ((1 as c_int) << (*h).sh.weight[0][1].i_denom) as int32_t;
-                (*h).sh.weight[i_1 as usize][1].i_offset = 0 as c_int as int32_t;
+                    ((1) << (*h).sh.weight[0][1].i_denom) as int32_t;
+                (*h).sh.weight[i_1 as usize][1].i_offset = 0 as int32_t;
             }
             i_1 += 1;
         }
     }
     if weightplane[0] == 0 {
-        (*h).sh.weight[0][0].i_denom = 0 as c_int as int32_t;
+        (*h).sh.weight[0][0].i_denom = 0 as int32_t;
     }
     if weightplane[1] == 0 {
-        (*h).sh.weight[0][1].i_denom = 0 as c_int as int32_t;
+        (*h).sh.weight[0][1].i_denom = 0 as int32_t;
     }
     (*h).sh.weight[0][2].i_denom = (*h).sh.weight[0][1].i_denom;
 }
@@ -4276,8 +4212,8 @@ unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
 #[c2rust::src_loc = "2286:1"]
 unsafe extern "C" fn reference_distance(mut h: *mut x264_t, mut frame: *mut x264_frame_t) -> c_int {
     if (*h).param.frame_packing == Some(FramePacking::TemporalInterleaved) {
-        return abs(((*(*h).fenc).i_frame & !(1 as c_int)) - ((*frame).i_frame & !(1 as c_int)))
-            + ((*(*h).fenc).i_frame & 1 as c_int != (*frame).i_frame & 1 as c_int) as c_int;
+        return abs(((*(*h).fenc).i_frame & !(1)) - ((*frame).i_frame & !(1)))
+            + ((*(*h).fenc).i_frame & 1 != (*frame).i_frame & 1) as c_int;
     } else {
         return abs((*(*h).fenc).i_frame - (*frame).i_frame);
     };
@@ -4286,14 +4222,14 @@ unsafe extern "C" fn reference_distance(mut h: *mut x264_t, mut frame: *mut x264
 #[c2rust::src_loc = "2295:1"]
 unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) {
     let mut b_ok: c_int = 0;
-    (*h).i_ref[0] = 0 as c_int;
+    (*h).i_ref[0] = 0;
     (*h).mb.pic.i_fref[0] = (*h).i_ref[0];
-    (*h).i_ref[1] = 0 as c_int;
+    (*h).i_ref[1] = 0;
     (*h).mb.pic.i_fref[1] = (*h).i_ref[1];
     if (*h).sh.i_type == SLICE_TYPE_I as c_int {
         return;
     }
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while !(*h).frames.reference[i as usize].is_null() {
         if !((*(*h).frames.reference[i as usize]).b_corrupt != 0) {
             if (*(*h).frames.reference[i as usize]).i_poc < i_poc {
@@ -4310,16 +4246,16 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
     }
     if (*h).sh.i_mmco_remove_from_end != 0 {
         loop {
-            b_ok = 1 as c_int;
-            let mut i_0: c_int = 0 as c_int;
-            while i_0 < (*h).i_ref[0] - 1 as c_int {
+            b_ok = 1;
+            let mut i_0: c_int = 0;
+            while i_0 < (*h).i_ref[0] - 1 {
                 if (*(*h).fref[0][i_0 as usize]).i_frame
-                    < (*(*h).fref[0][(i_0 + 1 as c_int) as usize]).i_frame
+                    < (*(*h).fref[0][(i_0 + 1) as usize]).i_frame
                 {
                     let mut t: *mut x264_frame_t = (*h).fref[0][i_0 as usize];
-                    (*h).fref[0][i_0 as usize] = (*h).fref[0][(i_0 + 1 as c_int) as usize];
-                    (*h).fref[0][(i_0 + 1 as c_int) as usize] = t;
-                    b_ok = 0 as c_int;
+                    (*h).fref[0][i_0 as usize] = (*h).fref[0][(i_0 + 1) as usize];
+                    (*h).fref[0][(i_0 + 1) as usize] = t;
+                    b_ok = 0;
                     break;
                 } else {
                     i_0 += 1;
@@ -4329,7 +4265,7 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
                 break;
             }
         }
-        let mut i_1: c_int = (*h).i_ref[0] - 1 as c_int;
+        let mut i_1: c_int = (*h).i_ref[0] - 1;
         while i_1 >= (*h).i_ref[0] - (*h).sh.i_mmco_remove_from_end {
             let mut diff: c_int = (*h).i_frame_num - (*(*h).fref[0][i_1 as usize]).i_frame_num;
             (*h).sh.mmco[(*h).sh.i_mmco_command_count as usize].i_poc =
@@ -4340,32 +4276,31 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
             i_1 -= 1;
         }
     }
-    let mut list: c_int = 0 as c_int;
-    while list < 2 as c_int {
+    let mut list: c_int = 0;
+    while list < 2 {
         (*h).fref_nearest[list as usize] = (*h).fref[list as usize][0];
         loop {
-            b_ok = 1 as c_int;
-            let mut i_2: c_int = 0 as c_int;
-            while i_2 < (*h).i_ref[list as usize] - 1 as c_int {
+            b_ok = 1;
+            let mut i_2: c_int = 0;
+            while i_2 < (*h).i_ref[list as usize] - 1 {
                 if if list != 0 {
-                    ((*(*h).fref[list as usize][(i_2 + 1 as c_int) as usize]).i_poc
+                    ((*(*h).fref[list as usize][(i_2 + 1) as usize]).i_poc
                         < (*(*h).fref_nearest[list as usize]).i_poc) as c_int
                 } else {
-                    ((*(*h).fref[list as usize][(i_2 + 1 as c_int) as usize]).i_poc
+                    ((*(*h).fref[list as usize][(i_2 + 1) as usize]).i_poc
                         > (*(*h).fref_nearest[list as usize]).i_poc) as c_int
                 } != 0
                 {
-                    (*h).fref_nearest[list as usize] =
-                        (*h).fref[list as usize][(i_2 + 1 as c_int) as usize];
+                    (*h).fref_nearest[list as usize] = (*h).fref[list as usize][(i_2 + 1) as usize];
                 }
                 if reference_distance(h, (*h).fref[list as usize][i_2 as usize])
-                    > reference_distance(h, (*h).fref[list as usize][(i_2 + 1 as c_int) as usize])
+                    > reference_distance(h, (*h).fref[list as usize][(i_2 + 1) as usize])
                 {
                     let mut t_0: *mut x264_frame_t = (*h).fref[list as usize][i_2 as usize];
                     (*h).fref[list as usize][i_2 as usize] =
-                        (*h).fref[list as usize][(i_2 + 1 as c_int) as usize];
-                    (*h).fref[list as usize][(i_2 + 1 as c_int) as usize] = t_0;
-                    b_ok = 0 as c_int;
+                        (*h).fref[list as usize][(i_2 + 1) as usize];
+                    (*h).fref[list as usize][(i_2 + 1) as usize] = t_0;
+                    b_ok = 0;
                     break;
                 } else {
                     i_2 += 1;
@@ -4399,13 +4334,13 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
         (*h).i_ref[0] = if (*h).i_ref[0]
             < ((*(*h).fref[0][0]).i_type == 0x5 as c_int
                 || (*(*h).fref[0][0]).i_type == 0x4 as c_int) as c_int
-                + 1 as c_int
+                + 1
         {
             (*h).i_ref[0]
         } else {
             ((*(*h).fref[0][0]).i_type == 0x5 as c_int || (*(*h).fref[0][0]).i_type == 0x4 as c_int)
                 as c_int
-                + 1 as c_int
+                + 1
         };
     }
     if (*(*h).fenc).i_type == X264_TYPE_P {
@@ -4425,21 +4360,21 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
                 x264_10_ratecontrol_set_weights(h, (*h).fenc);
             }
             if (*(*h).fenc).weight[0][0].weightfn.is_null() {
-                (*(*h).fenc).weight[0][0].i_denom = 0 as c_int as int32_t;
-                w[0].i_scale = 1 as c_int as int32_t;
-                w[0].i_denom = 0 as c_int as int32_t;
+                (*(*h).fenc).weight[0][0].i_denom = 0 as int32_t;
+                w[0].i_scale = 1 as int32_t;
+                w[0].i_denom = 0 as int32_t;
                 w[0].i_offset = -1 as int32_t;
                 (*h).mc.weight_cache.expect("non-null function pointer")(
                     h,
                     &mut *w.as_mut_ptr().offset(0),
                 );
-                idx = weighted_reference_duplicate(h, 0 as c_int, w.as_mut_ptr());
+                idx = weighted_reference_duplicate(h, 0, w.as_mut_ptr());
             } else {
                 if (*(*h).fenc).weight[0][0].i_scale
                     == (1 as int32_t) << (*(*h).fenc).weight[0][0].i_denom
                 {
-                    (*(*h).fenc).weight[0][0].i_scale = 1 as c_int as int32_t;
-                    (*(*h).fenc).weight[0][0].i_denom = 0 as c_int as int32_t;
+                    (*(*h).fenc).weight[0][0].i_scale = 1 as int32_t;
+                    (*(*h).fenc).weight[0][0].i_denom = 0 as int32_t;
                     (*(*h).fenc).weight[0][0].i_offset = (*(*h).fenc).weight[0][0].i_offset;
                     (*h).mc.weight_cache.expect("non-null function pointer")(
                         h,
@@ -4448,11 +4383,7 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
                             .offset(0),
                     );
                 }
-                weighted_reference_duplicate(
-                    h,
-                    0 as c_int,
-                    x264_zero.as_mut_ptr() as *const x264_weight_t,
-                );
+                weighted_reference_duplicate(h, 0, x264_zero.as_mut_ptr() as *const x264_weight_t);
                 if (*(*h).fenc).weight[0][0].i_offset > -(128 as int32_t) {
                     w[0] = (*(*h).fenc).weight[0][0];
                     w[0].i_offset -= 1;
@@ -4460,18 +4391,18 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
                         h,
                         &mut *w.as_mut_ptr().offset(0),
                     );
-                    idx = weighted_reference_duplicate(h, 0 as c_int, w.as_mut_ptr());
+                    idx = weighted_reference_duplicate(h, 0, w.as_mut_ptr());
                 }
             }
         }
         (*h).mb.ref_blind_dupe = idx;
     }
-    if (*h).i_ref[0] + (*h).i_ref[1] <= 16 as c_int {
+    if (*h).i_ref[0] + (*h).i_ref[1] <= 16 {
     } else {
         __assert_fail(
             b"h->i_ref[0] + h->i_ref[1] <= X264_REF_MAX\0" as *const u8 as *const c_char,
             b"encoder/encoder.c\0" as *const u8 as *const c_char,
-            2408 as c_uint,
+            2408,
             ::core::mem::transmute::<[u8; 41], [c_char; 41]>(
                 *b"void reference_build_list(x264_t *, int)\0",
             )
@@ -4484,29 +4415,29 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: c_int) 
 #[c2rust::src_loc = "2413:1"]
 unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pass: c_int) {
     let mut b_hpel: c_int = (*(*h).fdec).b_kept_as_ref;
-    let mut b_deblock: c_int = ((*h).sh.i_disable_deblocking_filter_idc != 1 as c_int) as c_int;
+    let mut b_deblock: c_int = ((*h).sh.i_disable_deblocking_filter_idc != 1) as c_int;
     let mut b_end: c_int = (mb_y == (*h).i_threadslice_end) as c_int;
-    let mut b_measure_quality: c_int = 1 as c_int;
-    let mut min_y: c_int = mb_y - ((1 as c_int) << (*h).sh.mbaff as i32);
+    let mut b_measure_quality: c_int = 1;
+    let mut min_y: c_int = mb_y - ((1) << (*h).sh.mbaff as i32);
     let mut b_start: c_int = (min_y == (*h).i_threadslice_start) as c_int;
-    let mut minpix_y: c_int = min_y * 16 as c_int - 4 as c_int * (b_start == 0) as c_int;
-    let mut maxpix_y: c_int = mb_y * 16 as c_int - 4 as c_int * (b_end == 0) as c_int;
+    let mut minpix_y: c_int = min_y * 16 - 4 * (b_start == 0) as c_int;
+    let mut maxpix_y: c_int = mb_y * 16 - 4 * (b_end == 0) as c_int;
     b_deblock &=
         (b_hpel != 0 || (*h).param.full_recon || !(*h).param.psz_dump_yuv.is_null()) as c_int;
     if (*h).param.sliced_threads {
         match pass {
             1 => {
                 b_deblock &= (!(*h).param.full_recon) as c_int;
-                b_hpel &= !(b_start != 0 && min_y > 0 as c_int) as c_int;
-                b_measure_quality = 0 as c_int;
+                b_hpel &= !(b_start != 0 && min_y > 0) as c_int;
+                b_measure_quality = 0;
             }
             2 => {
-                b_deblock = 0 as c_int;
-                b_measure_quality = 0 as c_int;
+                b_deblock = 0;
+                b_measure_quality = 0;
             }
             0 | _ => {
                 b_deblock &= (*h).param.full_recon as i32;
-                b_hpel = 0 as c_int;
+                b_hpel = 0;
             }
         }
     }
@@ -4520,11 +4451,11 @@ unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pa
         let mut y: c_int = min_y;
         while y < mb_y {
             x264_10_frame_deblock_row(h, y);
-            y += (1 as c_int) << (*h).sh.mbaff as i32;
+            y += (1) << (*h).sh.mbaff as i32;
         }
     }
-    if (*h).param.interlaced && (!(*h).param.sliced_threads || pass == 1 as c_int) {
-        let mut p: c_int = 0 as c_int;
+    if (*h).param.interlaced && (!(*h).param.sliced_threads || pass == 1) {
+        let mut p: c_int = 0;
         while p < (*(*h).fdec).i_plane {
             let mut i: c_int = minpix_y >> ((*h).mb.chroma_v_shift != 0 && p != 0) as c_int;
             while i < maxpix_y >> ((*h).mb.chroma_v_shift != 0 && p != 0) as c_int {
@@ -4535,7 +4466,7 @@ unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pa
                     (*(*h).fdec).plane[p as usize]
                         .offset((i * (*(*h).fdec).i_stride[p as usize]) as isize)
                         as *const c_void,
-                    ((*h).mb.i_mb_width * 16 as c_int * SIZEOF_PIXEL) as size_t,
+                    ((*h).mb.i_mb_width * 16 * SIZEOF_PIXEL) as size_t,
                 );
                 i += 1;
             }
@@ -4553,8 +4484,8 @@ unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pa
         }
     }
     if (*h).sh.mbaff && pass == 0 {
-        let mut i_0: c_int = 0 as c_int;
-        while i_0 < 3 as c_int {
+        let mut i_0: c_int = 0;
+        while i_0 < 3 {
             let mut t: *mut pixel = (*h).intra_border_backup[0][i_0 as usize];
             (*h).intra_border_backup[0][i_0 as usize] = (*h).intra_border_backup[3][i_0 as usize];
             (*h).intra_border_backup[3][i_0 as usize] = t;
@@ -4564,12 +4495,12 @@ unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pa
             i_0 += 1;
         }
     }
-    if (*h).i_thread_frames > 1 as c_int && (*(*h).fdec).b_kept_as_ref != 0 {
+    if (*h).i_thread_frames > 1 && (*(*h).fdec).b_kept_as_ref != 0 {
         x264_10_frame_cond_broadcast(
             (*h).fdec,
-            mb_y * 16 as c_int
+            mb_y * 16
                 + (if b_end != 0 {
-                    10000 as c_int
+                    10000
                 } else {
                     -(X264_THREAD_HEIGHT << (*h).sh.mbaff as i32)
                 }),
@@ -4582,12 +4513,12 @@ unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pa
             (*h).param.height as c_int
         };
         if (*h).param.analyse.psnr {
-            let mut p_0: c_int = 0 as c_int;
+            let mut p_0: c_int = 0;
             while p_0
                 < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-                    3 as c_int
+                    3
                 } else {
-                    1 as c_int
+                    1
                 })
             {
                 (*h).stat.frame.i_ssd[p_0 as usize] = ((*h).stat.frame.i_ssd[p_0 as usize]
@@ -4632,11 +4563,7 @@ unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pa
         }
         if (*h).param.analyse.ssim {
             let mut ssim_cnt: c_int = 0;
-            minpix_y += if b_start != 0 {
-                2 as c_int
-            } else {
-                -(6 as c_int)
-            };
+            minpix_y += if b_start != 0 { 2 } else { -(6) };
             (*h).stat.frame.f_ssim += x264_10_pixel_ssim_wxh(
                 &mut (*h).pixf,
                 (*(*h).fdec).plane[0]
@@ -4660,18 +4587,18 @@ unsafe extern "C" fn fdec_filter_row(mut h: *mut x264_t, mut mb_y: c_int, mut pa
 #[c2rust::src_loc = "2533:1"]
 unsafe extern "C" fn reference_update(mut h: *mut x264_t) -> c_int {
     if (*(*h).fdec).b_kept_as_ref == 0 {
-        if (*h).i_thread_frames > 1 as c_int {
+        if (*h).i_thread_frames > 1 {
             x264_10_frame_push_unused(h, (*h).fdec);
-            (*h).fdec = x264_10_frame_pop_unused(h, 1 as c_int);
+            (*h).fdec = x264_10_frame_pop_unused(h, 1);
             if (*h).fdec.is_null() {
                 return -1;
             }
         }
-        return 0 as c_int;
+        return 0;
     }
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*h).sh.i_mmco_command_count {
-        let mut j: c_int = 0 as c_int;
+        let mut j: c_int = 0;
         while !(*h).frames.reference[j as usize].is_null() {
             if (*(*h).frames.reference[j as usize]).i_poc == (*h).sh.mmco[i as usize].i_poc {
                 x264_10_frame_push_unused(
@@ -4689,11 +4616,11 @@ unsafe extern "C" fn reference_update(mut h: *mut x264_t) -> c_int {
     if !(*h).frames.reference[(*(*h).sps.as_mut_ptr()).i_num_ref_frames as usize].is_null() {
         x264_10_frame_push_unused(h, x264_10_frame_shift((*h).frames.reference.as_mut_ptr()));
     }
-    (*h).fdec = x264_10_frame_pop_unused(h, 1 as c_int);
+    (*h).fdec = x264_10_frame_pop_unused(h, 1);
     if (*h).fdec.is_null() {
         return -1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[inline]
 #[c2rust::src_loc = "2563:1"]
@@ -4701,15 +4628,15 @@ unsafe extern "C" fn reference_reset(mut h: *mut x264_t) {
     while !(*h).frames.reference[0].is_null() {
         x264_10_frame_push_unused(h, x264_10_frame_pop((*h).frames.reference.as_mut_ptr()));
     }
-    (*(*h).fenc).i_poc = 0 as c_int;
+    (*(*h).fenc).i_poc = 0;
     (*(*h).fdec).i_poc = (*(*h).fenc).i_poc;
 }
 #[inline]
 #[c2rust::src_loc = "2571:1"]
 unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
     let mut ref_0: c_int = 0;
-    let mut b_hasdelayframe: c_int = 0 as c_int;
-    let mut i: c_int = 0 as c_int;
+    let mut b_hasdelayframe: c_int = 0;
+    let mut i: c_int = 0;
     while !(*(*h).frames.current.offset(i as isize)).is_null()
         && (**(*h).frames.current.offset(i as isize)).i_type == X264_TYPE_B
     {
@@ -4725,7 +4652,7 @@ unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
     {
         return;
     }
-    ref_0 = 0 as c_int;
+    ref_0 = 0;
     while !(*h).frames.reference[ref_0 as usize].is_null() {
         if (*h).param.bframe_pyramid == BPyramid::Strict
             && (*(*h).frames.reference[ref_0 as usize]).i_type == X264_TYPE_BREF
@@ -4744,17 +4671,16 @@ unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
                     &mut *(*h).frames.reference.as_mut_ptr().offset(ref_0 as isize),
                 ),
             );
-            (*h).b_ref_reorder[0] = 1 as c_int;
+            (*h).b_ref_reorder[0] = 1;
             ref_0 -= 1;
         }
         ref_0 += 1;
     }
     if (*h).param.bframe_pyramid != BPyramid::None {
-        (*h).sh.i_mmco_remove_from_end = if ref_0 + 2 as c_int - (*h).frames.i_max_dpb > 0 as c_int
-        {
-            ref_0 + 2 as c_int - (*h).frames.i_max_dpb
+        (*h).sh.i_mmco_remove_from_end = if ref_0 + 2 - (*h).frames.i_max_dpb > 0 {
+            ref_0 + 2 - (*h).frames.i_max_dpb
         } else {
-            0 as c_int
+            0
         };
     }
 }
@@ -4774,17 +4700,17 @@ unsafe extern "C" fn slice_init(mut h: *mut x264_t, mut i_nal_type: c_int, mut i
         if (*h).param.i_avcintra_class != 0 {
             match (*h).i_idr_pic_id {
                 5 => {
-                    (*h).i_idr_pic_id = 3 as c_int;
+                    (*h).i_idr_pic_id = 3;
                 }
                 3 => {
-                    (*h).i_idr_pic_id = 4 as c_int;
+                    (*h).i_idr_pic_id = 4;
                 }
                 4 | _ => {
-                    (*h).i_idr_pic_id = 5 as c_int;
+                    (*h).i_idr_pic_id = 5;
                 }
             }
         } else {
-            (*h).i_idr_pic_id ^= 1 as c_int;
+            (*h).i_idr_pic_id ^= 1;
         }
     } else {
         slice_header_init(
@@ -4796,43 +4722,35 @@ unsafe extern "C" fn slice_init(mut h: *mut x264_t, mut i_nal_type: c_int, mut i
             (*h).i_frame_num,
             i_global_qp,
         );
-        (*h).sh.i_num_ref_idx_l0_active = if (*h).i_ref[0] <= 0 as c_int {
-            1 as c_int
-        } else {
-            (*h).i_ref[0]
-        };
-        (*h).sh.i_num_ref_idx_l1_active = if (*h).i_ref[1] <= 0 as c_int {
-            1 as c_int
-        } else {
-            (*h).i_ref[1]
-        };
+        (*h).sh.i_num_ref_idx_l0_active = if (*h).i_ref[0] <= 0 { 1 } else { (*h).i_ref[0] };
+        (*h).sh.i_num_ref_idx_l1_active = if (*h).i_ref[1] <= 0 { 1 } else { (*h).i_ref[1] };
         if (*h).sh.i_num_ref_idx_l0_active
             != (*(*h).pps.as_mut_ptr()).i_num_ref_idx_l0_default_active
             || (*h).sh.i_type == SLICE_TYPE_B as c_int
                 && (*h).sh.i_num_ref_idx_l1_active
                     != (*(*h).pps.as_mut_ptr()).i_num_ref_idx_l1_default_active
         {
-            (*h).sh.b_num_ref_idx_override = 1 as c_int;
+            (*h).sh.b_num_ref_idx_override = 1;
         }
     }
     if (*(*h).fenc).i_type == X264_TYPE_BREF
         && (*h).param.bluray_compat
         && (*h).sh.i_mmco_command_count != 0
     {
-        (*h).b_sh_backup = 1 as c_int;
+        (*h).b_sh_backup = 1;
         (*h).sh_backup = (*h).sh;
     }
     (*(*h).fdec).i_frame_num = (*h).sh.i_frame_num;
-    if (*(*h).sps.as_mut_ptr()).i_poc_type == 0 as c_int {
+    if (*(*h).sps.as_mut_ptr()).i_poc_type == 0 {
         (*h).sh.i_poc = (*(*h).fdec).i_poc;
         if (*h).param.interlaced {
-            (*h).sh.i_delta_poc_bottom = if (*h).param.tff { 1 as c_int } else { -1 };
+            (*h).sh.i_delta_poc_bottom = if (*h).param.tff { 1 } else { -1 };
             (*h).sh.i_poc += ((*h).sh.i_delta_poc_bottom == -1) as c_int;
         } else {
-            (*h).sh.i_delta_poc_bottom = 0 as c_int;
+            (*h).sh.i_delta_poc_bottom = 0;
         }
         (*(*h).fdec).i_delta_poc[0] = ((*h).sh.i_delta_poc_bottom == -1) as c_int;
-        (*(*h).fdec).i_delta_poc[1] = ((*h).sh.i_delta_poc_bottom == 1 as c_int) as c_int;
+        (*(*h).fdec).i_delta_poc[1] = ((*h).sh.i_delta_poc_bottom == 1) as c_int;
     }
     x264_10_macroblock_slice_init(h);
 }
@@ -4921,7 +4839,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
         + 1
         + (*h).param.cabac as i32
         + 5;
-    let mut slice_max_size: c_int = if (*h).param.i_slice_max_size > 0 as c_int {
+    let mut slice_max_size: c_int = if (*h).param.i_slice_max_size > 0 {
         ((*h).param.i_slice_max_size - overhead_guess) * 8
     } else {
         0
@@ -4932,10 +4850,10 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
     let mut back_up_bitstream: c_int =
         (slice_max_size != 0 || back_up_bitstream_cavlc != 0) as c_int;
     let mut starting_bits: c_int = bs_pos(&mut (*h).out.bs);
-    let mut b_deblock: c_int = ((*h).sh.i_disable_deblocking_filter_idc != 1 as c_int) as c_int;
+    let mut b_deblock: c_int = ((*h).sh.i_disable_deblocking_filter_idc != 1) as c_int;
     let mut b_hpel: c_int = (*(*h).fdec).b_kept_as_ref;
     let mut orig_last_mb: c_int = (*h).sh.i_last_mb;
-    let mut thread_last_mb: c_int = (*h).i_threadslice_end * (*h).mb.i_mb_width - 1 as c_int;
+    let mut thread_last_mb: c_int = (*h).i_threadslice_end * (*h).mb.i_mb_width - 1;
     let mut last_emu_check: *mut uint8_t = 0 as *mut uint8_t;
     let mut bs_bak: [x264_bs_bak_t; 4] = [x264_bs_bak_t {
         skip: 0,
@@ -4991,10 +4909,10 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
     x264_10_macroblock_thread_init(h);
     (*h).mb.i_mb_xy = (*h).sh.i_first_mb;
     (*h).sh.i_qp = x264_10_ratecontrol_mb_qp(h);
-    (*h).sh.i_qp = if (*h).sh.i_qp < 51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int) {
+    (*h).sh.i_qp = if (*h).sh.i_qp < 51 + 6 * (10 - 8) {
         (*h).sh.i_qp
     } else {
-        51 as c_int + 6 as c_int * (10 as c_int - 8 as c_int)
+        51 + 6 * (10 - 8)
     };
     (*h).sh.i_qp_delta = (*h).sh.i_qp - (*(*h).pps.as_mut_ptr()).i_pic_init_qp;
     slice_header_write(&mut (*h).out.bs, &mut (*h).sh, (*h).i_nal_ref_idc);
@@ -5004,7 +4922,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
             h,
             &mut (*h).cabac,
             (*h).sh.i_type,
-            x264_clip3((*h).sh.i_qp - QP_BD_OFFSET, 0 as c_int, 51 as c_int),
+            x264_clip3((*h).sh.i_qp - QP_BD_OFFSET, 0, 51),
             (*h).sh.i_cabac_init_idc,
         );
         x264_10_cabac_encode_init(&mut (*h).cabac, (*h).out.bs.p, (*h).out.bs.p_end);
@@ -5013,15 +4931,15 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
         last_emu_check = (*h).out.bs.p;
     }
     (*h).mb.i_last_qp = (*h).sh.i_qp;
-    (*h).mb.i_last_dqp = 0 as c_int;
+    (*h).mb.i_last_dqp = 0;
     (*h).mb.field_decoding_flag = false;
     i_mb_y = (*h).sh.i_first_mb / (*h).mb.i_mb_width;
     i_mb_x = (*h).sh.i_first_mb % (*h).mb.i_mb_width;
-    i_skip = 0 as c_int;
+    i_skip = 0;
     loop {
         mb_xy = i_mb_x + i_mb_y * (*h).mb.i_mb_width;
         let mut mb_spos: c_int = bs_pos(&mut (*h).out.bs) + x264_cabac_pos(&mut (*h).cabac);
-        if i_mb_x == 0 as c_int {
+        if i_mb_x == 0 {
             if bitstream_check_buffer(h) != 0 {
                 return -1 as intptr_t;
             }
@@ -5030,11 +4948,11 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                     h,
                     &mut *bs_bak.as_mut_ptr().offset(BS_BAK_ROW_VBV as isize),
                     i_skip,
-                    1 as c_int,
+                    1,
                 );
             }
             if (*h).mb.b_reencode_mb == 0 {
-                fdec_filter_row(h, i_mb_y, 0 as c_int);
+                fdec_filter_row(h, i_mb_y, 0);
             }
         }
         if back_up_bitstream != 0 {
@@ -5043,7 +4961,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                     h,
                     &mut *bs_bak.as_mut_ptr().offset(BS_BAK_CAVLC_OVERFLOW as isize),
                     i_skip,
-                    0 as c_int,
+                    0,
                 );
             }
             if slice_max_size != 0 && i_mb_y & (*h).sh.mbaff as i32 == 0 {
@@ -5051,21 +4969,21 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                     h,
                     &mut *bs_bak.as_mut_ptr().offset(BS_BAK_SLICE_MAX_SIZE as isize),
                     i_skip,
-                    0 as c_int,
+                    0,
                 );
-                if thread_last_mb + 1 as c_int - mb_xy == (*h).param.i_slice_min_mbs {
+                if thread_last_mb + 1 - mb_xy == (*h).param.i_slice_min_mbs {
                     bitstream_backup(
                         h,
                         &mut *bs_bak.as_mut_ptr().offset(BS_BAK_SLICE_MIN_MBS as isize),
                         i_skip,
-                        0 as c_int,
+                        0,
                     );
                 }
             }
         }
         if (*h).param.interlaced {
             if (*h).mb.b_adaptive_mbaff != 0 {
-                if i_mb_y & 1 as c_int == 0 {
+                if i_mb_y & 1 == 0 {
                     (*h).mb.interlaced = x264_10_field_vsad(h, i_mb_x, i_mb_y) != 0;
                     memcpy(
                         &mut (*h).zigzagf as *mut x264_zigzag_function_t as *mut c_void,
@@ -5076,7 +4994,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                         }) as *const c_void,
                         size_of::<x264_zigzag_function_t>(),
                     );
-                    if !(*h).mb.interlaced && i_mb_y + 2 as c_int == (*h).mb.i_mb_height {
+                    if !(*h).mb.interlaced && i_mb_y + 2 == (*h).mb.i_mb_height {
                         x264_10_expand_border_mbpair(h, i_mb_x, i_mb_y);
                     }
                 }
@@ -5092,14 +5010,14 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
         loop {
             x264_10_macroblock_encode(h);
             if (*h).param.cabac {
-                if mb_xy > (*h).sh.i_first_mb && !((*h).sh.mbaff && i_mb_y & 1 as c_int != 0) {
+                if mb_xy > (*h).sh.i_first_mb && !((*h).sh.mbaff && i_mb_y & 1 != 0) {
                     x264_10_cabac_encode_terminal_c(&mut (*h).cabac);
                 }
                 if (*h).mb.i_type == P_SKIP as c_int || (*h).mb.i_type == B_SKIP as c_int {
-                    x264_10_cabac_mb_skip(h, 1 as c_int);
+                    x264_10_cabac_mb_skip(h, 1);
                 } else {
                     if (*h).sh.i_type != SLICE_TYPE_I as c_int {
-                        x264_10_cabac_mb_skip(h, 0 as c_int);
+                        x264_10_cabac_mb_skip(h, 0);
                     }
                     x264_10_macroblock_write_cabac(h, &mut (*h).cabac);
                 }
@@ -5110,7 +5028,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
             } else {
                 if (*h).sh.i_type != SLICE_TYPE_I as c_int {
                     bs_write_ue_big(&mut (*h).out.bs, i_skip as c_uint);
-                    i_skip = 0 as c_int;
+                    i_skip = 0;
                 }
                 x264_10_macroblock_write_cavlc(h);
                 if !((*h).mb.b_overflow != 0) {
@@ -5118,20 +5036,20 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                 }
                 (*h).mb.i_qp += 1;
                 (*h).mb.i_chroma_qp = *(*h).chroma_qp_table.offset((*h).mb.i_qp as isize) as c_int;
-                (*h).mb.i_skip_intra = 0 as c_int;
-                (*h).mb.b_skip_mc = 0 as c_int;
-                (*h).mb.b_overflow = 0 as c_int;
+                (*h).mb.i_skip_intra = 0;
+                (*h).mb.b_skip_mc = 0;
+                (*h).mb.b_overflow = 0;
                 bitstream_restore(
                     h,
                     &mut *bs_bak.as_mut_ptr().offset(BS_BAK_CAVLC_OVERFLOW as isize),
                     &mut i_skip,
-                    0 as c_int,
+                    0,
                 );
             }
         }
         let mut total_bits: c_int = bs_pos(&mut (*h).out.bs) + x264_cabac_pos(&mut (*h).cabac);
         let mut mb_size: c_int = total_bits - mb_spos;
-        if slice_max_size != 0 && (!(*h).sh.mbaff || i_mb_y & 1 as c_int != 0) {
+        if slice_max_size != 0 && (!(*h).sh.mbaff || i_mb_y & 1 != 0) {
             if !(*h).param.cabac {
                 total_bits += bs_size_ue_big(i_skip as c_uint);
             }
@@ -5141,11 +5059,11 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                 (*h).out.bs.p
             };
             while last_emu_check < end.offset(-(2)) {
-                if *last_emu_check.offset(0) as c_int == 0 as c_int
-                    && *last_emu_check.offset(1) as c_int == 0 as c_int
-                    && *last_emu_check.offset(2) as c_int <= 3 as c_int
+                if *last_emu_check.offset(0) as c_int == 0
+                    && *last_emu_check.offset(1) as c_int == 0
+                    && *last_emu_check.offset(2) as c_int <= 3
                 {
-                    slice_max_size -= 8 as c_int;
+                    slice_max_size -= 8;
                     last_emu_check = last_emu_check.offset(1);
                 }
                 last_emu_check = last_emu_check.offset(1);
@@ -5153,7 +5071,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
             if total_bits - starting_bits > slice_max_size && (*h).mb.b_reencode_mb == 0 {
                 if x264_10_frame_new_slice(h, (*h).fdec) == 0 {
                     if mb_xy <= thread_last_mb
-                        && thread_last_mb + 1 as c_int - mb_xy < (*h).param.i_slice_min_mbs
+                        && thread_last_mb + 1 - mb_xy < (*h).param.i_slice_min_mbs
                     {
                         if thread_last_mb - (*h).param.i_slice_min_mbs
                             < (*h).sh.i_first_mb + (*h).param.i_slice_min_mbs
@@ -5165,15 +5083,15 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                                     as *const u8 as *const c_char,
                                 (*h).i_frame,
                             );
-                            slice_max_size = 0 as c_int;
+                            slice_max_size = 0;
                         } else {
                             bitstream_restore(
                                 h,
                                 &mut *bs_bak.as_mut_ptr().offset(BS_BAK_SLICE_MIN_MBS as isize),
                                 &mut i_skip,
-                                0 as c_int,
+                                0,
                             );
-                            (*h).mb.b_reencode_mb = 1 as c_int;
+                            (*h).mb.b_reencode_mb = 1;
                             (*h).sh.i_last_mb = thread_last_mb - (*h).param.i_slice_min_mbs;
                             break;
                         }
@@ -5184,45 +5102,44 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                             h,
                             &mut *bs_bak.as_mut_ptr().offset(BS_BAK_SLICE_MAX_SIZE as isize),
                             &mut i_skip,
-                            0 as c_int,
+                            0,
                         );
-                        (*h).mb.b_reencode_mb = 1 as c_int;
+                        (*h).mb.b_reencode_mb = 1;
                         if (*h).sh.mbaff {
                             if i_mb_x != 0 {
-                                (*h).sh.i_last_mb = mb_xy - 1 as c_int
-                                    + (*h).mb.i_mb_stride * (i_mb_y & 1 as c_int == 0) as c_int;
+                                (*h).sh.i_last_mb =
+                                    mb_xy - 1 + (*h).mb.i_mb_stride * (i_mb_y & 1 == 0) as c_int;
                             } else {
-                                (*h).sh.i_last_mb = (i_mb_y - 2 as c_int
-                                    + (i_mb_y & 1 as c_int == 0) as c_int)
+                                (*h).sh.i_last_mb = (i_mb_y - 2 + (i_mb_y & 1 == 0) as c_int)
                                     * (*h).mb.i_mb_stride
                                     + (*h).mb.i_mb_width
-                                    - 1 as c_int;
+                                    - 1;
                             }
                         } else {
-                            (*h).sh.i_last_mb = mb_xy - 1 as c_int;
+                            (*h).sh.i_last_mb = mb_xy - 1;
                         }
                         break;
                     } else {
                         (*h).sh.i_last_mb = mb_xy;
                     }
                 } else {
-                    slice_max_size = 0 as c_int;
+                    slice_max_size = 0;
                 }
             }
         }
-        (*h).mb.b_reencode_mb = 0 as c_int;
+        (*h).mb.b_reencode_mb = 0;
         x264_10_macroblock_cache_save(h);
-        if x264_10_ratecontrol_mb(h, mb_size) < 0 as c_int {
+        if x264_10_ratecontrol_mb(h, mb_size) < 0 {
             bitstream_restore(
                 h,
                 &mut *bs_bak.as_mut_ptr().offset(BS_BAK_ROW_VBV as isize),
                 &mut i_skip,
-                1 as c_int,
+                1,
             );
-            (*h).mb.b_reencode_mb = 1 as c_int;
-            i_mb_x = 0 as c_int;
+            (*h).mb.b_reencode_mb = 1;
+            i_mb_x = 0;
             i_mb_y = i_mb_y - (*h).sh.mbaff as i32;
-            (*h).mb.i_mb_prev_xy = i_mb_y * (*h).mb.i_mb_stride - 1 as c_int;
+            (*h).mb.i_mb_prev_xy = i_mb_y * (*h).mb.i_mb_stride - 1;
             (*h).sh.i_last_mb = orig_last_mb;
         } else {
             (*h).stat.frame.i_mb_count[(*h).mb.i_type as usize] += 1;
@@ -5235,24 +5152,24 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
             if (*h).param.i_log_level >= X264_LOG_INFO || (*h).param.rc.stat_write {
                 if b_intra == 0 && b_skip == 0 && !((*h).mb.i_type == B_DIRECT as c_int) {
                     if (*h).mb.i_partition != D_8x8 as c_int {
-                        (*h).stat.frame.i_mb_partition[(*h).mb.i_partition as usize] += 4 as c_int;
+                        (*h).stat.frame.i_mb_partition[(*h).mb.i_partition as usize] += 4;
                     } else {
-                        let mut i: c_int = 0 as c_int;
-                        while i < 4 as c_int {
+                        let mut i: c_int = 0;
+                        while i < 4 {
                             (*h).stat.frame.i_mb_partition
                                 [(*h).mb.i_sub_partition[i as usize] as usize] += 1;
                             i += 1;
                         }
                     }
-                    if (*h).param.i_frame_reference > 1 as c_int {
-                        let mut i_list: c_int = 0 as c_int;
+                    if (*h).param.i_frame_reference > 1 {
+                        let mut i_list: c_int = 0;
                         while i_list <= ((*h).sh.i_type == SLICE_TYPE_B as c_int) as c_int {
-                            let mut i_0: c_int = 0 as c_int;
-                            while i_0 < 4 as c_int {
+                            let mut i_0: c_int = 0;
+                            while i_0 < 4 {
                                 let mut i_ref: c_int = (*h).mb.cache.ref_0[i_list as usize]
-                                    [x264_scan8[(4 as c_int * i_0) as usize] as usize]
+                                    [x264_scan8[(4 * i_0) as usize] as usize]
                                     as c_int;
-                                if i_ref >= 0 as c_int {
+                                if i_ref >= 0 {
                                     (*h).stat.frame.i_mb_count_ref[i_list as usize]
                                         [i_ref as usize] += 1;
                                 }
@@ -5266,20 +5183,19 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
             if (*h).param.i_log_level >= X264_LOG_INFO {
                 if (*h).mb.i_cbp_luma | (*h).mb.i_cbp_chroma != 0 {
                     if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-                        let mut i_1: c_int = 0 as c_int;
-                        while i_1 < 4 as c_int {
-                            if (*h).mb.i_cbp_luma & (1 as c_int) << i_1 != 0 {
-                                let mut p: c_int = 0 as c_int;
-                                while p < 3 as c_int {
-                                    let mut s8: c_int = i_1 * 4 as c_int + p * 16 as c_int;
+                        let mut i_1: c_int = 0;
+                        while i_1 < 4 {
+                            if (*h).mb.i_cbp_luma & (1) << i_1 != 0 {
+                                let mut p: c_int = 0;
+                                while p < 3 {
+                                    let mut s8: c_int = i_1 * 4 + p * 16;
                                     let mut nnz8x8: c_int = (*(&mut *(*h)
                                         .mb
                                         .cache
                                         .non_zero_count
                                         .as_mut_ptr()
                                         .offset(
-                                            (*x264_scan8.as_ptr().offset(s8 as isize) as c_int
-                                                + 0 as c_int)
+                                            (*x264_scan8.as_ptr().offset(s8 as isize) as c_int + 0)
                                                 as isize,
                                         )
                                         as *mut uint8_t
@@ -5287,15 +5203,14 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                                         .i
                                         as c_int
                                         | (*(&mut *(*h).mb.cache.non_zero_count.as_mut_ptr().offset(
-                                            (*x264_scan8.as_ptr().offset(s8 as isize) as c_int
-                                                + 8 as c_int)
+                                            (*x264_scan8.as_ptr().offset(s8 as isize) as c_int + 8)
                                                 as isize,
                                         )
                                             as *mut uint8_t
                                             as *mut x264_union16_t))
                                             .i as c_int;
                                     (*h).stat.frame.i_mb_cbp
-                                        [((b_intra == 0) as c_int + p * 2 as c_int) as usize] +=
+                                        [((b_intra == 0) as c_int + p * 2) as usize] +=
                                         (nnz8x8 != 0) as c_int;
                                     p += 1;
                                 }
@@ -5303,18 +5218,15 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                             i_1 += 1;
                         }
                     } else {
-                        let mut cbpsum: c_int = ((*h).mb.i_cbp_luma & 1 as c_int)
-                            + ((*h).mb.i_cbp_luma >> 1 as c_int & 1 as c_int)
-                            + ((*h).mb.i_cbp_luma >> 2 as c_int & 1 as c_int)
-                            + ((*h).mb.i_cbp_luma >> 3 as c_int);
-                        (*h).stat.frame.i_mb_cbp
-                            [((b_intra == 0) as c_int + 0 as c_int) as usize] += cbpsum;
-                        (*h).stat.frame.i_mb_cbp
-                            [((b_intra == 0) as c_int + 2 as c_int) as usize] +=
+                        let mut cbpsum: c_int = ((*h).mb.i_cbp_luma & 1)
+                            + ((*h).mb.i_cbp_luma >> 1 & 1)
+                            + ((*h).mb.i_cbp_luma >> 2 & 1)
+                            + ((*h).mb.i_cbp_luma >> 3);
+                        (*h).stat.frame.i_mb_cbp[((b_intra == 0) as c_int + 0) as usize] += cbpsum;
+                        (*h).stat.frame.i_mb_cbp[((b_intra == 0) as c_int + 2) as usize] +=
                             ((*h).mb.i_cbp_chroma != 0) as c_int;
-                        (*h).stat.frame.i_mb_cbp
-                            [((b_intra == 0) as c_int + 4 as c_int) as usize] +=
-                            (*h).mb.i_cbp_chroma >> 1 as c_int;
+                        (*h).stat.frame.i_mb_cbp[((b_intra == 0) as c_int + 4) as usize] +=
+                            (*h).mb.i_cbp_chroma >> 1;
                     }
                 }
                 if (*h).mb.i_cbp_luma != 0 && b_intra == 0 {
@@ -5326,16 +5238,16 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                         (*h).stat.frame.i_mb_pred_mode[0]
                             [(*h).mb.i_intra16x16_pred_mode as usize] += 1;
                     } else if (*h).mb.i_type == I_8x8 as c_int {
-                        let mut i_2: c_int = 0 as c_int;
-                        while i_2 < 16 as c_int {
+                        let mut i_2: c_int = 0;
+                        while i_2 < 16 {
                             (*h).stat.frame.i_mb_pred_mode[1][(*h).mb.cache.intra4x4_pred_mode
                                 [x264_scan8[i_2 as usize] as usize]
                                 as usize] += 1;
-                            i_2 += 4 as c_int;
+                            i_2 += 4;
                         }
                     } else {
-                        let mut i_3: c_int = 0 as c_int;
-                        while i_3 < 16 as c_int {
+                        let mut i_3: c_int = 0;
+                        while i_3 < 16 {
                             (*h).stat.frame.i_mb_pred_mode[2][(*h).mb.cache.intra4x4_pred_mode
                                 [x264_scan8[i_3 as usize] as usize]
                                 as usize] += 1;
@@ -5347,11 +5259,11 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                         as usize] += 1;
                 }
                 (*h).stat.frame.i_mb_field[(if b_intra != 0 {
-                    0 as c_int
+                    0
                 } else if b_skip != 0 {
-                    2 as c_int
+                    2
                 } else {
-                    1 as c_int
+                    1
                 }) as usize] += (*h).mb.interlaced as i32;
             }
             if b_deblock != 0 {
@@ -5361,14 +5273,14 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
                 break;
             }
             if (*h).sh.mbaff {
-                i_mb_x += i_mb_y & 1 as c_int;
+                i_mb_x += i_mb_y & 1;
                 i_mb_y ^= (i_mb_x < (*h).mb.i_mb_width) as c_int;
             } else {
                 i_mb_x += 1;
             }
             if i_mb_x == (*h).mb.i_mb_width {
                 i_mb_y += 1;
-                i_mb_x = 0 as c_int;
+                i_mb_x = 0;
             }
         }
     }
@@ -5380,7 +5292,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
         x264_10_cabac_encode_flush(h, &mut (*h).cabac);
         (*h).out.bs.p = (*h).cabac.p;
     } else {
-        if i_skip > 0 as c_int {
+        if i_skip > 0 {
             bs_write_ue_big(&mut (*h).out.bs, i_skip as c_uint);
         }
         bs_rbsp_trailing(&mut (*h).out.bs);
@@ -5389,29 +5301,25 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
     if nal_end(h) != 0 {
         return -1 as intptr_t;
     }
-    if (*h).sh.i_last_mb == (*h).i_threadslice_end * (*h).mb.i_mb_width - 1 as c_int {
-        (*h).stat.frame.i_misc_bits = bs_pos(&mut (*h).out.bs)
-            + (*h).out.i_nal * NALU_OVERHEAD * 8 as c_int
+    if (*h).sh.i_last_mb == (*h).i_threadslice_end * (*h).mb.i_mb_width - 1 {
+        (*h).stat.frame.i_misc_bits = bs_pos(&mut (*h).out.bs) + (*h).out.i_nal * NALU_OVERHEAD * 8
             - (*h).stat.frame.i_tex_bits
             - (*h).stat.frame.i_mv_bits;
-        fdec_filter_row(h, (*h).i_threadslice_end, 0 as c_int);
+        fdec_filter_row(h, (*h).i_threadslice_end, 0);
         if (*h).param.sliced_threads {
-            x264_10_threadslice_cond_broadcast(h, 1 as c_int);
+            x264_10_threadslice_cond_broadcast(h, 1);
             let mut mb_y: c_int = (*h).i_threadslice_start;
             while mb_y <= (*h).i_threadslice_end {
-                fdec_filter_row(h, mb_y, 1 as c_int);
+                fdec_filter_row(h, mb_y, 1);
                 mb_y += 1;
             }
-            x264_10_threadslice_cond_broadcast(h, 2 as c_int);
-            if (*h).i_thread_idx > 0 as c_int {
-                x264_10_threadslice_cond_wait(
-                    (*h).thread[((*h).i_thread_idx - 1 as c_int) as usize],
-                    2 as c_int,
-                );
+            x264_10_threadslice_cond_broadcast(h, 2);
+            if (*h).i_thread_idx > 0 {
+                x264_10_threadslice_cond_wait((*h).thread[((*h).i_thread_idx - 1) as usize], 2);
                 fdec_filter_row(
                     h,
-                    (*h).i_threadslice_start + ((1 as c_int) << (*h).sh.mbaff as i32),
-                    2 as c_int,
+                    (*h).i_threadslice_start + ((1) << (*h).sh.mbaff as i32),
+                    2,
                 );
             }
         }
@@ -5430,13 +5338,13 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> intptr_t {
     return 0 as intptr_t;
 }
 #[c2rust::src_loc = "2770:9"]
-const BS_BAK_SLICE_MAX_SIZE: c_int = 0 as c_int;
+const BS_BAK_SLICE_MAX_SIZE: c_int = 0;
 #[c2rust::src_loc = "2771:9"]
-const BS_BAK_CAVLC_OVERFLOW: c_int = 1 as c_int;
+const BS_BAK_CAVLC_OVERFLOW: c_int = 1;
 #[c2rust::src_loc = "2772:9"]
-const BS_BAK_SLICE_MIN_MBS: c_int = 2 as c_int;
+const BS_BAK_SLICE_MIN_MBS: c_int = 2;
 #[c2rust::src_loc = "2773:9"]
-const BS_BAK_ROW_VBV: c_int = 3 as c_int;
+const BS_BAK_ROW_VBV: c_int = 3;
 #[c2rust::src_loc = "3132:1"]
 unsafe extern "C" fn thread_sync_context(mut dst: *mut x264_t, mut src: *mut x264_t) {
     if dst == src {
@@ -5477,19 +5385,19 @@ unsafe extern "C" fn thread_sync_stat(mut dst: *mut x264_t, mut src: *mut x264_t
 #[c2rust::src_loc = "3159:1"]
 unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut c_void {
     let mut current_block: u64;
-    let mut i_slice_num: c_int = 0 as c_int;
+    let mut i_slice_num: c_int = 0;
     let mut last_thread_mb: c_int = (*h).sh.i_last_mb;
     let mut round_bias: c_int = if (*h).param.i_avcintra_class != 0 {
-        0 as c_int
+        0
     } else {
-        (*h).param.i_slice_count / 2 as c_int
+        (*h).param.i_slice_count / 2
     };
     memset(
         &mut (*h).stat.frame as *mut x264_frame_stat_t as *mut c_void,
-        0 as c_int,
+        0,
         size_of::<x264_frame_stat_t>() as size_t,
     );
-    (*h).mb.b_reencode_mb = 0 as c_int;
+    (*h).mb.b_reencode_mb = 0;
     loop {
         if !((*h).sh.i_first_mb + (*h).sh.mbaff as i32 * (*h).mb.i_mb_stride <= last_thread_mb) {
             current_block = 5634871135123216486;
@@ -5499,19 +5407,15 @@ unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut c_void {
         if i_slice_num == 0 || x264_10_frame_new_slice(h, (*h).fdec) == 0 {
             if (*h).param.i_slice_max_mbs != 0 {
                 if (*h).sh.mbaff {
-                    let mut last_mbaff: c_int = 2 as c_int
-                        * ((*h).sh.i_first_mb % (*h).mb.i_mb_width)
+                    let mut last_mbaff: c_int = 2 * ((*h).sh.i_first_mb % (*h).mb.i_mb_width)
                         + (*h).mb.i_mb_width * ((*h).sh.i_first_mb / (*h).mb.i_mb_width)
                         + (*h).param.i_slice_max_mbs
-                        - 1 as c_int;
-                    let mut last_x: c_int =
-                        last_mbaff % (2 as c_int * (*h).mb.i_mb_width) / 2 as c_int;
-                    let mut last_y: c_int =
-                        last_mbaff / (2 as c_int * (*h).mb.i_mb_width) * 2 as c_int + 1 as c_int;
+                        - 1;
+                    let mut last_x: c_int = last_mbaff % (2 * (*h).mb.i_mb_width) / 2;
+                    let mut last_y: c_int = last_mbaff / (2 * (*h).mb.i_mb_width) * 2 + 1;
                     (*h).sh.i_last_mb = last_x + (*h).mb.i_mb_stride * last_y;
                 } else {
-                    (*h).sh.i_last_mb =
-                        (*h).sh.i_first_mb + (*h).param.i_slice_max_mbs - 1 as c_int;
+                    (*h).sh.i_last_mb = (*h).sh.i_first_mb + (*h).param.i_slice_max_mbs - 1;
                     if (*h).sh.i_last_mb < last_thread_mb
                         && last_thread_mb - (*h).sh.i_last_mb < (*h).param.i_slice_min_mbs
                     {
@@ -5523,9 +5427,8 @@ unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut c_void {
                 let mut height: c_int = (*h).mb.i_mb_height >> (*h).param.interlaced as i32;
                 let mut width: c_int = (*h).mb.i_mb_width << (*h).param.interlaced as i32;
                 i_slice_num += 1;
-                (*h).sh.i_last_mb = (height * i_slice_num + round_bias) / (*h).param.i_slice_count
-                    * width
-                    - 1 as c_int;
+                (*h).sh.i_last_mb =
+                    (height * i_slice_num + round_bias) / (*h).param.i_slice_count * width - 1;
             }
         }
         (*h).sh.i_last_mb = if (*h).sh.i_last_mb < last_thread_mb {
@@ -5537,7 +5440,7 @@ unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut c_void {
             current_block = 15078433425792239898;
             break;
         }
-        (*h).sh.i_first_mb = (*h).sh.i_last_mb + 1 as c_int;
+        (*h).sh.i_first_mb = (*h).sh.i_last_mb + 1;
         if (*h).sh.mbaff && (*h).sh.i_first_mb % (*h).mb.i_mb_width != 0 {
             (*h).sh.i_first_mb -= (*h).mb.i_mb_stride;
         }
@@ -5546,7 +5449,7 @@ unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut c_void {
         5634871135123216486 => return 0 as *mut c_void,
         _ => {
             if (*h).param.sliced_threads {
-                x264_10_threadslice_cond_broadcast(h, 2 as c_int);
+                x264_10_threadslice_cond_broadcast(h, 2);
             }
             // TODO: verify safety
             return core::ptr::null_mut();
@@ -5556,11 +5459,11 @@ unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut c_void {
 #[c2rust::src_loc = "3219:1"]
 unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> c_int {
     let mut round_bias: c_int = if (*h).param.i_avcintra_class != 0 {
-        0 as c_int
+        0
     } else {
-        (*h).param.i_slice_count / 2 as c_int
+        (*h).param.i_slice_count / 2
     };
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < *(*h).param.threads as i32 {
         let mut t: *mut x264_t = (*h).thread[i as usize];
         if i != 0 {
@@ -5574,23 +5477,22 @@ unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> c_int {
         let mut height: c_int = (*h).mb.i_mb_height >> (*h).param.interlaced as i32;
         (*t).i_threadslice_start = (height * i + round_bias) / (*(*h).param.threads as i32)
             << ((*h).param.interlaced as i32);
-        (*t).i_threadslice_end = (height * (i + 1 as c_int) + round_bias)
-            / (*(*h).param.threads as i32)
+        (*t).i_threadslice_end = (height * (i + 1) + round_bias) / (*(*h).param.threads as i32)
             << ((*h).param.interlaced as i32);
         (*t).sh.i_first_mb = (*t).i_threadslice_start * (*h).mb.i_mb_width;
-        (*t).sh.i_last_mb = (*t).i_threadslice_end * (*h).mb.i_mb_width - 1 as c_int;
+        (*t).sh.i_last_mb = (*t).i_threadslice_end * (*h).mb.i_mb_width - 1;
         i += 1;
     }
-    x264_10_analyse_weight_frame(h, (*h).mb.i_mb_height * 16 as c_int + 16 as c_int);
+    x264_10_analyse_weight_frame(h, (*h).mb.i_mb_height * 16 + 16);
     x264_10_threads_distribute_ratecontrol(h);
-    let mut i_0: c_int = 0 as c_int;
+    let mut i_0: c_int = 0;
     while i_0 < *(*h).param.threads as i32 {
         (*(*h).thread[i_0 as usize]).i_thread_idx = i_0;
-        (*(*h).thread[i_0 as usize]).b_thread_active = 1 as c_int;
-        x264_10_threadslice_cond_broadcast((*h).thread[i_0 as usize], 0 as c_int);
+        (*(*h).thread[i_0 as usize]).b_thread_active = 1;
+        x264_10_threadslice_cond_broadcast((*h).thread[i_0 as usize], 0);
         i_0 += 1;
     }
-    let mut i_1: c_int = 0 as c_int;
+    let mut i_1: c_int = 0;
     while i_1 < *(*h).param.threads as i32 {
         x264_10_threadpool_run(
             (*h).threadpool,
@@ -5607,16 +5509,16 @@ unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> c_int {
         );
         i_1 += 1;
     }
-    let mut i_2: c_int = 0 as c_int;
+    let mut i_2: c_int = 0;
     while i_2 < *(*h).param.threads as i32 {
-        x264_10_threadslice_cond_wait((*h).thread[i_2 as usize], 1 as c_int);
+        x264_10_threadslice_cond_wait((*h).thread[i_2 as usize], 1);
         i_2 += 1;
     }
     x264_10_threads_merge_ratecontrol(h);
-    let mut i_3: c_int = 1 as c_int;
+    let mut i_3: c_int = 1;
     while i_3 < *(*h).param.threads as i32 {
         let mut t_0: *mut x264_t = (*h).thread[i_3 as usize];
-        let mut j: c_int = 0 as c_int;
+        let mut j: c_int = 0;
         while j < (*t_0).out.i_nal {
             *(*h).out.nal.offset((*h).out.i_nal as isize) = *(*t_0).out.nal.offset(j as isize);
             (*h).out.i_nal += 1;
@@ -5634,8 +5536,8 @@ unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> c_int {
                     .offset(j_0 as isize);
             j_0 = j_0.wrapping_add(1);
         }
-        let mut j_1: c_int = 0 as c_int;
-        while j_1 < 3 as c_int {
+        let mut j_1: c_int = 0;
+        while j_1 < 3 {
             (*h).stat.frame.i_ssd[j_1 as usize] += (*t_0).stat.frame.i_ssd[j_1 as usize];
             j_1 += 1;
         }
@@ -5643,13 +5545,13 @@ unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> c_int {
         (*h).stat.frame.i_ssim_cnt += (*t_0).stat.frame.i_ssim_cnt;
         i_3 += 1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "3280:1"]
 unsafe extern "C" fn x264_10_encoder_intra_refresh(mut h: *mut x264_t) {
     h = (*h).thread[(*h).i_thread_phase as usize];
-    (*h).b_queued_intra_refresh = 1 as c_int;
+    (*h).b_queued_intra_refresh = 1;
 }
 #[no_mangle]
 #[c2rust::src_loc = "3286:1"]
@@ -5677,18 +5579,18 @@ unsafe extern "C" fn x264_10_encoder_invalidate_reference(
     }
     h = (*h).thread[(*h).i_thread_phase as usize];
     if pts >= (*h).i_last_idr_pts {
-        let mut i: c_int = 0 as c_int;
+        let mut i: c_int = 0;
         while !(*h).frames.reference[i as usize].is_null() {
             if pts <= (*(*h).frames.reference[i as usize]).i_pts {
-                (*(*h).frames.reference[i as usize]).b_corrupt = 1 as c_int;
+                (*(*h).frames.reference[i as usize]).b_corrupt = 1;
             }
             i += 1;
         }
         if pts <= (*(*h).fdec).i_pts {
-            (*(*h).fdec).b_corrupt = 1 as c_int;
+            (*(*h).fdec).b_corrupt = 1;
         }
     }
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "3323:1"]
@@ -5706,12 +5608,11 @@ unsafe extern "C" fn x264_10_encoder_encode(
     let mut i_nal_ref_idc: c_int = 0;
     let mut i_global_qp: c_int = 0;
     let mut overhead: c_int = NALU_OVERHEAD;
-    if (*h).i_thread_frames > 1 as c_int {
+    if (*h).i_thread_frames > 1 {
         thread_prev = (*h).thread[(*h).i_thread_phase as usize];
-        (*h).i_thread_phase = ((*h).i_thread_phase + 1 as c_int) % (*h).i_thread_frames;
+        (*h).i_thread_phase = ((*h).i_thread_phase + 1) % (*h).i_thread_frames;
         thread_current = (*h).thread[(*h).i_thread_phase as usize];
-        thread_oldest =
-            (*h).thread[(((*h).i_thread_phase + 1 as c_int) % (*h).i_thread_frames) as usize];
+        thread_oldest = (*h).thread[(((*h).i_thread_phase + 1) % (*h).i_thread_frames) as usize];
         thread_sync_context(thread_current, thread_prev);
         x264_10_thread_sync_ratecontrol(thread_current, thread_prev, thread_oldest);
         h = thread_current;
@@ -5720,7 +5621,7 @@ unsafe extern "C" fn x264_10_encoder_encode(
         thread_current = thread_oldest;
     }
     (*h).i_cpb_delay_pir_offset = (*h).i_cpb_delay_pir_offset_next;
-    *pi_nal = 0 as c_int;
+    *pi_nal = 0;
     *pp_nal = 0 as *mut x264_nal_t;
     if !pic_in.is_null() {
         if (*(*h).lookahead).b_exit_thread != 0 {
@@ -5731,11 +5632,11 @@ unsafe extern "C" fn x264_10_encoder_encode(
             );
             return -1;
         }
-        let mut fenc: *mut x264_frame_t = x264_10_frame_pop_unused(h, 0 as c_int);
+        let mut fenc: *mut x264_frame_t = x264_10_frame_pop_unused(h, 0);
         if fenc.is_null() {
             return -1;
         }
-        if x264_10_frame_copy_picture(h, fenc, pic_in) < 0 as c_int {
+        if x264_10_frame_copy_picture(h, fenc, pic_in) < 0 {
             return -1;
         }
         if (*h).param.width as c_int != 16 * (*h).mb.i_mb_width
@@ -5746,7 +5647,7 @@ unsafe extern "C" fn x264_10_encoder_encode(
         let fresh8 = (*h).frames.i_input;
         (*h).frames.i_input = (*h).frames.i_input + 1;
         (*fenc).i_frame = fresh8;
-        if (*fenc).i_frame == 0 as c_int {
+        if (*fenc).i_frame == 0 {
             (*h).frames.i_first_pts = (*fenc).i_pts;
         }
         if (*h).frames.i_bframe_delay != 0 && (*fenc).i_frame == (*h).frames.i_bframe_delay {
@@ -5806,16 +5707,13 @@ unsafe extern "C" fn x264_10_encoder_encode(
             x264_10_frame_init_lowres(h, fenc);
         }
         x264_10_lookahead_put_frame(h, fenc);
-        if (*h).frames.i_input <= (*h).frames.i_delay + 1 as c_int - (*h).i_thread_frames {
+        if (*h).frames.i_input <= (*h).frames.i_delay + 1 - (*h).i_thread_frames {
             (*pic_out).i_type = X264_TYPE_AUTO;
-            return 0 as c_int;
+            return 0;
         }
     } else {
         pthread_mutex_lock(&mut (*(*h).lookahead).ifbuf.mutex);
-        ::core::ptr::write_volatile(
-            &mut (*(*h).lookahead).b_exit_thread as *mut uint8_t,
-            1 as uint8_t,
-        );
+        ::core::ptr::write_volatile(&mut (*(*h).lookahead).b_exit_thread as *mut uint8_t, 1);
         pthread_cond_broadcast(&mut (*(*h).lookahead).ifbuf.cv_fill);
         pthread_mutex_unlock(&mut (*(*h).lookahead).ifbuf.mutex);
     }
@@ -5828,16 +5726,16 @@ unsafe extern "C" fn x264_10_encoder_encode(
     }
     (*h).fenc = x264_10_frame_shift((*h).frames.current);
     if (*h).param.sliced_threads {
-        if threadpool_wait_all(h) < 0 as c_int {
+        if threadpool_wait_all(h) < 0 {
             return -1;
         }
     }
-    if (*h).i_frame == 0 as c_int {
+    if (*h).i_frame == 0 {
         (*h).i_reordered_pts_delay = (*(*h).fenc).i_reordered_pts;
     }
     if (*h).reconfig != 0 {
         x264_10_encoder_reconfig_apply(h, &mut (*(*h).reconfig_h).param);
-        (*h).reconfig = 0 as c_int;
+        (*h).reconfig = 0;
     }
     if !(*(*h).fenc).param.is_null() {
         x264_10_encoder_reconfig_apply(h, (*(*h).fenc).param);
@@ -5858,8 +5756,8 @@ unsafe extern "C" fn x264_10_encoder_encode(
         || (*(*h).fenc).i_type == X264_TYPE_IDR
         || (*(*h).fenc).i_type == X264_TYPE_KEYFRAME)
     {
-        let mut valid_refs_left: c_int = 0 as c_int;
-        let mut i: c_int = 0 as c_int;
+        let mut valid_refs_left: c_int = 0;
+        let mut i: c_int = 0;
         while !(*h).frames.reference[i as usize].is_null() {
             if (*(*h).frames.reference[i as usize]).b_corrupt == 0 {
                 valid_refs_left += 1;
@@ -5874,20 +5772,20 @@ unsafe extern "C" fn x264_10_encoder_encode(
     if (*(*h).fenc).keyframe {
         (*h).frames.i_last_keyframe = (*(*h).fenc).i_frame;
         if (*(*h).fenc).i_type == X264_TYPE_IDR {
-            (*h).i_frame_num = 0 as c_int;
+            (*h).i_frame_num = 0;
             (*h).frames.i_last_idr = (*(*h).fenc).i_frame;
         }
     }
-    (*h).sh.i_mmco_remove_from_end = 0 as c_int;
+    (*h).sh.i_mmco_remove_from_end = 0;
     (*h).sh.i_mmco_command_count = (*h).sh.i_mmco_remove_from_end;
-    (*h).b_ref_reorder[1] = 0 as c_int;
+    (*h).b_ref_reorder[1] = 0;
     (*h).b_ref_reorder[0] = (*h).b_ref_reorder[1];
-    (*(*h).fenc).i_poc = 2 as c_int
+    (*(*h).fenc).i_poc = 2
         * ((*(*h).fenc).i_frame
-            - (if (*h).frames.i_last_idr > 0 as c_int {
+            - (if (*h).frames.i_last_idr > 0 {
                 (*h).frames.i_last_idr
             } else {
-                0 as c_int
+                0
             }));
     (*(*h).fdec).i_poc = (*(*h).fenc).i_poc;
     if (*(*h).fenc).i_type == X264_TYPE_IDR {
@@ -5930,8 +5828,8 @@ unsafe extern "C" fn x264_10_encoder_encode(
     }
     (*(*h).fdec).i_type = (*(*h).fenc).i_type;
     (*(*h).fdec).i_frame = (*(*h).fenc).i_frame;
-    (*(*h).fdec).b_kept_as_ref = (i_nal_ref_idc != NAL_PRIORITY_DISPOSABLE as c_int
-        && (*h).param.i_keyint_max > 1 as c_int) as c_int;
+    (*(*h).fdec).b_kept_as_ref =
+        (i_nal_ref_idc != NAL_PRIORITY_DISPOSABLE as c_int && (*h).param.i_keyint_max > 1) as c_int;
     (*(*h).fenc).b_kept_as_ref = (*(*h).fdec).b_kept_as_ref;
     (*(*h).fdec).mb_info = (*(*h).fenc).mb_info;
     (*(*h).fdec).mb_info_free = (*(*h).fenc).mb_info_free;
@@ -5964,7 +5862,7 @@ unsafe extern "C" fn x264_10_encoder_encode(
                 (*(*h).thread[n]).out.p_bitstream as *mut c_void,
                 (*(*h).thread[n]).out.i_bitstream,
             );
-            (*(*h).thread[n]).out.i_nal = 0 as c_int;
+            (*(*h).thread[n]).out.i_nal = 0;
         }
     } else {
         bs_init(
@@ -5972,28 +5870,27 @@ unsafe extern "C" fn x264_10_encoder_encode(
             (*h).out.p_bitstream as *mut c_void,
             (*h).out.i_bitstream,
         );
-        (*h).out.i_nal = 0 as c_int;
+        (*h).out.i_nal = 0;
     }
     if (*h).param.aud {
         let mut pic_type: c_int = 0;
         if (*h).sh.i_type == SLICE_TYPE_I as c_int {
-            pic_type = 0 as c_int;
+            pic_type = 0;
         } else if (*h).sh.i_type == SLICE_TYPE_P as c_int {
-            pic_type = 1 as c_int;
+            pic_type = 1;
         } else if (*h).sh.i_type == SLICE_TYPE_B as c_int {
-            pic_type = 2 as c_int;
+            pic_type = 2;
         } else {
-            pic_type = 7 as c_int;
+            pic_type = 7;
         }
         nal_start(h, NAL_AUD as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
-        bs_write(&mut (*h).out.bs, 3 as c_int, pic_type as uint32_t);
+        bs_write(&mut (*h).out.bs, 3, pic_type as uint32_t);
         bs_rbsp_trailing(&mut (*h).out.bs);
         bs_flush(&mut (*h).out.bs);
         if nal_end(h) != 0 {
             return -1;
         }
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
-            + NALU_OVERHEAD;
+        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload + NALU_OVERHEAD;
     }
     (*h).i_nal_type = i_nal_type;
     (*h).i_nal_ref_idc = i_nal_ref_idc;
@@ -6002,19 +5899,18 @@ unsafe extern "C" fn x264_10_encoder_encode(
             || (*(*h).fenc).i_type == X264_TYPE_IDR
             || (*(*h).fenc).i_type == X264_TYPE_KEYFRAME
         {
-            (*(*h).fdec).i_frames_since_pir = 0 as c_int;
-            (*h).b_queued_intra_refresh = 0 as c_int;
+            (*(*h).fdec).i_frames_since_pir = 0;
+            (*h).b_queued_intra_refresh = 0;
             (*(*h).fdec).f_pir_position = (*h).mb.i_mb_width as c_float;
         } else if (*(*h).fenc).i_type == X264_TYPE_P {
-            let mut pocdiff: c_int = ((*(*h).fdec).i_poc - (*(*h).fref[0][0]).i_poc) / 2 as c_int;
-            let mut increment: c_float = if ((*h).mb.i_mb_width as c_float - 1 as c_int as c_float)
+            let mut pocdiff: c_int = ((*(*h).fdec).i_poc - (*(*h).fref[0][0]).i_poc) / 2;
+            let mut increment: c_float = if ((*h).mb.i_mb_width as c_float - 1 as c_float)
                 / (*h).param.i_keyint_max as c_float
-                > 1 as c_int as c_float
+                > 1 as c_float
             {
-                ((*h).mb.i_mb_width as c_float - 1 as c_int as c_float)
-                    / (*h).param.i_keyint_max as c_float
+                ((*h).mb.i_mb_width as c_float - 1 as c_float) / (*h).param.i_keyint_max as c_float
             } else {
-                1 as c_int as c_float
+                1 as c_float
             };
             (*(*h).fdec).f_pir_position = (*(*h).fref[0][0]).f_pir_position;
             (*(*h).fdec).i_frames_since_pir = (*(*h).fref[0][0]).i_frames_since_pir + pocdiff;
@@ -6023,9 +5919,9 @@ unsafe extern "C" fn x264_10_encoder_encode(
                     && (*(*h).fdec).f_pir_position as c_double + 0.5f64
                         >= (*h).mb.i_mb_width as c_double
             {
-                (*(*h).fdec).f_pir_position = 0 as c_int as c_float;
-                (*(*h).fdec).i_frames_since_pir = 0 as c_int;
-                (*h).b_queued_intra_refresh = 0 as c_int;
+                (*(*h).fdec).f_pir_position = 0 as c_float;
+                (*(*h).fdec).i_frames_since_pir = 0;
+                (*h).b_queued_intra_refresh = 0;
                 (*(*h).fenc).keyframe = true;
             }
             (*(*h).fdec).i_pir_start_col =
@@ -6033,9 +5929,9 @@ unsafe extern "C" fn x264_10_encoder_encode(
             (*(*h).fdec).f_pir_position += increment * pocdiff as c_float;
             (*(*h).fdec).i_pir_end_col =
                 ((*(*h).fdec).f_pir_position as c_double + 0.5f64) as c_int;
-            if (*(*h).fdec).i_pir_end_col >= (*h).mb.i_mb_width - 1 as c_int {
+            if (*(*h).fdec).i_pir_end_col >= (*h).mb.i_mb_width - 1 {
                 (*(*h).fdec).f_pir_position = (*h).mb.i_mb_width as c_float;
-                (*(*h).fdec).i_pir_end_col = (*h).mb.i_mb_width - 1 as c_int;
+                (*(*h).fdec).i_pir_end_col = (*h).mb.i_mb_width - 1;
             }
         }
     }
@@ -6047,13 +5943,11 @@ unsafe extern "C" fn x264_10_encoder_encode(
                 return -1;
             }
             if (*h).param.i_avcintra_class != 0 {
-                (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_padding = 256
-                    as c_int
-                    - bs_pos(&mut (*h).out.bs) / 8 as c_int
-                    - 2 as c_int * NALU_OVERHEAD;
+                (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_padding =
+                    256 as c_int - bs_pos(&mut (*h).out.bs) / 8 - 2 * NALU_OVERHEAD;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
-                + (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_padding
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
+                + (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_padding
                 + NALU_OVERHEAD;
             nal_start(h, NAL_PPS as c_int, NAL_PRIORITY_HIGHEST as c_int);
             x264_10_pps_write(
@@ -6065,7 +5959,7 @@ unsafe extern "C" fn x264_10_encoder_encode(
                 return -1;
             }
             if (*h).param.i_avcintra_class != 0 {
-                let mut total_len: c_int = 256 as c_int;
+                let mut total_len: c_int = 256;
                 if (*h).param.i_avcintra_flavor == X264_AVCINTRA_FLAVOR_SONY {
                     total_len += if (*h).param.height >= 1080 {
                         18 * 512
@@ -6073,15 +5967,15 @@ unsafe extern "C" fn x264_10_encoder_encode(
                         10 * 512
                     };
                 }
-                (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_padding = total_len
-                    - (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+                (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_padding = total_len
+                    - (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                     - NALU_OVERHEAD;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
-                + (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_padding
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
+                + (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_padding
                 + NALU_OVERHEAD;
         }
-        if (*h).i_thread_frames == 1 as c_int
+        if (*h).i_thread_frames == 1
             && (*(*h).sps.as_mut_ptr()).vui.b_nal_hrd_parameters_present != 0
         {
             x264_10_hrd_fullness(h);
@@ -6090,14 +5984,14 @@ unsafe extern "C" fn x264_10_encoder_encode(
             if nal_end(h) != 0 {
                 return -1;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                 + (NALU_OVERHEAD
                     - ((*h).param.annexb
                         && (*h).param.i_avcintra_class == 0
-                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                        && (*h).out.i_nal - 1 != 0) as c_int);
         }
     }
-    let mut i_1: c_int = 0 as c_int;
+    let mut i_1: c_int = 0;
     while i_1 < (*(*h).fenc).extra_sei.num_payloads {
         nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
         x264_10_sei_write(
@@ -6109,11 +6003,10 @@ unsafe extern "C" fn x264_10_encoder_encode(
         if nal_end(h) != 0 {
             return -1;
         }
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
             + (NALU_OVERHEAD
-                - ((*h).param.annexb
-                    && (*h).param.i_avcintra_class == 0
-                    && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                - ((*h).param.annexb && (*h).param.i_avcintra_class == 0 && (*h).out.i_nal - 1 != 0)
+                    as c_int);
         if (*(*h).fenc).extra_sei.sei_free.is_some() {
             (*(*h).fenc)
                 .extra_sei
@@ -6148,11 +6041,11 @@ unsafe extern "C" fn x264_10_encoder_encode(
             if nal_end(h) != 0 {
                 return -1;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                 + (NALU_OVERHEAD
                     - ((*h).param.annexb
                         && (*h).param.i_avcintra_class == 0
-                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                        && (*h).out.i_nal - 1 != 0) as c_int);
         }
         if (*(*h).fenc).i_type != X264_TYPE_IDR {
             let mut time_to_recovery: c_int = if (*h).param.open_gop {
@@ -6170,11 +6063,11 @@ unsafe extern "C" fn x264_10_encoder_encode(
             if nal_end(h) != 0 {
                 return -1;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                 + (NALU_OVERHEAD
                     - ((*h).param.annexb
                         && (*h).param.i_avcintra_class == 0
-                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                        && (*h).out.i_nal - 1 != 0) as c_int);
         }
         if let Some(mastering_display) = (*h).param.mastering_display {
             nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
@@ -6182,11 +6075,11 @@ unsafe extern "C" fn x264_10_encoder_encode(
             if nal_end(h) != 0 {
                 return -1;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                 + (NALU_OVERHEAD
                     - ((*h).param.annexb
                         && (*h).param.i_avcintra_class == 0
-                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                        && (*h).out.i_nal - 1 != 0) as c_int);
         }
         if let Some(light_level) = (*h).param.content_light_level {
             nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
@@ -6194,23 +6087,23 @@ unsafe extern "C" fn x264_10_encoder_encode(
             if nal_end(h) != 0 {
                 return -1;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                 + (NALU_OVERHEAD
                     - ((*h).param.annexb
                         && (*h).param.i_avcintra_class == 0
-                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                        && (*h).out.i_nal - 1 != 0) as c_int);
         }
-        if (*h).param.i_alternative_transfer != 2 as c_int {
+        if (*h).param.i_alternative_transfer != 2 {
             nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
             x264_10_sei_alternative_transfer_write(h, &mut (*h).out.bs);
             if nal_end(h) != 0 {
                 return -1;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                 + (NALU_OVERHEAD
                     - ((*h).param.annexb
                         && (*h).param.i_avcintra_class == 0
-                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                        && (*h).out.i_nal - 1 != 0) as c_int);
         }
     }
     if let Some(frame_packing) = (*h).param.frame_packing {
@@ -6220,11 +6113,11 @@ unsafe extern "C" fn x264_10_encoder_encode(
             if nal_end(h) != 0 {
                 return -1;
             }
-            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+            overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
                 + (NALU_OVERHEAD
                     - ((*h).param.annexb
                         && (*h).param.i_avcintra_class == 0
-                        && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                        && (*h).out.i_nal - 1 != 0) as c_int);
         }
     }
     if (*(*h).sps.as_mut_ptr()).vui.pic_struct_present
@@ -6235,26 +6128,24 @@ unsafe extern "C" fn x264_10_encoder_encode(
         if nal_end(h) != 0 {
             return -1;
         }
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
             + (NALU_OVERHEAD
-                - ((*h).param.annexb
-                    && (*h).param.i_avcintra_class == 0
-                    && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                - ((*h).param.annexb && (*h).param.i_avcintra_class == 0 && (*h).out.i_nal - 1 != 0)
+                    as c_int);
     }
     if !((*(*h).fenc).i_type == X264_TYPE_B || (*(*h).fenc).i_type == X264_TYPE_BREF)
         && (*h).b_sh_backup != 0
     {
-        (*h).b_sh_backup = 0 as c_int;
+        (*h).b_sh_backup = 0;
         nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
         x264_10_sei_dec_ref_pic_marking_write(h, &mut (*h).out.bs);
         if nal_end(h) != 0 {
             return -1;
         }
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
             + (NALU_OVERHEAD
-                - ((*h).param.annexb
-                    && (*h).param.i_avcintra_class == 0
-                    && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                - ((*h).param.annexb && (*h).param.i_avcintra_class == 0 && (*h).out.i_nal - 1 != 0)
+                    as c_int);
     }
     if (*(*h).fenc).keyframe && (*h).param.intra_refresh {
         (*h).i_cpb_delay_pir_offset_next = (*(*h).fenc).i_cpb_delay;
@@ -6262,56 +6153,52 @@ unsafe extern "C" fn x264_10_encoder_encode(
     if (*h).param.i_avcintra_class != 0 && (*h).param.i_avcintra_flavor != X264_AVCINTRA_FLAVOR_SONY
     {
         nal_start(h, NAL_FILLER as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
-        x264_10_filler_write(h, &mut (*h).out.bs, 0 as c_int);
+        x264_10_filler_write(h, &mut (*h).out.bs, 0);
         if nal_end(h) != 0 {
             return -1;
         }
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
-            + NALU_OVERHEAD;
+        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload + NALU_OVERHEAD;
         nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
-        if x264_10_sei_avcintra_umid_write(h, &mut (*h).out.bs) < 0 as c_int {
+        if x264_10_sei_avcintra_umid_write(h, &mut (*h).out.bs) < 0 {
             return -1;
         }
         if nal_end(h) != 0 {
             return -1;
         }
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
             + (NALU_OVERHEAD
-                - ((*h).param.annexb
-                    && (*h).param.i_avcintra_class == 0
-                    && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                - ((*h).param.annexb && (*h).param.i_avcintra_class == 0 && (*h).out.i_nal - 1 != 0)
+                    as c_int);
         let mut unpadded_len: c_int = 0;
         let mut total_len_0: c_int = 0;
         if (*h).param.height == 1080 {
-            unpadded_len = 5780 as c_int;
-            total_len_0 = 17 as c_int * 512 as c_int;
+            unpadded_len = 5780;
+            total_len_0 = 17 * 512;
         } else {
-            unpadded_len = 2900 as c_int;
-            total_len_0 = 9 as c_int * 512 as c_int;
+            unpadded_len = 2900;
+            total_len_0 = 9 * 512;
         }
         nal_start(h, NAL_SEI as c_int, NAL_PRIORITY_DISPOSABLE as c_int);
-        if x264_10_sei_avcintra_vanc_write(h, &mut (*h).out.bs, unpadded_len) < 0 as c_int {
+        if x264_10_sei_avcintra_vanc_write(h, &mut (*h).out.bs, unpadded_len) < 0 {
             return -1;
         }
         if nal_end(h) != 0 {
             return -1;
         }
-        (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_padding = total_len_0
-            - (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
+        (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_padding = total_len_0
+            - (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
             - (NALU_OVERHEAD
-                - ((*h).param.annexb
-                    && (*h).param.i_avcintra_class == 0
-                    && (*h).out.i_nal - 1 as c_int != 0) as c_int);
-        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_payload
-            + (*(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize)).i_padding
+                - ((*h).param.annexb && (*h).param.i_avcintra_class == 0 && (*h).out.i_nal - 1 != 0)
+                    as c_int);
+        overhead += (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_payload
+            + (*(*h).out.nal.offset(((*h).out.i_nal - 1) as isize)).i_padding
             + (NALU_OVERHEAD
-                - ((*h).param.annexb
-                    && (*h).param.i_avcintra_class == 0
-                    && (*h).out.i_nal - 1 as c_int != 0) as c_int);
+                - ((*h).param.annexb && (*h).param.i_avcintra_class == 0 && (*h).out.i_nal - 1 != 0)
+                    as c_int);
     }
-    x264_10_ratecontrol_start(h, (*(*h).fenc).i_qpplus1, overhead * 8 as c_int);
+    x264_10_ratecontrol_start(h, (*(*h).fenc).i_qpplus1, overhead * 8);
     i_global_qp = x264_10_ratecontrol_qp(h);
-    (*(*h).fdec).i_qpplus1 = i_global_qp + 1 as c_int;
+    (*(*h).fdec).i_qpplus1 = i_global_qp + 1;
     (*pic_out).i_qpplus1 = (*(*h).fdec).i_qpplus1;
     if (*h).param.rc.stat_read && (*h).sh.i_type != SLICE_TYPE_I as c_int {
         x264_10_reference_build_list_optimal(h);
@@ -6328,9 +6215,9 @@ unsafe extern "C" fn x264_10_encoder_encode(
     if i_nal_ref_idc != NAL_PRIORITY_DISPOSABLE as c_int {
         (*h).i_frame_num += 1;
     }
-    (*h).i_threadslice_start = 0 as c_int;
+    (*h).i_threadslice_start = 0;
     (*h).i_threadslice_end = (*h).mb.i_mb_height;
-    if (*h).i_thread_frames > 1 as c_int {
+    if (*h).i_thread_frames > 1 {
         x264_10_threadpool_run(
             (*h).threadpool,
             ::core::mem::transmute::<
@@ -6344,7 +6231,7 @@ unsafe extern "C" fn x264_10_encoder_encode(
             ))),
             h as *mut c_void,
         );
-        (*h).b_thread_active = 1 as c_int;
+        (*h).b_thread_active = 1;
     } else if (*h).param.sliced_threads {
         if threaded_slices_write(h) != 0 {
             return -1;
@@ -6364,16 +6251,16 @@ unsafe extern "C" fn encoder_frame_end(
 ) -> c_int {
     let mut psz_message: [c_char; 80] = [0; 80];
     if !(*h).param.sliced_threads && (*h).b_thread_active != 0 {
-        (*h).b_thread_active = 0 as c_int;
+        (*h).b_thread_active = 0;
         if x264_10_threadpool_wait((*h).threadpool, h as *mut c_void) as intptr_t != 0 {
             return -1;
         }
     }
     if (*h).out.i_nal == 0 {
         (*pic_out).i_type = X264_TYPE_AUTO;
-        return 0 as c_int;
+        return 0;
     }
-    if (*h).i_thread_frames > 1 as c_int
+    if (*h).i_thread_frames > 1
         && (*(*h).fenc).keyframe
         && (*(*h).sps.as_mut_ptr()).vui.b_nal_hrd_parameters_present != 0
     {
@@ -6383,25 +6270,23 @@ unsafe extern "C" fn encoder_frame_end(
         if nal_end(h) != 0 {
             return -1;
         }
-        let mut idx: c_int = 0 as c_int;
+        let mut idx: c_int = 0;
         while (*(*h).out.nal.offset(idx as isize)).i_type == NAL_AUD as c_int
             || (*(*h).out.nal.offset(idx as isize)).i_type == NAL_SPS as c_int
             || (*(*h).out.nal.offset(idx as isize)).i_type == NAL_PPS as c_int
         {
             idx += 1;
         }
-        let mut nal_tmp: x264_nal_t = *(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize);
+        let mut nal_tmp: x264_nal_t = *(*h).out.nal.offset(((*h).out.i_nal - 1) as isize);
         memmove(
-            &mut *(*h).out.nal.offset((idx + 1 as c_int) as isize) as *mut x264_nal_t
-                as *mut c_void,
+            &mut *(*h).out.nal.offset((idx + 1) as isize) as *mut x264_nal_t as *mut c_void,
             &mut *(*h).out.nal.offset(idx as isize) as *mut x264_nal_t as *const c_void,
-            (((*h).out.i_nal - idx - 1 as c_int) as size_t)
-                .wrapping_mul(size_of::<x264_nal_t>() as size_t),
+            (((*h).out.i_nal - idx - 1) as size_t).wrapping_mul(size_of::<x264_nal_t>() as size_t),
         );
         *(*h).out.nal.offset(idx as isize) = nal_tmp;
     }
-    let mut frame_size: c_int = encoder_encapsulate_nals(h, 0 as c_int);
-    if frame_size < 0 as c_int {
+    let mut frame_size: c_int = encoder_encapsulate_nals(h, 0);
+    if frame_size < 0 {
         return -1;
     }
     (*pic_out).i_type = (*(*h).fenc).i_type;
@@ -6420,15 +6305,15 @@ unsafe extern "C" fn encoder_frame_end(
     (*pic_out).img.i_csp = (*(*h).fdec).i_csp;
     (*pic_out).img.i_csp |= X264_CSP_HIGH_DEPTH;
     (*pic_out).img.i_plane = (*(*h).fdec).i_plane;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*pic_out).img.i_plane {
         (*pic_out).img.i_stride[i as usize] = (*(*h).fdec).i_stride[i as usize] * SIZEOF_PIXEL;
         (*pic_out).img.plane[i as usize] = (*(*h).fdec).plane[i as usize] as *mut uint8_t;
         i += 1;
     }
     x264_10_frame_push_unused(thread_current, (*h).fenc);
-    let mut filler: c_int = 0 as c_int;
-    if x264_10_ratecontrol_end(h, frame_size * 8 as c_int, &mut filler) < 0 as c_int {
+    let mut filler: c_int = 0;
+    if x264_10_ratecontrol_end(h, frame_size * 8, &mut filler) < 0 {
         return -1;
     }
     (*pic_out).hrd_timing = (*(*h).fenc).hrd_timing;
@@ -6440,15 +6325,15 @@ unsafe extern "C" fn encoder_frame_end(
             (*h).out.i_nal,
             frame_size as int64_t,
             frame_size as int64_t + filler as int64_t,
-        ) < 0 as c_int
+        ) < 0
         {
             return -1;
         }
         let mut nal: *mut x264_nal_t =
-            &mut *(*h).out.nal.offset(((*h).out.i_nal - 1 as c_int) as isize) as *mut x264_nal_t;
+            &mut *(*h).out.nal.offset(((*h).out.i_nal - 1) as isize) as *mut x264_nal_t;
         memset(
             (*nal).p_payload.offset((*nal).i_payload as isize) as *mut c_void,
-            0 as c_int,
+            0,
             filler as size_t,
         );
         (*nal).i_payload += filler;
@@ -6456,27 +6341,27 @@ unsafe extern "C" fn encoder_frame_end(
         frame_size += filler;
         if !(*h).param.annexb {
             let mut nal_data: *mut uint8_t = (*nal).p_payload;
-            let mut chunk_size: c_int = (*nal).i_payload - 4 as c_int;
-            *nal_data.offset(0) = (chunk_size >> 24 as c_int) as uint8_t;
-            *nal_data.offset(1) = (chunk_size >> 16 as c_int) as uint8_t;
-            *nal_data.offset(2) = (chunk_size >> 8 as c_int) as uint8_t;
-            *nal_data.offset(3) = (chunk_size >> 0 as c_int) as uint8_t;
+            let mut chunk_size: c_int = (*nal).i_payload - 4;
+            *nal_data.offset(0) = (chunk_size >> 24) as uint8_t;
+            *nal_data.offset(1) = (chunk_size >> 16) as uint8_t;
+            *nal_data.offset(2) = (chunk_size >> 8) as uint8_t;
+            *nal_data.offset(3) = (chunk_size >> 0) as uint8_t;
         }
     } else {
-        while filler > 0 as c_int {
+        while filler > 0 {
             let mut f: c_int = 0;
             let mut overhead: c_int = FILLER_OVERHEAD - (*h).param.annexb as i32;
             if (*h).param.i_slice_max_size != 0 && filler > (*h).param.i_slice_max_size {
                 let mut next_size: c_int = filler - (*h).param.i_slice_max_size;
-                let mut overflow: c_int = if overhead - next_size > 0 as c_int {
+                let mut overflow: c_int = if overhead - next_size > 0 {
                     overhead - next_size
                 } else {
-                    0 as c_int
+                    0
                 };
                 f = (*h).param.i_slice_max_size - overhead - overflow;
             } else {
-                f = if 0 as c_int > filler - overhead {
-                    0 as c_int
+                f = if 0 > filler - overhead {
+                    0
                 } else {
                     filler - overhead
                 };
@@ -6489,8 +6374,8 @@ unsafe extern "C" fn encoder_frame_end(
             if nal_end(h) != 0 {
                 return -1;
             }
-            let mut total_size: c_int = encoder_encapsulate_nals(h, (*h).out.i_nal - 1 as c_int);
-            if total_size < 0 as c_int {
+            let mut total_size: c_int = encoder_encapsulate_nals(h, (*h).out.i_nal - 1);
+            if total_size < 0 {
                 return -1;
             }
             frame_size += total_size;
@@ -6499,33 +6384,33 @@ unsafe extern "C" fn encoder_frame_end(
     }
     *pi_nal = (*h).out.i_nal;
     *pp_nal = (*h).out.nal;
-    (*h).out.i_nal = 0 as c_int;
+    (*h).out.i_nal = 0;
     x264_10_noise_reduction_update(h);
     thread_sync_stat(h, (*h).thread[0]);
     (*h).stat.i_frame_count[(*h).sh.i_type as usize] += 1;
     (*h).stat.i_frame_size[(*h).sh.i_type as usize] += frame_size as int64_t;
     (*h).stat.f_frame_qp[(*h).sh.i_type as usize] += (*(*h).fdec).f_qp_avg_aq as c_double;
-    let mut i_0: c_int = 0 as c_int;
+    let mut i_0: c_int = 0;
     while i_0 < X264_MBTYPE_MAX as c_int {
         (*h).stat.i_mb_count[(*h).sh.i_type as usize][i_0 as usize] +=
             (*h).stat.frame.i_mb_count[i_0 as usize] as int64_t;
         i_0 += 1;
     }
-    let mut i_1: c_int = 0 as c_int;
-    while i_1 < 2 as c_int {
+    let mut i_1: c_int = 0;
+    while i_1 < 2 {
         (*h).stat.i_mb_count_8x8dct[i_1 as usize] +=
             (*h).stat.frame.i_mb_count_8x8dct[i_1 as usize] as int64_t;
         i_1 += 1;
     }
-    let mut i_2: c_int = 0 as c_int;
-    while i_2 < 6 as c_int {
+    let mut i_2: c_int = 0;
+    while i_2 < 6 {
         (*h).stat.i_mb_cbp[i_2 as usize] += (*h).stat.frame.i_mb_cbp[i_2 as usize] as int64_t;
         i_2 += 1;
     }
-    let mut i_3: c_int = 0 as c_int;
-    while i_3 < 4 as c_int {
-        let mut j: c_int = 0 as c_int;
-        while j < 13 as c_int {
+    let mut i_3: c_int = 0;
+    while i_3 < 4 {
+        let mut j: c_int = 0;
+        while j < 13 {
             (*h).stat.i_mb_pred_mode[i_3 as usize][j as usize] +=
                 (*h).stat.frame.i_mb_pred_mode[i_3 as usize][j as usize] as int64_t;
             j += 1;
@@ -6533,16 +6418,16 @@ unsafe extern "C" fn encoder_frame_end(
         i_3 += 1;
     }
     if (*h).sh.i_type != SLICE_TYPE_I as c_int {
-        let mut i_4: c_int = 0 as c_int;
+        let mut i_4: c_int = 0;
         while i_4 < X264_PARTTYPE_MAX as c_int {
             (*h).stat.i_mb_partition[(*h).sh.i_type as usize][i_4 as usize] +=
                 (*h).stat.frame.i_mb_partition[i_4 as usize] as int64_t;
             i_4 += 1;
         }
-        let mut i_list: c_int = 0 as c_int;
-        while i_list < 2 as c_int {
-            let mut i_5: c_int = 0 as c_int;
-            while i_5 < X264_REF_MAX * 2 as c_int {
+        let mut i_list: c_int = 0;
+        while i_list < 2 {
+            let mut i_5: c_int = 0;
+            while i_5 < X264_REF_MAX * 2 {
                 (*h).stat.i_mb_count_ref[(*h).sh.i_type as usize][i_list as usize][i_5 as usize] +=
                     (*h).stat.frame.i_mb_count_ref[i_list as usize][i_5 as usize] as int64_t;
                 i_5 += 1;
@@ -6550,8 +6435,8 @@ unsafe extern "C" fn encoder_frame_end(
             i_list += 1;
         }
     }
-    let mut i_6: c_int = 0 as c_int;
-    while i_6 < 3 as c_int {
+    let mut i_6: c_int = 0;
+    while i_6 < 3 {
         (*h).stat.i_mb_field[i_6 as usize] += (*h).stat.frame.i_mb_field[i_6 as usize] as int64_t;
         i_6 += 1;
     }
@@ -6566,15 +6451,15 @@ unsafe extern "C" fn encoder_frame_end(
         (*h).stat.i_direct_frames[(*h).sh.b_direct_spatial_mv_pred as usize] += 1;
         if (*h).mb.b_direct_auto_write != 0 {
             if (*h).stat.i_direct_score[0] + (*h).stat.i_direct_score[1] > (*h).mb.i_mb_count {
-                let mut i_7: c_int = 0 as c_int;
-                while i_7 < 2 as c_int {
+                let mut i_7: c_int = 0;
+                while i_7 < 2 {
                     (*h).stat.i_direct_score[i_7 as usize] =
-                        (*h).stat.i_direct_score[i_7 as usize] * 9 as c_int / 10 as c_int;
+                        (*h).stat.i_direct_score[i_7 as usize] * 9 / 10;
                     i_7 += 1;
                 }
             }
-            let mut i_8: c_int = 0 as c_int;
-            while i_8 < 2 as c_int {
+            let mut i_8: c_int = 0;
+            while i_8 < 2 {
                 (*h).stat.i_direct_score[i_8 as usize] +=
                     (*h).stat.frame.i_direct_score[i_8 as usize];
                 i_8 += 1;
@@ -6596,14 +6481,14 @@ unsafe extern "C" fn encoder_frame_end(
         let mut chroma_size: c_int = if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
             luma_size >> (*h).mb.chroma_h_shift + (*h).mb.chroma_v_shift
         } else {
-            0 as c_int
+            0
         };
         (*pic_out).prop.f_psnr[0] = calc_psnr(ssd[0] as c_double, luma_size as c_double);
         (*pic_out).prop.f_psnr[1] = calc_psnr(ssd[1] as c_double, chroma_size as c_double);
         (*pic_out).prop.f_psnr[2] = calc_psnr(ssd[2] as c_double, chroma_size as c_double);
         (*pic_out).prop.f_psnr_avg = calc_psnr(
             (ssd[0] + ssd[1] + ssd[2]) as c_double,
-            (luma_size + chroma_size * 2 as c_int) as c_double,
+            (luma_size + chroma_size * 2) as c_double,
         );
         (*h).stat.f_ssd_global[(*h).sh.i_type as usize] +=
             dur * (ssd[0] + ssd[1] + ssd[2]) as c_double;
@@ -6626,12 +6511,12 @@ unsafe extern "C" fn encoder_frame_end(
         let mut msg_len: c_int = strlen(psz_message.as_mut_ptr()) as c_int;
         snprintf(
             psz_message.as_mut_ptr().offset(msg_len as isize),
-            (80 as c_int - msg_len) as size_t,
+            (80 - msg_len) as size_t,
             b" SSIM Y:%.5f\0" as *const u8 as *const c_char,
             (*pic_out).prop.f_ssim,
         );
     }
-    psz_message[79 as c_int as usize] = '\0' as i32 as c_char;
+    psz_message[79 as usize] = '\0' as i32 as c_char;
     x264_10_log(
         h,
         X264_LOG_DEBUG,
@@ -6656,7 +6541,7 @@ unsafe extern "C" fn encoder_frame_end(
     );
     thread_sync_stat((*h).thread[0], h);
     thread_sync_stat(thread_current, h);
-    let mut i_9: c_int = 0 as c_int;
+    let mut i_9: c_int = 0;
     while i_9 < (*h).i_ref[0] {
         if !(*h).fref[0][i_9 as usize].is_null() && (*(*h).fref[0][i_9 as usize]).b_duplicate != 0 {
             x264_10_frame_push_blank_unused(h, (*h).fref[0][i_9 as usize]);
@@ -6700,15 +6585,13 @@ unsafe extern "C" fn print_intra(
 #[c2rust::src_loc = "4196:1"]
 unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
     let mut i_yuv_size: int64_t = ((*h).param.width as c_int * (*h).param.height as c_int
-        + 2 as c_int
-            * (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
-                (*h).param.width as c_int * (*h).param.height as c_int
-                    >> (*h).mb.chroma_h_shift + (*h).mb.chroma_v_shift
-            } else {
-                0 as c_int
-            })) as int64_t;
-    let mut i_mb_count_size: [[int64_t; 7]; 2] =
-        [[0 as c_int as int64_t, 0, 0, 0, 0, 0, 0], [0; 7]];
+        + 2 * (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
+            (*h).param.width as c_int * (*h).param.height as c_int
+                >> (*h).mb.chroma_h_shift + (*h).mb.chroma_v_shift
+        } else {
+            0
+        })) as int64_t;
+    let mut i_mb_count_size: [[int64_t; 7]; 2] = [[0 as int64_t, 0, 0, 0, 0, 0, 0], [0; 7]];
     let mut buf: [c_char; 200] = [0; 200];
     let mut b_print_pcm: c_int =
         ((*h).stat.i_mb_count[SLICE_TYPE_I as c_int as usize][I_PCM as c_int as usize] != 0
@@ -6725,17 +6608,17 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
     if *(*h).param.lookahead_threads > 1 {
         x264_10_threadpool_delete((*h).lookaheadpool);
     }
-    if (*h).i_thread_frames > 1 as c_int {
-        let mut i: c_int = 0 as c_int;
+    if (*h).i_thread_frames > 1 {
+        let mut i: c_int = 0;
         while i < (*h).i_thread_frames {
             if (*(*h).thread[i as usize]).b_thread_active != 0 {
-                if (*(*(*h).thread[i as usize]).fenc).i_reference_count == 1 as c_int {
+                if (*(*(*h).thread[i as usize]).fenc).i_reference_count == 1 {
                 } else {
                     __assert_fail(
                         b"h->thread[i]->fenc->i_reference_count == 1\0" as *const u8
                             as *const c_char,
                         b"encoder/encoder.c\0" as *const u8 as *const c_char,
-                        4223 as c_uint,
+                        4223,
                         ::core::mem::transmute::<[u8; 37], [c_char; 37]>(
                             *b"void x264_10_encoder_close(x264_t *)\0",
                         )
@@ -6749,18 +6632,18 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
         let mut thread_prev: *mut x264_t = (*h).thread[(*h).i_thread_phase as usize];
         x264_10_thread_sync_ratecontrol(h, thread_prev, h);
         x264_10_thread_sync_ratecontrol(thread_prev, thread_prev, h);
-        (*h).i_frame = (*thread_prev).i_frame + 1 as c_int - (*h).i_thread_frames;
+        (*h).i_frame = (*thread_prev).i_frame + 1 - (*h).i_thread_frames;
     }
     (*h).i_frame += 1;
-    let mut i_0: c_int = 0 as c_int;
-    while i_0 < 3 as c_int {
+    let mut i_0: c_int = 0;
+    while i_0 < 3 {
         static mut slice_order: [uint8_t; 3] = [
             SLICE_TYPE_I as c_int as uint8_t,
             SLICE_TYPE_P as c_int as uint8_t,
             SLICE_TYPE_B as c_int as uint8_t,
         ];
         let mut i_slice: c_int = slice_order[i_0 as usize] as c_int;
-        if (*h).stat.i_frame_count[i_slice as usize] > 0 as c_int {
+        if (*h).stat.i_frame_count[i_slice as usize] > 0 {
             let mut i_count: c_int = (*h).stat.i_frame_count[i_slice as usize];
             let mut dur: c_double = (*h).stat.f_frame_duration[i_slice as usize];
             if (*h).param.analyse.psnr {
@@ -6800,19 +6683,19 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
     }
     if (*h).param.i_bframe != 0 && (*h).stat.i_frame_count[SLICE_TYPE_B as c_int as usize] != 0 {
         let mut p: *mut c_char = buf.as_mut_ptr();
-        let mut den: c_int = 0 as c_int;
-        let mut i_1: c_int = 0 as c_int;
+        let mut den: c_int = 0;
+        let mut i_1: c_int = 0;
         while i_1 <= (*h).param.i_bframe {
-            den += (i_1 + 1 as c_int) * (*h).stat.i_consecutive_bframes[i_1 as usize];
+            den += (i_1 + 1) * (*h).stat.i_consecutive_bframes[i_1 as usize];
             i_1 += 1;
         }
-        let mut i_2: c_int = 0 as c_int;
+        let mut i_2: c_int = 0;
         while i_2 <= (*h).param.i_bframe {
             p = p.offset(sprintf(
                 p,
                 b" %4.1f%%\0" as *const u8 as *const c_char,
                 100.0f64
-                    * (i_2 + 1 as c_int) as c_double
+                    * (i_2 + 1) as c_double
                     * (*h).stat.i_consecutive_bframes[i_2 as usize] as c_double
                     / den as c_double,
             ) as isize);
@@ -6825,9 +6708,9 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             buf.as_mut_ptr(),
         );
     }
-    let mut i_type: c_int = 0 as c_int;
-    while i_type < 2 as c_int {
-        let mut i_3: c_int = 0 as c_int;
+    let mut i_type: c_int = 0;
+    while i_type < 2 {
+        let mut i_3: c_int = 0;
         while i_3 < X264_PARTTYPE_MAX as c_int {
             if !(i_3 == D_DIRECT_8x8 as c_int) {
                 i_mb_count_size[i_type as usize]
@@ -6838,7 +6721,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
         }
         i_type += 1;
     }
-    if (*h).stat.i_frame_count[SLICE_TYPE_I as c_int as usize] > 0 as c_int {
+    if (*h).stat.i_frame_count[SLICE_TYPE_I as c_int as usize] > 0 {
         let mut i_mb_count: *mut int64_t = (*(*h)
             .stat
             .i_mb_count
@@ -6857,7 +6740,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             buf.as_mut_ptr(),
         );
     }
-    if (*h).stat.i_frame_count[SLICE_TYPE_P as c_int as usize] > 0 as c_int {
+    if (*h).stat.i_frame_count[SLICE_TYPE_P as c_int as usize] > 0 {
         let mut i_mb_count_0: *mut int64_t = (*(*h)
             .stat
             .i_mb_count
@@ -6880,21 +6763,21 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                 as *const u8 as *const c_char,
             buf.as_mut_ptr(),
             *i_mb_size.offset(PIXEL_16x16 as c_int as isize) as c_double
-                / (i_count_1 * 4 as c_int as c_double),
+                / (i_count_1 * 4 as c_double),
             (*i_mb_size.offset(PIXEL_16x8 as c_int as isize)
                 + *i_mb_size.offset(PIXEL_8x16 as c_int as isize)) as c_double
-                / (i_count_1 * 4 as c_int as c_double),
+                / (i_count_1 * 4 as c_double),
             *i_mb_size.offset(PIXEL_8x8 as c_int as isize) as c_double
-                / (i_count_1 * 4 as c_int as c_double),
+                / (i_count_1 * 4 as c_double),
             (*i_mb_size.offset(PIXEL_8x4 as c_int as isize)
                 + *i_mb_size.offset(PIXEL_4x8 as c_int as isize)) as c_double
-                / (i_count_1 * 4 as c_int as c_double),
+                / (i_count_1 * 4 as c_double),
             *i_mb_size.offset(PIXEL_4x4 as c_int as isize) as c_double
-                / (i_count_1 * 4 as c_int as c_double),
+                / (i_count_1 * 4 as c_double),
             *i_mb_count_0.offset(P_SKIP as c_int as isize) as c_double / i_count_1,
         );
     }
-    if (*h).stat.i_frame_count[SLICE_TYPE_B as c_int as usize] > 0 as c_int {
+    if (*h).stat.i_frame_count[SLICE_TYPE_B as c_int as usize] > 0 {
         let mut i_mb_count_1: *mut int64_t = (*(*h)
             .stat
             .i_mb_count
@@ -6910,12 +6793,12 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             .as_mut_ptr()
             .offset(SLICE_TYPE_B as c_int as isize))
         .as_mut_ptr();
-        let mut list_count: [int64_t; 3] = [0 as c_int as int64_t, 0, 0];
+        let mut list_count: [int64_t; 3] = [0 as int64_t, 0, 0];
         print_intra(i_mb_count_1, i_count_2, b_print_pcm, buf.as_mut_ptr());
-        let mut i_4: c_int = 0 as c_int;
+        let mut i_4: c_int = 0;
         while i_4 < X264_PARTTYPE_MAX as c_int {
-            let mut j: c_int = 0 as c_int;
-            while j < 2 as c_int {
+            let mut j: c_int = 0;
+            while j < 2 {
                 let mut l0: c_int = x264_mb_type_list_table[i_4 as usize][0][j as usize] as c_int;
                 let mut l1: c_int = x264_mb_type_list_table[i_4 as usize][1][j as usize] as c_int;
                 if l0 != 0 || l1 != 0 {
@@ -6943,16 +6826,16 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             b"  B16..8: %4.1f%% %4.1f%% %4.1f%%  direct:%4.1f%%  skip:%4.1f%%\0" as *const u8
                 as *const c_char,
             *i_mb_size_0.offset(PIXEL_16x16 as c_int as isize) as c_double
-                / (i_count_2 * 4 as c_int as c_double),
+                / (i_count_2 * 4 as c_double),
             (*i_mb_size_0.offset(PIXEL_16x8 as c_int as isize)
                 + *i_mb_size_0.offset(PIXEL_8x16 as c_int as isize)) as c_double
-                / (i_count_2 * 4 as c_int as c_double),
+                / (i_count_2 * 4 as c_double),
             *i_mb_size_0.offset(PIXEL_8x8 as c_int as isize) as c_double
-                / (i_count_2 * 4 as c_int as c_double),
+                / (i_count_2 * 4 as c_double),
             *i_mb_count_1.offset(B_DIRECT as c_int as isize) as c_double / i_count_2,
             *i_mb_count_1.offset(B_SKIP as c_int as isize) as c_double / i_count_2,
         );
-        if i_mb_list_count != 0 as c_int as c_double {
+        if i_mb_list_count != 0 as c_double {
             sprintf(
                 buf.as_mut_ptr().offset(strlen(buf.as_mut_ptr()) as isize),
                 b"  L0:%4.1f%% L1:%4.1f%% BI:%4.1f%%\0" as *const u8 as *const c_char,
@@ -6972,7 +6855,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
     if (*h).stat.i_frame_count[SLICE_TYPE_I as c_int as usize]
         + (*h).stat.i_frame_count[SLICE_TYPE_P as c_int as usize]
         + (*h).stat.i_frame_count[SLICE_TYPE_B as c_int as usize]
-        > 0 as c_int
+        > 0
     {
         let mut i_i8x8: int64_t = (*h).stat.i_mb_count[SLICE_TYPE_I as c_int as usize]
             [I_8x8 as c_int as usize]
@@ -7009,7 +6892,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             + (*h).stat.i_frame_size[SLICE_TYPE_B as c_int as usize])
             as c_double
             / duration
-            / 125 as c_int as c_double) as c_float;
+            / 125 as c_double) as c_float;
         if (*h).param.interlaced {
             let mut fieldstats: *mut c_char = buf.as_mut_ptr();
             *fieldstats.offset(0) = 0 as c_char;
@@ -7076,9 +6959,9 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
         if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
             let mut csize: c_int =
                 if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-                    4 as c_int
+                    4
                 } else {
-                    1 as c_int
+                    1
                 };
             if i_mb_count_2 != i_all_intra {
                 sprintf(
@@ -7133,13 +7016,13 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             );
         }
         let mut fixed_pred_modes: [[int64_t; 9]; 4] = [
-            [0 as c_int as int64_t, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0 as int64_t, 0, 0, 0, 0, 0, 0, 0, 0],
             [0; 9],
             [0; 9],
             [0; 9],
         ];
-        let mut sum_pred_modes: [int64_t; 4] = [0 as c_int as int64_t, 0, 0, 0];
-        let mut i_5: c_int = 0 as c_int;
+        let mut sum_pred_modes: [int64_t; 4] = [0 as int64_t, 0, 0, 0];
+        let mut i_5: c_int = 0;
         while i_5 <= I_PRED_16x16_DC_128 as c_int {
             fixed_pred_modes[0][x264_mb_pred_mode16x16_fix[i_5 as usize] as usize] +=
                 (*h).stat.i_mb_pred_mode[0][i_5 as usize];
@@ -7157,12 +7040,12 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                 fixed_pred_modes[0][3] as c_double * 100.0f64 / sum_pred_modes[0] as c_double,
             );
         }
-        let mut i_6: c_int = 1 as c_int;
-        while i_6 <= 2 as c_int {
-            let mut j_0: c_int = 0 as c_int;
+        let mut i_6: c_int = 1;
+        while i_6 <= 2 {
+            let mut j_0: c_int = 0;
             while j_0 <= I_PRED_8x8_DC_128 as c_int {
                 fixed_pred_modes[i_6 as usize]
-                    [x264_mb_pred_mode4x4_fix[(j_0 + 1 as c_int) as usize] as usize] +=
+                    [x264_mb_pred_mode4x4_fix[(j_0 + 1) as usize] as usize] +=
                     (*h).stat.i_mb_pred_mode[i_6 as usize][j_0 as usize];
                 sum_pred_modes[i_6 as usize] +=
                     (*h).stat.i_mb_pred_mode[i_6 as usize][j_0 as usize];
@@ -7174,7 +7057,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                     X264_LOG_INFO,
                     b"i%d v,h,dc,ddl,ddr,vr,hd,vl,hu: %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%%\n\0"
                         as *const u8 as *const c_char,
-                    (3 as c_int - i_6) * 4 as c_int,
+                    (3 - i_6) * 4,
                     fixed_pred_modes[i_6 as usize][0]
                         as c_double * 100.0f64
                         / sum_pred_modes[i_6 as usize] as c_double,
@@ -7206,7 +7089,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             }
             i_6 += 1;
         }
-        let mut i_7: c_int = 0 as c_int;
+        let mut i_7: c_int = 0;
         while i_7 <= I_PRED_CHROMA_DC_128 as c_int {
             fixed_pred_modes[3][x264_mb_chroma_pred_mode_fix[i_7 as usize] as usize] +=
                 (*h).stat.i_mb_pred_mode[3][i_7 as usize];
@@ -7227,7 +7110,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
             );
         }
         if (*h).param.analyse.i_weighted_pred >= X264_WEIGHTP_SIMPLE
-            && (*h).stat.i_frame_count[SLICE_TYPE_P as c_int as usize] > 0 as c_int
+            && (*h).stat.i_frame_count[SLICE_TYPE_P as c_int as usize] > 0
         {
             buf[0] = 0 as c_char;
             if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc != 0 {
@@ -7247,15 +7130,15 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                 buf.as_mut_ptr(),
             );
         }
-        let mut i_list: c_int = 0 as c_int;
-        while i_list < 2 as c_int {
-            let mut i_slice_0: c_int = 0 as c_int;
-            while i_slice_0 < 2 as c_int {
+        let mut i_list: c_int = 0;
+        while i_list < 2 {
+            let mut i_slice_0: c_int = 0;
+            while i_slice_0 < 2 {
                 let mut p_0: *mut c_char = buf.as_mut_ptr();
                 let mut i_den: int64_t = 0 as int64_t;
-                let mut i_max: c_int = 0 as c_int;
-                let mut i_8: c_int = 0 as c_int;
-                while i_8 < X264_REF_MAX * 2 as c_int {
+                let mut i_max: c_int = 0;
+                let mut i_8: c_int = 0;
+                while i_8 < X264_REF_MAX * 2 {
                     if (*h).stat.i_mb_count_ref[i_slice_0 as usize][i_list as usize][i_8 as usize]
                         != 0
                     {
@@ -7265,8 +7148,8 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                     }
                     i_8 += 1;
                 }
-                if !(i_max == 0 as c_int) {
-                    let mut i_9: c_int = 0 as c_int;
+                if !(i_max == 0) {
+                    let mut i_9: c_int = 0;
                     while i_9 <= i_max {
                         p_0 = p_0.offset(sprintf(
                             p_0,
@@ -7351,7 +7234,7 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
     x264_free((*h).reconfig_h as *mut c_void);
     x264_10_analyse_free_costs(h);
     x264_free((*h).cost_table as *mut c_void);
-    if (*h).i_thread_frames > 1 as c_int {
+    if (*h).i_thread_frames > 1 {
         h = (*h).thread[(*h).i_thread_phase as usize];
     }
     x264_10_frame_delete_list((*h).frames.unused[0]);
@@ -7359,10 +7242,10 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
     x264_10_frame_delete_list((*h).frames.current);
     x264_10_frame_delete_list((*h).frames.blank_unused);
     h = (*h).thread[0];
-    let mut i_10: c_int = 0 as c_int;
+    let mut i_10: c_int = 0;
     while i_10 < (*h).i_thread_frames {
         if (*(*h).thread[i_10 as usize]).b_thread_active != 0 {
-            let mut j_1: c_int = 0 as c_int;
+            let mut j_1: c_int = 0;
             while j_1 < (*(*h).thread[i_10 as usize]).i_ref[0] {
                 if !(*(*h).thread[i_10 as usize]).fref[0][j_1 as usize].is_null()
                     && (*(*(*h).thread[i_10 as usize]).fref[0][j_1 as usize]).b_duplicate != 0
@@ -7380,20 +7263,20 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
         }
     }
     let mut i_12: c_int = *(*h).param.threads as i32 - 1;
-    while i_12 >= 0 as c_int {
+    while i_12 >= 0 {
         let mut frame: *mut *mut x264_frame_t = 0 as *mut *mut x264_frame_t;
-        if !(*h).param.sliced_threads || i_12 == 0 as c_int {
+        if !(*h).param.sliced_threads || i_12 == 0 {
             frame = (**(*h).thread.as_mut_ptr().offset(i_12 as isize))
                 .frames
                 .reference
                 .as_mut_ptr();
             while !(*frame).is_null() {
-                if (**frame).i_reference_count > 0 as c_int {
+                if (**frame).i_reference_count > 0 {
                 } else {
                     __assert_fail(
                         b"(*frame)->i_reference_count > 0\0" as *const u8 as *const c_char,
                         b"encoder/encoder.c\0" as *const u8 as *const c_char,
-                        4552 as c_uint,
+                        4552,
                         ::core::mem::transmute::<[u8; 37], [c_char; 37]>(
                             *b"void x264_10_encoder_close(x264_t *)\0",
                         )
@@ -7401,19 +7284,19 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                     );
                 }
                 (**frame).i_reference_count -= 1;
-                if (**frame).i_reference_count == 0 as c_int {
+                if (**frame).i_reference_count == 0 {
                     x264_10_frame_delete(*frame);
                 }
                 frame = frame.offset(1);
             }
             frame = &mut (**(*h).thread.as_mut_ptr().offset(i_12 as isize)).fdec;
             if !(*frame).is_null() {
-                if (**frame).i_reference_count > 0 as c_int {
+                if (**frame).i_reference_count > 0 {
                 } else {
                     __assert_fail(
                         b"(*frame)->i_reference_count > 0\0" as *const u8 as *const c_char,
                         b"encoder/encoder.c\0" as *const u8 as *const c_char,
-                        4560 as c_uint,
+                        4560,
                         ::core::mem::transmute::<[u8; 37], [c_char; 37]>(
                             *b"void x264_10_encoder_close(x264_t *)\0",
                         )
@@ -7421,13 +7304,13 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
                     );
                 }
                 (**frame).i_reference_count -= 1;
-                if (**frame).i_reference_count == 0 as c_int {
+                if (**frame).i_reference_count == 0 {
                     x264_10_frame_delete(*frame);
                 }
             }
             x264_10_macroblock_cache_free((*h).thread[i_12 as usize]);
         }
-        x264_10_macroblock_thread_free((*h).thread[i_12 as usize], 0 as c_int);
+        x264_10_macroblock_thread_free((*h).thread[i_12 as usize], 0);
         x264_free((*(*h).thread[i_12 as usize]).out.p_bitstream as *mut c_void);
         x264_free((*(*h).thread[i_12 as usize]).out.nal as *mut c_void);
         pthread_mutex_destroy(&mut (**(*h).thread.as_mut_ptr().offset(i_12 as isize)).mutex);
@@ -7439,16 +7322,16 @@ unsafe extern "C" fn x264_10_encoder_close(mut h: *mut x264_t) {
 #[no_mangle]
 #[c2rust::src_loc = "4579:1"]
 unsafe extern "C" fn x264_10_encoder_delayed_frames(mut h: *mut x264_t) -> c_int {
-    let mut delayed_frames: c_int = 0 as c_int;
-    if (*h).i_thread_frames > 1 as c_int {
-        let mut i: c_int = 0 as c_int;
+    let mut delayed_frames: c_int = 0;
+    if (*h).i_thread_frames > 1 {
+        let mut i: c_int = 0;
         while i < (*h).i_thread_frames {
             delayed_frames += (*(*h).thread[i as usize]).b_thread_active;
             i += 1;
         }
         h = (*h).thread[(*h).i_thread_phase as usize];
     }
-    let mut i_0: c_int = 0 as c_int;
+    let mut i_0: c_int = 0;
     while !(*(*h).frames.current.offset(i_0 as isize)).is_null() {
         delayed_frames += 1;
         i_0 += 1;

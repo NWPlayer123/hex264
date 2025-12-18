@@ -1,4 +1,4 @@
-use core::ffi::{c_char, c_double, c_int, c_long, c_uint, c_ulong, c_void};
+use core::ffi::{c_char, c_double, c_int, c_long, c_ulong, c_void};
 
 use crate::__stddef_size_t_h::size_t;
 use crate::assert_h::{__assert_fail, __ASSERT_FUNCTION};
@@ -13,9 +13,9 @@ pub unsafe extern "C" fn x264_split_options(
     mut opt_str: *const c_char,
     mut options: *const *const c_char,
 ) -> *mut *mut c_char {
-    let mut opt_count: c_int = 0 as c_int;
-    let mut options_count: c_int = 0 as c_int;
-    let mut found_named: c_int = 0 as c_int;
+    let mut opt_count: c_int = 0;
+    let mut options_count: c_int = 0;
+    let mut found_named: c_int = 0;
     let mut size: size_t = 0 as size_t;
     let mut opt: *const c_char = opt_str;
     if opt_str.is_null() {
@@ -43,7 +43,7 @@ pub unsafe extern "C" fn x264_split_options(
                 );
                 return 0 as *mut *mut c_char;
             }
-            found_named = 1 as c_int;
+            found_named = 1;
             length = (length as c_ulong).wrapping_add(strcspn(
                 opt.offset(length as isize),
                 b",\0" as *const u8 as *const c_char,
@@ -77,7 +77,7 @@ pub unsafe extern "C" fn x264_split_options(
             break;
         }
     }
-    let mut offset: size_t = ((2 as c_int * (opt_count + 1 as c_int)) as size_t)
+    let mut offset: size_t = ((2 * (opt_count + 1)) as size_t)
         .wrapping_mul(::core::mem::size_of::<*mut c_char>() as size_t);
     size = size.wrapping_add(offset.wrapping_add(opt.offset_from(opt_str) as c_long as size_t));
     let mut opts: *mut *mut c_char = calloc(1 as size_t, size) as *mut *mut c_char;
@@ -89,8 +89,8 @@ pub unsafe extern "C" fn x264_split_options(
         );
         return 0 as *mut *mut c_char;
     }
-    let mut i: c_int = 0 as c_int;
-    while i < 2 as c_int * opt_count {
+    let mut i: c_int = 0;
+    while i < 2 * opt_count {
         let mut length_0: size_t =
             strcspn(opt_str, b"=,\0" as *const u8 as *const c_char) as size_t;
         if *opt_str.offset(length_0 as isize) as c_int == '=' as i32 {
@@ -106,7 +106,7 @@ pub unsafe extern "C" fn x264_split_options(
             opt_str = opt_str.offset(length_0.wrapping_add(1 as size_t) as isize);
             length_0 = strcspn(opt_str, b",\0" as *const u8 as *const c_char) as size_t;
         } else {
-            let mut option_0: *const c_char = *options.offset((i / 2 as c_int) as isize);
+            let mut option_0: *const c_char = *options.offset((i / 2) as isize);
             let mut option_length: size_t = strlen(option_0);
             let fresh3 = i;
             i = i + 1;
@@ -135,7 +135,7 @@ pub unsafe extern "C" fn x264_split_options(
         __assert_fail(
             b"offset == size\0" as *const u8 as *const c_char,
             b"filters/filters.c\0" as *const u8 as *const c_char,
-            96 as c_uint,
+            96,
             __ASSERT_FUNCTION.as_ptr(),
         );
     }
@@ -149,17 +149,15 @@ unsafe extern "C" fn x264_get_option(
 ) -> *mut c_char {
     if !split_options.is_null() {
         let mut last_i: c_int = -1;
-        let mut i: c_int = 0 as c_int;
+        let mut i: c_int = 0;
         while !(*split_options.offset(i as isize)).is_null() {
             if strcmp(*split_options.offset(i as isize), name) == 0 {
                 last_i = i;
             }
-            i += 2 as c_int;
+            i += 2;
         }
-        if last_i >= 0 as c_int
-            && *(*split_options.offset((last_i + 1 as c_int) as isize)).offset(0) as c_int != 0
-        {
-            return *split_options.offset((last_i + 1 as c_int) as isize);
+        if last_i >= 0 && *(*split_options.offset((last_i + 1) as isize)).offset(0) as c_int != 0 {
+            return *split_options.offset((last_i + 1) as isize);
         }
     }
     return 0 as *mut c_char;
@@ -194,7 +192,7 @@ unsafe extern "C" fn x264_otoi(mut str: *const c_char, mut def: c_int) -> c_int 
     let mut ret: c_int = def;
     if !str.is_null() {
         let mut end: *mut c_char = 0 as *mut c_char;
-        ret = strtol(str, &mut end, 0 as c_int) as c_int;
+        ret = strtol(str, &mut end, 0) as c_int;
         if end == str as *mut c_char || *end as c_int != '\0' as i32 {
             ret = def;
         }

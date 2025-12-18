@@ -85,9 +85,9 @@ struct C2RustUnnamed {
     avs_is_y: avs_is_y_func,
 }
 #[c2rust::src_loc = "54:9"]
-const AVS_INTERFACE_25: c_int = 2 as c_int;
+const AVS_INTERFACE_25: c_int = 2;
 #[c2rust::src_loc = "61:9"]
-const AVS_MAX_SEQUENCE: c_int = 5 as c_int;
+const AVS_MAX_SEQUENCE: c_int = 5;
 #[c2rust::src_loc = "120:1"]
 unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
     (*h).library = dlopen(b"libavisynth.so\0" as *const u8 as *const c_char, RTLD_NOW);
@@ -99,37 +99,37 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
             (*h).library,
             b"avs_clip_get_error\0" as *const u8 as *const c_char,
         ));
-    if !(0 as c_int == 0 && (*h).func.avs_clip_get_error.is_none()) {
+    if !(0 == 0 && (*h).func.avs_clip_get_error.is_none()) {
         (*h).func.avs_create_script_environment =
             ::core::mem::transmute::<*mut c_void, avs_create_script_environment_func>(dlsym(
                 (*h).library,
                 b"avs_create_script_environment\0" as *const u8 as *const c_char,
             ));
-        if !(0 as c_int == 0 && (*h).func.avs_create_script_environment.is_none()) {
+        if !(0 == 0 && (*h).func.avs_create_script_environment.is_none()) {
             (*h).func.avs_delete_script_environment =
                 ::core::mem::transmute::<*mut c_void, avs_delete_script_environment_func>(dlsym(
                     (*h).library,
                     b"avs_delete_script_environment\0" as *const u8 as *const c_char,
                 ));
-            if !(1 as c_int == 0 && (*h).func.avs_delete_script_environment.is_none()) {
+            if !(1 == 0 && (*h).func.avs_delete_script_environment.is_none()) {
                 (*h).func.avs_get_error =
                     ::core::mem::transmute::<*mut c_void, avs_get_error_func>(dlsym(
                         (*h).library,
                         b"avs_get_error\0" as *const u8 as *const c_char,
                     ));
-                if !(1 as c_int == 0 && (*h).func.avs_get_error.is_none()) {
+                if !(1 == 0 && (*h).func.avs_get_error.is_none()) {
                     (*h).func.avs_get_frame =
                         ::core::mem::transmute::<*mut c_void, avs_get_frame_func>(dlsym(
                             (*h).library,
                             b"avs_get_frame\0" as *const u8 as *const c_char,
                         ));
-                    if !(0 as c_int == 0 && (*h).func.avs_get_frame.is_none()) {
+                    if !(0 == 0 && (*h).func.avs_get_frame.is_none()) {
                         (*h).func.avs_get_video_info =
                             ::core::mem::transmute::<*mut c_void, avs_get_video_info_func>(dlsym(
                                 (*h).library,
                                 b"avs_get_video_info\0" as *const u8 as *const c_char,
                             ));
-                        if !(0 as c_int == 0 && (*h).func.avs_get_video_info.is_none()) {
+                        if !(0 == 0 && (*h).func.avs_get_video_info.is_none()) {
                             (*h).func.avs_function_exists = ::core::mem::transmute::<
                                 *mut c_void,
                                 avs_function_exists_func,
@@ -137,13 +137,13 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                 (*h).library,
                                 b"avs_function_exists\0" as *const u8 as *const c_char,
                             ));
-                            if !(0 as c_int == 0 && (*h).func.avs_function_exists.is_none()) {
+                            if !(0 == 0 && (*h).func.avs_function_exists.is_none()) {
                                 (*h).func.avs_invoke =
                                     ::core::mem::transmute::<*mut c_void, avs_invoke_func>(dlsym(
                                         (*h).library,
                                         b"avs_invoke\0" as *const u8 as *const c_char,
                                     ));
-                                if !(0 as c_int == 0 && (*h).func.avs_invoke.is_none()) {
+                                if !(0 == 0 && (*h).func.avs_invoke.is_none()) {
                                     (*h).func.avs_release_clip = ::core::mem::transmute::<
                                         *mut c_void,
                                         avs_release_clip_func,
@@ -153,7 +153,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                             b"avs_release_clip\0" as *const u8 as *const c_char,
                                         ),
                                     );
-                                    if !(0 as c_int == 0 && (*h).func.avs_release_clip.is_none()) {
+                                    if !(0 == 0 && (*h).func.avs_release_clip.is_none()) {
                                         (*h).func.avs_release_value =
                                             ::core::mem::transmute::<
                                                 *mut c_void,
@@ -163,9 +163,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                 b"avs_release_value\0" as *const u8
                                                     as *const c_char,
                                             ));
-                                        if !(0 as c_int == 0
-                                            && (*h).func.avs_release_value.is_none())
-                                        {
+                                        if !(0 == 0 && (*h).func.avs_release_value.is_none()) {
                                             (*h).func.avs_release_video_frame =
                                                 ::core::mem::transmute::<
                                                     *mut c_void,
@@ -177,7 +175,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                             as *const c_char,
                                                     ),
                                                 );
-                                            if !(0 as c_int == 0
+                                            if !(0 == 0
                                                 && (*h).func.avs_release_video_frame.is_none())
                                             {
                                                 (*h).func.avs_take_clip = ::core::mem::transmute::<
@@ -190,9 +188,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                             as *const c_char,
                                                     ),
                                                 );
-                                                if !(0 as c_int == 0
-                                                    && (*h).func.avs_take_clip.is_none())
-                                                {
+                                                if !(0 == 0 && (*h).func.avs_take_clip.is_none()) {
                                                     (*h).func.avs_is_yv24 = ::core::mem::transmute::<
                                                         *mut c_void,
                                                         avs_is_yv24_func,
@@ -203,8 +199,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                 as *const c_char,
                                                         ),
                                                     );
-                                                    if !(1 as c_int == 0
-                                                        && (*h).func.avs_is_yv24.is_none())
+                                                    if !(1 == 0 && (*h).func.avs_is_yv24.is_none())
                                                     {
                                                         (*h).func.avs_is_yv16 =
                                                             ::core::mem::transmute::<
@@ -217,7 +212,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                         as *const c_char,
                                                                 ),
                                                             );
-                                                        if !(1 as c_int == 0
+                                                        if !(1 == 0
                                                             && (*h).func.avs_is_yv16.is_none())
                                                         {
                                                             (*h).func.avs_is_yv12 =
@@ -232,7 +227,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                             as *const c_char,
                                                                     ),
                                                                 );
-                                                            if !(1 as c_int == 0
+                                                            if !(1 == 0
                                                                 && (*h).func.avs_is_yv12.is_none())
                                                             {
                                                                 (*h).func.avs_is_yv411 =
@@ -247,7 +242,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                 as *const c_char,
                                                                         ),
                                                                     );
-                                                                if !(1 as c_int == 0
+                                                                if !(1 == 0
                                                                     && (*h)
                                                                         .func
                                                                         .avs_is_yv411
@@ -262,7 +257,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                             b"avs_is_y8\0" as *const u8 as *const c_char,
                                                                         ),
                                                                     );
-                                                                    if !(1 as c_int == 0
+                                                                    if !(1 == 0
                                                                         && (*h)
                                                                             .func
                                                                             .avs_is_y8
@@ -278,7 +273,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                     as *const c_char,
                                                                             ),
                                                                         );
-                                                                        if !(1 as c_int == 0
+                                                                        if !(1 == 0
                                                                             && (*h)
                                                                                 .func
                                                                                 .avs_get_pitch_p
@@ -294,7 +289,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                         as *const c_char,
                                                                                 ),
                                                                             );
-                                                                            if !(1 as c_int == 0
+                                                                            if !(1 == 0
                                                                                 && (*h).func.avs_get_read_ptr_p.is_none())
                                                                             {
                                                                                 (*h).func.avs_is_rgb48 = ::core::mem::transmute::<
@@ -306,7 +301,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                         b"avs_is_rgb48\0" as *const u8 as *const c_char,
                                                                                     ),
                                                                                 );
-                                                                                if !(1 as c_int == 0
+                                                                                if !(1 == 0
                                                                                     && (*h).func.avs_is_rgb48.is_none())
                                                                                 {
                                                                                     if (*h).func.avs_is_rgb48.is_none() {
@@ -321,7 +316,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                             ),
                                                                                         );
                                                                                     }
-                                                                                    if !(1 as c_int == 0
+                                                                                    if !(1 == 0
                                                                                         && (*h).func.avs_is_rgb48.is_none())
                                                                                     {
                                                                                         (*h).func.avs_is_rgb64 = ::core::mem::transmute::<
@@ -333,7 +328,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                 b"avs_is_rgb64\0" as *const u8 as *const c_char,
                                                                                             ),
                                                                                         );
-                                                                                        if !(1 as c_int == 0
+                                                                                        if !(1 == 0
                                                                                             && (*h).func.avs_is_rgb64.is_none())
                                                                                         {
                                                                                             if (*h).func.avs_is_rgb64.is_none() {
@@ -348,7 +343,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                     ),
                                                                                                 );
                                                                                             }
-                                                                                            if !(1 as c_int == 0
+                                                                                            if !(1 == 0
                                                                                                 && (*h).func.avs_is_rgb64.is_none())
                                                                                             {
                                                                                                 (*h).func.avs_is_yuv444p16 = ::core::mem::transmute::<
@@ -361,7 +356,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                             as *const c_char,
                                                                                                     ),
                                                                                                 );
-                                                                                                if !(1 as c_int == 0
+                                                                                                if !(1 == 0
                                                                                                     && (*h).func.avs_is_yuv444p16.is_none())
                                                                                                 {
                                                                                                     (*h).func.avs_is_yuv422p16 = ::core::mem::transmute::<
@@ -374,7 +369,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                                 as *const c_char,
                                                                                                         ),
                                                                                                     );
-                                                                                                    if !(1 as c_int == 0
+                                                                                                    if !(1 == 0
                                                                                                         && (*h).func.avs_is_yuv422p16.is_none())
                                                                                                     {
                                                                                                         (*h).func.avs_is_yuv420p16 = ::core::mem::transmute::<
@@ -387,7 +382,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                                     as *const c_char,
                                                                                                             ),
                                                                                                         );
-                                                                                                        if !(1 as c_int == 0
+                                                                                                        if !(1 == 0
                                                                                                             && (*h).func.avs_is_yuv420p16.is_none())
                                                                                                         {
                                                                                                             (*h).func.avs_is_y16 = ::core::mem::transmute::<
@@ -399,7 +394,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                                     b"avs_is_y16\0" as *const u8 as *const c_char,
                                                                                                                 ),
                                                                                                             );
-                                                                                                            if !(1 as c_int == 0
+                                                                                                            if !(1 == 0
                                                                                                                 && (*h).func.avs_is_y16.is_none())
                                                                                                             {
                                                                                                                 (*h).func.avs_is_444 = ::core::mem::transmute::<
@@ -411,7 +406,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                                         b"avs_is_444\0" as *const u8 as *const c_char,
                                                                                                                     ),
                                                                                                                 );
-                                                                                                                if !(1 as c_int == 0
+                                                                                                                if !(1 == 0
                                                                                                                     && (*h).func.avs_is_444.is_none())
                                                                                                                 {
                                                                                                                     (*h).func.avs_is_422 = ::core::mem::transmute::<
@@ -423,7 +418,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                                             b"avs_is_422\0" as *const u8 as *const c_char,
                                                                                                                         ),
                                                                                                                     );
-                                                                                                                    if !(1 as c_int == 0
+                                                                                                                    if !(1 == 0
                                                                                                                         && (*h).func.avs_is_422.is_none())
                                                                                                                     {
                                                                                                                         (*h).func.avs_is_420 = ::core::mem::transmute::<
@@ -435,7 +430,7 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                                                 b"avs_is_420\0" as *const u8 as *const c_char,
                                                                                                                             ),
                                                                                                                         );
-                                                                                                                        if !(1 as c_int == 0
+                                                                                                                        if !(1 == 0
                                                                                                                             && (*h).func.avs_is_420.is_none())
                                                                                                                         {
                                                                                                                             (*h).func.avs_is_y = ::core::mem::transmute::<
@@ -447,10 +442,10 @@ unsafe extern "C" fn custom_avs_load_library(mut h: *mut avs_hnd_t) -> c_int {
                                                                                                                                     b"avs_is_y\0" as *const u8 as *const c_char,
                                                                                                                                 ),
                                                                                                                             );
-                                                                                                                            if !(1 as c_int == 0
+                                                                                                                            if !(1 == 0
                                                                                                                                 && (*h).func.avs_is_y.is_none())
                                                                                                                             {
-                                                                                                                                return 0 as c_int;
+                                                                                                                                return 0;
                                                                                                                             }
                                                                                                                         }
                                                                                                                     }
@@ -491,12 +486,12 @@ unsafe extern "C" fn avs_build_filter_sequence(
     mut _filename_ext: *mut c_char,
     mut filter: *mut *const c_char,
 ) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     let mut all_purpose: [*const c_char; 2] = [
         b"FFVideoSource\0" as *const u8 as *const c_char,
         0 as *const c_char,
     ];
-    let mut j: c_int = 0 as c_int;
+    let mut j: c_int = 0;
     while !all_purpose[j as usize].is_null() && i < AVS_MAX_SEQUENCE {
         let fresh0 = i;
         i = i + 1;
@@ -545,7 +540,7 @@ unsafe extern "C" fn get_avs_version(mut h: *mut avs_hnd_t) -> c_float {
     let mut ver: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
         (*h).env,
         b"VersionNumber\0" as *const u8 as *const c_char,
-        avs_new_value_array(0 as *mut AVS_Value, 0 as c_int),
+        avs_new_value_array(0 as *mut AVS_Value, 0),
         0 as *mut *const c_char,
     );
     if avs_is_error(ver) != 0 {
@@ -625,7 +620,7 @@ unsafe extern "C" fn open_file(
         }
     }
     let mut avs_version: c_float = get_avs_version(h);
-    if avs_version <= 0 as c_int as c_float {
+    if avs_version <= 0 as c_float {
         return -1;
     }
     x264_cli_log(
@@ -662,18 +657,18 @@ unsafe extern "C" fn open_file(
         let mut mt_test: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
             (*h).env,
             b"GetMTMode\0" as *const u8 as *const c_char,
-            avs_new_value_bool(0 as c_int),
+            avs_new_value_bool(0),
             0 as *mut *const c_char,
         );
         let mut mt_mode: c_int = if avs_is_int(mt_test) != 0 {
             avs_as_int(mt_test)
         } else {
-            0 as c_int
+            0
         };
         (*h).func
             .avs_release_value
             .expect("non-null function pointer")(mt_test);
-        if mt_mode > 0 as c_int && mt_mode < 5 as c_int {
+        if mt_mode > 0 && mt_mode < 5 {
             let mut temp: AVS_Value = (*h).func.avs_invoke.expect("non-null function pointer")(
                 (*h).env,
                 b"Distributor\0" as *const u8 as *const c_char,
@@ -696,7 +691,7 @@ unsafe extern "C" fn open_file(
         ];
         avs_build_filter_sequence(filename_ext, filter.as_mut_ptr());
         let mut i: c_int = 0;
-        i = 0 as c_int;
+        i = 0;
         while !filter[i as usize].is_null() {
             x264_cli_log(
                 b"avs\0" as *const u8 as *const c_char,
@@ -813,7 +808,7 @@ unsafe extern "C" fn open_file(
     (*info).fps_den = (*vi).fps_denominator;
     (*info).num_frames = (*vi).num_frames;
     (*h).num_frames = (*info).num_frames;
-    (*info).thread_safe = 1 as c_int;
+    (*info).thread_safe = 1;
     if (*h).func.avs_is_rgb64.is_some()
         && (*h).func.avs_is_rgb64.expect("non-null function pointer")(vi) != 0
     {
@@ -913,7 +908,7 @@ unsafe extern "C" fn open_file(
     }
     (*info).vfr = false;
     *p_handle = h as hnd_t;
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "504:1"]
 unsafe extern "C" fn picture_alloc(
@@ -931,11 +926,11 @@ unsafe extern "C" fn picture_alloc(
     if !cli_csp.is_null() {
         (*pic).img.planes = (*cli_csp).planes;
     } else if csp == AV_PIX_FMT_YUV411P as c_int | X264_CSP_OTHER {
-        (*pic).img.planes = 3 as c_int;
+        (*pic).img.planes = 3;
     } else {
-        (*pic).img.planes = 1 as c_int;
+        (*pic).img.planes = 1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "521:1"]
 unsafe extern "C" fn read_frame(
@@ -969,7 +964,7 @@ unsafe extern "C" fn read_frame(
         );
         return -1;
     }
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*pic).img.planes {
         (*pic).img.plane[i as usize] = (if (*h).func.avs_get_read_ptr_p.is_some() {
             (*h).func
@@ -987,7 +982,7 @@ unsafe extern "C" fn read_frame(
         };
         i += 1;
     }
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "539:1"]
 unsafe extern "C" fn release_frame(mut pic: *mut cli_pic_t, mut handle: hnd_t) -> c_int {
@@ -995,15 +990,11 @@ unsafe extern "C" fn release_frame(mut pic: *mut cli_pic_t, mut handle: hnd_t) -
     (*h).func
         .avs_release_video_frame
         .expect("non-null function pointer")((*pic).opaque as *mut AVS_VideoFrame);
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "546:1"]
 unsafe extern "C" fn picture_clean(mut pic: *mut cli_pic_t, mut _handle: hnd_t) {
-    memset(
-        pic as *mut c_void,
-        0 as c_int,
-        size_of::<cli_pic_t>() as size_t,
-    );
+    memset(pic as *mut c_void, 0, size_of::<cli_pic_t>() as size_t);
 }
 #[c2rust::src_loc = "551:1"]
 unsafe extern "C" fn close_file(mut handle: hnd_t) -> c_int {
@@ -1022,7 +1013,7 @@ unsafe extern "C" fn close_file(mut handle: hnd_t) -> c_int {
         dlclose((*h).library);
     }
     free(h as *mut c_void);
-    return 0 as c_int;
+    return 0;
 }
 #[no_mangle]
 #[c2rust::src_loc = "564:19"]

@@ -64,10 +64,10 @@ unsafe extern "C" fn x264_10_threadpool_init(
     mut threads: c_int,
 ) -> c_int {
     let mut current_block: u64;
-    if threads <= 0 as c_int {
+    if threads <= 0 {
         return -1;
     }
-    if (0 as c_int) < 0 as c_int {
+    if (0) < 0 {
         return -1;
     }
     let mut pool: *mut x264_threadpool_t = 0 as *mut x264_threadpool_t;
@@ -75,7 +75,7 @@ unsafe extern "C" fn x264_10_threadpool_init(
     if !pool.is_null() {
         memset(
             pool as *mut c_void,
-            0 as c_int,
+            0,
             size_of::<x264_threadpool_t>() as size_t,
         );
         *p_pool = pool;
@@ -88,7 +88,7 @@ unsafe extern "C" fn x264_10_threadpool_init(
                 || x264_10_sync_frame_list_init(&mut (*pool).run, (*pool).threads) != 0
                 || x264_10_sync_frame_list_init(&mut (*pool).done, (*pool).threads) != 0)
             {
-                let mut i: c_int = 0 as c_int;
+                let mut i: c_int = 0;
                 loop {
                     if !(i < (*pool).threads) {
                         current_block = 11584701595673473500;
@@ -110,7 +110,7 @@ unsafe extern "C" fn x264_10_threadpool_init(
                 match current_block {
                     598935323617260105 => {}
                     _ => {
-                        let mut i_0: c_int = 0 as c_int;
+                        let mut i_0: c_int = 0;
                         loop {
                             if !(i_0 < (*pool).threads) {
                                 current_block = 5634871135123216486;
@@ -146,7 +146,7 @@ unsafe extern "C" fn x264_10_threadpool_init(
                         }
                         match current_block {
                             598935323617260105 => {}
-                            _ => return 0 as c_int,
+                            _ => return 0,
                         }
                     }
                 }
@@ -176,7 +176,7 @@ unsafe extern "C" fn x264_10_threadpool_wait(
 ) -> *mut c_void {
     pthread_mutex_lock(&mut (*pool).done.mutex);
     loop {
-        let mut i: c_int = 0 as c_int;
+        let mut i: c_int = 0;
         while i < (*pool).done.i_size {
             if (*(*(*pool).done.list.offset(i as isize) as *mut x264_threadpool_job_t)).arg == arg {
                 let mut job: *mut x264_threadpool_job_t =
@@ -198,7 +198,7 @@ unsafe extern "C" fn x264_10_threadpool_wait(
 }
 #[c2rust::src_loc = "135:1"]
 unsafe extern "C" fn threadpool_list_delete(mut slist: *mut x264_sync_frame_list_t) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while !(*(*slist).list.offset(i as isize)).is_null() {
         x264_free(*(*slist).list.offset(i as isize) as *mut c_void);
         let ref mut fresh0 = *(*slist).list.offset(i as isize);
@@ -211,10 +211,10 @@ unsafe extern "C" fn threadpool_list_delete(mut slist: *mut x264_sync_frame_list
 #[c2rust::src_loc = "145:1"]
 unsafe extern "C" fn x264_10_threadpool_delete(mut pool: *mut x264_threadpool_t) {
     pthread_mutex_lock(&mut (*pool).run.mutex);
-    ::core::ptr::write_volatile(&mut (*pool).exit as *mut c_int, 1 as c_int);
+    ::core::ptr::write_volatile(&mut (*pool).exit as *mut c_int, 1);
     pthread_cond_broadcast(&mut (*pool).run.cv_fill);
     pthread_mutex_unlock(&mut (*pool).run.mutex);
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < (*pool).threads {
         pthread_join(
             *(*pool).thread_handle.offset(i as isize),

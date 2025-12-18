@@ -51,8 +51,8 @@ struct flv_hnd_t {
 #[c2rust::src_loc = "65:1"]
 unsafe extern "C" fn write_header(mut c: *mut flv_buffer) -> c_int {
     flv_put_tag(c, b"FLV\0" as *const u8 as *const c_char);
-    flv_put_byte(c, 1 as uint8_t);
-    flv_put_byte(c, 1 as uint8_t);
+    flv_put_byte(c, 1);
+    flv_put_byte(c, 1);
     flv_put_be32(c, 9 as uint32_t);
     flv_put_be32(c, 0 as uint32_t);
     return flv_flush_data(c);
@@ -72,7 +72,7 @@ unsafe extern "C" fn open_file(
                 (*p_flv).c = c;
                 (*p_flv).b_dts_compress = (*opt).use_dts_compress;
                 *p_handle = p_flv as hnd_t;
-                return 0 as c_int;
+                return 0;
             }
             fclose((*c).fp);
             free((*c).data as *mut c_void);
@@ -110,7 +110,7 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
         (*p_flv).i_framerate_pos = ((*c).d_cur as uint64_t)
             .wrapping_add((*c).d_total)
             .wrapping_add(1 as uint64_t);
-        flv_put_amf_double(c, 0 as c_int as c_double);
+        flv_put_amf_double(c, 0 as c_double);
     }
     flv_put_amf_string(c, b"videocodecid\0" as *const u8 as *const c_char);
     flv_put_amf_double(c, FLV_CODECID_H264 as c_int as c_double);
@@ -118,21 +118,21 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     (*p_flv).i_duration_pos = ((*c).d_cur as uint64_t)
         .wrapping_add((*c).d_total)
         .wrapping_add(1 as uint64_t);
-    flv_put_amf_double(c, 0 as c_int as c_double);
+    flv_put_amf_double(c, 0 as c_double);
     flv_put_amf_string(c, b"filesize\0" as *const u8 as *const c_char);
     (*p_flv).i_filesize_pos = ((*c).d_cur as uint64_t)
         .wrapping_add((*c).d_total)
         .wrapping_add(1 as uint64_t);
-    flv_put_amf_double(c, 0 as c_int as c_double);
+    flv_put_amf_double(c, 0 as c_double);
     flv_put_amf_string(c, b"videodatarate\0" as *const u8 as *const c_char);
     (*p_flv).i_bitrate_pos = ((*c).d_cur as uint64_t)
         .wrapping_add((*c).d_total)
         .wrapping_add(1 as uint64_t);
-    flv_put_amf_double(c, 0 as c_int as c_double);
+    flv_put_amf_double(c, 0 as c_double);
     flv_put_amf_string(c, b"\0" as *const u8 as *const c_char);
     flv_put_byte(c, AMF_END_OF_OBJECT as uint8_t);
     let mut length: c_uint = (*c).d_cur.wrapping_sub(start as c_uint);
-    flv_rewrite_amf_be24(c, length.wrapping_sub(10 as c_uint), start as c_uint);
+    flv_rewrite_amf_be24(c, length.wrapping_sub(10), start as c_uint);
     flv_put_be32(c, (length as uint32_t).wrapping_add(1 as uint32_t));
     (*p_flv).i_fps_num = (*p_param).i_fps_num as int64_t;
     (*p_flv).i_fps_den = (*p_param).i_fps_den as int64_t;
@@ -141,14 +141,14 @@ unsafe extern "C" fn set_param(mut handle: hnd_t, mut p_param: *mut x264_param_t
     (*p_flv).vfr_input = (*p_param).vfr_input;
     (*p_flv).i_delay_frames = if (*p_param).i_bframe != 0 {
         if (*p_param).bframe_pyramid != BPyramid::None {
-            2 as c_int
+            2
         } else {
-            1 as c_int
+            1
         }
     } else {
-        0 as c_int
+        0
     };
-    return 0 as c_int;
+    return 0;
 }
 #[c2rust::src_loc = "169:1"]
 unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t) -> c_int {
@@ -171,34 +171,34 @@ unsafe extern "C" fn write_headers(mut handle: hnd_t, mut p_nal: *mut x264_nal_t
     flv_put_byte(c, FLV_TAG_TYPE_VIDEO as c_int as uint8_t);
     flv_put_be24(c, 0 as uint32_t);
     flv_put_be24(c, 0 as uint32_t);
-    flv_put_byte(c, 0 as uint8_t);
+    flv_put_byte(c, 0);
     flv_put_be24(c, 0 as uint32_t);
     (*p_flv).start = (*c).d_cur;
     flv_put_byte(
         c,
         (FLV_FRAME_KEY as c_int | FLV_CODECID_H264 as c_int) as uint8_t,
     );
-    flv_put_byte(c, 0 as uint8_t);
+    flv_put_byte(c, 0);
     flv_put_be24(c, 0 as uint32_t);
-    flv_put_byte(c, 1 as uint8_t);
+    flv_put_byte(c, 1);
     flv_put_byte(c, *sps.offset(1));
     flv_put_byte(c, *sps.offset(2));
     flv_put_byte(c, *sps.offset(3));
     flv_put_byte(c, 0xff as uint8_t);
     flv_put_byte(c, 0xe1 as uint8_t);
-    flv_put_be16(c, (sps_size - 4 as c_int) as uint16_t);
-    flv_append_data(c, sps, (sps_size - 4 as c_int) as c_uint);
-    flv_put_byte(c, 1 as uint8_t);
-    flv_put_be16(c, (pps_size - 4 as c_int) as uint16_t);
+    flv_put_be16(c, (sps_size - 4) as uint16_t);
+    flv_append_data(c, sps, (sps_size - 4) as c_uint);
+    flv_put_byte(c, 1);
+    flv_put_be16(c, (pps_size - 4) as uint16_t);
     flv_append_data(
         c,
         (*p_nal.offset(1)).p_payload.offset(4),
-        (pps_size - 4 as c_int) as c_uint,
+        (pps_size - 4) as c_uint,
     );
     let mut length: c_uint = (*c).d_cur.wrapping_sub((*p_flv).start);
-    flv_rewrite_amf_be24(c, length, (*p_flv).start.wrapping_sub(10 as c_uint));
+    flv_rewrite_amf_be24(c, length, (*p_flv).start.wrapping_sub(10));
     flv_put_be32(c, (length as uint32_t).wrapping_add(11 as uint32_t));
-    if flv_flush_data(c) < 0 as c_int {
+    if flv_flush_data(c) < 0 {
         return -1;
     }
     return sei_size + sps_size + pps_size;
@@ -221,7 +221,7 @@ unsafe extern "C" fn write_frame(
                 b"initial delay %ld ms\n\0" as *const u8 as *const c_char,
                 (((*p_picture).i_pts + (*p_flv).i_delay_time) as c_double
                     * (*p_flv).d_timebase
-                    * 1000 as c_int as c_double
+                    * 1000 as c_double
                     + 0.5f64) as int64_t,
             );
         }
@@ -233,26 +233,25 @@ unsafe extern "C" fn write_frame(
         if (*p_flv).i_framenum == 1 as int64_t {
             (*p_flv).i_init_delta = (((*p_picture).i_dts + (*p_flv).i_delay_time) as c_double
                 * (*p_flv).d_timebase
-                * 1000 as c_int as c_double
+                * 1000 as c_double
                 + 0.5f64) as int64_t;
         }
         dts = if (*p_flv).i_framenum > (*p_flv).i_delay_frames as int64_t {
-            ((*p_picture).i_dts as c_double * (*p_flv).d_timebase * 1000 as c_int as c_double
-                + 0.5f64) as int64_t
+            ((*p_picture).i_dts as c_double * (*p_flv).d_timebase * 1000 as c_double + 0.5f64)
+                as int64_t
         } else {
-            (*p_flv).i_framenum * (*p_flv).i_init_delta
-                / ((*p_flv).i_delay_frames + 1 as c_int) as int64_t
+            (*p_flv).i_framenum * (*p_flv).i_init_delta / ((*p_flv).i_delay_frames + 1) as int64_t
         };
-        cts = ((*p_picture).i_pts as c_double * (*p_flv).d_timebase * 1000 as c_int as c_double
-            + 0.5f64) as int64_t;
+        cts = ((*p_picture).i_pts as c_double * (*p_flv).d_timebase * 1000 as c_double + 0.5f64)
+            as int64_t;
     } else {
         dts = (((*p_picture).i_dts + (*p_flv).i_delay_time) as c_double
             * (*p_flv).d_timebase
-            * 1000 as c_int as c_double
+            * 1000 as c_double
             + 0.5f64) as int64_t;
         cts = (((*p_picture).i_pts + (*p_flv).i_delay_time) as c_double
             * (*p_flv).d_timebase
-            * 1000 as c_int as c_double
+            * 1000 as c_double
             + 0.5f64) as int64_t;
     }
     offset = cts - dts;
@@ -281,7 +280,7 @@ unsafe extern "C" fn write_frame(
     flv_put_byte(c, FLV_TAG_TYPE_VIDEO as c_int as uint8_t);
     flv_put_be24(c, 0 as uint32_t);
     flv_put_be24(c, dts as uint32_t);
-    flv_put_byte(c, (dts >> 24 as c_int) as uint8_t);
+    flv_put_byte(c, (dts >> 24) as uint8_t);
     flv_put_be24(c, 0 as uint32_t);
     (*p_flv).start = (*c).d_cur;
     flv_put_byte(
@@ -292,7 +291,7 @@ unsafe extern "C" fn write_frame(
             FLV_FRAME_INTER as c_int
         }) | FLV_CODECID_H264 as c_int) as uint8_t,
     );
-    flv_put_byte(c, 1 as uint8_t);
+    flv_put_byte(c, 1);
     flv_put_be24(c, offset as uint32_t);
     if !(*p_flv).sei.is_null() {
         flv_append_data(c, (*p_flv).sei, (*p_flv).sei_len as c_uint);
@@ -301,9 +300,9 @@ unsafe extern "C" fn write_frame(
     }
     flv_append_data(c, p_nalu, i_size as c_uint);
     let mut length: c_uint = (*c).d_cur.wrapping_sub((*p_flv).start);
-    flv_rewrite_amf_be24(c, length, (*p_flv).start.wrapping_sub(10 as c_uint));
+    flv_rewrite_amf_be24(c, length, (*p_flv).start.wrapping_sub(10));
     flv_put_be32(c, (11 as uint32_t).wrapping_add(length as uint32_t));
-    if flv_flush_data(c) < 0 as c_int {
+    if flv_flush_data(c) < 0 {
         return -1;
     }
     (*p_flv).i_framenum += 1;
@@ -324,7 +323,7 @@ unsafe extern "C" fn rewrite_amf_double(
             fp,
         ) == 1 as c_ulong
     {
-        0 as c_int
+        0
     } else {
         -1
     };
@@ -340,24 +339,24 @@ unsafe extern "C" fn close_file(
     let mut ret: c_int = -1;
     let mut p_flv: *mut flv_hnd_t = handle as *mut flv_hnd_t;
     let mut c: *mut flv_buffer = (*p_flv).c;
-    if !(flv_flush_data(c) < 0 as c_int) {
+    if !(flv_flush_data(c) < 0) {
         total_duration = 0.;
         if (*p_flv).i_framenum == 1 as int64_t {
             total_duration = if (*p_flv).i_fps_num != 0 {
                 (*p_flv).i_fps_den as c_double / (*p_flv).i_fps_num as c_double
             } else {
-                0 as c_int as c_double
+                0 as c_double
             };
         } else {
             total_duration =
                 (2 as int64_t * largest_pts - second_largest_pts) as c_double * (*p_flv).d_timebase;
         }
-        if x264_is_regular_file((*c).fp) != 0 && total_duration > 0 as c_int as c_double {
+        if x264_is_regular_file((*c).fp) != 0 && total_duration > 0 as c_double {
             let mut framerate: c_double = 0.;
             let mut filesize: int64_t = ftello((*c).fp) as int64_t;
             if (*p_flv).i_framerate_pos != 0 {
                 framerate = (*p_flv).i_framenum as c_double / total_duration;
-                if rewrite_amf_double((*c).fp, (*p_flv).i_framerate_pos, framerate) < 0 as c_int {
+                if rewrite_amf_double((*c).fp, (*p_flv).i_framerate_pos, framerate) < 0 {
                     current_block = 8311716385155032230;
                 } else {
                     current_block = 13586036798005543211;
@@ -368,23 +367,20 @@ unsafe extern "C" fn close_file(
             match current_block {
                 8311716385155032230 => {}
                 _ => {
-                    if rewrite_amf_double((*c).fp, (*p_flv).i_duration_pos, total_duration)
-                        < 0 as c_int
-                    {
+                    if rewrite_amf_double((*c).fp, (*p_flv).i_duration_pos, total_duration) < 0 {
                         current_block = 8311716385155032230;
                     } else if rewrite_amf_double(
                         (*c).fp,
                         (*p_flv).i_filesize_pos,
                         filesize as c_double,
-                    ) < 0 as c_int
+                    ) < 0
                     {
                         current_block = 8311716385155032230;
                     } else if rewrite_amf_double(
                         (*c).fp,
                         (*p_flv).i_bitrate_pos,
-                        filesize as c_double * 8.0f64
-                            / (total_duration * 1000 as c_int as c_double),
-                    ) < 0 as c_int
+                        filesize as c_double * 8.0f64 / (total_duration * 1000 as c_double),
+                    ) < 0
                     {
                         current_block = 8311716385155032230;
                     } else {
@@ -398,7 +394,7 @@ unsafe extern "C" fn close_file(
         match current_block {
             8311716385155032230 => {}
             _ => {
-                ret = 0 as c_int;
+                ret = 0;
             }
         }
     }

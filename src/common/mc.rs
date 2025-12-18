@@ -31,13 +31,13 @@ unsafe extern "C" fn pixel_avg(
     mut i_width: c_int,
     mut i_height: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < i_height {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < i_width {
             *dst.offset(x as isize) =
-                (*src1.offset(x as isize) as c_int + *src2.offset(x as isize) as c_int + 1 as c_int
-                    >> 1 as c_int) as pixel;
+                (*src1.offset(x as isize) as c_int + *src2.offset(x as isize) as c_int + 1 >> 1)
+                    as pixel;
             x += 1;
         }
         dst = dst.offset(i_dst_stride as isize);
@@ -58,13 +58,13 @@ unsafe extern "C" fn pixel_avg_wxh(
     mut width: c_int,
     mut height: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < width {
             *dst.offset(x as isize) =
-                (*src1.offset(x as isize) as c_int + *src2.offset(x as isize) as c_int + 1 as c_int
-                    >> 1 as c_int) as pixel;
+                (*src1.offset(x as isize) as c_int + *src2.offset(x as isize) as c_int + 1 >> 1)
+                    as pixel;
             x += 1;
         }
         src1 = src1.offset(i_src1 as isize);
@@ -86,16 +86,16 @@ unsafe extern "C" fn pixel_avg_weight_wxh(
     mut height: c_int,
     mut i_weight1: c_int,
 ) {
-    let mut i_weight2: c_int = 64 as c_int - i_weight1;
-    let mut y: c_int = 0 as c_int;
+    let mut i_weight2: c_int = 64 - i_weight1;
+    let mut y: c_int = 0;
     while y < height {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < width {
             *dst.offset(x as isize) = x264_clip_pixel(
                 *src1.offset(x as isize) as c_int * i_weight1
                     + *src2.offset(x as isize) as c_int * i_weight2
-                    + ((1 as c_int) << 5 as c_int)
-                    >> 6 as c_int,
+                    + ((1) << 5)
+                    >> 6,
             );
             x += 1;
         }
@@ -115,7 +115,7 @@ unsafe extern "C" fn pixel_avg_16x16(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -123,8 +123,8 @@ unsafe extern "C" fn pixel_avg_16x16(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            16 as c_int,
-            16 as c_int,
+            16,
+            16,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -134,8 +134,8 @@ unsafe extern "C" fn pixel_avg_16x16(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            16 as c_int,
-            16 as c_int,
+            16,
+            16,
             weight,
         );
     };
@@ -150,7 +150,7 @@ unsafe extern "C" fn pixel_avg_16x8(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -158,8 +158,8 @@ unsafe extern "C" fn pixel_avg_16x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            16 as c_int,
-            8 as c_int,
+            16,
+            8,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -169,8 +169,8 @@ unsafe extern "C" fn pixel_avg_16x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            16 as c_int,
-            8 as c_int,
+            16,
+            8,
             weight,
         );
     };
@@ -185,7 +185,7 @@ unsafe extern "C" fn pixel_avg_8x16(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -193,8 +193,8 @@ unsafe extern "C" fn pixel_avg_8x16(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            8 as c_int,
-            16 as c_int,
+            8,
+            16,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -204,8 +204,8 @@ unsafe extern "C" fn pixel_avg_8x16(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            8 as c_int,
-            16 as c_int,
+            8,
+            16,
             weight,
         );
     };
@@ -220,7 +220,7 @@ unsafe extern "C" fn pixel_avg_8x8(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -228,8 +228,8 @@ unsafe extern "C" fn pixel_avg_8x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            8 as c_int,
-            8 as c_int,
+            8,
+            8,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -239,8 +239,8 @@ unsafe extern "C" fn pixel_avg_8x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            8 as c_int,
-            8 as c_int,
+            8,
+            8,
             weight,
         );
     };
@@ -255,7 +255,7 @@ unsafe extern "C" fn pixel_avg_8x4(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -263,8 +263,8 @@ unsafe extern "C" fn pixel_avg_8x4(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            8 as c_int,
-            4 as c_int,
+            8,
+            4,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -274,8 +274,8 @@ unsafe extern "C" fn pixel_avg_8x4(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            8 as c_int,
-            4 as c_int,
+            8,
+            4,
             weight,
         );
     };
@@ -290,7 +290,7 @@ unsafe extern "C" fn pixel_avg_4x16(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -298,8 +298,8 @@ unsafe extern "C" fn pixel_avg_4x16(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            16 as c_int,
+            4,
+            16,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -309,8 +309,8 @@ unsafe extern "C" fn pixel_avg_4x16(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            16 as c_int,
+            4,
+            16,
             weight,
         );
     };
@@ -325,7 +325,7 @@ unsafe extern "C" fn pixel_avg_4x8(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -333,8 +333,8 @@ unsafe extern "C" fn pixel_avg_4x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            8 as c_int,
+            4,
+            8,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -344,8 +344,8 @@ unsafe extern "C" fn pixel_avg_4x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            8 as c_int,
+            4,
+            8,
             weight,
         );
     };
@@ -360,7 +360,7 @@ unsafe extern "C" fn pixel_avg_4x4(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -368,8 +368,8 @@ unsafe extern "C" fn pixel_avg_4x4(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            4 as c_int,
+            4,
+            4,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -379,8 +379,8 @@ unsafe extern "C" fn pixel_avg_4x4(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            4 as c_int,
+            4,
+            4,
             weight,
         );
     };
@@ -395,7 +395,7 @@ unsafe extern "C" fn pixel_avg_4x2(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -403,8 +403,8 @@ unsafe extern "C" fn pixel_avg_4x2(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            2 as c_int,
+            4,
+            2,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -414,8 +414,8 @@ unsafe extern "C" fn pixel_avg_4x2(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            4 as c_int,
-            2 as c_int,
+            4,
+            2,
             weight,
         );
     };
@@ -430,7 +430,7 @@ unsafe extern "C" fn pixel_avg_2x8(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -438,8 +438,8 @@ unsafe extern "C" fn pixel_avg_2x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            2 as c_int,
-            8 as c_int,
+            2,
+            8,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -449,8 +449,8 @@ unsafe extern "C" fn pixel_avg_2x8(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            2 as c_int,
-            8 as c_int,
+            2,
+            8,
             weight,
         );
     };
@@ -465,7 +465,7 @@ unsafe extern "C" fn pixel_avg_2x4(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -473,8 +473,8 @@ unsafe extern "C" fn pixel_avg_2x4(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            2 as c_int,
-            4 as c_int,
+            2,
+            4,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -484,8 +484,8 @@ unsafe extern "C" fn pixel_avg_2x4(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            2 as c_int,
-            4 as c_int,
+            2,
+            4,
             weight,
         );
     };
@@ -500,7 +500,7 @@ unsafe extern "C" fn pixel_avg_2x2(
     mut i_stride_pix3: intptr_t,
     mut weight: c_int,
 ) {
-    if weight == 32 as c_int {
+    if weight == 32 {
         pixel_avg_wxh(
             pix1,
             i_stride_pix1,
@@ -508,8 +508,8 @@ unsafe extern "C" fn pixel_avg_2x2(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            2 as c_int,
-            2 as c_int,
+            2,
+            2,
         );
     } else {
         pixel_avg_weight_wxh(
@@ -519,8 +519,8 @@ unsafe extern "C" fn pixel_avg_2x2(
             i_stride_pix2,
             pix3,
             i_stride_pix3,
-            2 as c_int,
-            2 as c_int,
+            2,
+            2,
             weight,
         );
     };
@@ -539,18 +539,16 @@ unsafe extern "C" fn mc_weight(
     mut i_width: c_int,
     mut i_height: c_int,
 ) {
-    let mut offset: c_int = (*weight).i_offset as c_int * ((1 as c_int) << BIT_DEPTH - 8 as c_int);
+    let mut offset: c_int = (*weight).i_offset as c_int * ((1) << BIT_DEPTH - 8);
     let mut scale: c_int = (*weight).i_scale as c_int;
     let mut denom: c_int = (*weight).i_denom as c_int;
-    if denom >= 1 as c_int {
-        let mut y: c_int = 0 as c_int;
+    if denom >= 1 {
+        let mut y: c_int = 0;
         while y < i_height {
-            let mut x: c_int = 0 as c_int;
+            let mut x: c_int = 0;
             while x < i_width {
                 *dst.offset(x as isize) = x264_clip_pixel(
-                    (*src.offset(x as isize) as c_int * scale
-                        + ((1 as c_int) << denom - 1 as c_int)
-                        >> denom)
+                    (*src.offset(x as isize) as c_int * scale + ((1) << denom - 1) >> denom)
                         + offset,
                 );
                 x += 1;
@@ -560,9 +558,9 @@ unsafe extern "C" fn mc_weight(
             src = src.offset(i_src_stride as isize);
         }
     } else {
-        let mut y_0: c_int = 0 as c_int;
+        let mut y_0: c_int = 0;
         while y_0 < i_height {
-            let mut x_0: c_int = 0 as c_int;
+            let mut x_0: c_int = 0;
             while x_0 < i_width {
                 *dst.offset(x_0 as isize) =
                     x264_clip_pixel(*src.offset(x_0 as isize) as c_int * scale + offset);
@@ -583,15 +581,7 @@ unsafe extern "C" fn mc_weight_w20(
     mut weight: *const x264_weight_t,
     mut height: c_int,
 ) {
-    mc_weight(
-        dst,
-        i_dst_stride,
-        src,
-        i_src_stride,
-        weight,
-        20 as c_int,
-        height,
-    );
+    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 20, height);
 }
 #[c2rust::src_loc = "146:1"]
 unsafe extern "C" fn mc_weight_w16(
@@ -602,15 +592,7 @@ unsafe extern "C" fn mc_weight_w16(
     mut weight: *const x264_weight_t,
     mut height: c_int,
 ) {
-    mc_weight(
-        dst,
-        i_dst_stride,
-        src,
-        i_src_stride,
-        weight,
-        16 as c_int,
-        height,
-    );
+    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 16, height);
 }
 #[c2rust::src_loc = "147:1"]
 unsafe extern "C" fn mc_weight_w12(
@@ -621,15 +603,7 @@ unsafe extern "C" fn mc_weight_w12(
     mut weight: *const x264_weight_t,
     mut height: c_int,
 ) {
-    mc_weight(
-        dst,
-        i_dst_stride,
-        src,
-        i_src_stride,
-        weight,
-        12 as c_int,
-        height,
-    );
+    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 12, height);
 }
 #[c2rust::src_loc = "148:1"]
 unsafe extern "C" fn mc_weight_w8(
@@ -640,15 +614,7 @@ unsafe extern "C" fn mc_weight_w8(
     mut weight: *const x264_weight_t,
     mut height: c_int,
 ) {
-    mc_weight(
-        dst,
-        i_dst_stride,
-        src,
-        i_src_stride,
-        weight,
-        8 as c_int,
-        height,
-    );
+    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 8, height);
 }
 #[c2rust::src_loc = "149:1"]
 unsafe extern "C" fn mc_weight_w4(
@@ -659,15 +625,7 @@ unsafe extern "C" fn mc_weight_w4(
     mut weight: *const x264_weight_t,
     mut height: c_int,
 ) {
-    mc_weight(
-        dst,
-        i_dst_stride,
-        src,
-        i_src_stride,
-        weight,
-        4 as c_int,
-        height,
-    );
+    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 4, height);
 }
 #[c2rust::src_loc = "150:1"]
 unsafe extern "C" fn mc_weight_w2(
@@ -678,15 +636,7 @@ unsafe extern "C" fn mc_weight_w2(
     mut weight: *const x264_weight_t,
     mut height: c_int,
 ) {
-    mc_weight(
-        dst,
-        i_dst_stride,
-        src,
-        i_src_stride,
-        weight,
-        2 as c_int,
-        height,
-    );
+    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 2, height);
 }
 #[c2rust::src_loc = "152:20"]
 static mut mc_weight_wtab: [weight_fn_t; 6] = [
@@ -766,7 +716,7 @@ unsafe extern "C" fn mc_copy(
     mut i_width: c_int,
     mut i_height: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < i_height {
         memcpy(
             dst as *mut c_void,
@@ -789,65 +739,48 @@ unsafe extern "C" fn hpel_filter(
     mut height: c_int,
     mut buf: *mut int16_t,
 ) {
-    let pad: c_int = if BIT_DEPTH > 9 as c_int {
-        -(10 as c_int) * PIXEL_MAX
-    } else {
-        0 as c_int
-    };
-    let mut y: c_int = 0 as c_int;
+    let pad: c_int = if BIT_DEPTH > 9 { -(10) * PIXEL_MAX } else { 0 };
+    let mut y: c_int = 0;
     while y < height {
-        let mut x: c_int = -(2 as c_int);
-        while x < width + 3 as c_int {
+        let mut x: c_int = -(2);
+        while x < width + 3 {
             let mut v: c_int = *src.offset((x as intptr_t - 2 as intptr_t * stride) as isize)
                 as c_int
                 + *src.offset((x as intptr_t + 3 as intptr_t * stride) as isize) as c_int
-                - 5 as c_int
-                    * (*src.offset((x as intptr_t - stride) as isize) as c_int
-                        + *src.offset((x as intptr_t + 2 as intptr_t * stride) as isize) as c_int)
-                + 20 as c_int
-                    * (*src.offset(x as isize) as c_int
-                        + *src.offset((x as intptr_t + stride) as isize) as c_int);
-            *dstv.offset(x as isize) = x264_clip_pixel(v + 16 as c_int >> 5 as c_int);
-            *buf.offset((x + 2 as c_int) as isize) = (v + pad) as int16_t;
+                - 5 * (*src.offset((x as intptr_t - stride) as isize) as c_int
+                    + *src.offset((x as intptr_t + 2 as intptr_t * stride) as isize) as c_int)
+                + 20 * (*src.offset(x as isize) as c_int
+                    + *src.offset((x as intptr_t + stride) as isize) as c_int);
+            *dstv.offset(x as isize) = x264_clip_pixel(v + 16 >> 5);
+            *buf.offset((x + 2) as isize) = (v + pad) as int16_t;
             x += 1;
         }
-        let mut x_0: c_int = 0 as c_int;
+        let mut x_0: c_int = 0;
         while x_0 < width {
             *dstc.offset(x_0 as isize) = x264_clip_pixel(
-                *buf.offset(2)
-                    .offset((x_0 - 2 as c_int * 1 as c_int) as isize) as c_int
-                    + *buf
-                        .offset(2)
-                        .offset((x_0 + 3 as c_int * 1 as c_int) as isize)
-                        as c_int
-                    - 5 as c_int
-                        * (*buf.offset(2).offset((x_0 - 1 as c_int) as isize) as c_int
-                            + *buf
-                                .offset(2)
-                                .offset((x_0 + 2 as c_int * 1 as c_int) as isize)
-                                as c_int)
-                    + 20 as c_int
-                        * (*buf.offset(2).offset(x_0 as isize) as c_int
-                            + *buf.offset(2).offset((x_0 + 1 as c_int) as isize) as c_int)
-                    - 32 as c_int * pad
-                    + 512 as c_int
-                    >> 10 as c_int,
+                *buf.offset(2).offset((x_0 - 2 * 1) as isize) as c_int
+                    + *buf.offset(2).offset((x_0 + 3 * 1) as isize) as c_int
+                    - 5 * (*buf.offset(2).offset((x_0 - 1) as isize) as c_int
+                        + *buf.offset(2).offset((x_0 + 2 * 1) as isize) as c_int)
+                    + 20 * (*buf.offset(2).offset(x_0 as isize) as c_int
+                        + *buf.offset(2).offset((x_0 + 1) as isize) as c_int)
+                    - 32 * pad
+                    + 512
+                    >> 10,
             );
             x_0 += 1;
         }
-        let mut x_1: c_int = 0 as c_int;
+        let mut x_1: c_int = 0;
         while x_1 < width {
             *dsth.offset(x_1 as isize) = x264_clip_pixel(
-                *src.offset((x_1 - 2 as c_int * 1 as c_int) as isize) as c_int
-                    + *src.offset((x_1 + 3 as c_int * 1 as c_int) as isize) as c_int
-                    - 5 as c_int
-                        * (*src.offset((x_1 - 1 as c_int) as isize) as c_int
-                            + *src.offset((x_1 + 2 as c_int * 1 as c_int) as isize) as c_int)
-                    + 20 as c_int
-                        * (*src.offset(x_1 as isize) as c_int
-                            + *src.offset((x_1 + 1 as c_int) as isize) as c_int)
-                    + 16 as c_int
-                    >> 5 as c_int,
+                *src.offset((x_1 - 2 * 1) as isize) as c_int
+                    + *src.offset((x_1 + 3 * 1) as isize) as c_int
+                    - 5 * (*src.offset((x_1 - 1) as isize) as c_int
+                        + *src.offset((x_1 + 2 * 1) as isize) as c_int)
+                    + 20 * (*src.offset(x_1 as isize) as c_int
+                        + *src.offset((x_1 + 1) as isize) as c_int)
+                    + 16
+                    >> 5,
             );
             x_1 += 1;
         }
@@ -870,16 +803,16 @@ unsafe extern "C" fn mc_luma(
     mut i_height: c_int,
     mut weight: *const x264_weight_t,
 ) {
-    let mut qpel_idx: c_int = ((mvy & 3 as c_int) << 2 as c_int) + (mvx & 3 as c_int);
+    let mut qpel_idx: c_int = ((mvy & 3) << 2) + (mvx & 3);
     let mut offset: c_int =
-        ((mvy >> 2 as c_int) as intptr_t * i_src_stride + (mvx >> 2 as c_int) as intptr_t) as c_int;
+        ((mvy >> 2) as intptr_t * i_src_stride + (mvx >> 2) as intptr_t) as c_int;
     let mut src1: *mut pixel = (*src.offset(x264_hpel_ref0[qpel_idx as usize] as isize))
         .offset(offset as isize)
-        .offset(((mvy & 3 as c_int == 3 as c_int) as c_int as intptr_t * i_src_stride) as isize);
-    if qpel_idx & 5 as c_int != 0 {
+        .offset(((mvy & 3 == 3) as c_int as intptr_t * i_src_stride) as isize);
+    if qpel_idx & 5 != 0 {
         let mut src2: *mut pixel = (*src.offset(x264_hpel_ref1[qpel_idx as usize] as isize))
             .offset(offset as isize)
-            .offset((mvx & 3 as c_int == 3 as c_int) as c_int as isize);
+            .offset((mvx & 3 == 3) as c_int as isize);
         pixel_avg(
             dst,
             i_dst_stride,
@@ -927,16 +860,16 @@ unsafe extern "C" fn get_ref(
     mut i_height: c_int,
     mut weight: *const x264_weight_t,
 ) -> *mut pixel {
-    let mut qpel_idx: c_int = ((mvy & 3 as c_int) << 2 as c_int) + (mvx & 3 as c_int);
+    let mut qpel_idx: c_int = ((mvy & 3) << 2) + (mvx & 3);
     let mut offset: c_int =
-        ((mvy >> 2 as c_int) as intptr_t * i_src_stride + (mvx >> 2 as c_int) as intptr_t) as c_int;
+        ((mvy >> 2) as intptr_t * i_src_stride + (mvx >> 2) as intptr_t) as c_int;
     let mut src1: *mut pixel = (*src.offset(x264_hpel_ref0[qpel_idx as usize] as isize))
         .offset(offset as isize)
-        .offset(((mvy & 3 as c_int == 3 as c_int) as c_int as intptr_t * i_src_stride) as isize);
-    if qpel_idx & 5 as c_int != 0 {
+        .offset(((mvy & 3 == 3) as c_int as intptr_t * i_src_stride) as isize);
+    if qpel_idx & 5 != 0 {
         let mut src2: *mut pixel = (*src.offset(x264_hpel_ref1[qpel_idx as usize] as isize))
             .offset(offset as isize)
-            .offset((mvx & 3 as c_int == 3 as c_int) as c_int as isize);
+            .offset((mvx & 3 == 3) as c_int as isize);
         pixel_avg(
             dst,
             *i_dst_stride,
@@ -990,32 +923,29 @@ unsafe extern "C" fn mc_chroma(
     let mut srcp: *mut pixel = 0 as *mut pixel;
     let mut d8x: c_int = mvx & 0x7 as c_int;
     let mut d8y: c_int = mvy & 0x7 as c_int;
-    let mut cA: c_int = (8 as c_int - d8x) * (8 as c_int - d8y);
-    let mut cB: c_int = d8x * (8 as c_int - d8y);
-    let mut cC: c_int = (8 as c_int - d8x) * d8y;
+    let mut cA: c_int = (8 - d8x) * (8 - d8y);
+    let mut cB: c_int = d8x * (8 - d8y);
+    let mut cC: c_int = (8 - d8x) * d8y;
     let mut cD: c_int = d8x * d8y;
-    src = src.offset(
-        ((mvy >> 3 as c_int) as intptr_t * i_src_stride
-            + ((mvx >> 3 as c_int) * 2 as c_int) as intptr_t) as isize,
-    );
+    src =
+        src.offset(((mvy >> 3) as intptr_t * i_src_stride + ((mvx >> 3) * 2) as intptr_t) as isize);
     srcp = &mut *src.offset(i_src_stride as isize) as *mut pixel;
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < i_height {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < i_width {
-            *dstu.offset(x as isize) = (cA * *src.offset((2 as c_int * x) as isize) as c_int
-                + cB * *src.offset((2 as c_int * x + 2 as c_int) as isize) as c_int
-                + cC * *srcp.offset((2 as c_int * x) as isize) as c_int
-                + cD * *srcp.offset((2 as c_int * x + 2 as c_int) as isize) as c_int
-                + 32 as c_int
-                >> 6 as c_int) as pixel;
-            *dstv.offset(x as isize) = (cA
-                * *src.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                + cB * *src.offset((2 as c_int * x + 3 as c_int) as isize) as c_int
-                + cC * *srcp.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                + cD * *srcp.offset((2 as c_int * x + 3 as c_int) as isize) as c_int
-                + 32 as c_int
-                >> 6 as c_int) as pixel;
+            *dstu.offset(x as isize) = (cA * *src.offset((2 * x) as isize) as c_int
+                + cB * *src.offset((2 * x + 2) as isize) as c_int
+                + cC * *srcp.offset((2 * x) as isize) as c_int
+                + cD * *srcp.offset((2 * x + 2) as isize) as c_int
+                + 32
+                >> 6) as pixel;
+            *dstv.offset(x as isize) = (cA * *src.offset((2 * x + 1) as isize) as c_int
+                + cB * *src.offset((2 * x + 3) as isize) as c_int
+                + cC * *srcp.offset((2 * x + 1) as isize) as c_int
+                + cD * *srcp.offset((2 * x + 3) as isize) as c_int
+                + 32
+                >> 6) as pixel;
             x += 1;
         }
         dstu = dstu.offset(i_dst_stride as isize);
@@ -1033,7 +963,7 @@ unsafe extern "C" fn mc_copy_w16(
     mut i_src: intptr_t,
     mut i_height: c_int,
 ) {
-    mc_copy(src, i_src, dst, i_dst, 16 as c_int, i_height);
+    mc_copy(src, i_src, dst, i_dst, 16, i_height);
 }
 #[c2rust::src_loc = "291:1"]
 unsafe extern "C" fn mc_copy_w8(
@@ -1043,7 +973,7 @@ unsafe extern "C" fn mc_copy_w8(
     mut i_src: intptr_t,
     mut i_height: c_int,
 ) {
-    mc_copy(src, i_src, dst, i_dst, 8 as c_int, i_height);
+    mc_copy(src, i_src, dst, i_dst, 8, i_height);
 }
 #[c2rust::src_loc = "292:1"]
 unsafe extern "C" fn mc_copy_w4(
@@ -1053,7 +983,7 @@ unsafe extern "C" fn mc_copy_w4(
     mut i_src: intptr_t,
     mut i_height: c_int,
 ) {
-    mc_copy(src, i_src, dst, i_dst, 4 as c_int, i_height);
+    mc_copy(src, i_src, dst, i_dst, 4, i_height);
 }
 #[no_mangle]
 #[c2rust::src_loc = "294:1"]
@@ -1090,13 +1020,13 @@ unsafe extern "C" fn x264_10_plane_copy_swap_c(
     mut w: c_int,
     mut h: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < h {
-        let mut x: c_int = 0 as c_int;
-        while x < 2 as c_int * w {
-            *dst.offset(x as isize) = *src.offset((x + 1 as c_int) as isize);
-            *dst.offset((x + 1 as c_int) as isize) = *src.offset(x as isize);
-            x += 2 as c_int;
+        let mut x: c_int = 0;
+        while x < 2 * w {
+            *dst.offset(x as isize) = *src.offset((x + 1) as isize);
+            *dst.offset((x + 1) as isize) = *src.offset(x as isize);
+            x += 2;
         }
         y += 1;
         dst = dst.offset(i_dst as isize);
@@ -1115,12 +1045,12 @@ unsafe extern "C" fn x264_10_plane_copy_interleave_c(
     mut w: c_int,
     mut h: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < h {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < w {
-            *dst.offset((2 as c_int * x) as isize) = *srcu.offset(x as isize);
-            *dst.offset((2 as c_int * x + 1 as c_int) as isize) = *srcv.offset(x as isize);
+            *dst.offset((2 * x) as isize) = *srcu.offset(x as isize);
+            *dst.offset((2 * x + 1) as isize) = *srcv.offset(x as isize);
             x += 1;
         }
         y += 1;
@@ -1141,12 +1071,12 @@ unsafe extern "C" fn x264_10_plane_copy_deinterleave_c(
     mut w: c_int,
     mut h: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < h {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < w {
-            *dsta.offset(x as isize) = *src.offset((2 as c_int * x) as isize);
-            *dstb.offset(x as isize) = *src.offset((2 as c_int * x + 1 as c_int) as isize);
+            *dsta.offset(x as isize) = *src.offset((2 * x) as isize);
+            *dstb.offset(x as isize) = *src.offset((2 * x + 1) as isize);
             x += 1;
         }
         y += 1;
@@ -1169,13 +1099,13 @@ unsafe extern "C" fn plane_copy_deinterleave_rgb_c(
     mut w: c_int,
     mut h: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < h {
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < w {
             *dsta.offset(x as isize) = *src.offset((x * pw) as isize);
-            *dstb.offset(x as isize) = *src.offset((x * pw + 1 as c_int) as isize);
-            *dstc.offset(x as isize) = *src.offset((x * pw + 2 as c_int) as isize);
+            *dstb.offset(x as isize) = *src.offset((x * pw + 1) as isize);
+            *dstc.offset(x as isize) = *src.offset((x * pw + 2) as isize);
             x += 1;
         }
         y += 1;
@@ -1196,12 +1126,12 @@ unsafe extern "C" fn plane_copy_deinterleave_v210_c(
     mut w: c_int,
     mut h: c_int,
 ) {
-    let mut l: c_int = 0 as c_int;
+    let mut l: c_int = 0;
     while l < h {
         let mut dsty0: *mut pixel = dsty;
         let mut dstc0: *mut pixel = dstc;
         let mut src0: *mut uint32_t = src;
-        let mut n: c_int = 0 as c_int;
+        let mut n: c_int = 0;
         while n < w {
             let fresh1 = src0;
             src0 = src0.offset(1);
@@ -1211,10 +1141,10 @@ unsafe extern "C" fn plane_copy_deinterleave_v210_c(
             *fresh2 = (s & 0x3ff as uint32_t) as pixel;
             let fresh3 = dsty0;
             dsty0 = dsty0.offset(1);
-            *fresh3 = (s >> 10 as c_int & 0x3ff as uint32_t) as pixel;
+            *fresh3 = (s >> 10 & 0x3ff as uint32_t) as pixel;
             let fresh4 = dstc0;
             dstc0 = dstc0.offset(1);
-            *fresh4 = (s >> 20 as c_int & 0x3ff as uint32_t) as pixel;
+            *fresh4 = (s >> 20 & 0x3ff as uint32_t) as pixel;
             let fresh5 = src0;
             src0 = src0.offset(1);
             s = *fresh5;
@@ -1223,11 +1153,11 @@ unsafe extern "C" fn plane_copy_deinterleave_v210_c(
             *fresh6 = (s & 0x3ff as uint32_t) as pixel;
             let fresh7 = dstc0;
             dstc0 = dstc0.offset(1);
-            *fresh7 = (s >> 10 as c_int & 0x3ff as uint32_t) as pixel;
+            *fresh7 = (s >> 10 & 0x3ff as uint32_t) as pixel;
             let fresh8 = dsty0;
             dsty0 = dsty0.offset(1);
-            *fresh8 = (s >> 20 as c_int & 0x3ff as uint32_t) as pixel;
-            n += 3 as c_int;
+            *fresh8 = (s >> 20 & 0x3ff as uint32_t) as pixel;
+            n += 3;
         }
         dsty = dsty.offset(i_dsty as isize);
         dstc = dstc.offset(i_dstc as isize);
@@ -1243,12 +1173,12 @@ unsafe extern "C" fn store_interleave_chroma(
     mut srcv: *mut pixel,
     mut height: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
-        let mut x: c_int = 0 as c_int;
-        while x < 8 as c_int {
-            *dst.offset((2 as c_int * x) as isize) = *srcu.offset(x as isize);
-            *dst.offset((2 as c_int * x + 1 as c_int) as isize) = *srcv.offset(x as isize);
+        let mut x: c_int = 0;
+        while x < 8 {
+            *dst.offset((2 * x) as isize) = *srcu.offset(x as isize);
+            *dst.offset((2 * x + 1) as isize) = *srcv.offset(x as isize);
             x += 1;
         }
         y += 1;
@@ -1267,11 +1197,11 @@ unsafe extern "C" fn load_deinterleave_chroma_fenc(
     x264_10_plane_copy_deinterleave_c(
         dst,
         FENC_STRIDE as intptr_t,
-        dst.offset((FENC_STRIDE / 2 as c_int) as isize),
+        dst.offset((FENC_STRIDE / 2) as isize),
         FENC_STRIDE as intptr_t,
         src,
         i_src,
-        8 as c_int,
+        8,
         height,
     );
 }
@@ -1285,11 +1215,11 @@ unsafe extern "C" fn load_deinterleave_chroma_fdec(
     x264_10_plane_copy_deinterleave_c(
         dst,
         FDEC_STRIDE as intptr_t,
-        dst.offset((FDEC_STRIDE / 2 as c_int) as isize),
+        dst.offset((FDEC_STRIDE / 2) as isize),
         FDEC_STRIDE as intptr_t,
         src,
         i_src,
-        8 as c_int,
+        8,
         height,
     );
 }
@@ -1311,7 +1241,7 @@ unsafe extern "C" fn prefetch_ref_null(
 }
 #[c2rust::src_loc = "419:1"]
 unsafe extern "C" fn memzero_aligned(mut dst: *mut c_void, mut n: size_t) {
-    memset(dst, 0 as c_int, n);
+    memset(dst, 0, n);
 }
 #[c2rust::src_loc = "424:1"]
 unsafe extern "C" fn integral_init4h(
@@ -1323,11 +1253,11 @@ unsafe extern "C" fn integral_init4h(
         + *pix.offset(1) as c_int
         + *pix.offset(2) as c_int
         + *pix.offset(3) as c_int;
-    let mut x: c_int = 0 as c_int;
+    let mut x: c_int = 0;
     while (x as intptr_t) < stride - 4 as intptr_t {
         *sum.offset(x as isize) =
             (v + *sum.offset((x as intptr_t - stride) as isize) as c_int) as uint16_t;
-        v += *pix.offset((x + 4 as c_int) as isize) as c_int - *pix.offset(x as isize) as c_int;
+        v += *pix.offset((x + 4) as isize) as c_int - *pix.offset(x as isize) as c_int;
         x += 1;
     }
 }
@@ -1345,11 +1275,11 @@ unsafe extern "C" fn integral_init8h(
         + *pix.offset(5) as c_int
         + *pix.offset(6) as c_int
         + *pix.offset(7) as c_int;
-    let mut x: c_int = 0 as c_int;
+    let mut x: c_int = 0;
     while (x as intptr_t) < stride - 8 as intptr_t {
         *sum.offset(x as isize) =
             (v + *sum.offset((x as intptr_t - stride) as isize) as c_int) as uint16_t;
-        v += *pix.offset((x + 8 as c_int) as isize) as c_int - *pix.offset(x as isize) as c_int;
+        v += *pix.offset((x + 8) as isize) as c_int - *pix.offset(x as isize) as c_int;
         x += 1;
     }
 }
@@ -1359,27 +1289,27 @@ unsafe extern "C" fn integral_init4v(
     mut sum4: *mut uint16_t,
     mut stride: intptr_t,
 ) {
-    let mut x: c_int = 0 as c_int;
+    let mut x: c_int = 0;
     while (x as intptr_t) < stride - 8 as intptr_t {
         *sum4.offset(x as isize) = (*sum8.offset((x as intptr_t + 4 as intptr_t * stride) as isize)
             as c_int
             - *sum8.offset(x as isize) as c_int) as uint16_t;
         x += 1;
     }
-    let mut x_0: c_int = 0 as c_int;
+    let mut x_0: c_int = 0;
     while (x_0 as intptr_t) < stride - 8 as intptr_t {
         *sum8.offset(x_0 as isize) =
             (*sum8.offset((x_0 as intptr_t + 8 as intptr_t * stride) as isize) as c_int
                 + *sum8.offset((x_0 as intptr_t + 8 as intptr_t * stride + 4 as intptr_t) as isize)
                     as c_int
                 - *sum8.offset(x_0 as isize) as c_int
-                - *sum8.offset((x_0 + 4 as c_int) as isize) as c_int) as uint16_t;
+                - *sum8.offset((x_0 + 4) as isize) as c_int) as uint16_t;
         x_0 += 1;
     }
 }
 #[c2rust::src_loc = "452:1"]
 unsafe extern "C" fn integral_init8v(mut sum8: *mut uint16_t, mut stride: intptr_t) {
-    let mut x: c_int = 0 as c_int;
+    let mut x: c_int = 0;
     while (x as intptr_t) < stride - 8 as intptr_t {
         *sum8.offset(x as isize) = (*sum8.offset((x as intptr_t + 8 as intptr_t * stride) as isize)
             as c_int
@@ -1394,16 +1324,16 @@ unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *m
     let mut i_stride: c_int = (*frame).i_stride[0];
     let mut i_height: c_int = (*frame).i_lines[0];
     let mut i_width: c_int = (*frame).i_width[0];
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < i_height {
         *src.offset((i_width + y * i_stride) as isize) =
-            *src.offset((i_width - 1 as c_int + y * i_stride) as isize);
+            *src.offset((i_width - 1 + y * i_stride) as isize);
         y += 1;
     }
     memcpy(
         src.offset((i_stride * i_height) as isize) as *mut c_void,
-        src.offset((i_stride * (i_height - 1 as c_int)) as isize) as *const c_void,
-        ((i_width + 1 as c_int) * SIZEOF_PIXEL) as size_t,
+        src.offset((i_stride * (i_height - 1)) as isize) as *const c_void,
+        ((i_width + 1) * SIZEOF_PIXEL) as size_t,
     );
     (*h).mc
         .frame_init_lowres_core
@@ -1424,18 +1354,18 @@ unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *m
         -1,
         size_of::<[[c_int; 18]; 18]>() as size_t,
     );
-    let mut y_0: c_int = 0 as c_int;
-    while y_0 < (*h).param.i_bframe + 2 as c_int {
-        let mut x: c_int = 0 as c_int;
-        while x < (*h).param.i_bframe + 2 as c_int {
+    let mut y_0: c_int = 0;
+    while y_0 < (*h).param.i_bframe + 2 {
+        let mut x: c_int = 0;
+        while x < (*h).param.i_bframe + 2 {
             *(*frame).i_row_satds[y_0 as usize][x as usize].offset(0) = -1;
             x += 1;
         }
         y_0 += 1;
     }
-    let mut y_1: c_int = 0 as c_int;
+    let mut y_1: c_int = 0;
     while y_1 <= ((*h).param.i_bframe != 0) as c_int {
-        let mut x_0: c_int = 0 as c_int;
+        let mut x_0: c_int = 0;
         while x_0 <= (*h).param.i_bframe {
             (*(*frame).lowres_mvs[y_1 as usize][x_0 as usize].offset(0))[0] = 0x7fff as int16_t;
             x_0 += 1;
@@ -1455,54 +1385,52 @@ unsafe extern "C" fn frame_init_lowres_core(
     mut width: c_int,
     mut height: c_int,
 ) {
-    let mut y: c_int = 0 as c_int;
+    let mut y: c_int = 0;
     while y < height {
         let mut src1: *mut pixel = src0.offset(src_stride as isize);
         let mut src2: *mut pixel = src1.offset(src_stride as isize);
-        let mut x: c_int = 0 as c_int;
+        let mut x: c_int = 0;
         while x < width {
-            *dst0.offset(x as isize) = ((*src0.offset((2 as c_int * x) as isize) as c_int
-                + *src1.offset((2 as c_int * x) as isize) as c_int
-                + 1 as c_int
-                >> 1 as c_int)
-                + (*src0.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                    + *src1.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                    + 1 as c_int
-                    >> 1 as c_int)
-                + 1 as c_int
-                >> 1 as c_int) as pixel;
-            *dsth.offset(x as isize) = ((*src0.offset((2 as c_int * x + 1 as c_int) as isize)
-                as c_int
-                + *src1.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                + 1 as c_int
-                >> 1 as c_int)
-                + (*src0.offset((2 as c_int * x + 2 as c_int) as isize) as c_int
-                    + *src1.offset((2 as c_int * x + 2 as c_int) as isize) as c_int
-                    + 1 as c_int
-                    >> 1 as c_int)
-                + 1 as c_int
-                >> 1 as c_int) as pixel;
-            *dstv.offset(x as isize) = ((*src1.offset((2 as c_int * x) as isize) as c_int
-                + *src2.offset((2 as c_int * x) as isize) as c_int
-                + 1 as c_int
-                >> 1 as c_int)
-                + (*src1.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                    + *src2.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                    + 1 as c_int
-                    >> 1 as c_int)
-                + 1 as c_int
-                >> 1 as c_int) as pixel;
-            *dstc.offset(x as isize) = ((*src1.offset((2 as c_int * x + 1 as c_int) as isize)
-                as c_int
-                + *src2.offset((2 as c_int * x + 1 as c_int) as isize) as c_int
-                + 1 as c_int
-                >> 1 as c_int)
-                + (*src1.offset((2 as c_int * x + 2 as c_int) as isize) as c_int
-                    + *src2.offset((2 as c_int * x + 2 as c_int) as isize) as c_int
-                    + 1 as c_int
-                    >> 1 as c_int)
-                + 1 as c_int
-                >> 1 as c_int) as pixel;
+            *dst0.offset(x as isize) = ((*src0.offset((2 * x) as isize) as c_int
+                + *src1.offset((2 * x) as isize) as c_int
+                + 1
+                >> 1)
+                + (*src0.offset((2 * x + 1) as isize) as c_int
+                    + *src1.offset((2 * x + 1) as isize) as c_int
+                    + 1
+                    >> 1)
+                + 1
+                >> 1) as pixel;
+            *dsth.offset(x as isize) = ((*src0.offset((2 * x + 1) as isize) as c_int
+                + *src1.offset((2 * x + 1) as isize) as c_int
+                + 1
+                >> 1)
+                + (*src0.offset((2 * x + 2) as isize) as c_int
+                    + *src1.offset((2 * x + 2) as isize) as c_int
+                    + 1
+                    >> 1)
+                + 1
+                >> 1) as pixel;
+            *dstv.offset(x as isize) = ((*src1.offset((2 * x) as isize) as c_int
+                + *src2.offset((2 * x) as isize) as c_int
+                + 1
+                >> 1)
+                + (*src1.offset((2 * x + 1) as isize) as c_int
+                    + *src2.offset((2 * x + 1) as isize) as c_int
+                    + 1
+                    >> 1)
+                + 1
+                >> 1) as pixel;
+            *dstc.offset(x as isize) = ((*src1.offset((2 * x + 1) as isize) as c_int
+                + *src2.offset((2 * x + 1) as isize) as c_int
+                + 1
+                >> 1)
+                + (*src1.offset((2 * x + 2) as isize) as c_int
+                    + *src2.offset((2 * x + 2) as isize) as c_int
+                    + 1
+                    >> 1)
+                + 1
+                >> 1) as pixel;
             x += 1;
         }
         src0 = src0.offset((src_stride * 2 as intptr_t) as isize);
@@ -1524,15 +1452,15 @@ unsafe extern "C" fn mbtree_propagate_cost(
     mut len: c_int,
 ) {
     let mut fps: c_float = *fps_factor;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < len {
         let mut intra_cost: c_int = *intra_costs.offset(i as isize) as c_int;
         let mut inter_cost: c_int = if (*intra_costs.offset(i as isize) as c_int)
-            < *inter_costs.offset(i as isize) as c_int & ((1 as c_int) << 14 as c_int) - 1 as c_int
+            < *inter_costs.offset(i as isize) as c_int & ((1) << 14) - 1
         {
             *intra_costs.offset(i as isize) as c_int
         } else {
-            *inter_costs.offset(i as isize) as c_int & ((1 as c_int) << 14 as c_int) - 1 as c_int
+            *inter_costs.offset(i as isize) as c_int & ((1) << 14) - 1
         };
         let mut propagate_intra: c_float =
             (intra_cost * *inv_qscales.offset(i as isize) as c_int) as c_float;
@@ -1540,14 +1468,12 @@ unsafe extern "C" fn mbtree_propagate_cost(
             *propagate_in.offset(i as isize) as c_int as c_float + propagate_intra * fps;
         let mut propagate_num: c_float = (intra_cost - inter_cost) as c_float;
         let mut propagate_denom: c_float = intra_cost as c_float;
-        *dst.offset(i as isize) = (if ((propagate_amount * propagate_num / propagate_denom + 0.5f32)
-            as c_int)
-            < 32767 as c_int
-        {
-            (propagate_amount * propagate_num / propagate_denom + 0.5f32) as c_int
-        } else {
-            32767 as c_int
-        }) as int16_t;
+        *dst.offset(i as isize) =
+            (if ((propagate_amount * propagate_num / propagate_denom + 0.5f32) as c_int) < 32767 {
+                (propagate_amount * propagate_num / propagate_denom + 0.5f32) as c_int
+            } else {
+                32767
+            }) as int16_t;
         i += 1;
     }
 }
@@ -1566,13 +1492,13 @@ unsafe extern "C" fn mbtree_propagate_list(
     let mut stride: c_uint = (*h).mb.i_mb_stride as c_uint;
     let mut width: c_uint = (*h).mb.i_mb_width as c_uint;
     let mut height: c_uint = (*h).mb.i_mb_height as c_uint;
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < len {
         let mut lists_used: c_int = *lowres_costs.offset(i as isize) as c_int >> LOWRES_COST_SHIFT;
-        if !(lists_used & (1 as c_int) << list == 0) {
+        if !(lists_used & (1) << list == 0) {
             let mut listamount: c_int = *propagate_amount.offset(i as isize) as c_int;
-            if lists_used == 3 as c_int {
-                listamount = listamount * bipred_weight + 32 as c_int >> 6 as c_int;
+            if lists_used == 3 {
+                listamount = listamount * bipred_weight + 32 >> 6;
             }
             if (*((*mvs.offset(i as isize)).as_mut_ptr() as *mut x264_union32_t)).i == 0 {
                 *ref_costs.offset(
@@ -1585,7 +1511,7 @@ unsafe extern "C" fn mbtree_propagate_list(
                         .wrapping_add(i as c_uint) as isize,
                 ) as c_int
                     + listamount
-                    < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                    < ((1) << 15) - 1
                 {
                     *ref_costs.offset(
                         (mb_y as c_uint)
@@ -1594,124 +1520,108 @@ unsafe extern "C" fn mbtree_propagate_list(
                     ) as c_int
                         + listamount
                 } else {
-                    ((1 as c_int) << 15 as c_int) - 1 as c_int
+                    ((1) << 15) - 1
                 }) as uint16_t;
             } else {
                 let mut x: c_int = (*mvs.offset(i as isize))[0] as c_int;
                 let mut y: c_int = (*mvs.offset(i as isize))[1] as c_int;
-                let mut mbx: c_uint = ((x >> 5 as c_int) + i) as c_uint;
-                let mut mby: c_uint = ((y >> 5 as c_int) + mb_y) as c_uint;
+                let mut mbx: c_uint = ((x >> 5) + i) as c_uint;
+                let mut mby: c_uint = ((y >> 5) + mb_y) as c_uint;
                 let mut idx0: c_uint = mbx.wrapping_add(mby.wrapping_mul(stride));
                 let mut idx2: c_uint = idx0.wrapping_add(stride);
-                x &= 31 as c_int;
-                y &= 31 as c_int;
-                let mut idx0weight: c_int = (32 as c_int - y) * (32 as c_int - x);
-                let mut idx1weight: c_int = (32 as c_int - y) * x;
-                let mut idx2weight: c_int = y * (32 as c_int - x);
+                x &= 31;
+                y &= 31;
+                let mut idx0weight: c_int = (32 - y) * (32 - x);
+                let mut idx1weight: c_int = (32 - y) * x;
+                let mut idx2weight: c_int = y * (32 - x);
                 let mut idx3weight: c_int = y * x;
-                idx0weight = idx0weight * listamount + 512 as c_int >> 10 as c_int;
-                idx1weight = idx1weight * listamount + 512 as c_int >> 10 as c_int;
-                idx2weight = idx2weight * listamount + 512 as c_int >> 10 as c_int;
-                idx3weight = idx3weight * listamount + 512 as c_int >> 10 as c_int;
-                if mbx < width.wrapping_sub(1 as c_uint) && mby < height.wrapping_sub(1 as c_uint) {
-                    *ref_costs.offset(idx0.wrapping_add(0 as c_uint) as isize) =
-                        (if *ref_costs.offset(idx0.wrapping_add(0 as c_uint) as isize) as c_int
-                            + idx0weight
-                            < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                idx0weight = idx0weight * listamount + 512 >> 10;
+                idx1weight = idx1weight * listamount + 512 >> 10;
+                idx2weight = idx2weight * listamount + 512 >> 10;
+                idx3weight = idx3weight * listamount + 512 >> 10;
+                if mbx < width.wrapping_sub(1) && mby < height.wrapping_sub(1) {
+                    *ref_costs.offset(idx0.wrapping_add(0) as isize) =
+                        (if *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int + idx0weight
+                            < ((1) << 15) - 1
                         {
-                            *ref_costs.offset(idx0.wrapping_add(0 as c_uint) as isize) as c_int
-                                + idx0weight
+                            *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int + idx0weight
                         } else {
-                            ((1 as c_int) << 15 as c_int) - 1 as c_int
+                            ((1) << 15) - 1
                         }) as uint16_t;
-                    *ref_costs.offset(idx0.wrapping_add(1 as c_uint) as isize) =
-                        (if *ref_costs.offset(idx0.wrapping_add(1 as c_uint) as isize) as c_int
-                            + idx1weight
-                            < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                    *ref_costs.offset(idx0.wrapping_add(1) as isize) =
+                        (if *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int + idx1weight
+                            < ((1) << 15) - 1
                         {
-                            *ref_costs.offset(idx0.wrapping_add(1 as c_uint) as isize) as c_int
-                                + idx1weight
+                            *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int + idx1weight
                         } else {
-                            ((1 as c_int) << 15 as c_int) - 1 as c_int
+                            ((1) << 15) - 1
                         }) as uint16_t;
-                    *ref_costs.offset(idx2.wrapping_add(0 as c_uint) as isize) =
-                        (if *ref_costs.offset(idx2.wrapping_add(0 as c_uint) as isize) as c_int
-                            + idx2weight
-                            < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                    *ref_costs.offset(idx2.wrapping_add(0) as isize) =
+                        (if *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int + idx2weight
+                            < ((1) << 15) - 1
                         {
-                            *ref_costs.offset(idx2.wrapping_add(0 as c_uint) as isize) as c_int
-                                + idx2weight
+                            *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int + idx2weight
                         } else {
-                            ((1 as c_int) << 15 as c_int) - 1 as c_int
+                            ((1) << 15) - 1
                         }) as uint16_t;
-                    *ref_costs.offset(idx2.wrapping_add(1 as c_uint) as isize) =
-                        (if *ref_costs.offset(idx2.wrapping_add(1 as c_uint) as isize) as c_int
-                            + idx3weight
-                            < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                    *ref_costs.offset(idx2.wrapping_add(1) as isize) =
+                        (if *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int + idx3weight
+                            < ((1) << 15) - 1
                         {
-                            *ref_costs.offset(idx2.wrapping_add(1 as c_uint) as isize) as c_int
-                                + idx3weight
+                            *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int + idx3weight
                         } else {
-                            ((1 as c_int) << 15 as c_int) - 1 as c_int
+                            ((1) << 15) - 1
                         }) as uint16_t;
                 } else {
                     if mby < height {
                         if mbx < width {
-                            *ref_costs.offset(idx0.wrapping_add(0 as c_uint) as isize) =
-                                (if *ref_costs.offset(idx0.wrapping_add(0 as c_uint) as isize)
-                                    as c_int
+                            *ref_costs.offset(idx0.wrapping_add(0) as isize) =
+                                (if *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int
                                     + idx0weight
-                                    < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    < ((1) << 15) - 1
                                 {
-                                    *ref_costs.offset(idx0.wrapping_add(0 as c_uint) as isize)
-                                        as c_int
+                                    *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int
                                         + idx0weight
                                 } else {
-                                    ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    ((1) << 15) - 1
                                 }) as uint16_t;
                         }
-                        if mbx.wrapping_add(1 as c_uint) < width {
-                            *ref_costs.offset(idx0.wrapping_add(1 as c_uint) as isize) =
-                                (if *ref_costs.offset(idx0.wrapping_add(1 as c_uint) as isize)
-                                    as c_int
+                        if mbx.wrapping_add(1) < width {
+                            *ref_costs.offset(idx0.wrapping_add(1) as isize) =
+                                (if *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int
                                     + idx1weight
-                                    < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    < ((1) << 15) - 1
                                 {
-                                    *ref_costs.offset(idx0.wrapping_add(1 as c_uint) as isize)
-                                        as c_int
+                                    *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int
                                         + idx1weight
                                 } else {
-                                    ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    ((1) << 15) - 1
                                 }) as uint16_t;
                         }
                     }
-                    if mby.wrapping_add(1 as c_uint) < height {
+                    if mby.wrapping_add(1) < height {
                         if mbx < width {
-                            *ref_costs.offset(idx2.wrapping_add(0 as c_uint) as isize) =
-                                (if *ref_costs.offset(idx2.wrapping_add(0 as c_uint) as isize)
-                                    as c_int
+                            *ref_costs.offset(idx2.wrapping_add(0) as isize) =
+                                (if *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int
                                     + idx2weight
-                                    < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    < ((1) << 15) - 1
                                 {
-                                    *ref_costs.offset(idx2.wrapping_add(0 as c_uint) as isize)
-                                        as c_int
+                                    *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int
                                         + idx2weight
                                 } else {
-                                    ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    ((1) << 15) - 1
                                 }) as uint16_t;
                         }
-                        if mbx.wrapping_add(1 as c_uint) < width {
-                            *ref_costs.offset(idx2.wrapping_add(1 as c_uint) as isize) =
-                                (if *ref_costs.offset(idx2.wrapping_add(1 as c_uint) as isize)
-                                    as c_int
+                        if mbx.wrapping_add(1) < width {
+                            *ref_costs.offset(idx2.wrapping_add(1) as isize) =
+                                (if *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int
                                     + idx3weight
-                                    < ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    < ((1) << 15) - 1
                                 {
-                                    *ref_costs.offset(idx2.wrapping_add(1 as c_uint) as isize)
-                                        as c_int
+                                    *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int
                                         + idx3weight
                                 } else {
-                                    ((1 as c_int) << 15 as c_int) - 1 as c_int
+                                    ((1) << 15) - 1
                                 }) as uint16_t;
                         }
                     }
@@ -1727,7 +1637,7 @@ unsafe extern "C" fn mbtree_fix8_pack(
     mut src: *mut c_float,
     mut count: c_int,
 ) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < count {
         *dst.offset(i as isize) =
             endian_fix16((*src.offset(i as isize) * 256.0f32) as int16_t as uint16_t);
@@ -1740,7 +1650,7 @@ unsafe extern "C" fn mbtree_fix8_unpack(
     mut src: *mut uint16_t,
     mut count: c_int,
 ) {
-    let mut i: c_int = 0 as c_int;
+    let mut i: c_int = 0;
     while i < count {
         *dst.offset(i as isize) = endian_fix16(*src.offset(i as isize)) as int16_t as c_int
             as c_float
@@ -2501,7 +2411,7 @@ unsafe extern "C" fn x264_10_frame_filter(
     mut b_end: c_int,
 ) {
     let interlaced = (*h).param.interlaced;
-    let mut start: c_int = mb_y * 16 as c_int - 8 as c_int;
+    let mut start: c_int = mb_y * 16 - 8;
     let mut height: c_int = (if b_end != 0 {
         (*frame).i_lines[0] + 16 * (*h).param.interlaced as i32
     } else {
@@ -2510,7 +2420,7 @@ unsafe extern "C" fn x264_10_frame_filter(
     if mb_y & interlaced as i32 != 0 {
         return;
     }
-    let mut p: c_int = 0 as c_int;
+    let mut p: c_int = 0;
     while p
         < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
             3
@@ -2520,7 +2430,7 @@ unsafe extern "C" fn x264_10_frame_filter(
     {
         let mut stride: c_int = (*frame).i_stride[p as usize];
         let width: c_int = (*frame).i_width[p as usize];
-        let mut offs: c_int = start * stride - 8 as c_int;
+        let mut offs: c_int = start * stride - 8;
         if !interlaced || (*h).mb.b_adaptive_mbaff != 0 {
             (*h).mc.hpel_filter.expect("non-null function pointer")(
                 (*frame).filtered[p as usize][1].offset(offs as isize),
@@ -2528,30 +2438,30 @@ unsafe extern "C" fn x264_10_frame_filter(
                 (*frame).filtered[p as usize][3].offset(offs as isize),
                 (*frame).plane[p as usize].offset(offs as isize),
                 stride as intptr_t,
-                width + 16 as c_int,
+                width + 16,
                 height - start,
                 (*h).scratch_buffer as *mut int16_t,
             );
         }
         if interlaced {
-            stride = (*frame).i_stride[p as usize] << 1 as c_int;
-            start = (mb_y * 16 as c_int >> 1 as c_int) - 8 as c_int;
+            stride = (*frame).i_stride[p as usize] << 1;
+            start = (mb_y * 16 >> 1) - 8;
             let mut height_fld: c_int = ((if b_end != 0 {
                 (*frame).i_lines[p as usize]
             } else {
-                mb_y * 16 as c_int
-            }) >> 1 as c_int)
-                + 8 as c_int;
-            offs = start * stride - 8 as c_int;
-            let mut i: c_int = 0 as c_int;
-            while i < 2 as c_int {
+                mb_y * 16
+            }) >> 1)
+                + 8;
+            offs = start * stride - 8;
+            let mut i: c_int = 0;
+            while i < 2 {
                 (*h).mc.hpel_filter.expect("non-null function pointer")(
                     (*frame).filtered_fld[p as usize][1].offset(offs as isize),
                     (*frame).filtered_fld[p as usize][2].offset(offs as isize),
                     (*frame).filtered_fld[p as usize][3].offset(offs as isize),
                     (*frame).plane_fld[p as usize].offset(offs as isize),
                     stride as intptr_t,
-                    width + 16 as c_int,
+                    width + 16,
                     height_fld - start,
                     (*h).scratch_buffer as *mut int16_t,
                 );
@@ -2563,43 +2473,43 @@ unsafe extern "C" fn x264_10_frame_filter(
     }
     if !(*frame).integral.is_null() {
         let mut stride_0: c_int = (*frame).i_stride[0];
-        if start < 0 as c_int {
+        if start < 0 {
             memset(
                 (*frame)
                     .integral
                     .offset(-((PADV * stride_0) as isize))
                     .offset(
-                        -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
-                            32 as c_int
+                        -((if 32 > 64 / size_of::<pixel>() as c_int {
+                            32
                         } else {
-                            64 as c_int / size_of::<pixel>() as c_int
+                            64 / size_of::<pixel>() as c_int
                         }) as isize),
                     ) as *mut c_void,
-                0 as c_int,
+                0,
                 (stride_0 as size_t).wrapping_mul(size_of::<uint16_t>() as size_t),
             );
             start = -PADV;
         }
         if b_end != 0 {
-            height += PADV - 9 as c_int;
+            height += PADV - 9;
         }
         let mut y: c_int = start;
         while y < height {
             let mut pix: *mut pixel = (*frame).plane[0].offset((y * stride_0) as isize).offset(
-                -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
-                    32 as c_int
+                -((if 32 > 64 / size_of::<pixel>() as c_int {
+                    32
                 } else {
-                    64 as c_int / size_of::<pixel>() as c_int
+                    64 / size_of::<pixel>() as c_int
                 }) as isize),
             );
             let mut sum8: *mut uint16_t = (*frame)
                 .integral
-                .offset(((y + 1 as c_int) * stride_0) as isize)
+                .offset(((y + 1) * stride_0) as isize)
                 .offset(
-                    -((if 32 as c_int > 64 as c_int / size_of::<pixel>() as c_int {
-                        32 as c_int
+                    -((if 32 > 64 / size_of::<pixel>() as c_int {
+                        32
                     } else {
-                        64 as c_int / size_of::<pixel>() as c_int
+                        64 / size_of::<pixel>() as c_int
                     }) as isize),
                 );
             let mut sum4: *mut uint16_t = 0 as *mut uint16_t;
@@ -2609,9 +2519,9 @@ unsafe extern "C" fn x264_10_frame_filter(
                     pix,
                     stride_0 as intptr_t,
                 );
-                sum8 = sum8.offset(-((8 as c_int * stride_0) as isize));
-                sum4 = sum8.offset((stride_0 * ((*frame).i_lines[0] + PADV * 2 as c_int)) as isize);
-                if y >= 8 as c_int - PADV {
+                sum8 = sum8.offset(-((8 * stride_0) as isize));
+                sum4 = sum8.offset((stride_0 * ((*frame).i_lines[0] + PADV * 2)) as isize);
+                if y >= 8 - PADV {
                     (*h).mc.integral_init4v.expect("non-null function pointer")(
                         sum8,
                         sum4,
@@ -2624,9 +2534,9 @@ unsafe extern "C" fn x264_10_frame_filter(
                     pix,
                     stride_0 as intptr_t,
                 );
-                if y >= 8 as c_int - PADV {
+                if y >= 8 - PADV {
                     (*h).mc.integral_init8v.expect("non-null function pointer")(
-                        sum8.offset(-((8 as c_int * stride_0) as isize)),
+                        sum8.offset(-((8 * stride_0) as isize)),
                         stride_0 as intptr_t,
                     );
                 }

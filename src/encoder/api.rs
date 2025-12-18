@@ -109,7 +109,7 @@ unsafe extern "C" fn x264_encoder_open_165(mut param: *mut x264_param_t) -> *mut
     if api.is_null() {
         return 0 as *mut x264_t;
     }
-    if (*param).i_bitdepth == 8 as c_int {
+    if (*param).i_bitdepth == 8 {
         (*api).nal_encode = Some(
             x264_8_nal_encode
                 as unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> (),
@@ -166,7 +166,7 @@ unsafe extern "C" fn x264_encoder_open_165(mut param: *mut x264_param_t) -> *mut
         )
             as Option<unsafe extern "C" fn(*mut x264_t, int64_t) -> c_int>;
         (*api).x264 = x264_8_encoder_open(param, api as *mut c_void);
-    } else if (*param).i_bitdepth == 10 as c_int {
+    } else if (*param).i_bitdepth == 10 {
         (*api).nal_encode = Some(
             x264_10_nal_encode
                 as unsafe extern "C" fn(*mut x264_t, *mut uint8_t, *mut x264_nal_t) -> (),
