@@ -7,6 +7,7 @@
 #![deny(unsafe_op_in_unsafe_fn)]
 #![feature(c_variadic)]
 #![feature(core_intrinsics)]
+#![feature(label_break_value)]
 #![feature(extern_types)]
 #![feature(raw_ref_op)]
 #![feature(register_tool)]
@@ -281,7 +282,7 @@ pub mod x264_h {
         pub i_level_idc: ::core::ffi::c_int,
         pub i_frame_total: ::core::ffi::c_int,
         pub i_nal_hrd: ::core::ffi::c_int,
-        pub vui: crate::x264_h::C2Rust_Unnamed_5,
+        pub vui: crate::x264_h::C2Rust_Unnamed_0,
         pub i_frame_reference: ::core::ffi::c_int,
         pub i_dpb_size: ::core::ffi::c_int,
         pub i_keyint_max: ::core::ffi::c_int,
@@ -325,12 +326,12 @@ pub mod x264_h {
         pub i_log_level: ::core::ffi::c_int,
         pub b_full_recon: ::core::ffi::c_int,
         pub psz_dump_yuv: *mut ::core::ffi::c_char,
-        pub analyse: crate::x264_h::C2Rust_Unnamed_4,
-        pub rc: crate::x264_h::C2Rust_Unnamed_3,
-        pub crop_rect: crate::x264_h::C2Rust_Unnamed_2,
+        pub analyse: crate::x264_h::C2Rust_Unnamed_1,
+        pub rc: crate::x264_h::C2Rust_Unnamed_2,
+        pub crop_rect: crate::x264_h::C2Rust_Unnamed_3,
         pub i_frame_packing: ::core::ffi::c_int,
-        pub mastering_display: crate::x264_h::C2Rust_Unnamed_1,
-        pub content_light_level: crate::x264_h::C2Rust_Unnamed_0,
+        pub mastering_display: crate::x264_h::C2Rust_Unnamed_4,
+        pub content_light_level: crate::x264_h::C2Rust_Unnamed_5,
         pub i_alternative_transfer: ::core::ffi::c_int,
         pub b_aud: ::core::ffi::c_int,
         pub b_repeat_headers: ::core::ffi::c_int,
@@ -367,7 +368,7 @@ pub mod x264_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_5 {
+    pub struct C2Rust_Unnamed_0 {
         pub i_sar_height: ::core::ffi::c_int,
         pub i_sar_width: ::core::ffi::c_int,
         pub i_overscan: ::core::ffi::c_int,
@@ -380,7 +381,7 @@ pub mod x264_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_4 {
+    pub struct C2Rust_Unnamed_1 {
         pub intra: ::core::ffi::c_uint,
         pub inter: ::core::ffi::c_uint,
         pub b_transform_8x8: ::core::ffi::c_int,
@@ -410,7 +411,7 @@ pub mod x264_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_3 {
+    pub struct C2Rust_Unnamed_2 {
         pub i_rc_method: ::core::ffi::c_int,
         pub i_qp_constant: ::core::ffi::c_int,
         pub i_qp_min: ::core::ffi::c_int,
@@ -443,7 +444,7 @@ pub mod x264_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_2 {
+    pub struct C2Rust_Unnamed_3 {
         pub i_left: ::core::ffi::c_int,
         pub i_top: ::core::ffi::c_int,
         pub i_right: ::core::ffi::c_int,
@@ -451,7 +452,7 @@ pub mod x264_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_1 {
+    pub struct C2Rust_Unnamed_4 {
         pub b_mastering_display: ::core::ffi::c_int,
         pub i_green_x: ::core::ffi::c_int,
         pub i_green_y: ::core::ffi::c_int,
@@ -466,7 +467,7 @@ pub mod x264_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_0 {
+    pub struct C2Rust_Unnamed_5 {
         pub b_cll: ::core::ffi::c_int,
         pub i_max_cll: ::core::ffi::c_int,
         pub i_max_fall: ::core::ffi::c_int,
@@ -873,11 +874,11 @@ pub mod stdlib {
     #[repr(C)]
     pub union __atomic_wide_counter {
         pub __value64: ::core::ffi::c_ulonglong,
-        pub __value32: crate::stdlib::C2Rust_Unnamed_7,
+        pub __value32: crate::stdlib::C2Rust_Unnamed_6,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_7 {
+    pub struct C2Rust_Unnamed_6 {
         pub __low: ::core::ffi::c_uint,
         pub __high: ::core::ffi::c_uint,
     }
@@ -890,19 +891,19 @@ pub mod stdlib {
     pub struct cpu_set_t {
         pub __bits: [crate::stdlib::__cpu_mask; 16],
     }
-    pub type C2Rust_Unnamed_6 = ::core::ffi::c_uint;
-    pub const _ISupper: crate::stdlib::C2Rust_Unnamed_6 = 256;
-    pub const _ISlower: crate::stdlib::C2Rust_Unnamed_6 = 512;
-    pub const _ISalpha: crate::stdlib::C2Rust_Unnamed_6 = 1024;
-    pub const _ISdigit: crate::stdlib::C2Rust_Unnamed_6 = 2048;
-    pub const _ISxdigit: crate::stdlib::C2Rust_Unnamed_6 = 4096;
-    pub const _ISspace: crate::stdlib::C2Rust_Unnamed_6 = 8192;
-    pub const _ISprint: crate::stdlib::C2Rust_Unnamed_6 = 16384;
-    pub const _ISgraph: crate::stdlib::C2Rust_Unnamed_6 = 32768;
-    pub const _ISblank: crate::stdlib::C2Rust_Unnamed_6 = 1;
-    pub const _IScntrl: crate::stdlib::C2Rust_Unnamed_6 = 2;
-    pub const _ISpunct: crate::stdlib::C2Rust_Unnamed_6 = 4;
-    pub const _ISalnum: crate::stdlib::C2Rust_Unnamed_6 = 8;
+    pub type C2Rust_Unnamed_7 = ::core::ffi::c_uint;
+    pub const _ISupper: crate::stdlib::C2Rust_Unnamed_7 = 256;
+    pub const _ISlower: crate::stdlib::C2Rust_Unnamed_7 = 512;
+    pub const _ISalpha: crate::stdlib::C2Rust_Unnamed_7 = 1024;
+    pub const _ISdigit: crate::stdlib::C2Rust_Unnamed_7 = 2048;
+    pub const _ISxdigit: crate::stdlib::C2Rust_Unnamed_7 = 4096;
+    pub const _ISspace: crate::stdlib::C2Rust_Unnamed_7 = 8192;
+    pub const _ISprint: crate::stdlib::C2Rust_Unnamed_7 = 16384;
+    pub const _ISgraph: crate::stdlib::C2Rust_Unnamed_7 = 32768;
+    pub const _ISblank: crate::stdlib::C2Rust_Unnamed_7 = 1;
+    pub const _IScntrl: crate::stdlib::C2Rust_Unnamed_7 = 2;
+    pub const _ISpunct: crate::stdlib::C2Rust_Unnamed_7 = 4;
+    pub const _ISalnum: crate::stdlib::C2Rust_Unnamed_7 = 8;
     pub const MADV_HUGEPAGE: ::core::ffi::c_int = 14 as ::core::ffi::c_int;
     pub type pthread_t = ::core::ffi::c_ulong;
     #[derive(Copy, Clone)]

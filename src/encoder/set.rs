@@ -698,7 +698,7 @@ use crate::src::encoder::set::macroblock_h::x264_zigzag_scan4;
 use crate::src::encoder::set::macroblock_h::x264_zigzag_scan8;
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct C2Rust_Unnamed_465 {
+pub struct C2Rust_Unnamed_24 {
     pub w: crate::stdlib::uint8_t,
     pub h: crate::stdlib::uint8_t,
     pub sar: crate::stdlib::uint8_t,
@@ -1573,88 +1573,88 @@ pub unsafe extern "C" fn x264_8_sps_write(
             );
             if (*sps).vui.b_aspect_ratio_info_present != 0 {
                 let mut i: ::core::ffi::c_int = 0;
-                static mut sar: [C2Rust_Unnamed_465; 17] = [
-                    C2Rust_Unnamed_465 {
+                static mut sar: [C2Rust_Unnamed_24; 17] = [
+                    C2Rust_Unnamed_24 {
                         w: 1 as crate::stdlib::uint8_t,
                         h: 1 as crate::stdlib::uint8_t,
                         sar: 1 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 12 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 2 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 10 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 3 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 16 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 4 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 40 as crate::stdlib::uint8_t,
                         h: 33 as crate::stdlib::uint8_t,
                         sar: 5 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 24 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 6 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 20 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 7 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 32 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 8 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 80 as crate::stdlib::uint8_t,
                         h: 33 as crate::stdlib::uint8_t,
                         sar: 9 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 18 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 10 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 15 as crate::stdlib::uint8_t,
                         h: 11 as crate::stdlib::uint8_t,
                         sar: 11 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 64 as crate::stdlib::uint8_t,
                         h: 33 as crate::stdlib::uint8_t,
                         sar: 12 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 160 as crate::stdlib::uint8_t,
                         h: 99 as crate::stdlib::uint8_t,
                         sar: 13 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 4 as crate::stdlib::uint8_t,
                         h: 3 as crate::stdlib::uint8_t,
                         sar: 14 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 3 as crate::stdlib::uint8_t,
                         h: 2 as crate::stdlib::uint8_t,
                         sar: 15 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 2 as crate::stdlib::uint8_t,
                         h: 1 as crate::stdlib::uint8_t,
                         sar: 16 as crate::stdlib::uint8_t,
                     },
-                    C2Rust_Unnamed_465 {
+                    C2Rust_Unnamed_24 {
                         w: 0 as crate::stdlib::uint8_t,
                         h: 0 as crate::stdlib::uint8_t,
                         sar: 255 as crate::stdlib::uint8_t,

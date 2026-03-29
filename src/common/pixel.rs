@@ -28,21 +28,21 @@ pub type x264_pixel_cmp_x4_t = Option<
         *mut ::core::ffi::c_int,
     ) -> (),
 >;
-pub const PIXEL_16x16: crate::stdlib::C2Rust_Unnamed_6 = 0;
-pub const PIXEL_16x8: crate::stdlib::C2Rust_Unnamed_6 = 1;
-pub const PIXEL_8x16: crate::stdlib::C2Rust_Unnamed_6 = 2;
-pub const PIXEL_8x8: crate::stdlib::C2Rust_Unnamed_6 = 3;
-pub const PIXEL_8x4: crate::stdlib::C2Rust_Unnamed_6 = 4;
-pub const PIXEL_4x8: crate::stdlib::C2Rust_Unnamed_6 = 5;
-pub const PIXEL_4x4: crate::stdlib::C2Rust_Unnamed_6 = 6;
-pub const PIXEL_4x16: crate::stdlib::C2Rust_Unnamed_6 = 7;
-pub const PIXEL_4x2: crate::stdlib::C2Rust_Unnamed_6 = 8;
-pub const PIXEL_2x8: crate::stdlib::C2Rust_Unnamed_6 = 9;
-pub const PIXEL_2x4: crate::stdlib::C2Rust_Unnamed_6 = 10;
-pub const PIXEL_2x2: crate::stdlib::C2Rust_Unnamed_6 = 11;
+pub const PIXEL_16x16: crate::stdlib::C2Rust_Unnamed_7 = 0;
+pub const PIXEL_16x8: crate::stdlib::C2Rust_Unnamed_7 = 1;
+pub const PIXEL_8x16: crate::stdlib::C2Rust_Unnamed_7 = 2;
+pub const PIXEL_8x8: crate::stdlib::C2Rust_Unnamed_7 = 3;
+pub const PIXEL_8x4: crate::stdlib::C2Rust_Unnamed_7 = 4;
+pub const PIXEL_4x8: crate::stdlib::C2Rust_Unnamed_7 = 5;
+pub const PIXEL_4x4: crate::stdlib::C2Rust_Unnamed_7 = 6;
+pub const PIXEL_4x16: crate::stdlib::C2Rust_Unnamed_7 = 7;
+pub const PIXEL_4x2: crate::stdlib::C2Rust_Unnamed_7 = 8;
+pub const PIXEL_2x8: crate::stdlib::C2Rust_Unnamed_7 = 9;
+pub const PIXEL_2x4: crate::stdlib::C2Rust_Unnamed_7 = 10;
+pub const PIXEL_2x2: crate::stdlib::C2Rust_Unnamed_7 = 11;
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct C2Rust_Unnamed_288 {
+pub struct C2Rust_Unnamed_18 {
     pub w: crate::stdlib::uint8_t,
     pub h: crate::stdlib::uint8_t,
 }

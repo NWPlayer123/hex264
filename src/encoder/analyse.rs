@@ -374,52 +374,52 @@ pub mod cabac_h {
     }
 }
 pub mod pixel_h {
-    pub static mut x264_pixel_size: [crate::src::common::pixel::C2Rust_Unnamed_288; 12] = [
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+    pub static mut x264_pixel_size: [crate::src::common::pixel::C2Rust_Unnamed_18; 12] = [
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 16 as crate::stdlib::uint8_t,
             h: 16 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 16 as crate::stdlib::uint8_t,
             h: 8 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 8 as crate::stdlib::uint8_t,
             h: 16 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 8 as crate::stdlib::uint8_t,
             h: 8 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 8 as crate::stdlib::uint8_t,
             h: 4 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 4 as crate::stdlib::uint8_t,
             h: 8 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 4 as crate::stdlib::uint8_t,
             h: 4 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 4 as crate::stdlib::uint8_t,
             h: 16 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 4 as crate::stdlib::uint8_t,
             h: 2 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 2 as crate::stdlib::uint8_t,
             h: 8 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 2 as crate::stdlib::uint8_t,
             h: 4 as crate::stdlib::uint8_t,
         },
-        crate::src::common::pixel::C2Rust_Unnamed_288 {
+        crate::src::common::pixel::C2Rust_Unnamed_18 {
             w: 2 as crate::stdlib::uint8_t,
             h: 2 as crate::stdlib::uint8_t,
         },

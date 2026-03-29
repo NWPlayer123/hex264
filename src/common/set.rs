@@ -30,9 +30,9 @@ pub struct x264_sps_t {
     pub b_mb_adaptive_frame_field: ::core::ffi::c_int,
     pub b_direct8x8_inference: ::core::ffi::c_int,
     pub b_crop: ::core::ffi::c_int,
-    pub crop: crate::src::common::set::C2Rust_Unnamed_26,
+    pub crop: crate::src::common::set::C2Rust_Unnamed_19,
     pub b_vui: ::core::ffi::c_int,
-    pub vui: crate::src::common::set::C2Rust_Unnamed_24,
+    pub vui: crate::src::common::set::C2Rust_Unnamed_20,
     pub b_qpprime_y_zero_transform_bypass: ::core::ffi::c_int,
     pub i_chroma_format_idc: ::core::ffi::c_int,
     pub b_avcintra_hd: ::core::ffi::c_int,
@@ -42,7 +42,7 @@ pub struct x264_sps_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct C2Rust_Unnamed_26 {
+pub struct C2Rust_Unnamed_19 {
     pub i_left: ::core::ffi::c_int,
     pub i_right: ::core::ffi::c_int,
     pub i_top: ::core::ffi::c_int,
@@ -50,7 +50,7 @@ pub struct C2Rust_Unnamed_26 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct C2Rust_Unnamed_24 {
+pub struct C2Rust_Unnamed_20 {
     pub b_aspect_ratio_info_present: ::core::ffi::c_int,
     pub i_sar_width: ::core::ffi::c_int,
     pub i_sar_height: ::core::ffi::c_int,
@@ -72,7 +72,7 @@ pub struct C2Rust_Unnamed_24 {
     pub b_fixed_frame_rate: ::core::ffi::c_int,
     pub b_nal_hrd_parameters_present: ::core::ffi::c_int,
     pub b_vcl_hrd_parameters_present: ::core::ffi::c_int,
-    pub hrd: crate::src::common::set::C2Rust_Unnamed_25,
+    pub hrd: crate::src::common::set::C2Rust_Unnamed_21,
     pub b_pic_struct_present: ::core::ffi::c_int,
     pub b_bitstream_restriction: ::core::ffi::c_int,
     pub b_motion_vectors_over_pic_boundaries: ::core::ffi::c_int,
@@ -85,7 +85,7 @@ pub struct C2Rust_Unnamed_24 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct C2Rust_Unnamed_25 {
+pub struct C2Rust_Unnamed_21 {
     pub i_cpb_cnt: ::core::ffi::c_int,
     pub i_bit_rate_scale: ::core::ffi::c_int,
     pub i_cpb_size_scale: ::core::ffi::c_int,

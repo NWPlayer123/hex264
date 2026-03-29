@@ -166,7 +166,7 @@ pub struct x264_ratecontrol_t {
     pub lmin: [::core::ffi::c_double; 3],
     pub lmax: [::core::ffi::c_double; 3],
     pub lstep: ::core::ffi::c_double,
-    pub mbtree: C2Rust_Unnamed_444,
+    pub mbtree: C2Rust_Unnamed_23,
     pub frame_size_estimated: ::core::ffi::c_float,
     pub bits_so_far: ::core::ffi::c_float,
     pub frame_size_maximum: ::core::ffi::c_double,
@@ -197,7 +197,7 @@ pub struct predictor_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct C2Rust_Unnamed_444 {
+pub struct C2Rust_Unnamed_23 {
     pub qp_buffer: [*mut crate::stdlib::uint16_t; 2],
     pub qpbuf_pos: ::core::ffi::c_int,
     pub src_mb_count: ::core::ffi::c_int,
