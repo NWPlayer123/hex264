@@ -1,1978 +1,5683 @@
-use core::ffi::{c_int, c_ulonglong};
+// =============== BEGIN predict_h ================
+pub type x264_predict_t =
+    Option<unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> ()>;
 
-use crate::base_h::x264_union64_t;
-use crate::common_h::{pixel, pixel4, x264_clip_pixel, FDEC_STRIDE};
-use crate::macroblock_h::{pack16to32, pack32to64, MB_LEFT, MB_TOP, MB_TOPLEFT, MB_TOPRIGHT};
-use crate::predict_h::{
-    x264_predict8x8_t, x264_predict_8x8_filter_t, x264_predict_t, I_PRED_16x16_DC,
-    I_PRED_16x16_DC_128, I_PRED_16x16_DC_LEFT, I_PRED_16x16_DC_TOP, I_PRED_16x16_H, I_PRED_16x16_P,
-    I_PRED_16x16_V, I_PRED_4x4_DC, I_PRED_4x4_DC_128, I_PRED_4x4_DC_LEFT, I_PRED_4x4_DC_TOP,
-    I_PRED_4x4_DDL, I_PRED_4x4_DDR, I_PRED_4x4_H, I_PRED_4x4_HD, I_PRED_4x4_HU, I_PRED_4x4_V,
-    I_PRED_4x4_VL, I_PRED_4x4_VR, I_PRED_CHROMA_DC, I_PRED_CHROMA_DC_128, I_PRED_CHROMA_DC_LEFT,
-    I_PRED_CHROMA_DC_TOP, I_PRED_CHROMA_H, I_PRED_CHROMA_P, I_PRED_CHROMA_V,
-};
-use crate::stdint_uintn_h::{uint32_t, uint64_t};
+pub type x264_predict8x8_t = Option<
+    unsafe extern "C" fn(
+        *mut crate::src::common::common::pixel,
+        *mut crate::src::common::common::pixel,
+    ) -> (),
+>;
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
-#[repr(usize)]
-pub enum Intra8x8Pred {
-    Vertical = 0,
-    Horizontal = 1,
-    Dc = 2,
-    DiagonalDownLeft = 3,
-    DiagonalDownRight = 4,
-    VerticalRight = 5,
-    HorizontalDown = 6,
-    VerticalLeft = 7,
-    HorizontalUp = 8,
+pub type x264_predict_8x8_filter_t = Option<
+    unsafe extern "C" fn(
+        *mut crate::src::common::common::pixel,
+        *mut crate::src::common::common::pixel,
+        ::core::ffi::c_int,
+        ::core::ffi::c_int,
+    ) -> (),
+>;
 
-    // Fallback modes when certain neighbors are unavailable
-    DcLeft = 9,
-    DcTop = 10,
-    Dc128 = 11,
-}
+pub type intra_chroma_pred_e = ::core::ffi::c_uint;
 
-#[no_mangle]
-#[c2rust::src_loc = "67:1"]
-unsafe extern "C" fn x264_10_predict_16x16_dc_c(mut src: *mut pixel) {
-    let mut dc: c_int = 0;
-    let mut i: c_int = 0;
-    while i < 16 {
-        dc += *src.offset((-1 + i * FDEC_STRIDE) as isize) as c_int;
-        dc += *src.offset((i - FDEC_STRIDE) as isize) as c_int;
-        i += 1;
-    }
-    let mut dcsplat: pixel4 =
-        ((dc + 16 >> 5) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut i_0: c_int = 0;
-    while i_0 < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(8) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(12 as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i_0 += 1;
-    }
-}
-#[c2rust::src_loc = "80:1"]
-unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut pixel) {
-    let mut dc: c_int = 0;
-    let mut i: c_int = 0;
-    while i < 16 {
-        dc += *src.offset((-1 + i * FDEC_STRIDE) as isize) as c_int;
-        i += 1;
-    }
-    let mut dcsplat: pixel4 =
-        ((dc + 8 >> 4) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut i_0: c_int = 0;
-    while i_0 < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(8) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(12 as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i_0 += 1;
-    }
-}
-#[c2rust::src_loc = "90:1"]
-unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut pixel) {
-    let mut dc: c_int = 0;
-    let mut i: c_int = 0;
-    while i < 16 {
-        dc += *src.offset((i - FDEC_STRIDE) as isize) as c_int;
-        i += 1;
-    }
-    let mut dcsplat: pixel4 =
-        ((dc + 8 >> 4) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut i_0: c_int = 0;
-    while i_0 < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(8) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        (*(src.offset(12 as isize) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i_0 += 1;
-    }
-}
-#[c2rust::src_loc = "100:1"]
-unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut pixel) {
-    let mut i: c_int = 0;
-    while i < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        (*(src.offset(8) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        (*(src.offset(12 as isize) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "104:1"]
-unsafe extern "C" fn x264_10_predict_16x16_h_c(mut src: *mut pixel) {
-    let mut i: c_int = 0;
-    while i < 16 {
-        let v: pixel4 = (*src.offset(-1 as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-        (*(src.offset(0) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(8) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(12 as isize) as *mut x264_union64_t)).i = v as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "116:1"]
-unsafe extern "C" fn x264_10_predict_16x16_v_c(mut src: *mut pixel) {
-    let mut v0: pixel4 =
-        (*(&mut *src.offset((0 - 32) as isize) as *mut pixel as *mut x264_union64_t)).i as pixel4;
-    let mut v1: pixel4 =
-        (*(&mut *src.offset((4 - 32) as isize) as *mut pixel as *mut x264_union64_t)).i as pixel4;
-    let mut v2: pixel4 =
-        (*(&mut *src.offset((8 - 32) as isize) as *mut pixel as *mut x264_union64_t)).i as pixel4;
-    let mut v3: pixel4 =
-        (*(&mut *src.offset((12 - 32) as isize) as *mut pixel as *mut x264_union64_t)).i as pixel4;
-    let mut i: c_int = 0;
-    while i < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = v0 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = v1 as uint64_t;
-        (*(src.offset(8) as *mut x264_union64_t)).i = v2 as uint64_t;
-        (*(src.offset(12 as isize) as *mut x264_union64_t)).i = v3 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "132:1"]
-unsafe extern "C" fn x264_10_predict_16x16_p_c(mut src: *mut pixel) {
-    let mut H: c_int = 0;
-    let mut V: c_int = 0;
-    let mut i: c_int = 0;
-    while i <= 7 {
-        H += (i + 1)
-            * (*src.offset((8 + i - FDEC_STRIDE) as isize) as c_int
-                - *src.offset((6 - i - FDEC_STRIDE) as isize) as c_int);
-        V += (i + 1)
-            * (*src.offset((-1 + (8 + i) * FDEC_STRIDE) as isize) as c_int
-                - *src.offset((-1 + (6 - i) * FDEC_STRIDE) as isize) as c_int);
-        i += 1;
-    }
-    let mut a: c_int = 16
-        * (*src.offset((-1 + 15 * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((15 - FDEC_STRIDE) as isize) as c_int);
-    let mut b: c_int = 5 * H + 32 >> 6;
-    let mut c: c_int = 5 * V + 32 >> 6;
-    let mut i00: c_int = a - b * 7 - c * 7 + 16;
-    let mut y: c_int = 0;
-    while y < 16 {
-        let mut pix: c_int = i00;
-        let mut x: c_int = 0;
-        while x < 16 {
-            *src.offset(x as isize) = x264_clip_pixel(pix >> 5);
-            pix += b;
-            x += 1;
+pub const I_PRED_CHROMA_DC: crate::src::common::predict::intra_chroma_pred_e = 0;
+
+pub const I_PRED_CHROMA_H: crate::src::common::predict::intra_chroma_pred_e = 1;
+
+pub const I_PRED_CHROMA_V: crate::src::common::predict::intra_chroma_pred_e = 2;
+
+pub const I_PRED_CHROMA_P: crate::src::common::predict::intra_chroma_pred_e = 3;
+
+pub const I_PRED_CHROMA_DC_LEFT: crate::src::common::predict::intra_chroma_pred_e = 4;
+
+pub const I_PRED_CHROMA_DC_TOP: crate::src::common::predict::intra_chroma_pred_e = 5;
+
+pub const I_PRED_CHROMA_DC_128: crate::src::common::predict::intra_chroma_pred_e = 6;
+
+pub type intra16x16_pred_e = ::core::ffi::c_uint;
+
+pub const I_PRED_16x16_V: crate::src::common::predict::intra16x16_pred_e = 0;
+
+pub const I_PRED_16x16_H: crate::src::common::predict::intra16x16_pred_e = 1;
+
+pub const I_PRED_16x16_DC: crate::src::common::predict::intra16x16_pred_e = 2;
+
+pub const I_PRED_16x16_P: crate::src::common::predict::intra16x16_pred_e = 3;
+
+pub const I_PRED_16x16_DC_LEFT: crate::src::common::predict::intra16x16_pred_e = 4;
+
+pub const I_PRED_16x16_DC_TOP: crate::src::common::predict::intra16x16_pred_e = 5;
+
+pub const I_PRED_16x16_DC_128: crate::src::common::predict::intra16x16_pred_e = 6;
+
+pub type intra4x4_pred_e = ::core::ffi::c_uint;
+
+pub const I_PRED_4x4_V: crate::src::common::predict::intra4x4_pred_e = 0;
+
+pub const I_PRED_4x4_H: crate::src::common::predict::intra4x4_pred_e = 1;
+
+pub const I_PRED_4x4_DC: crate::src::common::predict::intra4x4_pred_e = 2;
+
+pub const I_PRED_4x4_DDL: crate::src::common::predict::intra4x4_pred_e = 3;
+
+pub const I_PRED_4x4_DDR: crate::src::common::predict::intra4x4_pred_e = 4;
+
+pub const I_PRED_4x4_VR: crate::src::common::predict::intra4x4_pred_e = 5;
+
+pub const I_PRED_4x4_HD: crate::src::common::predict::intra4x4_pred_e = 6;
+
+pub const I_PRED_4x4_VL: crate::src::common::predict::intra4x4_pred_e = 7;
+
+pub const I_PRED_4x4_HU: crate::src::common::predict::intra4x4_pred_e = 8;
+
+pub const I_PRED_4x4_DC_LEFT: crate::src::common::predict::intra4x4_pred_e = 9;
+
+pub const I_PRED_4x4_DC_TOP: crate::src::common::predict::intra4x4_pred_e = 10;
+
+pub const I_PRED_4x4_DC_128: crate::src::common::predict::intra4x4_pred_e = 11;
+
+pub type intra8x8_pred_e = ::core::ffi::c_uint;
+
+pub const I_PRED_8x8_V: crate::src::common::predict::intra8x8_pred_e = 0;
+
+pub const I_PRED_8x8_H: crate::src::common::predict::intra8x8_pred_e = 1;
+
+pub const I_PRED_8x8_DC: crate::src::common::predict::intra8x8_pred_e = 2;
+
+pub const I_PRED_8x8_DDL: crate::src::common::predict::intra8x8_pred_e = 3;
+
+pub const I_PRED_8x8_DDR: crate::src::common::predict::intra8x8_pred_e = 4;
+
+pub const I_PRED_8x8_VR: crate::src::common::predict::intra8x8_pred_e = 5;
+
+pub const I_PRED_8x8_HD: crate::src::common::predict::intra8x8_pred_e = 6;
+
+pub const I_PRED_8x8_VL: crate::src::common::predict::intra8x8_pred_e = 7;
+
+pub const I_PRED_8x8_HU: crate::src::common::predict::intra8x8_pred_e = 8;
+
+pub const I_PRED_8x8_DC_LEFT: crate::src::common::predict::intra8x8_pred_e = 9;
+
+pub const I_PRED_8x8_DC_TOP: crate::src::common::predict::intra8x8_pred_e = 10;
+
+pub const I_PRED_8x8_DC_128: crate::src::common::predict::intra8x8_pred_e = 11;
+
+pub mod common_h {
+
+    #[inline(always)]
+
+    pub unsafe extern "C" fn x264_clip_pixel(
+        mut x: ::core::ffi::c_int,
+    ) -> crate::src::common::common::pixel {
+        unsafe {
+            return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+                -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
+            } else {
+                x
+            }) as crate::src::common::common::pixel;
         }
-        src = src.offset(FDEC_STRIDE as isize);
-        i00 += c;
-        y += 1;
     }
 }
-#[c2rust::src_loc = "167:1"]
-unsafe extern "C" fn predict_8x8c_dc_128_c(mut src: *mut pixel) {
-    let mut y: c_int = 0;
-    while y < 8 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "176:1"]
-unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut pixel) {
-    let mut dc0: c_int = 0;
-    let mut dc1: c_int = 0;
-    let mut y: c_int = 0;
-    while y < 4 {
-        dc0 += *src.offset((y * FDEC_STRIDE - 1) as isize) as c_int;
-        dc1 += *src.offset(((y + 4) * FDEC_STRIDE - 1) as isize) as c_int;
-        y += 1;
-    }
-    let mut dc0splat: pixel4 =
-        ((dc0 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc1splat: pixel4 =
-        ((dc1 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y_0: c_int = 0;
-    while y_0 < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc0splat as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc0splat as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y_0 += 1;
-    }
-    let mut y_1: c_int = 0;
-    while y_1 < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc1splat as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc1splat as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y_1 += 1;
-    }
-}
-#[c2rust::src_loc = "202:1"]
-unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut pixel) {
-    let mut dc0: c_int = 0;
-    let mut dc1: c_int = 0;
-    let mut x: c_int = 0;
-    while x < 4 {
-        dc0 += *src.offset((x - FDEC_STRIDE) as isize) as c_int;
-        dc1 += *src.offset((x + 4 - FDEC_STRIDE) as isize) as c_int;
-        x += 1;
-    }
-    let mut dc0splat: pixel4 =
-        ((dc0 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc1splat: pixel4 =
-        ((dc1 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y: c_int = 0;
-    while y < 8 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc0splat as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc1splat as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "221:1"]
-unsafe extern "C" fn x264_10_predict_8x8c_dc_c(mut src: *mut pixel) {
-    let mut s0: c_int = 0;
-    let mut s1: c_int = 0;
-    let mut s2: c_int = 0;
-    let mut s3: c_int = 0;
-    let mut i: c_int = 0;
-    while i < 4 {
-        s0 += *src.offset((i - FDEC_STRIDE) as isize) as c_int;
-        s1 += *src.offset((i + 4 - FDEC_STRIDE) as isize) as c_int;
-        s2 += *src.offset((-1 + i * FDEC_STRIDE) as isize) as c_int;
-        s3 += *src.offset((-1 + (i + 4) * FDEC_STRIDE) as isize) as c_int;
-        i += 1;
-    }
-    let mut dc0: pixel4 =
-        ((s0 + s2 + 4 >> 3) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc1: pixel4 =
-        ((s1 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc2: pixel4 =
-        ((s3 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc3: pixel4 =
-        ((s1 + s3 + 4 >> 3) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y: c_int = 0;
-    while y < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc0 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc1 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-    let mut y_0: c_int = 0;
-    while y_0 < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc2 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc3 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y_0 += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "260:1"]
-unsafe extern "C" fn x264_10_predict_8x8c_h_c(mut src: *mut pixel) {
-    let mut i: c_int = 0;
-    while i < 8 {
-        let mut v: pixel4 = (*src.offset(-1 as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-        (*(src.offset(0) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = v as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "270:1"]
-unsafe extern "C" fn x264_10_predict_8x8c_v_c(mut src: *mut pixel) {
-    let mut v0: pixel4 =
-        (*(src.offset(0).offset(-(32 as isize)) as *mut x264_union64_t)).i as pixel4;
-    let mut v1: pixel4 =
-        (*(src.offset(4).offset(-(32 as isize)) as *mut x264_union64_t)).i as pixel4;
-    let mut i: c_int = 0;
-    while i < 8 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = v0 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = v1 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "282:1"]
-unsafe extern "C" fn x264_10_predict_8x8c_p_c(mut src: *mut pixel) {
-    let mut H: c_int = 0;
-    let mut V: c_int = 0;
-    let mut i: c_int = 0;
-    while i < 4 {
-        H += (i + 1)
-            * (*src.offset((4 + i - FDEC_STRIDE) as isize) as c_int
-                - *src.offset((2 - i - FDEC_STRIDE) as isize) as c_int);
-        V += (i + 1)
-            * (*src.offset((-1 + (i + 4) * FDEC_STRIDE) as isize) as c_int
-                - *src.offset((-1 + (2 - i) * FDEC_STRIDE) as isize) as c_int);
-        i += 1;
-    }
-    let mut a: c_int = 16
-        * (*src.offset((-1 + 7 * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((7 - FDEC_STRIDE) as isize) as c_int);
-    let mut b: c_int = 17 * H + 16 >> 5;
-    let mut c: c_int = 17 * V + 16 >> 5;
-    let mut i00: c_int = a - 3 * b - 3 * c + 16;
-    let mut y: c_int = 0;
-    while y < 8 {
-        let mut pix: c_int = i00;
-        let mut x: c_int = 0;
-        while x < 8 {
-            *src.offset(x as isize) = x264_clip_pixel(pix >> 5);
-            pix += b;
-            x += 1;
+
+pub mod macroblock_h {
+
+    #[inline(always)]
+
+    pub unsafe extern "C" fn pack16to32(
+        mut a: crate::stdlib::uint32_t,
+        mut b: crate::stdlib::uint32_t,
+    ) -> crate::stdlib::uint32_t {
+        unsafe {
+            return a.wrapping_add(b << 16 as ::core::ffi::c_int);
         }
-        src = src.offset(FDEC_STRIDE as isize);
-        i00 += c;
-        y += 1;
+    }
+    #[inline(always)]
+
+    pub unsafe extern "C" fn pack8to16(
+        mut a: crate::stdlib::uint32_t,
+        mut b: crate::stdlib::uint32_t,
+    ) -> crate::stdlib::uint32_t {
+        unsafe {
+            return a.wrapping_add(b << 8 as ::core::ffi::c_int);
+        }
     }
 }
-#[c2rust::src_loc = "314:1"]
-unsafe extern "C" fn predict_8x16c_dc_128_c(mut src: *mut pixel) {
-    let mut y: c_int = 0;
-    while y < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
+
+pub use crate::internal::BIT_DEPTH;
+pub use crate::src::common::base::x264_union32_t;
+pub use crate::src::common::common::pixel;
+pub use crate::src::common::common::pixel4;
+pub use crate::src::common::common::FDEC_STRIDE;
+pub use crate::src::common::common::PIXEL_MAX;
+pub use crate::src::common::predict::common_h::x264_clip_pixel;
+
+pub use crate::src::common::macroblock::macroblock_position_e;
+pub use crate::src::common::macroblock::ALL_NEIGHBORS;
+pub use crate::src::common::macroblock::MB_LEFT;
+pub use crate::src::common::macroblock::MB_PRIVATE;
+pub use crate::src::common::macroblock::MB_TOP;
+pub use crate::src::common::macroblock::MB_TOPLEFT;
+pub use crate::src::common::macroblock::MB_TOPRIGHT;
+pub use crate::src::common::predict::macroblock_h::pack16to32;
+pub use crate::src::common::predict::macroblock_h::pack8to16;
+pub use crate::stdlib::__uint16_t;
+pub use crate::stdlib::__uint32_t;
+pub use crate::stdlib::__uint8_t;
+pub use crate::stdlib::uint16_t;
+pub use crate::stdlib::uint32_t;
+pub use crate::stdlib::uint8_t;
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
+    mut src: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut dc: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            dc += *src.offset(
+                (-(1 as ::core::ffi::c_int) + i * crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
+            dc += *src.offset((i - crate::src::common::common::FDEC_STRIDE) as isize)
+                as ::core::ffi::c_int;
+            i += 1;
+        }
+        let mut dcsplat: crate::src::common::common::pixel4 = ((dc + 16 as ::core::ffi::c_int
+            >> 5 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i_0 < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(8 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(12 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i_0 += 1;
+        }
     }
 }
-#[c2rust::src_loc = "323:1"]
-unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut pixel) {
-    let mut i: c_int = 0;
-    while i < 4 {
-        let mut dc: c_int = 0;
-        let mut y: c_int = 0;
-        while y < 4 {
-            dc += *src.offset((y * FDEC_STRIDE - 1) as isize) as c_int;
+
+unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            dc += *src.offset(
+                (-(1 as ::core::ffi::c_int) + i * crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
+            i += 1;
+        }
+        let mut dcsplat: crate::src::common::common::pixel4 = ((dc + 8 as ::core::ffi::c_int
+            >> 4 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i_0 < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(8 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(12 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i_0 += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            dc += *src.offset((i - crate::src::common::common::FDEC_STRIDE) as isize)
+                as ::core::ffi::c_int;
+            i += 1;
+        }
+        let mut dcsplat: crate::src::common::common::pixel4 = ((dc + 8 as ::core::ffi::c_int
+            >> 4 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i_0 < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(8 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            (*(src.offset(12 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dcsplat as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i_0 += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            (*(src.offset(8 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            (*(src.offset(12 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i += 1;
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_16x16_h_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            let v: crate::src::common::common::pixel4 = (*src
+                .offset(-(1 as ::core::ffi::c_int) as isize)
+                as crate::src::common::common::pixel4)
+                .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            (*(src.offset(8 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            (*(src.offset(12 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i += 1;
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_16x16_v_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut v0: crate::src::common::common::pixel4 =
+            (*(src.offset((0 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize)
+                as *mut crate::src::common::common::pixel
+                as *mut crate::src::common::base::x264_union32_t))
+                .i as crate::src::common::common::pixel4;
+        let mut v1: crate::src::common::common::pixel4 =
+            (*(src.offset((4 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize)
+                as *mut crate::src::common::common::pixel
+                as *mut crate::src::common::base::x264_union32_t))
+                .i as crate::src::common::common::pixel4;
+        let mut v2: crate::src::common::common::pixel4 =
+            (*(src.offset((8 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize)
+                as *mut crate::src::common::common::pixel
+                as *mut crate::src::common::base::x264_union32_t))
+                .i as crate::src::common::common::pixel4;
+        let mut v3: crate::src::common::common::pixel4 =
+            (*(src.offset((12 as ::core::ffi::c_int - 32 as ::core::ffi::c_int) as isize)
+                as *mut crate::src::common::common::pixel
+                as *mut crate::src::common::base::x264_union32_t))
+                .i as crate::src::common::common::pixel4;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v0 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v1 as crate::stdlib::uint32_t;
+            (*(src.offset(8 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v2 as crate::stdlib::uint32_t;
+            (*(src.offset(12 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v3 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i += 1;
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut H: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut V: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i <= 7 as ::core::ffi::c_int {
+            H += (i + 1 as ::core::ffi::c_int)
+                * (*src.offset(
+                    (8 as ::core::ffi::c_int + i - crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    - *src.offset(
+                        (6 as ::core::ffi::c_int - i - crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int);
+            V += (i + 1 as ::core::ffi::c_int)
+                * (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (8 as ::core::ffi::c_int + i) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    - *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (6 as ::core::ffi::c_int - i)
+                                * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int);
+            i += 1;
+        }
+        let mut a: ::core::ffi::c_int = 16 as ::core::ffi::c_int
+            * (*src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + 15 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int
+                + *src.offset(
+                    (15 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+                ) as ::core::ffi::c_int);
+        let mut b: ::core::ffi::c_int =
+            5 as ::core::ffi::c_int * H + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int;
+        let mut c: ::core::ffi::c_int =
+            5 as ::core::ffi::c_int * V + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int;
+        let mut i00: ::core::ffi::c_int =
+            a - b * 7 as ::core::ffi::c_int - c * 7 as ::core::ffi::c_int
+                + 16 as ::core::ffi::c_int;
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 16 as ::core::ffi::c_int {
+            let mut pix: ::core::ffi::c_int = i00;
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < 16 as ::core::ffi::c_int {
+                *src.offset(x as isize) = x264_clip_pixel(pix >> 5 as ::core::ffi::c_int);
+                pix += b;
+                x += 1;
+            }
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i00 += c;
             y += 1;
         }
-        let mut dcsplat: pixel4 =
-            ((dc + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-        let mut y_0: c_int = 0;
-        while y_0 < 4 {
-            (*(src.offset(0) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-            (*(src.offset(4) as *mut x264_union64_t)).i = dcsplat as uint64_t;
-            src = src.offset(FDEC_STRIDE as isize);
+    }
+}
+
+unsafe extern "C" fn predict_8x8c_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut dc1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 4 as ::core::ffi::c_int {
+            dc0 += *src.offset(
+                (y * crate::src::common::common::FDEC_STRIDE - 1 as ::core::ffi::c_int) as isize,
+            ) as ::core::ffi::c_int;
+            dc1 += *src.offset(
+                ((y + 4 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE
+                    - 1 as ::core::ffi::c_int) as isize,
+            ) as ::core::ffi::c_int;
+            y += 1;
+        }
+        let mut dc0splat: crate::src::common::common::pixel4 = ((dc0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc1splat: crate::src::common::common::pixel4 = ((dc1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_0 < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc0splat as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc0splat as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y_0 += 1;
         }
-        i += 1;
+        let mut y_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_1 < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc1splat as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc1splat as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y_1 += 1;
+        }
     }
 }
-#[c2rust::src_loc = "342:1"]
-unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut pixel) {
-    let mut dc0: c_int = 0;
-    let mut dc1: c_int = 0;
-    let mut x: c_int = 0;
-    while x < 4 {
-        dc0 += *src.offset((x - FDEC_STRIDE) as isize) as c_int;
-        dc1 += *src.offset((x + 4 - FDEC_STRIDE) as isize) as c_int;
-        x += 1;
-    }
-    let mut dc0splat: pixel4 =
-        ((dc0 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc1splat: pixel4 =
-        ((dc1 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y: c_int = 0;
-    while y < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc0splat as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc1splat as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "361:1"]
-unsafe extern "C" fn x264_10_predict_8x16c_dc_c(mut src: *mut pixel) {
-    let mut s0: c_int = 0;
-    let mut s1: c_int = 0;
-    let mut s2: c_int = 0;
-    let mut s3: c_int = 0;
-    let mut s4: c_int = 0;
-    let mut s5: c_int = 0;
-    let mut i: c_int = 0;
-    while i < 4 {
-        s0 += *src.offset((i + 0 - FDEC_STRIDE) as isize) as c_int;
-        s1 += *src.offset((i + 4 - FDEC_STRIDE) as isize) as c_int;
-        s2 += *src.offset((-1 + (i + 0) * FDEC_STRIDE) as isize) as c_int;
-        s3 += *src.offset((-1 + (i + 4) * FDEC_STRIDE) as isize) as c_int;
-        s4 += *src.offset((-1 + (i + 8) * FDEC_STRIDE) as isize) as c_int;
-        s5 += *src.offset((-1 + (i + 12) * FDEC_STRIDE) as isize) as c_int;
-        i += 1;
-    }
-    let mut dc0: pixel4 =
-        ((s0 + s2 + 4 >> 3) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc1: pixel4 =
-        ((s1 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc2: pixel4 =
-        ((s3 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc3: pixel4 =
-        ((s1 + s3 + 4 >> 3) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc4: pixel4 =
-        ((s4 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc5: pixel4 =
-        ((s1 + s4 + 4 >> 3) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc6: pixel4 =
-        ((s5 + 2 >> 2) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut dc7: pixel4 =
-        ((s1 + s5 + 4 >> 3) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y: c_int = 0;
-    while y < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc0 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc1 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-    let mut y_0: c_int = 0;
-    while y_0 < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc2 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc3 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y_0 += 1;
-    }
-    let mut y_1: c_int = 0;
-    while y_1 < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc4 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc5 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y_1 += 1;
-    }
-    let mut y_2: c_int = 0;
-    while y_2 < 4 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc6 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc7 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y_2 += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "421:1"]
-unsafe extern "C" fn x264_10_predict_8x16c_h_c(mut src: *mut pixel) {
-    let mut i: c_int = 0;
-    while i < 16 {
-        let mut v: pixel4 = (*src.offset(-1 as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-        (*(src.offset(0) as *mut x264_union64_t)).i = v as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = v as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "431:1"]
-unsafe extern "C" fn x264_10_predict_8x16c_v_c(mut src: *mut pixel) {
-    let mut v0: pixel4 =
-        (*(src.offset(0).offset(-(32 as isize)) as *mut x264_union64_t)).i as pixel4;
-    let mut v1: pixel4 =
-        (*(src.offset(4).offset(-(32 as isize)) as *mut x264_union64_t)).i as pixel4;
-    let mut i: c_int = 0;
-    while i < 16 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = v0 as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = v1 as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "443:1"]
-unsafe extern "C" fn x264_10_predict_8x16c_p_c(mut src: *mut pixel) {
-    let mut H: c_int = 0;
-    let mut V: c_int = 0;
-    let mut i: c_int = 0;
-    while i < 4 {
-        H += (i + 1)
-            * (*src.offset((4 + i - FDEC_STRIDE) as isize) as c_int
-                - *src.offset((2 - i - FDEC_STRIDE) as isize) as c_int);
-        i += 1;
-    }
-    let mut i_0: c_int = 0;
-    while i_0 < 8 {
-        V += (i_0 + 1)
-            * (*src.offset((-1 + (i_0 + 8) * FDEC_STRIDE) as isize) as c_int
-                - *src.offset((-1 + (6 - i_0) * FDEC_STRIDE) as isize) as c_int);
-        i_0 += 1;
-    }
-    let mut a: c_int = 16
-        * (*src.offset((-1 + 15 * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((7 - FDEC_STRIDE) as isize) as c_int);
-    let mut b: c_int = 17 * H + 16 >> 5;
-    let mut c: c_int = 5 * V + 32 >> 6;
-    let mut i00: c_int = a - 3 * b - 7 * c + 16;
-    let mut y: c_int = 0;
-    while y < 16 {
-        let mut pix: c_int = i00;
-        let mut x: c_int = 0;
-        while x < 8 {
-            *src.offset(x as isize) = x264_clip_pixel(pix >> 5);
-            pix += b;
+
+unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut dc1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while x < 4 as ::core::ffi::c_int {
+            dc0 += *src.offset((x - crate::src::common::common::FDEC_STRIDE) as isize)
+                as ::core::ffi::c_int;
+            dc1 += *src.offset(
+                (x + 4 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
             x += 1;
         }
-        src = src.offset(FDEC_STRIDE as isize);
-        i00 += c;
-        y += 1;
+        let mut dc0splat: crate::src::common::common::pixel4 = ((dc0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc1splat: crate::src::common::common::pixel4 = ((dc1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc0splat as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc1splat as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
     }
 }
-#[c2rust::src_loc = "481:1"]
-unsafe extern "C" fn predict_4x4_dc_128_c(mut src: *mut pixel) {
-    let ref mut fresh47 =
-        (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh47 =
-        (((1) << 10 - 1) as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    let ref mut fresh48 =
-        (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh48 = *fresh47;
-    let ref mut fresh49 =
-        (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh49 = *fresh48;
-    (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh49;
-}
-#[c2rust::src_loc = "485:1"]
-unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut pixel) {
-    let mut dc: pixel4 = ((*src.offset((-1 + 0 * 32) as isize) as c_int
-        + *src.offset((-1 + 1 * 32) as isize) as c_int
-        + *src.offset((-1 + 2 * 32) as isize) as c_int
-        + *src.offset((-1 + 3 * 32) as isize) as c_int
-        + 2
-        >> 2) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let ref mut fresh53 =
-        (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh53 = dc as uint64_t;
-    let ref mut fresh54 =
-        (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh54 = *fresh53;
-    let ref mut fresh55 =
-        (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh55 = *fresh54;
-    (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh55;
-}
-#[c2rust::src_loc = "490:1"]
-unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut pixel) {
-    let mut dc: pixel4 = ((*src.offset((0 + -1 * 32) as isize) as c_int
-        + *src.offset((1 + -1 * 32) as isize) as c_int
-        + *src.offset((2 + -1 * 32) as isize) as c_int
-        + *src.offset((3 + -1 * 32) as isize) as c_int
-        + 2
-        >> 2) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let ref mut fresh50 =
-        (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh50 = dc as uint64_t;
-    let ref mut fresh51 =
-        (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh51 = *fresh50;
-    let ref mut fresh52 =
-        (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh52 = *fresh51;
-    (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh52;
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut s0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 4 as ::core::ffi::c_int {
+            s0 += *src.offset((i - crate::src::common::common::FDEC_STRIDE) as isize)
+                as ::core::ffi::c_int;
+            s1 += *src.offset(
+                (i + 4 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
+            s2 += *src.offset(
+                (-(1 as ::core::ffi::c_int) + i * crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
+            s3 += *src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + (i + 4 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int;
+            i += 1;
+        }
+        let mut dc0: crate::src::common::common::pixel4 = ((s0 + s2 + 4 as ::core::ffi::c_int
+            >> 3 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc1: crate::src::common::common::pixel4 = ((s1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc2: crate::src::common::common::pixel4 = ((s3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc3: crate::src::common::common::pixel4 = ((s1 + s3 + 4 as ::core::ffi::c_int
+            >> 3 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc0 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc1 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+        let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_0 < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc2 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc3 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y_0 += 1;
+        }
+    }
 }
 #[no_mangle]
-#[c2rust::src_loc = "495:1"]
-unsafe extern "C" fn x264_10_predict_4x4_dc_c(mut src: *mut pixel) {
-    let mut dc: pixel4 = ((*src.offset((-1 + 0 * 32) as isize) as c_int
-        + *src.offset((-1 + 1 * 32) as isize) as c_int
-        + *src.offset((-1 + 2 * 32) as isize) as c_int
-        + *src.offset((-1 + 3 * 32) as isize) as c_int
-        + *src.offset((0 + -1 * 32) as isize) as c_int
-        + *src.offset((1 + -1 * 32) as isize) as c_int
-        + *src.offset((2 + -1 * 32) as isize) as c_int
-        + *src.offset((3 + -1 * 32) as isize) as c_int
-        + 4
-        >> 3) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let ref mut fresh8 =
-        (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh8 = dc as uint64_t;
-    let ref mut fresh9 =
-        (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh9 = *fresh8;
-    let ref mut fresh10 =
-        (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh10 = *fresh9;
-    (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh10;
+
+pub unsafe extern "C" fn x264_8_predict_8x8c_h_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 8 as ::core::ffi::c_int {
+            let mut v: crate::src::common::common::pixel4 = (*src
+                .offset(-(1 as ::core::ffi::c_int) as isize)
+                as crate::src::common::common::pixel4)
+                .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i += 1;
+        }
+    }
 }
 #[no_mangle]
-#[c2rust::src_loc = "501:1"]
-unsafe extern "C" fn x264_10_predict_4x4_h_c(mut src: *mut pixel) {
-    (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        (*src.offset((-1 + 0 * 32) as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        (*src.offset((-1 + 1 * 32) as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        (*src.offset((-1 + 2 * 32) as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        (*src.offset((-1 + 3 * 32) as isize) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
+
+pub unsafe extern "C" fn x264_8_predict_8x8c_v_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut v0: crate::src::common::common::pixel4 = (*(src
+            .offset(0 as ::core::ffi::c_int as isize)
+            .offset(-(32 as ::core::ffi::c_int as isize))
+            as *mut crate::src::common::base::x264_union32_t))
+            .i
+            as crate::src::common::common::pixel4;
+        let mut v1: crate::src::common::common::pixel4 = (*(src
+            .offset(4 as ::core::ffi::c_int as isize)
+            .offset(-(32 as ::core::ffi::c_int as isize))
+            as *mut crate::src::common::base::x264_union32_t))
+            .i
+            as crate::src::common::common::pixel4;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 8 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v0 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v1 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i += 1;
+        }
+    }
 }
 #[no_mangle]
-#[c2rust::src_loc = "508:1"]
-unsafe extern "C" fn x264_10_predict_4x4_v_c(mut src: *mut pixel) {
-    let ref mut fresh11 =
-        (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh11 = (*(&mut *src.offset((0 + -1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    let ref mut fresh12 =
-        (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh12 = *fresh11;
-    let ref mut fresh13 =
-        (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh13 = *fresh12;
-    (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh13;
+
+pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut H: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut V: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 4 as ::core::ffi::c_int {
+            H += (i + 1 as ::core::ffi::c_int)
+                * (*src.offset(
+                    (4 as ::core::ffi::c_int + i - crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    - *src.offset(
+                        (2 as ::core::ffi::c_int - i - crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int);
+            V += (i + 1 as ::core::ffi::c_int)
+                * (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (i + 4 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    - *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (2 as ::core::ffi::c_int - i)
+                                * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int);
+            i += 1;
+        }
+        let mut a: ::core::ffi::c_int = 16 as ::core::ffi::c_int
+            * (*src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int
+                + *src.offset(
+                    (7 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+                ) as ::core::ffi::c_int);
+        let mut b: ::core::ffi::c_int =
+            17 as ::core::ffi::c_int * H + 16 as ::core::ffi::c_int >> 5 as ::core::ffi::c_int;
+        let mut c: ::core::ffi::c_int =
+            17 as ::core::ffi::c_int * V + 16 as ::core::ffi::c_int >> 5 as ::core::ffi::c_int;
+        let mut i00: ::core::ffi::c_int =
+            a - 3 as ::core::ffi::c_int * b - 3 as ::core::ffi::c_int * c
+                + 16 as ::core::ffi::c_int;
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            let mut pix: ::core::ffi::c_int = i00;
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < 8 as ::core::ffi::c_int {
+                *src.offset(x as isize) = x264_clip_pixel(pix >> 5 as ::core::ffi::c_int);
+                pix += b;
+                x += 1;
+            }
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i00 += c;
+            y += 1;
+        }
+    }
 }
-#[c2rust::src_loc = "534:1"]
-unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut pixel) {
-    let mut t0: c_int = *src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t4: c_int = *src.offset((4 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t5: c_int = *src.offset((5 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t6: c_int = *src.offset((6 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t7: c_int = *src.offset((7 + -1 * FDEC_STRIDE) as isize) as c_int;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = (t0 + 2 * t1 + t2 + 2 >> 2) as pixel;
-    let ref mut fresh92 = *src.offset((0 + 1 * FDEC_STRIDE) as isize);
-    *fresh92 = (t1 + 2 * t2 + t3 + 2 >> 2) as pixel;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = *fresh92;
-    let ref mut fresh93 = *src.offset((0 + 2 * FDEC_STRIDE) as isize);
-    *fresh93 = (t2 + 2 * t3 + t4 + 2 >> 2) as pixel;
-    let ref mut fresh94 = *src.offset((1 + 1 * FDEC_STRIDE) as isize);
-    *fresh94 = *fresh93;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = *fresh94;
-    let ref mut fresh95 = *src.offset((0 + 3 * FDEC_STRIDE) as isize);
-    *fresh95 = (t3 + 2 * t4 + t5 + 2 >> 2) as pixel;
-    let ref mut fresh96 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh96 = *fresh95;
-    let ref mut fresh97 = *src.offset((2 + 1 * FDEC_STRIDE) as isize);
-    *fresh97 = *fresh96;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = *fresh97;
-    let ref mut fresh98 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh98 = (t4 + 2 * t5 + t6 + 2 >> 2) as pixel;
-    let ref mut fresh99 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh99 = *fresh98;
-    *src.offset((3 + 1 * FDEC_STRIDE) as isize) = *fresh99;
-    let ref mut fresh100 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh100 = (t5 + 2 * t6 + t7 + 2 >> 2) as pixel;
-    *src.offset((3 + 2 * FDEC_STRIDE) as isize) = *fresh100;
-    *src.offset((3 + 3 * FDEC_STRIDE) as isize) = (t6 + 2 * t7 + t7 + 2 >> 2) as pixel;
+
+unsafe extern "C" fn predict_8x16c_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+    }
 }
-#[c2rust::src_loc = "546:1"]
-unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut pixel) {
-    let mut lt: c_int = *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut l0: c_int = *src.offset((-1 + 0 * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-1 + 1 * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-1 + 2 * FDEC_STRIDE) as isize) as c_int;
-    let mut l3: c_int = *src.offset((-1 + 3 * FDEC_STRIDE) as isize) as c_int;
-    let mut t0: c_int = *src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 + -1 * FDEC_STRIDE) as isize) as c_int;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = (t3 + 2 * t2 + t1 + 2 >> 2) as pixel;
-    let ref mut fresh83 = *src.offset((3 + 1 * FDEC_STRIDE) as isize);
-    *fresh83 = (t2 + 2 * t1 + t0 + 2 >> 2) as pixel;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = *fresh83;
-    let ref mut fresh84 = *src.offset((3 + 2 * FDEC_STRIDE) as isize);
-    *fresh84 = (t1 + 2 * t0 + lt + 2 >> 2) as pixel;
-    let ref mut fresh85 = *src.offset((2 + 1 * FDEC_STRIDE) as isize);
-    *fresh85 = *fresh84;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = *fresh85;
-    let ref mut fresh86 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh86 = (t0 + 2 * lt + l0 + 2 >> 2) as pixel;
-    let ref mut fresh87 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh87 = *fresh86;
-    let ref mut fresh88 = *src.offset((1 + 1 * FDEC_STRIDE) as isize);
-    *fresh88 = *fresh87;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = *fresh88;
-    let ref mut fresh89 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh89 = (lt + 2 * l0 + l1 + 2 >> 2) as pixel;
-    let ref mut fresh90 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh90 = *fresh89;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = *fresh90;
-    let ref mut fresh91 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh91 = (l0 + 2 * l1 + l2 + 2 >> 2) as pixel;
-    *src.offset((0 + 2 * FDEC_STRIDE) as isize) = *fresh91;
-    *src.offset((0 + 3 * FDEC_STRIDE) as isize) = (l1 + 2 * l2 + l3 + 2 >> 2) as pixel;
+
+unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 4 as ::core::ffi::c_int {
+            let mut dc: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while y < 4 as ::core::ffi::c_int {
+                dc += *src.offset(
+                    (y * crate::src::common::common::FDEC_STRIDE - 1 as ::core::ffi::c_int)
+                        as isize,
+                ) as ::core::ffi::c_int;
+                y += 1;
+            }
+            let mut dcsplat: crate::src::common::common::pixel4 = ((dc + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int)
+                as crate::src::common::common::pixel4)
+                .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+            let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while y_0 < 4 as ::core::ffi::c_int {
+                (*(src.offset(0 as ::core::ffi::c_int as isize)
+                    as *mut crate::src::common::base::x264_union32_t))
+                    .i = dcsplat as crate::stdlib::uint32_t;
+                (*(src.offset(4 as ::core::ffi::c_int as isize)
+                    as *mut crate::src::common::base::x264_union32_t))
+                    .i = dcsplat as crate::stdlib::uint32_t;
+                src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+                y_0 += 1;
+            }
+            i += 1;
+        }
+    }
 }
-#[c2rust::src_loc = "560:1"]
-unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut pixel) {
-    let mut lt: c_int = *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut l0: c_int = *src.offset((-1 + 0 * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-1 + 1 * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-1 + 2 * FDEC_STRIDE) as isize) as c_int;
-    let mut _l3: c_int = *src.offset((-1 + 3 * FDEC_STRIDE) as isize) as c_int;
-    let mut t0: c_int = *src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 + -1 * FDEC_STRIDE) as isize) as c_int;
-    *src.offset((0 + 3 * FDEC_STRIDE) as isize) = (l2 + 2 * l1 + l0 + 2 >> 2) as pixel;
-    *src.offset((0 + 2 * FDEC_STRIDE) as isize) = (l1 + 2 * l0 + lt + 2 >> 2) as pixel;
-    let ref mut fresh77 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh77 = (l0 + 2 * lt + t0 + 2 >> 2) as pixel;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = *fresh77;
-    let ref mut fresh78 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh78 = (lt + t0 + 1 >> 1) as pixel;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = *fresh78;
-    let ref mut fresh79 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh79 = (lt + 2 * t0 + t1 + 2 >> 2) as pixel;
-    *src.offset((1 + 1 * FDEC_STRIDE) as isize) = *fresh79;
-    let ref mut fresh80 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh80 = (t0 + t1 + 1 >> 1) as pixel;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = *fresh80;
-    let ref mut fresh81 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh81 = (t0 + 2 * t1 + t2 + 2 >> 2) as pixel;
-    *src.offset((2 + 1 * FDEC_STRIDE) as isize) = *fresh81;
-    let ref mut fresh82 = *src.offset((3 + 2 * FDEC_STRIDE) as isize);
-    *fresh82 = (t1 + t2 + 1 >> 1) as pixel;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = *fresh82;
-    *src.offset((3 + 1 * FDEC_STRIDE) as isize) = (t1 + 2 * t2 + t3 + 2 >> 2) as pixel;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = (t2 + t3 + 1 >> 1) as pixel;
+
+unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut dc1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while x < 4 as ::core::ffi::c_int {
+            dc0 += *src.offset((x - crate::src::common::common::FDEC_STRIDE) as isize)
+                as ::core::ffi::c_int;
+            dc1 += *src.offset(
+                (x + 4 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
+            x += 1;
+        }
+        let mut dc0splat: crate::src::common::common::pixel4 = ((dc0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc1splat: crate::src::common::common::pixel4 = ((dc1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc0splat as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc1splat as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+    }
 }
-#[c2rust::src_loc = "577:1"]
-unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut pixel) {
-    let mut lt: c_int = *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut l0: c_int = *src.offset((-1 + 0 * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-1 + 1 * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-1 + 2 * FDEC_STRIDE) as isize) as c_int;
-    let mut l3: c_int = *src.offset((-1 + 3 * FDEC_STRIDE) as isize) as c_int;
-    let mut t0: c_int = *src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut _t3: c_int = *src.offset((3 + -1 * FDEC_STRIDE) as isize) as c_int;
-    *src.offset((0 + 3 * FDEC_STRIDE) as isize) = (l2 + l3 + 1 >> 1) as pixel;
-    *src.offset((1 + 3 * FDEC_STRIDE) as isize) = (l1 + 2 * l2 + l3 + 2 >> 2) as pixel;
-    let ref mut fresh71 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh71 = (l1 + l2 + 1 >> 1) as pixel;
-    *src.offset((0 + 2 * FDEC_STRIDE) as isize) = *fresh71;
-    let ref mut fresh72 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh72 = (l0 + 2 * l1 + l2 + 2 >> 2) as pixel;
-    *src.offset((1 + 2 * FDEC_STRIDE) as isize) = *fresh72;
-    let ref mut fresh73 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh73 = (l0 + l1 + 1 >> 1) as pixel;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = *fresh73;
-    let ref mut fresh74 = *src.offset((3 + 2 * FDEC_STRIDE) as isize);
-    *fresh74 = (lt + 2 * l0 + l1 + 2 >> 2) as pixel;
-    *src.offset((1 + 1 * FDEC_STRIDE) as isize) = *fresh74;
-    let ref mut fresh75 = *src.offset((2 + 1 * FDEC_STRIDE) as isize);
-    *fresh75 = (lt + l0 + 1 >> 1) as pixel;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = *fresh75;
-    let ref mut fresh76 = *src.offset((3 + 1 * FDEC_STRIDE) as isize);
-    *fresh76 = (t0 + 2 * lt + l0 + 2 >> 2) as pixel;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = *fresh76;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = (t1 + 2 * t0 + lt + 2 >> 2) as pixel;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = (t2 + 2 * t1 + t0 + 2 >> 2) as pixel;
-}
-#[c2rust::src_loc = "594:1"]
-unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut pixel) {
-    let mut t0: c_int = *src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t1: c_int = *src.offset((1 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t2: c_int = *src.offset((2 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t3: c_int = *src.offset((3 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t4: c_int = *src.offset((4 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t5: c_int = *src.offset((5 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut t6: c_int = *src.offset((6 + -1 * FDEC_STRIDE) as isize) as c_int;
-    let mut _t7: c_int = *src.offset((7 + -1 * FDEC_STRIDE) as isize) as c_int;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = (t0 + t1 + 1 >> 1) as pixel;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = (t0 + 2 * t1 + t2 + 2 >> 2) as pixel;
-    let ref mut fresh65 = *src.offset((0 + 2 * FDEC_STRIDE) as isize);
-    *fresh65 = (t1 + t2 + 1 >> 1) as pixel;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = *fresh65;
-    let ref mut fresh66 = *src.offset((0 + 3 * FDEC_STRIDE) as isize);
-    *fresh66 = (t1 + 2 * t2 + t3 + 2 >> 2) as pixel;
-    *src.offset((1 + 1 * FDEC_STRIDE) as isize) = *fresh66;
-    let ref mut fresh67 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh67 = (t2 + t3 + 1 >> 1) as pixel;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = *fresh67;
-    let ref mut fresh68 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh68 = (t2 + 2 * t3 + t4 + 2 >> 2) as pixel;
-    *src.offset((2 + 1 * FDEC_STRIDE) as isize) = *fresh68;
-    let ref mut fresh69 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh69 = (t3 + t4 + 1 >> 1) as pixel;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = *fresh69;
-    let ref mut fresh70 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh70 = (t3 + 2 * t4 + t5 + 2 >> 2) as pixel;
-    *src.offset((3 + 1 * FDEC_STRIDE) as isize) = *fresh70;
-    *src.offset((3 + 2 * FDEC_STRIDE) as isize) = (t4 + t5 + 1 >> 1) as pixel;
-    *src.offset((3 + 3 * FDEC_STRIDE) as isize) = (t4 + 2 * t5 + t6 + 2 >> 2) as pixel;
-}
-#[c2rust::src_loc = "610:1"]
-unsafe extern "C" fn predict_4x4_hu_c(mut src: *mut pixel) {
-    let mut l0: c_int = *src.offset((-1 + 0 * FDEC_STRIDE) as isize) as c_int;
-    let mut l1: c_int = *src.offset((-1 + 1 * FDEC_STRIDE) as isize) as c_int;
-    let mut l2: c_int = *src.offset((-1 + 2 * FDEC_STRIDE) as isize) as c_int;
-    let mut l3: c_int = *src.offset((-1 + 3 * FDEC_STRIDE) as isize) as c_int;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = (l0 + l1 + 1 >> 1) as pixel;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = (l0 + 2 * l1 + l2 + 2 >> 2) as pixel;
-    let ref mut fresh56 = *src.offset((0 + 1 * FDEC_STRIDE) as isize);
-    *fresh56 = (l1 + l2 + 1 >> 1) as pixel;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = *fresh56;
-    let ref mut fresh57 = *src.offset((1 + 1 * FDEC_STRIDE) as isize);
-    *fresh57 = (l1 + 2 * l2 + l3 + 2 >> 2) as pixel;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = *fresh57;
-    let ref mut fresh58 = *src.offset((0 + 2 * FDEC_STRIDE) as isize);
-    *fresh58 = (l2 + l3 + 1 >> 1) as pixel;
-    *src.offset((2 + 1 * FDEC_STRIDE) as isize) = *fresh58;
-    let ref mut fresh59 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh59 = (l2 + 2 * l3 + l3 + 2 >> 2) as pixel;
-    *src.offset((3 + 1 * FDEC_STRIDE) as isize) = *fresh59;
-    let ref mut fresh60 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh60 = l3 as pixel;
-    let ref mut fresh61 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh61 = *fresh60;
-    let ref mut fresh62 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh62 = *fresh61;
-    let ref mut fresh63 = *src.offset((0 + 3 * FDEC_STRIDE) as isize);
-    *fresh63 = *fresh62;
-    let ref mut fresh64 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh64 = *fresh63;
-    *src.offset((3 + 2 * FDEC_STRIDE) as isize) = *fresh64;
-}
-#[c2rust::src_loc = "632:1"]
-unsafe extern "C" fn predict_8x8_filter_c(
-    mut src: *mut pixel,
-    mut edge: *mut pixel,
-    mut i_neighbor: c_int,
-    mut i_filters: c_int,
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
+    mut src: *mut crate::src::common::common::pixel,
 ) {
-    let mut have_lt: c_int = i_neighbor & MB_TOPLEFT as c_int;
-    if i_filters & MB_LEFT as c_int != 0 {
-        *edge.offset(15 as isize) = (*src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int
-            + 2 * *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((-1 + 0 * FDEC_STRIDE) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset(14 as isize) = ((if have_lt != 0 {
-            *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int
-        } else {
-            *src.offset((-1 + 0 * FDEC_STRIDE) as isize) as c_int
-        }) + 2 * *src.offset((-1 + 0 * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((-1 + 1 * FDEC_STRIDE) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((14 - 1) as isize) = (*src.offset((-1 + (1 - 1) * 32) as isize) as c_int
-            + 2 * *src.offset((-1 + 1 * 32) as isize) as c_int
-            + *src.offset((-1 + (1 + 1) * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((14 - 2) as isize) = (*src.offset((-1 + (2 - 1) * 32) as isize) as c_int
-            + 2 * *src.offset((-1 + 2 * 32) as isize) as c_int
-            + *src.offset((-1 + (2 + 1) * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((14 - 3) as isize) = (*src.offset((-1 + (3 - 1) * 32) as isize) as c_int
-            + 2 * *src.offset((-1 + 3 * 32) as isize) as c_int
-            + *src.offset((-1 + (3 + 1) * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((14 - 4) as isize) = (*src.offset((-1 + (4 - 1) * 32) as isize) as c_int
-            + 2 * *src.offset((-1 + 4 * 32) as isize) as c_int
-            + *src.offset((-1 + (4 + 1) * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((14 - 5) as isize) = (*src.offset((-1 + (5 - 1) * 32) as isize) as c_int
-            + 2 * *src.offset((-1 + 5 * 32) as isize) as c_int
-            + *src.offset((-1 + (5 + 1) * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((14 - 6) as isize) = (*src.offset((-1 + (6 - 1) * 32) as isize) as c_int
-            + 2 * *src.offset((-1 + 6 * 32) as isize) as c_int
-            + *src.offset((-1 + (6 + 1) * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        let ref mut fresh113 = *edge.offset(7);
-        *fresh113 = (*src.offset((-1 + 6 * FDEC_STRIDE) as isize) as c_int
-            + 3 * *src.offset((-1 + 7 * FDEC_STRIDE) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset(6) = *fresh113;
+    unsafe {
+        let mut s0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s4: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut s5: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 4 as ::core::ffi::c_int {
+            s0 += *src.offset(
+                (i + 0 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
+            s1 += *src.offset(
+                (i + 4 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+            ) as ::core::ffi::c_int;
+            s2 += *src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + (i + 0 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int;
+            s3 += *src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + (i + 4 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int;
+            s4 += *src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + (i + 8 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int;
+            s5 += *src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + (i + 12 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int;
+            i += 1;
+        }
+        let mut dc0: crate::src::common::common::pixel4 = ((s0 + s2 + 4 as ::core::ffi::c_int
+            >> 3 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc1: crate::src::common::common::pixel4 = ((s1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc2: crate::src::common::common::pixel4 = ((s3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc3: crate::src::common::common::pixel4 = ((s1 + s3 + 4 as ::core::ffi::c_int
+            >> 3 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc4: crate::src::common::common::pixel4 = ((s4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc5: crate::src::common::common::pixel4 = ((s1 + s4 + 4 as ::core::ffi::c_int
+            >> 3 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc6: crate::src::common::common::pixel4 = ((s5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut dc7: crate::src::common::common::pixel4 = ((s1 + s5 + 4 as ::core::ffi::c_int
+            >> 3 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc0 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc1 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+        let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_0 < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc2 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc3 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y_0 += 1;
+        }
+        let mut y_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_1 < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc4 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc5 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y_1 += 1;
+        }
+        let mut y_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_2 < 4 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc6 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc7 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y_2 += 1;
+        }
     }
-    if i_filters & MB_TOP as c_int != 0 {
-        let mut have_tr: c_int = i_neighbor & MB_TOPRIGHT as c_int;
-        *edge.offset(16 as isize) = ((if have_lt != 0 {
-            *src.offset((-1 + -1 * FDEC_STRIDE) as isize) as c_int
-        } else {
-            *src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int
-        }) + 2 * *src.offset((0 + -1 * FDEC_STRIDE) as isize) as c_int
-            + *src.offset((1 + -1 * FDEC_STRIDE) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((16 + 1) as isize) = (*src.offset((1 - 1 + -1 * 32) as isize) as c_int
-            + 2 * *src.offset((1 + -1 * 32) as isize) as c_int
-            + *src.offset((1 + 1 + -1 * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((16 + 2) as isize) = (*src.offset((2 - 1 + -1 * 32) as isize) as c_int
-            + 2 * *src.offset((2 + -1 * 32) as isize) as c_int
-            + *src.offset((2 + 1 + -1 * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((16 + 3) as isize) = (*src.offset((3 - 1 + -1 * 32) as isize) as c_int
-            + 2 * *src.offset((3 + -1 * 32) as isize) as c_int
-            + *src.offset((3 + 1 + -1 * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((16 + 4) as isize) = (*src.offset((4 - 1 + -1 * 32) as isize) as c_int
-            + 2 * *src.offset((4 + -1 * 32) as isize) as c_int
-            + *src.offset((4 + 1 + -1 * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((16 + 5) as isize) = (*src.offset((5 - 1 + -1 * 32) as isize) as c_int
-            + 2 * *src.offset((5 + -1 * 32) as isize) as c_int
-            + *src.offset((5 + 1 + -1 * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset((16 + 6) as isize) = (*src.offset((6 - 1 + -1 * 32) as isize) as c_int
-            + 2 * *src.offset((6 + -1 * 32) as isize) as c_int
-            + *src.offset((6 + 1 + -1 * 32) as isize) as c_int
-            + 2
-            >> 2) as pixel;
-        *edge.offset(23 as isize) = (*src.offset((6 + -1 * FDEC_STRIDE) as isize) as c_int
-            + 2 * *src.offset((7 + -1 * FDEC_STRIDE) as isize) as c_int
-            + (if have_tr != 0 {
-                *src.offset((8 + -1 * FDEC_STRIDE) as isize) as c_int
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x16c_h_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            let mut v: crate::src::common::common::pixel4 = (*src
+                .offset(-(1 as ::core::ffi::c_int) as isize)
+                as crate::src::common::common::pixel4)
+                .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i += 1;
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x16c_v_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut v0: crate::src::common::common::pixel4 = (*(src
+            .offset(0 as ::core::ffi::c_int as isize)
+            .offset(-(32 as ::core::ffi::c_int as isize))
+            as *mut crate::src::common::base::x264_union32_t))
+            .i
+            as crate::src::common::common::pixel4;
+        let mut v1: crate::src::common::common::pixel4 = (*(src
+            .offset(4 as ::core::ffi::c_int as isize)
+            .offset(-(32 as ::core::ffi::c_int as isize))
+            as *mut crate::src::common::base::x264_union32_t))
+            .i
+            as crate::src::common::common::pixel4;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 16 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v0 as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = v1 as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i += 1;
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut H: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut V: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 4 as ::core::ffi::c_int {
+            H += (i + 1 as ::core::ffi::c_int)
+                * (*src.offset(
+                    (4 as ::core::ffi::c_int + i - crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    - *src.offset(
+                        (2 as ::core::ffi::c_int - i - crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int);
+            i += 1;
+        }
+        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i_0 < 8 as ::core::ffi::c_int {
+            V += (i_0 + 1 as ::core::ffi::c_int)
+                * (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (i_0 + 8 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    - *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (6 as ::core::ffi::c_int - i_0)
+                                * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int);
+            i_0 += 1;
+        }
+        let mut a: ::core::ffi::c_int = 16 as ::core::ffi::c_int
+            * (*src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + 15 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int
+                + *src.offset(
+                    (7 as ::core::ffi::c_int - crate::src::common::common::FDEC_STRIDE) as isize,
+                ) as ::core::ffi::c_int);
+        let mut b: ::core::ffi::c_int =
+            17 as ::core::ffi::c_int * H + 16 as ::core::ffi::c_int >> 5 as ::core::ffi::c_int;
+        let mut c: ::core::ffi::c_int =
+            5 as ::core::ffi::c_int * V + 32 as ::core::ffi::c_int >> 6 as ::core::ffi::c_int;
+        let mut i00: ::core::ffi::c_int =
+            a - 3 as ::core::ffi::c_int * b - 7 as ::core::ffi::c_int * c
+                + 16 as ::core::ffi::c_int;
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 16 as ::core::ffi::c_int {
+            let mut pix: ::core::ffi::c_int = i00;
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < 8 as ::core::ffi::c_int {
+                *src.offset(x as isize) = x264_clip_pixel(pix >> 5 as ::core::ffi::c_int);
+                pix += b;
+                x += 1;
+            }
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            i00 += c;
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn predict_4x4_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let ref mut c2rust_fresh47 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh47 = (((1 as ::core::ffi::c_int)
+            << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+            as ::core::ffi::c_uint)
+            .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        let ref mut c2rust_fresh48 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh48 = *c2rust_fresh47;
+        let ref mut c2rust_fresh49 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh49 = *c2rust_fresh48;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh49;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc: crate::src::common::common::pixel4 = ((*src.offset(
+            (-(1 as ::core::ffi::c_int) + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as ::core::ffi::c_int
+            + *src.offset(
+                (-(1 as ::core::ffi::c_int) + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (-(1 as ::core::ffi::c_int) + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (-(1 as ::core::ffi::c_int) + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let ref mut c2rust_fresh53 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh53 = dc as crate::stdlib::uint32_t;
+        let ref mut c2rust_fresh54 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh54 = *c2rust_fresh53;
+        let ref mut c2rust_fresh55 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh55 = *c2rust_fresh54;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh55;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc: crate::src::common::common::pixel4 = ((*src.offset(
+            (0 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as ::core::ffi::c_int
+            + *src.offset(
+                (1 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (2 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (3 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let ref mut c2rust_fresh50 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh50 = dc as crate::stdlib::uint32_t;
+        let ref mut c2rust_fresh51 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh51 = *c2rust_fresh50;
+        let ref mut c2rust_fresh52 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh52 = *c2rust_fresh51;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh52;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_4x4_dc_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut dc: crate::src::common::common::pixel4 = ((*src.offset(
+            (-(1 as ::core::ffi::c_int) + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as ::core::ffi::c_int
+            + *src.offset(
+                (-(1 as ::core::ffi::c_int) + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (-(1 as ::core::ffi::c_int) + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (-(1 as ::core::ffi::c_int) + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (0 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (1 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (2 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + *src.offset(
+                (3 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                    as isize,
+            ) as ::core::ffi::c_int
+            + 4 as ::core::ffi::c_int
+            >> 3 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let ref mut c2rust_fresh8 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh8 = dc as crate::stdlib::uint32_t;
+        let ref mut c2rust_fresh9 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh9 = *c2rust_fresh8;
+        let ref mut c2rust_fresh10 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh10 = *c2rust_fresh9;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh10;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_4x4_h_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = (*src.offset(
+            (-(1 as ::core::ffi::c_int) + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as ::core::ffi::c_uint)
+            .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = (*src.offset(
+            (-(1 as ::core::ffi::c_int) + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as ::core::ffi::c_uint)
+            .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = (*src.offset(
+            (-(1 as ::core::ffi::c_int) + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as ::core::ffi::c_uint)
+            .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = (*src.offset(
+            (-(1 as ::core::ffi::c_int) + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as ::core::ffi::c_uint)
+            .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_4x4_v_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let ref mut c2rust_fresh11 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh11 = (*(src.offset(
+            (0 as ::core::ffi::c_int + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        let ref mut c2rust_fresh12 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh12 = *c2rust_fresh11;
+        let ref mut c2rust_fresh13 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh13 = *c2rust_fresh12;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh13;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *src.offset(
+            (0 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *src.offset(
+            (1 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *src.offset(
+            (2 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *src.offset(
+            (3 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *src.offset(
+            (4 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *src.offset(
+            (5 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *src.offset(
+            (6 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *src.offset(
+            (7 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t0 + 2 as ::core::ffi::c_int * t1 + t2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh92 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh92 = (t1 + 2 as ::core::ffi::c_int * t2 + t3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh92;
+        let ref mut c2rust_fresh93 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh93 = (t2 + 2 as ::core::ffi::c_int * t3 + t4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh94 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh94 = *c2rust_fresh93;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh94;
+        let ref mut c2rust_fresh95 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh95 = (t3 + 2 as ::core::ffi::c_int * t4 + t5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh96 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh96 = *c2rust_fresh95;
+        let ref mut c2rust_fresh97 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh97 = *c2rust_fresh96;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh97;
+        let ref mut c2rust_fresh98 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh98 = (t4 + 2 as ::core::ffi::c_int * t5 + t6 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh99 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh99 = *c2rust_fresh98;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh99;
+        let ref mut c2rust_fresh100 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh100 = (t5 + 2 as ::core::ffi::c_int * t6 + t7 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh100;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t6 + 2 as ::core::ffi::c_int * t7 + t7 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut lt: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l0: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t0: ::core::ffi::c_int = *src.offset(
+            (0 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *src.offset(
+            (1 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *src.offset(
+            (2 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *src.offset(
+            (3 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t3 + 2 as ::core::ffi::c_int * t2 + t1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh83 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh83 = (t2 + 2 as ::core::ffi::c_int * t1 + t0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh83;
+        let ref mut c2rust_fresh84 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh84 = (t1 + 2 as ::core::ffi::c_int * t0 + lt + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh85 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh85 = *c2rust_fresh84;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh85;
+        let ref mut c2rust_fresh86 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh86 = (t0 + 2 as ::core::ffi::c_int * lt + l0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh87 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh87 = *c2rust_fresh86;
+        let ref mut c2rust_fresh88 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh88 = *c2rust_fresh87;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh88;
+        let ref mut c2rust_fresh89 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh89 = (lt + 2 as ::core::ffi::c_int * l0 + l1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh90 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh90 = *c2rust_fresh89;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh90;
+        let ref mut c2rust_fresh91 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh91 = (l0 + 2 as ::core::ffi::c_int * l1 + l2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh91;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l1 + 2 as ::core::ffi::c_int * l2 + l3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut lt: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l0: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t0: ::core::ffi::c_int = *src.offset(
+            (0 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *src.offset(
+            (1 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *src.offset(
+            (2 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *src.offset(
+            (3 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l2 + 2 as ::core::ffi::c_int * l1 + l0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l1 + 2 as ::core::ffi::c_int * l0 + lt + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh77 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh77 = (l0 + 2 as ::core::ffi::c_int * lt + t0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh77;
+        let ref mut c2rust_fresh78 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh78 = (lt + t0 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh78;
+        let ref mut c2rust_fresh79 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh79 = (lt + 2 as ::core::ffi::c_int * t0 + t1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh79;
+        let ref mut c2rust_fresh80 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh80 = (t0 + t1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh80;
+        let ref mut c2rust_fresh81 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh81 = (t0 + 2 as ::core::ffi::c_int * t1 + t2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh81;
+        let ref mut c2rust_fresh82 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh82 = (t1 + t2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh82;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t1 + 2 as ::core::ffi::c_int * t2 + t3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t2 + t3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut lt: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l0: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t0: ::core::ffi::c_int = *src.offset(
+            (0 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *src.offset(
+            (1 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *src.offset(
+            (2 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *src.offset(
+            (3 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l2 + l3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l1 + 2 as ::core::ffi::c_int * l2 + l3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh71 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh71 = (l1 + l2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh71;
+        let ref mut c2rust_fresh72 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh72 = (l0 + 2 as ::core::ffi::c_int * l1 + l2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh72;
+        let ref mut c2rust_fresh73 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh73 = (l0 + l1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh73;
+        let ref mut c2rust_fresh74 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh74 = (lt + 2 as ::core::ffi::c_int * l0 + l1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh74;
+        let ref mut c2rust_fresh75 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh75 = (lt + l0 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh75;
+        let ref mut c2rust_fresh76 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh76 = (t0 + 2 as ::core::ffi::c_int * lt + l0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh76;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t1 + 2 as ::core::ffi::c_int * t0 + lt + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t2 + 2 as ::core::ffi::c_int * t1 + t0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *src.offset(
+            (0 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *src.offset(
+            (1 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *src.offset(
+            (2 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *src.offset(
+            (3 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *src.offset(
+            (4 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *src.offset(
+            (5 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *src.offset(
+            (6 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *src.offset(
+            (7 as ::core::ffi::c_int
+                + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t0 + t1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t0 + 2 as ::core::ffi::c_int * t1 + t2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh65 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh65 = (t1 + t2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh65;
+        let ref mut c2rust_fresh66 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh66 = (t1 + 2 as ::core::ffi::c_int * t2 + t3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh66;
+        let ref mut c2rust_fresh67 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh67 = (t2 + t3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh67;
+        let ref mut c2rust_fresh68 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh68 = (t2 + 2 as ::core::ffi::c_int * t3 + t4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh68;
+        let ref mut c2rust_fresh69 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh69 = (t3 + t4 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh69;
+        let ref mut c2rust_fresh70 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh70 = (t3 + 2 as ::core::ffi::c_int * t4 + t5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh70;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t4 + t5 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t4 + 2 as ::core::ffi::c_int * t5 + t6 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_4x4_hu_c(mut src: *mut crate::src::common::common::pixel) {
+    unsafe {
+        let mut l0: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *src.offset(
+            (-(1 as ::core::ffi::c_int)
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l0 + l1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l0 + 2 as ::core::ffi::c_int * l1 + l2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh56 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh56 = (l1 + l2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh56;
+        let ref mut c2rust_fresh57 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh57 = (l1 + 2 as ::core::ffi::c_int * l2 + l3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh57;
+        let ref mut c2rust_fresh58 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh58 = (l2 + l3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh58;
+        let ref mut c2rust_fresh59 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh59 = (l2 + 2 as ::core::ffi::c_int * l3 + l3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh59;
+        let ref mut c2rust_fresh60 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh60 = l3 as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh61 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh61 = *c2rust_fresh60;
+        let ref mut c2rust_fresh62 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh62 = *c2rust_fresh61;
+        let ref mut c2rust_fresh63 = *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh63 = *c2rust_fresh62;
+        let ref mut c2rust_fresh64 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh64 = *c2rust_fresh63;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh64;
+    }
+}
+
+unsafe extern "C" fn predict_8x8_filter_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+    mut i_neighbor: ::core::ffi::c_int,
+    mut i_filters: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut have_lt: ::core::ffi::c_int =
+            i_neighbor & crate::src::common::macroblock::MB_TOPLEFT as ::core::ffi::c_int;
+        if i_filters & crate::src::common::macroblock::MB_LEFT as ::core::ffi::c_int != 0 {
+            *edge.offset(15 as ::core::ffi::c_int as isize) = (*src.offset(
+                (0 as ::core::ffi::c_int
+                    + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int
+                    * *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                + *src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int)
+                as crate::src::common::common::pixel;
+            *edge.offset(14 as ::core::ffi::c_int as isize) = ((if have_lt != 0 {
+                *src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
             } else {
-                *src.offset((7 + -1 * FDEC_STRIDE) as isize) as c_int
-            })
-            + 2
-            >> 2) as pixel;
-        if i_filters & MB_TOPRIGHT as c_int != 0 {
-            if have_tr != 0 {
-                *edge.offset((16 + 8) as isize) = (*src.offset((8 - 1 + -1 * 32) as isize) as c_int
-                    + 2 * *src.offset((8 + -1 * 32) as isize) as c_int
-                    + *src.offset((8 + 1 + -1 * 32) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                *edge.offset((16 + 9) as isize) = (*src.offset((9 - 1 + -1 * 32) as isize) as c_int
-                    + 2 * *src.offset((9 + -1 * 32) as isize) as c_int
-                    + *src.offset((9 + 1 + -1 * 32) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                *edge.offset((16 + 10) as isize) = (*src.offset((10 - 1 + -1 * 32) as isize)
-                    as c_int
-                    + 2 * *src.offset((10 + -1 * 32) as isize) as c_int
-                    + *src.offset((10 + 1 + -1 * 32) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                *edge.offset((16 + 11) as isize) = (*src.offset((11 - 1 + -1 * 32) as isize)
-                    as c_int
-                    + 2 * *src.offset((11 + -1 * 32) as isize) as c_int
-                    + *src.offset((11 + 1 + -1 * 32) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                *edge.offset((16 + 12) as isize) = (*src.offset((12 - 1 + -1 * 32) as isize)
-                    as c_int
-                    + 2 * *src.offset((12 + -1 * 32) as isize) as c_int
-                    + *src.offset((12 + 1 + -1 * 32) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                *edge.offset((16 + 13) as isize) = (*src.offset((13 - 1 + -1 * 32) as isize)
-                    as c_int
-                    + 2 * *src.offset((13 + -1 * 32) as isize) as c_int
-                    + *src.offset((13 + 1 + -1 * 32) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                *edge.offset((16 + 14) as isize) = (*src.offset((14 - 1 + -1 * 32) as isize)
-                    as c_int
-                    + 2 * *src.offset((14 + -1 * 32) as isize) as c_int
-                    + *src.offset((14 + 1 + -1 * 32) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                let ref mut fresh114 = *edge.offset(32 as isize);
-                *fresh114 = (*src.offset((14 + -1 * FDEC_STRIDE) as isize) as c_int
-                    + 3 * *src.offset((15 + -1 * FDEC_STRIDE) as isize) as c_int
-                    + 2
-                    >> 2) as pixel;
-                *edge.offset(31 as isize) = *fresh114;
+                *src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+            }) + 2 as ::core::ffi::c_int
+                * *src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                + *src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int)
+                as crate::src::common::common::pixel;
+            *edge.offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (1 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                            * 32 as ::core::ffi::c_int) as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (-(1 as ::core::ffi::c_int)
+                                + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (1 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
+                                * 32 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (2 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                            * 32 as ::core::ffi::c_int) as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (-(1 as ::core::ffi::c_int)
+                                + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (2 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
+                                * 32 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (3 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                            * 32 as ::core::ffi::c_int) as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (-(1 as ::core::ffi::c_int)
+                                + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (3 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
+                                * 32 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (4 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                            * 32 as ::core::ffi::c_int) as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (-(1 as ::core::ffi::c_int)
+                                + 4 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
+                                * 32 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (5 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                            * 32 as ::core::ffi::c_int) as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (-(1 as ::core::ffi::c_int)
+                                + 5 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
+                                * 32 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + (6 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                            * 32 as ::core::ffi::c_int) as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (-(1 as ::core::ffi::c_int)
+                                + 6 as ::core::ffi::c_int * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + (6 as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
+                                * 32 as ::core::ffi::c_int) as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            let ref mut c2rust_fresh113 = *edge.offset(7 as ::core::ffi::c_int as isize);
+            *c2rust_fresh113 = (*src.offset(
+                (-(1 as ::core::ffi::c_int)
+                    + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int
+                    * *src.offset(
+                        (-(1 as ::core::ffi::c_int)
+                            + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int)
+                as crate::src::common::common::pixel;
+            *edge.offset(6 as ::core::ffi::c_int as isize) = *c2rust_fresh113;
+        }
+        if i_filters & crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int != 0 {
+            let mut have_tr: ::core::ffi::c_int =
+                i_neighbor & crate::src::common::macroblock::MB_TOPRIGHT as ::core::ffi::c_int;
+            *edge.offset(16 as ::core::ffi::c_int as isize) = ((if have_lt != 0 {
+                *src.offset(
+                    (-(1 as ::core::ffi::c_int)
+                        + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
             } else {
-                (*(edge.offset(24 as isize) as *mut x264_union64_t)).i =
-                    (*src.offset((7 + -1 * 32) as isize) as c_ulonglong)
-                        .wrapping_mul(0x1000100010001 as c_ulonglong)
-                        as uint64_t;
-                (*(edge.offset(28 as isize) as *mut x264_union64_t)).i =
-                    (*src.offset((7 + -1 * 32) as isize) as c_ulonglong)
-                        .wrapping_mul(0x1000100010001 as c_ulonglong)
-                        as uint64_t;
-                *edge.offset(32 as isize) = *src.offset((7 + -1 * FDEC_STRIDE) as isize);
+                *src.offset(
+                    (0 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+            }) + 2 as ::core::ffi::c_int
+                * *src.offset(
+                    (0 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                + *src.offset(
+                    (1 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                        as isize,
+                ) as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int)
+                as crate::src::common::common::pixel;
+            *edge.offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (1 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (1 as ::core::ffi::c_int
+                            + 1 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (2 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (2 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (2 as ::core::ffi::c_int
+                            + 1 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (3 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (3 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (3 as ::core::ffi::c_int
+                            + 1 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (4 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (4 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (4 as ::core::ffi::c_int
+                            + 1 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (5 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (5 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (5 as ::core::ffi::c_int
+                            + 1 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize) =
+                (*src.offset(
+                    (6 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                        * *src.offset(
+                            (6 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (6 as ::core::ffi::c_int
+                            + 1 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                    + 2 as ::core::ffi::c_int
+                    >> 2 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+            *edge.offset(23 as ::core::ffi::c_int as isize) = (*src.offset(
+                (6 as ::core::ffi::c_int
+                    + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                    as isize,
+            ) as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int
+                    * *src.offset(
+                        (7 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                + (if have_tr != 0 {
+                    *src.offset(
+                        (8 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                } else {
+                    *src.offset(
+                        (7 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                })
+                + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int)
+                as crate::src::common::common::pixel;
+            if i_filters & crate::src::common::macroblock::MB_TOPRIGHT as ::core::ffi::c_int != 0 {
+                if have_tr != 0 {
+                    *edge.offset((16 as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize) =
+                        (*src.offset(
+                            (8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                                * *src.offset(
+                                    (8 as ::core::ffi::c_int
+                                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                            + *src.offset(
+                                (8 as ::core::ffi::c_int
+                                    + 1 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                            >> 2 as ::core::ffi::c_int)
+                            as crate::src::common::common::pixel;
+                    *edge.offset((16 as ::core::ffi::c_int + 9 as ::core::ffi::c_int) as isize) =
+                        (*src.offset(
+                            (9 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                                * *src.offset(
+                                    (9 as ::core::ffi::c_int
+                                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                            + *src.offset(
+                                (9 as ::core::ffi::c_int
+                                    + 1 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                            >> 2 as ::core::ffi::c_int)
+                            as crate::src::common::common::pixel;
+                    *edge.offset((16 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as isize) =
+                        (*src.offset(
+                            (10 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                                * *src.offset(
+                                    (10 as ::core::ffi::c_int
+                                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                            + *src.offset(
+                                (10 as ::core::ffi::c_int
+                                    + 1 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                            >> 2 as ::core::ffi::c_int)
+                            as crate::src::common::common::pixel;
+                    *edge.offset((16 as ::core::ffi::c_int + 11 as ::core::ffi::c_int) as isize) =
+                        (*src.offset(
+                            (11 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                                * *src.offset(
+                                    (11 as ::core::ffi::c_int
+                                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                            + *src.offset(
+                                (11 as ::core::ffi::c_int
+                                    + 1 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                            >> 2 as ::core::ffi::c_int)
+                            as crate::src::common::common::pixel;
+                    *edge.offset((16 as ::core::ffi::c_int + 12 as ::core::ffi::c_int) as isize) =
+                        (*src.offset(
+                            (12 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                                * *src.offset(
+                                    (12 as ::core::ffi::c_int
+                                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                            + *src.offset(
+                                (12 as ::core::ffi::c_int
+                                    + 1 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                            >> 2 as ::core::ffi::c_int)
+                            as crate::src::common::common::pixel;
+                    *edge.offset((16 as ::core::ffi::c_int + 13 as ::core::ffi::c_int) as isize) =
+                        (*src.offset(
+                            (13 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                                * *src.offset(
+                                    (13 as ::core::ffi::c_int
+                                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                            + *src.offset(
+                                (13 as ::core::ffi::c_int
+                                    + 1 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                            >> 2 as ::core::ffi::c_int)
+                            as crate::src::common::common::pixel;
+                    *edge.offset((16 as ::core::ffi::c_int + 14 as ::core::ffi::c_int) as isize) =
+                        (*src.offset(
+                            (14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                                + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                                * *src.offset(
+                                    (14 as ::core::ffi::c_int
+                                        + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int
+                            + *src.offset(
+                                (14 as ::core::ffi::c_int
+                                    + 1 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                            + 2 as ::core::ffi::c_int
+                            >> 2 as ::core::ffi::c_int)
+                            as crate::src::common::common::pixel;
+                    let ref mut c2rust_fresh114 = *edge.offset(32 as ::core::ffi::c_int as isize);
+                    *c2rust_fresh114 = (*src.offset(
+                        (14 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                        + 3 as ::core::ffi::c_int
+                            * *src.offset(
+                                (15 as ::core::ffi::c_int
+                                    + -(1 as ::core::ffi::c_int)
+                                        * crate::src::common::common::FDEC_STRIDE)
+                                    as isize,
+                            ) as ::core::ffi::c_int
+                        + 2 as ::core::ffi::c_int
+                        >> 2 as ::core::ffi::c_int)
+                        as crate::src::common::common::pixel;
+                    *edge.offset(31 as ::core::ffi::c_int as isize) = *c2rust_fresh114;
+                } else {
+                    (*(edge.offset(24 as ::core::ffi::c_int as isize)
+                        as *mut crate::src::common::base::x264_union32_t))
+                        .i = (*src.offset(
+                        (7 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_uint)
+                        .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                        as crate::stdlib::uint32_t;
+                    (*(edge.offset(28 as ::core::ffi::c_int as isize)
+                        as *mut crate::src::common::base::x264_union32_t))
+                        .i = (*src.offset(
+                        (7 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * 32 as ::core::ffi::c_int)
+                            as isize,
+                    ) as ::core::ffi::c_uint)
+                        .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                        as crate::stdlib::uint32_t;
+                    *edge.offset(32 as ::core::ffi::c_int as isize) = *src.offset(
+                        (7 as ::core::ffi::c_int
+                            + -(1 as ::core::ffi::c_int) * crate::src::common::common::FDEC_STRIDE)
+                            as isize,
+                    );
+                }
             }
         }
     }
 }
-#[c2rust::src_loc = "700:1"]
-unsafe extern "C" fn predict_8x8_dc_128_c(mut src: *mut pixel, mut _edge: *mut pixel) {
-    let mut y: c_int = 0;
-    while y < 8 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = (((1) << 10 - 1) as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong)
-            as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "704:1"]
-unsafe extern "C" fn predict_8x8_dc_left_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut l0: c_int = *edge.offset((14 - 0) as isize) as c_int;
-    let mut l1: c_int = *edge.offset((14 - 1) as isize) as c_int;
-    let mut l2: c_int = *edge.offset((14 - 2) as isize) as c_int;
-    let mut l3: c_int = *edge.offset((14 - 3) as isize) as c_int;
-    let mut l4: c_int = *edge.offset((14 - 4) as isize) as c_int;
-    let mut l5: c_int = *edge.offset((14 - 5) as isize) as c_int;
-    let mut l6: c_int = *edge.offset((14 - 6) as isize) as c_int;
-    let mut l7: c_int = *edge.offset((14 - 7) as isize) as c_int;
-    let mut dc: pixel4 = ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + 4 >> 3) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y: c_int = 0;
-    while y < 8 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "710:1"]
-unsafe extern "C" fn predict_8x8_dc_top_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut t0: c_int = *edge.offset((16 + 0) as isize) as c_int;
-    let mut t1: c_int = *edge.offset((16 + 1) as isize) as c_int;
-    let mut t2: c_int = *edge.offset((16 + 2) as isize) as c_int;
-    let mut t3: c_int = *edge.offset((16 + 3) as isize) as c_int;
-    let mut t4: c_int = *edge.offset((16 + 4) as isize) as c_int;
-    let mut t5: c_int = *edge.offset((16 + 5) as isize) as c_int;
-    let mut t6: c_int = *edge.offset((16 + 6) as isize) as c_int;
-    let mut t7: c_int = *edge.offset((16 + 7) as isize) as c_int;
-    let mut dc: pixel4 = ((t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 4 >> 3) as c_ulonglong)
-        .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y: c_int = 0;
-    while y < 8 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "716:1"]
-unsafe extern "C" fn x264_10_predict_8x8_dc_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut l0: c_int = *edge.offset((14 - 0) as isize) as c_int;
-    let mut l1: c_int = *edge.offset((14 - 1) as isize) as c_int;
-    let mut l2: c_int = *edge.offset((14 - 2) as isize) as c_int;
-    let mut l3: c_int = *edge.offset((14 - 3) as isize) as c_int;
-    let mut l4: c_int = *edge.offset((14 - 4) as isize) as c_int;
-    let mut l5: c_int = *edge.offset((14 - 5) as isize) as c_int;
-    let mut l6: c_int = *edge.offset((14 - 6) as isize) as c_int;
-    let mut l7: c_int = *edge.offset((14 - 7) as isize) as c_int;
-    let mut t0: c_int = *edge.offset((16 + 0) as isize) as c_int;
-    let mut t1: c_int = *edge.offset((16 + 1) as isize) as c_int;
-    let mut t2: c_int = *edge.offset((16 + 2) as isize) as c_int;
-    let mut t3: c_int = *edge.offset((16 + 3) as isize) as c_int;
-    let mut t4: c_int = *edge.offset((16 + 4) as isize) as c_int;
-    let mut t5: c_int = *edge.offset((16 + 5) as isize) as c_int;
-    let mut t6: c_int = *edge.offset((16 + 6) as isize) as c_int;
-    let mut t7: c_int = *edge.offset((16 + 7) as isize) as c_int;
-    let mut dc: pixel4 =
-        ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 8 >> 4)
-            as c_ulonglong)
-            .wrapping_mul(0x1000100010001 as c_ulonglong) as pixel4;
-    let mut y: c_int = 0;
-    while y < 8 {
-        (*(src.offset(0) as *mut x264_union64_t)).i = dc as uint64_t;
-        (*(src.offset(4) as *mut x264_union64_t)).i = dc as uint64_t;
-        src = src.offset(FDEC_STRIDE as isize);
-        y += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "723:1"]
-unsafe extern "C" fn x264_10_predict_8x8_h_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut l0: c_int = *edge.offset((14 - 0) as isize) as c_int;
-    let mut l1: c_int = *edge.offset((14 - 1) as isize) as c_int;
-    let mut l2: c_int = *edge.offset((14 - 2) as isize) as c_int;
-    let mut l3: c_int = *edge.offset((14 - 3) as isize) as c_int;
-    let mut l4: c_int = *edge.offset((14 - 4) as isize) as c_int;
-    let mut l5: c_int = *edge.offset((14 - 5) as isize) as c_int;
-    let mut l6: c_int = *edge.offset((14 - 6) as isize) as c_int;
-    let mut l7: c_int = *edge.offset((14 - 7) as isize) as c_int;
-    let ref mut fresh0 = (*(src.offset((0 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh0 = (l0 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((0 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh0;
-    let ref mut fresh1 = (*(src.offset((1 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh1 = (l1 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((1 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh1;
-    let ref mut fresh2 = (*(src.offset((2 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh2 = (l2 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((2 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh2;
-    let ref mut fresh3 = (*(src.offset((3 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh3 = (l3 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((3 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh3;
-    let ref mut fresh4 = (*(src.offset((4 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh4 = (l4 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((4 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh4;
-    let ref mut fresh5 = (*(src.offset((5 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh5 = (l5 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((5 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh5;
-    let ref mut fresh6 = (*(src.offset((6 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh6 = (l6 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((6 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh6;
-    let ref mut fresh7 = (*(src.offset((7 * 32) as isize).offset(4) as *mut x264_union64_t)).i;
-    *fresh7 = (l7 as c_ulonglong).wrapping_mul(0x1000100010001 as c_ulonglong) as uint64_t;
-    (*(src.offset((7 * 32) as isize).offset(0) as *mut x264_union64_t)).i = *fresh7;
-}
-#[no_mangle]
-#[c2rust::src_loc = "731:1"]
-unsafe extern "C" fn x264_10_predict_8x8_v_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut top: [pixel4; 2] = [
-        (*(edge.offset(16 as isize) as *mut x264_union64_t)).i,
-        (*(edge.offset(20 as isize) as *mut x264_union64_t)).i,
-    ];
-    let mut y: c_int = 0;
-    while y < 8 {
-        (*(src.offset((y * 32) as isize).offset(0) as *mut x264_union64_t)).i = top[0] as uint64_t;
-        (*(src.offset((y * 32) as isize).offset(4) as *mut x264_union64_t)).i = top[1] as uint64_t;
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "741:1"]
-unsafe extern "C" fn predict_8x8_ddl_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut t0: c_int = *edge.offset((16 + 0) as isize) as c_int;
-    let mut t1: c_int = *edge.offset((16 + 1) as isize) as c_int;
-    let mut t2: c_int = *edge.offset((16 + 2) as isize) as c_int;
-    let mut t3: c_int = *edge.offset((16 + 3) as isize) as c_int;
-    let mut t4: c_int = *edge.offset((16 + 4) as isize) as c_int;
-    let mut t5: c_int = *edge.offset((16 + 5) as isize) as c_int;
-    let mut t6: c_int = *edge.offset((16 + 6) as isize) as c_int;
-    let mut t7: c_int = *edge.offset((16 + 7) as isize) as c_int;
-    let mut t8: c_int = *edge.offset((16 + 8) as isize) as c_int;
-    let mut t9: c_int = *edge.offset((16 + 9) as isize) as c_int;
-    let mut t10: c_int = *edge.offset((16 + 10) as isize) as c_int;
-    let mut t11: c_int = *edge.offset((16 + 11) as isize) as c_int;
-    let mut t12: c_int = *edge.offset((16 + 12) as isize) as c_int;
-    let mut t13: c_int = *edge.offset((16 + 13) as isize) as c_int;
-    let mut t14: c_int = *edge.offset((16 + 14) as isize) as c_int;
-    let mut t15: c_int = *edge.offset((16 + 15) as isize) as c_int;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = (t0 + 2 * t1 + t2 + 2 >> 2) as pixel;
-    let ref mut fresh262 = *src.offset((1 + 0 * FDEC_STRIDE) as isize);
-    *fresh262 = (t1 + 2 * t2 + t3 + 2 >> 2) as pixel;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = *fresh262;
-    let ref mut fresh263 = *src.offset((2 + 0 * FDEC_STRIDE) as isize);
-    *fresh263 = (t2 + 2 * t3 + t4 + 2 >> 2) as pixel;
-    let ref mut fresh264 = *src.offset((1 + 1 * FDEC_STRIDE) as isize);
-    *fresh264 = *fresh263;
-    *src.offset((0 + 2 * FDEC_STRIDE) as isize) = *fresh264;
-    let ref mut fresh265 = *src.offset((3 + 0 * FDEC_STRIDE) as isize);
-    *fresh265 = (t3 + 2 * t4 + t5 + 2 >> 2) as pixel;
-    let ref mut fresh266 = *src.offset((2 + 1 * FDEC_STRIDE) as isize);
-    *fresh266 = *fresh265;
-    let ref mut fresh267 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh267 = *fresh266;
-    *src.offset((0 + 3 * FDEC_STRIDE) as isize) = *fresh267;
-    let ref mut fresh268 = *src.offset((4 + 0 * FDEC_STRIDE) as isize);
-    *fresh268 = (t4 + 2 * t5 + t6 + 2 >> 2) as pixel;
-    let ref mut fresh269 = *src.offset((3 + 1 * FDEC_STRIDE) as isize);
-    *fresh269 = *fresh268;
-    let ref mut fresh270 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh270 = *fresh269;
-    let ref mut fresh271 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh271 = *fresh270;
-    *src.offset((0 + 4 * FDEC_STRIDE) as isize) = *fresh271;
-    let ref mut fresh272 = *src.offset((5 + 0 * FDEC_STRIDE) as isize);
-    *fresh272 = (t5 + 2 * t6 + t7 + 2 >> 2) as pixel;
-    let ref mut fresh273 = *src.offset((4 + 1 * FDEC_STRIDE) as isize);
-    *fresh273 = *fresh272;
-    let ref mut fresh274 = *src.offset((3 + 2 * FDEC_STRIDE) as isize);
-    *fresh274 = *fresh273;
-    let ref mut fresh275 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh275 = *fresh274;
-    let ref mut fresh276 = *src.offset((1 + 4 * FDEC_STRIDE) as isize);
-    *fresh276 = *fresh275;
-    *src.offset((0 + 5 * FDEC_STRIDE) as isize) = *fresh276;
-    let ref mut fresh277 = *src.offset((6 + 0 * FDEC_STRIDE) as isize);
-    *fresh277 = (t6 + 2 * t7 + t8 + 2 >> 2) as pixel;
-    let ref mut fresh278 = *src.offset((5 + 1 * FDEC_STRIDE) as isize);
-    *fresh278 = *fresh277;
-    let ref mut fresh279 = *src.offset((4 + 2 * FDEC_STRIDE) as isize);
-    *fresh279 = *fresh278;
-    let ref mut fresh280 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh280 = *fresh279;
-    let ref mut fresh281 = *src.offset((2 + 4 * FDEC_STRIDE) as isize);
-    *fresh281 = *fresh280;
-    let ref mut fresh282 = *src.offset((1 + 5 * FDEC_STRIDE) as isize);
-    *fresh282 = *fresh281;
-    *src.offset((0 + 6 * FDEC_STRIDE) as isize) = *fresh282;
-    let ref mut fresh283 = *src.offset((7 + 0 * FDEC_STRIDE) as isize);
-    *fresh283 = (t7 + 2 * t8 + t9 + 2 >> 2) as pixel;
-    let ref mut fresh284 = *src.offset((6 + 1 * FDEC_STRIDE) as isize);
-    *fresh284 = *fresh283;
-    let ref mut fresh285 = *src.offset((5 + 2 * FDEC_STRIDE) as isize);
-    *fresh285 = *fresh284;
-    let ref mut fresh286 = *src.offset((4 + 3 * FDEC_STRIDE) as isize);
-    *fresh286 = *fresh285;
-    let ref mut fresh287 = *src.offset((3 + 4 * FDEC_STRIDE) as isize);
-    *fresh287 = *fresh286;
-    let ref mut fresh288 = *src.offset((2 + 5 * FDEC_STRIDE) as isize);
-    *fresh288 = *fresh287;
-    let ref mut fresh289 = *src.offset((1 + 6 * FDEC_STRIDE) as isize);
-    *fresh289 = *fresh288;
-    *src.offset((0 + 7 * FDEC_STRIDE) as isize) = *fresh289;
-    let ref mut fresh290 = *src.offset((7 + 1 * FDEC_STRIDE) as isize);
-    *fresh290 = (t8 + 2 * t9 + t10 + 2 >> 2) as pixel;
-    let ref mut fresh291 = *src.offset((6 + 2 * FDEC_STRIDE) as isize);
-    *fresh291 = *fresh290;
-    let ref mut fresh292 = *src.offset((5 + 3 * FDEC_STRIDE) as isize);
-    *fresh292 = *fresh291;
-    let ref mut fresh293 = *src.offset((4 + 4 * FDEC_STRIDE) as isize);
-    *fresh293 = *fresh292;
-    let ref mut fresh294 = *src.offset((3 + 5 * FDEC_STRIDE) as isize);
-    *fresh294 = *fresh293;
-    let ref mut fresh295 = *src.offset((2 + 6 * FDEC_STRIDE) as isize);
-    *fresh295 = *fresh294;
-    *src.offset((1 + 7 * FDEC_STRIDE) as isize) = *fresh295;
-    let ref mut fresh296 = *src.offset((7 + 2 * FDEC_STRIDE) as isize);
-    *fresh296 = (t9 + 2 * t10 + t11 + 2 >> 2) as pixel;
-    let ref mut fresh297 = *src.offset((6 + 3 * FDEC_STRIDE) as isize);
-    *fresh297 = *fresh296;
-    let ref mut fresh298 = *src.offset((5 + 4 * FDEC_STRIDE) as isize);
-    *fresh298 = *fresh297;
-    let ref mut fresh299 = *src.offset((4 + 5 * FDEC_STRIDE) as isize);
-    *fresh299 = *fresh298;
-    let ref mut fresh300 = *src.offset((3 + 6 * FDEC_STRIDE) as isize);
-    *fresh300 = *fresh299;
-    *src.offset((2 + 7 * FDEC_STRIDE) as isize) = *fresh300;
-    let ref mut fresh301 = *src.offset((7 + 3 * FDEC_STRIDE) as isize);
-    *fresh301 = (t10 + 2 * t11 + t12 + 2 >> 2) as pixel;
-    let ref mut fresh302 = *src.offset((6 + 4 * FDEC_STRIDE) as isize);
-    *fresh302 = *fresh301;
-    let ref mut fresh303 = *src.offset((5 + 5 * FDEC_STRIDE) as isize);
-    *fresh303 = *fresh302;
-    let ref mut fresh304 = *src.offset((4 + 6 * FDEC_STRIDE) as isize);
-    *fresh304 = *fresh303;
-    *src.offset((3 + 7 * FDEC_STRIDE) as isize) = *fresh304;
-    let ref mut fresh305 = *src.offset((7 + 4 * FDEC_STRIDE) as isize);
-    *fresh305 = (t11 + 2 * t12 + t13 + 2 >> 2) as pixel;
-    let ref mut fresh306 = *src.offset((6 + 5 * FDEC_STRIDE) as isize);
-    *fresh306 = *fresh305;
-    let ref mut fresh307 = *src.offset((5 + 6 * FDEC_STRIDE) as isize);
-    *fresh307 = *fresh306;
-    *src.offset((4 + 7 * FDEC_STRIDE) as isize) = *fresh307;
-    let ref mut fresh308 = *src.offset((7 + 5 * FDEC_STRIDE) as isize);
-    *fresh308 = (t12 + 2 * t13 + t14 + 2 >> 2) as pixel;
-    let ref mut fresh309 = *src.offset((6 + 6 * FDEC_STRIDE) as isize);
-    *fresh309 = *fresh308;
-    *src.offset((5 + 7 * FDEC_STRIDE) as isize) = *fresh309;
-    let ref mut fresh310 = *src.offset((7 + 6 * FDEC_STRIDE) as isize);
-    *fresh310 = (t13 + 2 * t14 + t15 + 2 >> 2) as pixel;
-    *src.offset((6 + 7 * FDEC_STRIDE) as isize) = *fresh310;
-    *src.offset((7 + 7 * FDEC_STRIDE) as isize) = (t14 + 2 * t15 + t15 + 2 >> 2) as pixel;
-}
-#[c2rust::src_loc = "761:1"]
-unsafe extern "C" fn predict_8x8_ddr_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut t0: c_int = *edge.offset((16 + 0) as isize) as c_int;
-    let mut t1: c_int = *edge.offset((16 + 1) as isize) as c_int;
-    let mut t2: c_int = *edge.offset((16 + 2) as isize) as c_int;
-    let mut t3: c_int = *edge.offset((16 + 3) as isize) as c_int;
-    let mut t4: c_int = *edge.offset((16 + 4) as isize) as c_int;
-    let mut t5: c_int = *edge.offset((16 + 5) as isize) as c_int;
-    let mut t6: c_int = *edge.offset((16 + 6) as isize) as c_int;
-    let mut t7: c_int = *edge.offset((16 + 7) as isize) as c_int;
-    let mut l0: c_int = *edge.offset((14 - 0) as isize) as c_int;
-    let mut l1: c_int = *edge.offset((14 - 1) as isize) as c_int;
-    let mut l2: c_int = *edge.offset((14 - 2) as isize) as c_int;
-    let mut l3: c_int = *edge.offset((14 - 3) as isize) as c_int;
-    let mut l4: c_int = *edge.offset((14 - 4) as isize) as c_int;
-    let mut l5: c_int = *edge.offset((14 - 5) as isize) as c_int;
-    let mut l6: c_int = *edge.offset((14 - 6) as isize) as c_int;
-    let mut l7: c_int = *edge.offset((14 - 7) as isize) as c_int;
-    let mut lt: c_int = *edge.offset(15 as isize) as c_int;
-    *src.offset((0 + 7 * FDEC_STRIDE) as isize) = (l7 + 2 * l6 + l5 + 2 >> 2) as pixel;
-    let ref mut fresh213 = *src.offset((1 + 7 * FDEC_STRIDE) as isize);
-    *fresh213 = (l6 + 2 * l5 + l4 + 2 >> 2) as pixel;
-    *src.offset((0 + 6 * FDEC_STRIDE) as isize) = *fresh213;
-    let ref mut fresh214 = *src.offset((2 + 7 * FDEC_STRIDE) as isize);
-    *fresh214 = (l5 + 2 * l4 + l3 + 2 >> 2) as pixel;
-    let ref mut fresh215 = *src.offset((1 + 6 * FDEC_STRIDE) as isize);
-    *fresh215 = *fresh214;
-    *src.offset((0 + 5 * FDEC_STRIDE) as isize) = *fresh215;
-    let ref mut fresh216 = *src.offset((3 + 7 * FDEC_STRIDE) as isize);
-    *fresh216 = (l4 + 2 * l3 + l2 + 2 >> 2) as pixel;
-    let ref mut fresh217 = *src.offset((2 + 6 * FDEC_STRIDE) as isize);
-    *fresh217 = *fresh216;
-    let ref mut fresh218 = *src.offset((1 + 5 * FDEC_STRIDE) as isize);
-    *fresh218 = *fresh217;
-    *src.offset((0 + 4 * FDEC_STRIDE) as isize) = *fresh218;
-    let ref mut fresh219 = *src.offset((4 + 7 * FDEC_STRIDE) as isize);
-    *fresh219 = (l3 + 2 * l2 + l1 + 2 >> 2) as pixel;
-    let ref mut fresh220 = *src.offset((3 + 6 * FDEC_STRIDE) as isize);
-    *fresh220 = *fresh219;
-    let ref mut fresh221 = *src.offset((2 + 5 * FDEC_STRIDE) as isize);
-    *fresh221 = *fresh220;
-    let ref mut fresh222 = *src.offset((1 + 4 * FDEC_STRIDE) as isize);
-    *fresh222 = *fresh221;
-    *src.offset((0 + 3 * FDEC_STRIDE) as isize) = *fresh222;
-    let ref mut fresh223 = *src.offset((5 + 7 * FDEC_STRIDE) as isize);
-    *fresh223 = (l2 + 2 * l1 + l0 + 2 >> 2) as pixel;
-    let ref mut fresh224 = *src.offset((4 + 6 * FDEC_STRIDE) as isize);
-    *fresh224 = *fresh223;
-    let ref mut fresh225 = *src.offset((3 + 5 * FDEC_STRIDE) as isize);
-    *fresh225 = *fresh224;
-    let ref mut fresh226 = *src.offset((2 + 4 * FDEC_STRIDE) as isize);
-    *fresh226 = *fresh225;
-    let ref mut fresh227 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh227 = *fresh226;
-    *src.offset((0 + 2 * FDEC_STRIDE) as isize) = *fresh227;
-    let ref mut fresh228 = *src.offset((6 + 7 * FDEC_STRIDE) as isize);
-    *fresh228 = (l1 + 2 * l0 + lt + 2 >> 2) as pixel;
-    let ref mut fresh229 = *src.offset((5 + 6 * FDEC_STRIDE) as isize);
-    *fresh229 = *fresh228;
-    let ref mut fresh230 = *src.offset((4 + 5 * FDEC_STRIDE) as isize);
-    *fresh230 = *fresh229;
-    let ref mut fresh231 = *src.offset((3 + 4 * FDEC_STRIDE) as isize);
-    *fresh231 = *fresh230;
-    let ref mut fresh232 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh232 = *fresh231;
-    let ref mut fresh233 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh233 = *fresh232;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = *fresh233;
-    let ref mut fresh234 = *src.offset((7 + 7 * FDEC_STRIDE) as isize);
-    *fresh234 = (l0 + 2 * lt + t0 + 2 >> 2) as pixel;
-    let ref mut fresh235 = *src.offset((6 + 6 * FDEC_STRIDE) as isize);
-    *fresh235 = *fresh234;
-    let ref mut fresh236 = *src.offset((5 + 5 * FDEC_STRIDE) as isize);
-    *fresh236 = *fresh235;
-    let ref mut fresh237 = *src.offset((4 + 4 * FDEC_STRIDE) as isize);
-    *fresh237 = *fresh236;
-    let ref mut fresh238 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh238 = *fresh237;
-    let ref mut fresh239 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh239 = *fresh238;
-    let ref mut fresh240 = *src.offset((1 + 1 * FDEC_STRIDE) as isize);
-    *fresh240 = *fresh239;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = *fresh240;
-    let ref mut fresh241 = *src.offset((7 + 6 * FDEC_STRIDE) as isize);
-    *fresh241 = (lt + 2 * t0 + t1 + 2 >> 2) as pixel;
-    let ref mut fresh242 = *src.offset((6 + 5 * FDEC_STRIDE) as isize);
-    *fresh242 = *fresh241;
-    let ref mut fresh243 = *src.offset((5 + 4 * FDEC_STRIDE) as isize);
-    *fresh243 = *fresh242;
-    let ref mut fresh244 = *src.offset((4 + 3 * FDEC_STRIDE) as isize);
-    *fresh244 = *fresh243;
-    let ref mut fresh245 = *src.offset((3 + 2 * FDEC_STRIDE) as isize);
-    *fresh245 = *fresh244;
-    let ref mut fresh246 = *src.offset((2 + 1 * FDEC_STRIDE) as isize);
-    *fresh246 = *fresh245;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = *fresh246;
-    let ref mut fresh247 = *src.offset((7 + 5 * FDEC_STRIDE) as isize);
-    *fresh247 = (t0 + 2 * t1 + t2 + 2 >> 2) as pixel;
-    let ref mut fresh248 = *src.offset((6 + 4 * FDEC_STRIDE) as isize);
-    *fresh248 = *fresh247;
-    let ref mut fresh249 = *src.offset((5 + 3 * FDEC_STRIDE) as isize);
-    *fresh249 = *fresh248;
-    let ref mut fresh250 = *src.offset((4 + 2 * FDEC_STRIDE) as isize);
-    *fresh250 = *fresh249;
-    let ref mut fresh251 = *src.offset((3 + 1 * FDEC_STRIDE) as isize);
-    *fresh251 = *fresh250;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = *fresh251;
-    let ref mut fresh252 = *src.offset((7 + 4 * FDEC_STRIDE) as isize);
-    *fresh252 = (t1 + 2 * t2 + t3 + 2 >> 2) as pixel;
-    let ref mut fresh253 = *src.offset((6 + 3 * FDEC_STRIDE) as isize);
-    *fresh253 = *fresh252;
-    let ref mut fresh254 = *src.offset((5 + 2 * FDEC_STRIDE) as isize);
-    *fresh254 = *fresh253;
-    let ref mut fresh255 = *src.offset((4 + 1 * FDEC_STRIDE) as isize);
-    *fresh255 = *fresh254;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = *fresh255;
-    let ref mut fresh256 = *src.offset((7 + 3 * FDEC_STRIDE) as isize);
-    *fresh256 = (t2 + 2 * t3 + t4 + 2 >> 2) as pixel;
-    let ref mut fresh257 = *src.offset((6 + 2 * FDEC_STRIDE) as isize);
-    *fresh257 = *fresh256;
-    let ref mut fresh258 = *src.offset((5 + 1 * FDEC_STRIDE) as isize);
-    *fresh258 = *fresh257;
-    *src.offset((4 + 0 * FDEC_STRIDE) as isize) = *fresh258;
-    let ref mut fresh259 = *src.offset((7 + 2 * FDEC_STRIDE) as isize);
-    *fresh259 = (t3 + 2 * t4 + t5 + 2 >> 2) as pixel;
-    let ref mut fresh260 = *src.offset((6 + 1 * FDEC_STRIDE) as isize);
-    *fresh260 = *fresh259;
-    *src.offset((5 + 0 * FDEC_STRIDE) as isize) = *fresh260;
-    let ref mut fresh261 = *src.offset((7 + 1 * FDEC_STRIDE) as isize);
-    *fresh261 = (t4 + 2 * t5 + t6 + 2 >> 2) as pixel;
-    *src.offset((6 + 0 * FDEC_STRIDE) as isize) = *fresh261;
-    *src.offset((7 + 0 * FDEC_STRIDE) as isize) = (t5 + 2 * t6 + t7 + 2 >> 2) as pixel;
-}
-#[c2rust::src_loc = "783:1"]
-unsafe extern "C" fn predict_8x8_vr_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut t0: c_int = *edge.offset((16 + 0) as isize) as c_int;
-    let mut t1: c_int = *edge.offset((16 + 1) as isize) as c_int;
-    let mut t2: c_int = *edge.offset((16 + 2) as isize) as c_int;
-    let mut t3: c_int = *edge.offset((16 + 3) as isize) as c_int;
-    let mut t4: c_int = *edge.offset((16 + 4) as isize) as c_int;
-    let mut t5: c_int = *edge.offset((16 + 5) as isize) as c_int;
-    let mut t6: c_int = *edge.offset((16 + 6) as isize) as c_int;
-    let mut t7: c_int = *edge.offset((16 + 7) as isize) as c_int;
-    let mut l0: c_int = *edge.offset((14 - 0) as isize) as c_int;
-    let mut l1: c_int = *edge.offset((14 - 1) as isize) as c_int;
-    let mut l2: c_int = *edge.offset((14 - 2) as isize) as c_int;
-    let mut l3: c_int = *edge.offset((14 - 3) as isize) as c_int;
-    let mut l4: c_int = *edge.offset((14 - 4) as isize) as c_int;
-    let mut l5: c_int = *edge.offset((14 - 5) as isize) as c_int;
-    let mut l6: c_int = *edge.offset((14 - 6) as isize) as c_int;
-    let mut _l7: c_int = *edge.offset((14 - 7) as isize) as c_int;
-    let mut lt: c_int = *edge.offset(15 as isize) as c_int;
-    *src.offset((0 + 6 * FDEC_STRIDE) as isize) = (l5 + 2 * l4 + l3 + 2 >> 2) as pixel;
-    *src.offset((0 + 7 * FDEC_STRIDE) as isize) = (l6 + 2 * l5 + l4 + 2 >> 2) as pixel;
-    let ref mut fresh171 = *src.offset((1 + 6 * FDEC_STRIDE) as isize);
-    *fresh171 = (l3 + 2 * l2 + l1 + 2 >> 2) as pixel;
-    *src.offset((0 + 4 * FDEC_STRIDE) as isize) = *fresh171;
-    let ref mut fresh172 = *src.offset((1 + 7 * FDEC_STRIDE) as isize);
-    *fresh172 = (l4 + 2 * l3 + l2 + 2 >> 2) as pixel;
-    *src.offset((0 + 5 * FDEC_STRIDE) as isize) = *fresh172;
-    let ref mut fresh173 = *src.offset((2 + 6 * FDEC_STRIDE) as isize);
-    *fresh173 = (l1 + 2 * l0 + lt + 2 >> 2) as pixel;
-    let ref mut fresh174 = *src.offset((1 + 4 * FDEC_STRIDE) as isize);
-    *fresh174 = *fresh173;
-    *src.offset((0 + 2 * FDEC_STRIDE) as isize) = *fresh174;
-    let ref mut fresh175 = *src.offset((2 + 7 * FDEC_STRIDE) as isize);
-    *fresh175 = (l2 + 2 * l1 + l0 + 2 >> 2) as pixel;
-    let ref mut fresh176 = *src.offset((1 + 5 * FDEC_STRIDE) as isize);
-    *fresh176 = *fresh175;
-    *src.offset((0 + 3 * FDEC_STRIDE) as isize) = *fresh176;
-    let ref mut fresh177 = *src.offset((3 + 7 * FDEC_STRIDE) as isize);
-    *fresh177 = (l0 + 2 * lt + t0 + 2 >> 2) as pixel;
-    let ref mut fresh178 = *src.offset((2 + 5 * FDEC_STRIDE) as isize);
-    *fresh178 = *fresh177;
-    let ref mut fresh179 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh179 = *fresh178;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = *fresh179;
-    let ref mut fresh180 = *src.offset((3 + 6 * FDEC_STRIDE) as isize);
-    *fresh180 = (lt + t0 + 1 >> 1) as pixel;
-    let ref mut fresh181 = *src.offset((2 + 4 * FDEC_STRIDE) as isize);
-    *fresh181 = *fresh180;
-    let ref mut fresh182 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh182 = *fresh181;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = *fresh182;
-    let ref mut fresh183 = *src.offset((4 + 7 * FDEC_STRIDE) as isize);
-    *fresh183 = (lt + 2 * t0 + t1 + 2 >> 2) as pixel;
-    let ref mut fresh184 = *src.offset((3 + 5 * FDEC_STRIDE) as isize);
-    *fresh184 = *fresh183;
-    let ref mut fresh185 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh185 = *fresh184;
-    *src.offset((1 + 1 * FDEC_STRIDE) as isize) = *fresh185;
-    let ref mut fresh186 = *src.offset((4 + 6 * FDEC_STRIDE) as isize);
-    *fresh186 = (t0 + t1 + 1 >> 1) as pixel;
-    let ref mut fresh187 = *src.offset((3 + 4 * FDEC_STRIDE) as isize);
-    *fresh187 = *fresh186;
-    let ref mut fresh188 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh188 = *fresh187;
-    *src.offset((1 + 0 * FDEC_STRIDE) as isize) = *fresh188;
-    let ref mut fresh189 = *src.offset((5 + 7 * FDEC_STRIDE) as isize);
-    *fresh189 = (t0 + 2 * t1 + t2 + 2 >> 2) as pixel;
-    let ref mut fresh190 = *src.offset((4 + 5 * FDEC_STRIDE) as isize);
-    *fresh190 = *fresh189;
-    let ref mut fresh191 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh191 = *fresh190;
-    *src.offset((2 + 1 * FDEC_STRIDE) as isize) = *fresh191;
-    let ref mut fresh192 = *src.offset((5 + 6 * FDEC_STRIDE) as isize);
-    *fresh192 = (t1 + t2 + 1 >> 1) as pixel;
-    let ref mut fresh193 = *src.offset((4 + 4 * FDEC_STRIDE) as isize);
-    *fresh193 = *fresh192;
-    let ref mut fresh194 = *src.offset((3 + 2 * FDEC_STRIDE) as isize);
-    *fresh194 = *fresh193;
-    *src.offset((2 + 0 * FDEC_STRIDE) as isize) = *fresh194;
-    let ref mut fresh195 = *src.offset((6 + 7 * FDEC_STRIDE) as isize);
-    *fresh195 = (t1 + 2 * t2 + t3 + 2 >> 2) as pixel;
-    let ref mut fresh196 = *src.offset((5 + 5 * FDEC_STRIDE) as isize);
-    *fresh196 = *fresh195;
-    let ref mut fresh197 = *src.offset((4 + 3 * FDEC_STRIDE) as isize);
-    *fresh197 = *fresh196;
-    *src.offset((3 + 1 * FDEC_STRIDE) as isize) = *fresh197;
-    let ref mut fresh198 = *src.offset((6 + 6 * FDEC_STRIDE) as isize);
-    *fresh198 = (t2 + t3 + 1 >> 1) as pixel;
-    let ref mut fresh199 = *src.offset((5 + 4 * FDEC_STRIDE) as isize);
-    *fresh199 = *fresh198;
-    let ref mut fresh200 = *src.offset((4 + 2 * FDEC_STRIDE) as isize);
-    *fresh200 = *fresh199;
-    *src.offset((3 + 0 * FDEC_STRIDE) as isize) = *fresh200;
-    let ref mut fresh201 = *src.offset((7 + 7 * FDEC_STRIDE) as isize);
-    *fresh201 = (t2 + 2 * t3 + t4 + 2 >> 2) as pixel;
-    let ref mut fresh202 = *src.offset((6 + 5 * FDEC_STRIDE) as isize);
-    *fresh202 = *fresh201;
-    let ref mut fresh203 = *src.offset((5 + 3 * FDEC_STRIDE) as isize);
-    *fresh203 = *fresh202;
-    *src.offset((4 + 1 * FDEC_STRIDE) as isize) = *fresh203;
-    let ref mut fresh204 = *src.offset((7 + 6 * FDEC_STRIDE) as isize);
-    *fresh204 = (t3 + t4 + 1 >> 1) as pixel;
-    let ref mut fresh205 = *src.offset((6 + 4 * FDEC_STRIDE) as isize);
-    *fresh205 = *fresh204;
-    let ref mut fresh206 = *src.offset((5 + 2 * FDEC_STRIDE) as isize);
-    *fresh206 = *fresh205;
-    *src.offset((4 + 0 * FDEC_STRIDE) as isize) = *fresh206;
-    let ref mut fresh207 = *src.offset((7 + 5 * FDEC_STRIDE) as isize);
-    *fresh207 = (t3 + 2 * t4 + t5 + 2 >> 2) as pixel;
-    let ref mut fresh208 = *src.offset((6 + 3 * FDEC_STRIDE) as isize);
-    *fresh208 = *fresh207;
-    *src.offset((5 + 1 * FDEC_STRIDE) as isize) = *fresh208;
-    let ref mut fresh209 = *src.offset((7 + 4 * FDEC_STRIDE) as isize);
-    *fresh209 = (t4 + t5 + 1 >> 1) as pixel;
-    let ref mut fresh210 = *src.offset((6 + 2 * FDEC_STRIDE) as isize);
-    *fresh210 = *fresh209;
-    *src.offset((5 + 0 * FDEC_STRIDE) as isize) = *fresh210;
-    let ref mut fresh211 = *src.offset((7 + 3 * FDEC_STRIDE) as isize);
-    *fresh211 = (t4 + 2 * t5 + t6 + 2 >> 2) as pixel;
-    *src.offset((6 + 1 * FDEC_STRIDE) as isize) = *fresh211;
-    let ref mut fresh212 = *src.offset((7 + 2 * FDEC_STRIDE) as isize);
-    *fresh212 = (t5 + t6 + 1 >> 1) as pixel;
-    *src.offset((6 + 0 * FDEC_STRIDE) as isize) = *fresh212;
-    *src.offset((7 + 1 * FDEC_STRIDE) as isize) = (t5 + 2 * t6 + t7 + 2 >> 2) as pixel;
-    *src.offset((7 + 0 * FDEC_STRIDE) as isize) = (t6 + t7 + 1 >> 1) as pixel;
-}
-#[c2rust::src_loc = "811:1"]
-unsafe extern "C" fn predict_8x8_hd_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut t0: c_int = *edge.offset((16 + 0) as isize) as c_int;
-    let mut t1: c_int = *edge.offset((16 + 1) as isize) as c_int;
-    let mut t2: c_int = *edge.offset((16 + 2) as isize) as c_int;
-    let mut t3: c_int = *edge.offset((16 + 3) as isize) as c_int;
-    let mut t4: c_int = *edge.offset((16 + 4) as isize) as c_int;
-    let mut t5: c_int = *edge.offset((16 + 5) as isize) as c_int;
-    let mut t6: c_int = *edge.offset((16 + 6) as isize) as c_int;
-    let mut _t7: c_int = *edge.offset((16 + 7) as isize) as c_int;
-    let mut l0: c_int = *edge.offset((14 - 0) as isize) as c_int;
-    let mut l1: c_int = *edge.offset((14 - 1) as isize) as c_int;
-    let mut l2: c_int = *edge.offset((14 - 2) as isize) as c_int;
-    let mut l3: c_int = *edge.offset((14 - 3) as isize) as c_int;
-    let mut l4: c_int = *edge.offset((14 - 4) as isize) as c_int;
-    let mut l5: c_int = *edge.offset((14 - 5) as isize) as c_int;
-    let mut l6: c_int = *edge.offset((14 - 6) as isize) as c_int;
-    let mut l7: c_int = *edge.offset((14 - 7) as isize) as c_int;
-    let mut lt: c_int = *edge.offset(15 as isize) as c_int;
-    let mut p1: c_int = pack16to32(
-        (l6 + l7 + 1 >> 1) as uint32_t,
-        (l5 + 2 * l6 + l7 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p2: c_int = pack16to32(
-        (l5 + l6 + 1 >> 1) as uint32_t,
-        (l4 + 2 * l5 + l6 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p3: c_int = pack16to32(
-        (l4 + l5 + 1 >> 1) as uint32_t,
-        (l3 + 2 * l4 + l5 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p4: c_int = pack16to32(
-        (l3 + l4 + 1 >> 1) as uint32_t,
-        (l2 + 2 * l3 + l4 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p5: c_int = pack16to32(
-        (l2 + l3 + 1 >> 1) as uint32_t,
-        (l1 + 2 * l2 + l3 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p6: c_int = pack16to32(
-        (l1 + l2 + 1 >> 1) as uint32_t,
-        (l0 + 2 * l1 + l2 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p7: c_int = pack16to32(
-        (l0 + l1 + 1 >> 1) as uint32_t,
-        (lt + 2 * l0 + l1 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p8: c_int = pack16to32(
-        (lt + l0 + 1 >> 1) as uint32_t,
-        (l0 + 2 * lt + t0 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p9: c_int = pack16to32(
-        (t1 + 2 * t0 + lt + 2 >> 2) as uint32_t,
-        (t2 + 2 * t1 + t0 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p10: c_int = pack16to32(
-        (t3 + 2 * t2 + t1 + 2 >> 2) as uint32_t,
-        (t4 + 2 * t3 + t2 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p11: c_int = pack16to32(
-        (t5 + 2 * t4 + t3 + 2 >> 2) as uint32_t,
-        (t6 + 2 * t5 + t4 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    (*(&mut *src.offset((0 + 7 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        pack32to64(p1 as uint32_t, p2 as uint32_t);
-    (*(&mut *src.offset((0 + 6 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        pack32to64(p2 as uint32_t, p3 as uint32_t);
-    let ref mut fresh165 =
-        (*(&mut *src.offset((0 + 5 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh165 = pack32to64(p3 as uint32_t, p4 as uint32_t);
-    (*(&mut *src.offset((4 + 7 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh165;
-    let ref mut fresh166 =
-        (*(&mut *src.offset((0 + 4 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh166 = pack32to64(p4 as uint32_t, p5 as uint32_t);
-    (*(&mut *src.offset((4 + 6 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh166;
-    let ref mut fresh167 =
-        (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh167 = pack32to64(p5 as uint32_t, p6 as uint32_t);
-    (*(&mut *src.offset((4 + 5 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh167;
-    let ref mut fresh168 =
-        (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh168 = pack32to64(p6 as uint32_t, p7 as uint32_t);
-    (*(&mut *src.offset((4 + 4 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh168;
-    let ref mut fresh169 =
-        (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh169 = pack32to64(p7 as uint32_t, p8 as uint32_t);
-    (*(&mut *src.offset((4 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh169;
-    let ref mut fresh170 =
-        (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh170 = pack32to64(p8 as uint32_t, p9 as uint32_t);
-    (*(&mut *src.offset((4 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh170;
-    (*(&mut *src.offset((4 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        pack32to64(p9 as uint32_t, p10 as uint32_t);
-    (*(&mut *src.offset((4 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        pack32to64(p10 as uint32_t, p11 as uint32_t);
-}
-#[c2rust::src_loc = "838:1"]
-unsafe extern "C" fn predict_8x8_vl_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut t0: c_int = *edge.offset((16 + 0) as isize) as c_int;
-    let mut t1: c_int = *edge.offset((16 + 1) as isize) as c_int;
-    let mut t2: c_int = *edge.offset((16 + 2) as isize) as c_int;
-    let mut t3: c_int = *edge.offset((16 + 3) as isize) as c_int;
-    let mut t4: c_int = *edge.offset((16 + 4) as isize) as c_int;
-    let mut t5: c_int = *edge.offset((16 + 5) as isize) as c_int;
-    let mut t6: c_int = *edge.offset((16 + 6) as isize) as c_int;
-    let mut t7: c_int = *edge.offset((16 + 7) as isize) as c_int;
-    let mut t8: c_int = *edge.offset((16 + 8) as isize) as c_int;
-    let mut t9: c_int = *edge.offset((16 + 9) as isize) as c_int;
-    let mut t10: c_int = *edge.offset((16 + 10) as isize) as c_int;
-    let mut t11: c_int = *edge.offset((16 + 11) as isize) as c_int;
-    let mut t12: c_int = *edge.offset((16 + 12) as isize) as c_int;
-    let mut _t13: c_int = *edge.offset((16 + 13) as isize) as c_int;
-    let mut _t14: c_int = *edge.offset((16 + 14) as isize) as c_int;
-    let mut _t15: c_int = *edge.offset((16 + 15) as isize) as c_int;
-    *src.offset((0 + 0 * FDEC_STRIDE) as isize) = (t0 + t1 + 1 >> 1) as pixel;
-    *src.offset((0 + 1 * FDEC_STRIDE) as isize) = (t0 + 2 * t1 + t2 + 2 >> 2) as pixel;
-    let ref mut fresh123 = *src.offset((1 + 0 * FDEC_STRIDE) as isize);
-    *fresh123 = (t1 + t2 + 1 >> 1) as pixel;
-    *src.offset((0 + 2 * FDEC_STRIDE) as isize) = *fresh123;
-    let ref mut fresh124 = *src.offset((1 + 1 * FDEC_STRIDE) as isize);
-    *fresh124 = (t1 + 2 * t2 + t3 + 2 >> 2) as pixel;
-    *src.offset((0 + 3 * FDEC_STRIDE) as isize) = *fresh124;
-    let ref mut fresh125 = *src.offset((2 + 0 * FDEC_STRIDE) as isize);
-    *fresh125 = (t2 + t3 + 1 >> 1) as pixel;
-    let ref mut fresh126 = *src.offset((1 + 2 * FDEC_STRIDE) as isize);
-    *fresh126 = *fresh125;
-    *src.offset((0 + 4 * FDEC_STRIDE) as isize) = *fresh126;
-    let ref mut fresh127 = *src.offset((2 + 1 * FDEC_STRIDE) as isize);
-    *fresh127 = (t2 + 2 * t3 + t4 + 2 >> 2) as pixel;
-    let ref mut fresh128 = *src.offset((1 + 3 * FDEC_STRIDE) as isize);
-    *fresh128 = *fresh127;
-    *src.offset((0 + 5 * FDEC_STRIDE) as isize) = *fresh128;
-    let ref mut fresh129 = *src.offset((3 + 0 * FDEC_STRIDE) as isize);
-    *fresh129 = (t3 + t4 + 1 >> 1) as pixel;
-    let ref mut fresh130 = *src.offset((2 + 2 * FDEC_STRIDE) as isize);
-    *fresh130 = *fresh129;
-    let ref mut fresh131 = *src.offset((1 + 4 * FDEC_STRIDE) as isize);
-    *fresh131 = *fresh130;
-    *src.offset((0 + 6 * FDEC_STRIDE) as isize) = *fresh131;
-    let ref mut fresh132 = *src.offset((3 + 1 * FDEC_STRIDE) as isize);
-    *fresh132 = (t3 + 2 * t4 + t5 + 2 >> 2) as pixel;
-    let ref mut fresh133 = *src.offset((2 + 3 * FDEC_STRIDE) as isize);
-    *fresh133 = *fresh132;
-    let ref mut fresh134 = *src.offset((1 + 5 * FDEC_STRIDE) as isize);
-    *fresh134 = *fresh133;
-    *src.offset((0 + 7 * FDEC_STRIDE) as isize) = *fresh134;
-    let ref mut fresh135 = *src.offset((4 + 0 * FDEC_STRIDE) as isize);
-    *fresh135 = (t4 + t5 + 1 >> 1) as pixel;
-    let ref mut fresh136 = *src.offset((3 + 2 * FDEC_STRIDE) as isize);
-    *fresh136 = *fresh135;
-    let ref mut fresh137 = *src.offset((2 + 4 * FDEC_STRIDE) as isize);
-    *fresh137 = *fresh136;
-    *src.offset((1 + 6 * FDEC_STRIDE) as isize) = *fresh137;
-    let ref mut fresh138 = *src.offset((4 + 1 * FDEC_STRIDE) as isize);
-    *fresh138 = (t4 + 2 * t5 + t6 + 2 >> 2) as pixel;
-    let ref mut fresh139 = *src.offset((3 + 3 * FDEC_STRIDE) as isize);
-    *fresh139 = *fresh138;
-    let ref mut fresh140 = *src.offset((2 + 5 * FDEC_STRIDE) as isize);
-    *fresh140 = *fresh139;
-    *src.offset((1 + 7 * FDEC_STRIDE) as isize) = *fresh140;
-    let ref mut fresh141 = *src.offset((5 + 0 * FDEC_STRIDE) as isize);
-    *fresh141 = (t5 + t6 + 1 >> 1) as pixel;
-    let ref mut fresh142 = *src.offset((4 + 2 * FDEC_STRIDE) as isize);
-    *fresh142 = *fresh141;
-    let ref mut fresh143 = *src.offset((3 + 4 * FDEC_STRIDE) as isize);
-    *fresh143 = *fresh142;
-    *src.offset((2 + 6 * FDEC_STRIDE) as isize) = *fresh143;
-    let ref mut fresh144 = *src.offset((5 + 1 * FDEC_STRIDE) as isize);
-    *fresh144 = (t5 + 2 * t6 + t7 + 2 >> 2) as pixel;
-    let ref mut fresh145 = *src.offset((4 + 3 * FDEC_STRIDE) as isize);
-    *fresh145 = *fresh144;
-    let ref mut fresh146 = *src.offset((3 + 5 * FDEC_STRIDE) as isize);
-    *fresh146 = *fresh145;
-    *src.offset((2 + 7 * FDEC_STRIDE) as isize) = *fresh146;
-    let ref mut fresh147 = *src.offset((6 + 0 * FDEC_STRIDE) as isize);
-    *fresh147 = (t6 + t7 + 1 >> 1) as pixel;
-    let ref mut fresh148 = *src.offset((5 + 2 * FDEC_STRIDE) as isize);
-    *fresh148 = *fresh147;
-    let ref mut fresh149 = *src.offset((4 + 4 * FDEC_STRIDE) as isize);
-    *fresh149 = *fresh148;
-    *src.offset((3 + 6 * FDEC_STRIDE) as isize) = *fresh149;
-    let ref mut fresh150 = *src.offset((6 + 1 * FDEC_STRIDE) as isize);
-    *fresh150 = (t6 + 2 * t7 + t8 + 2 >> 2) as pixel;
-    let ref mut fresh151 = *src.offset((5 + 3 * FDEC_STRIDE) as isize);
-    *fresh151 = *fresh150;
-    let ref mut fresh152 = *src.offset((4 + 5 * FDEC_STRIDE) as isize);
-    *fresh152 = *fresh151;
-    *src.offset((3 + 7 * FDEC_STRIDE) as isize) = *fresh152;
-    let ref mut fresh153 = *src.offset((7 + 0 * FDEC_STRIDE) as isize);
-    *fresh153 = (t7 + t8 + 1 >> 1) as pixel;
-    let ref mut fresh154 = *src.offset((6 + 2 * FDEC_STRIDE) as isize);
-    *fresh154 = *fresh153;
-    let ref mut fresh155 = *src.offset((5 + 4 * FDEC_STRIDE) as isize);
-    *fresh155 = *fresh154;
-    *src.offset((4 + 6 * FDEC_STRIDE) as isize) = *fresh155;
-    let ref mut fresh156 = *src.offset((7 + 1 * FDEC_STRIDE) as isize);
-    *fresh156 = (t7 + 2 * t8 + t9 + 2 >> 2) as pixel;
-    let ref mut fresh157 = *src.offset((6 + 3 * FDEC_STRIDE) as isize);
-    *fresh157 = *fresh156;
-    let ref mut fresh158 = *src.offset((5 + 5 * FDEC_STRIDE) as isize);
-    *fresh158 = *fresh157;
-    *src.offset((4 + 7 * FDEC_STRIDE) as isize) = *fresh158;
-    let ref mut fresh159 = *src.offset((7 + 2 * FDEC_STRIDE) as isize);
-    *fresh159 = (t8 + t9 + 1 >> 1) as pixel;
-    let ref mut fresh160 = *src.offset((6 + 4 * FDEC_STRIDE) as isize);
-    *fresh160 = *fresh159;
-    *src.offset((5 + 6 * FDEC_STRIDE) as isize) = *fresh160;
-    let ref mut fresh161 = *src.offset((7 + 3 * FDEC_STRIDE) as isize);
-    *fresh161 = (t8 + 2 * t9 + t10 + 2 >> 2) as pixel;
-    let ref mut fresh162 = *src.offset((6 + 5 * FDEC_STRIDE) as isize);
-    *fresh162 = *fresh161;
-    *src.offset((5 + 7 * FDEC_STRIDE) as isize) = *fresh162;
-    let ref mut fresh163 = *src.offset((7 + 4 * FDEC_STRIDE) as isize);
-    *fresh163 = (t9 + t10 + 1 >> 1) as pixel;
-    *src.offset((6 + 6 * FDEC_STRIDE) as isize) = *fresh163;
-    let ref mut fresh164 = *src.offset((7 + 5 * FDEC_STRIDE) as isize);
-    *fresh164 = (t9 + 2 * t10 + t11 + 2 >> 2) as pixel;
-    *src.offset((6 + 7 * FDEC_STRIDE) as isize) = *fresh164;
-    *src.offset((7 + 6 * FDEC_STRIDE) as isize) = (t10 + t11 + 1 >> 1) as pixel;
-    *src.offset((7 + 7 * FDEC_STRIDE) as isize) = (t10 + 2 * t11 + t12 + 2 >> 2) as pixel;
-}
-#[c2rust::src_loc = "865:1"]
-unsafe extern "C" fn predict_8x8_hu_c(mut src: *mut pixel, mut edge: *mut pixel) {
-    let mut l0: c_int = *edge.offset((14 - 0) as isize) as c_int;
-    let mut l1: c_int = *edge.offset((14 - 1) as isize) as c_int;
-    let mut l2: c_int = *edge.offset((14 - 2) as isize) as c_int;
-    let mut l3: c_int = *edge.offset((14 - 3) as isize) as c_int;
-    let mut l4: c_int = *edge.offset((14 - 4) as isize) as c_int;
-    let mut l5: c_int = *edge.offset((14 - 5) as isize) as c_int;
-    let mut l6: c_int = *edge.offset((14 - 6) as isize) as c_int;
-    let mut l7: c_int = *edge.offset((14 - 7) as isize) as c_int;
-    let mut p1: c_int = pack16to32(
-        (l0 + l1 + 1 >> 1) as uint32_t,
-        (l0 + 2 * l1 + l2 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p2: c_int = pack16to32(
-        (l1 + l2 + 1 >> 1) as uint32_t,
-        (l1 + 2 * l2 + l3 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p3: c_int = pack16to32(
-        (l2 + l3 + 1 >> 1) as uint32_t,
-        (l2 + 2 * l3 + l4 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p4: c_int = pack16to32(
-        (l3 + l4 + 1 >> 1) as uint32_t,
-        (l3 + 2 * l4 + l5 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p5: c_int = pack16to32(
-        (l4 + l5 + 1 >> 1) as uint32_t,
-        (l4 + 2 * l5 + l6 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p6: c_int = pack16to32(
-        (l5 + l6 + 1 >> 1) as uint32_t,
-        (l5 + 2 * l6 + l7 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p7: c_int = pack16to32(
-        (l6 + l7 + 1 >> 1) as uint32_t,
-        (l6 + 2 * l7 + l7 + 2 >> 2) as uint32_t,
-    ) as c_int;
-    let mut p8: c_int = pack16to32(l7 as uint32_t, l7 as uint32_t) as c_int;
-    (*(&mut *src.offset((0 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        pack32to64(p1 as uint32_t, p2 as uint32_t);
-    (*(&mut *src.offset((0 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i =
-        pack32to64(p2 as uint32_t, p3 as uint32_t);
-    let ref mut fresh115 =
-        (*(&mut *src.offset((0 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh115 = pack32to64(p3 as uint32_t, p4 as uint32_t);
-    (*(&mut *src.offset((4 + 0 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh115;
-    let ref mut fresh116 =
-        (*(&mut *src.offset((0 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh116 = pack32to64(p4 as uint32_t, p5 as uint32_t);
-    (*(&mut *src.offset((4 + 1 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh116;
-    let ref mut fresh117 =
-        (*(&mut *src.offset((0 + 4 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh117 = pack32to64(p5 as uint32_t, p6 as uint32_t);
-    (*(&mut *src.offset((4 + 2 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh117;
-    let ref mut fresh118 =
-        (*(&mut *src.offset((0 + 5 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh118 = pack32to64(p6 as uint32_t, p7 as uint32_t);
-    (*(&mut *src.offset((4 + 3 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh118;
-    let ref mut fresh119 =
-        (*(&mut *src.offset((0 + 6 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh119 = pack32to64(p7 as uint32_t, p8 as uint32_t);
-    (*(&mut *src.offset((4 + 4 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh119;
-    let ref mut fresh120 =
-        (*(&mut *src.offset((4 + 7 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh120 = pack32to64(p8 as uint32_t, p8 as uint32_t);
-    let ref mut fresh121 =
-        (*(&mut *src.offset((0 + 7 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh121 = *fresh120;
-    let ref mut fresh122 =
-        (*(&mut *src.offset((4 + 6 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i;
-    *fresh122 = *fresh121;
-    (*(&mut *src.offset((4 + 5 * 32) as isize) as *mut pixel as *mut x264_union64_t)).i = *fresh122;
-}
-#[no_mangle]
-#[c2rust::src_loc = "889:1"]
-unsafe extern "C" fn x264_10_predict_16x16_init(mut _cpu: uint32_t, mut pf: *mut x264_predict_t) {
-    let ref mut fresh14 = *pf.offset(I_PRED_16x16_V as c_int as isize);
-    *fresh14 =
-        Some(x264_10_predict_16x16_v_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh15 = *pf.offset(I_PRED_16x16_H as c_int as isize);
-    *fresh15 =
-        Some(x264_10_predict_16x16_h_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh16 = *pf.offset(I_PRED_16x16_DC as c_int as isize);
-    *fresh16 = Some(x264_10_predict_16x16_dc_c as unsafe extern "C" fn(*mut pixel) -> ())
-        as x264_predict_t;
-    let ref mut fresh17 = *pf.offset(I_PRED_16x16_P as c_int as isize);
-    *fresh17 =
-        Some(x264_10_predict_16x16_p_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh18 = *pf.offset(I_PRED_16x16_DC_LEFT as c_int as isize);
-    *fresh18 =
-        Some(predict_16x16_dc_left_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh19 = *pf.offset(I_PRED_16x16_DC_TOP as c_int as isize);
-    *fresh19 =
-        Some(predict_16x16_dc_top_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh20 = *pf.offset(I_PRED_16x16_DC_128 as c_int as isize);
-    *fresh20 =
-        Some(predict_16x16_dc_128_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-}
-#[no_mangle]
-#[c2rust::src_loc = "936:1"]
-unsafe extern "C" fn x264_10_predict_8x8c_init(mut _cpu: uint32_t, mut pf: *mut x264_predict_t) {
-    let ref mut fresh21 = *pf.offset(I_PRED_CHROMA_V as c_int as isize);
-    *fresh21 =
-        Some(x264_10_predict_8x8c_v_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh22 = *pf.offset(I_PRED_CHROMA_H as c_int as isize);
-    *fresh22 =
-        Some(x264_10_predict_8x8c_h_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh23 = *pf.offset(I_PRED_CHROMA_DC as c_int as isize);
-    *fresh23 =
-        Some(x264_10_predict_8x8c_dc_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh24 = *pf.offset(I_PRED_CHROMA_P as c_int as isize);
-    *fresh24 =
-        Some(x264_10_predict_8x8c_p_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh25 = *pf.offset(I_PRED_CHROMA_DC_LEFT as c_int as isize);
-    *fresh25 =
-        Some(predict_8x8c_dc_left_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh26 = *pf.offset(I_PRED_CHROMA_DC_TOP as c_int as isize);
-    *fresh26 =
-        Some(predict_8x8c_dc_top_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh27 = *pf.offset(I_PRED_CHROMA_DC_128 as c_int as isize);
-    *fresh27 =
-        Some(predict_8x8c_dc_128_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-}
-#[no_mangle]
-#[c2rust::src_loc = "977:1"]
-unsafe extern "C" fn x264_10_predict_8x16c_init(mut _cpu: uint32_t, mut pf: *mut x264_predict_t) {
-    let ref mut fresh28 = *pf.offset(I_PRED_CHROMA_V as c_int as isize);
-    *fresh28 =
-        Some(x264_10_predict_8x16c_v_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh29 = *pf.offset(I_PRED_CHROMA_H as c_int as isize);
-    *fresh29 =
-        Some(x264_10_predict_8x16c_h_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh30 = *pf.offset(I_PRED_CHROMA_DC as c_int as isize);
-    *fresh30 = Some(x264_10_predict_8x16c_dc_c as unsafe extern "C" fn(*mut pixel) -> ())
-        as x264_predict_t;
-    let ref mut fresh31 = *pf.offset(I_PRED_CHROMA_P as c_int as isize);
-    *fresh31 =
-        Some(x264_10_predict_8x16c_p_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh32 = *pf.offset(I_PRED_CHROMA_DC_LEFT as c_int as isize);
-    *fresh32 =
-        Some(predict_8x16c_dc_left_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh33 = *pf.offset(I_PRED_CHROMA_DC_TOP as c_int as isize);
-    *fresh33 =
-        Some(predict_8x16c_dc_top_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh34 = *pf.offset(I_PRED_CHROMA_DC_128 as c_int as isize);
-    *fresh34 =
-        Some(predict_8x16c_dc_128_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-}
 
-pub fn x264_predict_8x8_init(
-    mut _cpu: uint32_t,
-    mut pf: &mut [x264_predict8x8_t; 12],
-    mut predict_filter: &mut x264_predict_8x8_filter_t,
+unsafe extern "C" fn predict_8x8_dc_128_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
 ) {
-    pf[Intra8x8Pred::Vertical as usize] = Some(x264_10_predict_8x8_v_c);
-    pf[Intra8x8Pred::Horizontal as usize] = Some(x264_10_predict_8x8_h_c);
-    pf[Intra8x8Pred::Dc as usize] = Some(x264_10_predict_8x8_dc_c);
-    pf[Intra8x8Pred::DiagonalDownLeft as usize] = Some(predict_8x8_ddl_c);
-    pf[Intra8x8Pred::DiagonalDownRight as usize] = Some(predict_8x8_ddr_c);
-    pf[Intra8x8Pred::VerticalRight as usize] = Some(predict_8x8_vr_c);
-    pf[Intra8x8Pred::HorizontalDown as usize] = Some(predict_8x8_hd_c);
-    pf[Intra8x8Pred::VerticalLeft as usize] = Some(predict_8x8_vl_c);
-    pf[Intra8x8Pred::HorizontalUp as usize] = Some(predict_8x8_hu_c);
-    pf[Intra8x8Pred::DcLeft as usize] = Some(predict_8x8_dc_left_c);
-    pf[Intra8x8Pred::DcTop as usize] = Some(predict_8x8_dc_top_c);
-    pf[Intra8x8Pred::Dc128 as usize] = Some(predict_8x8_dc_128_c);
-    *predict_filter = Some(predict_8x8_filter_c);
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = (((1 as ::core::ffi::c_int)
+                << 8 as ::core::ffi::c_int - 1 as ::core::ffi::c_int)
+                as ::core::ffi::c_uint)
+                .wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+                as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+    }
 }
 
+unsafe extern "C" fn predict_8x8_dc_left_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut l0: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l4: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l5: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l6: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l7: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut dc: crate::src::common::common::pixel4 =
+            ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + 4 as ::core::ffi::c_int
+                >> 3 as ::core::ffi::c_int) as crate::src::common::common::pixel4)
+                .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn predict_8x8_dc_top_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut dc: crate::src::common::common::pixel4 =
+            ((t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 4 as ::core::ffi::c_int
+                >> 3 as ::core::ffi::c_int) as crate::src::common::common::pixel4)
+                .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+    }
+}
 #[no_mangle]
-#[c2rust::src_loc = "1042:1"]
-unsafe extern "C" fn x264_10_predict_4x4_init(mut _cpu: uint32_t, mut pf: *mut x264_predict_t) {
-    let ref mut fresh35 = *pf.offset(I_PRED_4x4_V as c_int as isize);
-    *fresh35 =
-        Some(x264_10_predict_4x4_v_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh36 = *pf.offset(I_PRED_4x4_H as c_int as isize);
-    *fresh36 =
-        Some(x264_10_predict_4x4_h_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh37 = *pf.offset(I_PRED_4x4_DC as c_int as isize);
-    *fresh37 =
-        Some(x264_10_predict_4x4_dc_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh38 = *pf.offset(I_PRED_4x4_DDL as c_int as isize);
-    *fresh38 = Some(predict_4x4_ddl_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh39 = *pf.offset(I_PRED_4x4_DDR as c_int as isize);
-    *fresh39 = Some(predict_4x4_ddr_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh40 = *pf.offset(I_PRED_4x4_VR as c_int as isize);
-    *fresh40 = Some(predict_4x4_vr_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh41 = *pf.offset(I_PRED_4x4_HD as c_int as isize);
-    *fresh41 = Some(predict_4x4_hd_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh42 = *pf.offset(I_PRED_4x4_VL as c_int as isize);
-    *fresh42 = Some(predict_4x4_vl_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh43 = *pf.offset(I_PRED_4x4_HU as c_int as isize);
-    *fresh43 = Some(predict_4x4_hu_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh44 = *pf.offset(I_PRED_4x4_DC_LEFT as c_int as isize);
-    *fresh44 =
-        Some(predict_4x4_dc_left_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh45 = *pf.offset(I_PRED_4x4_DC_TOP as c_int as isize);
-    *fresh45 =
-        Some(predict_4x4_dc_top_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
-    let ref mut fresh46 = *pf.offset(I_PRED_4x4_DC_128 as c_int as isize);
-    *fresh46 =
-        Some(predict_4x4_dc_128_c as unsafe extern "C" fn(*mut pixel) -> ()) as x264_predict_t;
+
+pub unsafe extern "C" fn x264_8_predict_8x8_dc_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut l0: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l4: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l5: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l6: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l7: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t0: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut dc: crate::src::common::common::pixel4 =
+            ((l0 + l1
+                + l2
+                + l3
+                + l4
+                + l5
+                + l6
+                + l7
+                + t0
+                + t1
+                + t2
+                + t3
+                + t4
+                + t5
+                + t6
+                + t7
+                + 8 as ::core::ffi::c_int
+                >> 4 as ::core::ffi::c_int) as crate::src::common::common::pixel4)
+                .wrapping_mul(0x1010101 as crate::src::common::common::pixel4);
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            (*(src.offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc as crate::stdlib::uint32_t;
+            (*(src.offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = dc as crate::stdlib::uint32_t;
+            src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            y += 1;
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x8_h_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut l0: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l4: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l5: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l6: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l7: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let ref mut c2rust_fresh0 = (*(src
+            .offset((0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh0 = (l0 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh0;
+        let ref mut c2rust_fresh1 = (*(src
+            .offset((1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh1 = (l1 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh1;
+        let ref mut c2rust_fresh2 = (*(src
+            .offset((2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh2 = (l2 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh2;
+        let ref mut c2rust_fresh3 = (*(src
+            .offset((3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh3 = (l3 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh3;
+        let ref mut c2rust_fresh4 = (*(src
+            .offset((4 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh4 = (l4 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((4 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh4;
+        let ref mut c2rust_fresh5 = (*(src
+            .offset((5 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh5 = (l5 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((5 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh5;
+        let ref mut c2rust_fresh6 = (*(src
+            .offset((6 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh6 = (l6 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((6 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh6;
+        let ref mut c2rust_fresh7 = (*(src
+            .offset((7 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(4 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh7 = (l7 as ::core::ffi::c_uint).wrapping_mul(0x1010101 as ::core::ffi::c_uint)
+            as crate::stdlib::uint32_t;
+        (*(src
+            .offset((7 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize)
+            .offset(0 as ::core::ffi::c_int as isize)
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh7;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x8_v_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut top: [crate::src::common::common::pixel4; 2] = [
+            (*(edge.offset(16 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i,
+            (*(edge.offset(20 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i,
+        ];
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < 8 as ::core::ffi::c_int {
+            (*(src
+                .offset((y * 32 as ::core::ffi::c_int) as isize)
+                .offset(0 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = top[0 as ::core::ffi::c_int as usize] as crate::stdlib::uint32_t;
+            (*(src
+                .offset((y * 32 as ::core::ffi::c_int) as isize)
+                .offset(4 as ::core::ffi::c_int as isize)
+                as *mut crate::src::common::base::x264_union32_t))
+                .i = top[1 as ::core::ffi::c_int as usize] as crate::stdlib::uint32_t;
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn predict_8x8_ddl_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t8: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t9: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 9 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t10: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t11: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 11 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t12: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 12 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t13: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 13 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t14: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 14 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t15: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 15 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t0 + 2 as ::core::ffi::c_int * t1 + t2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh262 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh262 = (t1 + 2 as ::core::ffi::c_int * t2 + t3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh262;
+        let ref mut c2rust_fresh263 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh263 = (t2 + 2 as ::core::ffi::c_int * t3 + t4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh264 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh264 = *c2rust_fresh263;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh264;
+        let ref mut c2rust_fresh265 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh265 = (t3 + 2 as ::core::ffi::c_int * t4 + t5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh266 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh266 = *c2rust_fresh265;
+        let ref mut c2rust_fresh267 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh267 = *c2rust_fresh266;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh267;
+        let ref mut c2rust_fresh268 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh268 = (t4 + 2 as ::core::ffi::c_int * t5 + t6 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh269 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh269 = *c2rust_fresh268;
+        let ref mut c2rust_fresh270 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh270 = *c2rust_fresh269;
+        let ref mut c2rust_fresh271 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh271 = *c2rust_fresh270;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh271;
+        let ref mut c2rust_fresh272 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh272 = (t5 + 2 as ::core::ffi::c_int * t6 + t7 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh273 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh273 = *c2rust_fresh272;
+        let ref mut c2rust_fresh274 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh274 = *c2rust_fresh273;
+        let ref mut c2rust_fresh275 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh275 = *c2rust_fresh274;
+        let ref mut c2rust_fresh276 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh276 = *c2rust_fresh275;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh276;
+        let ref mut c2rust_fresh277 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh277 = (t6 + 2 as ::core::ffi::c_int * t7 + t8 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh278 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh278 = *c2rust_fresh277;
+        let ref mut c2rust_fresh279 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh279 = *c2rust_fresh278;
+        let ref mut c2rust_fresh280 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh280 = *c2rust_fresh279;
+        let ref mut c2rust_fresh281 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh281 = *c2rust_fresh280;
+        let ref mut c2rust_fresh282 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh282 = *c2rust_fresh281;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh282;
+        let ref mut c2rust_fresh283 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh283 = (t7 + 2 as ::core::ffi::c_int * t8 + t9 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh284 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh284 = *c2rust_fresh283;
+        let ref mut c2rust_fresh285 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh285 = *c2rust_fresh284;
+        let ref mut c2rust_fresh286 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh286 = *c2rust_fresh285;
+        let ref mut c2rust_fresh287 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh287 = *c2rust_fresh286;
+        let ref mut c2rust_fresh288 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh288 = *c2rust_fresh287;
+        let ref mut c2rust_fresh289 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh289 = *c2rust_fresh288;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh289;
+        let ref mut c2rust_fresh290 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh290 = (t8 + 2 as ::core::ffi::c_int * t9 + t10 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh291 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh291 = *c2rust_fresh290;
+        let ref mut c2rust_fresh292 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh292 = *c2rust_fresh291;
+        let ref mut c2rust_fresh293 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh293 = *c2rust_fresh292;
+        let ref mut c2rust_fresh294 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh294 = *c2rust_fresh293;
+        let ref mut c2rust_fresh295 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh295 = *c2rust_fresh294;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh295;
+        let ref mut c2rust_fresh296 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh296 = (t9 + 2 as ::core::ffi::c_int * t10 + t11 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh297 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh297 = *c2rust_fresh296;
+        let ref mut c2rust_fresh298 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh298 = *c2rust_fresh297;
+        let ref mut c2rust_fresh299 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh299 = *c2rust_fresh298;
+        let ref mut c2rust_fresh300 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh300 = *c2rust_fresh299;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh300;
+        let ref mut c2rust_fresh301 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh301 = (t10 + 2 as ::core::ffi::c_int * t11 + t12 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh302 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh302 = *c2rust_fresh301;
+        let ref mut c2rust_fresh303 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh303 = *c2rust_fresh302;
+        let ref mut c2rust_fresh304 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh304 = *c2rust_fresh303;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh304;
+        let ref mut c2rust_fresh305 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh305 = (t11 + 2 as ::core::ffi::c_int * t12 + t13 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh306 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh306 = *c2rust_fresh305;
+        let ref mut c2rust_fresh307 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh307 = *c2rust_fresh306;
+        *src.offset(
+            (4 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh307;
+        let ref mut c2rust_fresh308 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh308 = (t12 + 2 as ::core::ffi::c_int * t13 + t14 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh309 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh309 = *c2rust_fresh308;
+        *src.offset(
+            (5 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh309;
+        let ref mut c2rust_fresh310 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh310 = (t13 + 2 as ::core::ffi::c_int * t14 + t15 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (6 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh310;
+        *src.offset(
+            (7 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t14 + 2 as ::core::ffi::c_int * t15 + t15 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_8x8_ddr_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l0: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l4: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l5: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l6: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l7: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut lt: ::core::ffi::c_int =
+            *edge.offset(15 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l7 + 2 as ::core::ffi::c_int * l6 + l5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh213 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh213 = (l6 + 2 as ::core::ffi::c_int * l5 + l4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh213;
+        let ref mut c2rust_fresh214 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh214 = (l5 + 2 as ::core::ffi::c_int * l4 + l3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh215 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh215 = *c2rust_fresh214;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh215;
+        let ref mut c2rust_fresh216 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh216 = (l4 + 2 as ::core::ffi::c_int * l3 + l2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh217 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh217 = *c2rust_fresh216;
+        let ref mut c2rust_fresh218 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh218 = *c2rust_fresh217;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh218;
+        let ref mut c2rust_fresh219 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh219 = (l3 + 2 as ::core::ffi::c_int * l2 + l1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh220 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh220 = *c2rust_fresh219;
+        let ref mut c2rust_fresh221 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh221 = *c2rust_fresh220;
+        let ref mut c2rust_fresh222 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh222 = *c2rust_fresh221;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh222;
+        let ref mut c2rust_fresh223 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh223 = (l2 + 2 as ::core::ffi::c_int * l1 + l0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh224 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh224 = *c2rust_fresh223;
+        let ref mut c2rust_fresh225 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh225 = *c2rust_fresh224;
+        let ref mut c2rust_fresh226 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh226 = *c2rust_fresh225;
+        let ref mut c2rust_fresh227 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh227 = *c2rust_fresh226;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh227;
+        let ref mut c2rust_fresh228 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh228 = (l1 + 2 as ::core::ffi::c_int * l0 + lt + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh229 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh229 = *c2rust_fresh228;
+        let ref mut c2rust_fresh230 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh230 = *c2rust_fresh229;
+        let ref mut c2rust_fresh231 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh231 = *c2rust_fresh230;
+        let ref mut c2rust_fresh232 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh232 = *c2rust_fresh231;
+        let ref mut c2rust_fresh233 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh233 = *c2rust_fresh232;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh233;
+        let ref mut c2rust_fresh234 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh234 = (l0 + 2 as ::core::ffi::c_int * lt + t0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh235 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh235 = *c2rust_fresh234;
+        let ref mut c2rust_fresh236 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh236 = *c2rust_fresh235;
+        let ref mut c2rust_fresh237 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh237 = *c2rust_fresh236;
+        let ref mut c2rust_fresh238 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh238 = *c2rust_fresh237;
+        let ref mut c2rust_fresh239 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh239 = *c2rust_fresh238;
+        let ref mut c2rust_fresh240 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh240 = *c2rust_fresh239;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh240;
+        let ref mut c2rust_fresh241 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh241 = (lt + 2 as ::core::ffi::c_int * t0 + t1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh242 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh242 = *c2rust_fresh241;
+        let ref mut c2rust_fresh243 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh243 = *c2rust_fresh242;
+        let ref mut c2rust_fresh244 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh244 = *c2rust_fresh243;
+        let ref mut c2rust_fresh245 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh245 = *c2rust_fresh244;
+        let ref mut c2rust_fresh246 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh246 = *c2rust_fresh245;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh246;
+        let ref mut c2rust_fresh247 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh247 = (t0 + 2 as ::core::ffi::c_int * t1 + t2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh248 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh248 = *c2rust_fresh247;
+        let ref mut c2rust_fresh249 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh249 = *c2rust_fresh248;
+        let ref mut c2rust_fresh250 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh250 = *c2rust_fresh249;
+        let ref mut c2rust_fresh251 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh251 = *c2rust_fresh250;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh251;
+        let ref mut c2rust_fresh252 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh252 = (t1 + 2 as ::core::ffi::c_int * t2 + t3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh253 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh253 = *c2rust_fresh252;
+        let ref mut c2rust_fresh254 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh254 = *c2rust_fresh253;
+        let ref mut c2rust_fresh255 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh255 = *c2rust_fresh254;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh255;
+        let ref mut c2rust_fresh256 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh256 = (t2 + 2 as ::core::ffi::c_int * t3 + t4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh257 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh257 = *c2rust_fresh256;
+        let ref mut c2rust_fresh258 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh258 = *c2rust_fresh257;
+        *src.offset(
+            (4 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh258;
+        let ref mut c2rust_fresh259 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh259 = (t3 + 2 as ::core::ffi::c_int * t4 + t5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh260 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh260 = *c2rust_fresh259;
+        *src.offset(
+            (5 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh260;
+        let ref mut c2rust_fresh261 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh261 = (t4 + 2 as ::core::ffi::c_int * t5 + t6 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (6 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh261;
+        *src.offset(
+            (7 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t5 + 2 as ::core::ffi::c_int * t6 + t7 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_8x8_vr_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l0: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l4: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l5: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l6: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l7: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut lt: ::core::ffi::c_int =
+            *edge.offset(15 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l5 + 2 as ::core::ffi::c_int * l4 + l3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (l6 + 2 as ::core::ffi::c_int * l5 + l4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh171 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh171 = (l3 + 2 as ::core::ffi::c_int * l2 + l1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh171;
+        let ref mut c2rust_fresh172 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh172 = (l4 + 2 as ::core::ffi::c_int * l3 + l2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh172;
+        let ref mut c2rust_fresh173 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh173 = (l1 + 2 as ::core::ffi::c_int * l0 + lt + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh174 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh174 = *c2rust_fresh173;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh174;
+        let ref mut c2rust_fresh175 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh175 = (l2 + 2 as ::core::ffi::c_int * l1 + l0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh176 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh176 = *c2rust_fresh175;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh176;
+        let ref mut c2rust_fresh177 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh177 = (l0 + 2 as ::core::ffi::c_int * lt + t0 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh178 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh178 = *c2rust_fresh177;
+        let ref mut c2rust_fresh179 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh179 = *c2rust_fresh178;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh179;
+        let ref mut c2rust_fresh180 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh180 = (lt + t0 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh181 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh181 = *c2rust_fresh180;
+        let ref mut c2rust_fresh182 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh182 = *c2rust_fresh181;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh182;
+        let ref mut c2rust_fresh183 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh183 = (lt + 2 as ::core::ffi::c_int * t0 + t1 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh184 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh184 = *c2rust_fresh183;
+        let ref mut c2rust_fresh185 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh185 = *c2rust_fresh184;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh185;
+        let ref mut c2rust_fresh186 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh186 = (t0 + t1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh187 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh187 = *c2rust_fresh186;
+        let ref mut c2rust_fresh188 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh188 = *c2rust_fresh187;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh188;
+        let ref mut c2rust_fresh189 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh189 = (t0 + 2 as ::core::ffi::c_int * t1 + t2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh190 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh190 = *c2rust_fresh189;
+        let ref mut c2rust_fresh191 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh191 = *c2rust_fresh190;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh191;
+        let ref mut c2rust_fresh192 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh192 = (t1 + t2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh193 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh193 = *c2rust_fresh192;
+        let ref mut c2rust_fresh194 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh194 = *c2rust_fresh193;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh194;
+        let ref mut c2rust_fresh195 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh195 = (t1 + 2 as ::core::ffi::c_int * t2 + t3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh196 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh196 = *c2rust_fresh195;
+        let ref mut c2rust_fresh197 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh197 = *c2rust_fresh196;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh197;
+        let ref mut c2rust_fresh198 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh198 = (t2 + t3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh199 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh199 = *c2rust_fresh198;
+        let ref mut c2rust_fresh200 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh200 = *c2rust_fresh199;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh200;
+        let ref mut c2rust_fresh201 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh201 = (t2 + 2 as ::core::ffi::c_int * t3 + t4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh202 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh202 = *c2rust_fresh201;
+        let ref mut c2rust_fresh203 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh203 = *c2rust_fresh202;
+        *src.offset(
+            (4 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh203;
+        let ref mut c2rust_fresh204 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh204 = (t3 + t4 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh205 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh205 = *c2rust_fresh204;
+        let ref mut c2rust_fresh206 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh206 = *c2rust_fresh205;
+        *src.offset(
+            (4 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh206;
+        let ref mut c2rust_fresh207 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh207 = (t3 + 2 as ::core::ffi::c_int * t4 + t5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh208 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh208 = *c2rust_fresh207;
+        *src.offset(
+            (5 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh208;
+        let ref mut c2rust_fresh209 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh209 = (t4 + t5 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh210 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh210 = *c2rust_fresh209;
+        *src.offset(
+            (5 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh210;
+        let ref mut c2rust_fresh211 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh211 = (t4 + 2 as ::core::ffi::c_int * t5 + t6 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (6 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh211;
+        let ref mut c2rust_fresh212 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh212 = (t5 + t6 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (6 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh212;
+        *src.offset(
+            (7 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t5 + 2 as ::core::ffi::c_int * t6 + t7 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        *src.offset(
+            (7 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t6 + t7 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_8x8_hd_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l0: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l4: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l5: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l6: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l7: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut lt: ::core::ffi::c_int =
+            *edge.offset(15 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
+        let mut p1: ::core::ffi::c_int = pack8to16(
+            (l6 + l7 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l5 + 2 as ::core::ffi::c_int * l6 + l7 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p2: ::core::ffi::c_int = pack8to16(
+            (l5 + l6 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l4 + 2 as ::core::ffi::c_int * l5 + l6 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p3: ::core::ffi::c_int = pack8to16(
+            (l4 + l5 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l3 + 2 as ::core::ffi::c_int * l4 + l5 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p4: ::core::ffi::c_int = pack8to16(
+            (l3 + l4 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l2 + 2 as ::core::ffi::c_int * l3 + l4 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p5: ::core::ffi::c_int = pack8to16(
+            (l2 + l3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l1 + 2 as ::core::ffi::c_int * l2 + l3 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p6: ::core::ffi::c_int = pack8to16(
+            (l1 + l2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l0 + 2 as ::core::ffi::c_int * l1 + l2 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p7: ::core::ffi::c_int = pack8to16(
+            (l0 + l1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (lt + 2 as ::core::ffi::c_int * l0 + l1 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p8: ::core::ffi::c_int = pack8to16(
+            (lt + l0 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l0 + 2 as ::core::ffi::c_int * lt + t0 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p9: ::core::ffi::c_int = pack8to16(
+            (t1 + 2 as ::core::ffi::c_int * t0 + lt + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+            (t2 + 2 as ::core::ffi::c_int * t1 + t0 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p10: ::core::ffi::c_int = pack8to16(
+            (t3 + 2 as ::core::ffi::c_int * t2 + t1 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+            (t4 + 2 as ::core::ffi::c_int * t3 + t2 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p11: ::core::ffi::c_int = pack8to16(
+            (t5 + 2 as ::core::ffi::c_int * t4 + t3 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+            (t6 + 2 as ::core::ffi::c_int * t5 + t4 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = pack16to32(p1 as crate::stdlib::uint32_t, p2 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = pack16to32(p2 as crate::stdlib::uint32_t, p3 as crate::stdlib::uint32_t);
+        let ref mut c2rust_fresh165 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 5 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh165 = pack16to32(p3 as crate::stdlib::uint32_t, p4 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh165;
+        let ref mut c2rust_fresh166 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh166 = pack16to32(p4 as crate::stdlib::uint32_t, p5 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh166;
+        let ref mut c2rust_fresh167 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh167 = pack16to32(p5 as crate::stdlib::uint32_t, p6 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 5 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh167;
+        let ref mut c2rust_fresh168 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh168 = pack16to32(p6 as crate::stdlib::uint32_t, p7 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh168;
+        let ref mut c2rust_fresh169 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh169 = pack16to32(p7 as crate::stdlib::uint32_t, p8 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh169;
+        let ref mut c2rust_fresh170 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh170 = pack16to32(p8 as crate::stdlib::uint32_t, p9 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh170;
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = pack16to32(
+            p9 as crate::stdlib::uint32_t,
+            p10 as crate::stdlib::uint32_t,
+        );
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = pack16to32(
+            p10 as crate::stdlib::uint32_t,
+            p11 as crate::stdlib::uint32_t,
+        );
+    }
+}
+
+unsafe extern "C" fn predict_8x8_vl_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut t0: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t1: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t2: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t3: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t4: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t5: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t6: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t7: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t8: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 8 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t9: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 9 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t10: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t11: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 11 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t12: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 12 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t13: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 13 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t14: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 14 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut t15: ::core::ffi::c_int = *edge
+            .offset((16 as ::core::ffi::c_int + 15 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t0 + t1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t0 + 2 as ::core::ffi::c_int * t1 + t2 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh123 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh123 = (t1 + t2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh123;
+        let ref mut c2rust_fresh124 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh124 = (t1 + 2 as ::core::ffi::c_int * t2 + t3 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh124;
+        let ref mut c2rust_fresh125 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh125 = (t2 + t3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh126 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh126 = *c2rust_fresh125;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh126;
+        let ref mut c2rust_fresh127 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh127 = (t2 + 2 as ::core::ffi::c_int * t3 + t4 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh128 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh128 = *c2rust_fresh127;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh128;
+        let ref mut c2rust_fresh129 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh129 = (t3 + t4 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh130 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh130 = *c2rust_fresh129;
+        let ref mut c2rust_fresh131 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh131 = *c2rust_fresh130;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh131;
+        let ref mut c2rust_fresh132 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh132 = (t3 + 2 as ::core::ffi::c_int * t4 + t5 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh133 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh133 = *c2rust_fresh132;
+        let ref mut c2rust_fresh134 = *src.offset(
+            (1 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh134 = *c2rust_fresh133;
+        *src.offset(
+            (0 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh134;
+        let ref mut c2rust_fresh135 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh135 = (t4 + t5 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh136 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh136 = *c2rust_fresh135;
+        let ref mut c2rust_fresh137 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh137 = *c2rust_fresh136;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh137;
+        let ref mut c2rust_fresh138 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh138 = (t4 + 2 as ::core::ffi::c_int * t5 + t6 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh139 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh139 = *c2rust_fresh138;
+        let ref mut c2rust_fresh140 = *src.offset(
+            (2 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh140 = *c2rust_fresh139;
+        *src.offset(
+            (1 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh140;
+        let ref mut c2rust_fresh141 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh141 = (t5 + t6 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh142 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh142 = *c2rust_fresh141;
+        let ref mut c2rust_fresh143 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh143 = *c2rust_fresh142;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh143;
+        let ref mut c2rust_fresh144 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh144 = (t5 + 2 as ::core::ffi::c_int * t6 + t7 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh145 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh145 = *c2rust_fresh144;
+        let ref mut c2rust_fresh146 = *src.offset(
+            (3 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh146 = *c2rust_fresh145;
+        *src.offset(
+            (2 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh146;
+        let ref mut c2rust_fresh147 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh147 = (t6 + t7 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh148 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh148 = *c2rust_fresh147;
+        let ref mut c2rust_fresh149 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh149 = *c2rust_fresh148;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh149;
+        let ref mut c2rust_fresh150 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh150 = (t6 + 2 as ::core::ffi::c_int * t7 + t8 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh151 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh151 = *c2rust_fresh150;
+        let ref mut c2rust_fresh152 = *src.offset(
+            (4 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh152 = *c2rust_fresh151;
+        *src.offset(
+            (3 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh152;
+        let ref mut c2rust_fresh153 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 0 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh153 = (t7 + t8 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh154 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh154 = *c2rust_fresh153;
+        let ref mut c2rust_fresh155 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh155 = *c2rust_fresh154;
+        *src.offset(
+            (4 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh155;
+        let ref mut c2rust_fresh156 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 1 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh156 = (t7 + 2 as ::core::ffi::c_int * t8 + t9 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh157 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh157 = *c2rust_fresh156;
+        let ref mut c2rust_fresh158 = *src.offset(
+            (5 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh158 = *c2rust_fresh157;
+        *src.offset(
+            (4 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh158;
+        let ref mut c2rust_fresh159 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 2 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh159 = (t8 + t9 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh160 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh160 = *c2rust_fresh159;
+        *src.offset(
+            (5 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh160;
+        let ref mut c2rust_fresh161 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 3 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh161 = (t8 + 2 as ::core::ffi::c_int * t9 + t10 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        let ref mut c2rust_fresh162 = *src.offset(
+            (6 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh162 = *c2rust_fresh161;
+        *src.offset(
+            (5 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh162;
+        let ref mut c2rust_fresh163 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 4 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh163 = (t9 + t10 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (6 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh163;
+        let ref mut c2rust_fresh164 = *src.offset(
+            (7 as ::core::ffi::c_int
+                + 5 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        );
+        *c2rust_fresh164 = (t9 + 2 as ::core::ffi::c_int * t10 + t11 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (6 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = *c2rust_fresh164;
+        *src.offset(
+            (7 as ::core::ffi::c_int
+                + 6 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t10 + t11 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+            as crate::src::common::common::pixel;
+        *src.offset(
+            (7 as ::core::ffi::c_int
+                + 7 as ::core::ffi::c_int * crate::src::common::common::FDEC_STRIDE)
+                as isize,
+        ) = (t10 + 2 as ::core::ffi::c_int * t11 + t12 + 2 as ::core::ffi::c_int
+            >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
+    }
+}
+
+unsafe extern "C" fn predict_8x8_hu_c(
+    mut src: *mut crate::src::common::common::pixel,
+    mut edge: *mut crate::src::common::common::pixel,
+) {
+    unsafe {
+        let mut l0: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 0 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l1: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 1 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l2: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 2 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l3: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 3 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l4: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 4 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l5: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 5 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l6: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 6 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut l7: ::core::ffi::c_int = *edge
+            .offset((14 as ::core::ffi::c_int - 7 as ::core::ffi::c_int) as isize)
+            as ::core::ffi::c_int;
+        let mut p1: ::core::ffi::c_int = pack8to16(
+            (l0 + l1 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l0 + 2 as ::core::ffi::c_int * l1 + l2 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p2: ::core::ffi::c_int = pack8to16(
+            (l1 + l2 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l1 + 2 as ::core::ffi::c_int * l2 + l3 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p3: ::core::ffi::c_int = pack8to16(
+            (l2 + l3 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l2 + 2 as ::core::ffi::c_int * l3 + l4 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p4: ::core::ffi::c_int = pack8to16(
+            (l3 + l4 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l3 + 2 as ::core::ffi::c_int * l4 + l5 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p5: ::core::ffi::c_int = pack8to16(
+            (l4 + l5 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l4 + 2 as ::core::ffi::c_int * l5 + l6 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p6: ::core::ffi::c_int = pack8to16(
+            (l5 + l6 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l5 + 2 as ::core::ffi::c_int * l6 + l7 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p7: ::core::ffi::c_int = pack8to16(
+            (l6 + l7 + 1 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                as crate::stdlib::uint32_t,
+            (l6 + 2 as ::core::ffi::c_int * l7 + l7 + 2 as ::core::ffi::c_int
+                >> 2 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+        ) as ::core::ffi::c_int;
+        let mut p8: ::core::ffi::c_int =
+            pack8to16(l7 as crate::stdlib::uint32_t, l7 as crate::stdlib::uint32_t)
+                as ::core::ffi::c_int;
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = pack16to32(p1 as crate::stdlib::uint32_t, p2 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (0 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = pack16to32(p2 as crate::stdlib::uint32_t, p3 as crate::stdlib::uint32_t);
+        let ref mut c2rust_fresh115 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh115 = pack16to32(p3 as crate::stdlib::uint32_t, p4 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 0 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh115;
+        let ref mut c2rust_fresh116 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh116 = pack16to32(p4 as crate::stdlib::uint32_t, p5 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh116;
+        let ref mut c2rust_fresh117 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh117 = pack16to32(p5 as crate::stdlib::uint32_t, p6 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 2 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh117;
+        let ref mut c2rust_fresh118 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 5 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh118 = pack16to32(p6 as crate::stdlib::uint32_t, p7 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 3 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh118;
+        let ref mut c2rust_fresh119 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh119 = pack16to32(p7 as crate::stdlib::uint32_t, p8 as crate::stdlib::uint32_t);
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 4 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh119;
+        let ref mut c2rust_fresh120 = (*(src.offset(
+            (4 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh120 = pack16to32(p8 as crate::stdlib::uint32_t, p8 as crate::stdlib::uint32_t);
+        let ref mut c2rust_fresh121 = (*(src.offset(
+            (0 as ::core::ffi::c_int + 7 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh121 = *c2rust_fresh120;
+        let ref mut c2rust_fresh122 = (*(src.offset(
+            (4 as ::core::ffi::c_int + 6 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i;
+        *c2rust_fresh122 = *c2rust_fresh121;
+        (*(src.offset(
+            (4 as ::core::ffi::c_int + 5 as ::core::ffi::c_int * 32 as ::core::ffi::c_int) as isize,
+        ) as *mut crate::src::common::common::pixel
+            as *mut crate::src::common::base::x264_union32_t))
+            .i = *c2rust_fresh122;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_16x16_init(
+    mut cpu: crate::stdlib::uint32_t,
+    mut pf: *mut crate::src::common::predict::x264_predict_t,
+) {
+    unsafe {
+        let ref mut c2rust_fresh14 =
+            *pf.offset(crate::src::common::predict::I_PRED_16x16_V as ::core::ffi::c_int as isize);
+        *c2rust_fresh14 = Some(
+            x264_8_predict_16x16_v_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh15 =
+            *pf.offset(crate::src::common::predict::I_PRED_16x16_H as ::core::ffi::c_int as isize);
+        *c2rust_fresh15 = Some(
+            x264_8_predict_16x16_h_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh16 =
+            *pf.offset(crate::src::common::predict::I_PRED_16x16_DC as ::core::ffi::c_int as isize);
+        *c2rust_fresh16 = Some(
+            x264_8_predict_16x16_dc_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh17 =
+            *pf.offset(crate::src::common::predict::I_PRED_16x16_P as ::core::ffi::c_int as isize);
+        *c2rust_fresh17 = Some(
+            x264_8_predict_16x16_p_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh18 = *pf.offset(
+            crate::src::common::predict::I_PRED_16x16_DC_LEFT as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh18 = Some(
+            predict_16x16_dc_left_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh19 = *pf.offset(
+            crate::src::common::predict::I_PRED_16x16_DC_TOP as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh19 = Some(
+            predict_16x16_dc_top_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh20 = *pf.offset(
+            crate::src::common::predict::I_PRED_16x16_DC_128 as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh20 = Some(
+            predict_16x16_dc_128_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x8c_init(
+    mut cpu: crate::stdlib::uint32_t,
+    mut pf: *mut crate::src::common::predict::x264_predict_t,
+) {
+    unsafe {
+        let ref mut c2rust_fresh21 =
+            *pf.offset(crate::src::common::predict::I_PRED_CHROMA_V as ::core::ffi::c_int as isize);
+        *c2rust_fresh21 = Some(
+            x264_8_predict_8x8c_v_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh22 =
+            *pf.offset(crate::src::common::predict::I_PRED_CHROMA_H as ::core::ffi::c_int as isize);
+        *c2rust_fresh22 = Some(
+            x264_8_predict_8x8c_h_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh23 = *pf
+            .offset(crate::src::common::predict::I_PRED_CHROMA_DC as ::core::ffi::c_int as isize);
+        *c2rust_fresh23 = Some(
+            x264_8_predict_8x8c_dc_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh24 =
+            *pf.offset(crate::src::common::predict::I_PRED_CHROMA_P as ::core::ffi::c_int as isize);
+        *c2rust_fresh24 = Some(
+            x264_8_predict_8x8c_p_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh25 = *pf.offset(
+            crate::src::common::predict::I_PRED_CHROMA_DC_LEFT as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh25 = Some(
+            predict_8x8c_dc_left_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh26 = *pf.offset(
+            crate::src::common::predict::I_PRED_CHROMA_DC_TOP as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh26 = Some(
+            predict_8x8c_dc_top_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh27 = *pf.offset(
+            crate::src::common::predict::I_PRED_CHROMA_DC_128 as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh27 = Some(
+            predict_8x8c_dc_128_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x16c_init(
+    mut cpu: crate::stdlib::uint32_t,
+    mut pf: *mut crate::src::common::predict::x264_predict_t,
+) {
+    unsafe {
+        let ref mut c2rust_fresh28 =
+            *pf.offset(crate::src::common::predict::I_PRED_CHROMA_V as ::core::ffi::c_int as isize);
+        *c2rust_fresh28 = Some(
+            x264_8_predict_8x16c_v_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh29 =
+            *pf.offset(crate::src::common::predict::I_PRED_CHROMA_H as ::core::ffi::c_int as isize);
+        *c2rust_fresh29 = Some(
+            x264_8_predict_8x16c_h_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh30 = *pf
+            .offset(crate::src::common::predict::I_PRED_CHROMA_DC as ::core::ffi::c_int as isize);
+        *c2rust_fresh30 = Some(
+            x264_8_predict_8x16c_dc_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh31 =
+            *pf.offset(crate::src::common::predict::I_PRED_CHROMA_P as ::core::ffi::c_int as isize);
+        *c2rust_fresh31 = Some(
+            x264_8_predict_8x16c_p_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh32 = *pf.offset(
+            crate::src::common::predict::I_PRED_CHROMA_DC_LEFT as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh32 = Some(
+            predict_8x16c_dc_left_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh33 = *pf.offset(
+            crate::src::common::predict::I_PRED_CHROMA_DC_TOP as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh33 = Some(
+            predict_8x16c_dc_top_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh34 = *pf.offset(
+            crate::src::common::predict::I_PRED_CHROMA_DC_128 as ::core::ffi::c_int as isize,
+        );
+        *c2rust_fresh34 = Some(
+            predict_8x16c_dc_128_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_8x8_init(
+    mut cpu: crate::stdlib::uint32_t,
+    mut pf: *mut crate::src::common::predict::x264_predict8x8_t,
+    mut predict_filter: *mut crate::src::common::predict::x264_predict_8x8_filter_t,
+) {
+    unsafe {
+        let ref mut c2rust_fresh101 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_V as ::core::ffi::c_int as isize);
+        *c2rust_fresh101 = Some(
+            x264_8_predict_8x8_v_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh102 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_H as ::core::ffi::c_int as isize);
+        *c2rust_fresh102 = Some(
+            x264_8_predict_8x8_h_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh103 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_DC as ::core::ffi::c_int as isize);
+        *c2rust_fresh103 = Some(
+            x264_8_predict_8x8_dc_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh104 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_DDL as ::core::ffi::c_int as isize);
+        *c2rust_fresh104 = Some(
+            predict_8x8_ddl_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh105 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_DDR as ::core::ffi::c_int as isize);
+        *c2rust_fresh105 = Some(
+            predict_8x8_ddr_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh106 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_VR as ::core::ffi::c_int as isize);
+        *c2rust_fresh106 = Some(
+            predict_8x8_vr_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh107 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_HD as ::core::ffi::c_int as isize);
+        *c2rust_fresh107 = Some(
+            predict_8x8_hd_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh108 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_VL as ::core::ffi::c_int as isize);
+        *c2rust_fresh108 = Some(
+            predict_8x8_vl_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh109 =
+            *pf.offset(crate::src::common::predict::I_PRED_8x8_HU as ::core::ffi::c_int as isize);
+        *c2rust_fresh109 = Some(
+            predict_8x8_hu_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh110 = *pf
+            .offset(crate::src::common::predict::I_PRED_8x8_DC_LEFT as ::core::ffi::c_int as isize);
+        *c2rust_fresh110 = Some(
+            predict_8x8_dc_left_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh111 = *pf
+            .offset(crate::src::common::predict::I_PRED_8x8_DC_TOP as ::core::ffi::c_int as isize);
+        *c2rust_fresh111 = Some(
+            predict_8x8_dc_top_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        let ref mut c2rust_fresh112 = *pf
+            .offset(crate::src::common::predict::I_PRED_8x8_DC_128 as ::core::ffi::c_int as isize);
+        *c2rust_fresh112 = Some(
+            predict_8x8_dc_128_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict8x8_t;
+        *predict_filter = Some(
+            predict_8x8_filter_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        ) as crate::src::common::predict::x264_predict_8x8_filter_t;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_predict_4x4_init(
+    mut cpu: crate::stdlib::uint32_t,
+    mut pf: *mut crate::src::common::predict::x264_predict_t,
+) {
+    unsafe {
+        let ref mut c2rust_fresh35 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_V as ::core::ffi::c_int as isize);
+        *c2rust_fresh35 = Some(
+            x264_8_predict_4x4_v_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh36 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_H as ::core::ffi::c_int as isize);
+        *c2rust_fresh36 = Some(
+            x264_8_predict_4x4_h_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh37 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_DC as ::core::ffi::c_int as isize);
+        *c2rust_fresh37 = Some(
+            x264_8_predict_4x4_dc_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh38 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_DDL as ::core::ffi::c_int as isize);
+        *c2rust_fresh38 = Some(
+            predict_4x4_ddl_c as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh39 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_DDR as ::core::ffi::c_int as isize);
+        *c2rust_fresh39 = Some(
+            predict_4x4_ddr_c as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh40 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_VR as ::core::ffi::c_int as isize);
+        *c2rust_fresh40 = Some(
+            predict_4x4_vr_c as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh41 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_HD as ::core::ffi::c_int as isize);
+        *c2rust_fresh41 = Some(
+            predict_4x4_hd_c as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh42 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_VL as ::core::ffi::c_int as isize);
+        *c2rust_fresh42 = Some(
+            predict_4x4_vl_c as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh43 =
+            *pf.offset(crate::src::common::predict::I_PRED_4x4_HU as ::core::ffi::c_int as isize);
+        *c2rust_fresh43 = Some(
+            predict_4x4_hu_c as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh44 = *pf
+            .offset(crate::src::common::predict::I_PRED_4x4_DC_LEFT as ::core::ffi::c_int as isize);
+        *c2rust_fresh44 = Some(
+            predict_4x4_dc_left_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh45 = *pf
+            .offset(crate::src::common::predict::I_PRED_4x4_DC_TOP as ::core::ffi::c_int as isize);
+        *c2rust_fresh45 = Some(
+            predict_4x4_dc_top_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+        let ref mut c2rust_fresh46 = *pf
+            .offset(crate::src::common::predict::I_PRED_4x4_DC_128 as ::core::ffi::c_int as isize);
+        *c2rust_fresh46 = Some(
+            predict_4x4_dc_128_c
+                as unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> (),
+        ) as crate::src::common::predict::x264_predict_t;
+    }
 }

@@ -1,238 +1,436 @@
-use core::ffi::{c_int, c_void};
+// =============== BEGIN cabac_h ================
+#[derive(Copy, Clone)]
+#[repr(C)]
+pub struct x264_cabac_t {
+    pub i_low: ::core::ffi::c_int,
+    pub i_range: ::core::ffi::c_int,
+    pub i_queue: ::core::ffi::c_int,
+    pub i_bytes_outstanding: ::core::ffi::c_int,
+    pub p_start: *mut crate::stdlib::uint8_t,
+    pub p: *mut crate::stdlib::uint8_t,
+    pub p_end: *mut crate::stdlib::uint8_t,
+    pub f8_bits_encoded: ::core::ffi::c_int,
+    pub state: [crate::stdlib::uint8_t; 1024],
+    pub padding: [crate::stdlib::uint8_t; 12],
+}
 
-use crate::__stddef_size_t_h::size_t;
-use crate::base_h::{x264_clip3, CHROMA_444, SLICE_TYPE_I};
-use crate::cabac_h::x264_cabac_t;
-use crate::common_h::{x264_t, QP_MAX_SPEC};
-use crate::stdint_intn_h::int8_t;
-use crate::stdint_uintn_h::{uint32_t, uint8_t};
-use crate::string_h::memcpy;
-use crate::tables_h::{
-    x264_cabac_context_init_I, x264_cabac_context_init_PB, x264_cabac_range_lps,
-    x264_cabac_renorm_shift, x264_cabac_transition,
-};
-#[c2rust::src_loc = "30:16"]
-static mut cabac_contexts: [[[uint8_t; 1024]; 64]; 4] = [[[0; 1024]; 64]; 4];
-#[no_mangle]
-#[c2rust::src_loc = "32:1"]
-unsafe extern "C" fn x264_10_cabac_init(mut h: *mut x264_t) {
-    let mut ctx_count: c_int =
-        if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-            1024
-        } else {
-            460
-        };
-    let mut i: c_int = 0;
-    while i < 4 {
-        let mut cabac_context_init: *const [[int8_t; 2]; 1024] = if i == 0 {
-            &x264_cabac_context_init_I
-        } else {
-            &*x264_cabac_context_init_PB.as_ptr().offset((i - 1) as isize)
-                as *const [[int8_t; 2]; 1024]
-        };
-        let mut qp: c_int = 0;
-        while qp <= QP_MAX_SPEC {
-            let mut j: c_int = 0;
-            while j < ctx_count {
-                let mut state: c_int = x264_clip3(
-                    ((*cabac_context_init)[j as usize][0] as c_int * qp >> 4)
-                        + (*cabac_context_init)[j as usize][1] as c_int,
-                    1,
-                    126,
-                );
-                cabac_contexts[i as usize][qp as usize][j as usize] = ((if state < 127 - state {
-                    state
-                } else {
-                    127 - state
-                }) << 1
-                    | state >> 6)
-                    as uint8_t;
-                j += 1;
-            }
-            qp += 1;
-        }
-        i += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "48:1"]
-unsafe extern "C" fn x264_10_cabac_context_init(
-    mut h: *mut x264_t,
-    mut cb: *mut x264_cabac_t,
-    mut i_slice_type: c_int,
-    mut i_qp: c_int,
-    mut i_model: c_int,
-) {
-    memcpy(
-        (*cb).state.as_mut_ptr() as *mut c_void,
-        (*(*cabac_contexts.as_mut_ptr().offset(
-            (if i_slice_type == SLICE_TYPE_I as c_int {
-                0
+pub mod base_h {
+
+    #[inline(always)]
+
+    pub unsafe extern "C" fn x264_clip3(
+        mut v: ::core::ffi::c_int,
+        mut i_min: ::core::ffi::c_int,
+        mut i_max: ::core::ffi::c_int,
+    ) -> ::core::ffi::c_int {
+        unsafe {
+            return if v < i_min {
+                i_min
+            } else if v > i_max {
+                i_max
             } else {
-                i_model + 1
-            }) as isize,
-        ))
-        .as_mut_ptr()
-        .offset(i_qp as isize))
-        .as_mut_ptr() as *const c_void,
-        (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-            1024
+                v
+            };
+        }
+    }
+}
+
+pub use crate::__stddef_size_t_h::size_t;
+
+pub use crate::src::common::base::chroma_format_e;
+pub use crate::src::common::base::slice_type_e;
+pub use crate::src::common::base::CHROMA_400;
+pub use crate::src::common::base::CHROMA_420;
+pub use crate::src::common::base::CHROMA_422;
+pub use crate::src::common::base::CHROMA_444;
+pub use crate::src::common::base::SLICE_TYPE_B;
+pub use crate::src::common::base::SLICE_TYPE_I;
+pub use crate::src::common::base::SLICE_TYPE_P;
+pub use crate::src::common::bitstream::bs_s;
+pub use crate::src::common::bitstream::bs_t;
+pub use crate::src::common::bitstream::x264_bitstream_function_t;
+pub use crate::src::common::bitstream::x264_run_level_t;
+pub use crate::src::common::cabac::base_h::x264_clip3;
+pub use crate::stdlib::C2Rust_Unnamed_7;
+pub use crate::stdlib::__atomic_wide_counter;
+
+pub use crate::internal::__va_list_tag;
+pub use crate::internal::BIT_DEPTH;
+pub use crate::src::common::common::dctcoef;
+pub use crate::src::common::common::pixel;
+pub use crate::src::common::common::udctcoef;
+pub use crate::src::common::common::x264_frame_stat_t;
+pub use crate::src::common::common::x264_left_table_t;
+pub use crate::src::common::common::x264_lookahead_t;
+pub use crate::src::common::common::x264_ratecontrol_t;
+pub use crate::src::common::common::x264_slice_header_t;
+pub use crate::src::common::common::x264_t;
+pub use crate::src::common::common::C2Rust_Unnamed_10;
+pub use crate::src::common::common::C2Rust_Unnamed_11;
+pub use crate::src::common::common::C2Rust_Unnamed_12;
+pub use crate::src::common::common::C2Rust_Unnamed_13;
+pub use crate::src::common::common::C2Rust_Unnamed_14;
+pub use crate::src::common::common::C2Rust_Unnamed_15;
+pub use crate::src::common::common::C2Rust_Unnamed_16;
+pub use crate::src::common::common::C2Rust_Unnamed_17;
+pub use crate::src::common::common::C2Rust_Unnamed_8;
+pub use crate::src::common::common::C2Rust_Unnamed_9;
+pub use crate::src::common::common::QP_BD_OFFSET;
+pub use crate::src::common::common::QP_MAX_SPEC;
+pub use crate::src::common::dct::x264_dct_function_t;
+pub use crate::src::common::dct::x264_zigzag_function_t;
+pub use crate::src::common::frame::x264_deblock_function_t;
+pub use crate::src::common::frame::x264_deblock_inter_t;
+pub use crate::src::common::frame::x264_deblock_intra_t;
+pub use crate::src::common::frame::x264_frame;
+pub use crate::src::common::frame::x264_frame_t;
+pub use crate::src::common::frame::x264_sync_frame_list_t;
+pub use crate::src::common::mc::weight_fn_t;
+pub use crate::src::common::mc::x264_mc_functions_t_1;
+pub use crate::src::common::mc::x264_weight_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_x3_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_x4_t;
+pub use crate::src::common::pixel::x264_pixel_function_t;
+pub use crate::src::common::predict::x264_predict8x8_t;
+pub use crate::src::common::predict::x264_predict_8x8_filter_t;
+pub use crate::src::common::predict::x264_predict_t;
+pub use crate::src::common::quant::x264_quant_function_t;
+pub use crate::stdlib::pthread_cond_t;
+pub use crate::stdlib::pthread_mutex_t;
+pub use crate::stdlib::pthread_t;
+
+pub use crate::src::common::set::x264_pps_t;
+pub use crate::src::common::set::x264_sps_t;
+pub use crate::src::common::set::C2Rust_Unnamed_24;
+pub use crate::src::common::set::C2Rust_Unnamed_25;
+pub use crate::src::common::set::C2Rust_Unnamed_26;
+pub use crate::stdlib::__pthread_mutex_s;
+pub use crate::stdlib::int16_t;
+pub use crate::stdlib::int32_t;
+pub use crate::stdlib::int64_t;
+pub use crate::stdlib::int8_t;
+pub use crate::stdlib::intptr_t;
+use crate::stdlib::memcpy;
+pub use crate::stdlib::uint16_t;
+pub use crate::stdlib::uint32_t;
+pub use crate::stdlib::uint64_t;
+pub use crate::stdlib::uint8_t;
+pub use crate::stdlib::uintptr_t;
+
+use crate::src::common::tables::x264_cabac_context_init_I;
+use crate::src::common::tables::x264_cabac_context_init_PB;
+use crate::src::common::tables::x264_cabac_range_lps;
+use crate::src::common::tables::x264_cabac_renorm_shift;
+use crate::src::common::tables::x264_cabac_transition;
+use crate::src::common::threadpool::x264_threadpool_t;
+pub use crate::stdlib::__pthread_cond_s;
+pub use crate::stdlib::__pthread_internal_list;
+pub use crate::stdlib::__pthread_list_t;
+
+pub use crate::stdlib::__int16_t;
+pub use crate::stdlib::__int32_t;
+pub use crate::stdlib::__int64_t;
+pub use crate::stdlib::__int8_t;
+pub use crate::stdlib::__uint16_t;
+pub use crate::stdlib::__uint32_t;
+pub use crate::stdlib::__uint64_t;
+pub use crate::stdlib::__uint8_t;
+pub use crate::x264_h::x264_hrd_t;
+pub use crate::x264_h::x264_nal_t;
+pub use crate::x264_h::x264_param_t;
+pub use crate::x264_h::x264_sei_payload_t;
+pub use crate::x264_h::x264_sei_t;
+pub use crate::x264_h::x264_zone_t;
+pub use crate::x264_h::C2Rust_Unnamed_0;
+pub use crate::x264_h::C2Rust_Unnamed_1;
+pub use crate::x264_h::C2Rust_Unnamed_2;
+pub use crate::x264_h::C2Rust_Unnamed_3;
+pub use crate::x264_h::C2Rust_Unnamed_4;
+pub use crate::x264_h::C2Rust_Unnamed_5;
+
+static mut cabac_contexts: [[[crate::stdlib::uint8_t; 1024]; 52]; 4] = [[[0; 1024]; 52]; 4];
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_cabac_init(mut h: *mut crate::src::common::common::x264_t) {
+    unsafe {
+        let mut ctx_count: ::core::ffi::c_int = if crate::src::common::base::CHROMA_444
+            as ::core::ffi::c_int
+            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+        {
+            1024 as ::core::ffi::c_int
         } else {
-            460
-        }) as size_t,
-    );
+            460 as ::core::ffi::c_int
+        };
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < 4 as ::core::ffi::c_int {
+            let mut cabac_context_init: *const [[crate::stdlib::int8_t; 2]; 1024] =
+                if i == 0 as ::core::ffi::c_int {
+                    &raw const crate::src::common::tables::x264_cabac_context_init_I
+                } else {
+                    (&raw const crate::src::common::tables::x264_cabac_context_init_PB
+                        as *const [[crate::stdlib::int8_t; 2]; 1024])
+                        .offset((i - 1 as ::core::ffi::c_int) as isize)
+                        as *const [[crate::stdlib::int8_t; 2]; 1024]
+                };
+            let mut qp: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while qp <= crate::src::common::common::QP_MAX_SPEC {
+                let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                while j < ctx_count {
+                    let mut state: ::core::ffi::c_int = x264_clip3(
+                        ((*cabac_context_init)[j as usize][0 as ::core::ffi::c_int as usize]
+                            as ::core::ffi::c_int
+                            * qp
+                            >> 4 as ::core::ffi::c_int)
+                            + (*cabac_context_init)[j as usize][1 as ::core::ffi::c_int as usize]
+                                as ::core::ffi::c_int,
+                        1 as ::core::ffi::c_int,
+                        126 as ::core::ffi::c_int,
+                    );
+                    cabac_contexts[i as usize][qp as usize][j as usize] =
+                        ((if state < 127 as ::core::ffi::c_int - state {
+                            state
+                        } else {
+                            127 as ::core::ffi::c_int - state
+                        }) << 1 as ::core::ffi::c_int
+                            | state >> 6 as ::core::ffi::c_int)
+                            as crate::stdlib::uint8_t;
+                    j += 1;
+                }
+                qp += 1;
+            }
+            i += 1;
+        }
+    }
 }
 #[no_mangle]
-#[c2rust::src_loc = "53:1"]
-unsafe extern "C" fn x264_10_cabac_encode_init_core(mut cb: *mut x264_cabac_t) {
-    (*cb).i_low = 0;
-    (*cb).i_range = 0x1fe as c_int;
-    (*cb).i_queue = -(9);
-    (*cb).i_bytes_outstanding = 0;
-}
-#[no_mangle]
-#[c2rust::src_loc = "61:1"]
-unsafe extern "C" fn x264_10_cabac_encode_init(
-    mut cb: *mut x264_cabac_t,
-    mut p_data: *mut uint8_t,
-    mut p_end: *mut uint8_t,
+
+pub unsafe extern "C" fn x264_8_cabac_context_init(
+    mut h: *mut crate::src::common::common::x264_t,
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+    mut i_slice_type: ::core::ffi::c_int,
+    mut i_qp: ::core::ffi::c_int,
+    mut i_model: ::core::ffi::c_int,
 ) {
-    x264_10_cabac_encode_init_core(cb);
-    (*cb).p_start = p_data;
-    (*cb).p = p_data;
-    (*cb).p_end = p_end;
+    unsafe {
+        crate::stdlib::memcpy(
+            &raw mut (*cb).state as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
+            &raw mut *(&raw mut *(&raw mut cabac_contexts
+                as *mut [[crate::stdlib::uint8_t; 1024]; 52])
+                .offset(
+                    (if i_slice_type == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
+                    {
+                        0 as ::core::ffi::c_int
+                    } else {
+                        i_model + 1 as ::core::ffi::c_int
+                    }) as isize,
+                ) as *mut [crate::stdlib::uint8_t; 1024])
+                .offset(i_qp as isize) as *mut crate::stdlib::uint8_t
+                as *const ::core::ffi::c_void,
+            (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+            {
+                1024 as ::core::ffi::c_int
+            } else {
+                460 as ::core::ffi::c_int
+            }) as crate::__stddef_size_t_h::size_t,
+        );
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_cabac_encode_init_core(
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+) {
+    unsafe {
+        (*cb).i_low = 0 as ::core::ffi::c_int;
+        (*cb).i_range = 0x1fe as ::core::ffi::c_int;
+        (*cb).i_queue = -(9 as ::core::ffi::c_int);
+        (*cb).i_bytes_outstanding = 0 as ::core::ffi::c_int;
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_cabac_encode_init(
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+    mut p_data: *mut crate::stdlib::uint8_t,
+    mut p_end: *mut crate::stdlib::uint8_t,
+) {
+    unsafe {
+        x264_8_cabac_encode_init_core(cb);
+        (*cb).p_start = p_data;
+        (*cb).p = p_data;
+        (*cb).p_end = p_end;
+    }
 }
 #[inline]
-#[c2rust::src_loc = "69:1"]
-unsafe extern "C" fn cabac_putbyte(mut cb: *mut x264_cabac_t) {
-    if (*cb).i_queue >= 0 {
-        let mut out: c_int = (*cb).i_low >> (*cb).i_queue + 10;
-        (*cb).i_low &= ((0x400 as c_int) << (*cb).i_queue) - 1;
-        (*cb).i_queue -= 8;
-        if out & 0xff as c_int == 0xff as c_int {
-            (*cb).i_bytes_outstanding += 1;
-        } else {
-            let mut carry: c_int = out >> 8;
-            let mut bytes_outstanding: c_int = (*cb).i_bytes_outstanding;
-            let ref mut fresh0 = *(*cb).p.offset(-1 as isize);
-            *fresh0 = (*fresh0 as c_int + carry) as uint8_t;
-            while bytes_outstanding > 0 {
-                let fresh1 = (*cb).p;
+
+unsafe extern "C" fn cabac_putbyte(mut cb: *mut crate::src::common::cabac::x264_cabac_t) {
+    unsafe {
+        if (*cb).i_queue >= 0 as ::core::ffi::c_int {
+            let mut out: ::core::ffi::c_int =
+                (*cb).i_low >> (*cb).i_queue + 10 as ::core::ffi::c_int;
+            (*cb).i_low &=
+                ((0x400 as ::core::ffi::c_int) << (*cb).i_queue) - 1 as ::core::ffi::c_int;
+            (*cb).i_queue -= 8 as ::core::ffi::c_int;
+            if out & 0xff as ::core::ffi::c_int == 0xff as ::core::ffi::c_int {
+                (*cb).i_bytes_outstanding += 1;
+            } else {
+                let mut carry: ::core::ffi::c_int = out >> 8 as ::core::ffi::c_int;
+                let mut bytes_outstanding: ::core::ffi::c_int = (*cb).i_bytes_outstanding;
+                let ref mut c2rust_fresh0 = *(*cb).p.offset(-(1 as ::core::ffi::c_int) as isize);
+                *c2rust_fresh0 =
+                    (*c2rust_fresh0 as ::core::ffi::c_int + carry) as crate::stdlib::uint8_t;
+                while bytes_outstanding > 0 as ::core::ffi::c_int {
+                    let c2rust_fresh1 = (*cb).p;
+                    (*cb).p = (*cb).p.offset(1);
+                    *c2rust_fresh1 = (carry - 1 as ::core::ffi::c_int) as crate::stdlib::uint8_t;
+                    bytes_outstanding -= 1;
+                }
+                let c2rust_fresh2 = (*cb).p;
                 (*cb).p = (*cb).p.offset(1);
-                *fresh1 = (carry - 1) as uint8_t;
-                bytes_outstanding -= 1;
+                *c2rust_fresh2 = out as crate::stdlib::uint8_t;
+                (*cb).i_bytes_outstanding = 0 as ::core::ffi::c_int;
             }
-            let fresh2 = (*cb).p;
-            (*cb).p = (*cb).p.offset(1);
-            *fresh2 = out as uint8_t;
-            (*cb).i_bytes_outstanding = 0;
         }
     }
 }
 #[inline]
-#[c2rust::src_loc = "101:1"]
-unsafe extern "C" fn cabac_encode_renorm(mut cb: *mut x264_cabac_t) {
-    let mut shift: c_int = x264_cabac_renorm_shift[((*cb).i_range >> 3) as usize] as c_int;
-    (*cb).i_range <<= shift;
-    (*cb).i_low <<= shift;
-    (*cb).i_queue += shift;
-    cabac_putbyte(cb);
-}
-#[no_mangle]
-#[c2rust::src_loc = "113:1"]
-unsafe extern "C" fn x264_10_cabac_encode_decision_c(
-    mut cb: *mut x264_cabac_t,
-    mut i_ctx: c_int,
-    mut b: c_int,
-) {
-    let mut i_state: c_int = (*cb).state[i_ctx as usize] as c_int;
-    let mut i_range_lps: c_int =
-        x264_cabac_range_lps[(i_state >> 1) as usize][(((*cb).i_range >> 6) - 4) as usize] as c_int;
-    (*cb).i_range -= i_range_lps;
-    if b != i_state & 1 {
-        (*cb).i_low += (*cb).i_range;
-        (*cb).i_range = i_range_lps;
+
+unsafe extern "C" fn cabac_encode_renorm(mut cb: *mut crate::src::common::cabac::x264_cabac_t) {
+    unsafe {
+        let mut shift: ::core::ffi::c_int = crate::src::common::tables::x264_cabac_renorm_shift
+            [((*cb).i_range >> 3 as ::core::ffi::c_int) as usize]
+            as ::core::ffi::c_int;
+        (*cb).i_range <<= shift;
+        (*cb).i_low <<= shift;
+        (*cb).i_queue += shift;
+        cabac_putbyte(cb);
     }
-    (*cb).state[i_ctx as usize] = x264_cabac_transition[i_state as usize][b as usize];
-    cabac_encode_renorm(cb);
 }
 #[no_mangle]
-#[c2rust::src_loc = "128:1"]
-unsafe extern "C" fn x264_10_cabac_encode_bypass_c(mut cb: *mut x264_cabac_t, mut b: c_int) {
-    (*cb).i_low <<= 1;
-    (*cb).i_low += b & (*cb).i_range;
-    (*cb).i_queue += 1;
-    cabac_putbyte(cb);
+
+pub unsafe extern "C" fn x264_8_cabac_encode_decision_c(
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+    mut i_ctx: ::core::ffi::c_int,
+    mut b: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut i_state: ::core::ffi::c_int = (*cb).state[i_ctx as usize] as ::core::ffi::c_int;
+        let mut i_range_lps: ::core::ffi::c_int = crate::src::common::tables::x264_cabac_range_lps
+            [(i_state >> 1 as ::core::ffi::c_int) as usize]
+            [(((*cb).i_range >> 6 as ::core::ffi::c_int) - 4 as ::core::ffi::c_int) as usize]
+            as ::core::ffi::c_int;
+        (*cb).i_range -= i_range_lps;
+        if b != i_state & 1 as ::core::ffi::c_int {
+            (*cb).i_low += (*cb).i_range;
+            (*cb).i_range = i_range_lps;
+        }
+        (*cb).state[i_ctx as usize] =
+            crate::src::common::tables::x264_cabac_transition[i_state as usize][b as usize];
+        cabac_encode_renorm(cb);
+    }
 }
-#[c2rust::src_loc = "136:18"]
-static mut bypass_lut: [c_int; 16] = [
-    -1,
-    0x2 as c_int,
-    0x14 as c_int,
-    0x68 as c_int,
-    0x1d0 as c_int,
-    0x7a0 as c_int,
-    0x1f40 as c_int,
-    0x7e80 as c_int,
-    0x1fd00 as c_int,
-    0x7fa00 as c_int,
-    0x1ff400 as c_int,
-    0x7fe800 as c_int,
-    0x1ffd000 as c_int,
-    0x7ffa000 as c_int,
-    0x1fff4000 as c_int,
-    0x7ffe8000 as c_int,
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_cabac_encode_bypass_c(
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+    mut b: ::core::ffi::c_int,
+) {
+    unsafe {
+        (*cb).i_low <<= 1 as ::core::ffi::c_int;
+        (*cb).i_low += b & (*cb).i_range;
+        (*cb).i_queue += 1 as ::core::ffi::c_int;
+        cabac_putbyte(cb);
+    }
+}
+
+static mut bypass_lut: [::core::ffi::c_int; 16] = [
+    -(1 as ::core::ffi::c_int),
+    0x2 as ::core::ffi::c_int,
+    0x14 as ::core::ffi::c_int,
+    0x68 as ::core::ffi::c_int,
+    0x1d0 as ::core::ffi::c_int,
+    0x7a0 as ::core::ffi::c_int,
+    0x1f40 as ::core::ffi::c_int,
+    0x7e80 as ::core::ffi::c_int,
+    0x1fd00 as ::core::ffi::c_int,
+    0x7fa00 as ::core::ffi::c_int,
+    0x1ff400 as ::core::ffi::c_int,
+    0x7fe800 as ::core::ffi::c_int,
+    0x1ffd000 as ::core::ffi::c_int,
+    0x7ffa000 as ::core::ffi::c_int,
+    0x1fff4000 as ::core::ffi::c_int,
+    0x7ffe8000 as ::core::ffi::c_int,
 ];
 #[no_mangle]
-#[c2rust::src_loc = "142:1"]
-unsafe extern "C" fn x264_10_cabac_encode_ue_bypass(
-    mut cb: *mut x264_cabac_t,
-    mut exp_bits: c_int,
-    mut val: c_int,
+
+pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+    mut exp_bits: ::core::ffi::c_int,
+    mut val: ::core::ffi::c_int,
 ) {
-    let mut v: uint32_t = (val + ((1) << exp_bits)) as uint32_t;
-    let mut k: c_int = 31 - v.leading_zeros() as i32;
-    let mut x: uint32_t =
-        ((bypass_lut[(k - exp_bits) as usize] as uint32_t) << exp_bits).wrapping_add(v);
-    k = 2 * k + 1 - exp_bits;
-    let mut i: c_int = (k - 1 & 7) + 1;
-    loop {
-        k -= i;
-        (*cb).i_low <<= i;
-        (*cb).i_low = ((*cb).i_low as uint32_t)
-            .wrapping_add((x >> k & 0xff as uint32_t).wrapping_mul((*cb).i_range as uint32_t))
-            as c_int as c_int;
-        (*cb).i_queue += i;
-        cabac_putbyte(cb);
-        i = 8;
-        if !(k > 0) {
-            break;
+    unsafe {
+        let mut v: crate::stdlib::uint32_t =
+            (val + ((1 as ::core::ffi::c_int) << exp_bits)) as crate::stdlib::uint32_t;
+        let mut k: ::core::ffi::c_int = 31 as ::core::ffi::c_int - v.leading_zeros() as i32;
+        let mut x: crate::stdlib::uint32_t =
+            ((bypass_lut[(k - exp_bits) as usize] as crate::stdlib::uint32_t) << exp_bits)
+                .wrapping_add(v);
+        k = 2 as ::core::ffi::c_int * k + 1 as ::core::ffi::c_int - exp_bits;
+        let mut i: ::core::ffi::c_int =
+            (k - 1 as ::core::ffi::c_int & 7 as ::core::ffi::c_int) + 1 as ::core::ffi::c_int;
+        loop {
+            k -= i;
+            (*cb).i_low <<= i;
+            (*cb).i_low = ((*cb).i_low as crate::stdlib::uint32_t).wrapping_add(
+                (x >> k & 0xff as crate::stdlib::uint32_t)
+                    .wrapping_mul((*cb).i_range as crate::stdlib::uint32_t),
+            ) as ::core::ffi::c_int as ::core::ffi::c_int;
+            (*cb).i_queue += i;
+            cabac_putbyte(cb);
+            i = 8 as ::core::ffi::c_int;
+            if !(k > 0 as ::core::ffi::c_int) {
+                break;
+            }
         }
     }
 }
 #[no_mangle]
-#[c2rust::src_loc = "159:1"]
-unsafe extern "C" fn x264_10_cabac_encode_terminal_c(mut cb: *mut x264_cabac_t) {
-    (*cb).i_range -= 2;
-    cabac_encode_renorm(cb);
+
+pub unsafe extern "C" fn x264_8_cabac_encode_terminal_c(
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+) {
+    unsafe {
+        (*cb).i_range -= 2 as ::core::ffi::c_int;
+        cabac_encode_renorm(cb);
+    }
 }
 #[no_mangle]
-#[c2rust::src_loc = "165:1"]
-unsafe extern "C" fn x264_10_cabac_encode_flush(mut h: *mut x264_t, mut cb: *mut x264_cabac_t) {
-    (*cb).i_low += (*cb).i_range - 2;
-    (*cb).i_low |= 1;
-    (*cb).i_low <<= 9;
-    (*cb).i_queue += 9;
-    cabac_putbyte(cb);
-    cabac_putbyte(cb);
-    (*cb).i_low <<= -(*cb).i_queue;
-    (*cb).i_low |= (0x35a4e4f5 as c_int >> ((*h).i_frame & 31) & 1) << 10;
-    (*cb).i_queue = 0;
-    cabac_putbyte(cb);
-    while (*cb).i_bytes_outstanding > 0 {
-        let fresh3 = (*cb).p;
-        (*cb).p = (*cb).p.offset(1);
-        *fresh3 = 0xff as uint8_t;
-        (*cb).i_bytes_outstanding -= 1;
+
+pub unsafe extern "C" fn x264_8_cabac_encode_flush(
+    mut h: *mut crate::src::common::common::x264_t,
+    mut cb: *mut crate::src::common::cabac::x264_cabac_t,
+) {
+    unsafe {
+        (*cb).i_low += (*cb).i_range - 2 as ::core::ffi::c_int;
+        (*cb).i_low |= 1 as ::core::ffi::c_int;
+        (*cb).i_low <<= 9 as ::core::ffi::c_int;
+        (*cb).i_queue += 9 as ::core::ffi::c_int;
+        cabac_putbyte(cb);
+        cabac_putbyte(cb);
+        (*cb).i_low <<= -(*cb).i_queue;
+        (*cb).i_low |= (0x35a4e4f5 as ::core::ffi::c_int
+            >> ((*h).i_frame & 31 as ::core::ffi::c_int)
+            & 1 as ::core::ffi::c_int)
+            << 10 as ::core::ffi::c_int;
+        (*cb).i_queue = 0 as ::core::ffi::c_int;
+        cabac_putbyte(cb);
+        while (*cb).i_bytes_outstanding > 0 as ::core::ffi::c_int {
+            let c2rust_fresh3 = (*cb).p;
+            (*cb).p = (*cb).p.offset(1);
+            *c2rust_fresh3 = 0xff as crate::stdlib::uint8_t;
+            (*cb).i_bytes_outstanding -= 1;
+        }
     }
 }

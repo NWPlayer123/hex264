@@ -1,28 +1,599 @@
-use core::ffi::{c_char, c_int};
+// =============== BEGIN common_h ================
+pub use crate::src::encoder::ratecontrol::x264_ratecontrol_t;
 
-use crate::__stddef_null_h::NULL;
-use crate::base_h::x264_log_default;
-use crate::common_h::x264_t;
+pub const QP_BD_OFFSET: ::core::ffi::c_int =
+    6 as ::core::ffi::c_int * (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int);
+
+pub const QP_MAX_SPEC: ::core::ffi::c_int =
+    51 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET;
+
+pub const QP_MAX: ::core::ffi::c_int =
+    crate::src::common::common::QP_MAX_SPEC + 18 as ::core::ffi::c_int;
+
+pub const PIXEL_MAX: ::core::ffi::c_int =
+    ((1 as ::core::ffi::c_int) << crate::internal::BIT_DEPTH) - 1 as ::core::ffi::c_int;
+
+pub const X264_LOOKAHEAD_QP: ::core::ffi::c_int =
+    12 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET;
+
+pub const NALU_OVERHEAD: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
+
+pub const FILLER_OVERHEAD: ::core::ffi::c_int =
+    crate::src::common::common::NALU_OVERHEAD + 1 as ::core::ffi::c_int;
+
+pub type pixel = crate::stdlib::uint8_t;
+
+pub type pixel4 = crate::stdlib::uint32_t;
+
+pub type dctcoef = crate::stdlib::int16_t;
+
+pub type udctcoef = crate::stdlib::uint16_t;
+
+pub const SIZEOF_PIXEL: ::core::ffi::c_int =
+    ::core::mem::size_of::<crate::src::common::common::pixel>() as ::core::ffi::c_int;
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_slice_header_t {
+    pub sps: *mut crate::src::common::set::x264_sps_t,
+    pub pps: *mut crate::src::common::set::x264_pps_t,
+    pub i_type: ::core::ffi::c_int,
+    pub i_first_mb: ::core::ffi::c_int,
+    pub i_last_mb: ::core::ffi::c_int,
+    pub i_pps_id: ::core::ffi::c_int,
+    pub i_frame_num: ::core::ffi::c_int,
+    pub b_mbaff: ::core::ffi::c_int,
+    pub b_field_pic: ::core::ffi::c_int,
+    pub b_bottom_field: ::core::ffi::c_int,
+    pub i_idr_pic_id: ::core::ffi::c_int,
+    pub i_poc: ::core::ffi::c_int,
+    pub i_delta_poc_bottom: ::core::ffi::c_int,
+    pub i_delta_poc: [::core::ffi::c_int; 2],
+    pub i_redundant_pic_cnt: ::core::ffi::c_int,
+    pub b_direct_spatial_mv_pred: ::core::ffi::c_int,
+    pub b_num_ref_idx_override: ::core::ffi::c_int,
+    pub i_num_ref_idx_l0_active: ::core::ffi::c_int,
+    pub i_num_ref_idx_l1_active: ::core::ffi::c_int,
+    pub b_ref_pic_list_reordering: [::core::ffi::c_int; 2],
+    pub ref_pic_list_order: [[crate::src::common::common::C2Rust_Unnamed_15; 16]; 2],
+    pub b_weighted_pred: ::core::ffi::c_int,
+    pub weight: [[crate::src::common::mc::x264_weight_t; 3]; 32],
+    pub i_mmco_remove_from_end: ::core::ffi::c_int,
+    pub i_mmco_command_count: ::core::ffi::c_int,
+    pub mmco: [crate::src::common::common::C2Rust_Unnamed_14; 16],
+    pub i_cabac_init_idc: ::core::ffi::c_int,
+    pub i_qp: ::core::ffi::c_int,
+    pub i_qp_delta: ::core::ffi::c_int,
+    pub b_sp_for_swidth: ::core::ffi::c_int,
+    pub i_qs_delta: ::core::ffi::c_int,
+    pub i_disable_deblocking_filter_idc: ::core::ffi::c_int,
+    pub i_alpha_c0_offset: ::core::ffi::c_int,
+    pub i_beta_offset: ::core::ffi::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_15 {
+    pub idc: ::core::ffi::c_int,
+    pub arg: ::core::ffi::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_14 {
+    pub i_difference_of_pic_nums: ::core::ffi::c_int,
+    pub i_poc: ::core::ffi::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_lookahead_t {
+    pub b_exit_thread: crate::stdlib::uint8_t,
+    pub b_thread_active: crate::stdlib::uint8_t,
+    pub b_analyse_keyframe: crate::stdlib::uint8_t,
+    pub i_last_keyframe: ::core::ffi::c_int,
+    pub i_slicetype_length: ::core::ffi::c_int,
+    pub last_nonb: *mut crate::src::common::frame::x264_frame_t,
+    pub thread_handle: crate::stdlib::pthread_t,
+    pub ifbuf: crate::src::common::frame::x264_sync_frame_list_t,
+    pub next: crate::src::common::frame::x264_sync_frame_list_t,
+    pub ofbuf: crate::src::common::frame::x264_sync_frame_list_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_left_table_t {
+    pub intra: [crate::stdlib::uint8_t; 4],
+    pub nnz: [crate::stdlib::uint8_t; 4],
+    pub nnz_chroma: [crate::stdlib::uint8_t; 4],
+    pub mv: [crate::stdlib::uint8_t; 4],
+    pub ref_0: [crate::stdlib::uint8_t; 4],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_frame_stat_t {
+    pub i_mv_bits: ::core::ffi::c_int,
+    pub i_tex_bits: ::core::ffi::c_int,
+    pub i_misc_bits: ::core::ffi::c_int,
+    pub i_mb_count: [::core::ffi::c_int; 19],
+    pub i_mb_count_i: ::core::ffi::c_int,
+    pub i_mb_count_p: ::core::ffi::c_int,
+    pub i_mb_count_skip: ::core::ffi::c_int,
+    pub i_mb_count_8x8dct: [::core::ffi::c_int; 2],
+    pub i_mb_count_ref: [[::core::ffi::c_int; 32]; 2],
+    pub i_mb_partition: [::core::ffi::c_int; 17],
+    pub i_mb_cbp: [::core::ffi::c_int; 6],
+    pub i_mb_pred_mode: [[::core::ffi::c_int; 13]; 4],
+    pub i_mb_field: [::core::ffi::c_int; 3],
+    pub i_direct_score: [::core::ffi::c_int; 2],
+    pub i_ssd: [crate::stdlib::int64_t; 3],
+    pub f_ssim: ::core::ffi::c_double,
+    pub i_ssim_cnt: ::core::ffi::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_t {
+    pub param: crate::x264_h::x264_param_t,
+    pub api: *mut ::core::ffi::c_void,
+    pub thread: [*mut crate::src::common::common::x264_t; 129],
+    pub lookahead_thread: [*mut crate::src::common::common::x264_t; 16],
+    pub b_thread_active: ::core::ffi::c_int,
+    pub i_thread_phase: ::core::ffi::c_int,
+    pub i_thread_idx: ::core::ffi::c_int,
+    pub i_threadslice_start: ::core::ffi::c_int,
+    pub i_threadslice_end: ::core::ffi::c_int,
+    pub i_threadslice_pass: ::core::ffi::c_int,
+    pub threadpool: *mut crate::src::common::threadpool::x264_threadpool_t,
+    pub lookaheadpool: *mut crate::src::common::threadpool::x264_threadpool_t,
+    pub mutex: crate::stdlib::pthread_mutex_t,
+    pub cv: crate::stdlib::pthread_cond_t,
+    pub out: crate::src::common::common::C2Rust_Unnamed_17,
+    pub nal_buffer: *mut crate::stdlib::uint8_t,
+    pub nal_buffer_size: ::core::ffi::c_int,
+    pub reconfig_h: *mut crate::src::common::common::x264_t,
+    pub reconfig: ::core::ffi::c_int,
+    pub i_frame: ::core::ffi::c_int,
+    pub i_frame_num: ::core::ffi::c_int,
+    pub i_thread_frames: ::core::ffi::c_int,
+    pub i_nal_type: ::core::ffi::c_int,
+    pub i_nal_ref_idc: ::core::ffi::c_int,
+    pub i_disp_fields: crate::stdlib::int64_t,
+    pub i_disp_fields_last_frame: ::core::ffi::c_int,
+    pub i_prev_duration: crate::stdlib::int64_t,
+    pub i_coded_fields: crate::stdlib::int64_t,
+    pub i_cpb_delay: crate::stdlib::int64_t,
+    pub i_coded_fields_lookahead: crate::stdlib::int64_t,
+    pub i_cpb_delay_lookahead: crate::stdlib::int64_t,
+    pub i_cpb_delay_pir_offset: crate::stdlib::int64_t,
+    pub i_cpb_delay_pir_offset_next: crate::stdlib::int64_t,
+    pub b_queued_intra_refresh: ::core::ffi::c_int,
+    pub i_last_idr_pts: crate::stdlib::int64_t,
+    pub i_idr_pic_id: ::core::ffi::c_int,
+    pub dequant4_mf: [*mut [::core::ffi::c_int; 16]; 4],
+    pub dequant8_mf: [*mut [::core::ffi::c_int; 64]; 4],
+    pub unquant4_mf: [*mut [::core::ffi::c_int; 16]; 4],
+    pub unquant8_mf: [*mut [::core::ffi::c_int; 64]; 4],
+    pub quant4_mf: [*mut [crate::src::common::common::udctcoef; 16]; 4],
+    pub quant8_mf: [*mut [crate::src::common::common::udctcoef; 64]; 4],
+    pub quant4_bias: [*mut [crate::src::common::common::udctcoef; 16]; 4],
+    pub quant8_bias: [*mut [crate::src::common::common::udctcoef; 64]; 4],
+    pub quant4_bias0: [*mut [crate::src::common::common::udctcoef; 16]; 4],
+    pub quant8_bias0: [*mut [crate::src::common::common::udctcoef; 64]; 4],
+    pub nr_offset_emergency: *mut [[crate::src::common::common::udctcoef; 64]; 4],
+    pub cost_mv: [*mut crate::stdlib::uint16_t; 70],
+    pub cost_mv_fpel: [[*mut crate::stdlib::uint16_t; 4]; 70],
+    pub cost_table: *mut crate::src::common::common::C2Rust_Unnamed_16,
+    pub chroma_qp_table: *const crate::stdlib::uint8_t,
+    pub sh: crate::src::common::common::x264_slice_header_t,
+    pub sps: [crate::src::common::set::x264_sps_t; 1],
+    pub pps: [crate::src::common::set::x264_pps_t; 1],
+    pub b_sh_backup: ::core::ffi::c_int,
+    pub sh_backup: crate::src::common::common::x264_slice_header_t,
+    pub cabac: crate::src::common::cabac::x264_cabac_t,
+    pub frames: crate::src::common::common::C2Rust_Unnamed_13,
+    pub fenc: *mut crate::src::common::frame::x264_frame_t,
+    pub fdec: *mut crate::src::common::frame::x264_frame_t,
+    pub i_ref: [::core::ffi::c_int; 2],
+    pub fref: [[*mut crate::src::common::frame::x264_frame_t; 19]; 2],
+    pub fref_nearest: [*mut crate::src::common::frame::x264_frame_t; 2],
+    pub b_ref_reorder: [::core::ffi::c_int; 2],
+    pub initial_cpb_removal_delay: ::core::ffi::c_int,
+    pub initial_cpb_removal_delay_offset: ::core::ffi::c_int,
+    pub i_reordered_pts_delay: crate::stdlib::int64_t,
+    pub dct: crate::src::common::common::C2Rust_Unnamed_12,
+    pub mb: crate::src::common::common::C2Rust_Unnamed_9,
+    pub rc: *mut crate::src::common::common::x264_ratecontrol_t,
+    pub stat: crate::src::common::common::C2Rust_Unnamed_8,
+    pub nr_offset: *mut [crate::src::common::common::udctcoef; 64],
+    pub nr_residual_sum: *mut [crate::stdlib::uint32_t; 64],
+    pub nr_count: *mut crate::stdlib::uint32_t,
+    pub nr_offset_denoise: [[crate::src::common::common::udctcoef; 64]; 4],
+    pub nr_residual_sum_buf: [[[crate::stdlib::uint32_t; 64]; 4]; 2],
+    pub nr_count_buf: [[crate::stdlib::uint32_t; 4]; 2],
+    pub luma2chroma_pixel: [crate::stdlib::uint8_t; 7],
+    pub scratch_buffer: *mut ::core::ffi::c_void,
+    pub scratch_buffer2: *mut ::core::ffi::c_void,
+    pub intra_border_backup: [[*mut crate::src::common::common::pixel; 3]; 5],
+    pub deblock_strength: [*mut [[[crate::stdlib::uint8_t; 4]; 8]; 2]; 2],
+    pub predict_16x16: [crate::src::common::predict::x264_predict_t; 7],
+    pub predict_8x8: [crate::src::common::predict::x264_predict8x8_t; 12],
+    pub predict_4x4: [crate::src::common::predict::x264_predict_t; 12],
+    pub predict_chroma: [crate::src::common::predict::x264_predict_t; 7],
+    pub predict_8x8c: [crate::src::common::predict::x264_predict_t; 7],
+    pub predict_8x16c: [crate::src::common::predict::x264_predict_t; 7],
+    pub predict_8x8_filter: crate::src::common::predict::x264_predict_8x8_filter_t,
+    pub pixf: crate::src::common::pixel::x264_pixel_function_t,
+    pub mc: crate::src::common::mc::x264_mc_functions_t,
+    pub dctf: crate::src::common::dct::x264_dct_function_t,
+    pub zigzagf: crate::src::common::dct::x264_zigzag_function_t,
+    pub zigzagf_interlaced: crate::src::common::dct::x264_zigzag_function_t,
+    pub zigzagf_progressive: crate::src::common::dct::x264_zigzag_function_t,
+    pub quantf: crate::src::common::quant::x264_quant_function_t,
+    pub loopf: crate::src::common::frame::x264_deblock_function_t,
+    pub bsf: crate::src::common::bitstream::x264_bitstream_function_t,
+    pub lookahead: *mut crate::src::common::common::x264_lookahead_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_17 {
+    pub i_nal: ::core::ffi::c_int,
+    pub i_nals_allocated: ::core::ffi::c_int,
+    pub nal: *mut crate::x264_h::x264_nal_t,
+    pub i_bitstream: ::core::ffi::c_int,
+    pub p_bitstream: *mut crate::stdlib::uint8_t,
+    pub bs: crate::src::common::bitstream::bs_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_16 {
+    pub ref_0: [[[crate::stdlib::uint16_t; 33]; 3]; 70],
+    pub i4x4_mode: [[crate::stdlib::uint16_t; 17]; 70],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_13 {
+    pub current: *mut *mut crate::src::common::frame::x264_frame_t,
+    pub unused: [*mut *mut crate::src::common::frame::x264_frame_t; 2],
+    pub blank_unused: *mut *mut crate::src::common::frame::x264_frame_t,
+    pub reference: [*mut crate::src::common::frame::x264_frame_t; 18],
+    pub i_last_keyframe: ::core::ffi::c_int,
+    pub i_last_idr: ::core::ffi::c_int,
+    pub i_poc_last_open_gop: ::core::ffi::c_int,
+    pub i_input: ::core::ffi::c_int,
+    pub i_max_dpb: ::core::ffi::c_int,
+    pub i_max_ref0: ::core::ffi::c_int,
+    pub i_max_ref1: ::core::ffi::c_int,
+    pub i_delay: ::core::ffi::c_int,
+    pub i_bframe_delay: ::core::ffi::c_int,
+    pub i_bframe_delay_time: crate::stdlib::int64_t,
+    pub i_first_pts: crate::stdlib::int64_t,
+    pub i_prev_reordered_pts: [crate::stdlib::int64_t; 2],
+    pub i_largest_pts: crate::stdlib::int64_t,
+    pub i_second_largest_pts: crate::stdlib::int64_t,
+    pub b_have_lowres: ::core::ffi::c_int,
+    pub b_have_sub8x8_esa: ::core::ffi::c_int,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_12 {
+    pub luma16x16_dc: [[crate::src::common::common::dctcoef; 16]; 3],
+    pub chroma_dc: [[crate::src::common::common::dctcoef; 8]; 2],
+    pub luma8x8: [[crate::src::common::common::dctcoef; 64]; 12],
+    pub luma4x4: [[crate::src::common::common::dctcoef; 16]; 48],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_9 {
+    pub i_mb_width: ::core::ffi::c_int,
+    pub i_mb_height: ::core::ffi::c_int,
+    pub i_mb_count: ::core::ffi::c_int,
+    pub chroma_h_shift: ::core::ffi::c_int,
+    pub chroma_v_shift: ::core::ffi::c_int,
+    pub i_mb_stride: ::core::ffi::c_int,
+    pub i_b8_stride: ::core::ffi::c_int,
+    pub i_b4_stride: ::core::ffi::c_int,
+    pub left_b8: [::core::ffi::c_int; 2],
+    pub left_b4: [::core::ffi::c_int; 2],
+    pub i_mb_x: ::core::ffi::c_int,
+    pub i_mb_y: ::core::ffi::c_int,
+    pub i_mb_xy: ::core::ffi::c_int,
+    pub i_b8_xy: ::core::ffi::c_int,
+    pub i_b4_xy: ::core::ffi::c_int,
+    pub i_me_method: ::core::ffi::c_int,
+    pub i_subpel_refine: ::core::ffi::c_int,
+    pub b_chroma_me: ::core::ffi::c_int,
+    pub b_trellis: ::core::ffi::c_int,
+    pub b_noise_reduction: ::core::ffi::c_int,
+    pub b_dct_decimate: ::core::ffi::c_int,
+    pub i_psy_rd: ::core::ffi::c_int,
+    pub i_psy_trellis: ::core::ffi::c_int,
+    pub b_interlaced: ::core::ffi::c_int,
+    pub b_adaptive_mbaff: ::core::ffi::c_int,
+    pub mv_min: [::core::ffi::c_int; 2],
+    pub mv_max: [::core::ffi::c_int; 2],
+    pub mv_miny_row: [::core::ffi::c_int; 3],
+    pub mv_maxy_row: [::core::ffi::c_int; 3],
+    pub mv_min_spel: [::core::ffi::c_int; 2],
+    pub mv_max_spel: [::core::ffi::c_int; 2],
+    pub mv_miny_spel_row: [::core::ffi::c_int; 3],
+    pub mv_maxy_spel_row: [::core::ffi::c_int; 3],
+    pub mv_limit_fpel: [[crate::stdlib::int16_t; 2]; 2],
+    pub mv_miny_fpel_row: [::core::ffi::c_int; 3],
+    pub mv_maxy_fpel_row: [::core::ffi::c_int; 3],
+    pub i_neighbour: ::core::ffi::c_uint,
+    pub i_neighbour8: [::core::ffi::c_uint; 4],
+    pub i_neighbour4: [::core::ffi::c_uint; 16],
+    pub i_neighbour_intra: ::core::ffi::c_uint,
+    pub i_neighbour_frame: ::core::ffi::c_uint,
+    pub i_mb_type_top: ::core::ffi::c_int,
+    pub i_mb_type_left: [::core::ffi::c_int; 2],
+    pub i_mb_type_topleft: ::core::ffi::c_int,
+    pub i_mb_type_topright: ::core::ffi::c_int,
+    pub i_mb_prev_xy: ::core::ffi::c_int,
+    pub i_mb_left_xy: [::core::ffi::c_int; 2],
+    pub i_mb_top_xy: ::core::ffi::c_int,
+    pub i_mb_topleft_xy: ::core::ffi::c_int,
+    pub i_mb_topright_xy: ::core::ffi::c_int,
+    pub i_mb_top_y: ::core::ffi::c_int,
+    pub i_mb_topleft_y: ::core::ffi::c_int,
+    pub i_mb_topright_y: ::core::ffi::c_int,
+    pub left_index_table: *const crate::src::common::common::x264_left_table_t,
+    pub i_mb_top_mbpair_xy: ::core::ffi::c_int,
+    pub topleft_partition: ::core::ffi::c_int,
+    pub b_allow_skip: ::core::ffi::c_int,
+    pub field_decoding_flag: ::core::ffi::c_int,
+    pub base: *mut crate::stdlib::uint8_t,
+    pub type_0: *mut crate::stdlib::int8_t,
+    pub partition: *mut crate::stdlib::uint8_t,
+    pub qp: *mut crate::stdlib::int8_t,
+    pub cbp: *mut crate::stdlib::int16_t,
+    pub intra4x4_pred_mode: *mut [crate::stdlib::int8_t; 8],
+    pub non_zero_count: *mut [crate::stdlib::uint8_t; 48],
+    pub chroma_pred_mode: *mut crate::stdlib::int8_t,
+    pub mv: [*mut [crate::stdlib::int16_t; 2]; 2],
+    pub mvd: [*mut [[crate::stdlib::uint8_t; 2]; 8]; 2],
+    pub ref_0: [*mut crate::stdlib::int8_t; 2],
+    pub mvr: [[*mut [crate::stdlib::int16_t; 2]; 32]; 2],
+    pub skipbp: *mut crate::stdlib::int8_t,
+    pub mb_transform_size: *mut crate::stdlib::int8_t,
+    pub slice_table: *mut crate::stdlib::int32_t,
+    pub field: *mut crate::stdlib::uint8_t,
+    pub p_weight_buf: [*mut crate::src::common::common::pixel; 16],
+    pub i_type: ::core::ffi::c_int,
+    pub i_partition: ::core::ffi::c_int,
+    pub i_sub_partition: [crate::stdlib::uint8_t; 4],
+    pub b_transform_8x8: ::core::ffi::c_int,
+    pub i_cbp_luma: ::core::ffi::c_int,
+    pub i_cbp_chroma: ::core::ffi::c_int,
+    pub i_intra16x16_pred_mode: ::core::ffi::c_int,
+    pub i_chroma_pred_mode: ::core::ffi::c_int,
+    pub i_skip_intra: ::core::ffi::c_int,
+    pub b_skip_mc: ::core::ffi::c_int,
+    pub b_reencode_mb: ::core::ffi::c_int,
+    pub ip_offset: ::core::ffi::c_int,
+    pub b_deblock_rdo: ::core::ffi::c_int,
+    pub b_overflow: ::core::ffi::c_int,
+    pub pic: crate::src::common::common::C2Rust_Unnamed_11,
+    pub cache: crate::src::common::common::C2Rust_Unnamed_10,
+    pub i_qp: ::core::ffi::c_int,
+    pub i_chroma_qp: ::core::ffi::c_int,
+    pub i_last_qp: ::core::ffi::c_int,
+    pub i_last_dqp: ::core::ffi::c_int,
+    pub b_variable_qp: ::core::ffi::c_int,
+    pub b_lossless: ::core::ffi::c_int,
+    pub b_direct_auto_read: ::core::ffi::c_int,
+    pub b_direct_auto_write: ::core::ffi::c_int,
+    pub i_trellis_lambda2: [[::core::ffi::c_int; 2]; 2],
+    pub i_psy_rd_lambda: ::core::ffi::c_int,
+    pub i_chroma_lambda2_offset: ::core::ffi::c_int,
+    pub dist_scale_factor_buf: [[[[crate::stdlib::int16_t; 4]; 32]; 2]; 2],
+    pub dist_scale_factor: *mut [crate::stdlib::int16_t; 4],
+    pub bipred_weight_buf: [[[[crate::stdlib::int8_t; 4]; 32]; 2]; 2],
+    pub bipred_weight: *mut [crate::stdlib::int8_t; 4],
+    pub map_col_to_list0: [crate::stdlib::int8_t; 18],
+    pub ref_blind_dupe: ::core::ffi::c_int,
+    pub deblock_ref_table: [crate::stdlib::int8_t; 34],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_11 {
+    pub fenc_buf: [crate::src::common::common::pixel; 768],
+    pub fdec_buf: [crate::src::common::common::pixel; 1728],
+    pub i4x4_fdec_buf: [crate::src::common::common::pixel; 256],
+    pub i8x8_fdec_buf: [crate::src::common::common::pixel; 256],
+    pub i8x8_dct_buf: [[crate::src::common::common::dctcoef; 64]; 3],
+    pub i4x4_dct_buf: [[crate::src::common::common::dctcoef; 16]; 15],
+    pub i4x4_nnz_buf: [crate::stdlib::uint32_t; 4],
+    pub i8x8_nnz_buf: [crate::stdlib::uint32_t; 4],
+    pub fenc_dct8: [[crate::src::common::common::dctcoef; 64]; 4],
+    pub fenc_dct4: [[crate::src::common::common::dctcoef; 16]; 16],
+    pub fenc_satd_cache: [crate::stdlib::uint32_t; 32],
+    pub fenc_hadamard_cache: [crate::stdlib::uint64_t; 9],
+    pub i4x4_cbp: ::core::ffi::c_int,
+    pub i8x8_cbp: ::core::ffi::c_int,
+    pub p_fenc: [*mut crate::src::common::common::pixel; 3],
+    pub p_fenc_plane: [*mut crate::src::common::common::pixel; 3],
+    pub p_fdec: [*mut crate::src::common::common::pixel; 3],
+    pub i_fref: [::core::ffi::c_int; 2],
+    pub p_fref: [[[*mut crate::src::common::common::pixel; 12]; 32]; 2],
+    pub p_fref_w: [*mut crate::src::common::common::pixel; 32],
+    pub p_integral: [[*mut crate::stdlib::uint16_t; 16]; 2],
+    pub i_stride: [::core::ffi::c_int; 3],
+}
+
+pub const FENC_STRIDE: ::core::ffi::c_int = 16 as ::core::ffi::c_int;
+
+pub const FDEC_STRIDE: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_10 {
+    pub intra4x4_pred_mode: [crate::stdlib::int8_t; 40],
+    pub non_zero_count: [crate::stdlib::uint8_t; 120],
+    pub ref_0: [[crate::stdlib::int8_t; 40]; 2],
+    pub mv: [[[crate::stdlib::int16_t; 2]; 40]; 2],
+    pub mvd: [[[crate::stdlib::uint8_t; 2]; 40]; 2],
+    pub skip: [crate::stdlib::int8_t; 40],
+    pub direct_mv: [[[crate::stdlib::int16_t; 2]; 4]; 2],
+    pub direct_ref: [[crate::stdlib::int8_t; 4]; 2],
+    pub direct_partition: ::core::ffi::c_int,
+    pub pskip_mv: [crate::stdlib::int16_t; 2],
+    pub i_neighbour_transform_size: ::core::ffi::c_int,
+    pub i_neighbour_skip: ::core::ffi::c_int,
+    pub i_cbp_top: ::core::ffi::c_int,
+    pub i_cbp_left: ::core::ffi::c_int,
+    pub topright_mv: [[[crate::stdlib::int16_t; 2]; 3]; 2],
+    pub topright_ref: [[crate::stdlib::int8_t; 3]; 2],
+    pub deblock_strength: *mut [[crate::stdlib::uint8_t; 4]; 8],
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct C2Rust_Unnamed_8 {
+    pub i_frame_count: [::core::ffi::c_int; 3],
+    pub i_frame_size: [crate::stdlib::int64_t; 3],
+    pub f_frame_qp: [::core::ffi::c_double; 3],
+    pub i_consecutive_bframes: [::core::ffi::c_int; 17],
+    pub f_ssd_global: [::core::ffi::c_double; 3],
+    pub f_psnr_average: [::core::ffi::c_double; 3],
+    pub f_psnr_mean_y: [::core::ffi::c_double; 3],
+    pub f_psnr_mean_u: [::core::ffi::c_double; 3],
+    pub f_psnr_mean_v: [::core::ffi::c_double; 3],
+    pub f_ssim_mean_y: [::core::ffi::c_double; 3],
+    pub f_frame_duration: [::core::ffi::c_double; 3],
+    pub i_mb_count: [[crate::stdlib::int64_t; 19]; 3],
+    pub i_mb_partition: [[crate::stdlib::int64_t; 17]; 2],
+    pub i_mb_count_8x8dct: [crate::stdlib::int64_t; 2],
+    pub i_mb_count_ref: [[[crate::stdlib::int64_t; 32]; 2]; 2],
+    pub i_mb_cbp: [crate::stdlib::int64_t; 6],
+    pub i_mb_pred_mode: [[crate::stdlib::int64_t; 13]; 4],
+    pub i_mb_field: [crate::stdlib::int64_t; 3],
+    pub i_direct_score: [::core::ffi::c_int; 2],
+    pub i_direct_frames: [::core::ffi::c_int; 2],
+    pub i_wpred: [::core::ffi::c_int; 2],
+    pub frame: crate::src::common::common::x264_frame_stat_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct mvsad_t {
+    pub sad: ::core::ffi::c_int,
+    pub mv: [crate::stdlib::int16_t; 2],
+}
+pub use crate::__stdarg___gnuc_va_list_h::__gnuc_va_list;
+pub use crate::__stddef_null_h::NULL;
+pub use crate::__stddef_size_t_h::size_t;
+use crate::src::common::base::x264_log_default;
+pub use crate::src::common::bitstream::bs_s;
+pub use crate::src::common::bitstream::bs_t;
+pub use crate::src::common::bitstream::x264_bitstream_function_t;
+pub use crate::src::common::bitstream::x264_run_level_t;
+pub use crate::src::common::cabac::x264_cabac_t;
+pub use crate::stdlib::C2Rust_Unnamed_7;
+pub use crate::stdlib::__atomic_wide_counter;
+
+pub use crate::internal::__builtin_va_list;
+pub use crate::internal::__va_list_tag;
+pub use crate::src::common::dct::x264_dct_function_t;
+pub use crate::src::common::dct::x264_zigzag_function_t;
+pub use crate::src::common::frame::x264_deblock_function_t;
+pub use crate::src::common::frame::x264_deblock_inter_t;
+pub use crate::src::common::frame::x264_deblock_intra_t;
+pub use crate::src::common::frame::x264_frame;
+pub use crate::src::common::frame::x264_frame_t;
+pub use crate::src::common::frame::x264_sync_frame_list_t;
+pub use crate::src::common::mc::weight_fn_t;
+pub use crate::src::common::mc::x264_mc_functions_t_2;
+pub use crate::src::common::mc::x264_weight_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_x3_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_x4_t;
+pub use crate::src::common::pixel::x264_pixel_function_t;
+pub use crate::src::common::predict::x264_predict8x8_t;
+pub use crate::src::common::predict::x264_predict_8x8_filter_t;
+pub use crate::src::common::predict::x264_predict_t;
+pub use crate::src::common::quant::x264_quant_function_t;
+pub use crate::stdlib::pthread_cond_t;
+pub use crate::stdlib::pthread_mutex_t;
+pub use crate::stdlib::pthread_t;
+
+pub use crate::src::common::set::x264_pps_t;
+pub use crate::src::common::set::x264_sps_t;
+pub use crate::src::common::set::C2Rust_Unnamed_24;
+pub use crate::src::common::set::C2Rust_Unnamed_25;
+pub use crate::src::common::set::C2Rust_Unnamed_26;
+use crate::src::common::threadpool::x264_threadpool_t;
+pub use crate::stdlib::__pthread_cond_s;
+pub use crate::stdlib::__pthread_internal_list;
+pub use crate::stdlib::__pthread_list_t;
+pub use crate::stdlib::__pthread_mutex_s;
+pub use crate::stdlib::int16_t;
+pub use crate::stdlib::int32_t;
+pub use crate::stdlib::int64_t;
+pub use crate::stdlib::int8_t;
+pub use crate::stdlib::intptr_t;
+pub use crate::stdlib::uint16_t;
+pub use crate::stdlib::uint32_t;
+pub use crate::stdlib::uint64_t;
+pub use crate::stdlib::uint8_t;
+pub use crate::stdlib::uintptr_t;
+pub use crate::stdlib::va_list;
+
+pub use crate::stdlib::__int16_t;
+pub use crate::stdlib::__int32_t;
+pub use crate::stdlib::__int64_t;
+pub use crate::stdlib::__int8_t;
+pub use crate::stdlib::__uint16_t;
+pub use crate::stdlib::__uint32_t;
+pub use crate::stdlib::__uint64_t;
+pub use crate::stdlib::__uint8_t;
+pub use crate::x264_h::x264_hrd_t;
+pub use crate::x264_h::x264_nal_t;
+pub use crate::x264_h::x264_param_t;
+pub use crate::x264_h::x264_sei_payload_t;
+pub use crate::x264_h::x264_sei_t;
+pub use crate::x264_h::x264_zone_t;
+pub use crate::x264_h::C2Rust_Unnamed_0;
+pub use crate::x264_h::C2Rust_Unnamed_1;
+pub use crate::x264_h::C2Rust_Unnamed_2;
+pub use crate::x264_h::C2Rust_Unnamed_3;
+pub use crate::x264_h::C2Rust_Unnamed_4;
+pub use crate::x264_h::C2Rust_Unnamed_5;
 #[no_mangle]
-#[c2rust::src_loc = "32:1"]
-unsafe extern "C" fn x264_10_log(
-    mut h: *mut x264_t,
-    mut i_level: c_int,
-    mut psz_fmt: *const c_char,
-    mut args: ...
+
+pub unsafe extern "C" fn x264_8_log(
+    mut h: *mut crate::src::common::common::x264_t,
+    mut i_level: ::core::ffi::c_int,
+    mut psz_fmt: *const ::core::ffi::c_char,
+    mut c2rust_args: ...
 ) {
-    if h.is_null() || i_level <= (*h).param.i_log_level {
-        let mut arg: ::core::ffi::VaListImpl;
-        arg = args.clone();
-        if h.is_null() {
-            x264_log_default(NULL, i_level, psz_fmt, arg.as_va_list());
-        } else {
-            (*h).param.pf_log.expect("non-null function pointer")(
-                (*h).param.p_log_private,
-                i_level,
-                psz_fmt,
-                arg.as_va_list(),
-            );
+    unsafe {
+        if h.is_null() || i_level <= (*h).param.i_log_level {
+            let mut arg: ::core::ffi::VaListImpl;
+            arg = c2rust_args.clone();
+            if h.is_null() {
+                crate::src::common::base::x264_log_default(
+                    crate::__stddef_null_h::NULL,
+                    i_level,
+                    psz_fmt,
+                    arg.as_va_list(),
+                );
+            } else {
+                (*h).param.pf_log.expect("non-null function pointer")(
+                    (*h).param.p_log_private,
+                    i_level,
+                    psz_fmt,
+                    arg.as_va_list(),
+                );
+            }
         }
     }
 }

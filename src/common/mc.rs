@@ -1,2547 +1,10725 @@
-use ::core::mem::size_of;
-use core::ffi::{c_float, c_int, c_uint, c_void};
+// =============== BEGIN mc_h ================
+pub type weight_fn_t = Option<
+    unsafe extern "C" fn(
+        *mut crate::src::common::common::pixel,
+        crate::stdlib::intptr_t,
+        *mut crate::src::common::common::pixel,
+        crate::stdlib::intptr_t,
+        *const crate::src::common::mc::x264_weight_t,
+        ::core::ffi::c_int,
+    ) -> (),
+>;
+#[derive(Copy, Clone)]
+#[repr(C)]
 
-use crate::__stddef_size_t_h::size_t;
-use crate::base_h::{x264_union32_t, CHROMA_444};
-use crate::common_h::{
-    pixel, x264_clip_pixel, x264_t, FDEC_STRIDE, FENC_STRIDE, PIXEL_MAX, SIZEOF_PIXEL,
-};
-use crate::frame_h::{x264_10_frame_expand_border_lowres, x264_frame_t, LOWRES_COST_SHIFT, PADV};
-use crate::internal::BIT_DEPTH;
-use crate::mc_h::{weight_fn_t, x264_mc_functions_t, x264_weight_t};
-use crate::osdep_h::endian_fix16;
-use crate::pixel_h::{
-    PIXEL_16x16, PIXEL_16x8, PIXEL_2x2, PIXEL_2x4, PIXEL_2x8, PIXEL_4x16, PIXEL_4x2, PIXEL_4x4,
-    PIXEL_4x8, PIXEL_8x16, PIXEL_8x4, PIXEL_8x8,
-};
-use crate::stdint_h::intptr_t;
-use crate::stdint_intn_h::int16_t;
-use crate::stdint_uintn_h::{uint16_t, uint32_t};
-use crate::string_h::{memcpy, memset};
-use crate::tables_h::{x264_hpel_ref0, x264_hpel_ref1};
+pub struct x264_weight_t {
+    pub cachea: [crate::stdlib::int16_t; 8],
+    pub cacheb: [crate::stdlib::int16_t; 8],
+    pub i_denom: crate::stdlib::int32_t,
+    pub i_scale: crate::stdlib::int32_t,
+    pub i_offset: crate::stdlib::int32_t,
+    pub weightfn: *mut crate::src::common::mc::weight_fn_t,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_1 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_2 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_3 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_4 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_5 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_6 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_7 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_8 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_9 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_10 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_11 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_12 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_13 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_14 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_15 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_16 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_17 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_18 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_19 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_20 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+#[derive(Copy, Clone)]
+#[repr(C)]
+
+pub struct x264_mc_functions_t_21 {
+    pub mc_luma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub get_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::stdlib::intptr_t,
+            *mut *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *const crate::src::common::mc::x264_weight_t,
+        ) -> *mut crate::src::common::common::pixel,
+    >,
+    pub mc_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub avg: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 12],
+    pub copy: [Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >; 7],
+    pub copy_16x16_unaligned: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub store_interleave_chroma: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub load_deinterleave_chroma_fdec: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_swap: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_interleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_yuyv: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_rgb: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub plane_copy_deinterleave_v210: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::stdlib::uint32_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub hpel_filter: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            *mut crate::stdlib::int16_t,
+        ) -> (),
+    >,
+    pub prefetch_fenc: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_400: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_420: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_fenc_422: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub prefetch_ref: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub memcpy_aligned: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_void,
+            *const ::core::ffi::c_void,
+            crate::__stddef_size_t_h::size_t,
+        ) -> *mut ::core::ffi::c_void,
+    >,
+    pub memzero_aligned: Option<
+        unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::__stddef_size_t_h::size_t) -> (),
+    >,
+    pub integral_init4h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8h: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init4v: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            crate::stdlib::intptr_t,
+        ) -> (),
+    >,
+    pub integral_init8v:
+        Option<unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> ()>,
+    pub frame_init_lowres_core: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            *mut crate::src::common::common::pixel,
+            crate::stdlib::intptr_t,
+            crate::stdlib::intptr_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub weight: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetadd: *mut crate::src::common::mc::weight_fn_t,
+    pub offsetsub: *mut crate::src::common::mc::weight_fn_t,
+    pub weight_cache: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::src::common::mc::x264_weight_t,
+        ) -> (),
+    >,
+    pub mbtree_propagate_cost: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_propagate_list: Option<
+        unsafe extern "C" fn(
+            *mut crate::src::common::common::x264_t,
+            *mut crate::stdlib::uint16_t,
+            *mut [crate::stdlib::int16_t; 2],
+            *mut crate::stdlib::int16_t,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_pack: Option<
+        unsafe extern "C" fn(
+            *mut crate::stdlib::uint16_t,
+            *mut ::core::ffi::c_float,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+    pub mbtree_fix8_unpack: Option<
+        unsafe extern "C" fn(
+            *mut ::core::ffi::c_float,
+            *mut crate::stdlib::uint16_t,
+            ::core::ffi::c_int,
+        ) -> (),
+    >,
+}
+
+pub mod common_h {
+
+    #[inline(always)]
+
+    pub unsafe extern "C" fn x264_clip_pixel(
+        mut x: ::core::ffi::c_int,
+    ) -> crate::src::common::common::pixel {
+        unsafe {
+            return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+                -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
+            } else {
+                x
+            }) as crate::src::common::common::pixel;
+        }
+    }
+}
+
+pub mod osdep_h {
+    #[inline(always)]
+
+    pub unsafe extern "C" fn endian_fix16(
+        mut x: crate::stdlib::uint16_t,
+    ) -> crate::stdlib::uint16_t {
+        unsafe {
+            return ((x as ::core::ffi::c_int) << 8 as ::core::ffi::c_int
+                | x as ::core::ffi::c_int >> 8 as ::core::ffi::c_int)
+                as crate::stdlib::uint16_t;
+        }
+    }
+    use crate::stdlib::uint16_t;
+}
+
+pub use crate::__stddef_size_t_h::size_t;
+
+pub use crate::src::common::base::chroma_format_e;
+pub use crate::src::common::base::x264_union32_t;
+pub use crate::src::common::base::CHROMA_400;
+pub use crate::src::common::base::CHROMA_420;
+pub use crate::src::common::base::CHROMA_422;
+pub use crate::src::common::base::CHROMA_444;
+pub use crate::src::common::bitstream::bs_s;
+pub use crate::src::common::bitstream::bs_t;
+pub use crate::src::common::bitstream::x264_bitstream_function_t;
+pub use crate::src::common::bitstream::x264_run_level_t;
+pub use crate::src::common::cabac::x264_cabac_t;
+pub use crate::stdlib::C2Rust_Unnamed_7;
+pub use crate::stdlib::__atomic_wide_counter;
+
+pub use crate::internal::__va_list_tag;
+pub use crate::internal::BIT_DEPTH;
+pub use crate::src::common::common::dctcoef;
+pub use crate::src::common::common::pixel;
+pub use crate::src::common::common::udctcoef;
+pub use crate::src::common::common::x264_frame_stat_t;
+pub use crate::src::common::common::x264_left_table_t;
+pub use crate::src::common::common::x264_lookahead_t;
+pub use crate::src::common::common::x264_ratecontrol_t;
+pub use crate::src::common::common::x264_slice_header_t;
+pub use crate::src::common::common::x264_t;
+pub use crate::src::common::common::C2Rust_Unnamed_10;
+pub use crate::src::common::common::C2Rust_Unnamed_11;
+pub use crate::src::common::common::C2Rust_Unnamed_12;
+pub use crate::src::common::common::C2Rust_Unnamed_13;
+pub use crate::src::common::common::C2Rust_Unnamed_14;
+pub use crate::src::common::common::C2Rust_Unnamed_15;
+pub use crate::src::common::common::C2Rust_Unnamed_16;
+pub use crate::src::common::common::C2Rust_Unnamed_17;
+pub use crate::src::common::common::C2Rust_Unnamed_8;
+pub use crate::src::common::common::C2Rust_Unnamed_9;
+pub use crate::src::common::common::FDEC_STRIDE;
+pub use crate::src::common::common::FENC_STRIDE;
+pub use crate::src::common::common::PIXEL_MAX;
+pub use crate::src::common::common::SIZEOF_PIXEL;
+pub use crate::src::common::dct::x264_dct_function_t;
+pub use crate::src::common::dct::x264_zigzag_function_t;
+pub use crate::src::common::frame::x264_8_frame_expand_border_lowres;
+pub use crate::src::common::frame::x264_deblock_function_t;
+pub use crate::src::common::frame::x264_deblock_inter_t;
+pub use crate::src::common::frame::x264_deblock_intra_t;
+pub use crate::src::common::frame::x264_frame;
+pub use crate::src::common::frame::x264_frame_t;
+pub use crate::src::common::frame::x264_sync_frame_list_t;
+pub use crate::src::common::frame::LOWRES_COST_SHIFT;
+pub use crate::src::common::frame::PADV;
+pub use crate::src::common::mc::common_h::x264_clip_pixel;
+pub use crate::src::common::mc::osdep_h::endian_fix16;
+
+pub use crate::src::common::pixel::x264_pixel_cmp_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_x3_t;
+pub use crate::src::common::pixel::x264_pixel_cmp_x4_t;
+pub use crate::src::common::pixel::x264_pixel_function_t;
+pub use crate::src::common::pixel::PIXEL_16x16;
+pub use crate::src::common::pixel::PIXEL_16x8;
+pub use crate::src::common::pixel::PIXEL_2x2;
+pub use crate::src::common::pixel::PIXEL_2x4;
+pub use crate::src::common::pixel::PIXEL_2x8;
+pub use crate::src::common::pixel::PIXEL_4x16;
+pub use crate::src::common::pixel::PIXEL_4x2;
+pub use crate::src::common::pixel::PIXEL_4x4;
+pub use crate::src::common::pixel::PIXEL_4x8;
+pub use crate::src::common::pixel::PIXEL_8x16;
+pub use crate::src::common::pixel::PIXEL_8x4;
+pub use crate::src::common::pixel::PIXEL_8x8;
+pub use crate::src::common::predict::x264_predict8x8_t;
+pub use crate::src::common::predict::x264_predict_8x8_filter_t;
+pub use crate::src::common::predict::x264_predict_t;
+pub use crate::src::common::quant::x264_quant_function_t;
+pub use crate::stdlib::pthread_cond_t;
+pub use crate::stdlib::pthread_mutex_t;
+pub use crate::stdlib::pthread_t;
+pub use crate::stdlib::C2Rust_Unnamed_6;
+
+pub use crate::src::common::set::x264_pps_t;
+pub use crate::src::common::set::x264_sps_t;
+pub use crate::src::common::set::C2Rust_Unnamed_24;
+pub use crate::src::common::set::C2Rust_Unnamed_25;
+pub use crate::src::common::set::C2Rust_Unnamed_26;
+pub use crate::stdlib::__pthread_mutex_s;
+pub use crate::stdlib::int16_t;
+pub use crate::stdlib::int32_t;
+pub use crate::stdlib::int64_t;
+pub use crate::stdlib::int8_t;
+pub use crate::stdlib::intptr_t;
+use crate::stdlib::memcpy;
+use crate::stdlib::memset;
+pub use crate::stdlib::uint16_t;
+pub use crate::stdlib::uint32_t;
+pub use crate::stdlib::uint64_t;
+pub use crate::stdlib::uint8_t;
+pub use crate::stdlib::uintptr_t;
+
+use crate::src::common::tables::x264_hpel_ref0;
+use crate::src::common::tables::x264_hpel_ref1;
+use crate::src::common::threadpool::x264_threadpool_t;
+pub use crate::stdlib::__pthread_cond_s;
+pub use crate::stdlib::__pthread_internal_list;
+pub use crate::stdlib::__pthread_list_t;
+
+pub use crate::stdlib::__int16_t;
+pub use crate::stdlib::__int32_t;
+pub use crate::stdlib::__int64_t;
+pub use crate::stdlib::__int8_t;
+pub use crate::stdlib::__uint16_t;
+pub use crate::stdlib::__uint32_t;
+pub use crate::stdlib::__uint64_t;
+pub use crate::stdlib::__uint8_t;
+pub use crate::x264_h::x264_hrd_t;
+pub use crate::x264_h::x264_nal_t;
+pub use crate::x264_h::x264_param_t;
+pub use crate::x264_h::x264_sei_payload_t;
+pub use crate::x264_h::x264_sei_t;
+pub use crate::x264_h::x264_zone_t;
+pub use crate::x264_h::C2Rust_Unnamed_0;
+pub use crate::x264_h::C2Rust_Unnamed_1;
+pub use crate::x264_h::C2Rust_Unnamed_2;
+pub use crate::x264_h::C2Rust_Unnamed_3;
+pub use crate::x264_h::C2Rust_Unnamed_4;
+pub use crate::x264_h::C2Rust_Unnamed_5;
 #[inline]
-#[c2rust::src_loc = "49:1"]
+
 unsafe extern "C" fn pixel_avg(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src1: *mut pixel,
-    mut i_src1_stride: intptr_t,
-    mut src2: *mut pixel,
-    mut i_src2_stride: intptr_t,
-    mut i_width: c_int,
-    mut i_height: c_int,
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src1: *mut crate::src::common::common::pixel,
+    mut i_src1_stride: crate::stdlib::intptr_t,
+    mut src2: *mut crate::src::common::common::pixel,
+    mut i_src2_stride: crate::stdlib::intptr_t,
+    mut i_width: ::core::ffi::c_int,
+    mut i_height: ::core::ffi::c_int,
 ) {
-    let mut y: c_int = 0;
-    while y < i_height {
-        let mut x: c_int = 0;
-        while x < i_width {
-            *dst.offset(x as isize) =
-                (*src1.offset(x as isize) as c_int + *src2.offset(x as isize) as c_int + 1 >> 1)
-                    as pixel;
-            x += 1;
-        }
-        dst = dst.offset(i_dst_stride as isize);
-        src1 = src1.offset(i_src1_stride as isize);
-        src2 = src2.offset(i_src2_stride as isize);
-        y += 1;
-    }
-}
-#[inline]
-#[c2rust::src_loc = "63:1"]
-unsafe extern "C" fn pixel_avg_wxh(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut src1: *mut pixel,
-    mut i_src1: intptr_t,
-    mut src2: *mut pixel,
-    mut i_src2: intptr_t,
-    mut width: c_int,
-    mut height: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < height {
-        let mut x: c_int = 0;
-        while x < width {
-            *dst.offset(x as isize) =
-                (*src1.offset(x as isize) as c_int + *src2.offset(x as isize) as c_int + 1 >> 1)
-                    as pixel;
-            x += 1;
-        }
-        src1 = src1.offset(i_src1 as isize);
-        src2 = src2.offset(i_src2 as isize);
-        dst = dst.offset(i_dst as isize);
-        y += 1;
-    }
-}
-#[inline]
-#[c2rust::src_loc = "79:1"]
-unsafe extern "C" fn pixel_avg_weight_wxh(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut src1: *mut pixel,
-    mut i_src1: intptr_t,
-    mut src2: *mut pixel,
-    mut i_src2: intptr_t,
-    mut width: c_int,
-    mut height: c_int,
-    mut i_weight1: c_int,
-) {
-    let mut i_weight2: c_int = 64 - i_weight1;
-    let mut y: c_int = 0;
-    while y < height {
-        let mut x: c_int = 0;
-        while x < width {
-            *dst.offset(x as isize) = x264_clip_pixel(
-                *src1.offset(x as isize) as c_int * i_weight1
-                    + *src2.offset(x as isize) as c_int * i_weight2
-                    + ((1) << 5)
-                    >> 6,
-            );
-            x += 1;
-        }
-        y += 1;
-        dst = dst.offset(i_dst as isize);
-        src1 = src1.offset(i_src1 as isize);
-        src2 = src2.offset(i_src2 as isize);
-    }
-}
-#[c2rust::src_loc = "100:1"]
-unsafe extern "C" fn pixel_avg_16x16(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            16,
-            16,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            16,
-            16,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "101:1"]
-unsafe extern "C" fn pixel_avg_16x8(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            16,
-            8,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            16,
-            8,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "102:1"]
-unsafe extern "C" fn pixel_avg_8x16(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            8,
-            16,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            8,
-            16,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "103:1"]
-unsafe extern "C" fn pixel_avg_8x8(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            8,
-            8,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            8,
-            8,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "104:1"]
-unsafe extern "C" fn pixel_avg_8x4(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            8,
-            4,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            8,
-            4,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "105:1"]
-unsafe extern "C" fn pixel_avg_4x16(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            16,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            16,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "106:1"]
-unsafe extern "C" fn pixel_avg_4x8(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            8,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            8,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "107:1"]
-unsafe extern "C" fn pixel_avg_4x4(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            4,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            4,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "108:1"]
-unsafe extern "C" fn pixel_avg_4x2(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            2,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            4,
-            2,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "109:1"]
-unsafe extern "C" fn pixel_avg_2x8(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            2,
-            8,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            2,
-            8,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "110:1"]
-unsafe extern "C" fn pixel_avg_2x4(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            2,
-            4,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            2,
-            4,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "111:1"]
-unsafe extern "C" fn pixel_avg_2x2(
-    mut pix1: *mut pixel,
-    mut i_stride_pix1: intptr_t,
-    mut pix2: *mut pixel,
-    mut i_stride_pix2: intptr_t,
-    mut pix3: *mut pixel,
-    mut i_stride_pix3: intptr_t,
-    mut weight: c_int,
-) {
-    if weight == 32 {
-        pixel_avg_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            2,
-            2,
-        );
-    } else {
-        pixel_avg_weight_wxh(
-            pix1,
-            i_stride_pix1,
-            pix2,
-            i_stride_pix2,
-            pix3,
-            i_stride_pix3,
-            2,
-            2,
-            weight,
-        );
-    };
-}
-#[c2rust::src_loc = "113:1"]
-unsafe extern "C" fn weight_cache(mut h: *mut x264_t, mut w: *mut x264_weight_t) {
-    (*w).weightfn = (*h).mc.weight;
-}
-#[c2rust::src_loc = "119:1"]
-unsafe extern "C" fn mc_weight(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut weight: *const x264_weight_t,
-    mut i_width: c_int,
-    mut i_height: c_int,
-) {
-    let mut offset: c_int = (*weight).i_offset as c_int * ((1) << BIT_DEPTH - 8);
-    let mut scale: c_int = (*weight).i_scale as c_int;
-    let mut denom: c_int = (*weight).i_denom as c_int;
-    if denom >= 1 {
-        let mut y: c_int = 0;
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while y < i_height {
-            let mut x: c_int = 0;
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while x < i_width {
+                *dst.offset(x as isize) = (*src1.offset(x as isize) as ::core::ffi::c_int
+                    + *src2.offset(x as isize) as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                x += 1;
+            }
+            dst = dst.offset(i_dst_stride as isize);
+            src1 = src1.offset(i_src1_stride as isize);
+            src2 = src2.offset(i_src2_stride as isize);
+            y += 1;
+        }
+    }
+}
+#[inline]
+
+unsafe extern "C" fn pixel_avg_wxh(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut src1: *mut crate::src::common::common::pixel,
+    mut i_src1: crate::stdlib::intptr_t,
+    mut src2: *mut crate::src::common::common::pixel,
+    mut i_src2: crate::stdlib::intptr_t,
+    mut width: ::core::ffi::c_int,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < height {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < width {
+                *dst.offset(x as isize) = (*src1.offset(x as isize) as ::core::ffi::c_int
+                    + *src2.offset(x as isize) as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                x += 1;
+            }
+            src1 = src1.offset(i_src1 as isize);
+            src2 = src2.offset(i_src2 as isize);
+            dst = dst.offset(i_dst as isize);
+            y += 1;
+        }
+    }
+}
+#[inline]
+
+unsafe extern "C" fn pixel_avg_weight_wxh(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut src1: *mut crate::src::common::common::pixel,
+    mut i_src1: crate::stdlib::intptr_t,
+    mut src2: *mut crate::src::common::common::pixel,
+    mut i_src2: crate::stdlib::intptr_t,
+    mut width: ::core::ffi::c_int,
+    mut height: ::core::ffi::c_int,
+    mut i_weight1: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut i_weight2: ::core::ffi::c_int = 64 as ::core::ffi::c_int - i_weight1;
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < height {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < width {
                 *dst.offset(x as isize) = x264_clip_pixel(
-                    (*src.offset(x as isize) as c_int * scale + ((1) << denom - 1) >> denom)
-                        + offset,
+                    *src1.offset(x as isize) as ::core::ffi::c_int * i_weight1
+                        + *src2.offset(x as isize) as ::core::ffi::c_int * i_weight2
+                        + ((1 as ::core::ffi::c_int) << 5 as ::core::ffi::c_int)
+                        >> 6 as ::core::ffi::c_int,
                 );
                 x += 1;
             }
             y += 1;
-            dst = dst.offset(i_dst_stride as isize);
-            src = src.offset(i_src_stride as isize);
+            dst = dst.offset(i_dst as isize);
+            src1 = src1.offset(i_src1 as isize);
+            src2 = src2.offset(i_src2 as isize);
         }
-    } else {
-        let mut y_0: c_int = 0;
-        while y_0 < i_height {
-            let mut x_0: c_int = 0;
-            while x_0 < i_width {
-                *dst.offset(x_0 as isize) =
-                    x264_clip_pixel(*src.offset(x_0 as isize) as c_int * scale + offset);
+    }
+}
+
+unsafe extern "C" fn pixel_avg_16x16(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                16 as ::core::ffi::c_int,
+                16 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                16 as ::core::ffi::c_int,
+                16 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_16x8(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                16 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                16 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_8x16(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                8 as ::core::ffi::c_int,
+                16 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                8 as ::core::ffi::c_int,
+                16 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_8x8(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                8 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                8 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_8x4(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                8 as ::core::ffi::c_int,
+                4 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                8 as ::core::ffi::c_int,
+                4 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_4x16(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                16 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                16 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_4x8(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_4x4(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                4 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                4 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_4x2(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                2 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                4 as ::core::ffi::c_int,
+                2 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_2x8(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                2 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                2 as ::core::ffi::c_int,
+                8 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_2x4(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                2 as ::core::ffi::c_int,
+                4 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                2 as ::core::ffi::c_int,
+                4 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn pixel_avg_2x2(
+    mut pix1: *mut crate::src::common::common::pixel,
+    mut i_stride_pix1: crate::stdlib::intptr_t,
+    mut pix2: *mut crate::src::common::common::pixel,
+    mut i_stride_pix2: crate::stdlib::intptr_t,
+    mut pix3: *mut crate::src::common::common::pixel,
+    mut i_stride_pix3: crate::stdlib::intptr_t,
+    mut weight: ::core::ffi::c_int,
+) {
+    unsafe {
+        if weight == 32 as ::core::ffi::c_int {
+            pixel_avg_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                2 as ::core::ffi::c_int,
+                2 as ::core::ffi::c_int,
+            );
+        } else {
+            pixel_avg_weight_wxh(
+                pix1,
+                i_stride_pix1,
+                pix2,
+                i_stride_pix2,
+                pix3,
+                i_stride_pix3,
+                2 as ::core::ffi::c_int,
+                2 as ::core::ffi::c_int,
+                weight,
+            );
+        };
+    }
+}
+
+unsafe extern "C" fn weight_cache(
+    mut h: *mut crate::src::common::common::x264_t,
+    mut w: *mut crate::src::common::mc::x264_weight_t,
+) {
+    unsafe {
+        (*w).weightfn = (*h).mc.weight;
+    }
+}
+
+unsafe extern "C" fn mc_weight(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+    mut i_width: ::core::ffi::c_int,
+    mut i_height: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut offset: ::core::ffi::c_int = (*weight).i_offset as ::core::ffi::c_int
+            * ((1 as ::core::ffi::c_int) << crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int);
+        let mut scale: ::core::ffi::c_int = (*weight).i_scale as ::core::ffi::c_int;
+        let mut denom: ::core::ffi::c_int = (*weight).i_denom as ::core::ffi::c_int;
+        if denom >= 1 as ::core::ffi::c_int {
+            let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while y < i_height {
+                let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                while x < i_width {
+                    *dst.offset(x as isize) = x264_clip_pixel(
+                        (*src.offset(x as isize) as ::core::ffi::c_int * scale
+                            + ((1 as ::core::ffi::c_int) << denom - 1 as ::core::ffi::c_int)
+                            >> denom)
+                            + offset,
+                    );
+                    x += 1;
+                }
+                y += 1;
+                dst = dst.offset(i_dst_stride as isize);
+                src = src.offset(i_src_stride as isize);
+            }
+        } else {
+            let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while y_0 < i_height {
+                let mut x_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                while x_0 < i_width {
+                    *dst.offset(x_0 as isize) = x264_clip_pixel(
+                        *src.offset(x_0 as isize) as ::core::ffi::c_int * scale + offset,
+                    );
+                    x_0 += 1;
+                }
+                y_0 += 1;
+                dst = dst.offset(i_dst_stride as isize);
+                src = src.offset(i_src_stride as isize);
+            }
+        };
+    }
+}
+
+unsafe extern "C" fn mc_weight_w20(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_weight(
+            dst,
+            i_dst_stride,
+            src,
+            i_src_stride,
+            weight,
+            20 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+unsafe extern "C" fn mc_weight_w16(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_weight(
+            dst,
+            i_dst_stride,
+            src,
+            i_src_stride,
+            weight,
+            16 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+unsafe extern "C" fn mc_weight_w12(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_weight(
+            dst,
+            i_dst_stride,
+            src,
+            i_src_stride,
+            weight,
+            12 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+unsafe extern "C" fn mc_weight_w8(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_weight(
+            dst,
+            i_dst_stride,
+            src,
+            i_src_stride,
+            weight,
+            8 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+unsafe extern "C" fn mc_weight_w4(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_weight(
+            dst,
+            i_dst_stride,
+            src,
+            i_src_stride,
+            weight,
+            4 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+unsafe extern "C" fn mc_weight_w2(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_weight(
+            dst,
+            i_dst_stride,
+            src,
+            i_src_stride,
+            weight,
+            2 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+static mut mc_weight_wtab: [crate::src::common::mc::weight_fn_t; 6] = unsafe {
+    [
+        Some(
+            mc_weight_w2
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *const crate::src::common::mc::x264_weight_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        ),
+        Some(
+            mc_weight_w4
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *const crate::src::common::mc::x264_weight_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        ),
+        Some(
+            mc_weight_w8
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *const crate::src::common::mc::x264_weight_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        ),
+        Some(
+            mc_weight_w12
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *const crate::src::common::mc::x264_weight_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        ),
+        Some(
+            mc_weight_w16
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *const crate::src::common::mc::x264_weight_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        ),
+        Some(
+            mc_weight_w20
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *const crate::src::common::mc::x264_weight_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        ),
+    ]
+};
+
+unsafe extern "C" fn mc_copy(
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut i_width: ::core::ffi::c_int,
+    mut i_height: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < i_height {
+            crate::stdlib::memcpy(
+                dst as *mut ::core::ffi::c_void,
+                src as *const ::core::ffi::c_void,
+                (i_width * crate::src::common::common::SIZEOF_PIXEL)
+                    as crate::__stddef_size_t_h::size_t,
+            );
+            src = src.offset(i_src_stride as isize);
+            dst = dst.offset(i_dst_stride as isize);
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn hpel_filter(
+    mut dsth: *mut crate::src::common::common::pixel,
+    mut dstv: *mut crate::src::common::common::pixel,
+    mut dstc: *mut crate::src::common::common::pixel,
+    mut src: *mut crate::src::common::common::pixel,
+    mut stride: crate::stdlib::intptr_t,
+    mut width: ::core::ffi::c_int,
+    mut height: ::core::ffi::c_int,
+    mut buf: *mut crate::stdlib::int16_t,
+) {
+    unsafe {
+        let pad: ::core::ffi::c_int = if crate::internal::BIT_DEPTH > 9 as ::core::ffi::c_int {
+            -(10 as ::core::ffi::c_int) * crate::src::common::common::PIXEL_MAX
+        } else {
+            0 as ::core::ffi::c_int
+        };
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < height {
+            let mut x: ::core::ffi::c_int = -(2 as ::core::ffi::c_int);
+            while x < width + 3 as ::core::ffi::c_int {
+                let mut v: ::core::ffi::c_int = *src.offset(
+                    (x as crate::stdlib::intptr_t
+                        - 2 as ::core::ffi::c_int as crate::stdlib::intptr_t * stride)
+                        as isize,
+                ) as ::core::ffi::c_int
+                    + *src.offset(
+                        (x as crate::stdlib::intptr_t
+                            + 3 as ::core::ffi::c_int as crate::stdlib::intptr_t * stride)
+                            as isize,
+                    ) as ::core::ffi::c_int
+                    - 5 as ::core::ffi::c_int
+                        * (*src.offset((x as crate::stdlib::intptr_t - stride) as isize)
+                            as ::core::ffi::c_int
+                            + *src.offset(
+                                (x as crate::stdlib::intptr_t
+                                    + 2 as ::core::ffi::c_int as crate::stdlib::intptr_t * stride)
+                                    as isize,
+                            ) as ::core::ffi::c_int)
+                    + 20 as ::core::ffi::c_int
+                        * (*src.offset(x as isize) as ::core::ffi::c_int
+                            + *src.offset((x as crate::stdlib::intptr_t + stride) as isize)
+                                as ::core::ffi::c_int);
+                *dstv.offset(x as isize) =
+                    x264_clip_pixel(v + 16 as ::core::ffi::c_int >> 5 as ::core::ffi::c_int);
+                *buf.offset((x + 2 as ::core::ffi::c_int) as isize) =
+                    (v + pad) as crate::stdlib::int16_t;
+                x += 1;
+            }
+            let mut x_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x_0 < width {
+                *dstc.offset(x_0 as isize) = x264_clip_pixel(
+                    *buf.offset(2 as ::core::ffi::c_int as isize)
+                        .offset((x_0 - 2 as ::core::ffi::c_int * 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                        + *buf.offset(2 as ::core::ffi::c_int as isize).offset(
+                            (x_0 + 3 as ::core::ffi::c_int * 1 as ::core::ffi::c_int) as isize,
+                        ) as ::core::ffi::c_int
+                        - 5 as ::core::ffi::c_int
+                            * (*buf
+                                .offset(2 as ::core::ffi::c_int as isize)
+                                .offset((x_0 - 1 as ::core::ffi::c_int) as isize)
+                                as ::core::ffi::c_int
+                                + *buf.offset(2 as ::core::ffi::c_int as isize).offset(
+                                    (x_0 + 2 as ::core::ffi::c_int * 1 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int)
+                        + 20 as ::core::ffi::c_int
+                            * (*buf
+                                .offset(2 as ::core::ffi::c_int as isize)
+                                .offset(x_0 as isize)
+                                as ::core::ffi::c_int
+                                + *buf
+                                    .offset(2 as ::core::ffi::c_int as isize)
+                                    .offset((x_0 + 1 as ::core::ffi::c_int) as isize)
+                                    as ::core::ffi::c_int)
+                        - 32 as ::core::ffi::c_int * pad
+                        + 512 as ::core::ffi::c_int
+                        >> 10 as ::core::ffi::c_int,
+                );
                 x_0 += 1;
             }
-            y_0 += 1;
-            dst = dst.offset(i_dst_stride as isize);
-            src = src.offset(i_src_stride as isize);
-        }
-    };
-}
-#[c2rust::src_loc = "145:1"]
-unsafe extern "C" fn mc_weight_w20(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut weight: *const x264_weight_t,
-    mut height: c_int,
-) {
-    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 20, height);
-}
-#[c2rust::src_loc = "146:1"]
-unsafe extern "C" fn mc_weight_w16(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut weight: *const x264_weight_t,
-    mut height: c_int,
-) {
-    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 16, height);
-}
-#[c2rust::src_loc = "147:1"]
-unsafe extern "C" fn mc_weight_w12(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut weight: *const x264_weight_t,
-    mut height: c_int,
-) {
-    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 12, height);
-}
-#[c2rust::src_loc = "148:1"]
-unsafe extern "C" fn mc_weight_w8(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut weight: *const x264_weight_t,
-    mut height: c_int,
-) {
-    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 8, height);
-}
-#[c2rust::src_loc = "149:1"]
-unsafe extern "C" fn mc_weight_w4(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut weight: *const x264_weight_t,
-    mut height: c_int,
-) {
-    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 4, height);
-}
-#[c2rust::src_loc = "150:1"]
-unsafe extern "C" fn mc_weight_w2(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut weight: *const x264_weight_t,
-    mut height: c_int,
-) {
-    mc_weight(dst, i_dst_stride, src, i_src_stride, weight, 2, height);
-}
-#[c2rust::src_loc = "152:20"]
-static mut mc_weight_wtab: [weight_fn_t; 6] = [
-    Some(
-        mc_weight_w2
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *const x264_weight_t,
-                c_int,
-            ) -> (),
-    ),
-    Some(
-        mc_weight_w4
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *const x264_weight_t,
-                c_int,
-            ) -> (),
-    ),
-    Some(
-        mc_weight_w8
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *const x264_weight_t,
-                c_int,
-            ) -> (),
-    ),
-    Some(
-        mc_weight_w12
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *const x264_weight_t,
-                c_int,
-            ) -> (),
-    ),
-    Some(
-        mc_weight_w16
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *const x264_weight_t,
-                c_int,
-            ) -> (),
-    ),
-    Some(
-        mc_weight_w20
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *const x264_weight_t,
-                c_int,
-            ) -> (),
-    ),
-];
-#[c2rust::src_loc = "162:1"]
-unsafe extern "C" fn mc_copy(
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut i_width: c_int,
-    mut i_height: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < i_height {
-        memcpy(
-            dst as *mut c_void,
-            src as *const c_void,
-            (i_width * SIZEOF_PIXEL) as size_t,
-        );
-        src = src.offset(i_src_stride as isize);
-        dst = dst.offset(i_dst_stride as isize);
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "174:1"]
-unsafe extern "C" fn hpel_filter(
-    mut dsth: *mut pixel,
-    mut dstv: *mut pixel,
-    mut dstc: *mut pixel,
-    mut src: *mut pixel,
-    mut stride: intptr_t,
-    mut width: c_int,
-    mut height: c_int,
-    mut buf: *mut int16_t,
-) {
-    let pad: c_int = if BIT_DEPTH > 9 { -(10) * PIXEL_MAX } else { 0 };
-    let mut y: c_int = 0;
-    while y < height {
-        let mut x: c_int = -(2);
-        while x < width + 3 {
-            let mut v: c_int = *src.offset((x as intptr_t - 2 as intptr_t * stride) as isize)
-                as c_int
-                + *src.offset((x as intptr_t + 3 as intptr_t * stride) as isize) as c_int
-                - 5 * (*src.offset((x as intptr_t - stride) as isize) as c_int
-                    + *src.offset((x as intptr_t + 2 as intptr_t * stride) as isize) as c_int)
-                + 20 * (*src.offset(x as isize) as c_int
-                    + *src.offset((x as intptr_t + stride) as isize) as c_int);
-            *dstv.offset(x as isize) = x264_clip_pixel(v + 16 >> 5);
-            *buf.offset((x + 2) as isize) = (v + pad) as int16_t;
-            x += 1;
-        }
-        let mut x_0: c_int = 0;
-        while x_0 < width {
-            *dstc.offset(x_0 as isize) = x264_clip_pixel(
-                *buf.offset(2).offset((x_0 - 2 * 1) as isize) as c_int
-                    + *buf.offset(2).offset((x_0 + 3 * 1) as isize) as c_int
-                    - 5 * (*buf.offset(2).offset((x_0 - 1) as isize) as c_int
-                        + *buf.offset(2).offset((x_0 + 2 * 1) as isize) as c_int)
-                    + 20 * (*buf.offset(2).offset(x_0 as isize) as c_int
-                        + *buf.offset(2).offset((x_0 + 1) as isize) as c_int)
-                    - 32 * pad
-                    + 512
-                    >> 10,
-            );
-            x_0 += 1;
-        }
-        let mut x_1: c_int = 0;
-        while x_1 < width {
-            *dsth.offset(x_1 as isize) = x264_clip_pixel(
-                *src.offset((x_1 - 2 * 1) as isize) as c_int
-                    + *src.offset((x_1 + 3 * 1) as isize) as c_int
-                    - 5 * (*src.offset((x_1 - 1) as isize) as c_int
-                        + *src.offset((x_1 + 2 * 1) as isize) as c_int)
-                    + 20 * (*src.offset(x_1 as isize) as c_int
-                        + *src.offset((x_1 + 1) as isize) as c_int)
-                    + 16
-                    >> 5,
-            );
-            x_1 += 1;
-        }
-        dsth = dsth.offset(stride as isize);
-        dstv = dstv.offset(stride as isize);
-        dstc = dstc.offset(stride as isize);
-        src = src.offset(stride as isize);
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "198:1"]
-unsafe extern "C" fn mc_luma(
-    mut dst: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut mvx: c_int,
-    mut mvy: c_int,
-    mut i_width: c_int,
-    mut i_height: c_int,
-    mut weight: *const x264_weight_t,
-) {
-    let mut qpel_idx: c_int = ((mvy & 3) << 2) + (mvx & 3);
-    let mut offset: c_int =
-        ((mvy >> 2) as intptr_t * i_src_stride + (mvx >> 2) as intptr_t) as c_int;
-    let mut src1: *mut pixel = (*src.offset(x264_hpel_ref0[qpel_idx as usize] as isize))
-        .offset(offset as isize)
-        .offset(((mvy & 3 == 3) as c_int as intptr_t * i_src_stride) as isize);
-    if qpel_idx & 5 != 0 {
-        let mut src2: *mut pixel = (*src.offset(x264_hpel_ref1[qpel_idx as usize] as isize))
-            .offset(offset as isize)
-            .offset((mvx & 3 == 3) as c_int as isize);
-        pixel_avg(
-            dst,
-            i_dst_stride,
-            src1,
-            i_src_stride,
-            src2,
-            i_src_stride,
-            i_width,
-            i_height,
-        );
-        if !(*weight).weightfn.is_null() {
-            mc_weight(
-                dst,
-                i_dst_stride,
-                dst,
-                i_dst_stride,
-                weight,
-                i_width,
-                i_height,
-            );
-        }
-    } else if !(*weight).weightfn.is_null() {
-        mc_weight(
-            dst,
-            i_dst_stride,
-            src1,
-            i_src_stride,
-            weight,
-            i_width,
-            i_height,
-        );
-    } else {
-        mc_copy(src1, i_src_stride, dst, i_dst_stride, i_width, i_height);
-    };
-}
-#[c2rust::src_loc = "221:1"]
-unsafe extern "C" fn get_ref(
-    mut dst: *mut pixel,
-    mut i_dst_stride: *mut intptr_t,
-    mut src: *mut *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut mvx: c_int,
-    mut mvy: c_int,
-    mut i_width: c_int,
-    mut i_height: c_int,
-    mut weight: *const x264_weight_t,
-) -> *mut pixel {
-    let mut qpel_idx: c_int = ((mvy & 3) << 2) + (mvx & 3);
-    let mut offset: c_int =
-        ((mvy >> 2) as intptr_t * i_src_stride + (mvx >> 2) as intptr_t) as c_int;
-    let mut src1: *mut pixel = (*src.offset(x264_hpel_ref0[qpel_idx as usize] as isize))
-        .offset(offset as isize)
-        .offset(((mvy & 3 == 3) as c_int as intptr_t * i_src_stride) as isize);
-    if qpel_idx & 5 != 0 {
-        let mut src2: *mut pixel = (*src.offset(x264_hpel_ref1[qpel_idx as usize] as isize))
-            .offset(offset as isize)
-            .offset((mvx & 3 == 3) as c_int as isize);
-        pixel_avg(
-            dst,
-            *i_dst_stride,
-            src1,
-            i_src_stride,
-            src2,
-            i_src_stride,
-            i_width,
-            i_height,
-        );
-        if !(*weight).weightfn.is_null() {
-            mc_weight(
-                dst,
-                *i_dst_stride,
-                dst,
-                *i_dst_stride,
-                weight,
-                i_width,
-                i_height,
-            );
-        }
-        return dst;
-    } else if !(*weight).weightfn.is_null() {
-        mc_weight(
-            dst,
-            *i_dst_stride,
-            src1,
-            i_src_stride,
-            weight,
-            i_width,
-            i_height,
-        );
-        return dst;
-    } else {
-        *i_dst_stride = i_src_stride;
-        return src1;
-    };
-}
-#[c2rust::src_loc = "252:1"]
-unsafe extern "C" fn mc_chroma(
-    mut dstu: *mut pixel,
-    mut dstv: *mut pixel,
-    mut i_dst_stride: intptr_t,
-    mut src: *mut pixel,
-    mut i_src_stride: intptr_t,
-    mut mvx: c_int,
-    mut mvy: c_int,
-    mut i_width: c_int,
-    mut i_height: c_int,
-) {
-    let mut srcp: *mut pixel = 0 as *mut pixel;
-    let mut d8x: c_int = mvx & 0x7 as c_int;
-    let mut d8y: c_int = mvy & 0x7 as c_int;
-    let mut cA: c_int = (8 - d8x) * (8 - d8y);
-    let mut cB: c_int = d8x * (8 - d8y);
-    let mut cC: c_int = (8 - d8x) * d8y;
-    let mut cD: c_int = d8x * d8y;
-    src =
-        src.offset(((mvy >> 3) as intptr_t * i_src_stride + ((mvx >> 3) * 2) as intptr_t) as isize);
-    srcp = &mut *src.offset(i_src_stride as isize) as *mut pixel;
-    let mut y: c_int = 0;
-    while y < i_height {
-        let mut x: c_int = 0;
-        while x < i_width {
-            *dstu.offset(x as isize) = (cA * *src.offset((2 * x) as isize) as c_int
-                + cB * *src.offset((2 * x + 2) as isize) as c_int
-                + cC * *srcp.offset((2 * x) as isize) as c_int
-                + cD * *srcp.offset((2 * x + 2) as isize) as c_int
-                + 32
-                >> 6) as pixel;
-            *dstv.offset(x as isize) = (cA * *src.offset((2 * x + 1) as isize) as c_int
-                + cB * *src.offset((2 * x + 3) as isize) as c_int
-                + cC * *srcp.offset((2 * x + 1) as isize) as c_int
-                + cD * *srcp.offset((2 * x + 3) as isize) as c_int
-                + 32
-                >> 6) as pixel;
-            x += 1;
-        }
-        dstu = dstu.offset(i_dst_stride as isize);
-        dstv = dstv.offset(i_dst_stride as isize);
-        src = srcp;
-        srcp = srcp.offset(i_src_stride as isize);
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "290:1"]
-unsafe extern "C" fn mc_copy_w16(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut i_height: c_int,
-) {
-    mc_copy(src, i_src, dst, i_dst, 16, i_height);
-}
-#[c2rust::src_loc = "291:1"]
-unsafe extern "C" fn mc_copy_w8(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut i_height: c_int,
-) {
-    mc_copy(src, i_src, dst, i_dst, 8, i_height);
-}
-#[c2rust::src_loc = "292:1"]
-unsafe extern "C" fn mc_copy_w4(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut i_height: c_int,
-) {
-    mc_copy(src, i_src, dst, i_dst, 4, i_height);
-}
-#[no_mangle]
-#[c2rust::src_loc = "294:1"]
-unsafe extern "C" fn x264_10_plane_copy_c(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut w: c_int,
-    mut h: c_int,
-) {
-    loop {
-        let fresh0 = h;
-        h = h - 1;
-        if !(fresh0 != 0) {
-            break;
-        }
-        memcpy(
-            dst as *mut c_void,
-            src as *const c_void,
-            (w * SIZEOF_PIXEL) as size_t,
-        );
-        dst = dst.offset(i_dst as isize);
-        src = src.offset(i_src as isize);
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "305:1"]
-unsafe extern "C" fn x264_10_plane_copy_swap_c(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut w: c_int,
-    mut h: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < h {
-        let mut x: c_int = 0;
-        while x < 2 * w {
-            *dst.offset(x as isize) = *src.offset((x + 1) as isize);
-            *dst.offset((x + 1) as isize) = *src.offset(x as isize);
-            x += 2;
-        }
-        y += 1;
-        dst = dst.offset(i_dst as isize);
-        src = src.offset(i_src as isize);
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "316:1"]
-unsafe extern "C" fn x264_10_plane_copy_interleave_c(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut srcu: *mut pixel,
-    mut i_srcu: intptr_t,
-    mut srcv: *mut pixel,
-    mut i_srcv: intptr_t,
-    mut w: c_int,
-    mut h: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < h {
-        let mut x: c_int = 0;
-        while x < w {
-            *dst.offset((2 * x) as isize) = *srcu.offset(x as isize);
-            *dst.offset((2 * x + 1) as isize) = *srcv.offset(x as isize);
-            x += 1;
-        }
-        y += 1;
-        dst = dst.offset(i_dst as isize);
-        srcu = srcu.offset(i_srcu as isize);
-        srcv = srcv.offset(i_srcv as isize);
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "328:1"]
-unsafe extern "C" fn x264_10_plane_copy_deinterleave_c(
-    mut dsta: *mut pixel,
-    mut i_dsta: intptr_t,
-    mut dstb: *mut pixel,
-    mut i_dstb: intptr_t,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut w: c_int,
-    mut h: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < h {
-        let mut x: c_int = 0;
-        while x < w {
-            *dsta.offset(x as isize) = *src.offset((2 * x) as isize);
-            *dstb.offset(x as isize) = *src.offset((2 * x + 1) as isize);
-            x += 1;
-        }
-        y += 1;
-        dsta = dsta.offset(i_dsta as isize);
-        dstb = dstb.offset(i_dstb as isize);
-        src = src.offset(i_src as isize);
-    }
-}
-#[c2rust::src_loc = "339:1"]
-unsafe extern "C" fn plane_copy_deinterleave_rgb_c(
-    mut dsta: *mut pixel,
-    mut i_dsta: intptr_t,
-    mut dstb: *mut pixel,
-    mut i_dstb: intptr_t,
-    mut dstc: *mut pixel,
-    mut i_dstc: intptr_t,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut pw: c_int,
-    mut w: c_int,
-    mut h: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < h {
-        let mut x: c_int = 0;
-        while x < w {
-            *dsta.offset(x as isize) = *src.offset((x * pw) as isize);
-            *dstb.offset(x as isize) = *src.offset((x * pw + 1) as isize);
-            *dstc.offset(x as isize) = *src.offset((x * pw + 2) as isize);
-            x += 1;
-        }
-        y += 1;
-        dsta = dsta.offset(i_dsta as isize);
-        dstb = dstb.offset(i_dstb as isize);
-        dstc = dstc.offset(i_dstc as isize);
-        src = src.offset(i_src as isize);
-    }
-}
-#[c2rust::src_loc = "364:1"]
-unsafe extern "C" fn plane_copy_deinterleave_v210_c(
-    mut dsty: *mut pixel,
-    mut i_dsty: intptr_t,
-    mut dstc: *mut pixel,
-    mut i_dstc: intptr_t,
-    mut src: *mut uint32_t,
-    mut i_src: intptr_t,
-    mut w: c_int,
-    mut h: c_int,
-) {
-    let mut l: c_int = 0;
-    while l < h {
-        let mut dsty0: *mut pixel = dsty;
-        let mut dstc0: *mut pixel = dstc;
-        let mut src0: *mut uint32_t = src;
-        let mut n: c_int = 0;
-        while n < w {
-            let fresh1 = src0;
-            src0 = src0.offset(1);
-            let mut s: uint32_t = *fresh1;
-            let fresh2 = dstc0;
-            dstc0 = dstc0.offset(1);
-            *fresh2 = (s & 0x3ff as uint32_t) as pixel;
-            let fresh3 = dsty0;
-            dsty0 = dsty0.offset(1);
-            *fresh3 = (s >> 10 & 0x3ff as uint32_t) as pixel;
-            let fresh4 = dstc0;
-            dstc0 = dstc0.offset(1);
-            *fresh4 = (s >> 20 & 0x3ff as uint32_t) as pixel;
-            let fresh5 = src0;
-            src0 = src0.offset(1);
-            s = *fresh5;
-            let fresh6 = dsty0;
-            dsty0 = dsty0.offset(1);
-            *fresh6 = (s & 0x3ff as uint32_t) as pixel;
-            let fresh7 = dstc0;
-            dstc0 = dstc0.offset(1);
-            *fresh7 = (s >> 10 & 0x3ff as uint32_t) as pixel;
-            let fresh8 = dsty0;
-            dsty0 = dsty0.offset(1);
-            *fresh8 = (s >> 20 & 0x3ff as uint32_t) as pixel;
-            n += 3;
-        }
-        dsty = dsty.offset(i_dsty as isize);
-        dstc = dstc.offset(i_dstc as isize);
-        src = src.offset(i_src as isize);
-        l += 1;
-    }
-}
-#[c2rust::src_loc = "392:1"]
-unsafe extern "C" fn store_interleave_chroma(
-    mut dst: *mut pixel,
-    mut i_dst: intptr_t,
-    mut srcu: *mut pixel,
-    mut srcv: *mut pixel,
-    mut height: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < height {
-        let mut x: c_int = 0;
-        while x < 8 {
-            *dst.offset((2 * x) as isize) = *srcu.offset(x as isize);
-            *dst.offset((2 * x + 1) as isize) = *srcv.offset(x as isize);
-            x += 1;
-        }
-        y += 1;
-        dst = dst.offset(i_dst as isize);
-        srcu = srcu.offset(FDEC_STRIDE as isize);
-        srcv = srcv.offset(FDEC_STRIDE as isize);
-    }
-}
-#[c2rust::src_loc = "402:1"]
-unsafe extern "C" fn load_deinterleave_chroma_fenc(
-    mut dst: *mut pixel,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut height: c_int,
-) {
-    x264_10_plane_copy_deinterleave_c(
-        dst,
-        FENC_STRIDE as intptr_t,
-        dst.offset((FENC_STRIDE / 2) as isize),
-        FENC_STRIDE as intptr_t,
-        src,
-        i_src,
-        8,
-        height,
-    );
-}
-#[c2rust::src_loc = "407:1"]
-unsafe extern "C" fn load_deinterleave_chroma_fdec(
-    mut dst: *mut pixel,
-    mut src: *mut pixel,
-    mut i_src: intptr_t,
-    mut height: c_int,
-) {
-    x264_10_plane_copy_deinterleave_c(
-        dst,
-        FDEC_STRIDE as intptr_t,
-        dst.offset((FDEC_STRIDE / 2) as isize),
-        FDEC_STRIDE as intptr_t,
-        src,
-        i_src,
-        8,
-        height,
-    );
-}
-#[c2rust::src_loc = "412:1"]
-unsafe extern "C" fn prefetch_fenc_null(
-    mut _pix_y: *mut pixel,
-    mut _stride_y: intptr_t,
-    mut _pix_uv: *mut pixel,
-    mut _stride_uv: intptr_t,
-    mut _mb_x: c_int,
-) {
-}
-#[c2rust::src_loc = "416:1"]
-unsafe extern "C" fn prefetch_ref_null(
-    mut _pix: *mut pixel,
-    mut _stride: intptr_t,
-    mut _parity: c_int,
-) {
-}
-#[c2rust::src_loc = "419:1"]
-unsafe extern "C" fn memzero_aligned(mut dst: *mut c_void, mut n: size_t) {
-    memset(dst, 0, n);
-}
-#[c2rust::src_loc = "424:1"]
-unsafe extern "C" fn integral_init4h(
-    mut sum: *mut uint16_t,
-    mut pix: *mut pixel,
-    mut stride: intptr_t,
-) {
-    let mut v: c_int = *pix.offset(0) as c_int
-        + *pix.offset(1) as c_int
-        + *pix.offset(2) as c_int
-        + *pix.offset(3) as c_int;
-    let mut x: c_int = 0;
-    while (x as intptr_t) < stride - 4 as intptr_t {
-        *sum.offset(x as isize) =
-            (v + *sum.offset((x as intptr_t - stride) as isize) as c_int) as uint16_t;
-        v += *pix.offset((x + 4) as isize) as c_int - *pix.offset(x as isize) as c_int;
-        x += 1;
-    }
-}
-#[c2rust::src_loc = "434:1"]
-unsafe extern "C" fn integral_init8h(
-    mut sum: *mut uint16_t,
-    mut pix: *mut pixel,
-    mut stride: intptr_t,
-) {
-    let mut v: c_int = *pix.offset(0) as c_int
-        + *pix.offset(1) as c_int
-        + *pix.offset(2) as c_int
-        + *pix.offset(3) as c_int
-        + *pix.offset(4) as c_int
-        + *pix.offset(5) as c_int
-        + *pix.offset(6) as c_int
-        + *pix.offset(7) as c_int;
-    let mut x: c_int = 0;
-    while (x as intptr_t) < stride - 8 as intptr_t {
-        *sum.offset(x as isize) =
-            (v + *sum.offset((x as intptr_t - stride) as isize) as c_int) as uint16_t;
-        v += *pix.offset((x + 8) as isize) as c_int - *pix.offset(x as isize) as c_int;
-        x += 1;
-    }
-}
-#[c2rust::src_loc = "444:1"]
-unsafe extern "C" fn integral_init4v(
-    mut sum8: *mut uint16_t,
-    mut sum4: *mut uint16_t,
-    mut stride: intptr_t,
-) {
-    let mut x: c_int = 0;
-    while (x as intptr_t) < stride - 8 as intptr_t {
-        *sum4.offset(x as isize) = (*sum8.offset((x as intptr_t + 4 as intptr_t * stride) as isize)
-            as c_int
-            - *sum8.offset(x as isize) as c_int) as uint16_t;
-        x += 1;
-    }
-    let mut x_0: c_int = 0;
-    while (x_0 as intptr_t) < stride - 8 as intptr_t {
-        *sum8.offset(x_0 as isize) =
-            (*sum8.offset((x_0 as intptr_t + 8 as intptr_t * stride) as isize) as c_int
-                + *sum8.offset((x_0 as intptr_t + 8 as intptr_t * stride + 4 as intptr_t) as isize)
-                    as c_int
-                - *sum8.offset(x_0 as isize) as c_int
-                - *sum8.offset((x_0 + 4) as isize) as c_int) as uint16_t;
-        x_0 += 1;
-    }
-}
-#[c2rust::src_loc = "452:1"]
-unsafe extern "C" fn integral_init8v(mut sum8: *mut uint16_t, mut stride: intptr_t) {
-    let mut x: c_int = 0;
-    while (x as intptr_t) < stride - 8 as intptr_t {
-        *sum8.offset(x as isize) = (*sum8.offset((x as intptr_t + 8 as intptr_t * stride) as isize)
-            as c_int
-            - *sum8.offset(x as isize) as c_int) as uint16_t;
-        x += 1;
-    }
-}
-#[no_mangle]
-#[c2rust::src_loc = "458:1"]
-unsafe extern "C" fn x264_10_frame_init_lowres(mut h: *mut x264_t, mut frame: *mut x264_frame_t) {
-    let mut src: *mut pixel = (*frame).plane[0];
-    let mut i_stride: c_int = (*frame).i_stride[0];
-    let mut i_height: c_int = (*frame).i_lines[0];
-    let mut i_width: c_int = (*frame).i_width[0];
-    let mut y: c_int = 0;
-    while y < i_height {
-        *src.offset((i_width + y * i_stride) as isize) =
-            *src.offset((i_width - 1 + y * i_stride) as isize);
-        y += 1;
-    }
-    memcpy(
-        src.offset((i_stride * i_height) as isize) as *mut c_void,
-        src.offset((i_stride * (i_height - 1)) as isize) as *const c_void,
-        ((i_width + 1) * SIZEOF_PIXEL) as size_t,
-    );
-    (*h).mc
-        .frame_init_lowres_core
-        .expect("non-null function pointer")(
-        src,
-        (*frame).lowres[0],
-        (*frame).lowres[1],
-        (*frame).lowres[2],
-        (*frame).lowres[3],
-        i_stride as intptr_t,
-        (*frame).i_stride_lowres as intptr_t,
-        (*frame).i_width_lowres,
-        (*frame).i_lines_lowres,
-    );
-    x264_10_frame_expand_border_lowres(frame);
-    memset(
-        (*frame).i_cost_est.as_mut_ptr() as *mut c_void,
-        -1,
-        size_of::<[[c_int; 18]; 18]>() as size_t,
-    );
-    let mut y_0: c_int = 0;
-    while y_0 < (*h).param.i_bframe + 2 {
-        let mut x: c_int = 0;
-        while x < (*h).param.i_bframe + 2 {
-            *(*frame).i_row_satds[y_0 as usize][x as usize].offset(0) = -1;
-            x += 1;
-        }
-        y_0 += 1;
-    }
-    let mut y_1: c_int = 0;
-    while y_1 <= ((*h).param.i_bframe != 0) as c_int {
-        let mut x_0: c_int = 0;
-        while x_0 <= (*h).param.i_bframe {
-            (*(*frame).lowres_mvs[y_1 as usize][x_0 as usize].offset(0))[0] = 0x7fff as int16_t;
-            x_0 += 1;
-        }
-        y_1 += 1;
-    }
-}
-#[c2rust::src_loc = "484:1"]
-unsafe extern "C" fn frame_init_lowres_core(
-    mut src0: *mut pixel,
-    mut dst0: *mut pixel,
-    mut dsth: *mut pixel,
-    mut dstv: *mut pixel,
-    mut dstc: *mut pixel,
-    mut src_stride: intptr_t,
-    mut dst_stride: intptr_t,
-    mut width: c_int,
-    mut height: c_int,
-) {
-    let mut y: c_int = 0;
-    while y < height {
-        let mut src1: *mut pixel = src0.offset(src_stride as isize);
-        let mut src2: *mut pixel = src1.offset(src_stride as isize);
-        let mut x: c_int = 0;
-        while x < width {
-            *dst0.offset(x as isize) = ((*src0.offset((2 * x) as isize) as c_int
-                + *src1.offset((2 * x) as isize) as c_int
-                + 1
-                >> 1)
-                + (*src0.offset((2 * x + 1) as isize) as c_int
-                    + *src1.offset((2 * x + 1) as isize) as c_int
-                    + 1
-                    >> 1)
-                + 1
-                >> 1) as pixel;
-            *dsth.offset(x as isize) = ((*src0.offset((2 * x + 1) as isize) as c_int
-                + *src1.offset((2 * x + 1) as isize) as c_int
-                + 1
-                >> 1)
-                + (*src0.offset((2 * x + 2) as isize) as c_int
-                    + *src1.offset((2 * x + 2) as isize) as c_int
-                    + 1
-                    >> 1)
-                + 1
-                >> 1) as pixel;
-            *dstv.offset(x as isize) = ((*src1.offset((2 * x) as isize) as c_int
-                + *src2.offset((2 * x) as isize) as c_int
-                + 1
-                >> 1)
-                + (*src1.offset((2 * x + 1) as isize) as c_int
-                    + *src2.offset((2 * x + 1) as isize) as c_int
-                    + 1
-                    >> 1)
-                + 1
-                >> 1) as pixel;
-            *dstc.offset(x as isize) = ((*src1.offset((2 * x + 1) as isize) as c_int
-                + *src2.offset((2 * x + 1) as isize) as c_int
-                + 1
-                >> 1)
-                + (*src1.offset((2 * x + 2) as isize) as c_int
-                    + *src2.offset((2 * x + 2) as isize) as c_int
-                    + 1
-                    >> 1)
-                + 1
-                >> 1) as pixel;
-            x += 1;
-        }
-        src0 = src0.offset((src_stride * 2 as intptr_t) as isize);
-        dst0 = dst0.offset(dst_stride as isize);
-        dsth = dsth.offset(dst_stride as isize);
-        dstv = dstv.offset(dst_stride as isize);
-        dstc = dstc.offset(dst_stride as isize);
-        y += 1;
-    }
-}
-#[c2rust::src_loc = "511:1"]
-unsafe extern "C" fn mbtree_propagate_cost(
-    mut dst: *mut int16_t,
-    mut propagate_in: *mut uint16_t,
-    mut intra_costs: *mut uint16_t,
-    mut inter_costs: *mut uint16_t,
-    mut inv_qscales: *mut uint16_t,
-    mut fps_factor: *mut c_float,
-    mut len: c_int,
-) {
-    let mut fps: c_float = *fps_factor;
-    let mut i: c_int = 0;
-    while i < len {
-        let mut intra_cost: c_int = *intra_costs.offset(i as isize) as c_int;
-        let mut inter_cost: c_int = if (*intra_costs.offset(i as isize) as c_int)
-            < *inter_costs.offset(i as isize) as c_int & ((1) << 14) - 1
-        {
-            *intra_costs.offset(i as isize) as c_int
-        } else {
-            *inter_costs.offset(i as isize) as c_int & ((1) << 14) - 1
-        };
-        let mut propagate_intra: c_float =
-            (intra_cost * *inv_qscales.offset(i as isize) as c_int) as c_float;
-        let mut propagate_amount: c_float =
-            *propagate_in.offset(i as isize) as c_int as c_float + propagate_intra * fps;
-        let mut propagate_num: c_float = (intra_cost - inter_cost) as c_float;
-        let mut propagate_denom: c_float = intra_cost as c_float;
-        *dst.offset(i as isize) =
-            (if ((propagate_amount * propagate_num / propagate_denom + 0.5f32) as c_int) < 32767 {
-                (propagate_amount * propagate_num / propagate_denom + 0.5f32) as c_int
-            } else {
-                32767
-            }) as int16_t;
-        i += 1;
-    }
-}
-#[c2rust::src_loc = "527:1"]
-unsafe extern "C" fn mbtree_propagate_list(
-    mut h: *mut x264_t,
-    mut ref_costs: *mut uint16_t,
-    mut mvs: *mut [int16_t; 2],
-    mut propagate_amount: *mut int16_t,
-    mut lowres_costs: *mut uint16_t,
-    mut bipred_weight: c_int,
-    mut mb_y: c_int,
-    mut len: c_int,
-    mut list: c_int,
-) {
-    let mut stride: c_uint = (*h).mb.i_mb_stride as c_uint;
-    let mut width: c_uint = (*h).mb.i_mb_width as c_uint;
-    let mut height: c_uint = (*h).mb.i_mb_height as c_uint;
-    let mut i: c_int = 0;
-    while i < len {
-        let mut lists_used: c_int = *lowres_costs.offset(i as isize) as c_int >> LOWRES_COST_SHIFT;
-        if !(lists_used & (1) << list == 0) {
-            let mut listamount: c_int = *propagate_amount.offset(i as isize) as c_int;
-            if lists_used == 3 {
-                listamount = listamount * bipred_weight + 32 >> 6;
+            let mut x_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x_1 < width {
+                *dsth.offset(x_1 as isize) = x264_clip_pixel(
+                    *src.offset((x_1 - 2 as ::core::ffi::c_int * 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                        + *src.offset(
+                            (x_1 + 3 as ::core::ffi::c_int * 1 as ::core::ffi::c_int) as isize,
+                        ) as ::core::ffi::c_int
+                        - 5 as ::core::ffi::c_int
+                            * (*src.offset((x_1 - 1 as ::core::ffi::c_int) as isize)
+                                as ::core::ffi::c_int
+                                + *src.offset(
+                                    (x_1 + 2 as ::core::ffi::c_int * 1 as ::core::ffi::c_int)
+                                        as isize,
+                                ) as ::core::ffi::c_int)
+                        + 20 as ::core::ffi::c_int
+                            * (*src.offset(x_1 as isize) as ::core::ffi::c_int
+                                + *src.offset((x_1 + 1 as ::core::ffi::c_int) as isize)
+                                    as ::core::ffi::c_int)
+                        + 16 as ::core::ffi::c_int
+                        >> 5 as ::core::ffi::c_int,
+                );
+                x_1 += 1;
             }
-            if (*((*mvs.offset(i as isize)).as_mut_ptr() as *mut x264_union32_t)).i == 0 {
-                *ref_costs.offset(
-                    (mb_y as c_uint)
-                        .wrapping_mul(stride)
-                        .wrapping_add(i as c_uint) as isize,
-                ) = (if *ref_costs.offset(
-                    (mb_y as c_uint)
-                        .wrapping_mul(stride)
-                        .wrapping_add(i as c_uint) as isize,
-                ) as c_int
-                    + listamount
-                    < ((1) << 15) - 1
+            dsth = dsth.offset(stride as isize);
+            dstv = dstv.offset(stride as isize);
+            dstc = dstc.offset(stride as isize);
+            src = src.offset(stride as isize);
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn mc_luma(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut mvx: ::core::ffi::c_int,
+    mut mvy: ::core::ffi::c_int,
+    mut i_width: ::core::ffi::c_int,
+    mut i_height: ::core::ffi::c_int,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+) {
+    unsafe {
+        let mut qpel_idx: ::core::ffi::c_int = ((mvy & 3 as ::core::ffi::c_int)
+            << 2 as ::core::ffi::c_int)
+            + (mvx & 3 as ::core::ffi::c_int);
+        let mut offset: ::core::ffi::c_int =
+            ((mvy >> 2 as ::core::ffi::c_int) as crate::stdlib::intptr_t * i_src_stride
+                + (mvx >> 2 as ::core::ffi::c_int) as crate::stdlib::intptr_t)
+                as ::core::ffi::c_int;
+        let mut src1: *mut crate::src::common::common::pixel = (*src
+            .offset(crate::src::common::tables::x264_hpel_ref0[qpel_idx as usize] as isize))
+        .offset(offset as isize)
+        .offset(
+            ((mvy & 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int) as ::core::ffi::c_int
+                as crate::stdlib::intptr_t
+                * i_src_stride) as isize,
+        );
+        if qpel_idx & 5 as ::core::ffi::c_int != 0 {
+            let mut src2: *mut crate::src::common::common::pixel = (*src
+                .offset(crate::src::common::tables::x264_hpel_ref1[qpel_idx as usize] as isize))
+            .offset(offset as isize)
+            .offset(
+                (mvx & 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int) as ::core::ffi::c_int
+                    as isize,
+            );
+            pixel_avg(
+                dst,
+                i_dst_stride,
+                src1,
+                i_src_stride,
+                src2,
+                i_src_stride,
+                i_width,
+                i_height,
+            );
+            if !(*weight).weightfn.is_null() {
+                mc_weight(
+                    dst,
+                    i_dst_stride,
+                    dst,
+                    i_dst_stride,
+                    weight,
+                    i_width,
+                    i_height,
+                );
+            }
+        } else if !(*weight).weightfn.is_null() {
+            mc_weight(
+                dst,
+                i_dst_stride,
+                src1,
+                i_src_stride,
+                weight,
+                i_width,
+                i_height,
+            );
+        } else {
+            mc_copy(src1, i_src_stride, dst, i_dst_stride, i_width, i_height);
+        };
+    }
+}
+
+unsafe extern "C" fn get_ref(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: *mut crate::stdlib::intptr_t,
+    mut src: *mut *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut mvx: ::core::ffi::c_int,
+    mut mvy: ::core::ffi::c_int,
+    mut i_width: ::core::ffi::c_int,
+    mut i_height: ::core::ffi::c_int,
+    mut weight: *const crate::src::common::mc::x264_weight_t,
+) -> *mut crate::src::common::common::pixel {
+    unsafe {
+        let mut qpel_idx: ::core::ffi::c_int = ((mvy & 3 as ::core::ffi::c_int)
+            << 2 as ::core::ffi::c_int)
+            + (mvx & 3 as ::core::ffi::c_int);
+        let mut offset: ::core::ffi::c_int =
+            ((mvy >> 2 as ::core::ffi::c_int) as crate::stdlib::intptr_t * i_src_stride
+                + (mvx >> 2 as ::core::ffi::c_int) as crate::stdlib::intptr_t)
+                as ::core::ffi::c_int;
+        let mut src1: *mut crate::src::common::common::pixel = (*src
+            .offset(crate::src::common::tables::x264_hpel_ref0[qpel_idx as usize] as isize))
+        .offset(offset as isize)
+        .offset(
+            ((mvy & 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int) as ::core::ffi::c_int
+                as crate::stdlib::intptr_t
+                * i_src_stride) as isize,
+        );
+        if qpel_idx & 5 as ::core::ffi::c_int != 0 {
+            let mut src2: *mut crate::src::common::common::pixel = (*src
+                .offset(crate::src::common::tables::x264_hpel_ref1[qpel_idx as usize] as isize))
+            .offset(offset as isize)
+            .offset(
+                (mvx & 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int) as ::core::ffi::c_int
+                    as isize,
+            );
+            pixel_avg(
+                dst,
+                *i_dst_stride,
+                src1,
+                i_src_stride,
+                src2,
+                i_src_stride,
+                i_width,
+                i_height,
+            );
+            if !(*weight).weightfn.is_null() {
+                mc_weight(
+                    dst,
+                    *i_dst_stride,
+                    dst,
+                    *i_dst_stride,
+                    weight,
+                    i_width,
+                    i_height,
+                );
+            }
+            return dst;
+        } else if !(*weight).weightfn.is_null() {
+            mc_weight(
+                dst,
+                *i_dst_stride,
+                src1,
+                i_src_stride,
+                weight,
+                i_width,
+                i_height,
+            );
+            return dst;
+        } else {
+            *i_dst_stride = i_src_stride;
+            return src1;
+        };
+    }
+}
+
+unsafe extern "C" fn mc_chroma(
+    mut dstu: *mut crate::src::common::common::pixel,
+    mut dstv: *mut crate::src::common::common::pixel,
+    mut i_dst_stride: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src_stride: crate::stdlib::intptr_t,
+    mut mvx: ::core::ffi::c_int,
+    mut mvy: ::core::ffi::c_int,
+    mut i_width: ::core::ffi::c_int,
+    mut i_height: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut srcp: *mut crate::src::common::common::pixel =
+            ::core::ptr::null_mut::<crate::src::common::common::pixel>();
+        let mut d8x: ::core::ffi::c_int = mvx & 0x7 as ::core::ffi::c_int;
+        let mut d8y: ::core::ffi::c_int = mvy & 0x7 as ::core::ffi::c_int;
+        let mut cA: ::core::ffi::c_int =
+            (8 as ::core::ffi::c_int - d8x) * (8 as ::core::ffi::c_int - d8y);
+        let mut cB: ::core::ffi::c_int = d8x * (8 as ::core::ffi::c_int - d8y);
+        let mut cC: ::core::ffi::c_int = (8 as ::core::ffi::c_int - d8x) * d8y;
+        let mut cD: ::core::ffi::c_int = d8x * d8y;
+        src = src.offset(
+            ((mvy >> 3 as ::core::ffi::c_int) as crate::stdlib::intptr_t * i_src_stride
+                + ((mvx >> 3 as ::core::ffi::c_int) * 2 as ::core::ffi::c_int)
+                    as crate::stdlib::intptr_t) as isize,
+        );
+        srcp = src.offset(i_src_stride as isize) as *mut crate::src::common::common::pixel;
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < i_height {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < i_width {
+                *dstu.offset(x as isize) = (cA
+                    * *src.offset((2 as ::core::ffi::c_int * x) as isize) as ::core::ffi::c_int
+                    + cB * *src
+                        .offset((2 as ::core::ffi::c_int * x + 2 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + cC * *srcp.offset((2 as ::core::ffi::c_int * x) as isize)
+                        as ::core::ffi::c_int
+                    + cD * *srcp
+                        .offset((2 as ::core::ffi::c_int * x + 2 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + 32 as ::core::ffi::c_int
+                    >> 6 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                *dstv.offset(x as isize) = (cA
+                    * *src.offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + cB * *src
+                        .offset((2 as ::core::ffi::c_int * x + 3 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + cC * *srcp
+                        .offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + cD * *srcp
+                        .offset((2 as ::core::ffi::c_int * x + 3 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + 32 as ::core::ffi::c_int
+                    >> 6 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                x += 1;
+            }
+            dstu = dstu.offset(i_dst_stride as isize);
+            dstv = dstv.offset(i_dst_stride as isize);
+            src = srcp;
+            srcp = srcp.offset(i_src_stride as isize);
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn mc_copy_w16(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut i_height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_copy(src, i_src, dst, i_dst, 16 as ::core::ffi::c_int, i_height);
+    }
+}
+
+unsafe extern "C" fn mc_copy_w8(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut i_height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_copy(src, i_src, dst, i_dst, 8 as ::core::ffi::c_int, i_height);
+    }
+}
+
+unsafe extern "C" fn mc_copy_w4(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut i_height: ::core::ffi::c_int,
+) {
+    unsafe {
+        mc_copy(src, i_src, dst, i_dst, 4 as ::core::ffi::c_int, i_height);
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_plane_copy_c(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut w: ::core::ffi::c_int,
+    mut h: ::core::ffi::c_int,
+) {
+    unsafe {
+        loop {
+            let c2rust_fresh0 = h;
+            h = h - 1;
+            if !(c2rust_fresh0 != 0) {
+                break;
+            }
+            crate::stdlib::memcpy(
+                dst as *mut ::core::ffi::c_void,
+                src as *const ::core::ffi::c_void,
+                (w * crate::src::common::common::SIZEOF_PIXEL) as crate::__stddef_size_t_h::size_t,
+            );
+            dst = dst.offset(i_dst as isize);
+            src = src.offset(i_src as isize);
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_plane_copy_swap_c(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut w: ::core::ffi::c_int,
+    mut h: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < h {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < 2 as ::core::ffi::c_int * w {
+                *dst.offset(x as isize) = *src.offset((x + 1 as ::core::ffi::c_int) as isize);
+                *dst.offset((x + 1 as ::core::ffi::c_int) as isize) = *src.offset(x as isize);
+                x += 2 as ::core::ffi::c_int;
+            }
+            y += 1;
+            dst = dst.offset(i_dst as isize);
+            src = src.offset(i_src as isize);
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_plane_copy_interleave_c(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut srcu: *mut crate::src::common::common::pixel,
+    mut i_srcu: crate::stdlib::intptr_t,
+    mut srcv: *mut crate::src::common::common::pixel,
+    mut i_srcv: crate::stdlib::intptr_t,
+    mut w: ::core::ffi::c_int,
+    mut h: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < h {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < w {
+                *dst.offset((2 as ::core::ffi::c_int * x) as isize) = *srcu.offset(x as isize);
+                *dst.offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize) =
+                    *srcv.offset(x as isize);
+                x += 1;
+            }
+            y += 1;
+            dst = dst.offset(i_dst as isize);
+            srcu = srcu.offset(i_srcu as isize);
+            srcv = srcv.offset(i_srcv as isize);
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_plane_copy_deinterleave_c(
+    mut dsta: *mut crate::src::common::common::pixel,
+    mut i_dsta: crate::stdlib::intptr_t,
+    mut dstb: *mut crate::src::common::common::pixel,
+    mut i_dstb: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut w: ::core::ffi::c_int,
+    mut h: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < h {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < w {
+                *dsta.offset(x as isize) = *src.offset((2 as ::core::ffi::c_int * x) as isize);
+                *dstb.offset(x as isize) =
+                    *src.offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize);
+                x += 1;
+            }
+            y += 1;
+            dsta = dsta.offset(i_dsta as isize);
+            dstb = dstb.offset(i_dstb as isize);
+            src = src.offset(i_src as isize);
+        }
+    }
+}
+
+unsafe extern "C" fn plane_copy_deinterleave_rgb_c(
+    mut dsta: *mut crate::src::common::common::pixel,
+    mut i_dsta: crate::stdlib::intptr_t,
+    mut dstb: *mut crate::src::common::common::pixel,
+    mut i_dstb: crate::stdlib::intptr_t,
+    mut dstc: *mut crate::src::common::common::pixel,
+    mut i_dstc: crate::stdlib::intptr_t,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut pw: ::core::ffi::c_int,
+    mut w: ::core::ffi::c_int,
+    mut h: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < h {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < w {
+                *dsta.offset(x as isize) = *src.offset((x * pw) as isize);
+                *dstb.offset(x as isize) = *src.offset((x * pw + 1 as ::core::ffi::c_int) as isize);
+                *dstc.offset(x as isize) = *src.offset((x * pw + 2 as ::core::ffi::c_int) as isize);
+                x += 1;
+            }
+            y += 1;
+            dsta = dsta.offset(i_dsta as isize);
+            dstb = dstb.offset(i_dstb as isize);
+            dstc = dstc.offset(i_dstc as isize);
+            src = src.offset(i_src as isize);
+        }
+    }
+}
+
+unsafe extern "C" fn plane_copy_deinterleave_v210_c(
+    mut dsty: *mut crate::src::common::common::pixel,
+    mut i_dsty: crate::stdlib::intptr_t,
+    mut dstc: *mut crate::src::common::common::pixel,
+    mut i_dstc: crate::stdlib::intptr_t,
+    mut src: *mut crate::stdlib::uint32_t,
+    mut i_src: crate::stdlib::intptr_t,
+    mut w: ::core::ffi::c_int,
+    mut h: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut l: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while l < h {
+            let mut dsty0: *mut crate::src::common::common::pixel = dsty;
+            let mut dstc0: *mut crate::src::common::common::pixel = dstc;
+            let mut src0: *mut crate::stdlib::uint32_t = src;
+            let mut n: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while n < w {
+                let c2rust_fresh1 = src0;
+                src0 = src0.offset(1);
+                let mut s: crate::stdlib::uint32_t = *c2rust_fresh1;
+                let c2rust_fresh2 = dstc0;
+                dstc0 = dstc0.offset(1);
+                *c2rust_fresh2 =
+                    (s & 0x3ff as crate::stdlib::uint32_t) as crate::src::common::common::pixel;
+                let c2rust_fresh3 = dsty0;
+                dsty0 = dsty0.offset(1);
+                *c2rust_fresh3 = (s >> 10 as ::core::ffi::c_int & 0x3ff as crate::stdlib::uint32_t)
+                    as crate::src::common::common::pixel;
+                let c2rust_fresh4 = dstc0;
+                dstc0 = dstc0.offset(1);
+                *c2rust_fresh4 = (s >> 20 as ::core::ffi::c_int & 0x3ff as crate::stdlib::uint32_t)
+                    as crate::src::common::common::pixel;
+                let c2rust_fresh5 = src0;
+                src0 = src0.offset(1);
+                s = *c2rust_fresh5;
+                let c2rust_fresh6 = dsty0;
+                dsty0 = dsty0.offset(1);
+                *c2rust_fresh6 =
+                    (s & 0x3ff as crate::stdlib::uint32_t) as crate::src::common::common::pixel;
+                let c2rust_fresh7 = dstc0;
+                dstc0 = dstc0.offset(1);
+                *c2rust_fresh7 = (s >> 10 as ::core::ffi::c_int & 0x3ff as crate::stdlib::uint32_t)
+                    as crate::src::common::common::pixel;
+                let c2rust_fresh8 = dsty0;
+                dsty0 = dsty0.offset(1);
+                *c2rust_fresh8 = (s >> 20 as ::core::ffi::c_int & 0x3ff as crate::stdlib::uint32_t)
+                    as crate::src::common::common::pixel;
+                n += 3 as ::core::ffi::c_int;
+            }
+            dsty = dsty.offset(i_dsty as isize);
+            dstc = dstc.offset(i_dstc as isize);
+            src = src.offset(i_src as isize);
+            l += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn store_interleave_chroma(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut i_dst: crate::stdlib::intptr_t,
+    mut srcu: *mut crate::src::common::common::pixel,
+    mut srcv: *mut crate::src::common::common::pixel,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < height {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < 8 as ::core::ffi::c_int {
+                *dst.offset((2 as ::core::ffi::c_int * x) as isize) = *srcu.offset(x as isize);
+                *dst.offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize) =
+                    *srcv.offset(x as isize);
+                x += 1;
+            }
+            y += 1;
+            dst = dst.offset(i_dst as isize);
+            srcu = srcu.offset(crate::src::common::common::FDEC_STRIDE as isize);
+            srcv = srcv.offset(crate::src::common::common::FDEC_STRIDE as isize);
+        }
+    }
+}
+
+unsafe extern "C" fn load_deinterleave_chroma_fenc(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        x264_8_plane_copy_deinterleave_c(
+            dst,
+            crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
+            dst.offset(
+                (crate::src::common::common::FENC_STRIDE / 2 as ::core::ffi::c_int) as isize,
+            ),
+            crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
+            src,
+            i_src,
+            8 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+unsafe extern "C" fn load_deinterleave_chroma_fdec(
+    mut dst: *mut crate::src::common::common::pixel,
+    mut src: *mut crate::src::common::common::pixel,
+    mut i_src: crate::stdlib::intptr_t,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        x264_8_plane_copy_deinterleave_c(
+            dst,
+            crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
+            dst.offset(
+                (crate::src::common::common::FDEC_STRIDE / 2 as ::core::ffi::c_int) as isize,
+            ),
+            crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
+            src,
+            i_src,
+            8 as ::core::ffi::c_int,
+            height,
+        );
+    }
+}
+
+unsafe extern "C" fn prefetch_fenc_null(
+    mut pix_y: *mut crate::src::common::common::pixel,
+    mut stride_y: crate::stdlib::intptr_t,
+    mut pix_uv: *mut crate::src::common::common::pixel,
+    mut stride_uv: crate::stdlib::intptr_t,
+    mut mb_x: ::core::ffi::c_int,
+) {
+}
+
+unsafe extern "C" fn prefetch_ref_null(
+    mut pix: *mut crate::src::common::common::pixel,
+    mut stride: crate::stdlib::intptr_t,
+    mut parity: ::core::ffi::c_int,
+) {
+}
+
+unsafe extern "C" fn memzero_aligned(
+    mut dst: *mut ::core::ffi::c_void,
+    mut n: crate::__stddef_size_t_h::size_t,
+) {
+    unsafe {
+        crate::stdlib::memset(dst, 0 as ::core::ffi::c_int, n);
+    }
+}
+
+unsafe extern "C" fn integral_init4h(
+    mut sum: *mut crate::stdlib::uint16_t,
+    mut pix: *mut crate::src::common::common::pixel,
+    mut stride: crate::stdlib::intptr_t,
+) {
+    unsafe {
+        let mut v: ::core::ffi::c_int = *pix.offset(0 as ::core::ffi::c_int as isize)
+            as ::core::ffi::c_int
+            + *pix.offset(1 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(2 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(3 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
+        let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while (x as crate::stdlib::intptr_t)
+            < stride - 4 as ::core::ffi::c_int as crate::stdlib::intptr_t
+        {
+            *sum.offset(x as isize) =
+                (v + *sum.offset((x as crate::stdlib::intptr_t - stride) as isize)
+                    as ::core::ffi::c_int) as crate::stdlib::uint16_t;
+            v += *pix.offset((x + 4 as ::core::ffi::c_int) as isize) as ::core::ffi::c_int
+                - *pix.offset(x as isize) as ::core::ffi::c_int;
+            x += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn integral_init8h(
+    mut sum: *mut crate::stdlib::uint16_t,
+    mut pix: *mut crate::src::common::common::pixel,
+    mut stride: crate::stdlib::intptr_t,
+) {
+    unsafe {
+        let mut v: ::core::ffi::c_int = *pix.offset(0 as ::core::ffi::c_int as isize)
+            as ::core::ffi::c_int
+            + *pix.offset(1 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(2 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(3 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(4 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(5 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(6 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
+            + *pix.offset(7 as ::core::ffi::c_int as isize) as ::core::ffi::c_int;
+        let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while (x as crate::stdlib::intptr_t)
+            < stride - 8 as ::core::ffi::c_int as crate::stdlib::intptr_t
+        {
+            *sum.offset(x as isize) =
+                (v + *sum.offset((x as crate::stdlib::intptr_t - stride) as isize)
+                    as ::core::ffi::c_int) as crate::stdlib::uint16_t;
+            v += *pix.offset((x + 8 as ::core::ffi::c_int) as isize) as ::core::ffi::c_int
+                - *pix.offset(x as isize) as ::core::ffi::c_int;
+            x += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn integral_init4v(
+    mut sum8: *mut crate::stdlib::uint16_t,
+    mut sum4: *mut crate::stdlib::uint16_t,
+    mut stride: crate::stdlib::intptr_t,
+) {
+    unsafe {
+        let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while (x as crate::stdlib::intptr_t)
+            < stride - 8 as ::core::ffi::c_int as crate::stdlib::intptr_t
+        {
+            *sum4.offset(x as isize) = (*sum8.offset(
+                (x as crate::stdlib::intptr_t
+                    + 4 as ::core::ffi::c_int as crate::stdlib::intptr_t * stride)
+                    as isize,
+            ) as ::core::ffi::c_int
+                - *sum8.offset(x as isize) as ::core::ffi::c_int)
+                as crate::stdlib::uint16_t;
+            x += 1;
+        }
+        let mut x_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while (x_0 as crate::stdlib::intptr_t)
+            < stride - 8 as ::core::ffi::c_int as crate::stdlib::intptr_t
+        {
+            *sum8.offset(x_0 as isize) = (*sum8.offset(
+                (x_0 as crate::stdlib::intptr_t
+                    + 8 as ::core::ffi::c_int as crate::stdlib::intptr_t * stride)
+                    as isize,
+            ) as ::core::ffi::c_int
+                + *sum8.offset(
+                    (x_0 as crate::stdlib::intptr_t
+                        + 8 as ::core::ffi::c_int as crate::stdlib::intptr_t * stride
+                        + 4 as ::core::ffi::c_int as crate::stdlib::intptr_t)
+                        as isize,
+                ) as ::core::ffi::c_int
+                - *sum8.offset(x_0 as isize) as ::core::ffi::c_int
+                - *sum8.offset((x_0 + 4 as ::core::ffi::c_int) as isize) as ::core::ffi::c_int)
+                as crate::stdlib::uint16_t;
+            x_0 += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn integral_init8v(
+    mut sum8: *mut crate::stdlib::uint16_t,
+    mut stride: crate::stdlib::intptr_t,
+) {
+    unsafe {
+        let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while (x as crate::stdlib::intptr_t)
+            < stride - 8 as ::core::ffi::c_int as crate::stdlib::intptr_t
+        {
+            *sum8.offset(x as isize) = (*sum8.offset(
+                (x as crate::stdlib::intptr_t
+                    + 8 as ::core::ffi::c_int as crate::stdlib::intptr_t * stride)
+                    as isize,
+            ) as ::core::ffi::c_int
+                - *sum8.offset(x as isize) as ::core::ffi::c_int)
+                as crate::stdlib::uint16_t;
+            x += 1;
+        }
+    }
+}
+#[no_mangle]
+
+pub unsafe extern "C" fn x264_8_frame_init_lowres(
+    mut h: *mut crate::src::common::common::x264_t,
+    mut frame: *mut crate::src::common::frame::x264_frame_t,
+) {
+    unsafe {
+        let mut src: *mut crate::src::common::common::pixel =
+            (*frame).plane[0 as ::core::ffi::c_int as usize];
+        let mut i_stride: ::core::ffi::c_int = (*frame).i_stride[0 as ::core::ffi::c_int as usize];
+        let mut i_height: ::core::ffi::c_int = (*frame).i_lines[0 as ::core::ffi::c_int as usize];
+        let mut i_width: ::core::ffi::c_int = (*frame).i_width[0 as ::core::ffi::c_int as usize];
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < i_height {
+            *src.offset((i_width + y * i_stride) as isize) =
+                *src.offset((i_width - 1 as ::core::ffi::c_int + y * i_stride) as isize);
+            y += 1;
+        }
+        crate::stdlib::memcpy(
+            src.offset((i_stride * i_height) as isize) as *mut ::core::ffi::c_void,
+            src.offset((i_stride * (i_height - 1 as ::core::ffi::c_int)) as isize)
+                as *const ::core::ffi::c_void,
+            ((i_width + 1 as ::core::ffi::c_int) * crate::src::common::common::SIZEOF_PIXEL)
+                as crate::__stddef_size_t_h::size_t,
+        );
+        (*h).mc
+            .frame_init_lowres_core
+            .expect("non-null function pointer")(
+            src,
+            (*frame).lowres[0 as ::core::ffi::c_int as usize],
+            (*frame).lowres[1 as ::core::ffi::c_int as usize],
+            (*frame).lowres[2 as ::core::ffi::c_int as usize],
+            (*frame).lowres[3 as ::core::ffi::c_int as usize],
+            i_stride as crate::stdlib::intptr_t,
+            (*frame).i_stride_lowres as crate::stdlib::intptr_t,
+            (*frame).i_width_lowres,
+            (*frame).i_lines_lowres,
+        );
+        crate::src::common::frame::x264_8_frame_expand_border_lowres(
+            frame as *mut crate::src::common::frame::x264_frame,
+        );
+        crate::stdlib::memset(
+            &raw mut (*frame).i_cost_est as *mut [::core::ffi::c_int; 18]
+                as *mut ::core::ffi::c_void,
+            -(1 as ::core::ffi::c_int),
+            ::core::mem::size_of::<[[::core::ffi::c_int; 18]; 18]>()
+                as crate::__stddef_size_t_h::size_t,
+        );
+        let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_0 < (*h).param.i_bframe + 2 as ::core::ffi::c_int {
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < (*h).param.i_bframe + 2 as ::core::ffi::c_int {
+                *(*frame).i_row_satds[y_0 as usize][x as usize]
+                    .offset(0 as ::core::ffi::c_int as isize) = -(1 as ::core::ffi::c_int);
+                x += 1;
+            }
+            y_0 += 1;
+        }
+        let mut y_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y_1 <= ((*h).param.i_bframe != 0) as ::core::ffi::c_int {
+            let mut x_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x_0 <= (*h).param.i_bframe {
+                (*(*frame).lowres_mvs[y_1 as usize][x_0 as usize]
+                    .offset(0 as ::core::ffi::c_int as isize))
+                    [0 as ::core::ffi::c_int as usize] = 0x7fff as crate::stdlib::int16_t;
+                x_0 += 1;
+            }
+            y_1 += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn frame_init_lowres_core(
+    mut src0: *mut crate::src::common::common::pixel,
+    mut dst0: *mut crate::src::common::common::pixel,
+    mut dsth: *mut crate::src::common::common::pixel,
+    mut dstv: *mut crate::src::common::common::pixel,
+    mut dstc: *mut crate::src::common::common::pixel,
+    mut src_stride: crate::stdlib::intptr_t,
+    mut dst_stride: crate::stdlib::intptr_t,
+    mut width: ::core::ffi::c_int,
+    mut height: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while y < height {
+            let mut src1: *mut crate::src::common::common::pixel = src0.offset(src_stride as isize);
+            let mut src2: *mut crate::src::common::common::pixel = src1.offset(src_stride as isize);
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            while x < width {
+                *dst0.offset(x as isize) = ((*src0.offset((2 as ::core::ffi::c_int * x) as isize)
+                    as ::core::ffi::c_int
+                    + *src1.offset((2 as ::core::ffi::c_int * x) as isize) as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    + (*src0
+                        .offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                        + *src1.offset(
+                            (2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize,
+                        ) as ::core::ffi::c_int
+                        + 1 as ::core::ffi::c_int
+                        >> 1 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                *dsth.offset(x as isize) = ((*src0
+                    .offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + *src1.offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    + (*src0
+                        .offset((2 as ::core::ffi::c_int * x + 2 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                        + *src1.offset(
+                            (2 as ::core::ffi::c_int * x + 2 as ::core::ffi::c_int) as isize,
+                        ) as ::core::ffi::c_int
+                        + 1 as ::core::ffi::c_int
+                        >> 1 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                *dstv.offset(x as isize) = ((*src1.offset((2 as ::core::ffi::c_int * x) as isize)
+                    as ::core::ffi::c_int
+                    + *src2.offset((2 as ::core::ffi::c_int * x) as isize) as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    + (*src1
+                        .offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                        + *src2.offset(
+                            (2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize,
+                        ) as ::core::ffi::c_int
+                        + 1 as ::core::ffi::c_int
+                        >> 1 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                *dstc.offset(x as isize) = ((*src1
+                    .offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                    as ::core::ffi::c_int
+                    + *src2.offset((2 as ::core::ffi::c_int * x + 1 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    + (*src1
+                        .offset((2 as ::core::ffi::c_int * x + 2 as ::core::ffi::c_int) as isize)
+                        as ::core::ffi::c_int
+                        + *src2.offset(
+                            (2 as ::core::ffi::c_int * x + 2 as ::core::ffi::c_int) as isize,
+                        ) as ::core::ffi::c_int
+                        + 1 as ::core::ffi::c_int
+                        >> 1 as ::core::ffi::c_int)
+                    + 1 as ::core::ffi::c_int
+                    >> 1 as ::core::ffi::c_int)
+                    as crate::src::common::common::pixel;
+                x += 1;
+            }
+            src0 = src0
+                .offset((src_stride * 2 as ::core::ffi::c_int as crate::stdlib::intptr_t) as isize);
+            dst0 = dst0.offset(dst_stride as isize);
+            dsth = dsth.offset(dst_stride as isize);
+            dstv = dstv.offset(dst_stride as isize);
+            dstc = dstc.offset(dst_stride as isize);
+            y += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn mbtree_propagate_cost(
+    mut dst: *mut crate::stdlib::int16_t,
+    mut propagate_in: *mut crate::stdlib::uint16_t,
+    mut intra_costs: *mut crate::stdlib::uint16_t,
+    mut inter_costs: *mut crate::stdlib::uint16_t,
+    mut inv_qscales: *mut crate::stdlib::uint16_t,
+    mut fps_factor: *mut ::core::ffi::c_float,
+    mut len: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut fps: ::core::ffi::c_float = *fps_factor;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < len {
+            let mut intra_cost: ::core::ffi::c_int =
+                *intra_costs.offset(i as isize) as ::core::ffi::c_int;
+            let mut inter_cost: ::core::ffi::c_int = if (*intra_costs.offset(i as isize)
+                as ::core::ffi::c_int)
+                < *inter_costs.offset(i as isize) as ::core::ffi::c_int
+                    & ((1 as ::core::ffi::c_int) << 14 as ::core::ffi::c_int)
+                        - 1 as ::core::ffi::c_int
+            {
+                *intra_costs.offset(i as isize) as ::core::ffi::c_int
+            } else {
+                *inter_costs.offset(i as isize) as ::core::ffi::c_int
+                    & ((1 as ::core::ffi::c_int) << 14 as ::core::ffi::c_int)
+                        - 1 as ::core::ffi::c_int
+            };
+            let mut propagate_intra: ::core::ffi::c_float = (intra_cost
+                * *inv_qscales.offset(i as isize) as ::core::ffi::c_int)
+                as ::core::ffi::c_float;
+            let mut propagate_amount: ::core::ffi::c_float =
+                *propagate_in.offset(i as isize) as ::core::ffi::c_int as ::core::ffi::c_float
+                    + propagate_intra * fps;
+            let mut propagate_num: ::core::ffi::c_float =
+                (intra_cost - inter_cost) as ::core::ffi::c_float;
+            let mut propagate_denom: ::core::ffi::c_float = intra_cost as ::core::ffi::c_float;
+            *dst.offset(i as isize) = (if ((propagate_amount * propagate_num / propagate_denom
+                + 0.5f32) as ::core::ffi::c_int)
+                < 32767 as ::core::ffi::c_int
+            {
+                (propagate_amount * propagate_num / propagate_denom + 0.5f32) as ::core::ffi::c_int
+            } else {
+                32767 as ::core::ffi::c_int
+            }) as crate::stdlib::int16_t;
+            i += 1;
+        }
+    }
+}
+
+unsafe extern "C" fn mbtree_propagate_list(
+    mut h: *mut crate::src::common::common::x264_t,
+    mut ref_costs: *mut crate::stdlib::uint16_t,
+    mut mvs: *mut [crate::stdlib::int16_t; 2],
+    mut propagate_amount: *mut crate::stdlib::int16_t,
+    mut lowres_costs: *mut crate::stdlib::uint16_t,
+    mut bipred_weight: ::core::ffi::c_int,
+    mut mb_y: ::core::ffi::c_int,
+    mut len: ::core::ffi::c_int,
+    mut list: ::core::ffi::c_int,
+) {
+    unsafe {
+        let mut stride: ::core::ffi::c_uint = (*h).mb.i_mb_stride as ::core::ffi::c_uint;
+        let mut width: ::core::ffi::c_uint = (*h).mb.i_mb_width as ::core::ffi::c_uint;
+        let mut height: ::core::ffi::c_uint = (*h).mb.i_mb_height as ::core::ffi::c_uint;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < len {
+            let mut lists_used: ::core::ffi::c_int = *lowres_costs.offset(i as isize)
+                as ::core::ffi::c_int
+                >> crate::src::common::frame::LOWRES_COST_SHIFT;
+            if !(lists_used & (1 as ::core::ffi::c_int) << list == 0) {
+                let mut listamount: ::core::ffi::c_int =
+                    *propagate_amount.offset(i as isize) as ::core::ffi::c_int;
+                if lists_used == 3 as ::core::ffi::c_int {
+                    listamount = listamount * bipred_weight + 32 as ::core::ffi::c_int
+                        >> 6 as ::core::ffi::c_int;
+                }
+                if (*(&raw mut *mvs.offset(i as isize) as *mut crate::stdlib::int16_t
+                    as *mut crate::src::common::base::x264_union32_t))
+                    .i
+                    == 0
                 {
                     *ref_costs.offset(
-                        (mb_y as c_uint)
+                        (mb_y as ::core::ffi::c_uint)
                             .wrapping_mul(stride)
-                            .wrapping_add(i as c_uint) as isize,
-                    ) as c_int
+                            .wrapping_add(i as ::core::ffi::c_uint)
+                            as isize,
+                    ) = (if *ref_costs.offset(
+                        (mb_y as ::core::ffi::c_uint)
+                            .wrapping_mul(stride)
+                            .wrapping_add(i as ::core::ffi::c_uint)
+                            as isize,
+                    ) as ::core::ffi::c_int
                         + listamount
+                        < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                            - 1 as ::core::ffi::c_int
+                    {
+                        *ref_costs.offset(
+                            (mb_y as ::core::ffi::c_uint)
+                                .wrapping_mul(stride)
+                                .wrapping_add(i as ::core::ffi::c_uint)
+                                as isize,
+                        ) as ::core::ffi::c_int
+                            + listamount
+                    } else {
+                        ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                            - 1 as ::core::ffi::c_int
+                    }) as crate::stdlib::uint16_t;
                 } else {
-                    ((1) << 15) - 1
-                }) as uint16_t;
-            } else {
-                let mut x: c_int = (*mvs.offset(i as isize))[0] as c_int;
-                let mut y: c_int = (*mvs.offset(i as isize))[1] as c_int;
-                let mut mbx: c_uint = ((x >> 5) + i) as c_uint;
-                let mut mby: c_uint = ((y >> 5) + mb_y) as c_uint;
-                let mut idx0: c_uint = mbx.wrapping_add(mby.wrapping_mul(stride));
-                let mut idx2: c_uint = idx0.wrapping_add(stride);
-                x &= 31;
-                y &= 31;
-                let mut idx0weight: c_int = (32 - y) * (32 - x);
-                let mut idx1weight: c_int = (32 - y) * x;
-                let mut idx2weight: c_int = y * (32 - x);
-                let mut idx3weight: c_int = y * x;
-                idx0weight = idx0weight * listamount + 512 >> 10;
-                idx1weight = idx1weight * listamount + 512 >> 10;
-                idx2weight = idx2weight * listamount + 512 >> 10;
-                idx3weight = idx3weight * listamount + 512 >> 10;
-                if mbx < width.wrapping_sub(1) && mby < height.wrapping_sub(1) {
-                    *ref_costs.offset(idx0.wrapping_add(0) as isize) =
-                        (if *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int + idx0weight
-                            < ((1) << 15) - 1
-                        {
-                            *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int + idx0weight
-                        } else {
-                            ((1) << 15) - 1
-                        }) as uint16_t;
-                    *ref_costs.offset(idx0.wrapping_add(1) as isize) =
-                        (if *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int + idx1weight
-                            < ((1) << 15) - 1
-                        {
-                            *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int + idx1weight
-                        } else {
-                            ((1) << 15) - 1
-                        }) as uint16_t;
-                    *ref_costs.offset(idx2.wrapping_add(0) as isize) =
-                        (if *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int + idx2weight
-                            < ((1) << 15) - 1
-                        {
-                            *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int + idx2weight
-                        } else {
-                            ((1) << 15) - 1
-                        }) as uint16_t;
-                    *ref_costs.offset(idx2.wrapping_add(1) as isize) =
-                        (if *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int + idx3weight
-                            < ((1) << 15) - 1
-                        {
-                            *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int + idx3weight
-                        } else {
-                            ((1) << 15) - 1
-                        }) as uint16_t;
-                } else {
-                    if mby < height {
-                        if mbx < width {
-                            *ref_costs.offset(idx0.wrapping_add(0) as isize) =
-                                (if *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int
+                    let mut x: ::core::ffi::c_int = (*mvs.offset(i as isize))
+                        [0 as ::core::ffi::c_int as usize]
+                        as ::core::ffi::c_int;
+                    let mut y: ::core::ffi::c_int = (*mvs.offset(i as isize))
+                        [1 as ::core::ffi::c_int as usize]
+                        as ::core::ffi::c_int;
+                    let mut mbx: ::core::ffi::c_uint =
+                        ((x >> 5 as ::core::ffi::c_int) + i) as ::core::ffi::c_uint;
+                    let mut mby: ::core::ffi::c_uint =
+                        ((y >> 5 as ::core::ffi::c_int) + mb_y) as ::core::ffi::c_uint;
+                    let mut idx0: ::core::ffi::c_uint = mbx.wrapping_add(mby.wrapping_mul(stride));
+                    let mut idx2: ::core::ffi::c_uint = idx0.wrapping_add(stride);
+                    x &= 31 as ::core::ffi::c_int;
+                    y &= 31 as ::core::ffi::c_int;
+                    let mut idx0weight: ::core::ffi::c_int =
+                        (32 as ::core::ffi::c_int - y) * (32 as ::core::ffi::c_int - x);
+                    let mut idx1weight: ::core::ffi::c_int = (32 as ::core::ffi::c_int - y) * x;
+                    let mut idx2weight: ::core::ffi::c_int = y * (32 as ::core::ffi::c_int - x);
+                    let mut idx3weight: ::core::ffi::c_int = y * x;
+                    idx0weight = idx0weight * listamount + 512 as ::core::ffi::c_int
+                        >> 10 as ::core::ffi::c_int;
+                    idx1weight = idx1weight * listamount + 512 as ::core::ffi::c_int
+                        >> 10 as ::core::ffi::c_int;
+                    idx2weight = idx2weight * listamount + 512 as ::core::ffi::c_int
+                        >> 10 as ::core::ffi::c_int;
+                    idx3weight = idx3weight * listamount + 512 as ::core::ffi::c_int
+                        >> 10 as ::core::ffi::c_int;
+                    if mbx < width.wrapping_sub(1 as ::core::ffi::c_uint)
+                        && mby < height.wrapping_sub(1 as ::core::ffi::c_uint)
+                    {
+                        *ref_costs.offset(idx0.wrapping_add(0 as ::core::ffi::c_uint) as isize) =
+                            (if *ref_costs
+                                .offset(idx0.wrapping_add(0 as ::core::ffi::c_uint) as isize)
+                                as ::core::ffi::c_int
+                                + idx0weight
+                                < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            {
+                                *ref_costs
+                                    .offset(idx0.wrapping_add(0 as ::core::ffi::c_uint) as isize)
+                                    as ::core::ffi::c_int
                                     + idx0weight
-                                    < ((1) << 15) - 1
-                                {
-                                    *ref_costs.offset(idx0.wrapping_add(0) as isize) as c_int
-                                        + idx0weight
-                                } else {
-                                    ((1) << 15) - 1
-                                }) as uint16_t;
-                        }
-                        if mbx.wrapping_add(1) < width {
-                            *ref_costs.offset(idx0.wrapping_add(1) as isize) =
-                                (if *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int
+                            } else {
+                                ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            }) as crate::stdlib::uint16_t;
+                        *ref_costs.offset(idx0.wrapping_add(1 as ::core::ffi::c_uint) as isize) =
+                            (if *ref_costs
+                                .offset(idx0.wrapping_add(1 as ::core::ffi::c_uint) as isize)
+                                as ::core::ffi::c_int
+                                + idx1weight
+                                < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            {
+                                *ref_costs
+                                    .offset(idx0.wrapping_add(1 as ::core::ffi::c_uint) as isize)
+                                    as ::core::ffi::c_int
                                     + idx1weight
-                                    < ((1) << 15) - 1
-                                {
-                                    *ref_costs.offset(idx0.wrapping_add(1) as isize) as c_int
-                                        + idx1weight
-                                } else {
-                                    ((1) << 15) - 1
-                                }) as uint16_t;
-                        }
-                    }
-                    if mby.wrapping_add(1) < height {
-                        if mbx < width {
-                            *ref_costs.offset(idx2.wrapping_add(0) as isize) =
-                                (if *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int
+                            } else {
+                                ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            }) as crate::stdlib::uint16_t;
+                        *ref_costs.offset(idx2.wrapping_add(0 as ::core::ffi::c_uint) as isize) =
+                            (if *ref_costs
+                                .offset(idx2.wrapping_add(0 as ::core::ffi::c_uint) as isize)
+                                as ::core::ffi::c_int
+                                + idx2weight
+                                < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            {
+                                *ref_costs
+                                    .offset(idx2.wrapping_add(0 as ::core::ffi::c_uint) as isize)
+                                    as ::core::ffi::c_int
                                     + idx2weight
-                                    < ((1) << 15) - 1
-                                {
-                                    *ref_costs.offset(idx2.wrapping_add(0) as isize) as c_int
-                                        + idx2weight
-                                } else {
-                                    ((1) << 15) - 1
-                                }) as uint16_t;
-                        }
-                        if mbx.wrapping_add(1) < width {
-                            *ref_costs.offset(idx2.wrapping_add(1) as isize) =
-                                (if *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int
+                            } else {
+                                ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            }) as crate::stdlib::uint16_t;
+                        *ref_costs.offset(idx2.wrapping_add(1 as ::core::ffi::c_uint) as isize) =
+                            (if *ref_costs
+                                .offset(idx2.wrapping_add(1 as ::core::ffi::c_uint) as isize)
+                                as ::core::ffi::c_int
+                                + idx3weight
+                                < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            {
+                                *ref_costs
+                                    .offset(idx2.wrapping_add(1 as ::core::ffi::c_uint) as isize)
+                                    as ::core::ffi::c_int
                                     + idx3weight
-                                    < ((1) << 15) - 1
+                            } else {
+                                ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                    - 1 as ::core::ffi::c_int
+                            }) as crate::stdlib::uint16_t;
+                    } else {
+                        if mby < height {
+                            if mbx < width {
+                                *ref_costs
+                                    .offset(
+                                        idx0.wrapping_add(0 as ::core::ffi::c_uint) as isize,
+                                    ) = (if *ref_costs
+                                    .offset(
+                                        idx0.wrapping_add(0 as ::core::ffi::c_uint) as isize,
+                                    ) as ::core::ffi::c_int + idx0weight
+                                    < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
                                 {
-                                    *ref_costs.offset(idx2.wrapping_add(1) as isize) as c_int
-                                        + idx3weight
+                                    *ref_costs
+                                        .offset(
+                                            idx0.wrapping_add(0 as ::core::ffi::c_uint) as isize,
+                                        ) as ::core::ffi::c_int + idx0weight
                                 } else {
-                                    ((1) << 15) - 1
-                                }) as uint16_t;
+                                    ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
+                                }) as crate::stdlib::uint16_t;
+                            }
+                            if mbx.wrapping_add(1 as ::core::ffi::c_uint) < width {
+                                *ref_costs
+                                    .offset(
+                                        idx0.wrapping_add(1 as ::core::ffi::c_uint) as isize,
+                                    ) = (if *ref_costs
+                                    .offset(
+                                        idx0.wrapping_add(1 as ::core::ffi::c_uint) as isize,
+                                    ) as ::core::ffi::c_int + idx1weight
+                                    < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
+                                {
+                                    *ref_costs
+                                        .offset(
+                                            idx0.wrapping_add(1 as ::core::ffi::c_uint) as isize,
+                                        ) as ::core::ffi::c_int + idx1weight
+                                } else {
+                                    ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
+                                }) as crate::stdlib::uint16_t;
+                            }
+                        }
+                        if mby.wrapping_add(1 as ::core::ffi::c_uint) < height {
+                            if mbx < width {
+                                *ref_costs
+                                    .offset(
+                                        idx2.wrapping_add(0 as ::core::ffi::c_uint) as isize,
+                                    ) = (if *ref_costs
+                                    .offset(
+                                        idx2.wrapping_add(0 as ::core::ffi::c_uint) as isize,
+                                    ) as ::core::ffi::c_int + idx2weight
+                                    < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
+                                {
+                                    *ref_costs
+                                        .offset(
+                                            idx2.wrapping_add(0 as ::core::ffi::c_uint) as isize,
+                                        ) as ::core::ffi::c_int + idx2weight
+                                } else {
+                                    ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
+                                }) as crate::stdlib::uint16_t;
+                            }
+                            if mbx.wrapping_add(1 as ::core::ffi::c_uint) < width {
+                                *ref_costs
+                                    .offset(
+                                        idx2.wrapping_add(1 as ::core::ffi::c_uint) as isize,
+                                    ) = (if *ref_costs
+                                    .offset(
+                                        idx2.wrapping_add(1 as ::core::ffi::c_uint) as isize,
+                                    ) as ::core::ffi::c_int + idx3weight
+                                    < ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
+                                {
+                                    *ref_costs
+                                        .offset(
+                                            idx2.wrapping_add(1 as ::core::ffi::c_uint) as isize,
+                                        ) as ::core::ffi::c_int + idx3weight
+                                } else {
+                                    ((1 as ::core::ffi::c_int) << 15 as ::core::ffi::c_int)
+                                        - 1 as ::core::ffi::c_int
+                                }) as crate::stdlib::uint16_t;
+                            }
                         }
                     }
                 }
             }
+            i += 1;
         }
-        i += 1;
     }
 }
-#[c2rust::src_loc = "601:1"]
+
 unsafe extern "C" fn mbtree_fix8_pack(
-    mut dst: *mut uint16_t,
-    mut src: *mut c_float,
-    mut count: c_int,
+    mut dst: *mut crate::stdlib::uint16_t,
+    mut src: *mut ::core::ffi::c_float,
+    mut count: ::core::ffi::c_int,
 ) {
-    let mut i: c_int = 0;
-    while i < count {
-        *dst.offset(i as isize) =
-            endian_fix16((*src.offset(i as isize) * 256.0f32) as int16_t as uint16_t);
-        i += 1;
+    unsafe {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < count {
+            *dst.offset(i as isize) = endian_fix16(
+                (*src.offset(i as isize) * 256.0f32) as crate::stdlib::int16_t
+                    as crate::stdlib::uint16_t,
+            );
+            i += 1;
+        }
     }
 }
-#[c2rust::src_loc = "607:1"]
+
 unsafe extern "C" fn mbtree_fix8_unpack(
-    mut dst: *mut c_float,
-    mut src: *mut uint16_t,
-    mut count: c_int,
+    mut dst: *mut ::core::ffi::c_float,
+    mut src: *mut crate::stdlib::uint16_t,
+    mut count: ::core::ffi::c_int,
 ) {
-    let mut i: c_int = 0;
-    while i < count {
-        *dst.offset(i as isize) = endian_fix16(*src.offset(i as isize)) as int16_t as c_int
-            as c_float
-            * (1.0f32 / 256.0f32);
-        i += 1;
+    unsafe {
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while i < count {
+            *dst.offset(i as isize) = endian_fix16(*src.offset(i as isize))
+                as crate::stdlib::int16_t
+                as ::core::ffi::c_int as ::core::ffi::c_float
+                * (1.0f32 / 256.0f32);
+            i += 1;
+        }
     }
 }
 #[no_mangle]
-#[c2rust::src_loc = "613:1"]
-unsafe extern "C" fn x264_10_mc_init(
-    mut _cpu: uint32_t,
-    mut pf: *mut x264_mc_functions_t,
-    mut cpu_independent: c_int,
+
+pub unsafe extern "C" fn x264_8_mc_init(
+    mut cpu: crate::stdlib::uint32_t,
+    mut pf: *mut crate::src::common::mc::x264_mc_functions_t_6,
+    mut cpu_independent: ::core::ffi::c_int,
 ) {
-    (*pf).mc_luma = Some(
-        mc_luma
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-                *const x264_weight_t,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-                *const x264_weight_t,
-            ) -> (),
-        >;
-    (*pf).get_ref = Some(
-        get_ref
-            as unsafe extern "C" fn(
-                *mut pixel,
-                *mut intptr_t,
-                *mut *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-                *const x264_weight_t,
-            ) -> *mut pixel,
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut intptr_t,
-                *mut *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-                *const x264_weight_t,
-            ) -> *mut pixel,
-        >;
-    (*pf).mc_chroma = Some(
-        mc_chroma
-            as unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_16x16 as c_int as usize] = Some(
-        pixel_avg_16x16
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_16x8 as c_int as usize] = Some(
-        pixel_avg_16x8
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_8x16 as c_int as usize] = Some(
-        pixel_avg_8x16
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_8x8 as c_int as usize] = Some(
-        pixel_avg_8x8
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_8x4 as c_int as usize] = Some(
-        pixel_avg_8x4
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_4x16 as c_int as usize] = Some(
-        pixel_avg_4x16
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_4x8 as c_int as usize] = Some(
-        pixel_avg_4x8
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_4x4 as c_int as usize] = Some(
-        pixel_avg_4x4
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_4x2 as c_int as usize] = Some(
-        pixel_avg_4x2
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_2x8 as c_int as usize] = Some(
-        pixel_avg_2x8
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_2x4 as c_int as usize] = Some(
-        pixel_avg_2x4
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).avg[PIXEL_2x2 as c_int as usize] = Some(
-        pixel_avg_2x2
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).weight = mc_weight_wtab.as_mut_ptr();
-    (*pf).offsetadd = mc_weight_wtab.as_mut_ptr();
-    (*pf).offsetsub = mc_weight_wtab.as_mut_ptr();
-    (*pf).weight_cache =
-        Some(weight_cache as unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> ())
-            as Option<unsafe extern "C" fn(*mut x264_t, *mut x264_weight_t) -> ()>;
-    (*pf).copy_16x16_unaligned = Some(
-        mc_copy_w16
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).copy[PIXEL_16x16 as c_int as usize] = Some(
-        mc_copy_w16
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).copy[PIXEL_8x8 as c_int as usize] = Some(
-        mc_copy_w8 as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).copy[PIXEL_4x4 as c_int as usize] = Some(
-        mc_copy_w4 as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).store_interleave_chroma = Some(
-        store_interleave_chroma
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, *mut pixel, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, *mut pixel, c_int) -> ()>;
-    (*pf).load_deinterleave_chroma_fenc = Some(
-        load_deinterleave_chroma_fenc
-            as unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).load_deinterleave_chroma_fdec = Some(
-        load_deinterleave_chroma_fdec
-            as unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).plane_copy = Some(
-        x264_10_plane_copy_c
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int, c_int) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int, c_int) -> (),
-        >;
-    (*pf).plane_copy_swap = Some(
-        x264_10_plane_copy_swap_c
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int, c_int) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int, c_int) -> (),
-        >;
-    (*pf).plane_copy_interleave = Some(
-        x264_10_plane_copy_interleave_c
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).plane_copy_deinterleave = Some(
-        x264_10_plane_copy_deinterleave_c
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).plane_copy_deinterleave_yuyv = Some(
-        x264_10_plane_copy_deinterleave_c
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).plane_copy_deinterleave_rgb = Some(
-        plane_copy_deinterleave_rgb_c
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).plane_copy_deinterleave_v210 = Some(
-        plane_copy_deinterleave_v210_c
-            as unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut uint32_t,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                intptr_t,
-                *mut pixel,
-                intptr_t,
-                *mut uint32_t,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).hpel_filter = Some(
-        hpel_filter
-            as unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                *mut int16_t,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                c_int,
-                c_int,
-                *mut int16_t,
-            ) -> (),
-        >;
-    (*pf).prefetch_fenc_400 = Some(
-        prefetch_fenc_null
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).prefetch_fenc_420 = Some(
-        prefetch_fenc_null
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).prefetch_fenc_422 = Some(
-        prefetch_fenc_null
-            as unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> (),
-    )
-        as Option<unsafe extern "C" fn(*mut pixel, intptr_t, *mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).prefetch_ref =
-        Some(prefetch_ref_null as unsafe extern "C" fn(*mut pixel, intptr_t, c_int) -> ())
-            as Option<unsafe extern "C" fn(*mut pixel, intptr_t, c_int) -> ()>;
-    (*pf).memcpy_aligned =
-        Some(memcpy as unsafe extern "C" fn(*mut c_void, *const c_void, size_t) -> *mut c_void)
-            as Option<unsafe extern "C" fn(*mut c_void, *const c_void, size_t) -> *mut c_void>;
-    (*pf).memzero_aligned = Some(memzero_aligned as unsafe extern "C" fn(*mut c_void, size_t) -> ())
-        as Option<unsafe extern "C" fn(*mut c_void, size_t) -> ()>;
-    (*pf).frame_init_lowres_core = Some(
-        frame_init_lowres_core
-            as unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                *mut pixel,
-                intptr_t,
-                intptr_t,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).integral_init4h =
-        Some(integral_init4h as unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ())
-            as Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>;
-    (*pf).integral_init8h =
-        Some(integral_init8h as unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ())
-            as Option<unsafe extern "C" fn(*mut uint16_t, *mut pixel, intptr_t) -> ()>;
-    (*pf).integral_init4v =
-        Some(integral_init4v as unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> ())
-            as Option<unsafe extern "C" fn(*mut uint16_t, *mut uint16_t, intptr_t) -> ()>;
-    (*pf).integral_init8v =
-        Some(integral_init8v as unsafe extern "C" fn(*mut uint16_t, intptr_t) -> ())
-            as Option<unsafe extern "C" fn(*mut uint16_t, intptr_t) -> ()>;
-    (*pf).mbtree_propagate_cost = Some(
-        mbtree_propagate_cost
-            as unsafe extern "C" fn(
-                *mut int16_t,
-                *mut uint16_t,
-                *mut uint16_t,
-                *mut uint16_t,
-                *mut uint16_t,
-                *mut c_float,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut int16_t,
-                *mut uint16_t,
-                *mut uint16_t,
-                *mut uint16_t,
-                *mut uint16_t,
-                *mut c_float,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).mbtree_propagate_list = Some(
-        mbtree_propagate_list
-            as unsafe extern "C" fn(
-                *mut x264_t,
-                *mut uint16_t,
-                *mut [int16_t; 2],
-                *mut int16_t,
-                *mut uint16_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-            ) -> (),
-    )
-        as Option<
-            unsafe extern "C" fn(
-                *mut x264_t,
-                *mut uint16_t,
-                *mut [int16_t; 2],
-                *mut int16_t,
-                *mut uint16_t,
-                c_int,
-                c_int,
-                c_int,
-                c_int,
-            ) -> (),
-        >;
-    (*pf).mbtree_fix8_pack =
-        Some(mbtree_fix8_pack as unsafe extern "C" fn(*mut uint16_t, *mut c_float, c_int) -> ())
-            as Option<unsafe extern "C" fn(*mut uint16_t, *mut c_float, c_int) -> ()>;
-    (*pf).mbtree_fix8_unpack =
-        Some(mbtree_fix8_unpack as unsafe extern "C" fn(*mut c_float, *mut uint16_t, c_int) -> ())
-            as Option<unsafe extern "C" fn(*mut c_float, *mut uint16_t, c_int) -> ()>;
-    if cpu_independent != 0 {
-        (*pf).mbtree_propagate_cost = Some(
-            mbtree_propagate_cost
+    unsafe {
+        (*pf).mc_luma = Some(
+            mc_luma
                 as unsafe extern "C" fn(
-                    *mut int16_t,
-                    *mut uint16_t,
-                    *mut uint16_t,
-                    *mut uint16_t,
-                    *mut uint16_t,
-                    *mut c_float,
-                    c_int,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    *const crate::src::common::mc::x264_weight_t,
                 ) -> (),
         )
             as Option<
                 unsafe extern "C" fn(
-                    *mut int16_t,
-                    *mut uint16_t,
-                    *mut uint16_t,
-                    *mut uint16_t,
-                    *mut uint16_t,
-                    *mut c_float,
-                    c_int,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    *const crate::src::common::mc::x264_weight_t,
+                ) -> (),
+            >;
+        (*pf).get_ref = Some(
+            get_ref
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::stdlib::intptr_t,
+                    *mut *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    *const crate::src::common::mc::x264_weight_t,
+                ) -> *mut crate::src::common::common::pixel,
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::stdlib::intptr_t,
+                    *mut *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    *const crate::src::common::mc::x264_weight_t,
+                ) -> *mut crate::src::common::common::pixel,
+            >;
+        (*pf).mc_chroma = Some(
+            mc_chroma
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_16x16
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_16x8 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_16x8
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_8x16 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_8x16
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_8x8
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_8x4 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_8x4
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_4x16 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_4x16
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_4x8 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_4x8
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_4x4 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_4x4
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_4x2 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_4x2
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_2x8 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_2x8
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_2x4 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_2x4
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).avg[crate::src::common::pixel::PIXEL_2x2 as ::core::ffi::c_int as usize] = Some(
+            pixel_avg_2x2
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).weight = &raw mut mc_weight_wtab as *mut crate::src::common::mc::weight_fn_t;
+        (*pf).offsetadd = &raw mut mc_weight_wtab as *mut crate::src::common::mc::weight_fn_t;
+        (*pf).offsetsub = &raw mut mc_weight_wtab as *mut crate::src::common::mc::weight_fn_t;
+        (*pf).weight_cache = Some(
+            weight_cache
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::x264_t,
+                    *mut crate::src::common::mc::x264_weight_t,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::x264_t,
+                    *mut crate::src::common::mc::x264_weight_t,
+                ) -> (),
+            >;
+        (*pf).copy_16x16_unaligned = Some(
+            mc_copy_w16
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).copy[crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize] = Some(
+            mc_copy_w16
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).copy[crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int as usize] = Some(
+            mc_copy_w8
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).copy[crate::src::common::pixel::PIXEL_4x4 as ::core::ffi::c_int as usize] = Some(
+            mc_copy_w4
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).store_interleave_chroma = Some(
+            store_interleave_chroma
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).load_deinterleave_chroma_fenc = Some(
+            load_deinterleave_chroma_fenc
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).load_deinterleave_chroma_fdec = Some(
+            load_deinterleave_chroma_fdec
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).plane_copy = Some(
+            x264_8_plane_copy_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).plane_copy_swap = Some(
+            x264_8_plane_copy_swap_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).plane_copy_interleave = Some(
+            x264_8_plane_copy_interleave_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).plane_copy_deinterleave = Some(
+            x264_8_plane_copy_deinterleave_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).plane_copy_deinterleave_yuyv = Some(
+            x264_8_plane_copy_deinterleave_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).plane_copy_deinterleave_rgb = Some(
+            plane_copy_deinterleave_rgb_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).plane_copy_deinterleave_v210 = Some(
+            plane_copy_deinterleave_v210_c
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::stdlib::uint32_t,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::stdlib::uint32_t,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).hpel_filter = Some(
+            hpel_filter
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    *mut crate::stdlib::int16_t,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    *mut crate::stdlib::int16_t,
+                ) -> (),
+            >;
+        (*pf).prefetch_fenc_400 = Some(
+            prefetch_fenc_null
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).prefetch_fenc_420 = Some(
+            prefetch_fenc_null
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).prefetch_fenc_422 = Some(
+            prefetch_fenc_null
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).prefetch_ref = Some(
+            prefetch_ref_null
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).memcpy_aligned = Some(
+            crate::stdlib::memcpy
+                as unsafe extern "C" fn(
+                    *mut ::core::ffi::c_void,
+                    *const ::core::ffi::c_void,
+                    crate::__stddef_size_t_h::size_t,
+                ) -> *mut ::core::ffi::c_void,
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut ::core::ffi::c_void,
+                    *const ::core::ffi::c_void,
+                    crate::__stddef_size_t_h::size_t,
+                ) -> *mut ::core::ffi::c_void,
+            >;
+        (*pf).memzero_aligned = Some(
+            memzero_aligned
+                as unsafe extern "C" fn(
+                    *mut ::core::ffi::c_void,
+                    crate::__stddef_size_t_h::size_t,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut ::core::ffi::c_void,
+                    crate::__stddef_size_t_h::size_t,
+                ) -> (),
+            >;
+        (*pf).frame_init_lowres_core = Some(
+            frame_init_lowres_core
+                as unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                    crate::stdlib::intptr_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).integral_init4h = Some(
+            integral_init4h
+                as unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                ) -> (),
+            >;
+        (*pf).integral_init8h = Some(
+            integral_init8h
+                as unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::src::common::common::pixel,
+                    crate::stdlib::intptr_t,
+                ) -> (),
+            >;
+        (*pf).integral_init4v = Some(
+            integral_init4v
+                as unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    crate::stdlib::intptr_t,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    crate::stdlib::intptr_t,
+                ) -> (),
+            >;
+        (*pf).integral_init8v = Some(
+            integral_init8v
+                as unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    crate::stdlib::intptr_t,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(*mut crate::stdlib::uint16_t, crate::stdlib::intptr_t) -> (),
+            >;
+        (*pf).mbtree_propagate_cost = Some(
+            mbtree_propagate_cost
+                as unsafe extern "C" fn(
+                    *mut crate::stdlib::int16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut ::core::ffi::c_float,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::stdlib::int16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut ::core::ffi::c_float,
+                    ::core::ffi::c_int,
                 ) -> (),
             >;
         (*pf).mbtree_propagate_list = Some(
             mbtree_propagate_list
                 as unsafe extern "C" fn(
-                    *mut x264_t,
-                    *mut uint16_t,
-                    *mut [int16_t; 2],
-                    *mut int16_t,
-                    *mut uint16_t,
-                    c_int,
-                    c_int,
-                    c_int,
-                    c_int,
+                    *mut crate::src::common::common::x264_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut [crate::stdlib::int16_t; 2],
+                    *mut crate::stdlib::int16_t,
+                    *mut crate::stdlib::uint16_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
                 ) -> (),
         )
             as Option<
                 unsafe extern "C" fn(
-                    *mut x264_t,
-                    *mut uint16_t,
-                    *mut [int16_t; 2],
-                    *mut int16_t,
-                    *mut uint16_t,
-                    c_int,
-                    c_int,
-                    c_int,
-                    c_int,
+                    *mut crate::src::common::common::x264_t,
+                    *mut crate::stdlib::uint16_t,
+                    *mut [crate::stdlib::int16_t; 2],
+                    *mut crate::stdlib::int16_t,
+                    *mut crate::stdlib::uint16_t,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
+                    ::core::ffi::c_int,
                 ) -> (),
             >;
+        (*pf).mbtree_fix8_pack = Some(
+            mbtree_fix8_pack
+                as unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut ::core::ffi::c_float,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut crate::stdlib::uint16_t,
+                    *mut ::core::ffi::c_float,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        (*pf).mbtree_fix8_unpack = Some(
+            mbtree_fix8_unpack
+                as unsafe extern "C" fn(
+                    *mut ::core::ffi::c_float,
+                    *mut crate::stdlib::uint16_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+        )
+            as Option<
+                unsafe extern "C" fn(
+                    *mut ::core::ffi::c_float,
+                    *mut crate::stdlib::uint16_t,
+                    ::core::ffi::c_int,
+                ) -> (),
+            >;
+        if cpu_independent != 0 {
+            (*pf).mbtree_propagate_cost = Some(
+                mbtree_propagate_cost
+                    as unsafe extern "C" fn(
+                        *mut crate::stdlib::int16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut ::core::ffi::c_float,
+                        ::core::ffi::c_int,
+                    ) -> (),
+            )
+                as Option<
+                    unsafe extern "C" fn(
+                        *mut crate::stdlib::int16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut ::core::ffi::c_float,
+                        ::core::ffi::c_int,
+                    ) -> (),
+                >;
+            (*pf).mbtree_propagate_list = Some(
+                mbtree_propagate_list
+                    as unsafe extern "C" fn(
+                        *mut crate::src::common::common::x264_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut [crate::stdlib::int16_t; 2],
+                        *mut crate::stdlib::int16_t,
+                        *mut crate::stdlib::uint16_t,
+                        ::core::ffi::c_int,
+                        ::core::ffi::c_int,
+                        ::core::ffi::c_int,
+                        ::core::ffi::c_int,
+                    ) -> (),
+            )
+                as Option<
+                    unsafe extern "C" fn(
+                        *mut crate::src::common::common::x264_t,
+                        *mut crate::stdlib::uint16_t,
+                        *mut [crate::stdlib::int16_t; 2],
+                        *mut crate::stdlib::int16_t,
+                        *mut crate::stdlib::uint16_t,
+                        ::core::ffi::c_int,
+                        ::core::ffi::c_int,
+                        ::core::ffi::c_int,
+                        ::core::ffi::c_int,
+                    ) -> (),
+                >;
+        }
     }
 }
 #[no_mangle]
-#[c2rust::src_loc = "704:1"]
-unsafe extern "C" fn x264_10_frame_filter(
-    mut h: *mut x264_t,
-    mut frame: *mut x264_frame_t,
-    mut mb_y: c_int,
-    mut b_end: c_int,
+
+pub unsafe extern "C" fn x264_8_frame_filter(
+    mut h: *mut crate::src::common::common::x264_t,
+    mut frame: *mut crate::src::common::frame::x264_frame_t,
+    mut mb_y: ::core::ffi::c_int,
+    mut b_end: ::core::ffi::c_int,
 ) {
-    let interlaced = (*h).param.interlaced;
-    let mut start: c_int = mb_y * 16 - 8;
-    let mut height: c_int = (if b_end != 0 {
-        (*frame).i_lines[0] + 16 * (*h).param.interlaced as i32
-    } else {
-        (mb_y + interlaced as i32) * 16
-    }) + 8;
-    if mb_y & interlaced as i32 != 0 {
-        return;
-    }
-    let mut p: c_int = 0;
-    while p
-        < (if (*(*h).sps.as_mut_ptr()).i_chroma_format_idc == CHROMA_444 as c_int {
-            3
+    unsafe {
+        let b_interlaced: ::core::ffi::c_int = (*h).param.b_interlaced;
+        let mut start: ::core::ffi::c_int =
+            mb_y * 16 as ::core::ffi::c_int - 8 as ::core::ffi::c_int;
+        let mut height: ::core::ffi::c_int = (if b_end != 0 {
+            (*frame).i_lines[0 as ::core::ffi::c_int as usize]
+                + 16 as ::core::ffi::c_int * (*h).param.b_interlaced
         } else {
-            1
-        })
-    {
-        let mut stride: c_int = (*frame).i_stride[p as usize];
-        let width: c_int = (*frame).i_width[p as usize];
-        let mut offs: c_int = start * stride - 8;
-        if !interlaced || (*h).mb.b_adaptive_mbaff != 0 {
-            (*h).mc.hpel_filter.expect("non-null function pointer")(
-                (*frame).filtered[p as usize][1].offset(offs as isize),
-                (*frame).filtered[p as usize][2].offset(offs as isize),
-                (*frame).filtered[p as usize][3].offset(offs as isize),
-                (*frame).plane[p as usize].offset(offs as isize),
-                stride as intptr_t,
-                width + 16,
-                height - start,
-                (*h).scratch_buffer as *mut int16_t,
-            );
+            (mb_y + b_interlaced) * 16 as ::core::ffi::c_int
+        }) + 8 as ::core::ffi::c_int;
+        if mb_y & b_interlaced != 0 {
+            return;
         }
-        if interlaced {
-            stride = (*frame).i_stride[p as usize] << 1;
-            start = (mb_y * 16 >> 1) - 8;
-            let mut height_fld: c_int = ((if b_end != 0 {
-                (*frame).i_lines[p as usize]
+        let mut p: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        while p
+            < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+            {
+                3 as ::core::ffi::c_int
             } else {
-                mb_y * 16
-            }) >> 1)
-                + 8;
-            offs = start * stride - 8;
-            let mut i: c_int = 0;
-            while i < 2 {
+                1 as ::core::ffi::c_int
+            })
+        {
+            let mut stride: ::core::ffi::c_int = (*frame).i_stride[p as usize];
+            let width: ::core::ffi::c_int = (*frame).i_width[p as usize];
+            let mut offs: ::core::ffi::c_int = start * stride - 8 as ::core::ffi::c_int;
+            if b_interlaced == 0 || (*h).mb.b_adaptive_mbaff != 0 {
                 (*h).mc.hpel_filter.expect("non-null function pointer")(
-                    (*frame).filtered_fld[p as usize][1].offset(offs as isize),
-                    (*frame).filtered_fld[p as usize][2].offset(offs as isize),
-                    (*frame).filtered_fld[p as usize][3].offset(offs as isize),
-                    (*frame).plane_fld[p as usize].offset(offs as isize),
-                    stride as intptr_t,
-                    width + 16,
-                    height_fld - start,
-                    (*h).scratch_buffer as *mut int16_t,
+                    (*frame).filtered[p as usize][1 as ::core::ffi::c_int as usize]
+                        .offset(offs as isize),
+                    (*frame).filtered[p as usize][2 as ::core::ffi::c_int as usize]
+                        .offset(offs as isize),
+                    (*frame).filtered[p as usize][3 as ::core::ffi::c_int as usize]
+                        .offset(offs as isize),
+                    (*frame).plane[p as usize].offset(offs as isize),
+                    stride as crate::stdlib::intptr_t,
+                    width + 16 as ::core::ffi::c_int,
+                    height - start,
+                    (*h).scratch_buffer as *mut crate::stdlib::int16_t,
                 );
-                i += 1;
-                offs += (*frame).i_stride[p as usize];
             }
-        }
-        p += 1;
-    }
-    if !(*frame).integral.is_null() {
-        let mut stride_0: c_int = (*frame).i_stride[0];
-        if start < 0 {
-            memset(
-                (*frame)
-                    .integral
-                    .offset(-((PADV * stride_0) as isize))
-                    .offset(
-                        -((if 32 > 64 / size_of::<pixel>() as c_int {
-                            32
-                        } else {
-                            64 / size_of::<pixel>() as c_int
-                        }) as isize),
-                    ) as *mut c_void,
-                0,
-                (stride_0 as size_t).wrapping_mul(size_of::<uint16_t>() as size_t),
-            );
-            start = -PADV;
-        }
-        if b_end != 0 {
-            height += PADV - 9;
-        }
-        let mut y: c_int = start;
-        while y < height {
-            let mut pix: *mut pixel = (*frame).plane[0].offset((y * stride_0) as isize).offset(
-                -((if 32 > 64 / size_of::<pixel>() as c_int {
-                    32
+            if b_interlaced != 0 {
+                stride = (*frame).i_stride[p as usize] << 1 as ::core::ffi::c_int;
+                start = (mb_y * 16 as ::core::ffi::c_int >> 1 as ::core::ffi::c_int)
+                    - 8 as ::core::ffi::c_int;
+                let mut height_fld: ::core::ffi::c_int = ((if b_end != 0 {
+                    (*frame).i_lines[p as usize]
                 } else {
-                    64 / size_of::<pixel>() as c_int
-                }) as isize),
-            );
-            let mut sum8: *mut uint16_t = (*frame)
-                .integral
-                .offset(((y + 1) * stride_0) as isize)
-                .offset(
-                    -((if 32 > 64 / size_of::<pixel>() as c_int {
-                        32
-                    } else {
-                        64 / size_of::<pixel>() as c_int
-                    }) as isize),
-                );
-            let mut sum4: *mut uint16_t = 0 as *mut uint16_t;
-            if (*h).frames.b_have_sub8x8_esa != 0 {
-                (*h).mc.integral_init4h.expect("non-null function pointer")(
-                    sum8,
-                    pix,
-                    stride_0 as intptr_t,
-                );
-                sum8 = sum8.offset(-((8 * stride_0) as isize));
-                sum4 = sum8.offset((stride_0 * ((*frame).i_lines[0] + PADV * 2)) as isize);
-                if y >= 8 - PADV {
-                    (*h).mc.integral_init4v.expect("non-null function pointer")(
-                        sum8,
-                        sum4,
-                        stride_0 as intptr_t,
+                    mb_y * 16 as ::core::ffi::c_int
+                }) >> 1 as ::core::ffi::c_int)
+                    + 8 as ::core::ffi::c_int;
+                offs = start * stride - 8 as ::core::ffi::c_int;
+                let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                while i < 2 as ::core::ffi::c_int {
+                    (*h).mc.hpel_filter.expect("non-null function pointer")(
+                        (*frame).filtered_fld[p as usize][1 as ::core::ffi::c_int as usize]
+                            .offset(offs as isize),
+                        (*frame).filtered_fld[p as usize][2 as ::core::ffi::c_int as usize]
+                            .offset(offs as isize),
+                        (*frame).filtered_fld[p as usize][3 as ::core::ffi::c_int as usize]
+                            .offset(offs as isize),
+                        (*frame).plane_fld[p as usize].offset(offs as isize),
+                        stride as crate::stdlib::intptr_t,
+                        width + 16 as ::core::ffi::c_int,
+                        height_fld - start,
+                        (*h).scratch_buffer as *mut crate::stdlib::int16_t,
                     );
-                }
-            } else {
-                (*h).mc.integral_init8h.expect("non-null function pointer")(
-                    sum8,
-                    pix,
-                    stride_0 as intptr_t,
-                );
-                if y >= 8 - PADV {
-                    (*h).mc.integral_init8v.expect("non-null function pointer")(
-                        sum8.offset(-((8 * stride_0) as isize)),
-                        stride_0 as intptr_t,
-                    );
+                    i += 1;
+                    offs += (*frame).i_stride[p as usize];
                 }
             }
-            y += 1;
+            p += 1;
+        }
+        if !(*frame).integral.is_null() {
+            let mut stride_0: ::core::ffi::c_int =
+                (*frame).i_stride[0 as ::core::ffi::c_int as usize];
+            if start < 0 as ::core::ffi::c_int {
+                crate::stdlib::memset(
+                    (*frame)
+                        .integral
+                        .offset(-((crate::src::common::frame::PADV * stride_0) as isize))
+                        .offset(
+                            -((if 32 as ::core::ffi::c_int
+                                > 64 as ::core::ffi::c_int
+                                    / ::core::mem::size_of::<crate::src::common::common::pixel>()
+                                        as ::core::ffi::c_int
+                            {
+                                32 as ::core::ffi::c_int
+                            } else {
+                                64 as ::core::ffi::c_int
+                                    / ::core::mem::size_of::<crate::src::common::common::pixel>()
+                                        as ::core::ffi::c_int
+                            }) as isize),
+                        ) as *mut ::core::ffi::c_void,
+                    0 as ::core::ffi::c_int,
+                    (stride_0 as crate::__stddef_size_t_h::size_t)
+                        .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>()
+                            as crate::__stddef_size_t_h::size_t),
+                );
+                start = -crate::src::common::frame::PADV;
+            }
+            if b_end != 0 {
+                height += crate::src::common::frame::PADV - 9 as ::core::ffi::c_int;
+            }
+            let mut y: ::core::ffi::c_int = start;
+            while y < height {
+                let mut pix: *mut crate::src::common::common::pixel = (*frame).plane
+                    [0 as ::core::ffi::c_int as usize]
+                    .offset((y * stride_0) as isize)
+                    .offset(
+                        -((if 32 as ::core::ffi::c_int
+                            > 64 as ::core::ffi::c_int
+                                / ::core::mem::size_of::<crate::src::common::common::pixel>()
+                                    as ::core::ffi::c_int
+                        {
+                            32 as ::core::ffi::c_int
+                        } else {
+                            64 as ::core::ffi::c_int
+                                / ::core::mem::size_of::<crate::src::common::common::pixel>()
+                                    as ::core::ffi::c_int
+                        }) as isize),
+                    );
+                let mut sum8: *mut crate::stdlib::uint16_t = (*frame)
+                    .integral
+                    .offset(((y + 1 as ::core::ffi::c_int) * stride_0) as isize)
+                    .offset(
+                        -((if 32 as ::core::ffi::c_int
+                            > 64 as ::core::ffi::c_int
+                                / ::core::mem::size_of::<crate::src::common::common::pixel>()
+                                    as ::core::ffi::c_int
+                        {
+                            32 as ::core::ffi::c_int
+                        } else {
+                            64 as ::core::ffi::c_int
+                                / ::core::mem::size_of::<crate::src::common::common::pixel>()
+                                    as ::core::ffi::c_int
+                        }) as isize),
+                    );
+                let mut sum4: *mut crate::stdlib::uint16_t =
+                    ::core::ptr::null_mut::<crate::stdlib::uint16_t>();
+                if (*h).frames.b_have_sub8x8_esa != 0 {
+                    (*h).mc.integral_init4h.expect("non-null function pointer")(
+                        sum8,
+                        pix,
+                        stride_0 as crate::stdlib::intptr_t,
+                    );
+                    sum8 = sum8.offset(-((8 as ::core::ffi::c_int * stride_0) as isize));
+                    sum4 = sum8.offset(
+                        (stride_0
+                            * ((*frame).i_lines[0 as ::core::ffi::c_int as usize]
+                                + crate::src::common::frame::PADV * 2 as ::core::ffi::c_int))
+                            as isize,
+                    );
+                    if y >= 8 as ::core::ffi::c_int - crate::src::common::frame::PADV {
+                        (*h).mc.integral_init4v.expect("non-null function pointer")(
+                            sum8,
+                            sum4,
+                            stride_0 as crate::stdlib::intptr_t,
+                        );
+                    }
+                } else {
+                    (*h).mc.integral_init8h.expect("non-null function pointer")(
+                        sum8,
+                        pix,
+                        stride_0 as crate::stdlib::intptr_t,
+                    );
+                    if y >= 8 as ::core::ffi::c_int - crate::src::common::frame::PADV {
+                        (*h).mc.integral_init8v.expect("non-null function pointer")(
+                            sum8.offset(-((8 as ::core::ffi::c_int * stride_0) as isize)),
+                            stride_0 as crate::stdlib::intptr_t,
+                        );
+                    }
+                }
+                y += 1;
+            }
         }
     }
 }

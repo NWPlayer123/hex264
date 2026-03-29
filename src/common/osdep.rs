@@ -1,14 +1,22 @@
-use crate::bits_time_h::CLOCK_MONOTONIC;
-use crate::stdint_intn_h::int64_t;
-use crate::struct_timespec_h::timespec;
-use crate::time_h::clock_gettime;
+pub use crate::stdlib::__clockid_t;
+pub use crate::stdlib::__int64_t;
+pub use crate::stdlib::__syscall_slong_t;
+pub use crate::stdlib::__time_t;
+use crate::stdlib::clock_gettime;
+pub use crate::stdlib::clockid_t;
+pub use crate::stdlib::int64_t;
+pub use crate::stdlib::timespec;
+pub use crate::stdlib::CLOCK_MONOTONIC;
 #[no_mangle]
-#[c2rust::src_loc = "43:1"]
-pub unsafe extern "C" fn x264_mdate() -> int64_t {
-    let mut ts: timespec = timespec {
-        tv_sec: 0,
-        tv_nsec: 0,
-    };
-    clock_gettime(CLOCK_MONOTONIC, &mut ts);
-    return ts.tv_sec as int64_t * 1000000 as int64_t + ts.tv_nsec as int64_t / 1000 as int64_t;
+
+pub unsafe extern "C" fn x264_mdate() -> crate::stdlib::int64_t {
+    unsafe {
+        let mut ts: crate::stdlib::timespec = crate::stdlib::timespec {
+            tv_sec: 0,
+            tv_nsec: 0,
+        };
+        crate::stdlib::clock_gettime(crate::stdlib::CLOCK_MONOTONIC, &raw mut ts);
+        return ts.tv_sec as crate::stdlib::int64_t * 1000000 as crate::stdlib::int64_t
+            + ts.tv_nsec as crate::stdlib::int64_t / 1000 as crate::stdlib::int64_t;
+    }
 }
