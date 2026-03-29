@@ -1,26 +1,16 @@
 // =============== BEGIN set_h ================
 pub type cqm4_e = ::core::ffi::c_uint;
-
 pub const CQM_4IY: crate::src::common::set::cqm4_e = 0;
-
 pub const CQM_4PY: crate::src::common::set::cqm4_e = 1;
-
 pub const CQM_4IC: crate::src::common::set::cqm4_e = 2;
-
 pub const CQM_4PC: crate::src::common::set::cqm4_e = 3;
-
 pub type cqm8_e = ::core::ffi::c_uint;
-
 pub const CQM_8IY: crate::src::common::set::cqm8_e = 0;
-
 pub const CQM_8PY: crate::src::common::set::cqm8_e = 1;
-
 pub const CQM_8IC: crate::src::common::set::cqm8_e = 2;
-
 pub const CQM_8PC: crate::src::common::set::cqm8_e = 3;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_sps_t {
     pub i_id: ::core::ffi::c_int,
     pub i_profile_idc: ::core::ffi::c_int,
@@ -52,7 +42,6 @@ pub struct x264_sps_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_26 {
     pub i_left: ::core::ffi::c_int,
     pub i_right: ::core::ffi::c_int,
@@ -61,7 +50,6 @@ pub struct C2Rust_Unnamed_26 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_24 {
     pub b_aspect_ratio_info_present: ::core::ffi::c_int,
     pub i_sar_width: ::core::ffi::c_int,
@@ -97,7 +85,6 @@ pub struct C2Rust_Unnamed_24 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_25 {
     pub i_cpb_cnt: ::core::ffi::c_int,
     pub i_bit_rate_scale: ::core::ffi::c_int,
@@ -114,7 +101,6 @@ pub struct C2Rust_Unnamed_25 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_pps_t {
     pub i_id: ::core::ffi::c_int,
     pub i_sps_id: ::core::ffi::c_int,
@@ -133,7 +119,6 @@ pub struct x264_pps_t {
     pub b_redundant_pic_cnt: ::core::ffi::c_int,
     pub b_transform_8x8_mode: ::core::ffi::c_int,
 }
-
 static mut dequant4_scale: [[crate::stdlib::uint8_t; 3]; 6] = [
     [
         10 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -166,7 +151,6 @@ static mut dequant4_scale: [[crate::stdlib::uint8_t; 3]; 6] = [
         29 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ],
 ];
-
 static mut quant4_scale: [[crate::stdlib::uint16_t; 3]; 6] = [
     [
         13107 as ::core::ffi::c_int as crate::stdlib::uint16_t,
@@ -199,7 +183,6 @@ static mut quant4_scale: [[crate::stdlib::uint16_t; 3]; 6] = [
         2893 as ::core::ffi::c_int as crate::stdlib::uint16_t,
     ],
 ];
-
 static mut quant8_scan: [crate::stdlib::uint8_t; 16] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -218,7 +201,6 @@ static mut quant8_scan: [crate::stdlib::uint8_t; 16] = [
     5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 static mut dequant8_scale: [[crate::stdlib::uint8_t; 6]; 6] = [
     [
         20 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -269,7 +251,6 @@ static mut dequant8_scale: [[crate::stdlib::uint8_t; 6]; 6] = [
         43 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ],
 ];
-
 static mut quant8_scale: [[crate::stdlib::uint16_t; 6]; 6] = [
     [
         13107 as ::core::ffi::c_int as crate::stdlib::uint16_t,
@@ -321,7 +302,6 @@ static mut quant8_scale: [[crate::stdlib::uint16_t; 6]; 6] = [
     ],
 ];
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cqm_init(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -1181,7 +1161,6 @@ pub unsafe extern "C" fn x264_8_cqm_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -1271,7 +1250,6 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
         crate::src::common::base::x264_free((*h).nr_offset_emergency as *mut ::core::ffi::c_void);
     }
 }
-
 unsafe extern "C" fn cqm_parse_jmlist(
     mut h: *mut crate::src::common::common::x264_t,
     mut buf: *const ::core::ffi::c_char,
@@ -1350,7 +1328,6 @@ unsafe extern "C" fn cqm_parse_jmlist(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cqm_parse_file(
     mut h: *mut crate::src::common::common::x264_t,
     mut filename: *const ::core::ffi::c_char,

@@ -104,7 +104,6 @@ pub struct x264_dct_function_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_zigzag_function_t {
     pub scan_8x8: Option<
         unsafe extern "C" fn(
@@ -148,25 +147,19 @@ pub struct x264_zigzag_function_t {
         ) -> (),
     >,
 }
-
 pub mod common_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-            return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
-                -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
-            } else {
-                x
-            }) as crate::src::common::common::pixel;
-      
+        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+            -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
+        } else {
+            x
+        }) as crate::src::common::common::pixel;
     }
 }
-
 use crate::src::common::dct::common_h::x264_clip_pixel;
-
 unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
     unsafe {
         let mut tmp: [crate::src::common::common::dctcoef; 16] = [0; 16];
@@ -240,7 +233,6 @@ unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
         }
     }
 }
-
 unsafe extern "C" fn idct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
     unsafe {
         let mut tmp: [crate::src::common::common::dctcoef; 16] = [0; 16];
@@ -310,7 +302,6 @@ unsafe extern "C" fn idct4x4dc(mut d: *mut crate::src::common::common::dctcoef) 
         }
     }
 }
-
 unsafe extern "C" fn dct2x4dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dct4x4: *mut [crate::src::common::common::dctcoef; 16],
@@ -399,7 +390,6 @@ unsafe extern "C" fn dct2x4dc(
     }
 }
 #[inline]
-
 unsafe extern "C" fn pixel_sub_wxh(
     mut diff: *mut crate::src::common::common::dctcoef,
     mut i_size: ::core::ffi::c_int,
@@ -425,7 +415,6 @@ unsafe extern "C" fn pixel_sub_wxh(
         }
     }
 }
-
 unsafe extern "C" fn sub4x4_dct(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -508,7 +497,6 @@ unsafe extern "C" fn sub4x4_dct(
         }
     }
 }
-
 unsafe extern "C" fn sub8x8_dct(
     mut dct: *mut [crate::src::common::common::dctcoef; 16],
     mut pix1: *mut crate::src::common::common::pixel,
@@ -553,7 +541,6 @@ unsafe extern "C" fn sub8x8_dct(
         );
     }
 }
-
 unsafe extern "C" fn sub16x16_dct(
     mut dct: *mut [crate::src::common::common::dctcoef; 16],
     mut pix1: *mut crate::src::common::common::pixel,
@@ -598,7 +585,6 @@ unsafe extern "C" fn sub16x16_dct(
         );
     }
 }
-
 unsafe extern "C" fn sub4x4_dct_dc(
     mut pix1: *mut crate::src::common::common::pixel,
     mut pix2: *mut crate::src::common::common::pixel,
@@ -622,7 +608,6 @@ unsafe extern "C" fn sub4x4_dct_dc(
         return sum;
     }
 }
-
 unsafe extern "C" fn sub8x8_dct_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -683,7 +668,6 @@ unsafe extern "C" fn sub8x8_dct_dc(
             (d2 - d3) as crate::src::common::common::dctcoef;
     }
 }
-
 unsafe extern "C" fn sub8x16_dct_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -804,7 +788,6 @@ unsafe extern "C" fn sub8x16_dct_dc(
             (a6 + a7) as crate::src::common::common::dctcoef;
     }
 }
-
 unsafe extern "C" fn add4x4_idct(
     mut p_dst: *mut crate::src::common::common::pixel,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -899,7 +882,6 @@ unsafe extern "C" fn add4x4_idct(
         }
     }
 }
-
 unsafe extern "C" fn add8x8_idct(
     mut p_dst: *mut crate::src::common::common::pixel,
     mut dct: *mut [crate::src::common::common::dctcoef; 16],
@@ -935,7 +917,6 @@ unsafe extern "C" fn add8x8_idct(
         );
     }
 }
-
 unsafe extern "C" fn add16x16_idct(
     mut p_dst: *mut crate::src::common::common::pixel,
     mut dct: *mut [crate::src::common::common::dctcoef; 16],
@@ -971,7 +952,6 @@ unsafe extern "C" fn add16x16_idct(
         );
     }
 }
-
 unsafe extern "C" fn sub8x8_dct8(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -1129,7 +1109,6 @@ unsafe extern "C" fn sub8x8_dct8(
         }
     }
 }
-
 unsafe extern "C" fn sub16x16_dct8(
     mut dct: *mut [crate::src::common::common::dctcoef; 64],
     mut pix1: *mut crate::src::common::common::pixel,
@@ -1174,7 +1153,6 @@ unsafe extern "C" fn sub16x16_dct8(
         );
     }
 }
-
 unsafe extern "C" fn add8x8_idct8(
     mut dst: *mut crate::src::common::common::pixel,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -1421,7 +1399,6 @@ unsafe extern "C" fn add8x8_idct8(
         }
     }
 }
-
 unsafe extern "C" fn add16x16_idct8(
     mut dst: *mut crate::src::common::common::pixel,
     mut dct: *mut [crate::src::common::common::dctcoef; 64],
@@ -1456,7 +1433,6 @@ unsafe extern "C" fn add16x16_idct8(
     }
 }
 #[inline]
-
 unsafe extern "C" fn add4x4_idct_dc(
     mut p_dst: *mut crate::src::common::common::pixel,
     mut dc: crate::src::common::common::dctcoef,
@@ -1487,7 +1463,6 @@ unsafe extern "C" fn add4x4_idct_dc(
         }
     }
 }
-
 unsafe extern "C" fn add8x8_idct_dc(
     mut p_dst: *mut crate::src::common::common::pixel,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -1519,7 +1494,6 @@ unsafe extern "C" fn add8x8_idct_dc(
         );
     }
 }
-
 unsafe extern "C" fn add16x16_idct_dc(
     mut p_dst: *mut crate::src::common::common::pixel,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -1556,7 +1530,6 @@ unsafe extern "C" fn add16x16_idct_dc(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_dct_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut dctf: *mut crate::src::common::dct::x264_dct_function_t,
@@ -1779,7 +1752,6 @@ pub unsafe extern "C" fn x264_8_dct_init(
             >;
     }
 }
-
 unsafe extern "C" fn zigzag_scan_8x8_frame(
     mut level: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -1979,7 +1951,6 @@ unsafe extern "C" fn zigzag_scan_8x8_frame(
         );
     }
 }
-
 unsafe extern "C" fn zigzag_scan_8x8_field(
     mut level: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -2179,7 +2150,6 @@ unsafe extern "C" fn zigzag_scan_8x8_field(
         );
     }
 }
-
 unsafe extern "C" fn zigzag_scan_4x4_frame(
     mut level: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -2235,7 +2205,6 @@ unsafe extern "C" fn zigzag_scan_4x4_frame(
         );
     }
 }
-
 unsafe extern "C" fn zigzag_scan_4x4_field(
     mut level: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -2271,7 +2240,6 @@ unsafe extern "C" fn zigzag_scan_4x4_field(
         );
     }
 }
-
 unsafe extern "C" fn zigzag_sub_4x4_frame(
     mut level: *mut crate::src::common::common::dctcoef,
     mut p_src: *const crate::src::common::common::pixel,
@@ -2446,7 +2414,6 @@ unsafe extern "C" fn zigzag_sub_4x4_frame(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn zigzag_sub_4x4_field(
     mut level: *mut crate::src::common::common::dctcoef,
     mut p_src: *const crate::src::common::common::pixel,
@@ -2621,7 +2588,6 @@ unsafe extern "C" fn zigzag_sub_4x4_field(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn zigzag_sub_4x4ac_frame(
     mut level: *mut crate::src::common::common::dctcoef,
     mut p_src: *const crate::src::common::common::pixel,
@@ -2796,7 +2762,6 @@ unsafe extern "C" fn zigzag_sub_4x4ac_frame(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn zigzag_sub_4x4ac_field(
     mut level: *mut crate::src::common::common::dctcoef,
     mut p_src: *const crate::src::common::common::pixel,
@@ -2971,7 +2936,6 @@ unsafe extern "C" fn zigzag_sub_4x4ac_field(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn zigzag_sub_8x8_frame(
     mut level: *mut crate::src::common::common::dctcoef,
     mut p_src: *const crate::src::common::common::pixel,
@@ -3670,7 +3634,6 @@ unsafe extern "C" fn zigzag_sub_8x8_frame(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn zigzag_sub_8x8_field(
     mut level: *mut crate::src::common::common::dctcoef,
     mut p_src: *const crate::src::common::common::pixel,
@@ -4369,7 +4332,6 @@ unsafe extern "C" fn zigzag_sub_8x8_field(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn zigzag_interleave_8x8_cavlc(
     mut dst: *mut crate::src::common::common::dctcoef,
     mut src: *mut crate::src::common::common::dctcoef,
@@ -4396,7 +4358,6 @@ unsafe extern "C" fn zigzag_interleave_8x8_cavlc(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_zigzag_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf_progressive: *mut crate::src::common::dct::x264_zigzag_function_t,

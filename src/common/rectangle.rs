@@ -1,6 +1,5 @@
 pub mod rectangle_h {
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_macroblock_cache_rect(
         mut dst: *mut ::core::ffi::c_void,
         mut w: ::core::ffi::c_int,
@@ -192,52 +191,44 @@ pub mod rectangle_h {
             };
         }
     }
-
 }
-
-
 use crate::src::common::rectangle::rectangle_h::x264_macroblock_cache_rect;
-
 #[no_mangle]
-
 pub static mut x264_8_cache_mv_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
->; 10] = 
-    [
-        Some(
-            macroblock_cache_mv_1_1
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_mv_2_1
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_mv_1_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_mv_2_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_mv_4_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_mv_2_4
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_mv_4_4
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-    ]
-;
-
+>; 10] = [
+    Some(
+        macroblock_cache_mv_1_1
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_mv_2_1
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_mv_1_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_mv_2_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_mv_4_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_mv_2_4
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_mv_4_4
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+];
 unsafe extern "C" fn macroblock_cache_mv_1_1(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -252,7 +243,6 @@ unsafe extern "C" fn macroblock_cache_mv_1_1(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mv_2_1(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -267,7 +257,6 @@ unsafe extern "C" fn macroblock_cache_mv_2_1(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mv_1_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -282,7 +271,6 @@ unsafe extern "C" fn macroblock_cache_mv_1_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mv_2_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -297,7 +285,6 @@ unsafe extern "C" fn macroblock_cache_mv_2_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mv_4_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -312,7 +299,6 @@ unsafe extern "C" fn macroblock_cache_mv_4_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mv_2_4(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -327,7 +313,6 @@ unsafe extern "C" fn macroblock_cache_mv_2_4(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mv_4_4(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -342,7 +327,6 @@ unsafe extern "C" fn macroblock_cache_mv_4_4(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mvd_2_4(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -358,45 +342,41 @@ unsafe extern "C" fn macroblock_cache_mvd_2_4(
     }
 }
 #[no_mangle]
-
 pub static mut x264_8_cache_mvd_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
->; 10] = 
-    [
-        Some(
-            macroblock_cache_mvd_1_1
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_mvd_2_1
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_mvd_1_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_mvd_2_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_mvd_4_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_mvd_2_4
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_mvd_4_4
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-    ]
-;
-
+>; 10] = [
+    Some(
+        macroblock_cache_mvd_1_1
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_mvd_2_1
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_mvd_1_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_mvd_2_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_mvd_4_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_mvd_2_4
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_mvd_4_4
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+];
 unsafe extern "C" fn macroblock_cache_mvd_1_1(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -411,7 +391,6 @@ unsafe extern "C" fn macroblock_cache_mvd_1_1(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mvd_2_1(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -426,7 +405,6 @@ unsafe extern "C" fn macroblock_cache_mvd_2_1(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mvd_1_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -441,7 +419,6 @@ unsafe extern "C" fn macroblock_cache_mvd_1_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mvd_2_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -456,7 +433,6 @@ unsafe extern "C" fn macroblock_cache_mvd_2_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mvd_4_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -471,7 +447,6 @@ unsafe extern "C" fn macroblock_cache_mvd_4_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_mvd_4_4(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -487,45 +462,41 @@ unsafe extern "C" fn macroblock_cache_mvd_4_4(
     }
 }
 #[no_mangle]
-
 pub static mut x264_8_cache_ref_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
->; 10] = 
-    [
-        Some(
-            macroblock_cache_ref_1_1
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_ref_2_1
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_ref_1_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        Some(
-            macroblock_cache_ref_2_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_ref_4_2
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_ref_2_4
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-        None,
-        Some(
-            macroblock_cache_ref_4_4
-                as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
-        ),
-    ]
-;
-
+>; 10] = [
+    Some(
+        macroblock_cache_ref_1_1
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_ref_2_1
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_ref_1_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    Some(
+        macroblock_cache_ref_2_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_ref_4_2
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_ref_2_4
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+    None,
+    Some(
+        macroblock_cache_ref_4_4
+            as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
+    ),
+];
 unsafe extern "C" fn macroblock_cache_ref_1_1(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -540,7 +511,6 @@ unsafe extern "C" fn macroblock_cache_ref_1_1(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_ref_2_1(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -555,7 +525,6 @@ unsafe extern "C" fn macroblock_cache_ref_2_1(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_ref_1_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -570,7 +539,6 @@ unsafe extern "C" fn macroblock_cache_ref_1_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_ref_2_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -585,7 +553,6 @@ unsafe extern "C" fn macroblock_cache_ref_2_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_ref_4_2(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -600,7 +567,6 @@ unsafe extern "C" fn macroblock_cache_ref_4_2(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_ref_2_4(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,
@@ -615,7 +581,6 @@ unsafe extern "C" fn macroblock_cache_ref_2_4(
         );
     }
 }
-
 unsafe extern "C" fn macroblock_cache_ref_4_4(
     mut target: *mut ::core::ffi::c_void,
     mut val: crate::stdlib::uint32_t,

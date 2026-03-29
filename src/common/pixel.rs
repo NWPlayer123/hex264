@@ -7,7 +7,6 @@ pub type x264_pixel_cmp_t = Option<
         crate::stdlib::intptr_t,
     ) -> ::core::ffi::c_int,
 >;
-
 pub type x264_pixel_cmp_x3_t = Option<
     unsafe extern "C" fn(
         *mut crate::src::common::common::pixel,
@@ -18,7 +17,6 @@ pub type x264_pixel_cmp_x3_t = Option<
         *mut ::core::ffi::c_int,
     ) -> (),
 >;
-
 pub type x264_pixel_cmp_x4_t = Option<
     unsafe extern "C" fn(
         *mut crate::src::common::common::pixel,
@@ -30,40 +28,26 @@ pub type x264_pixel_cmp_x4_t = Option<
         *mut ::core::ffi::c_int,
     ) -> (),
 >;
-
 pub const PIXEL_16x16: crate::stdlib::C2Rust_Unnamed_6 = 0;
-
 pub const PIXEL_16x8: crate::stdlib::C2Rust_Unnamed_6 = 1;
-
 pub const PIXEL_8x16: crate::stdlib::C2Rust_Unnamed_6 = 2;
-
 pub const PIXEL_8x8: crate::stdlib::C2Rust_Unnamed_6 = 3;
-
 pub const PIXEL_8x4: crate::stdlib::C2Rust_Unnamed_6 = 4;
-
 pub const PIXEL_4x8: crate::stdlib::C2Rust_Unnamed_6 = 5;
-
 pub const PIXEL_4x4: crate::stdlib::C2Rust_Unnamed_6 = 6;
-
 pub const PIXEL_4x16: crate::stdlib::C2Rust_Unnamed_6 = 7;
-
 pub const PIXEL_4x2: crate::stdlib::C2Rust_Unnamed_6 = 8;
-
 pub const PIXEL_2x8: crate::stdlib::C2Rust_Unnamed_6 = 9;
-
 pub const PIXEL_2x4: crate::stdlib::C2Rust_Unnamed_6 = 10;
-
 pub const PIXEL_2x2: crate::stdlib::C2Rust_Unnamed_6 = 11;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_288 {
     pub w: crate::stdlib::uint8_t,
     pub h: crate::stdlib::uint8_t,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_pixel_function_t {
     pub sad: [crate::src::common::pixel::x264_pixel_cmp_t; 8],
     pub ssd: [crate::src::common::pixel::x264_pixel_cmp_t; 8],
@@ -337,11 +321,8 @@ pub struct x264_pixel_function_t {
         ) -> ::core::ffi::c_int,
     >,
 }
-
 pub type sum2_t = crate::stdlib::uint32_t;
-
 pub type sum_t = crate::stdlib::uint16_t;
-
 unsafe extern "C" fn x264_pixel_sad_16x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -367,7 +348,6 @@ unsafe extern "C" fn x264_pixel_sad_16x16(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_16x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -393,7 +373,6 @@ unsafe extern "C" fn x264_pixel_sad_16x8(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_8x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -419,7 +398,6 @@ unsafe extern "C" fn x264_pixel_sad_8x16(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_8x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -445,7 +423,6 @@ unsafe extern "C" fn x264_pixel_sad_8x8(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_8x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -471,7 +448,6 @@ unsafe extern "C" fn x264_pixel_sad_8x4(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_4x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -497,7 +473,6 @@ unsafe extern "C" fn x264_pixel_sad_4x16(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_4x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -523,7 +498,6 @@ unsafe extern "C" fn x264_pixel_sad_4x8(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_4x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -549,7 +523,6 @@ unsafe extern "C" fn x264_pixel_sad_4x4(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_16x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -574,7 +547,6 @@ unsafe extern "C" fn x264_pixel_ssd_16x16(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_16x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -599,7 +571,6 @@ unsafe extern "C" fn x264_pixel_ssd_16x8(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_8x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -624,7 +595,6 @@ unsafe extern "C" fn x264_pixel_ssd_8x16(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_8x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -649,7 +619,6 @@ unsafe extern "C" fn x264_pixel_ssd_8x8(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_8x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -674,7 +643,6 @@ unsafe extern "C" fn x264_pixel_ssd_8x4(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_4x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -699,7 +667,6 @@ unsafe extern "C" fn x264_pixel_ssd_4x16(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_4x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -724,7 +691,6 @@ unsafe extern "C" fn x264_pixel_ssd_4x8(
         return i_sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ssd_4x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -750,7 +716,6 @@ unsafe extern "C" fn x264_pixel_ssd_4x4(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_pixel_ssd_wxh(
     mut pf: *mut crate::src::common::pixel::x264_pixel_function_t,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -857,7 +822,6 @@ pub unsafe extern "C" fn x264_8_pixel_ssd_wxh(
         return i_ssd;
     }
 }
-
 unsafe extern "C" fn pixel_ssd_nv12_core(
     mut pixuv1: *mut crate::src::common::common::pixel,
     mut stride1: crate::stdlib::intptr_t,
@@ -896,7 +860,6 @@ unsafe extern "C" fn pixel_ssd_nv12_core(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_pixel_ssd_nv12(
     mut pf: *mut crate::src::common::pixel::x264_pixel_function_t,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -940,7 +903,6 @@ pub unsafe extern "C" fn x264_8_pixel_ssd_nv12(
         }
     }
 }
-
 unsafe extern "C" fn pixel_var_16x16(
     mut pix: *mut crate::src::common::common::pixel,
     mut i_stride: crate::stdlib::intptr_t,
@@ -967,7 +929,6 @@ unsafe extern "C" fn pixel_var_16x16(
             .wrapping_add((sqr as crate::stdlib::uint64_t) << 32 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn pixel_var_8x16(
     mut pix: *mut crate::src::common::common::pixel,
     mut i_stride: crate::stdlib::intptr_t,
@@ -994,7 +955,6 @@ unsafe extern "C" fn pixel_var_8x16(
             .wrapping_add((sqr as crate::stdlib::uint64_t) << 32 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn pixel_var_8x8(
     mut pix: *mut crate::src::common::common::pixel,
     mut i_stride: crate::stdlib::intptr_t,
@@ -1021,7 +981,6 @@ unsafe extern "C" fn pixel_var_8x8(
             .wrapping_add((sqr as crate::stdlib::uint64_t) << 32 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn pixel_var2_8x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -1066,7 +1025,6 @@ unsafe extern "C" fn pixel_var2_8x16(
                 >> 7 as ::core::ffi::c_int)) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn pixel_var2_8x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -1111,19 +1069,15 @@ unsafe extern "C" fn pixel_var2_8x8(
                 >> 6 as ::core::ffi::c_int)) as ::core::ffi::c_int;
     }
 }
-
 pub const BITS_PER_SUM: usize = (8 as usize).wrapping_mul(::core::mem::size_of::<sum_t>() as usize);
 #[inline(always)]
-
- extern "C" fn abs2(mut a: sum2_t) -> sum2_t {
-        let mut s: sum2_t = (a >> BITS_PER_SUM.wrapping_sub(1 as usize)
-            & ((1 as ::core::ffi::c_int as sum2_t) << BITS_PER_SUM).wrapping_add(1 as sum2_t))
-        .wrapping_mul(-(1 as ::core::ffi::c_int) as sum_t as sum2_t);
-        return a.wrapping_add(s) ^ s;
-  
+extern "C" fn abs2(mut a: sum2_t) -> sum2_t {
+    let mut s: sum2_t = (a >> BITS_PER_SUM.wrapping_sub(1 as usize)
+        & ((1 as ::core::ffi::c_int as sum2_t) << BITS_PER_SUM).wrapping_add(1 as sum2_t))
+    .wrapping_mul(-(1 as ::core::ffi::c_int) as sum_t as sum2_t);
+    return a.wrapping_add(s) ^ s;
 }
 #[inline(never)]
-
 unsafe extern "C" fn x264_pixel_satd_4x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1190,7 +1144,6 @@ unsafe extern "C" fn x264_pixel_satd_4x4(
     }
 }
 #[inline(never)]
-
 unsafe extern "C" fn x264_pixel_satd_8x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1280,7 +1233,6 @@ unsafe extern "C" fn x264_pixel_satd_8x4(
             >> 1 as ::core::ffi::c_int) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_16x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1351,7 +1303,6 @@ unsafe extern "C" fn x264_pixel_satd_16x16(
         return sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_16x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1422,7 +1373,6 @@ unsafe extern "C" fn x264_pixel_satd_16x8(
         return sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_8x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1493,7 +1443,6 @@ unsafe extern "C" fn x264_pixel_satd_8x16(
         return sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_8x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1564,7 +1513,6 @@ unsafe extern "C" fn x264_pixel_satd_8x8(
         return sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_4x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1635,7 +1583,6 @@ unsafe extern "C" fn x264_pixel_satd_4x16(
         return sum;
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_4x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1707,7 +1654,6 @@ unsafe extern "C" fn x264_pixel_satd_4x8(
     }
 }
 #[inline(never)]
-
 unsafe extern "C" fn sa8d_8x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1815,7 +1761,6 @@ unsafe extern "C" fn sa8d_8x8(
         return sum as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sa8d_8x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1827,7 +1772,6 @@ unsafe extern "C" fn x264_pixel_sa8d_8x8(
         return sum + 2 as ::core::ffi::c_int >> 2 as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn x264_pixel_sa8d_16x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_pix1: crate::stdlib::intptr_t,
@@ -1860,7 +1804,6 @@ unsafe extern "C" fn x264_pixel_sa8d_16x16(
     }
 }
 #[inline(never)]
-
 unsafe extern "C" fn pixel_hadamard_ac(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1996,7 +1939,6 @@ unsafe extern "C" fn pixel_hadamard_ac(
             .wrapping_add(sum4 as crate::stdlib::uint64_t);
     }
 }
-
 unsafe extern "C" fn x264_pixel_hadamard_ac_16x16(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -2029,7 +1971,6 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_16x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_hadamard_ac_16x8(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -2062,7 +2003,6 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_16x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_hadamard_ac_8x16(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -2095,7 +2035,6 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_8x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_hadamard_ac_8x8(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -2128,7 +2067,6 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_8x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x3_16x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2158,7 +2096,6 @@ unsafe extern "C" fn x264_pixel_sad_x3_16x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x4_16x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2195,7 +2132,6 @@ unsafe extern "C" fn x264_pixel_sad_x4_16x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x3_16x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2225,7 +2161,6 @@ unsafe extern "C" fn x264_pixel_sad_x3_16x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x4_16x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2262,7 +2197,6 @@ unsafe extern "C" fn x264_pixel_sad_x4_16x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x3_8x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2292,7 +2226,6 @@ unsafe extern "C" fn x264_pixel_sad_x3_8x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x4_8x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2329,7 +2262,6 @@ unsafe extern "C" fn x264_pixel_sad_x4_8x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x3_8x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2359,7 +2291,6 @@ unsafe extern "C" fn x264_pixel_sad_x3_8x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x4_8x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2396,7 +2327,6 @@ unsafe extern "C" fn x264_pixel_sad_x4_8x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x4_8x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2433,7 +2363,6 @@ unsafe extern "C" fn x264_pixel_sad_x4_8x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x3_8x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2463,7 +2392,6 @@ unsafe extern "C" fn x264_pixel_sad_x3_8x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x4_4x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2500,7 +2428,6 @@ unsafe extern "C" fn x264_pixel_sad_x4_4x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x3_4x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2530,7 +2457,6 @@ unsafe extern "C" fn x264_pixel_sad_x3_4x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x3_4x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2560,7 +2486,6 @@ unsafe extern "C" fn x264_pixel_sad_x3_4x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_sad_x4_4x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2597,7 +2522,6 @@ unsafe extern "C" fn x264_pixel_sad_x4_4x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x4_8x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2634,7 +2558,6 @@ unsafe extern "C" fn x264_pixel_satd_x4_8x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x3_4x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2664,7 +2587,6 @@ unsafe extern "C" fn x264_pixel_satd_x3_4x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x3_8x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2694,7 +2616,6 @@ unsafe extern "C" fn x264_pixel_satd_x3_8x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x3_8x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2724,7 +2645,6 @@ unsafe extern "C" fn x264_pixel_satd_x3_8x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x3_8x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2754,7 +2674,6 @@ unsafe extern "C" fn x264_pixel_satd_x3_8x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x3_16x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2784,7 +2703,6 @@ unsafe extern "C" fn x264_pixel_satd_x3_16x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x3_16x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2814,7 +2732,6 @@ unsafe extern "C" fn x264_pixel_satd_x3_16x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x4_8x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2851,7 +2768,6 @@ unsafe extern "C" fn x264_pixel_satd_x4_8x16(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x3_4x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2881,7 +2797,6 @@ unsafe extern "C" fn x264_pixel_satd_x3_4x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x4_8x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2918,7 +2833,6 @@ unsafe extern "C" fn x264_pixel_satd_x4_8x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x4_4x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2955,7 +2869,6 @@ unsafe extern "C" fn x264_pixel_satd_x4_4x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x4_4x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -2992,7 +2905,6 @@ unsafe extern "C" fn x264_pixel_satd_x4_4x4(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x4_16x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -3029,7 +2941,6 @@ unsafe extern "C" fn x264_pixel_satd_x4_16x8(
         );
     }
 }
-
 unsafe extern "C" fn x264_pixel_satd_x4_16x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut pix0: *mut crate::src::common::common::pixel,
@@ -3066,7 +2977,6 @@ unsafe extern "C" fn x264_pixel_satd_x4_16x16(
         );
     }
 }
-
 unsafe extern "C" fn intra_sad_x3_8x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -3106,7 +3016,6 @@ unsafe extern "C" fn intra_sad_x3_8x8(
         );
     }
 }
-
 unsafe extern "C" fn intra_sa8d_x3_8x8(
     mut fenc: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -3146,7 +3055,6 @@ unsafe extern "C" fn intra_sa8d_x3_8x8(
         );
     }
 }
-
 unsafe extern "C" fn intra_sad_x3_4x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3176,7 +3084,6 @@ unsafe extern "C" fn intra_sad_x3_4x4(
         );
     }
 }
-
 unsafe extern "C" fn intra_satd_x3_4x4(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3206,7 +3113,6 @@ unsafe extern "C" fn intra_satd_x3_4x4(
         );
     }
 }
-
 unsafe extern "C" fn intra_sad_x3_8x8c(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3236,7 +3142,6 @@ unsafe extern "C" fn intra_sad_x3_8x8c(
         );
     }
 }
-
 unsafe extern "C" fn intra_satd_x3_8x8c(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3266,7 +3171,6 @@ unsafe extern "C" fn intra_satd_x3_8x8c(
         );
     }
 }
-
 unsafe extern "C" fn intra_sad_x3_8x16c(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3296,7 +3200,6 @@ unsafe extern "C" fn intra_sad_x3_8x16c(
         );
     }
 }
-
 unsafe extern "C" fn intra_satd_x3_8x16c(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3326,7 +3229,6 @@ unsafe extern "C" fn intra_satd_x3_8x16c(
         );
     }
 }
-
 unsafe extern "C" fn intra_sad_x3_16x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3356,7 +3258,6 @@ unsafe extern "C" fn intra_sad_x3_16x16(
         );
     }
 }
-
 unsafe extern "C" fn intra_satd_x3_16x16(
     mut fenc: *mut crate::src::common::common::pixel,
     mut fdec: *mut crate::src::common::common::pixel,
@@ -3386,7 +3287,6 @@ unsafe extern "C" fn intra_satd_x3_16x16(
         );
     }
 }
-
 unsafe extern "C" fn ssim_4x4x2_core(
     mut pix1: *const crate::src::common::common::pixel,
     mut stride1: crate::stdlib::intptr_t,
@@ -3433,7 +3333,6 @@ unsafe extern "C" fn ssim_4x4x2_core(
         }
     }
 }
-
 unsafe extern "C" fn ssim_end1(
     mut s1: ::core::ffi::c_int,
     mut s2: ::core::ffi::c_int,
@@ -3466,7 +3365,6 @@ unsafe extern "C" fn ssim_end1(
                 * (vars + ssim_c2) as ::core::ffi::c_float);
     }
 }
-
 unsafe extern "C" fn ssim_end4(
     mut sum0: *mut [::core::ffi::c_int; 4],
     mut sum1: *mut [::core::ffi::c_int; 4],
@@ -3508,7 +3406,6 @@ unsafe extern "C" fn ssim_end4(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_pixel_ssim_wxh(
     mut pf: *mut crate::src::common::pixel::x264_pixel_function_t,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -3577,7 +3474,6 @@ pub unsafe extern "C" fn x264_8_pixel_ssim_wxh(
         return ssim;
     }
 }
-
 unsafe extern "C" fn pixel_vsad(
     mut src: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -3603,7 +3499,6 @@ unsafe extern "C" fn pixel_vsad(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_field_vsad(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -3657,7 +3552,6 @@ pub unsafe extern "C" fn x264_8_field_vsad(
         return (score_field < score_frame) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn pixel_asd8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut stride1: crate::stdlib::intptr_t,
@@ -3682,7 +3576,6 @@ unsafe extern "C" fn pixel_asd8(
         return crate::stdlib::abs(sum);
     }
 }
-
 unsafe extern "C" fn x264_pixel_ads4(
     mut enc_dc: *mut ::core::ffi::c_int,
     mut sums: *mut crate::stdlib::uint16_t,
@@ -3722,7 +3615,6 @@ unsafe extern "C" fn x264_pixel_ads4(
         return nmv;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ads2(
     mut enc_dc: *mut ::core::ffi::c_int,
     mut sums: *mut crate::stdlib::uint16_t,
@@ -3755,7 +3647,6 @@ unsafe extern "C" fn x264_pixel_ads2(
         return nmv;
     }
 }
-
 unsafe extern "C" fn x264_pixel_ads1(
     mut enc_dc: *mut ::core::ffi::c_int,
     mut sums: *mut crate::stdlib::uint16_t,
@@ -3786,7 +3677,6 @@ unsafe extern "C" fn x264_pixel_ads1(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_pixel_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pixf: *mut crate::src::common::pixel::x264_pixel_function_t,

@@ -6,7 +6,6 @@ pub struct x264_cpu_name_t {
     pub flags: crate::stdlib::uint32_t,
 }
 #[no_mangle]
-
 pub static mut x264_cpu_names: [crate::src::common::cpu::x264_cpu_name_t; 28] = [
     crate::src::common::cpu::x264_cpu_name_t {
         name: b"MMX2\0".as_ptr() as *const ::core::ffi::c_char,
@@ -252,14 +251,10 @@ pub static mut x264_cpu_names: [crate::src::common::cpu::x264_cpu_name_t; 28] = 
     },
 ];
 #[no_mangle]
-
 pub extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {
-
-        return 0 as crate::stdlib::uint32_t;
-
+    return 0 as crate::stdlib::uint32_t;
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_cpu_num_processors() -> ::core::ffi::c_int {
     unsafe {
         let mut p_aff: crate::stdlib::cpu_set_t = crate::stdlib::cpu_set_t { __bits: [0; 16] };

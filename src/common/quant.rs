@@ -229,7 +229,6 @@ pub struct x264_quant_function_t {
         ) -> ::core::ffi::c_int,
     >,
 }
-
 unsafe extern "C" fn quant_8x8(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut mf: *mut crate::src::common::common::udctcoef,
@@ -261,7 +260,6 @@ unsafe extern "C" fn quant_8x8(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn quant_4x4(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut mf: *mut crate::src::common::common::udctcoef,
@@ -293,7 +291,6 @@ unsafe extern "C" fn quant_4x4(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn quant_4x4x4(
     mut dct: *mut [crate::src::common::common::dctcoef; 16],
     mut mf: *mut crate::src::common::common::udctcoef,
@@ -338,7 +335,6 @@ unsafe extern "C" fn quant_4x4x4(
         return nza;
     }
 }
-
 unsafe extern "C" fn quant_4x4_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut mf: ::core::ffi::c_int,
@@ -370,7 +366,6 @@ unsafe extern "C" fn quant_4x4_dc(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn quant_2x2_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut mf: ::core::ffi::c_int,
@@ -469,7 +464,6 @@ unsafe extern "C" fn quant_2x2_dc(
         return (nz != 0) as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn dequant_4x4(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: *mut [::core::ffi::c_int; 16],
@@ -502,7 +496,6 @@ unsafe extern "C" fn dequant_4x4(
         };
     }
 }
-
 unsafe extern "C" fn dequant_8x8(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: *mut [::core::ffi::c_int; 64],
@@ -535,7 +528,6 @@ unsafe extern "C" fn dequant_8x8(
         };
     }
 }
-
 unsafe extern "C" fn dequant_4x4_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: *mut [::core::ffi::c_int; 16],
@@ -571,7 +563,6 @@ unsafe extern "C" fn dequant_4x4_dc(
         };
     }
 }
-
 unsafe extern "C" fn idct_dequant_2x4_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dct4x4: *mut [crate::src::common::common::dctcoef; 16],
@@ -640,7 +631,6 @@ unsafe extern "C" fn idct_dequant_2x4_dc(
                 as crate::src::common::common::dctcoef;
     }
 }
-
 unsafe extern "C" fn idct_dequant_2x4_dconly(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: *mut [::core::ffi::c_int; 16],
@@ -709,7 +699,6 @@ unsafe extern "C" fn idct_dequant_2x4_dconly(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn optimize_chroma_idct_dequant_2x4(
     mut out: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -775,7 +764,6 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x4(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn optimize_chroma_idct_dequant_2x2(
     mut out: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -809,7 +797,6 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x2(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn optimize_chroma_round(
     mut ref_0: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -848,7 +835,6 @@ unsafe extern "C" fn optimize_chroma_round(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn optimize_chroma_dc_internal(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: ::core::ffi::c_int,
@@ -917,7 +903,6 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
         return nz;
     }
 }
-
 unsafe extern "C" fn optimize_chroma_2x2_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: ::core::ffi::c_int,
@@ -930,7 +915,6 @@ unsafe extern "C" fn optimize_chroma_2x2_dc(
         );
     }
 }
-
 unsafe extern "C" fn optimize_chroma_2x4_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: ::core::ffi::c_int,
@@ -943,7 +927,6 @@ unsafe extern "C" fn optimize_chroma_2x4_dc(
         );
     }
 }
-
 unsafe extern "C" fn denoise_dct(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut sum: *mut crate::stdlib::uint32_t,
@@ -969,7 +952,6 @@ unsafe extern "C" fn denoise_dct(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn decimate_score_internal(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut i_max: ::core::ffi::c_int,
@@ -1011,7 +993,6 @@ unsafe extern "C" fn decimate_score_internal(
         return i_score;
     }
 }
-
 unsafe extern "C" fn decimate_score15(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1022,7 +1003,6 @@ unsafe extern "C" fn decimate_score15(
         );
     }
 }
-
 unsafe extern "C" fn decimate_score16(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1030,7 +1010,6 @@ unsafe extern "C" fn decimate_score16(
         return decimate_score_internal(dct, 16 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn decimate_score64(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1038,7 +1017,6 @@ unsafe extern "C" fn decimate_score64(
         return decimate_score_internal(dct, 64 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn coeff_last4(
     mut l: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1052,7 +1030,6 @@ unsafe extern "C" fn coeff_last4(
         return i_last;
     }
 }
-
 unsafe extern "C" fn coeff_last8(
     mut l: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1066,7 +1043,6 @@ unsafe extern "C" fn coeff_last8(
         return i_last;
     }
 }
-
 unsafe extern "C" fn coeff_last15(
     mut l: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1080,7 +1056,6 @@ unsafe extern "C" fn coeff_last15(
         return i_last;
     }
 }
-
 unsafe extern "C" fn coeff_last16(
     mut l: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1094,7 +1069,6 @@ unsafe extern "C" fn coeff_last16(
         return i_last;
     }
 }
-
 unsafe extern "C" fn coeff_last64(
     mut l: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
@@ -1108,7 +1082,6 @@ unsafe extern "C" fn coeff_last64(
         return i_last;
     }
 }
-
 unsafe extern "C" fn coeff_level_run4(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
@@ -1140,7 +1113,6 @@ unsafe extern "C" fn coeff_level_run4(
         return i_total;
     }
 }
-
 unsafe extern "C" fn coeff_level_run8(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
@@ -1172,7 +1144,6 @@ unsafe extern "C" fn coeff_level_run8(
         return i_total;
     }
 }
-
 unsafe extern "C" fn coeff_level_run15(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
@@ -1204,7 +1175,6 @@ unsafe extern "C" fn coeff_level_run15(
         return i_total;
     }
 }
-
 unsafe extern "C" fn coeff_level_run16(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
@@ -1237,7 +1207,6 @@ unsafe extern "C" fn coeff_level_run16(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_quant_init(
     mut _h: *mut crate::src::common::common::x264_t,
     mut _cpu: crate::stdlib::uint32_t,

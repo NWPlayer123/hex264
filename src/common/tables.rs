@@ -5,9 +5,7 @@ pub struct vlc_t {
     pub i_bits: crate::stdlib::uint8_t,
     pub i_size: crate::stdlib::uint8_t,
 }
-
 #[no_mangle]
-
 pub static mut x264_levels: [crate::x264_h::x264_level_t; 21] = [
     crate::x264_h::x264_level_t {
         level_idc: 10 as crate::stdlib::uint8_t,
@@ -326,7 +324,6 @@ pub static mut x264_levels: [crate::x264_h::x264_level_t; 21] = [
     },
 ];
 #[no_mangle]
-
 pub static mut x264_exp2_lut: [crate::stdlib::uint8_t; 64] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -394,7 +391,6 @@ pub static mut x264_exp2_lut: [crate::stdlib::uint8_t; 64] = [
     250 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_log2_lut: [::core::ffi::c_float; 128] = [
     0.00000f64 as ::core::ffi::c_float,
     0.01123f64 as ::core::ffi::c_float,
@@ -526,7 +522,6 @@ pub static mut x264_log2_lut: [::core::ffi::c_float; 128] = [
     0.99435f64 as ::core::ffi::c_float,
 ];
 #[no_mangle]
-
 pub static mut x264_log2_lz_lut: [::core::ffi::c_float; 32] = [
     31 as ::core::ffi::c_int as ::core::ffi::c_float,
     30 as ::core::ffi::c_int as ::core::ffi::c_float,
@@ -562,7 +557,6 @@ pub static mut x264_log2_lz_lut: [::core::ffi::c_float; 32] = [
     0 as ::core::ffi::c_int as ::core::ffi::c_float,
 ];
 #[no_mangle]
-
 pub static mut x264_lambda_tab: [crate::stdlib::uint16_t; 82] = [
     1 as ::core::ffi::c_int as crate::stdlib::uint16_t,
     1 as ::core::ffi::c_int as crate::stdlib::uint16_t,
@@ -648,7 +642,6 @@ pub static mut x264_lambda_tab: [crate::stdlib::uint16_t; 82] = [
     2896 as ::core::ffi::c_int as crate::stdlib::uint16_t,
 ];
 #[no_mangle]
-
 pub static mut x264_lambda2_tab: [::core::ffi::c_int; 82] = [
     14 as ::core::ffi::c_int,
     18 as ::core::ffi::c_int,
@@ -734,7 +727,6 @@ pub static mut x264_lambda2_tab: [::core::ffi::c_int; 82] = [
     134217727 as ::core::ffi::c_int,
 ];
 #[no_mangle]
-
 pub static mut x264_trellis_lambda2_tab: [[::core::ffi::c_int; 82]; 2] = [
     [
         46 as ::core::ffi::c_int,
@@ -906,7 +898,6 @@ pub static mut x264_trellis_lambda2_tab: [[::core::ffi::c_int; 82]; 2] = [
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_chroma_lambda2_offset_tab: [crate::stdlib::uint16_t; 37] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint16_t,
     20 as ::core::ffi::c_int as crate::stdlib::uint16_t,
@@ -947,7 +938,6 @@ pub static mut x264_chroma_lambda2_offset_tab: [crate::stdlib::uint16_t; 37] = [
     65535 as ::core::ffi::c_int as crate::stdlib::uint16_t,
 ];
 #[no_mangle]
-
 pub static mut x264_hpel_ref0: [crate::stdlib::uint8_t; 16] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -967,7 +957,6 @@ pub static mut x264_hpel_ref0: [crate::stdlib::uint8_t; 16] = [
     1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_hpel_ref1: [crate::stdlib::uint8_t; 16] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -987,7 +976,6 @@ pub static mut x264_hpel_ref1: [crate::stdlib::uint8_t; 16] = [
     2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_jvt4i: [crate::stdlib::uint8_t; 16] = [
     6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1007,7 +995,6 @@ pub static mut x264_cqm_jvt4i: [crate::stdlib::uint8_t; 16] = [
     42 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_jvt4p: [crate::stdlib::uint8_t; 16] = [
     10 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1027,7 +1014,6 @@ pub static mut x264_cqm_jvt4p: [crate::stdlib::uint8_t; 16] = [
     34 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_jvt8i: [crate::stdlib::uint8_t; 64] = [
     6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     10 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1095,7 +1081,6 @@ pub static mut x264_cqm_jvt8i: [crate::stdlib::uint8_t; 64] = [
     42 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_jvt8p: [crate::stdlib::uint8_t; 64] = [
     9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1163,7 +1148,6 @@ pub static mut x264_cqm_jvt8p: [crate::stdlib::uint8_t; 64] = [
     35 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_flat16: [crate::stdlib::uint8_t; 64] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1231,7 +1215,6 @@ pub static mut x264_cqm_flat16: [crate::stdlib::uint8_t; 64] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = unsafe {
     [
         &raw const x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
@@ -1245,7 +1228,6 @@ pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = unsafe {
     ]
 };
 #[no_mangle]
-
 pub static mut x264_cqm_avci50_4ic: [crate::stdlib::uint8_t; 16] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     22 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1265,7 +1247,6 @@ pub static mut x264_cqm_avci50_4ic: [crate::stdlib::uint8_t; 16] = [
     60 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci50_p_8iy: [crate::stdlib::uint8_t; 64] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1333,7 +1314,6 @@ pub static mut x264_cqm_avci50_p_8iy: [crate::stdlib::uint8_t; 64] = [
     96 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci50_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1401,7 +1381,6 @@ pub static mut x264_cqm_avci50_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
     96 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci100_720p_4ic: [crate::stdlib::uint8_t; 16] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     21 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1421,7 +1400,6 @@ pub static mut x264_cqm_avci100_720p_4ic: [crate::stdlib::uint8_t; 16] = [
     54 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci100_720p_8iy: [crate::stdlib::uint8_t; 64] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1489,7 +1467,6 @@ pub static mut x264_cqm_avci100_720p_8iy: [crate::stdlib::uint8_t; 64] = [
     42 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci100_1080_4ic: [crate::stdlib::uint8_t; 16] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     20 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1509,7 +1486,6 @@ pub static mut x264_cqm_avci100_1080_4ic: [crate::stdlib::uint8_t; 16] = [
     50 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci100_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     19 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1577,7 +1553,6 @@ pub static mut x264_cqm_avci100_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
     72 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci100_1080p_8iy: [crate::stdlib::uint8_t; 64] = [
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1645,7 +1620,6 @@ pub static mut x264_cqm_avci100_1080p_8iy: [crate::stdlib::uint8_t; 64] = [
     72 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci300_2160p_4iy: [crate::stdlib::uint8_t; 16] = [
     12 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1665,7 +1639,6 @@ pub static mut x264_cqm_avci300_2160p_4iy: [crate::stdlib::uint8_t; 16] = [
     39 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci300_2160p_4ic: [crate::stdlib::uint8_t; 16] = [
     28 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     39 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1685,7 +1658,6 @@ pub static mut x264_cqm_avci300_2160p_4ic: [crate::stdlib::uint8_t; 16] = [
     133 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cqm_avci300_2160p_8iy: [crate::stdlib::uint8_t; 64] = [
     12 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1753,7 +1725,6 @@ pub static mut x264_cqm_avci300_2160p_8iy: [crate::stdlib::uint8_t; 64] = [
     84 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_decimate_table4: [crate::stdlib::uint8_t; 16] = [
     3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1773,7 +1744,6 @@ pub static mut x264_decimate_table4: [crate::stdlib::uint8_t; 16] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_decimate_table8: [crate::stdlib::uint8_t; 64] = [
     3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1841,19 +1811,14 @@ pub static mut x264_decimate_table8: [crate::stdlib::uint8_t; 64] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_dct8_weight_tab: [crate::stdlib::uint32_t; 64] = [0; 64];
 #[no_mangle]
-
 pub static mut x264_dct4_weight_tab: [crate::stdlib::uint32_t; 16] = [0; 16];
 #[no_mangle]
-
 pub static mut x264_dct4_weight2_tab: [crate::stdlib::uint32_t; 16] = [0; 16];
 #[no_mangle]
-
 pub static mut x264_dct8_weight2_tab: [crate::stdlib::uint32_t; 64] = [0; 64];
 #[no_mangle]
-
 pub static mut x264_cabac_context_init_I: [[crate::stdlib::int8_t; 2]; 1024] = [
     [
         20 as ::core::ffi::c_int as crate::stdlib::int8_t,
@@ -5953,7 +5918,6 @@ pub static mut x264_cabac_context_init_I: [[crate::stdlib::int8_t; 2]; 1024] = [
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_cabac_context_init_PB: [[[crate::stdlib::int8_t; 2]; 1024]; 3] = [
     [
         [
@@ -18251,7 +18215,6 @@ pub static mut x264_cabac_context_init_PB: [[[crate::stdlib::int8_t; 2]; 1024]; 
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_cabac_range_lps: [[crate::stdlib::uint8_t; 4]; 64] = [
     [
         2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -18639,7 +18602,6 @@ pub static mut x264_cabac_range_lps: [[crate::stdlib::uint8_t; 4]; 64] = [
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_cabac_transition: [[crate::stdlib::uint8_t; 2]; 128] = [
     [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -19155,7 +19117,6 @@ pub static mut x264_cabac_transition: [[crate::stdlib::uint8_t; 2]; 128] = [
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_cabac_renorm_shift: [crate::stdlib::uint8_t; 64] = [
     6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -19223,7 +19184,6 @@ pub static mut x264_cabac_renorm_shift: [crate::stdlib::uint8_t; 64] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_cabac_entropy: [crate::stdlib::uint16_t; 128] = [
     (0.0273f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
         + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
@@ -19483,7 +19443,6 @@ pub static mut x264_cabac_entropy: [crate::stdlib::uint16_t; 128] = [
         + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
 ];
 #[no_mangle]
-
 pub static mut x264_significant_coeff_flag_offset_8x8: [[crate::stdlib::uint8_t; 64]; 2] = [
     [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -19619,7 +19578,6 @@ pub static mut x264_significant_coeff_flag_offset_8x8: [[crate::stdlib::uint8_t;
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_last_coeff_flag_offset_8x8: [crate::stdlib::uint8_t; 63] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -19686,7 +19644,6 @@ pub static mut x264_last_coeff_flag_offset_8x8: [crate::stdlib::uint8_t; 63] = [
     8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_coeff_flag_offset_chroma_422_dc: [crate::stdlib::uint8_t; 7] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -19697,7 +19654,6 @@ pub static mut x264_coeff_flag_offset_chroma_422_dc: [crate::stdlib::uint8_t; 7]
     2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_significant_coeff_flag_offset: [[crate::stdlib::uint16_t; 16]; 2] = [
     [
         (105 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as crate::stdlib::uint16_t,
@@ -19737,7 +19693,6 @@ pub static mut x264_significant_coeff_flag_offset: [[crate::stdlib::uint16_t; 16
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_last_coeff_flag_offset: [[crate::stdlib::uint16_t; 16]; 2] = [
     [
         (166 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as crate::stdlib::uint16_t,
@@ -19777,7 +19732,6 @@ pub static mut x264_last_coeff_flag_offset: [[crate::stdlib::uint16_t; 16]; 2] =
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_coeff_abs_level_m1_offset: [crate::stdlib::uint16_t; 16] = [
     (227 as ::core::ffi::c_int + 0 as ::core::ffi::c_int) as crate::stdlib::uint16_t,
     (227 as ::core::ffi::c_int + 10 as ::core::ffi::c_int) as crate::stdlib::uint16_t,
@@ -19797,7 +19751,6 @@ pub static mut x264_coeff_abs_level_m1_offset: [crate::stdlib::uint16_t; 16] = [
     0,
 ];
 #[no_mangle]
-
 pub static mut x264_count_cat_m1: [crate::stdlib::uint8_t; 14] = [
     15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -19815,7 +19768,6 @@ pub static mut x264_count_cat_m1: [crate::stdlib::uint8_t; 14] = [
     63 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
 #[no_mangle]
-
 pub static mut x264_coeff0_token: [crate::src::common::tables::vlc_t; 6] = [
     crate::src::common::tables::vlc_t {
         i_bits: 0x1 as crate::stdlib::uint8_t,
@@ -19843,7 +19795,6 @@ pub static mut x264_coeff0_token: [crate::src::common::tables::vlc_t; 6] = [
     },
 ];
 #[no_mangle]
-
 pub static mut x264_coeff_token: [[[crate::src::common::tables::vlc_t; 4]; 16]; 6] = [
     [
         [
@@ -21307,7 +21258,6 @@ pub static mut x264_coeff_token: [[[crate::src::common::tables::vlc_t; 4]; 16]; 
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_total_zeros: [[crate::src::common::tables::vlc_t; 16]; 15] = [
     [
         crate::src::common::tables::vlc_t {
@@ -22301,7 +22251,6 @@ pub static mut x264_total_zeros: [[crate::src::common::tables::vlc_t; 16]; 15] =
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_total_zeros_2x2_dc: [[crate::src::common::tables::vlc_t; 4]; 3] = [
     [
         crate::src::common::tables::vlc_t {
@@ -22359,7 +22308,6 @@ pub static mut x264_total_zeros_2x2_dc: [[crate::src::common::tables::vlc_t; 4];
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_total_zeros_2x4_dc: [[crate::src::common::tables::vlc_t; 8]; 7] = [
     [
         crate::src::common::tables::vlc_t {
@@ -22601,7 +22549,6 @@ pub static mut x264_total_zeros_2x4_dc: [[crate::src::common::tables::vlc_t; 8];
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_run_before_init: [[crate::src::common::tables::vlc_t; 16]; 7] = [
     [
         crate::src::common::tables::vlc_t {
@@ -23067,7 +23014,6 @@ pub static mut x264_run_before_init: [[crate::src::common::tables::vlc_t; 16]; 7
     ],
 ];
 #[no_mangle]
-
 pub static mut x264_zero: [crate::stdlib::uint8_t; 1024] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0,

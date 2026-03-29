@@ -13,31 +13,25 @@ pub struct x264_cabac_t {
     pub state: [crate::stdlib::uint8_t; 1024],
     pub padding: [crate::stdlib::uint8_t; 12],
 }
-
 pub mod base_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_clip3(
         mut v: ::core::ffi::c_int,
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-            return if v < i_min {
-                i_min
-            } else if v > i_max {
-                i_max
-            } else {
-                v
-            };
-        }
+        return if v < i_min {
+            i_min
+        } else if v > i_max {
+            i_max
+        } else {
+            v
+        };
+    }
 }
-
 use crate::src::common::cabac::base_h::x264_clip3;
-
 static mut cabac_contexts: [[[crate::stdlib::uint8_t; 1024]; 52]; 4] = [[[0; 1024]; 52]; 4];
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut ctx_count: ::core::ffi::c_int = if crate::src::common::base::CHROMA_444
@@ -90,7 +84,6 @@ pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_context_init(
     mut _h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -124,7 +117,6 @@ pub unsafe extern "C" fn x264_8_cabac_context_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_encode_init_core(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
 ) {
@@ -136,7 +128,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_init_core(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_encode_init(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut p_data: *mut crate::stdlib::uint8_t,
@@ -150,7 +141,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_init(
     }
 }
 #[inline]
-
 unsafe extern "C" fn cabac_putbyte(mut cb: *mut crate::src::common::cabac::x264_cabac_t) {
     unsafe {
         if (*cb).i_queue >= 0 as ::core::ffi::c_int {
@@ -182,7 +172,6 @@ unsafe extern "C" fn cabac_putbyte(mut cb: *mut crate::src::common::cabac::x264_
     }
 }
 #[inline]
-
 unsafe extern "C" fn cabac_encode_renorm(mut cb: *mut crate::src::common::cabac::x264_cabac_t) {
     unsafe {
         let mut shift: ::core::ffi::c_int = crate::src::common::tables::x264_cabac_renorm_shift
@@ -195,7 +184,6 @@ unsafe extern "C" fn cabac_encode_renorm(mut cb: *mut crate::src::common::cabac:
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_encode_decision_c(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut i_ctx: ::core::ffi::c_int,
@@ -218,7 +206,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_decision_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_encode_bypass_c(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut b: ::core::ffi::c_int,
@@ -230,7 +217,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_bypass_c(
         cabac_putbyte(cb);
     }
 }
-
 static mut bypass_lut: [::core::ffi::c_int; 16] = [
     -(1 as ::core::ffi::c_int),
     0x2 as ::core::ffi::c_int,
@@ -250,7 +236,6 @@ static mut bypass_lut: [::core::ffi::c_int; 16] = [
     0x7ffe8000 as ::core::ffi::c_int,
 ];
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut exp_bits: ::core::ffi::c_int,
@@ -283,7 +268,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_encode_terminal_c(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
 ) {
@@ -293,7 +277,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_terminal_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_encode_flush(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,

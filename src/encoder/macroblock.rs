@@ -1,5 +1,4 @@
 pub mod base_h {
-
     pub static mut x264_scan8: [crate::stdlib::uint8_t; 51] = [
         (4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
             as crate::stdlib::uint8_t,
@@ -105,25 +104,21 @@ pub mod base_h {
             as crate::stdlib::uint8_t,
     ];
     #[inline(always)]
-
-    pub  extern "C" fn x264_clip3(
+    pub extern "C" fn x264_clip3(
         mut v: ::core::ffi::c_int,
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-            return if v < i_min {
-                i_min
-            } else if v > i_max {
-                i_max
-            } else {
-                v
-            };
-        
+        return if v < i_min {
+            i_min
+        } else if v > i_max {
+            i_max
+        } else {
+            v
+        };
     }
 }
-
 pub mod macroblock_h {
-
     pub static mut x264_pred_i4x4_neighbors: [crate::stdlib::uint8_t; 12] = [
         crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int as crate::stdlib::uint8_t,
         crate::src::common::macroblock::MB_LEFT as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -153,7 +148,6 @@ pub mod macroblock_h {
         crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int as crate::stdlib::uint8_t,
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
-
     pub static mut block_idx_x: [crate::stdlib::uint8_t; 16] = [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -172,7 +166,6 @@ pub mod macroblock_h {
         2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
-
     pub static mut block_idx_y: [crate::stdlib::uint8_t; 16] = [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -191,7 +184,6 @@ pub mod macroblock_h {
         3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
-
     pub static mut block_idx_xy_1d: [crate::stdlib::uint8_t; 16] = [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -210,7 +202,6 @@ pub mod macroblock_h {
         14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
-
     pub static mut block_idx_yx_1d: [crate::stdlib::uint8_t; 16] = [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         4 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -229,7 +220,6 @@ pub mod macroblock_h {
         11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
-
     pub static mut block_idx_xy_fenc: [crate::stdlib::uint8_t; 16] = [
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
             + 0 as ::core::ffi::c_int
@@ -296,7 +286,6 @@ pub mod macroblock_h {
                 * 4 as ::core::ffi::c_int
                 * crate::src::common::common::FENC_STRIDE) as crate::stdlib::uint8_t,
     ];
-
     pub static mut block_idx_xy_fdec: [crate::stdlib::uint16_t; 16] = [
         (0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int
             + 0 as ::core::ffi::c_int
@@ -363,7 +352,6 @@ pub mod macroblock_h {
                 * 4 as ::core::ffi::c_int
                 * crate::src::common::common::FDEC_STRIDE) as crate::stdlib::uint16_t,
     ];
-
     pub static mut ctx_cat_plane: [[crate::stdlib::uint8_t; 3]; 6] = [
         [
             crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int
@@ -400,13 +388,9 @@ pub mod macroblock_h {
                 as crate::stdlib::uint8_t,
         ],
     ];
-
 }
-
 pub mod osdep_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_ctz_4bit(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_int {
         unsafe {
             pub static mut lut: [crate::stdlib::uint8_t; 16] = [
@@ -431,10 +415,8 @@ pub mod osdep_h {
         }
     }
 }
-
 pub mod encoder_macroblock_h {
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_quant_4x4(
         mut h: *mut crate::src::common::common::x264_t,
         mut dct: *mut crate::src::common::common::dctcoef,
@@ -501,7 +483,6 @@ pub mod encoder_macroblock_h {
         }
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_quant_8x8(
         mut h: *mut crate::src::common::common::x264_t,
         mut dct: *mut crate::src::common::common::dctcoef,
@@ -568,7 +549,6 @@ pub mod encoder_macroblock_h {
         }
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_mb_encode_i4x4(
         mut h: *mut crate::src::common::common::x264_t,
         mut p: ::core::ffi::c_int,
@@ -661,7 +641,6 @@ pub mod encoder_macroblock_h {
         }
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_mb_encode_i8x8(
         mut h: *mut crate::src::common::common::x264_t,
         mut p: ::core::ffi::c_int,
@@ -825,7 +804,6 @@ pub mod encoder_macroblock_h {
             };
         }
     }
-
     use crate::src::encoder::macroblock::base_h::x264_scan8;
     use crate::src::encoder::macroblock::macroblock_h::block_idx_xy_fdec;
     use crate::src::encoder::macroblock::macroblock_h::block_idx_xy_fenc;
@@ -834,7 +812,6 @@ pub mod encoder_macroblock_h {
     use crate::src::encoder::macroblock::x264_8_predict_lossless_4x4;
     use crate::src::encoder::macroblock::x264_8_predict_lossless_8x8;
 }
-
 use crate::src::encoder::macroblock::base_h::x264_clip3;
 use crate::src::encoder::macroblock::base_h::x264_scan8;
 use crate::src::encoder::macroblock::encoder_macroblock_h::x264_mb_encode_i4x4;
@@ -850,7 +827,6 @@ use crate::src::encoder::macroblock::macroblock_h::block_idx_yx_1d;
 use crate::src::encoder::macroblock::macroblock_h::ctx_cat_plane;
 use crate::src::encoder::macroblock::osdep_h::x264_ctz_4bit;
 #[inline]
-
 unsafe extern "C" fn zigzag_scan_2x2_dc(
     mut level: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -871,7 +847,6 @@ unsafe extern "C" fn zigzag_scan_2x2_dc(
     }
 }
 #[inline]
-
 unsafe extern "C" fn zigzag_scan_2x4_dc(
     mut level: *mut crate::src::common::common::dctcoef,
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -896,7 +871,6 @@ unsafe extern "C" fn zigzag_scan_2x4_dc(
     }
 }
 #[inline]
-
 unsafe extern "C" fn idct_dequant_2x2_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dct4x4: *mut [crate::src::common::common::dctcoef; 16],
@@ -930,7 +904,6 @@ unsafe extern "C" fn idct_dequant_2x2_dc(
     }
 }
 #[inline]
-
 unsafe extern "C" fn idct_dequant_2x2_dconly(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: *mut [::core::ffi::c_int; 16],
@@ -963,7 +936,6 @@ unsafe extern "C" fn idct_dequant_2x2_dconly(
     }
 }
 #[inline]
-
 unsafe extern "C" fn dct2x2dc(
     mut d: *mut crate::src::common::common::dctcoef,
     mut dct4x4: *mut [crate::src::common::common::dctcoef; 16],
@@ -1008,7 +980,6 @@ unsafe extern "C" fn dct2x2dc(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn array_non_zero(
     mut v: *mut crate::src::common::common::dctcoef,
     mut i_count: ::core::ffi::c_int,
@@ -1050,7 +1021,6 @@ unsafe extern "C" fn array_non_zero(
         return 0 as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn mb_encode_i16x16(
     mut h: *mut crate::src::common::common::x264_t,
     mut p: ::core::ffi::c_int,
@@ -1409,7 +1379,6 @@ unsafe extern "C" fn mb_encode_i16x16(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn mb_optimize_chroma_dc(
     mut h: *mut crate::src::common::common::x264_t,
     mut dct_dc: *mut crate::src::common::common::dctcoef,
@@ -1444,7 +1413,6 @@ unsafe extern "C" fn mb_optimize_chroma_dc(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn mb_encode_chroma_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_inter: ::core::ffi::c_int,
@@ -2171,7 +2139,6 @@ unsafe extern "C" fn mb_encode_chroma_internal(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_mb_encode_chroma(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_inter: ::core::ffi::c_int,
@@ -2187,7 +2154,6 @@ pub unsafe extern "C" fn x264_8_mb_encode_chroma(
         };
     }
 }
-
 unsafe extern "C" fn macroblock_encode_skip(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         (*((&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
@@ -2280,7 +2246,6 @@ unsafe extern "C" fn macroblock_encode_skip(mut h: *mut crate::src::common::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_lossless_chroma(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_mode: ::core::ffi::c_int,
@@ -2405,7 +2370,6 @@ pub unsafe extern "C" fn x264_8_predict_lossless_chroma(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_lossless_4x4(
     mut h: *mut crate::src::common::common::x264_t,
     mut p_dst: *mut crate::src::common::common::pixel,
@@ -2466,7 +2430,6 @@ pub unsafe extern "C" fn x264_8_predict_lossless_4x4(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_lossless_8x8(
     mut h: *mut crate::src::common::common::x264_t,
     mut p_dst: *mut crate::src::common::common::pixel,
@@ -2520,7 +2483,6 @@ pub unsafe extern "C" fn x264_8_predict_lossless_8x8(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_lossless_16x16(
     mut h: *mut crate::src::common::common::x264_t,
     mut p: ::core::ffi::c_int,
@@ -2571,7 +2533,6 @@ pub unsafe extern "C" fn x264_8_predict_lossless_16x16(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn macroblock_encode_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut plane_count: ::core::ffi::c_int,
@@ -3672,10 +3633,7 @@ unsafe extern "C" fn macroblock_encode_internal(
     }
 }
 #[no_mangle]
-
-pub unsafe extern "C" fn x264_8_macroblock_encode(
-    mut h: *mut crate::src::common::common::x264_t,
-) {
+pub unsafe extern "C" fn x264_8_macroblock_encode(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -3689,7 +3647,6 @@ pub unsafe extern "C" fn x264_8_macroblock_encode(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn macroblock_probe_skip_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_bidir: ::core::ffi::c_int,
@@ -4136,7 +4093,6 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_macroblock_probe_skip(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_bidir: ::core::ffi::c_int,
@@ -4180,7 +4136,6 @@ pub unsafe extern "C" fn x264_8_macroblock_probe_skip(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_noise_reduction_update(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -4261,7 +4216,6 @@ pub unsafe extern "C" fn x264_8_noise_reduction_update(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn macroblock_encode_p8x8_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut i8: ::core::ffi::c_int,
@@ -5034,7 +4988,6 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_macroblock_encode_p8x8(
     mut h: *mut crate::src::common::common::x264_t,
     mut i8: ::core::ffi::c_int,
@@ -5078,7 +5031,6 @@ pub unsafe extern "C" fn x264_8_macroblock_encode_p8x8(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn macroblock_encode_p4x4_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut i4: ::core::ffi::c_int,
@@ -5165,7 +5117,6 @@ unsafe extern "C" fn macroblock_encode_p4x4_internal(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_macroblock_encode_p4x4(
     mut h: *mut crate::src::common::common::x264_t,
     mut i8: ::core::ffi::c_int,

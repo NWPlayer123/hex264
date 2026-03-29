@@ -1,7 +1,5 @@
 pub mod bitstream_h {
-
     #[inline]
-
     pub unsafe extern "C" fn bs_init(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut p_data: *mut ::core::ffi::c_void,
@@ -26,7 +24,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_flush(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
             (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i = endian_fix32(
@@ -40,7 +37,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_write(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut i_count: ::core::ffi::c_int,
@@ -74,11 +70,8 @@ pub mod bitstream_h {
     use crate::src::encoder::cabac::osdep_h::endian_fix;
     use crate::src::encoder::cabac::osdep_h::endian_fix32;
 }
-
 pub mod cabac_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_cabac_pos(
         mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     ) -> ::core::ffi::c_int {
@@ -90,9 +83,7 @@ pub mod cabac_h {
         }
     }
 }
-
 pub mod predict_h {
-
     pub static mut x264_mb_chroma_pred_mode_fix: [crate::stdlib::uint8_t; 7] = [
         crate::src::common::predict::I_PRED_CHROMA_DC as ::core::ffi::c_int
             as crate::stdlib::uint8_t,
@@ -109,7 +100,6 @@ pub mod predict_h {
         crate::src::common::predict::I_PRED_CHROMA_DC as ::core::ffi::c_int
             as crate::stdlib::uint8_t,
     ];
-
     pub static mut x264_mb_pred_mode16x16_fix: [crate::stdlib::uint8_t; 7] = [
         crate::src::common::predict::I_PRED_16x16_V as ::core::ffi::c_int as crate::stdlib::uint8_t,
         crate::src::common::predict::I_PRED_16x16_H as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -123,7 +113,6 @@ pub mod predict_h {
         crate::src::common::predict::I_PRED_16x16_DC as ::core::ffi::c_int
             as crate::stdlib::uint8_t,
     ];
-
     pub static mut x264_mb_pred_mode4x4_fix: [crate::stdlib::int8_t; 13] = [
         -(1 as ::core::ffi::c_int) as crate::stdlib::int8_t,
         crate::src::common::predict::I_PRED_4x4_V as ::core::ffi::c_int as crate::stdlib::int8_t,
@@ -140,9 +129,7 @@ pub mod predict_h {
         crate::src::common::predict::I_PRED_4x4_DC as ::core::ffi::c_int as crate::stdlib::int8_t,
     ];
 }
-
 pub mod base_h {
-
     pub static mut x264_scan8: [crate::stdlib::uint8_t; 51] = [
         (4 as ::core::ffi::c_int + 1 as ::core::ffi::c_int * 8 as ::core::ffi::c_int)
             as crate::stdlib::uint8_t,
@@ -248,7 +235,6 @@ pub mod base_h {
             as crate::stdlib::uint8_t,
     ];
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_cabac_mvd_sum(
         mut mvdleft: *mut crate::stdlib::uint8_t,
         mut mvdtop: *mut crate::stdlib::uint8_t,
@@ -268,9 +254,7 @@ pub mod base_h {
         }
     }
 }
-
 pub mod macroblock_h {
-
     pub static mut x264_mb_type_list_table: [[[crate::stdlib::uint8_t; 2]; 2]; 19] = [
         [
             [
@@ -463,7 +447,6 @@ pub mod macroblock_h {
             ],
         ],
     ];
-
     pub static mut x264_mb_partition_listX_table: [[crate::stdlib::uint8_t; 17]; 2] = [
         [
             1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -504,7 +487,6 @@ pub mod macroblock_h {
             0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         ],
     ];
-
     pub static mut block_idx_x: [crate::stdlib::uint8_t; 16] = [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -523,7 +505,6 @@ pub mod macroblock_h {
         2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
-
     pub static mut block_idx_y: [crate::stdlib::uint8_t; 16] = [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -542,7 +523,6 @@ pub mod macroblock_h {
         3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
-
     pub static mut ctx_cat_plane: [[crate::stdlib::uint8_t; 3]; 6] = [
         [
             crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int
@@ -580,16 +560,13 @@ pub mod macroblock_h {
         ],
     ];
     #[inline(always)]
-
-    pub  extern "C" fn pack8to16(
+    pub extern "C" fn pack8to16(
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-            return a.wrapping_add(b << 8 as ::core::ffi::c_int);
-       
+        return a.wrapping_add(b << 8 as ::core::ffi::c_int);
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_mb_predict_intra4x4_mode(
         mut h: *mut crate::src::common::common::x264_t,
         mut idx: ::core::ffi::c_int,
@@ -621,7 +598,6 @@ pub mod macroblock_h {
             return m;
         }
     }
-
     pub static mut x264_transform_allowed: [crate::stdlib::uint8_t; 19] = [
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -644,7 +620,6 @@ pub mod macroblock_h {
         0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_mb_transform_8x8_allowed(
         mut h: *mut crate::src::common::common::x264_t,
     ) -> ::core::ffi::c_int {
@@ -668,48 +643,33 @@ pub mod macroblock_h {
     }
     use crate::src::encoder::cabac::base_h::x264_scan8;
     use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode4x4_fix;
-
 }
-
 pub mod osdep_h {
-
     #[inline(always)]
-
-    pub  extern "C" fn endian_fix32(
-        mut x: crate::stdlib::uint32_t,
-    ) -> crate::stdlib::uint32_t {
-            return (x << 24 as ::core::ffi::c_int)
-                .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as crate::stdlib::uint32_t)
-                .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as crate::stdlib::uint32_t)
-                .wrapping_add(x >> 24 as ::core::ffi::c_int);
-     
+    pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
+        return (x << 24 as ::core::ffi::c_int)
+            .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as crate::stdlib::uint32_t)
+            .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as crate::stdlib::uint32_t)
+            .wrapping_add(x >> 24 as ::core::ffi::c_int);
     }
     #[inline(always)]
-
-    pub  extern "C" fn endian_fix64(
-        mut x: crate::stdlib::uint64_t,
-    ) -> crate::stdlib::uint64_t {
-            return (endian_fix32((x >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t)
-                as crate::stdlib::uint64_t)
-                .wrapping_add(
-                    (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
-                        << 32 as ::core::ffi::c_int,
-                );
-     
+    pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
+        return (endian_fix32((x >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t)
+            as crate::stdlib::uint64_t)
+            .wrapping_add(
+                (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
+                    << 32 as ::core::ffi::c_int,
+            );
     }
     #[inline(always)]
-
-    pub  extern "C" fn endian_fix(
-        mut x: crate::stdlib::uintptr_t,
-    ) -> crate::stdlib::uintptr_t {
-            return if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
-                endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
-            } else {
-                endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
-            };
+    pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
+        return if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
+            endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
+        } else {
+            endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
+        };
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_ctz_4bit(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_int {
         unsafe {
             pub static mut lut: [crate::stdlib::uint8_t; 16] = [
@@ -734,10 +694,8 @@ pub mod osdep_h {
         }
     }
 }
-
 pub mod rectangle_h {
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_macroblock_cache_rect(
         mut dst: *mut ::core::ffi::c_void,
         mut w: ::core::ffi::c_int,
@@ -932,7 +890,6 @@ pub mod rectangle_h {
         }
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_macroblock_cache_mvd(
         mut h: *mut crate::src::common::common::x264_t,
         mut x: ::core::ffi::c_int,
@@ -971,7 +928,6 @@ pub mod rectangle_h {
         }
     }
 }
-
 use crate::src::encoder::cabac::base_h::x264_cabac_mvd_sum;
 use crate::src::encoder::cabac::base_h::x264_scan8;
 use crate::src::encoder::cabac::bitstream_h::bs_flush;
@@ -992,7 +948,6 @@ use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode4x4_fix;
 use crate::src::encoder::cabac::rectangle_h::x264_macroblock_cache_mvd;
 #[inline]
-
 unsafe extern "C" fn cabac_mb_type_intra(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1071,7 +1026,6 @@ unsafe extern "C" fn cabac_mb_type_intra(
         };
     }
 }
-
 unsafe extern "C" fn cabac_field_decoding_flag(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1095,7 +1049,6 @@ unsafe extern "C" fn cabac_field_decoding_flag(
         (*h).mb.field_decoding_flag = (*h).mb.b_interlaced;
     }
 }
-
 unsafe extern "C" fn cabac_intra4x4_pred_mode(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut i_pred: ::core::ffi::c_int,
@@ -1135,7 +1088,6 @@ unsafe extern "C" fn cabac_intra4x4_pred_mode(
         };
     }
 }
-
 unsafe extern "C" fn cabac_intra_chroma_pred_mode(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1188,7 +1140,6 @@ unsafe extern "C" fn cabac_intra_chroma_pred_mode(
         }
     }
 }
-
 unsafe extern "C" fn cabac_cbp_luma(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1227,7 +1178,6 @@ unsafe extern "C" fn cabac_cbp_luma(
         );
     }
 }
-
 unsafe extern "C" fn cabac_cbp_chroma(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1269,7 +1219,6 @@ unsafe extern "C" fn cabac_cbp_chroma(
         };
     }
 }
-
 unsafe extern "C" fn cabac_qp_delta(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1325,7 +1274,6 @@ unsafe extern "C" fn cabac_qp_delta(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_mb_skip(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_skip: ::core::ffi::c_int,
@@ -1343,7 +1291,6 @@ pub unsafe extern "C" fn x264_8_cabac_mb_skip(
     }
 }
 #[inline]
-
 unsafe extern "C" fn cabac_subpartition_p(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut i_sub: ::core::ffi::c_int,
@@ -1384,7 +1331,6 @@ unsafe extern "C" fn cabac_subpartition_p(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_subpartition_b(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut i_sub: ::core::ffi::c_int,
@@ -1440,7 +1386,6 @@ unsafe extern "C" fn cabac_subpartition_b(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_transform_size(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1456,7 +1401,6 @@ unsafe extern "C" fn cabac_transform_size(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_ref_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1502,7 +1446,6 @@ unsafe extern "C" fn cabac_ref_internal(
     }
 }
 #[inline(never)]
-
 unsafe extern "C" fn cabac_ref_p(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1513,7 +1456,6 @@ unsafe extern "C" fn cabac_ref_p(
     }
 }
 #[inline(never)]
-
 unsafe extern "C" fn cabac_ref_b(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1525,7 +1467,6 @@ unsafe extern "C" fn cabac_ref_b(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_mvd_cpn(
     mut _h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1608,7 +1549,6 @@ unsafe extern "C" fn cabac_mvd_cpn(
     }
 }
 #[inline(never)]
-
 unsafe extern "C" fn cabac_mvd(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1676,7 +1616,6 @@ unsafe extern "C" fn cabac_mvd(
     }
 }
 #[inline]
-
 unsafe extern "C" fn cabac_8x8_mvd(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1867,7 +1806,6 @@ unsafe extern "C" fn cabac_8x8_mvd(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_mb_header_i(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -1997,7 +1935,6 @@ unsafe extern "C" fn cabac_mb_header_i(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_mb_header_p(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -2186,7 +2123,6 @@ unsafe extern "C" fn cabac_mb_header_p(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_mb_header_b(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -2591,7 +2527,6 @@ unsafe extern "C" fn cabac_mb_header_b(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_cbf_ctxidxinc(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_cat: ::core::ffi::c_int,
@@ -2669,7 +2604,6 @@ unsafe extern "C" fn cabac_cbf_ctxidxinc(
         };
     }
 }
-
 static mut coeff_abs_level1_ctx: [crate::stdlib::uint8_t; 8] = [
     1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -2680,7 +2614,6 @@ static mut coeff_abs_level1_ctx: [crate::stdlib::uint8_t; 8] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 static mut coeff_abs_levelgt1_ctx: [crate::stdlib::uint8_t; 8] = [
     5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -2691,7 +2624,6 @@ static mut coeff_abs_levelgt1_ctx: [crate::stdlib::uint8_t; 8] = [
     8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 static mut coeff_abs_levelgt1_ctx_chroma_dc: [crate::stdlib::uint8_t; 8] = [
     5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -2702,7 +2634,6 @@ static mut coeff_abs_levelgt1_ctx_chroma_dc: [crate::stdlib::uint8_t; 8] = [
     8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 static mut coeff_abs_level_transition: [[crate::stdlib::uint8_t; 8]; 2] = [
     [
         1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -2726,7 +2657,6 @@ static mut coeff_abs_level_transition: [[crate::stdlib::uint8_t; 8]; 2] = [
     ],
 ];
 #[inline(always)]
-
 unsafe extern "C" fn cabac_block_residual_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -2965,7 +2895,6 @@ unsafe extern "C" fn cabac_block_residual_internal(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_cabac_block_residual_c(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -2977,7 +2906,6 @@ pub unsafe extern "C" fn x264_8_cabac_block_residual_c(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn cabac_block_residual(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -2988,7 +2916,6 @@ unsafe extern "C" fn cabac_block_residual(
         x264_8_cabac_block_residual_c(h, cb, ctx_block_cat, l);
     }
 }
-
 unsafe extern "C" fn cabac_block_residual_422_dc(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -3006,7 +2933,6 @@ unsafe extern "C" fn cabac_block_residual_422_dc(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn macroblock_write_cabac_internal(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -4038,7 +3964,6 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_macroblock_write_cabac(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,

@@ -1,41 +1,33 @@
 pub mod common_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-            return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
-                -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
-            } else {
-                x
-            }) as crate::src::common::common::pixel;
-     
+        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+            -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
+        } else {
+            x
+        }) as crate::src::common::common::pixel;
     }
 }
-
 pub mod base_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_clip3(
         mut v: ::core::ffi::c_int,
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-            return if v < i_min {
-                i_min
-            } else if v > i_max {
-                i_max
-            } else {
-                v
-            };
+        return if v < i_min {
+            i_min
+        } else if v > i_max {
+            i_max
+        } else {
+            v
+        };
     }
 }
-
 use crate::src::common::deblock::base_h::x264_clip3;
 use crate::src::common::deblock::common_h::x264_clip_pixel;
-
 static mut i_alpha_table: [crate::stdlib::uint8_t; 88] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -126,7 +118,6 @@ static mut i_alpha_table: [crate::stdlib::uint8_t; 88] = [
     255 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     255 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 static mut i_beta_table: [crate::stdlib::uint8_t; 88] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -217,7 +208,6 @@ static mut i_beta_table: [crate::stdlib::uint8_t; 88] = [
     18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 static mut i_tc0_table: [[crate::stdlib::int8_t; 4]; 88] = [
     [
         -(1 as ::core::ffi::c_int) as crate::stdlib::int8_t,
@@ -749,7 +739,6 @@ static mut i_tc0_table: [[crate::stdlib::int8_t; 4]; 88] = [
     ],
 ];
 #[inline(always)]
-
 unsafe extern "C" fn deblock_edge_luma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut xstride: crate::stdlib::intptr_t,
@@ -826,7 +815,6 @@ unsafe extern "C" fn deblock_edge_luma_c(
     }
 }
 #[inline]
-
 unsafe extern "C" fn deblock_luma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut xstride: crate::stdlib::intptr_t,
@@ -854,7 +842,6 @@ unsafe extern "C" fn deblock_luma_c(
         }
     }
 }
-
 unsafe extern "C" fn deblock_h_luma_mbaff_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -877,7 +864,6 @@ unsafe extern "C" fn deblock_h_luma_mbaff_c(
         }
     }
 }
-
 unsafe extern "C" fn deblock_v_luma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -896,7 +882,6 @@ unsafe extern "C" fn deblock_v_luma_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_h_luma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -916,7 +901,6 @@ unsafe extern "C" fn deblock_h_luma_c(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn deblock_edge_chroma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut xstride: crate::stdlib::intptr_t,
@@ -955,7 +939,6 @@ unsafe extern "C" fn deblock_edge_chroma_c(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn deblock_chroma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut height: ::core::ffi::c_int,
@@ -990,7 +973,6 @@ unsafe extern "C" fn deblock_chroma_c(
         }
     }
 }
-
 unsafe extern "C" fn deblock_h_chroma_mbaff_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1010,7 +992,6 @@ unsafe extern "C" fn deblock_h_chroma_mbaff_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_v_chroma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1030,7 +1011,6 @@ unsafe extern "C" fn deblock_v_chroma_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_h_chroma_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1050,7 +1030,6 @@ unsafe extern "C" fn deblock_h_chroma_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_h_chroma_422_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1071,7 +1050,6 @@ unsafe extern "C" fn deblock_h_chroma_422_c(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn deblock_edge_luma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut xstride: crate::stdlib::intptr_t,
@@ -1185,7 +1163,6 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
     }
 }
 #[inline]
-
 unsafe extern "C" fn deblock_luma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut xstride: crate::stdlib::intptr_t,
@@ -1202,7 +1179,6 @@ unsafe extern "C" fn deblock_luma_intra_c(
         }
     }
 }
-
 unsafe extern "C" fn deblock_h_luma_intra_mbaff_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut ystride: crate::stdlib::intptr_t,
@@ -1223,7 +1199,6 @@ unsafe extern "C" fn deblock_h_luma_intra_mbaff_c(
         }
     }
 }
-
 unsafe extern "C" fn deblock_v_luma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1240,7 +1215,6 @@ unsafe extern "C" fn deblock_v_luma_intra_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_h_luma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1258,7 +1232,6 @@ unsafe extern "C" fn deblock_h_luma_intra_c(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn deblock_edge_chroma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut xstride: crate::stdlib::intptr_t,
@@ -1293,7 +1266,6 @@ unsafe extern "C" fn deblock_edge_chroma_intra_c(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn deblock_chroma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut width: ::core::ffi::c_int,
@@ -1318,7 +1290,6 @@ unsafe extern "C" fn deblock_chroma_intra_c(
         }
     }
 }
-
 unsafe extern "C" fn deblock_h_chroma_intra_mbaff_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1337,7 +1308,6 @@ unsafe extern "C" fn deblock_h_chroma_intra_mbaff_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_v_chroma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1356,7 +1326,6 @@ unsafe extern "C" fn deblock_v_chroma_intra_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_h_chroma_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1375,7 +1344,6 @@ unsafe extern "C" fn deblock_h_chroma_intra_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_h_chroma_422_intra_c(
     mut pix: *mut crate::src::common::common::pixel,
     mut stride: crate::stdlib::intptr_t,
@@ -1394,7 +1362,6 @@ unsafe extern "C" fn deblock_h_chroma_422_intra_c(
         );
     }
 }
-
 unsafe extern "C" fn deblock_strength_c(
     mut nnz: *mut crate::stdlib::uint8_t,
     mut ref_0: *mut [crate::stdlib::int8_t; 40],
@@ -1488,7 +1455,6 @@ unsafe extern "C" fn deblock_strength_c(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn deblock_edge(
     mut _h: *mut crate::src::common::common::x264_t,
     mut pix: *mut crate::src::common::common::pixel,
@@ -1550,7 +1516,6 @@ unsafe extern "C" fn deblock_edge(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn deblock_edge_intra(
     mut _h: *mut crate::src::common::common::x264_t,
     mut pix: *mut crate::src::common::common::pixel,
@@ -1578,7 +1543,6 @@ unsafe extern "C" fn deblock_edge_intra(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -1653,7 +1617,6 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_frame_deblock_row(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_y: ::core::ffi::c_int,
@@ -3556,10 +3519,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
     }
 }
 #[no_mangle]
-
-pub unsafe extern "C" fn x264_8_macroblock_deblock(
-    mut h: *mut crate::src::common::common::x264_t,
-) {
+pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut a: ::core::ffi::c_int =
             (*h).sh.i_alpha_c0_offset - crate::src::common::common::QP_BD_OFFSET;
@@ -4062,7 +4022,6 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_deblock_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::frame::x264_deblock_function_t,

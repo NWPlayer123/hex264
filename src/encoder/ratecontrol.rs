@@ -1,44 +1,38 @@
-
-
 pub mod base_h {
-
     pub static mut slice_type_to_char: [::core::ffi::c_char; 3] = [
         'P' as i32 as ::core::ffi::c_char,
         'B' as i32 as ::core::ffi::c_char,
         'I' as i32 as ::core::ffi::c_char,
     ];
     #[inline(always)]
-
     pub extern "C" fn x264_clip3(
         mut v: ::core::ffi::c_int,
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-            return if v < i_min {
-                i_min
-            } else if v > i_max {
-                i_max
-            } else {
-                v
-            };
+        return if v < i_min {
+            i_min
+        } else if v > i_max {
+            i_max
+        } else {
+            v
+        };
     }
     #[inline(always)]
-
     pub extern "C" fn x264_clip3f(
         mut v: ::core::ffi::c_double,
         mut f_min: ::core::ffi::c_double,
         mut f_max: ::core::ffi::c_double,
     ) -> ::core::ffi::c_double {
-            return if v < f_min {
-                f_min
-            } else if v > f_max {
-                f_max
-            } else {
-                v
-            };
+        return if v < f_min {
+            f_min
+        } else if v > f_max {
+            f_max
+        } else {
+            v
+        };
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_exp2fix8(mut x: ::core::ffi::c_float) -> ::core::ffi::c_int {
         unsafe {
             let mut i: ::core::ffi::c_int =
@@ -58,7 +52,6 @@ pub mod base_h {
         }
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_log2(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_float {
         unsafe {
             let mut lz: ::core::ffi::c_int = x.leading_zeros() as i32;
@@ -68,10 +61,8 @@ pub mod base_h {
         }
     }
 }
-
 pub mod osdep_h {
     #[inline]
-
     pub unsafe extern "C" fn x264_is_regular_file(
         mut filehandle: *mut crate::stdlib::FILE,
     ) -> ::core::ffi::c_int {
@@ -110,7 +101,6 @@ pub mod osdep_h {
         }
     }
 }
-
 use crate::src::encoder::ratecontrol::base_h::slice_type_to_char;
 use crate::src::encoder::ratecontrol::base_h::x264_clip3;
 use crate::src::encoder::ratecontrol::base_h::x264_clip3f;
@@ -119,7 +109,6 @@ use crate::src::encoder::ratecontrol::base_h::x264_log2;
 use crate::src::encoder::ratecontrol::osdep_h::x264_is_regular_file;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_ratecontrol_t {
     pub b_abr: ::core::ffi::c_int,
     pub b_2pass: ::core::ffi::c_int,
@@ -199,7 +188,6 @@ pub struct x264_ratecontrol_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct predictor_t {
     pub coeff_min: ::core::ffi::c_float,
     pub coeff: ::core::ffi::c_float,
@@ -209,7 +197,6 @@ pub struct predictor_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_444 {
     pub qp_buffer: [*mut crate::stdlib::uint16_t; 2],
     pub qpbuf_pos: ::core::ffi::c_int,
@@ -223,7 +210,6 @@ pub struct C2Rust_Unnamed_444 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct ratecontrol_entry_t {
     pub pict_type: ::core::ffi::c_int,
     pub frame_type: ::core::ffi::c_int,
@@ -250,7 +236,6 @@ pub struct ratecontrol_entry_t {
     pub out_num: ::core::ffi::c_int,
 }
 #[inline]
-
 unsafe extern "C" fn qp2qscale(mut qp: ::core::ffi::c_float) -> ::core::ffi::c_float {
     unsafe {
         return 0.85f32
@@ -262,7 +247,6 @@ unsafe extern "C" fn qp2qscale(mut qp: ::core::ffi::c_float) -> ::core::ffi::c_f
     }
 }
 #[inline]
-
 unsafe extern "C" fn qscale2qp(mut qscale: ::core::ffi::c_float) -> ::core::ffi::c_float {
     unsafe {
         return 12.0f32
@@ -271,7 +255,6 @@ unsafe extern "C" fn qscale2qp(mut qscale: ::core::ffi::c_float) -> ::core::ffi:
     }
 }
 #[inline]
-
 unsafe extern "C" fn qscale2bits(
     mut rce: *mut ratecontrol_entry_t,
     mut qscale: ::core::ffi::c_double,
@@ -299,7 +282,6 @@ unsafe extern "C" fn qscale2bits(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn ac_energy_var(
     mut sum_ssd: crate::stdlib::uint64_t,
     mut shift: ::core::ffi::c_int,
@@ -322,7 +304,6 @@ unsafe extern "C" fn ac_energy_var(
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn ac_energy_plane(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -408,7 +389,6 @@ unsafe extern "C" fn ac_energy_plane(
     }
 }
 #[inline(never)]
-
 unsafe extern "C" fn ac_energy_mb(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -567,7 +547,6 @@ unsafe extern "C" fn ac_energy_mb(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -699,13 +678,11 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
                         let mut energy_0: crate::stdlib::uint32_t =
                             ac_energy_mb(h, mb_x_1, mb_y_1, frame);
                         qp_adj_0 = strength
-                            * (x264_log2(
-                                if energy_0 > 1 as crate::stdlib::uint32_t {
-                                    energy_0
-                                } else {
-                                    1 as crate::stdlib::uint32_t
-                                },
-                            ) - (14.427f32
+                            * (x264_log2(if energy_0 > 1 as crate::stdlib::uint32_t {
+                                energy_0
+                            } else {
+                                1 as crate::stdlib::uint32_t
+                            }) - (14.427f32
                                 + (2 as ::core::ffi::c_int
                                     * (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int))
                                     as ::core::ffi::c_float));
@@ -753,7 +730,6 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
         }
     }
 }
-
 unsafe extern "C" fn macroblock_tree_rescale_init(
     mut h: *mut crate::src::common::common::x264_t,
     mut rc: *mut x264_ratecontrol_t,
@@ -953,7 +929,6 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
         return -(1 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn macroblock_tree_rescale_destroy(mut rc: *mut x264_ratecontrol_t) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -975,7 +950,6 @@ unsafe extern "C" fn macroblock_tree_rescale_destroy(mut rc: *mut x264_ratecontr
     }
 }
 #[inline(always)]
-
 unsafe extern "C" fn tapfilter(
     mut src: *mut ::core::ffi::c_float,
     mut pos: ::core::ffi::c_int,
@@ -998,7 +972,6 @@ unsafe extern "C" fn tapfilter(
         return sum;
     }
 }
-
 unsafe extern "C" fn macroblock_tree_rescale(
     mut h: *mut crate::src::common::common::x264_t,
     mut rc: *mut x264_ratecontrol_t,
@@ -1065,7 +1038,6 @@ unsafe extern "C" fn macroblock_tree_rescale(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_macroblock_tree_read(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1181,7 +1153,6 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_reference_build_list_optimal(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -1270,7 +1241,6 @@ pub unsafe extern "C" fn x264_8_reference_build_list_optimal(
         return 0 as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn strcat_filename(
     mut input: *mut ::core::ffi::c_char,
     mut suffix: *mut ::core::ffi::c_char,
@@ -1291,7 +1261,6 @@ unsafe extern "C" fn strcat_filename(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_init: ::core::ffi::c_int,
@@ -1604,14 +1573,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
         }
     }
 }
-
 pub const BR_SHIFT: ::core::ffi::c_int = 6 as ::core::ffi::c_int;
-
 pub const CPB_SHIFT: ::core::ffi::c_int = 4 as ::core::ffi::c_int;
-
 pub const MAX_DURATION: ::core::ffi::c_double = 0.5f64;
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_new(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -2907,7 +2872,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
         return -(1 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn parse_zone(
     mut h: *mut crate::src::common::common::x264_t,
     mut z: *mut crate::x264_h::x264_zone_t,
@@ -3018,7 +2982,6 @@ unsafe extern "C" fn parse_zone(
         };
     }
 }
-
 unsafe extern "C" fn parse_zones(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -3046,9 +3009,9 @@ unsafe extern "C" fn parse_zones(
                     p = p.offset(1);
                 }
                 (*h).param.rc.zones = crate::src::common::base::x264_malloc(
-                    ((*h).param.rc.i_zones as usize).wrapping_mul(::core::mem::size_of::<
-                        crate::x264_h::x264_zone_t,
-                    >() as usize) as crate::stdlib::int64_t,
+                    ((*h).param.rc.i_zones as usize)
+                        .wrapping_mul(::core::mem::size_of::<crate::x264_h::x264_zone_t>() as usize)
+                        as crate::stdlib::int64_t,
                 ) as *mut crate::x264_h::x264_zone_t;
                 if (*h).param.rc.zones.is_null() {
                     c2rust_current_block = 17294107561870585226;
@@ -3130,10 +3093,8 @@ unsafe extern "C" fn parse_zones(
                             (*h).param.rc.zones as *const ::core::ffi::c_void,
                             (((*rc).i_zones - 1 as ::core::ffi::c_int)
                                 as crate::__stddef_size_t_h::size_t)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<crate::x264_h::x264_zone_t>()
-                                        as crate::__stddef_size_t_h::size_t,
-                                ),
+                                .wrapping_mul(::core::mem::size_of::<crate::x264_h::x264_zone_t>()
+                                    as crate::__stddef_size_t_h::size_t),
                         );
                         (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).i_start =
                             0 as ::core::ffi::c_int;
@@ -3195,7 +3156,6 @@ unsafe extern "C" fn parse_zones(
         return -(1 as ::core::ffi::c_int);
     }
 }
-
 unsafe extern "C" fn get_zone(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame_num: ::core::ffi::c_int,
@@ -3215,7 +3175,6 @@ unsafe extern "C" fn get_zone(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_summary(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -3254,10 +3213,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_summary(
     }
 }
 #[no_mangle]
-
-pub unsafe extern "C" fn x264_8_ratecontrol_delete(
-    mut h: *mut crate::src::common::common::x264_t,
-) {
+pub unsafe extern "C" fn x264_8_ratecontrol_delete(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut rc: *mut x264_ratecontrol_t = (*h).rc;
         let mut b_regular_file: ::core::ffi::c_int = 0;
@@ -3335,8 +3291,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_delete(
                         .is_some()
                 {
                     crate::src::common::base::x264_param_cleanup(
-                        (*(*rc).zones.offset(i as isize)).param
-                            as *mut crate::x264_h::x264_param_t
+                        (*(*rc).zones.offset(i as isize)).param as *mut crate::x264_h::x264_param_t
                             as *mut crate::x264_h::x264_param_t,
                     );
                     (*(*(*rc).zones.offset(i as isize)).param)
@@ -3352,7 +3307,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_delete(
         crate::src::common::base::x264_free(rc as *mut ::core::ffi::c_void);
     }
 }
-
 unsafe extern "C" fn accum_p_qp_update(
     mut h: *mut crate::src::common::common::x264_t,
     mut qp: ::core::ffi::c_float,
@@ -3370,7 +3324,6 @@ unsafe extern "C" fn accum_p_qp_update(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_zone_init(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -3390,7 +3343,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_zone_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_start(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_force_qp: ::core::ffi::c_int,
@@ -3568,7 +3520,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
         }
     }
 }
-
 unsafe extern "C" fn predict_row_size(
     mut h: *mut crate::src::common::common::x264_t,
     mut y: ::core::ffi::c_int,
@@ -3637,7 +3588,6 @@ unsafe extern "C" fn predict_row_size(
         };
     }
 }
-
 unsafe extern "C" fn row_bits_so_far(
     mut h: *mut crate::src::common::common::x264_t,
     mut y: ::core::ffi::c_int,
@@ -3652,7 +3602,6 @@ unsafe extern "C" fn row_bits_so_far(
         return bits;
     }
 }
-
 unsafe extern "C" fn predict_row_size_to_end(
     mut h: *mut crate::src::common::common::x264_t,
     mut y: ::core::ffi::c_int,
@@ -3670,7 +3619,6 @@ unsafe extern "C" fn predict_row_size_to_end(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_mb(
     mut h: *mut crate::src::common::common::x264_t,
     mut bits: ::core::ffi::c_int,
@@ -3974,7 +3922,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_qp(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -3987,7 +3934,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_qp(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_mb_qp(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -4014,7 +3960,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb_qp(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame_num: ::core::ffi::c_int,
@@ -4110,7 +4055,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_set_weights(
     mut h: *mut crate::src::common::common::x264_t,
     mut frm: *mut crate::src::common::frame::x264_frame_t,
@@ -4192,7 +4136,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_set_weights(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_ratecontrol_end(
     mut h: *mut crate::src::common::common::x264_t,
     mut bits: ::core::ffi::c_int,
@@ -4620,7 +4563,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
         return 0 as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn get_qscale(
     mut h: *mut crate::src::common::common::x264_t,
     mut rce: *mut ratecontrol_entry_t,
@@ -4687,7 +4629,6 @@ unsafe extern "C" fn get_qscale(
         return q;
     }
 }
-
 unsafe extern "C" fn get_diff_limited_q(
     mut h: *mut crate::src::common::common::x264_t,
     mut rce: *mut ratecontrol_entry_t,
@@ -4771,7 +4712,6 @@ unsafe extern "C" fn get_diff_limited_q(
         return q;
     }
 }
-
 unsafe extern "C" fn predict_size(
     mut p: *mut predictor_t,
     mut q: ::core::ffi::c_float,
@@ -4781,7 +4721,6 @@ unsafe extern "C" fn predict_size(
         return ((*p).coeff * var + (*p).offset) / (q * (*p).count);
     }
 }
-
 unsafe extern "C" fn update_predictor(
     mut p: *mut predictor_t,
     mut q: ::core::ffi::c_float,
@@ -4820,7 +4759,6 @@ unsafe extern "C" fn update_predictor(
         (*p).offset += new_offset;
     }
 }
-
 unsafe extern "C" fn update_vbv(
     mut h: *mut crate::src::common::common::x264_t,
     mut bits: ::core::ffi::c_int,
@@ -4962,7 +4900,6 @@ unsafe extern "C" fn update_vbv(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut rct: *mut x264_ratecontrol_t = (*(*h).thread[0 as ::core::ffi::c_int as usize]).rc;
@@ -5032,7 +4969,6 @@ pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::com
         };
     }
 }
-
 unsafe extern "C" fn update_vbv_plan(
     mut h: *mut crate::src::common::common::x264_t,
     mut overhead: ::core::ffi::c_int,
@@ -5084,7 +5020,6 @@ unsafe extern "C" fn update_vbv_plan(
         (*rcc).buffer_fill -= overhead as ::core::ffi::c_double;
     }
 }
-
 unsafe extern "C" fn clip_qscale(
     mut h: *mut crate::src::common::common::x264_t,
     mut pict_type: ::core::ffi::c_int,
@@ -5121,7 +5056,6 @@ unsafe extern "C" fn clip_qscale(
         };
     }
 }
-
 unsafe extern "C" fn vbv_pass1(
     mut h: *mut crate::src::common::common::x264_t,
     mut pict_type: ::core::ffi::c_int,
@@ -5335,7 +5269,6 @@ unsafe extern "C" fn vbv_pass1(
         return clip_qscale(h, pict_type, q);
     }
 }
-
 unsafe extern "C" fn rate_estimate_qscale(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_float {
@@ -5773,10 +5706,7 @@ unsafe extern "C" fn rate_estimate_qscale(
         };
     }
 }
-
-unsafe extern "C" fn threads_normalize_predictors(
-    mut h: *mut crate::src::common::common::x264_t,
-) {
+unsafe extern "C" fn threads_normalize_predictors(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut totalsize: ::core::ffi::c_double = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -5793,7 +5723,6 @@ unsafe extern "C" fn threads_normalize_predictors(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_threads_distribute_ratecontrol(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -5887,7 +5816,6 @@ pub unsafe extern "C" fn x264_8_threads_distribute_ratecontrol(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -5928,7 +5856,6 @@ pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_thread_sync_ratecontrol(
     mut cur: *mut crate::src::common::common::x264_t,
     mut prev: *mut crate::src::common::common::x264_t,
@@ -6049,7 +5976,6 @@ pub unsafe extern "C" fn x264_8_thread_sync_ratecontrol(
         }
     }
 }
-
 unsafe extern "C" fn find_underflow(
     mut h: *mut crate::src::common::common::x264_t,
     mut fills: *mut ::core::ffi::c_double,
@@ -6104,7 +6030,6 @@ unsafe extern "C" fn find_underflow(
             as ::core::ffi::c_int;
     }
 }
-
 unsafe extern "C" fn fix_underflow(
     mut h: *mut crate::src::common::common::x264_t,
     mut t0: ::core::ffi::c_int,
@@ -6134,7 +6059,6 @@ unsafe extern "C" fn fix_underflow(
         return adjusted;
     }
 }
-
 unsafe extern "C" fn count_expected_bits(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_double {
@@ -6152,7 +6076,6 @@ unsafe extern "C" fn count_expected_bits(
         return expected_bits;
     }
 }
-
 unsafe extern "C" fn vbv_pass2(
     mut h: *mut crate::src::common::common::x264_t,
     mut all_available_bits: ::core::ffi::c_double,
@@ -6257,7 +6180,6 @@ unsafe extern "C" fn vbv_pass2(
         };
     }
 }
-
 unsafe extern "C" fn init_pass2(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -6656,7 +6578,6 @@ unsafe extern "C" fn init_pass2(
                         {
                             if (*h).param.rc.i_qp_min > 0 as ::core::ffi::c_int {
                                 crate::src::common::common::x264_8_log(
-
                                     h as *mut crate::src::common::common::x264_t,
                                     crate::x264_h::X264_LOG_WARNING_1,
                                     b"try reducing target bitrate or reducing qp_min (currently %d)\n\0"
@@ -6678,7 +6599,6 @@ unsafe extern "C" fn init_pass2(
                         {
                             if (*h).param.rc.i_qp_max < crate::src::common::common::QP_MAX {
                                 crate::src::common::common::x264_8_log(
-
                                     h as *mut crate::src::common::common::x264_t,
                                     crate::x264_h::X264_LOG_WARNING_1,
                                     b"try increasing target bitrate or increasing qp_max (currently %d)\n\0"

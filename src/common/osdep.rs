@@ -1,6 +1,4 @@
-
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_mdate() -> crate::stdlib::int64_t {
     unsafe {
         let mut ts: crate::stdlib::timespec = crate::stdlib::timespec {

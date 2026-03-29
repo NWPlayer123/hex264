@@ -1,33 +1,26 @@
-
 extern "C" {
-
     pub fn x264_8_encoder_open(
         _: *mut crate::x264_h::x264_param_t,
         _: *mut ::core::ffi::c_void,
     ) -> *mut crate::src::common::common::x264_t;
-
     pub fn x264_8_nal_encode(
         h: *mut crate::src::common::common::x264_t,
         dst: *mut crate::stdlib::uint8_t,
         nal: *mut crate::x264_h::x264_nal_t,
     );
-
     pub fn x264_8_encoder_reconfig(
         _: *mut crate::src::common::common::x264_t,
         _: *mut crate::x264_h::x264_param_t,
     ) -> ::core::ffi::c_int;
-
     pub fn x264_8_encoder_parameters(
         _: *mut crate::src::common::common::x264_t,
         _: *mut crate::x264_h::x264_param_t,
     );
-
     pub fn x264_8_encoder_headers(
         _: *mut crate::src::common::common::x264_t,
         pp_nal: *mut *mut crate::x264_h::x264_nal_t,
         pi_nal: *mut ::core::ffi::c_int,
     ) -> ::core::ffi::c_int;
-
     pub fn x264_8_encoder_encode(
         _: *mut crate::src::common::common::x264_t,
         pp_nal: *mut *mut crate::x264_h::x264_nal_t,
@@ -35,19 +28,14 @@ extern "C" {
         pic_in: *mut crate::x264_h::x264_picture_t_2,
         pic_out: *mut crate::x264_h::x264_picture_t_2,
     ) -> ::core::ffi::c_int;
-
     pub fn x264_8_encoder_close(_: *mut crate::src::common::common::x264_t);
-
     pub fn x264_8_encoder_delayed_frames(
         _: *mut crate::src::common::common::x264_t,
     ) -> ::core::ffi::c_int;
-
     pub fn x264_8_encoder_maximum_delayed_frames(
         _: *mut crate::src::common::common::x264_t,
     ) -> ::core::ffi::c_int;
-
     pub fn x264_8_encoder_intra_refresh(_: *mut crate::src::common::common::x264_t);
-
     pub fn x264_8_encoder_invalidate_reference(
         _: *mut crate::src::common::common::x264_t,
         pts: crate::stdlib::int64_t,
@@ -55,7 +43,6 @@ extern "C" {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_api_t {
     pub x264: *mut crate::src::common::common::x264_t,
     pub nal_encode: Option<
@@ -108,10 +95,8 @@ pub struct x264_api_t {
     >,
 }
 #[no_mangle]
-
 pub static mut x264_chroma_format: ::core::ffi::c_int = crate::x264_config_h::X264_CHROMA_FORMAT;
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_open_165(
     mut param: *mut crate::x264_h::x264_param_t,
 ) -> *mut crate::src::common::common::x264_t {
@@ -261,7 +246,6 @@ pub unsafe extern "C" fn x264_encoder_open_165(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_close(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut api: *mut x264_api_t = h as *mut x264_api_t;
@@ -270,7 +254,6 @@ pub unsafe extern "C" fn x264_encoder_close(mut h: *mut crate::src::common::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_nal_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut dst: *mut crate::stdlib::uint8_t,
@@ -282,7 +265,6 @@ pub unsafe extern "C" fn x264_nal_encode(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_reconfig(
     mut h: *mut crate::src::common::common::x264_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -293,7 +275,6 @@ pub unsafe extern "C" fn x264_encoder_reconfig(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_parameters(
     mut h: *mut crate::src::common::common::x264_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -306,7 +287,6 @@ pub unsafe extern "C" fn x264_encoder_parameters(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_headers(
     mut h: *mut crate::src::common::common::x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
@@ -322,7 +302,6 @@ pub unsafe extern "C" fn x264_encoder_headers(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
@@ -342,7 +321,6 @@ pub unsafe extern "C" fn x264_encoder_encode(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_delayed_frames(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -354,7 +332,6 @@ pub unsafe extern "C" fn x264_encoder_delayed_frames(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_maximum_delayed_frames(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -366,7 +343,6 @@ pub unsafe extern "C" fn x264_encoder_maximum_delayed_frames(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_intra_refresh(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -378,7 +354,6 @@ pub unsafe extern "C" fn x264_encoder_intra_refresh(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_encoder_invalidate_reference(
     mut h: *mut crate::src::common::common::x264_t,
     mut pts: crate::stdlib::int64_t,

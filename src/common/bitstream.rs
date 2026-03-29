@@ -6,11 +6,9 @@ pub struct vlc_large_t {
     pub i_size: crate::stdlib::uint8_t,
     pub i_next: crate::stdlib::uint8_t,
 }
-
 pub type bs_t = crate::src::common::bitstream::bs_s;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct bs_s {
     pub p_start: *mut crate::stdlib::uint8_t,
     pub p: *mut crate::stdlib::uint8_t,
@@ -21,7 +19,6 @@ pub struct bs_s {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_run_level_t {
     pub last: crate::stdlib::int32_t,
     pub mask: crate::stdlib::int32_t,
@@ -29,7 +26,6 @@ pub struct x264_run_level_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_bitstream_function_t {
     pub nal_escape: Option<
         unsafe extern "C" fn(
@@ -63,9 +59,7 @@ pub struct x264_bitstream_function_t {
         ) -> (),
     >,
 }
-
 pub const LEVEL_TABLE_SIZE: ::core::ffi::c_int = 128 as ::core::ffi::c_int;
-
 unsafe extern "C" fn nal_escape_c(
     mut dst: *mut crate::stdlib::uint8_t,
     mut src: *mut crate::stdlib::uint8_t,
@@ -106,7 +100,6 @@ unsafe extern "C" fn nal_escape_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_nal_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut dst: *mut crate::stdlib::uint8_t,
@@ -177,7 +170,6 @@ pub unsafe extern "C" fn x264_8_nal_encode(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_bitstream_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::bitstream::x264_bitstream_function_t,

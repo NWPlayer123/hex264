@@ -11,7 +11,6 @@ pub type weight_fn_t = Option<
 >;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_weight_t {
     pub cachea: [crate::stdlib::int16_t; 8],
     pub cacheb: [crate::stdlib::int16_t; 8],
@@ -22,7 +21,6 @@ pub struct x264_weight_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -351,7 +349,6 @@ pub struct x264_mc_functions_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_1 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -680,7 +677,6 @@ pub struct x264_mc_functions_t_1 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_2 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -1009,7 +1005,6 @@ pub struct x264_mc_functions_t_2 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_3 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -1338,7 +1333,6 @@ pub struct x264_mc_functions_t_3 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_4 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -1667,7 +1661,6 @@ pub struct x264_mc_functions_t_4 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_5 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -1996,7 +1989,6 @@ pub struct x264_mc_functions_t_5 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_6 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -2325,7 +2317,6 @@ pub struct x264_mc_functions_t_6 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_7 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -2654,7 +2645,6 @@ pub struct x264_mc_functions_t_7 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_8 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -2983,7 +2973,6 @@ pub struct x264_mc_functions_t_8 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_9 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -3312,7 +3301,6 @@ pub struct x264_mc_functions_t_9 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_10 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -3641,7 +3629,6 @@ pub struct x264_mc_functions_t_10 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_11 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -3970,7 +3957,6 @@ pub struct x264_mc_functions_t_11 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_12 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -4299,7 +4285,6 @@ pub struct x264_mc_functions_t_12 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_13 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -4628,7 +4613,6 @@ pub struct x264_mc_functions_t_13 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_14 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -4957,7 +4941,6 @@ pub struct x264_mc_functions_t_14 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_15 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -5286,7 +5269,6 @@ pub struct x264_mc_functions_t_15 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_16 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -5615,7 +5597,6 @@ pub struct x264_mc_functions_t_16 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_17 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -5944,7 +5925,6 @@ pub struct x264_mc_functions_t_17 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_18 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -6273,7 +6253,6 @@ pub struct x264_mc_functions_t_18 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_19 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -6602,7 +6581,6 @@ pub struct x264_mc_functions_t_19 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_20 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -6931,7 +6909,6 @@ pub struct x264_mc_functions_t_20 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_mc_functions_t_21 {
     pub mc_luma: Option<
         unsafe extern "C" fn(
@@ -7258,40 +7235,31 @@ pub struct x264_mc_functions_t_21 {
         ) -> (),
     >,
 }
-
 pub mod common_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-            return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
-                -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
-            } else {
-                x
-            }) as crate::src::common::common::pixel;
-       
+        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+            -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
+        } else {
+            x
+        }) as crate::src::common::common::pixel;
     }
 }
-
 pub mod osdep_h {
     #[inline(always)]
-
     pub unsafe extern "C" fn endian_fix16(
         mut x: crate::stdlib::uint16_t,
     ) -> crate::stdlib::uint16_t {
-            return ((x as ::core::ffi::c_int) << 8 as ::core::ffi::c_int
-                | x as ::core::ffi::c_int >> 8 as ::core::ffi::c_int)
-                as crate::stdlib::uint16_t;
-       
+        return ((x as ::core::ffi::c_int) << 8 as ::core::ffi::c_int
+            | x as ::core::ffi::c_int >> 8 as ::core::ffi::c_int)
+            as crate::stdlib::uint16_t;
     }
 }
-
 use crate::src::common::mc::common_h::x264_clip_pixel;
 use crate::src::common::mc::osdep_h::endian_fix16;
 #[inline]
-
 unsafe extern "C" fn pixel_avg(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -7322,7 +7290,6 @@ unsafe extern "C" fn pixel_avg(
     }
 }
 #[inline]
-
 unsafe extern "C" fn pixel_avg_wxh(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -7353,7 +7320,6 @@ unsafe extern "C" fn pixel_avg_wxh(
     }
 }
 #[inline]
-
 unsafe extern "C" fn pixel_avg_weight_wxh(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -7386,7 +7352,6 @@ unsafe extern "C" fn pixel_avg_weight_wxh(
         }
     }
 }
-
 unsafe extern "C" fn pixel_avg_16x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7423,7 +7388,6 @@ unsafe extern "C" fn pixel_avg_16x16(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_16x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7460,7 +7424,6 @@ unsafe extern "C" fn pixel_avg_16x8(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_8x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7497,7 +7460,6 @@ unsafe extern "C" fn pixel_avg_8x16(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_8x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7534,7 +7496,6 @@ unsafe extern "C" fn pixel_avg_8x8(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_8x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7571,7 +7532,6 @@ unsafe extern "C" fn pixel_avg_8x4(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_4x16(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7608,7 +7568,6 @@ unsafe extern "C" fn pixel_avg_4x16(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_4x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7645,7 +7604,6 @@ unsafe extern "C" fn pixel_avg_4x8(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_4x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7682,7 +7640,6 @@ unsafe extern "C" fn pixel_avg_4x4(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_4x2(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7719,7 +7676,6 @@ unsafe extern "C" fn pixel_avg_4x2(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_2x8(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7756,7 +7712,6 @@ unsafe extern "C" fn pixel_avg_2x8(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_2x4(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7793,7 +7748,6 @@ unsafe extern "C" fn pixel_avg_2x4(
         };
     }
 }
-
 unsafe extern "C" fn pixel_avg_2x2(
     mut pix1: *mut crate::src::common::common::pixel,
     mut i_stride_pix1: crate::stdlib::intptr_t,
@@ -7830,7 +7784,6 @@ unsafe extern "C" fn pixel_avg_2x2(
         };
     }
 }
-
 unsafe extern "C" fn weight_cache(
     mut h: *mut crate::src::common::common::x264_t,
     mut w: *mut crate::src::common::mc::x264_weight_t,
@@ -7839,7 +7792,6 @@ unsafe extern "C" fn weight_cache(
         (*w).weightfn = (*h).mc.weight;
     }
 }
-
 unsafe extern "C" fn mc_weight(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -7888,7 +7840,6 @@ unsafe extern "C" fn mc_weight(
         };
     }
 }
-
 unsafe extern "C" fn mc_weight_w20(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -7909,7 +7860,6 @@ unsafe extern "C" fn mc_weight_w20(
         );
     }
 }
-
 unsafe extern "C" fn mc_weight_w16(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -7930,7 +7880,6 @@ unsafe extern "C" fn mc_weight_w16(
         );
     }
 }
-
 unsafe extern "C" fn mc_weight_w12(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -7951,7 +7900,6 @@ unsafe extern "C" fn mc_weight_w12(
         );
     }
 }
-
 unsafe extern "C" fn mc_weight_w8(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -7972,7 +7920,6 @@ unsafe extern "C" fn mc_weight_w8(
         );
     }
 }
-
 unsafe extern "C" fn mc_weight_w4(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -7993,7 +7940,6 @@ unsafe extern "C" fn mc_weight_w4(
         );
     }
 }
-
 unsafe extern "C" fn mc_weight_w2(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -8014,78 +7960,74 @@ unsafe extern "C" fn mc_weight_w2(
         );
     }
 }
-
-static mut mc_weight_wtab: [crate::src::common::mc::weight_fn_t; 6] = 
-    [
-        Some(
-            mc_weight_w2
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *const crate::src::common::mc::x264_weight_t,
-                    ::core::ffi::c_int,
-                ) -> (),
-        ),
-        Some(
-            mc_weight_w4
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *const crate::src::common::mc::x264_weight_t,
-                    ::core::ffi::c_int,
-                ) -> (),
-        ),
-        Some(
-            mc_weight_w8
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *const crate::src::common::mc::x264_weight_t,
-                    ::core::ffi::c_int,
-                ) -> (),
-        ),
-        Some(
-            mc_weight_w12
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *const crate::src::common::mc::x264_weight_t,
-                    ::core::ffi::c_int,
-                ) -> (),
-        ),
-        Some(
-            mc_weight_w16
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *const crate::src::common::mc::x264_weight_t,
-                    ::core::ffi::c_int,
-                ) -> (),
-        ),
-        Some(
-            mc_weight_w20
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *mut crate::src::common::common::pixel,
-                    crate::stdlib::intptr_t,
-                    *const crate::src::common::mc::x264_weight_t,
-                    ::core::ffi::c_int,
-                ) -> (),
-        ),
-    ]
-;
-
+static mut mc_weight_wtab: [crate::src::common::mc::weight_fn_t; 6] = [
+    Some(
+        mc_weight_w2
+            as unsafe extern "C" fn(
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *const crate::src::common::mc::x264_weight_t,
+                ::core::ffi::c_int,
+            ) -> (),
+    ),
+    Some(
+        mc_weight_w4
+            as unsafe extern "C" fn(
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *const crate::src::common::mc::x264_weight_t,
+                ::core::ffi::c_int,
+            ) -> (),
+    ),
+    Some(
+        mc_weight_w8
+            as unsafe extern "C" fn(
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *const crate::src::common::mc::x264_weight_t,
+                ::core::ffi::c_int,
+            ) -> (),
+    ),
+    Some(
+        mc_weight_w12
+            as unsafe extern "C" fn(
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *const crate::src::common::mc::x264_weight_t,
+                ::core::ffi::c_int,
+            ) -> (),
+    ),
+    Some(
+        mc_weight_w16
+            as unsafe extern "C" fn(
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *const crate::src::common::mc::x264_weight_t,
+                ::core::ffi::c_int,
+            ) -> (),
+    ),
+    Some(
+        mc_weight_w20
+            as unsafe extern "C" fn(
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *mut crate::src::common::common::pixel,
+                crate::stdlib::intptr_t,
+                *const crate::src::common::mc::x264_weight_t,
+                ::core::ffi::c_int,
+            ) -> (),
+    ),
+];
 unsafe extern "C" fn mc_copy(
     mut src: *mut crate::src::common::common::pixel,
     mut i_src_stride: crate::stdlib::intptr_t,
@@ -8109,7 +8051,6 @@ unsafe extern "C" fn mc_copy(
         }
     }
 }
-
 unsafe extern "C" fn hpel_filter(
     mut dsth: *mut crate::src::common::common::pixel,
     mut dstv: *mut crate::src::common::common::pixel,
@@ -8223,7 +8164,6 @@ unsafe extern "C" fn hpel_filter(
         }
     }
 }
-
 unsafe extern "C" fn mc_luma(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: crate::stdlib::intptr_t,
@@ -8295,7 +8235,6 @@ unsafe extern "C" fn mc_luma(
         };
     }
 }
-
 unsafe extern "C" fn get_ref(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst_stride: *mut crate::stdlib::intptr_t,
@@ -8370,7 +8309,6 @@ unsafe extern "C" fn get_ref(
         };
     }
 }
-
 unsafe extern "C" fn mc_chroma(
     mut dstu: *mut crate::src::common::common::pixel,
     mut dstv: *mut crate::src::common::common::pixel,
@@ -8440,7 +8378,6 @@ unsafe extern "C" fn mc_chroma(
         }
     }
 }
-
 unsafe extern "C" fn mc_copy_w16(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8452,7 +8389,6 @@ unsafe extern "C" fn mc_copy_w16(
         mc_copy(src, i_src, dst, i_dst, 16 as ::core::ffi::c_int, i_height);
     }
 }
-
 unsafe extern "C" fn mc_copy_w8(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8464,7 +8400,6 @@ unsafe extern "C" fn mc_copy_w8(
         mc_copy(src, i_src, dst, i_dst, 8 as ::core::ffi::c_int, i_height);
     }
 }
-
 unsafe extern "C" fn mc_copy_w4(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8477,7 +8412,6 @@ unsafe extern "C" fn mc_copy_w4(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_plane_copy_c(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8504,7 +8438,6 @@ pub unsafe extern "C" fn x264_8_plane_copy_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_plane_copy_swap_c(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8529,7 +8462,6 @@ pub unsafe extern "C" fn x264_8_plane_copy_swap_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_plane_copy_interleave_c(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8558,7 +8490,6 @@ pub unsafe extern "C" fn x264_8_plane_copy_interleave_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_plane_copy_deinterleave_c(
     mut dsta: *mut crate::src::common::common::pixel,
     mut i_dsta: crate::stdlib::intptr_t,
@@ -8586,7 +8517,6 @@ pub unsafe extern "C" fn x264_8_plane_copy_deinterleave_c(
         }
     }
 }
-
 unsafe extern "C" fn plane_copy_deinterleave_rgb_c(
     mut dsta: *mut crate::src::common::common::pixel,
     mut i_dsta: crate::stdlib::intptr_t,
@@ -8618,7 +8548,6 @@ unsafe extern "C" fn plane_copy_deinterleave_rgb_c(
         }
     }
 }
-
 unsafe extern "C" fn plane_copy_deinterleave_v210_c(
     mut dsty: *mut crate::src::common::common::pixel,
     mut i_dsty: crate::stdlib::intptr_t,
@@ -8676,7 +8605,6 @@ unsafe extern "C" fn plane_copy_deinterleave_v210_c(
         }
     }
 }
-
 unsafe extern "C" fn store_interleave_chroma(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8701,7 +8629,6 @@ unsafe extern "C" fn store_interleave_chroma(
         }
     }
 }
-
 unsafe extern "C" fn load_deinterleave_chroma_fenc(
     mut dst: *mut crate::src::common::common::pixel,
     mut src: *mut crate::src::common::common::pixel,
@@ -8723,7 +8650,6 @@ unsafe extern "C" fn load_deinterleave_chroma_fenc(
         );
     }
 }
-
 unsafe extern "C" fn load_deinterleave_chroma_fdec(
     mut dst: *mut crate::src::common::common::pixel,
     mut src: *mut crate::src::common::common::pixel,
@@ -8745,7 +8671,6 @@ unsafe extern "C" fn load_deinterleave_chroma_fdec(
         );
     }
 }
-
 unsafe extern "C" fn prefetch_fenc_null(
     mut _pix_y: *mut crate::src::common::common::pixel,
     mut _stride_y: crate::stdlib::intptr_t,
@@ -8754,14 +8679,12 @@ unsafe extern "C" fn prefetch_fenc_null(
     mut _mb_x: ::core::ffi::c_int,
 ) {
 }
-
 unsafe extern "C" fn prefetch_ref_null(
     mut _pix: *mut crate::src::common::common::pixel,
     mut _stride: crate::stdlib::intptr_t,
     mut _parity: ::core::ffi::c_int,
 ) {
 }
-
 unsafe extern "C" fn memzero_aligned(
     mut dst: *mut ::core::ffi::c_void,
     mut n: crate::__stddef_size_t_h::size_t,
@@ -8770,7 +8693,6 @@ unsafe extern "C" fn memzero_aligned(
         crate::stdlib::memset(dst, 0 as ::core::ffi::c_int, n);
     }
 }
-
 unsafe extern "C" fn integral_init4h(
     mut sum: *mut crate::stdlib::uint16_t,
     mut pix: *mut crate::src::common::common::pixel,
@@ -8795,7 +8717,6 @@ unsafe extern "C" fn integral_init4h(
         }
     }
 }
-
 unsafe extern "C" fn integral_init8h(
     mut sum: *mut crate::stdlib::uint16_t,
     mut pix: *mut crate::src::common::common::pixel,
@@ -8824,7 +8745,6 @@ unsafe extern "C" fn integral_init8h(
         }
     }
 }
-
 unsafe extern "C" fn integral_init4v(
     mut sum8: *mut crate::stdlib::uint16_t,
     mut sum4: *mut crate::stdlib::uint16_t,
@@ -8866,7 +8786,6 @@ unsafe extern "C" fn integral_init4v(
         }
     }
 }
-
 unsafe extern "C" fn integral_init8v(
     mut sum8: *mut crate::stdlib::uint16_t,
     mut stride: crate::stdlib::intptr_t,
@@ -8888,7 +8807,6 @@ unsafe extern "C" fn integral_init8v(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_frame_init_lowres(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -8958,7 +8876,6 @@ pub unsafe extern "C" fn x264_8_frame_init_lowres(
         }
     }
 }
-
 unsafe extern "C" fn frame_init_lowres_core(
     mut src0: *mut crate::src::common::common::pixel,
     mut dst0: *mut crate::src::common::common::pixel,
@@ -9057,7 +8974,6 @@ unsafe extern "C" fn frame_init_lowres_core(
         }
     }
 }
-
 unsafe extern "C" fn mbtree_propagate_cost(
     mut dst: *mut crate::stdlib::int16_t,
     mut propagate_in: *mut crate::stdlib::uint16_t,
@@ -9106,7 +9022,6 @@ unsafe extern "C" fn mbtree_propagate_cost(
         }
     }
 }
-
 unsafe extern "C" fn mbtree_propagate_list(
     mut h: *mut crate::src::common::common::x264_t,
     mut ref_costs: *mut crate::stdlib::uint16_t,
@@ -9352,7 +9267,6 @@ unsafe extern "C" fn mbtree_propagate_list(
         }
     }
 }
-
 unsafe extern "C" fn mbtree_fix8_pack(
     mut dst: *mut crate::stdlib::uint16_t,
     mut src: *mut ::core::ffi::c_float,
@@ -9369,7 +9283,6 @@ unsafe extern "C" fn mbtree_fix8_pack(
         }
     }
 }
-
 unsafe extern "C" fn mbtree_fix8_unpack(
     mut dst: *mut ::core::ffi::c_float,
     mut src: *mut crate::stdlib::uint16_t,
@@ -9387,7 +9300,6 @@ unsafe extern "C" fn mbtree_fix8_unpack(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_mc_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::mc::x264_mc_functions_t_6,
@@ -10411,7 +10323,6 @@ pub unsafe extern "C" fn x264_8_mc_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_frame_filter(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,

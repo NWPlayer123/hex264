@@ -1,39 +1,26 @@
 // =============== BEGIN common_h ================
 use crate::src::encoder::ratecontrol::x264_ratecontrol_t;
-
 pub const QP_BD_OFFSET: ::core::ffi::c_int =
     6 as ::core::ffi::c_int * (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int);
-
 pub const QP_MAX_SPEC: ::core::ffi::c_int =
     51 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET;
-
 pub const QP_MAX: ::core::ffi::c_int =
     crate::src::common::common::QP_MAX_SPEC + 18 as ::core::ffi::c_int;
-
 pub const PIXEL_MAX: ::core::ffi::c_int =
     ((1 as ::core::ffi::c_int) << crate::internal::BIT_DEPTH) - 1 as ::core::ffi::c_int;
-
 pub const X264_LOOKAHEAD_QP: ::core::ffi::c_int =
     12 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET;
-
 pub const NALU_OVERHEAD: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
-
 pub const FILLER_OVERHEAD: ::core::ffi::c_int =
     crate::src::common::common::NALU_OVERHEAD + 1 as ::core::ffi::c_int;
-
 pub type pixel = crate::stdlib::uint8_t;
-
 pub type pixel4 = crate::stdlib::uint32_t;
-
 pub type dctcoef = crate::stdlib::int16_t;
-
 pub type udctcoef = crate::stdlib::uint16_t;
-
 pub const SIZEOF_PIXEL: ::core::ffi::c_int =
     ::core::mem::size_of::<crate::src::common::common::pixel>() as ::core::ffi::c_int;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_slice_header_t {
     pub sps: *mut crate::src::common::set::x264_sps_t,
     pub pps: *mut crate::src::common::set::x264_pps_t,
@@ -72,21 +59,18 @@ pub struct x264_slice_header_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_15 {
     pub idc: ::core::ffi::c_int,
     pub arg: ::core::ffi::c_int,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_14 {
     pub i_difference_of_pic_nums: ::core::ffi::c_int,
     pub i_poc: ::core::ffi::c_int,
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_lookahead_t {
     pub b_exit_thread: crate::stdlib::uint8_t,
     pub b_thread_active: crate::stdlib::uint8_t,
@@ -101,7 +85,6 @@ pub struct x264_lookahead_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_left_table_t {
     pub intra: [crate::stdlib::uint8_t; 4],
     pub nnz: [crate::stdlib::uint8_t; 4],
@@ -111,7 +94,6 @@ pub struct x264_left_table_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_frame_stat_t {
     pub i_mv_bits: ::core::ffi::c_int,
     pub i_tex_bits: ::core::ffi::c_int,
@@ -133,7 +115,6 @@ pub struct x264_frame_stat_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct x264_t {
     pub param: crate::x264_h::x264_param_t,
     pub api: *mut ::core::ffi::c_void,
@@ -237,7 +218,6 @@ pub struct x264_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_17 {
     pub i_nal: ::core::ffi::c_int,
     pub i_nals_allocated: ::core::ffi::c_int,
@@ -248,14 +228,12 @@ pub struct C2Rust_Unnamed_17 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_16 {
     pub ref_0: [[[crate::stdlib::uint16_t; 33]; 3]; 70],
     pub i4x4_mode: [[crate::stdlib::uint16_t; 17]; 70],
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_13 {
     pub current: *mut *mut crate::src::common::frame::x264_frame_t,
     pub unused: [*mut *mut crate::src::common::frame::x264_frame_t; 2],
@@ -280,7 +258,6 @@ pub struct C2Rust_Unnamed_13 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_12 {
     pub luma16x16_dc: [[crate::src::common::common::dctcoef; 16]; 3],
     pub chroma_dc: [[crate::src::common::common::dctcoef; 8]; 2],
@@ -289,7 +266,6 @@ pub struct C2Rust_Unnamed_12 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_9 {
     pub i_mb_width: ::core::ffi::c_int,
     pub i_mb_height: ::core::ffi::c_int,
@@ -403,7 +379,6 @@ pub struct C2Rust_Unnamed_9 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_11 {
     pub fenc_buf: [crate::src::common::common::pixel; 768],
     pub fdec_buf: [crate::src::common::common::pixel; 1728],
@@ -428,13 +403,10 @@ pub struct C2Rust_Unnamed_11 {
     pub p_integral: [[*mut crate::stdlib::uint16_t; 16]; 2],
     pub i_stride: [::core::ffi::c_int; 3],
 }
-
 pub const FENC_STRIDE: ::core::ffi::c_int = 16 as ::core::ffi::c_int;
-
 pub const FDEC_STRIDE: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_10 {
     pub intra4x4_pred_mode: [crate::stdlib::int8_t; 40],
     pub non_zero_count: [crate::stdlib::uint8_t; 120],
@@ -456,7 +428,6 @@ pub struct C2Rust_Unnamed_10 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_8 {
     pub i_frame_count: [::core::ffi::c_int; 3],
     pub i_frame_size: [crate::stdlib::int64_t; 3],
@@ -483,13 +454,11 @@ pub struct C2Rust_Unnamed_8 {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct mvsad_t {
     pub sad: ::core::ffi::c_int,
     pub mv: [crate::stdlib::int16_t; 2],
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_log(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_level: ::core::ffi::c_int,

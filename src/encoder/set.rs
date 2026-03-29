@@ -1,7 +1,5 @@
 pub mod bitstream_h {
-
     #[inline]
-
     pub unsafe extern "C" fn bs_init(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut p_data: *mut ::core::ffi::c_void,
@@ -26,7 +24,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_pos(
         mut s: *mut crate::src::common::bitstream::bs_t,
     ) -> ::core::ffi::c_int {
@@ -38,7 +35,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_flush(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
             (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i = endian_fix32(
@@ -52,7 +48,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_realign(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
             let mut offset: ::core::ffi::c_int = ((*s).p as crate::stdlib::intptr_t
@@ -69,7 +64,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_write(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut i_count: ::core::ffi::c_int,
@@ -101,7 +95,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_write32(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut i_bits: crate::stdlib::uint32_t,
@@ -116,7 +109,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_write1(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut i_bit: crate::stdlib::uint32_t,
@@ -136,7 +128,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_align_10(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
             if (*s).i_left & 7 as ::core::ffi::c_int != 0 {
@@ -151,7 +142,6 @@ pub mod bitstream_h {
             bs_flush(s);
         }
     }
-
     pub static mut x264_ue_size_tab: [crate::stdlib::uint8_t; 256] = [
         1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -411,7 +401,6 @@ pub mod bitstream_h {
         15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     ];
     #[inline]
-
     pub unsafe extern "C" fn bs_write_ue_big(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut val: ::core::ffi::c_uint,
@@ -442,7 +431,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_write_se(
         mut s: *mut crate::src::common::bitstream::bs_t,
         mut val: ::core::ffi::c_int,
@@ -464,7 +452,6 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-
     pub unsafe extern "C" fn bs_rbsp_trailing(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
             bs_write1(s, 1 as crate::stdlib::uint32_t);
@@ -476,7 +463,6 @@ pub mod bitstream_h {
         }
     }
     #[inline(always)]
-
     pub unsafe extern "C" fn bs_size_se(mut val: ::core::ffi::c_int) -> ::core::ffi::c_int {
         unsafe {
             let mut tmp: ::core::ffi::c_int =
@@ -496,49 +482,33 @@ pub mod bitstream_h {
     use crate::src::encoder::set::osdep_h::endian_fix;
     use crate::src::encoder::set::osdep_h::endian_fix32;
 }
-
 pub mod osdep_h {
-
     #[inline(always)]
-
-    pub  extern "C" fn endian_fix32(
-        mut x: crate::stdlib::uint32_t,
-    ) -> crate::stdlib::uint32_t {
-            return (x << 24 as ::core::ffi::c_int)
-                .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as crate::stdlib::uint32_t)
-                .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as crate::stdlib::uint32_t)
-                .wrapping_add(x >> 24 as ::core::ffi::c_int);
-      
+    pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
+        return (x << 24 as ::core::ffi::c_int)
+            .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as crate::stdlib::uint32_t)
+            .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as crate::stdlib::uint32_t)
+            .wrapping_add(x >> 24 as ::core::ffi::c_int);
     }
     #[inline(always)]
-
-    pub  extern "C" fn endian_fix64(
-        mut x: crate::stdlib::uint64_t,
-    ) -> crate::stdlib::uint64_t {
-            return (endian_fix32((x >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t)
-                as crate::stdlib::uint64_t)
-                .wrapping_add(
-                    (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
-                        << 32 as ::core::ffi::c_int,
-                );
-        
+    pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
+        return (endian_fix32((x >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t)
+            as crate::stdlib::uint64_t)
+            .wrapping_add(
+                (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
+                    << 32 as ::core::ffi::c_int,
+            );
     }
     #[inline(always)]
-
-    pub  extern "C" fn endian_fix(
-        mut x: crate::stdlib::uintptr_t,
-    ) -> crate::stdlib::uintptr_t {
-            return if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
-                endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
-            } else {
-                endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
-            };
-       
+    pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
+        return if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
+            endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
+        } else {
+            endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
+        };
     }
 }
-
 pub mod macroblock_h {
-
     pub static mut x264_zigzag_scan4: [[crate::stdlib::uint8_t; 16]; 2] = [
         [
             0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -577,7 +547,6 @@ pub mod macroblock_h {
             15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         ],
     ];
-
     pub static mut x264_zigzag_scan8: [[crate::stdlib::uint8_t; 64]; 2] = [
         [
             0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -713,7 +682,6 @@ pub mod macroblock_h {
         ],
     ];
 }
-
 use crate::src::encoder::set::bitstream_h::bs_align_10;
 use crate::src::encoder::set::bitstream_h::bs_flush;
 use crate::src::encoder::set::bitstream_h::bs_init;
@@ -730,13 +698,11 @@ use crate::src::encoder::set::macroblock_h::x264_zigzag_scan4;
 use crate::src::encoder::set::macroblock_h::x264_zigzag_scan8;
 #[derive(Copy, Clone)]
 #[repr(C)]
-
 pub struct C2Rust_Unnamed_465 {
     pub w: crate::stdlib::uint8_t,
     pub h: crate::stdlib::uint8_t,
     pub sar: crate::stdlib::uint8_t,
 }
-
 static mut num_clock_ts: [crate::stdlib::uint8_t; 10] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -749,7 +715,6 @@ static mut num_clock_ts: [crate::stdlib::uint8_t; 10] = [
     2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 static mut avcintra_uuid: [crate::stdlib::uint8_t; 16] = [
     0xf7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0x49 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -768,7 +733,6 @@ static mut avcintra_uuid: [crate::stdlib::uint8_t; 16] = [
     0x37 as ::core::ffi::c_int as crate::stdlib::uint8_t,
     0x2a as ::core::ffi::c_int as crate::stdlib::uint8_t,
 ];
-
 unsafe extern "C" fn transpose(mut buf: *mut crate::stdlib::uint8_t, mut w: ::core::ffi::c_int) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -784,7 +748,6 @@ unsafe extern "C" fn transpose(mut buf: *mut crate::stdlib::uint8_t, mut w: ::co
         }
     }
 }
-
 unsafe extern "C" fn scaling_list_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut sps: *mut crate::src::common::set::x264_sps_t,
@@ -889,7 +852,6 @@ unsafe extern "C" fn scaling_list_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut payload: *mut crate::stdlib::uint8_t,
@@ -933,7 +895,6 @@ pub unsafe extern "C" fn x264_8_sei_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sps_init(
     mut sps: *mut crate::src::common::set::x264_sps_t,
     mut i_id: ::core::ffi::c_int,
@@ -1332,7 +1293,6 @@ pub unsafe extern "C" fn x264_8_sps_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sps_init_reconfigurable(
     mut sps: *mut crate::src::common::set::x264_sps_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -1361,7 +1321,6 @@ pub unsafe extern "C" fn x264_8_sps_init_reconfigurable(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
     mut sps: *mut crate::src::common::set::x264_sps_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -1469,7 +1428,6 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sps_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut sps: *mut crate::src::common::set::x264_sps_t,
@@ -1887,7 +1845,6 @@ pub unsafe extern "C" fn x264_8_sps_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_pps_init(
     mut pps: *mut crate::src::common::set::x264_pps_t,
     mut i_id: ::core::ffi::c_int,
@@ -1936,7 +1893,6 @@ pub unsafe extern "C" fn x264_8_pps_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_pps_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut sps: *mut crate::src::common::set::x264_sps_t,
@@ -2074,7 +2030,6 @@ pub unsafe extern "C" fn x264_8_pps_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_recovery_point_write(
     mut _h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2117,7 +2072,6 @@ pub unsafe extern "C" fn x264_8_sei_recovery_point_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_version_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2192,7 +2146,6 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2241,7 +2194,6 @@ pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2303,7 +2255,6 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2402,7 +2353,6 @@ pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_mastering_display_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2484,7 +2434,6 @@ pub unsafe extern "C" fn x264_8_sei_mastering_display_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_content_light_level_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2528,7 +2477,6 @@ pub unsafe extern "C" fn x264_8_sei_content_light_level_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_alternative_transfer_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2567,7 +2515,6 @@ pub unsafe extern "C" fn x264_8_sei_alternative_transfer_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_filler_write(
     mut _h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2585,7 +2532,6 @@ pub unsafe extern "C" fn x264_8_filler_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -2644,7 +2590,6 @@ pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut _s: *mut crate::src::common::bitstream::bs_t,
@@ -2702,7 +2647,6 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut _s: *mut crate::src::common::bitstream::bs_t,
@@ -2750,7 +2694,6 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_validate_levels(
     mut h: *mut crate::src::common::common::x264_t,
     mut verbose: ::core::ffi::c_int,

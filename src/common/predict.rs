@@ -1,14 +1,12 @@
 // =============== BEGIN predict_h ================
 pub type x264_predict_t =
     Option<unsafe extern "C" fn(*mut crate::src::common::common::pixel) -> ()>;
-
 pub type x264_predict8x8_t = Option<
     unsafe extern "C" fn(
         *mut crate::src::common::common::pixel,
         *mut crate::src::common::common::pixel,
     ) -> (),
 >;
-
 pub type x264_predict_8x8_filter_t = Option<
     unsafe extern "C" fn(
         *mut crate::src::common::common::pixel,
@@ -17,135 +15,80 @@ pub type x264_predict_8x8_filter_t = Option<
         ::core::ffi::c_int,
     ) -> (),
 >;
-
 pub type intra_chroma_pred_e = ::core::ffi::c_uint;
-
 pub const I_PRED_CHROMA_DC: crate::src::common::predict::intra_chroma_pred_e = 0;
-
 pub const I_PRED_CHROMA_H: crate::src::common::predict::intra_chroma_pred_e = 1;
-
 pub const I_PRED_CHROMA_V: crate::src::common::predict::intra_chroma_pred_e = 2;
-
 pub const I_PRED_CHROMA_P: crate::src::common::predict::intra_chroma_pred_e = 3;
-
 pub const I_PRED_CHROMA_DC_LEFT: crate::src::common::predict::intra_chroma_pred_e = 4;
-
 pub const I_PRED_CHROMA_DC_TOP: crate::src::common::predict::intra_chroma_pred_e = 5;
-
 pub const I_PRED_CHROMA_DC_128: crate::src::common::predict::intra_chroma_pred_e = 6;
-
 pub type intra16x16_pred_e = ::core::ffi::c_uint;
-
 pub const I_PRED_16x16_V: crate::src::common::predict::intra16x16_pred_e = 0;
-
 pub const I_PRED_16x16_H: crate::src::common::predict::intra16x16_pred_e = 1;
-
 pub const I_PRED_16x16_DC: crate::src::common::predict::intra16x16_pred_e = 2;
-
 pub const I_PRED_16x16_P: crate::src::common::predict::intra16x16_pred_e = 3;
-
 pub const I_PRED_16x16_DC_LEFT: crate::src::common::predict::intra16x16_pred_e = 4;
-
 pub const I_PRED_16x16_DC_TOP: crate::src::common::predict::intra16x16_pred_e = 5;
-
 pub const I_PRED_16x16_DC_128: crate::src::common::predict::intra16x16_pred_e = 6;
-
 pub type intra4x4_pred_e = ::core::ffi::c_uint;
-
 pub const I_PRED_4x4_V: crate::src::common::predict::intra4x4_pred_e = 0;
-
 pub const I_PRED_4x4_H: crate::src::common::predict::intra4x4_pred_e = 1;
-
 pub const I_PRED_4x4_DC: crate::src::common::predict::intra4x4_pred_e = 2;
-
 pub const I_PRED_4x4_DDL: crate::src::common::predict::intra4x4_pred_e = 3;
-
 pub const I_PRED_4x4_DDR: crate::src::common::predict::intra4x4_pred_e = 4;
-
 pub const I_PRED_4x4_VR: crate::src::common::predict::intra4x4_pred_e = 5;
-
 pub const I_PRED_4x4_HD: crate::src::common::predict::intra4x4_pred_e = 6;
-
 pub const I_PRED_4x4_VL: crate::src::common::predict::intra4x4_pred_e = 7;
-
 pub const I_PRED_4x4_HU: crate::src::common::predict::intra4x4_pred_e = 8;
-
 pub const I_PRED_4x4_DC_LEFT: crate::src::common::predict::intra4x4_pred_e = 9;
-
 pub const I_PRED_4x4_DC_TOP: crate::src::common::predict::intra4x4_pred_e = 10;
-
 pub const I_PRED_4x4_DC_128: crate::src::common::predict::intra4x4_pred_e = 11;
-
 pub type intra8x8_pred_e = ::core::ffi::c_uint;
-
 pub const I_PRED_8x8_V: crate::src::common::predict::intra8x8_pred_e = 0;
-
 pub const I_PRED_8x8_H: crate::src::common::predict::intra8x8_pred_e = 1;
-
 pub const I_PRED_8x8_DC: crate::src::common::predict::intra8x8_pred_e = 2;
-
 pub const I_PRED_8x8_DDL: crate::src::common::predict::intra8x8_pred_e = 3;
-
 pub const I_PRED_8x8_DDR: crate::src::common::predict::intra8x8_pred_e = 4;
-
 pub const I_PRED_8x8_VR: crate::src::common::predict::intra8x8_pred_e = 5;
-
 pub const I_PRED_8x8_HD: crate::src::common::predict::intra8x8_pred_e = 6;
-
 pub const I_PRED_8x8_VL: crate::src::common::predict::intra8x8_pred_e = 7;
-
 pub const I_PRED_8x8_HU: crate::src::common::predict::intra8x8_pred_e = 8;
-
 pub const I_PRED_8x8_DC_LEFT: crate::src::common::predict::intra8x8_pred_e = 9;
-
 pub const I_PRED_8x8_DC_TOP: crate::src::common::predict::intra8x8_pred_e = 10;
-
 pub const I_PRED_8x8_DC_128: crate::src::common::predict::intra8x8_pred_e = 11;
-
 pub mod common_h {
-
     #[inline(always)]
-
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-            return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
-                -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
-            } else {
-                x
-            }) as crate::src::common::common::pixel;
-       
+        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+            -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
+        } else {
+            x
+        }) as crate::src::common::common::pixel;
     }
 }
-
 pub mod macroblock_h {
-
     #[inline(always)]
-
-    pub  extern "C" fn pack16to32(
+    pub extern "C" fn pack16to32(
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-            return a.wrapping_add(b << 16 as ::core::ffi::c_int);
-  
+        return a.wrapping_add(b << 16 as ::core::ffi::c_int);
     }
     #[inline(always)]
-
-    pub  extern "C" fn pack8to16(
+    pub extern "C" fn pack8to16(
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-     
-            return a.wrapping_add(b << 8 as ::core::ffi::c_int);
-       
+        return a.wrapping_add(b << 8 as ::core::ffi::c_int);
     }
 }
-
 use crate::src::common::predict::common_h::x264_clip_pixel;
 use crate::src::common::predict::macroblock_h::pack16to32;
 use crate::src::common::predict::macroblock_h::pack8to16;
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
     mut src: *mut crate::src::common::common::pixel,
 ) {
@@ -183,7 +126,6 @@ pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
         }
     }
 }
-
 unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -217,7 +159,6 @@ unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut crate::src::common::c
         }
     }
 }
-
 unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -250,7 +191,6 @@ unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut crate::src::common::co
         }
     }
 }
-
 unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -289,7 +229,6 @@ unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut crate::src::common::co
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_16x16_h_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -316,7 +255,6 @@ pub unsafe extern "C" fn x264_8_predict_16x16_h_c(mut src: *mut crate::src::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_16x16_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut v0: crate::src::common::common::pixel4 =
@@ -359,7 +297,6 @@ pub unsafe extern "C" fn x264_8_predict_16x16_v_c(mut src: *mut crate::src::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut H: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -420,7 +357,6 @@ pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::comm
         }
     }
 }
-
 unsafe extern "C" fn predict_8x8c_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -444,7 +380,6 @@ unsafe extern "C" fn predict_8x8c_dc_128_c(mut src: *mut crate::src::common::com
         }
     }
 }
-
 unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -492,7 +427,6 @@ unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::co
         }
     }
 }
-
 unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -528,7 +462,6 @@ unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::com
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut s0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -593,7 +526,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8c_h_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -614,7 +546,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_h_c(mut src: *mut crate::src::commo
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8c_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut v0: crate::src::common::common::pixel4 = (*(src
@@ -643,7 +574,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_v_c(mut src: *mut crate::src::commo
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut H: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -704,7 +634,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::commo
         }
     }
 }
-
 unsafe extern "C" fn predict_8x16c_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -728,7 +657,6 @@ unsafe extern "C" fn predict_8x16c_dc_128_c(mut src: *mut crate::src::common::co
         }
     }
 }
-
 unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -761,7 +689,6 @@ unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut crate::src::common::c
         }
     }
 }
-
 unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -797,7 +724,6 @@ unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut crate::src::common::co
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
     mut src: *mut crate::src::common::common::pixel,
 ) {
@@ -917,7 +843,6 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x16c_h_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -938,7 +863,6 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_h_c(mut src: *mut crate::src::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x16c_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut v0: crate::src::common::common::pixel4 = (*(src
@@ -967,7 +891,6 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_v_c(mut src: *mut crate::src::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut H: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -1032,7 +955,6 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::comm
         }
     }
 }
-
 unsafe extern "C" fn predict_4x4_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let ref mut c2rust_fresh47 = (*(src.offset(
@@ -1064,7 +986,6 @@ unsafe extern "C" fn predict_4x4_dc_128_c(mut src: *mut crate::src::common::comm
             .i = *c2rust_fresh49;
     }
 }
-
 unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc: crate::src::common::common::pixel4 = ((*src.offset(
@@ -1112,7 +1033,6 @@ unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut crate::src::common::com
             .i = *c2rust_fresh55;
     }
 }
-
 unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc: crate::src::common::common::pixel4 = ((*src.offset(
@@ -1161,7 +1081,6 @@ unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut crate::src::common::comm
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_4x4_dc_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut dc: crate::src::common::common::pixel4 = ((*src.offset(
@@ -1226,7 +1145,6 @@ pub unsafe extern "C" fn x264_8_predict_4x4_dc_c(mut src: *mut crate::src::commo
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_4x4_h_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         (*(src.offset(
@@ -1272,7 +1190,6 @@ pub unsafe extern "C" fn x264_8_predict_4x4_h_c(mut src: *mut crate::src::common
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_4x4_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let ref mut c2rust_fresh11 = (*(src.offset(
@@ -1305,7 +1222,6 @@ pub unsafe extern "C" fn x264_8_predict_4x4_v_c(mut src: *mut crate::src::common
             .i = *c2rust_fresh13;
     }
 }
-
 unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut t0: ::core::ffi::c_int = *src.offset(
@@ -1451,7 +1367,6 @@ unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut crate::src::common::common:
             >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut lt: ::core::ffi::c_int = *src.offset(
@@ -1602,7 +1517,6 @@ unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut crate::src::common::common:
             >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut lt: ::core::ffi::c_int = *src.offset(
@@ -1751,7 +1665,6 @@ unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut crate::src::common::common::
             as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut lt: ::core::ffi::c_int = *src.offset(
@@ -1900,7 +1813,6 @@ unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut crate::src::common::common::
             >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut t0: ::core::ffi::c_int = *src.offset(
@@ -2044,7 +1956,6 @@ unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut crate::src::common::common::
             >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_4x4_hu_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
         let mut l0: ::core::ffi::c_int = *src.offset(
@@ -2166,7 +2077,6 @@ unsafe extern "C" fn predict_4x4_hu_c(mut src: *mut crate::src::common::common::
         ) = *c2rust_fresh64;
     }
 }
-
 unsafe extern "C" fn predict_8x8_filter_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -2736,7 +2646,6 @@ unsafe extern "C" fn predict_8x8_filter_c(
         }
     }
 }
-
 unsafe extern "C" fn predict_8x8_dc_128_c(
     mut src: *mut crate::src::common::common::pixel,
     mut _edge: *mut crate::src::common::common::pixel,
@@ -2763,7 +2672,6 @@ unsafe extern "C" fn predict_8x8_dc_128_c(
         }
     }
 }
-
 unsafe extern "C" fn predict_8x8_dc_left_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -2810,7 +2718,6 @@ unsafe extern "C" fn predict_8x8_dc_left_c(
         }
     }
 }
-
 unsafe extern "C" fn predict_8x8_dc_top_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -2858,7 +2765,6 @@ unsafe extern "C" fn predict_8x8_dc_top_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8_dc_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -2945,7 +2851,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8_dc_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8_h_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -3074,7 +2979,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8_h_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8_v_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -3104,7 +3008,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8_v_c(
         }
     }
 }
-
 unsafe extern "C" fn predict_8x8_ddl_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -3557,7 +3460,6 @@ unsafe extern "C" fn predict_8x8_ddl_c(
             >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_8x8_ddr_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -4012,7 +3914,6 @@ unsafe extern "C" fn predict_8x8_ddr_c(
             >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_8x8_vr_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -4465,7 +4366,6 @@ unsafe extern "C" fn predict_8x8_vr_c(
             as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_8x8_hd_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -4681,7 +4581,6 @@ unsafe extern "C" fn predict_8x8_hd_c(
         );
     }
 }
-
 unsafe extern "C" fn predict_8x8_vl_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -5130,7 +5029,6 @@ unsafe extern "C" fn predict_8x8_vl_c(
             >> 2 as ::core::ffi::c_int) as crate::src::common::common::pixel;
     }
 }
-
 unsafe extern "C" fn predict_8x8_hu_c(
     mut src: *mut crate::src::common::common::pixel,
     mut edge: *mut crate::src::common::common::pixel,
@@ -5296,7 +5194,6 @@ unsafe extern "C" fn predict_8x8_hu_c(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_16x16_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::predict::x264_predict_t,
@@ -5350,7 +5247,6 @@ pub unsafe extern "C" fn x264_8_predict_16x16_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8c_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::predict::x264_predict_t,
@@ -5404,7 +5300,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x16c_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::predict::x264_predict_t,
@@ -5458,7 +5353,6 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_8x8_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::predict::x264_predict8x8_t,
@@ -5585,7 +5479,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8_init(
     }
 }
 #[no_mangle]
-
 pub unsafe extern "C" fn x264_8_predict_4x4_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::predict::x264_predict_t,
