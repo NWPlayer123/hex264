@@ -337,118 +337,6 @@ pub struct x264_pixel_function_t {
         ) -> ::core::ffi::c_int,
     >,
 }
-pub use crate::__stddef_size_t_h::size_t;
-
-pub use crate::src::common::bitstream::bs_s;
-pub use crate::src::common::bitstream::bs_t;
-pub use crate::src::common::bitstream::x264_bitstream_function_t;
-pub use crate::src::common::bitstream::x264_run_level_t;
-pub use crate::src::common::cabac::x264_cabac_t;
-pub use crate::stdlib::C2Rust_Unnamed_7;
-pub use crate::stdlib::__atomic_wide_counter;
-
-pub use crate::internal::__va_list_tag;
-pub use crate::internal::BIT_DEPTH;
-pub use crate::src::common::common::dctcoef;
-pub use crate::src::common::common::pixel;
-pub use crate::src::common::common::udctcoef;
-pub use crate::src::common::common::x264_frame_stat_t;
-pub use crate::src::common::common::x264_left_table_t;
-pub use crate::src::common::common::x264_lookahead_t;
-pub use crate::src::common::common::x264_ratecontrol_t;
-pub use crate::src::common::common::x264_slice_header_t;
-pub use crate::src::common::common::x264_t;
-pub use crate::src::common::common::C2Rust_Unnamed_10;
-pub use crate::src::common::common::C2Rust_Unnamed_11;
-pub use crate::src::common::common::C2Rust_Unnamed_12;
-pub use crate::src::common::common::C2Rust_Unnamed_13;
-pub use crate::src::common::common::C2Rust_Unnamed_14;
-pub use crate::src::common::common::C2Rust_Unnamed_15;
-pub use crate::src::common::common::C2Rust_Unnamed_16;
-pub use crate::src::common::common::C2Rust_Unnamed_17;
-pub use crate::src::common::common::C2Rust_Unnamed_8;
-pub use crate::src::common::common::C2Rust_Unnamed_9;
-pub use crate::src::common::common::FDEC_STRIDE;
-pub use crate::src::common::common::FENC_STRIDE;
-pub use crate::src::common::common::PIXEL_MAX;
-pub use crate::src::common::dct::x264_dct_function_t;
-pub use crate::src::common::dct::x264_zigzag_function_t;
-pub use crate::src::common::frame::x264_deblock_function_t;
-pub use crate::src::common::frame::x264_deblock_inter_t;
-pub use crate::src::common::frame::x264_deblock_intra_t;
-pub use crate::src::common::frame::x264_frame;
-pub use crate::src::common::frame::x264_frame_t;
-pub use crate::src::common::frame::x264_sync_frame_list_t;
-pub use crate::src::common::mc::weight_fn_t;
-pub use crate::src::common::mc::x264_mc_functions_t_8;
-pub use crate::src::common::mc::x264_weight_t;
-pub use crate::src::common::predict::x264_8_predict_16x16_dc_c;
-pub use crate::src::common::predict::x264_8_predict_16x16_h_c;
-pub use crate::src::common::predict::x264_8_predict_16x16_v_c;
-pub use crate::src::common::predict::x264_8_predict_4x4_dc_c;
-pub use crate::src::common::predict::x264_8_predict_4x4_h_c;
-pub use crate::src::common::predict::x264_8_predict_4x4_v_c;
-pub use crate::src::common::predict::x264_8_predict_8x16c_dc_c;
-pub use crate::src::common::predict::x264_8_predict_8x16c_h_c;
-pub use crate::src::common::predict::x264_8_predict_8x16c_v_c;
-pub use crate::src::common::predict::x264_8_predict_8x8_dc_c;
-pub use crate::src::common::predict::x264_8_predict_8x8_h_c;
-pub use crate::src::common::predict::x264_8_predict_8x8_v_c;
-pub use crate::src::common::predict::x264_8_predict_8x8c_dc_c;
-pub use crate::src::common::predict::x264_8_predict_8x8c_h_c;
-pub use crate::src::common::predict::x264_8_predict_8x8c_v_c;
-pub use crate::src::common::predict::x264_predict8x8_t;
-pub use crate::src::common::predict::x264_predict_8x8_filter_t;
-pub use crate::src::common::predict::x264_predict_t;
-pub use crate::src::common::quant::x264_quant_function_t;
-pub use crate::stdlib::pthread_cond_t;
-pub use crate::stdlib::pthread_mutex_t;
-pub use crate::stdlib::pthread_t;
-pub use crate::stdlib::C2Rust_Unnamed_6;
-
-pub use crate::src::common::set::x264_pps_t;
-pub use crate::src::common::set::x264_sps_t;
-pub use crate::src::common::set::C2Rust_Unnamed_24;
-pub use crate::src::common::set::C2Rust_Unnamed_25;
-pub use crate::src::common::set::C2Rust_Unnamed_26;
-use crate::src::common::threadpool::x264_threadpool_t;
-pub use crate::stdlib::__pthread_cond_s;
-pub use crate::stdlib::__pthread_internal_list;
-pub use crate::stdlib::__pthread_list_t;
-pub use crate::stdlib::__pthread_mutex_s;
-use crate::stdlib::abs;
-pub use crate::stdlib::int16_t;
-pub use crate::stdlib::int32_t;
-pub use crate::stdlib::int64_t;
-pub use crate::stdlib::int8_t;
-pub use crate::stdlib::intptr_t;
-use crate::stdlib::memset;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint64_t;
-pub use crate::stdlib::uint8_t;
-pub use crate::stdlib::uintptr_t;
-
-pub use crate::stdlib::__int16_t;
-pub use crate::stdlib::__int32_t;
-pub use crate::stdlib::__int64_t;
-pub use crate::stdlib::__int8_t;
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint64_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::x264_h::x264_hrd_t;
-pub use crate::x264_h::x264_nal_t;
-pub use crate::x264_h::x264_param_t;
-pub use crate::x264_h::x264_sei_payload_t;
-pub use crate::x264_h::x264_sei_t;
-pub use crate::x264_h::x264_zone_t;
-pub use crate::x264_h::C2Rust_Unnamed_0;
-pub use crate::x264_h::C2Rust_Unnamed_1;
-pub use crate::x264_h::C2Rust_Unnamed_2;
-pub use crate::x264_h::C2Rust_Unnamed_3;
-pub use crate::x264_h::C2Rust_Unnamed_4;
-pub use crate::x264_h::C2Rust_Unnamed_5;
 
 pub type sum2_t = crate::stdlib::uint32_t;
 
@@ -1227,13 +1115,12 @@ unsafe extern "C" fn pixel_var2_8x8(
 pub const BITS_PER_SUM: usize = (8 as usize).wrapping_mul(::core::mem::size_of::<sum_t>() as usize);
 #[inline(always)]
 
-unsafe extern "C" fn abs2(mut a: sum2_t) -> sum2_t {
-    unsafe {
+ extern "C" fn abs2(mut a: sum2_t) -> sum2_t {
         let mut s: sum2_t = (a >> BITS_PER_SUM.wrapping_sub(1 as usize)
             & ((1 as ::core::ffi::c_int as sum2_t) << BITS_PER_SUM).wrapping_add(1 as sum2_t))
         .wrapping_mul(-(1 as ::core::ffi::c_int) as sum_t as sum2_t);
         return a.wrapping_add(s) ^ s;
-    }
+  
 }
 #[inline(never)]
 
@@ -3872,7 +3759,7 @@ unsafe extern "C" fn x264_pixel_ads2(
 unsafe extern "C" fn x264_pixel_ads1(
     mut enc_dc: *mut ::core::ffi::c_int,
     mut sums: *mut crate::stdlib::uint16_t,
-    mut delta: ::core::ffi::c_int,
+    mut _delta: ::core::ffi::c_int,
     mut cost_mvx: *mut crate::stdlib::uint16_t,
     mut mvs: *mut crate::stdlib::int16_t,
     mut width: ::core::ffi::c_int,
@@ -3901,7 +3788,7 @@ unsafe extern "C" fn x264_pixel_ads1(
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_8_pixel_init(
-    mut cpu: crate::stdlib::uint32_t,
+    mut _cpu: crate::stdlib::uint32_t,
     mut pixf: *mut crate::src::common::pixel::x264_pixel_function_t,
 ) {
     unsafe {

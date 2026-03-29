@@ -6,18 +6,6 @@ pub struct vlc_t {
     pub i_size: crate::stdlib::uint8_t,
 }
 
-pub use crate::stdlib::int32_t;
-pub use crate::stdlib::int8_t;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint8_t;
-
-pub use crate::stdlib::__int32_t;
-pub use crate::stdlib::__int8_t;
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::x264_h::x264_level_t;
 #[no_mangle]
 
 pub static mut x264_levels: [crate::x264_h::x264_level_t; 21] = [

@@ -493,62 +493,48 @@ pub mod bitstream_h {
             };
         }
     }
-    use crate::src::common::base::x264_union32_t;
-
-    use crate::osdep_h::WORD_SIZE;
     use crate::src::encoder::set::osdep_h::endian_fix;
     use crate::src::encoder::set::osdep_h::endian_fix32;
-    use crate::stdlib::intptr_t;
-    use crate::stdlib::uintptr_t;
-
-    use crate::stdlib::uint32_t;
-    use crate::stdlib::uint8_t;
 }
 
 pub mod osdep_h {
 
     #[inline(always)]
 
-    pub unsafe extern "C" fn endian_fix32(
+    pub  extern "C" fn endian_fix32(
         mut x: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        unsafe {
             return (x << 24 as ::core::ffi::c_int)
                 .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as crate::stdlib::uint32_t)
                 .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as crate::stdlib::uint32_t)
                 .wrapping_add(x >> 24 as ::core::ffi::c_int);
-        }
+      
     }
     #[inline(always)]
 
-    pub unsafe extern "C" fn endian_fix64(
+    pub  extern "C" fn endian_fix64(
         mut x: crate::stdlib::uint64_t,
     ) -> crate::stdlib::uint64_t {
-        unsafe {
             return (endian_fix32((x >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                 as crate::stdlib::uint64_t)
                 .wrapping_add(
                     (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
                         << 32 as ::core::ffi::c_int,
                 );
-        }
+        
     }
     #[inline(always)]
 
-    pub unsafe extern "C" fn endian_fix(
+    pub  extern "C" fn endian_fix(
         mut x: crate::stdlib::uintptr_t,
     ) -> crate::stdlib::uintptr_t {
-        unsafe {
             return if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
                 endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
             } else {
                 endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
             };
-        }
+       
     }
-    use crate::stdlib::uint32_t;
-    use crate::stdlib::uint64_t;
-    use crate::stdlib::uintptr_t;
 }
 
 pub mod macroblock_h {
@@ -726,191 +712,22 @@ pub mod macroblock_h {
             63 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         ],
     ];
-    use crate::stdlib::uint8_t;
 }
 
-pub use crate::__stddef_size_t_h::size_t;
-
-pub use crate::config_h::HAVE_GPL;
-pub use crate::src::common::base::chroma_format_e;
-pub use crate::src::common::base::profile_e;
-pub use crate::src::common::base::sei_payload_type_e;
-pub use crate::src::common::base::x264_free;
-pub use crate::src::common::base::x264_malloc;
-pub use crate::src::common::base::x264_param2string;
-pub use crate::src::common::base::x264_union32_t;
-pub use crate::src::common::base::CHROMA_400;
-pub use crate::src::common::base::CHROMA_420;
-pub use crate::src::common::base::CHROMA_422;
-pub use crate::src::common::base::CHROMA_444;
-pub use crate::src::common::base::PROFILE_BASELINE;
-pub use crate::src::common::base::PROFILE_HIGH;
-pub use crate::src::common::base::PROFILE_HIGH10;
-pub use crate::src::common::base::PROFILE_HIGH422;
-pub use crate::src::common::base::PROFILE_HIGH444_PREDICTIVE;
-pub use crate::src::common::base::PROFILE_MAIN;
-pub use crate::src::common::base::SEI_ALTERNATIVE_TRANSFER;
-pub use crate::src::common::base::SEI_BUFFERING_PERIOD;
-pub use crate::src::common::base::SEI_CONTENT_LIGHT_LEVEL;
-pub use crate::src::common::base::SEI_DEC_REF_PIC_MARKING;
-pub use crate::src::common::base::SEI_FILLER;
-pub use crate::src::common::base::SEI_FRAME_PACKING;
-pub use crate::src::common::base::SEI_MASTERING_DISPLAY;
-pub use crate::src::common::base::SEI_PAN_SCAN_RECT;
-pub use crate::src::common::base::SEI_PIC_TIMING;
-pub use crate::src::common::base::SEI_RECOVERY_POINT;
-pub use crate::src::common::base::SEI_USER_DATA_REGISTERED;
-pub use crate::src::common::base::SEI_USER_DATA_UNREGISTERED;
-pub use crate::src::common::bitstream::bs_s;
-pub use crate::src::common::bitstream::bs_t;
-pub use crate::src::common::bitstream::x264_bitstream_function_t;
-pub use crate::src::common::bitstream::x264_run_level_t;
-pub use crate::src::common::cabac::x264_cabac_t;
-pub use crate::src::common::common::dctcoef;
-pub use crate::src::common::common::pixel;
-pub use crate::src::common::common::udctcoef;
-pub use crate::src::common::common::x264_8_log;
-pub use crate::src::common::common::x264_frame_stat_t;
-pub use crate::src::common::common::x264_left_table_t;
-pub use crate::src::common::common::x264_lookahead_t;
-pub use crate::src::common::common::x264_ratecontrol_t;
-pub use crate::src::common::common::x264_slice_header_t;
-pub use crate::src::common::common::x264_t;
-pub use crate::src::common::common::C2Rust_Unnamed_10;
-pub use crate::src::common::common::C2Rust_Unnamed_11;
-pub use crate::src::common::common::C2Rust_Unnamed_12;
-pub use crate::src::common::common::C2Rust_Unnamed_13;
-pub use crate::src::common::common::C2Rust_Unnamed_14;
-pub use crate::src::common::common::C2Rust_Unnamed_15;
-pub use crate::src::common::common::C2Rust_Unnamed_16;
-pub use crate::src::common::common::C2Rust_Unnamed_17;
-pub use crate::src::common::common::C2Rust_Unnamed_8;
-pub use crate::src::common::common::C2Rust_Unnamed_9;
-pub use crate::src::common::common::QP_BD_OFFSET;
-pub use crate::src::encoder::set::bitstream_h::bs_align_10;
-pub use crate::src::encoder::set::bitstream_h::bs_flush;
-pub use crate::src::encoder::set::bitstream_h::bs_init;
-pub use crate::src::encoder::set::bitstream_h::bs_pos;
-pub use crate::src::encoder::set::bitstream_h::bs_rbsp_trailing;
-pub use crate::src::encoder::set::bitstream_h::bs_realign;
-pub use crate::src::encoder::set::bitstream_h::bs_size_se;
-pub use crate::src::encoder::set::bitstream_h::bs_write;
-pub use crate::src::encoder::set::bitstream_h::bs_write1;
-pub use crate::src::encoder::set::bitstream_h::bs_write32;
-pub use crate::src::encoder::set::bitstream_h::bs_write_se;
-pub use crate::src::encoder::set::bitstream_h::bs_write_ue_big;
-pub use crate::src::encoder::set::bitstream_h::x264_ue_size_tab;
-pub use crate::stdlib::C2Rust_Unnamed_7;
-pub use crate::stdlib::__atomic_wide_counter;
-
-pub use crate::internal::__va_list_tag;
-pub use crate::internal::BIT_DEPTH;
-pub use crate::src::common::dct::x264_dct_function_t;
-pub use crate::src::common::dct::x264_zigzag_function_t;
-pub use crate::src::common::frame::x264_deblock_function_t;
-pub use crate::src::common::frame::x264_deblock_inter_t;
-pub use crate::src::common::frame::x264_deblock_intra_t;
-pub use crate::src::common::frame::x264_frame;
-pub use crate::src::common::frame::x264_frame_t;
-pub use crate::src::common::frame::x264_sync_frame_list_t;
-pub use crate::src::encoder::set::macroblock_h::x264_zigzag_scan4;
-pub use crate::src::encoder::set::macroblock_h::x264_zigzag_scan8;
-use crate::stdlib::log2f;
-
-pub use crate::osdep_h::WORD_SIZE;
-pub use crate::src::common::mc::weight_fn_t;
-pub use crate::src::common::mc::x264_mc_functions_t_21;
-pub use crate::src::common::mc::x264_weight_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x3_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x4_t;
-pub use crate::src::common::pixel::x264_pixel_function_t;
-pub use crate::src::common::predict::x264_predict8x8_t;
-pub use crate::src::common::predict::x264_predict_8x8_filter_t;
-pub use crate::src::common::predict::x264_predict_t;
-pub use crate::src::common::quant::x264_quant_function_t;
-pub use crate::src::encoder::set::osdep_h::endian_fix;
-pub use crate::src::encoder::set::osdep_h::endian_fix32;
-pub use crate::src::encoder::set::osdep_h::endian_fix64;
-pub use crate::stdlib::pthread_cond_t;
-pub use crate::stdlib::pthread_mutex_t;
-pub use crate::stdlib::pthread_t;
-
-pub use crate::src::common::set::cqm4_e;
-pub use crate::src::common::set::cqm8_e;
-pub use crate::src::common::set::x264_pps_t;
-pub use crate::src::common::set::x264_sps_t;
-pub use crate::src::common::set::C2Rust_Unnamed_24;
-pub use crate::src::common::set::C2Rust_Unnamed_25;
-pub use crate::src::common::set::C2Rust_Unnamed_26;
-pub use crate::src::common::set::CQM_4IC;
-pub use crate::src::common::set::CQM_4IY;
-pub use crate::src::common::set::CQM_4PC;
-pub use crate::src::common::set::CQM_4PY;
-pub use crate::src::common::set::CQM_8IC;
-pub use crate::src::common::set::CQM_8IY;
-pub use crate::src::common::set::CQM_8PC;
-pub use crate::src::common::set::CQM_8PY;
-pub use crate::stdlib::__pthread_mutex_s;
-pub use crate::stdlib::int16_t;
-pub use crate::stdlib::int32_t;
-pub use crate::stdlib::int64_t;
-pub use crate::stdlib::int8_t;
-pub use crate::stdlib::intptr_t;
-use crate::stdlib::memcmp;
-use crate::stdlib::memcpy;
-use crate::stdlib::memset;
-use crate::stdlib::sprintf;
-use crate::stdlib::strlen;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint64_t;
-pub use crate::stdlib::uint8_t;
-pub use crate::stdlib::uintptr_t;
-
-use crate::src::common::tables::x264_cqm_flat16;
-use crate::src::common::tables::x264_cqm_jvt;
-pub use crate::src::common::tables::x264_levels;
-use crate::src::common::threadpool::x264_threadpool_t;
-pub use crate::stdlib::__int16_t;
-pub use crate::stdlib::__int32_t;
-pub use crate::stdlib::__int64_t;
-pub use crate::stdlib::__int8_t;
-pub use crate::stdlib::__pthread_cond_s;
-pub use crate::stdlib::__pthread_internal_list;
-pub use crate::stdlib::__pthread_list_t;
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint64_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::x264_config_h::X264_VERSION;
-pub use crate::x264_h::x264_hrd_t;
-pub use crate::x264_h::x264_level_t;
-pub use crate::x264_h::x264_nal_t;
-pub use crate::x264_h::x264_param_t;
-pub use crate::x264_h::x264_sei_payload_t;
-pub use crate::x264_h::x264_sei_t;
-pub use crate::x264_h::x264_zone_t;
-pub use crate::x264_h::C2Rust_Unnamed_0;
-pub use crate::x264_h::C2Rust_Unnamed_1;
-pub use crate::x264_h::C2Rust_Unnamed_2;
-pub use crate::x264_h::C2Rust_Unnamed_3;
-pub use crate::x264_h::C2Rust_Unnamed_4;
-pub use crate::x264_h::C2Rust_Unnamed_5;
-pub use crate::x264_h::X264_BUILD;
-pub use crate::x264_h::X264_B_PYRAMID_STRICT;
-pub use crate::x264_h::X264_CQM_CUSTOM_1;
-pub use crate::x264_h::X264_CQM_FLAT;
-pub use crate::x264_h::X264_CQM_JVT_1;
-pub use crate::x264_h::X264_CSP_BGR;
-pub use crate::x264_h::X264_CSP_I420;
-pub use crate::x264_h::X264_CSP_I422;
-pub use crate::x264_h::X264_CSP_I444;
-pub use crate::x264_h::X264_CSP_MASK;
-pub use crate::x264_h::X264_LOG_ERROR_1;
-pub use crate::x264_h::X264_LOG_WARNING_1;
-pub use crate::x264_h::X264_RC_ABR;
-pub use crate::x264_h::X264_RC_CQP;
+use crate::src::encoder::set::bitstream_h::bs_align_10;
+use crate::src::encoder::set::bitstream_h::bs_flush;
+use crate::src::encoder::set::bitstream_h::bs_init;
+use crate::src::encoder::set::bitstream_h::bs_pos;
+use crate::src::encoder::set::bitstream_h::bs_rbsp_trailing;
+use crate::src::encoder::set::bitstream_h::bs_realign;
+use crate::src::encoder::set::bitstream_h::bs_size_se;
+use crate::src::encoder::set::bitstream_h::bs_write;
+use crate::src::encoder::set::bitstream_h::bs_write1;
+use crate::src::encoder::set::bitstream_h::bs_write32;
+use crate::src::encoder::set::bitstream_h::bs_write_se;
+use crate::src::encoder::set::bitstream_h::bs_write_ue_big;
+use crate::src::encoder::set::macroblock_h::x264_zigzag_scan4;
+use crate::src::encoder::set::macroblock_h::x264_zigzag_scan8;
 #[derive(Copy, Clone)]
 #[repr(C)]
 
@@ -1215,68 +1032,68 @@ pub unsafe extern "C" fn x264_8_sps_init(
                         1 as ::core::ffi::c_int
                     }) > (*param).i_dpb_size
                     {
-                        (if (*param).i_bframe_pyramid != 0 {
+                        if (*param).i_bframe_pyramid != 0 {
                             4 as ::core::ffi::c_int
                         } else {
                             1 as ::core::ffi::c_int
-                        })
+                        }
                     } else {
                         (*param).i_dpb_size
                     })
                 {
                     1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
                 } else {
-                    (if (if (*param).i_bframe_pyramid != 0 {
+                    if (if (*param).i_bframe_pyramid != 0 {
                         4 as ::core::ffi::c_int
                     } else {
                         1 as ::core::ffi::c_int
                     }) > (*param).i_dpb_size
                     {
-                        (if (*param).i_bframe_pyramid != 0 {
+                        if (*param).i_bframe_pyramid != 0 {
                             4 as ::core::ffi::c_int
                         } else {
                             1 as ::core::ffi::c_int
-                        })
+                        }
                     } else {
                         (*param).i_dpb_size
-                    })
+                    }
                 })
             {
                 (*param).i_frame_reference
             } else {
-                (if 1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+                if 1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
                     > (if (if (*param).i_bframe_pyramid != 0 {
                         4 as ::core::ffi::c_int
                     } else {
                         1 as ::core::ffi::c_int
                     }) > (*param).i_dpb_size
                     {
-                        (if (*param).i_bframe_pyramid != 0 {
+                        if (*param).i_bframe_pyramid != 0 {
                             4 as ::core::ffi::c_int
                         } else {
                             1 as ::core::ffi::c_int
-                        })
+                        }
                     } else {
                         (*param).i_dpb_size
                     })
                 {
                     1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
                 } else {
-                    (if (if (*param).i_bframe_pyramid != 0 {
+                    if (if (*param).i_bframe_pyramid != 0 {
                         4 as ::core::ffi::c_int
                     } else {
                         1 as ::core::ffi::c_int
                     }) > (*param).i_dpb_size
                     {
-                        (if (*param).i_bframe_pyramid != 0 {
+                        if (*param).i_bframe_pyramid != 0 {
                             4 as ::core::ffi::c_int
                         } else {
                             1 as ::core::ffi::c_int
-                        })
+                        }
                     } else {
                         (*param).i_dpb_size
-                    })
-                })
+                    }
+                }
             }) {
             16 as ::core::ffi::c_int
         } else if (*param).i_frame_reference
@@ -1287,31 +1104,31 @@ pub unsafe extern "C" fn x264_8_sps_init(
                     1 as ::core::ffi::c_int
                 }) > (*param).i_dpb_size
                 {
-                    (if (*param).i_bframe_pyramid != 0 {
+                    if (*param).i_bframe_pyramid != 0 {
                         4 as ::core::ffi::c_int
                     } else {
                         1 as ::core::ffi::c_int
-                    })
+                    }
                 } else {
                     (*param).i_dpb_size
                 })
             {
                 1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
             } else {
-                (if (if (*param).i_bframe_pyramid != 0 {
+                if (if (*param).i_bframe_pyramid != 0 {
                     4 as ::core::ffi::c_int
                 } else {
                     1 as ::core::ffi::c_int
                 }) > (*param).i_dpb_size
                 {
-                    (if (*param).i_bframe_pyramid != 0 {
+                    if (*param).i_bframe_pyramid != 0 {
                         4 as ::core::ffi::c_int
                     } else {
                         1 as ::core::ffi::c_int
-                    })
+                    }
                 } else {
                     (*param).i_dpb_size
-                })
+                }
             })
         {
             (*param).i_frame_reference
@@ -1322,11 +1139,11 @@ pub unsafe extern "C" fn x264_8_sps_init(
                 1 as ::core::ffi::c_int
             }) > (*param).i_dpb_size
             {
-                (if (*param).i_bframe_pyramid != 0 {
+                if (*param).i_bframe_pyramid != 0 {
                     4 as ::core::ffi::c_int
                 } else {
                     1 as ::core::ffi::c_int
-                })
+                }
             } else {
                 (*param).i_dpb_size
             })
@@ -2259,7 +2076,7 @@ pub unsafe extern "C" fn x264_8_pps_write(
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_8_sei_recovery_point_write(
-    mut h: *mut crate::src::common::common::x264_t,
+    mut _h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut recovery_frame_cnt: ::core::ffi::c_int,
 ) {
@@ -2752,7 +2569,7 @@ pub unsafe extern "C" fn x264_8_sei_alternative_transfer_write(
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_8_filler_write(
-    mut h: *mut crate::src::common::common::x264_t,
+    mut _h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut filler: ::core::ffi::c_int,
 ) {
@@ -2830,7 +2647,7 @@ pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
 
 pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
     mut h: *mut crate::src::common::common::x264_t,
-    mut s: *mut crate::src::common::bitstream::bs_t,
+    mut _s: *mut crate::src::common::bitstream::bs_t,
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut data: [crate::stdlib::uint8_t; 512] = [0; 512];
@@ -2888,7 +2705,7 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
 
 pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
     mut h: *mut crate::src::common::common::x264_t,
-    mut s: *mut crate::src::common::bitstream::bs_t,
+    mut _s: *mut crate::src::common::bitstream::bs_t,
     mut len: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {

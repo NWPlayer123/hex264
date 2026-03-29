@@ -1,5 +1,5 @@
 // =============== BEGIN common_h ================
-pub use crate::src::encoder::ratecontrol::x264_ratecontrol_t;
+use crate::src::encoder::ratecontrol::x264_ratecontrol_t;
 
 pub const QP_BD_OFFSET: ::core::ffi::c_int =
     6 as ::core::ffi::c_int * (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int);
@@ -488,85 +488,6 @@ pub struct mvsad_t {
     pub sad: ::core::ffi::c_int,
     pub mv: [crate::stdlib::int16_t; 2],
 }
-pub use crate::__stdarg___gnuc_va_list_h::__gnuc_va_list;
-pub use crate::__stddef_null_h::NULL;
-pub use crate::__stddef_size_t_h::size_t;
-use crate::src::common::base::x264_log_default;
-pub use crate::src::common::bitstream::bs_s;
-pub use crate::src::common::bitstream::bs_t;
-pub use crate::src::common::bitstream::x264_bitstream_function_t;
-pub use crate::src::common::bitstream::x264_run_level_t;
-pub use crate::src::common::cabac::x264_cabac_t;
-pub use crate::stdlib::C2Rust_Unnamed_7;
-pub use crate::stdlib::__atomic_wide_counter;
-
-pub use crate::internal::__builtin_va_list;
-pub use crate::internal::__va_list_tag;
-pub use crate::src::common::dct::x264_dct_function_t;
-pub use crate::src::common::dct::x264_zigzag_function_t;
-pub use crate::src::common::frame::x264_deblock_function_t;
-pub use crate::src::common::frame::x264_deblock_inter_t;
-pub use crate::src::common::frame::x264_deblock_intra_t;
-pub use crate::src::common::frame::x264_frame;
-pub use crate::src::common::frame::x264_frame_t;
-pub use crate::src::common::frame::x264_sync_frame_list_t;
-pub use crate::src::common::mc::weight_fn_t;
-pub use crate::src::common::mc::x264_mc_functions_t_2;
-pub use crate::src::common::mc::x264_weight_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x3_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x4_t;
-pub use crate::src::common::pixel::x264_pixel_function_t;
-pub use crate::src::common::predict::x264_predict8x8_t;
-pub use crate::src::common::predict::x264_predict_8x8_filter_t;
-pub use crate::src::common::predict::x264_predict_t;
-pub use crate::src::common::quant::x264_quant_function_t;
-pub use crate::stdlib::pthread_cond_t;
-pub use crate::stdlib::pthread_mutex_t;
-pub use crate::stdlib::pthread_t;
-
-pub use crate::src::common::set::x264_pps_t;
-pub use crate::src::common::set::x264_sps_t;
-pub use crate::src::common::set::C2Rust_Unnamed_24;
-pub use crate::src::common::set::C2Rust_Unnamed_25;
-pub use crate::src::common::set::C2Rust_Unnamed_26;
-use crate::src::common::threadpool::x264_threadpool_t;
-pub use crate::stdlib::__pthread_cond_s;
-pub use crate::stdlib::__pthread_internal_list;
-pub use crate::stdlib::__pthread_list_t;
-pub use crate::stdlib::__pthread_mutex_s;
-pub use crate::stdlib::int16_t;
-pub use crate::stdlib::int32_t;
-pub use crate::stdlib::int64_t;
-pub use crate::stdlib::int8_t;
-pub use crate::stdlib::intptr_t;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint64_t;
-pub use crate::stdlib::uint8_t;
-pub use crate::stdlib::uintptr_t;
-pub use crate::stdlib::va_list;
-
-pub use crate::stdlib::__int16_t;
-pub use crate::stdlib::__int32_t;
-pub use crate::stdlib::__int64_t;
-pub use crate::stdlib::__int8_t;
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint64_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::x264_h::x264_hrd_t;
-pub use crate::x264_h::x264_nal_t;
-pub use crate::x264_h::x264_param_t;
-pub use crate::x264_h::x264_sei_payload_t;
-pub use crate::x264_h::x264_sei_t;
-pub use crate::x264_h::x264_zone_t;
-pub use crate::x264_h::C2Rust_Unnamed_0;
-pub use crate::x264_h::C2Rust_Unnamed_1;
-pub use crate::x264_h::C2Rust_Unnamed_2;
-pub use crate::x264_h::C2Rust_Unnamed_3;
-pub use crate::x264_h::C2Rust_Unnamed_4;
-pub use crate::x264_h::C2Rust_Unnamed_5;
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_8_log(

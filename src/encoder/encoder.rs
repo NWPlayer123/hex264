@@ -1,4 +1,4 @@
-use ::c2rust_bitfields;
+
 
 pub mod bitstream_h {
 
@@ -474,16 +474,8 @@ pub mod bitstream_h {
             };
         }
     }
-    use crate::src::common::base::x264_union32_t;
-
-    use crate::osdep_h::WORD_SIZE;
     use crate::src::encoder::encoder::osdep_h::endian_fix;
     use crate::src::encoder::encoder::osdep_h::endian_fix32;
-    use crate::stdlib::intptr_t;
-    use crate::stdlib::uintptr_t;
-
-    use crate::stdlib::uint32_t;
-    use crate::stdlib::uint8_t;
 }
 
 pub mod cabac_h {
@@ -542,8 +534,6 @@ pub mod pixel_h {
             crate::src::common::pixel::PIXEL_4x4 as ::core::ffi::c_int as crate::stdlib::uint8_t,
         ],
     ];
-
-    use crate::stdlib::uint8_t;
 }
 
 pub mod predict_h {
@@ -594,9 +584,6 @@ pub mod predict_h {
         crate::src::common::predict::I_PRED_4x4_DC as ::core::ffi::c_int as crate::stdlib::int8_t,
         crate::src::common::predict::I_PRED_4x4_DC as ::core::ffi::c_int as crate::stdlib::int8_t,
     ];
-
-    use crate::stdlib::int8_t;
-    use crate::stdlib::uint8_t;
 }
 
 pub mod base_h {
@@ -713,12 +700,11 @@ pub mod base_h {
     ];
     #[inline(always)]
 
-    pub unsafe extern "C" fn x264_clip3(
+    pub  extern "C" fn x264_clip3(
         mut v: ::core::ffi::c_int,
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        unsafe {
             return if v < i_min {
                 i_min
             } else if v > i_max {
@@ -726,16 +712,14 @@ pub mod base_h {
             } else {
                 v
             };
-        }
     }
     #[inline(always)]
 
-    pub unsafe extern "C" fn x264_clip3f(
+    pub  extern "C" fn x264_clip3f(
         mut v: ::core::ffi::c_double,
         mut f_min: ::core::ffi::c_double,
         mut f_max: ::core::ffi::c_double,
     ) -> ::core::ffi::c_double {
-        unsafe {
             return if v < f_min {
                 f_min
             } else if v > f_max {
@@ -743,10 +727,7 @@ pub mod base_h {
             } else {
                 v
             };
-        }
     }
-
-    use crate::stdlib::uint8_t;
 }
 
 pub mod macroblock_h {
@@ -1124,16 +1105,6 @@ pub mod macroblock_h {
         0,
         0,
     ];
-    use crate::src::common::common::QP_BD_OFFSET;
-
-    use crate::src::common::pixel::PIXEL_16x16;
-    use crate::src::common::pixel::PIXEL_16x8;
-    use crate::src::common::pixel::PIXEL_4x4;
-    use crate::src::common::pixel::PIXEL_4x8;
-    use crate::src::common::pixel::PIXEL_8x16;
-    use crate::src::common::pixel::PIXEL_8x4;
-    use crate::src::common::pixel::PIXEL_8x8;
-    use crate::stdlib::uint8_t;
 }
 
 pub mod osdep_h {
@@ -1179,610 +1150,68 @@ pub mod osdep_h {
 
     #[inline(always)]
 
-    pub unsafe extern "C" fn endian_fix32(
+    pub  extern "C" fn endian_fix32(
         mut x: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        unsafe {
+     
             return (x << 24 as ::core::ffi::c_int)
                 .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as crate::stdlib::uint32_t)
                 .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as crate::stdlib::uint32_t)
                 .wrapping_add(x >> 24 as ::core::ffi::c_int);
-        }
+        
     }
     #[inline(always)]
 
-    pub unsafe extern "C" fn endian_fix64(
+    pub  extern "C" fn endian_fix64(
         mut x: crate::stdlib::uint64_t,
     ) -> crate::stdlib::uint64_t {
-        unsafe {
             return (endian_fix32((x >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                 as crate::stdlib::uint64_t)
                 .wrapping_add(
                     (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
                         << 32 as ::core::ffi::c_int,
                 );
-        }
+     
     }
     #[inline(always)]
 
-    pub unsafe extern "C" fn endian_fix(
+    pub  extern "C" fn endian_fix(
         mut x: crate::stdlib::uintptr_t,
     ) -> crate::stdlib::uintptr_t {
-        unsafe {
+   
             return if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
                 endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
             } else {
                 endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
             };
-        }
+     
     }
-    use crate::stdlib::__mode_t;
-    use crate::stdlib::fileno;
-    use crate::stdlib::fstat;
-    use crate::stdlib::stat;
-    use crate::stdlib::timespec;
-    use crate::stdlib::uint32_t;
-    use crate::stdlib::uint64_t;
-    use crate::stdlib::uintptr_t;
-    use crate::stdlib::__S_IFMT;
 }
 
-pub use crate::__stddef_null_h::NULL;
-pub use crate::__stddef_size_t_h::size_t;
-
-pub use crate::src::common::base::chroma_format_e;
-pub use crate::src::common::base::profile_e;
-pub use crate::src::common::base::slice_type_e;
-pub use crate::src::common::base::x264_free;
-pub use crate::src::common::base::x264_log_internal;
-pub use crate::src::common::base::x264_malloc;
-pub use crate::src::common::base::x264_param_strdup;
-pub use crate::src::common::base::x264_reduce_fraction;
-pub use crate::src::common::base::x264_union16_t;
-pub use crate::src::common::base::x264_union32_t;
-pub use crate::src::common::base::CHROMA_400;
-pub use crate::src::common::base::CHROMA_420;
-pub use crate::src::common::base::CHROMA_422;
-pub use crate::src::common::base::CHROMA_444;
-pub use crate::src::common::base::PROFILE_BASELINE;
-pub use crate::src::common::base::PROFILE_HIGH;
-pub use crate::src::common::base::PROFILE_HIGH10;
-pub use crate::src::common::base::PROFILE_HIGH422;
-pub use crate::src::common::base::PROFILE_HIGH444_PREDICTIVE;
-pub use crate::src::common::base::PROFILE_MAIN;
-pub use crate::src::common::base::SLICE_TYPE_B;
-pub use crate::src::common::base::SLICE_TYPE_I;
-pub use crate::src::common::base::SLICE_TYPE_P;
-pub use crate::src::common::base::X264_LOOKAHEAD_MAX;
-pub use crate::src::common::base::X264_REF_MAX;
-pub use crate::src::common::base::X264_THREAD_HEIGHT;
-pub use crate::src::common::base::X264_THREAD_MAX;
-pub use crate::src::common::base::X264_WEIGHTP_FAKE;
-use crate::src::encoder::analyse::x264_8_analyse_free_costs;
-use crate::src::encoder::analyse::x264_8_analyse_init_costs;
-use crate::src::encoder::analyse::x264_8_analyse_weight_frame;
-use crate::src::encoder::analyse::x264_8_macroblock_analyse;
-pub use crate::src::encoder::encoder::base_h::slice_type_to_char;
-pub use crate::src::encoder::encoder::base_h::x264_clip3;
-pub use crate::src::encoder::encoder::base_h::x264_clip3f;
-pub use crate::src::encoder::encoder::base_h::x264_scan8;
-use crate::src::encoder::lookahead::x264_8_lookahead_delete;
-use crate::src::encoder::lookahead::x264_8_lookahead_get_frames;
-use crate::src::encoder::lookahead::x264_8_lookahead_init;
-use crate::src::encoder::lookahead::x264_8_lookahead_is_empty;
-use crate::src::encoder::lookahead::x264_8_lookahead_put_frame;
-pub use crate::stdlib::C2Rust_Unnamed_7;
-use crate::stdlib::__assert_fail;
-use crate::stdlib::__assert_single_arg;
-pub use crate::stdlib::__atomic_wide_counter;
-pub use crate::stdlib::__S_IFMT;
-
-pub use crate::internal::__va_list_tag;
-pub use crate::internal::BIT_DEPTH;
-pub use crate::internal::__INT_MAX__;
-pub use crate::limits_h::INT_MAX;
-pub use crate::src::common::bitstream::bs_s;
-pub use crate::src::common::bitstream::bs_t;
-pub use crate::src::common::bitstream::x264_8_bitstream_init;
-pub use crate::src::common::bitstream::x264_bitstream_function_t;
-pub use crate::src::common::bitstream::x264_run_level_t;
-pub use crate::src::common::cabac::x264_8_cabac_context_init;
-pub use crate::src::common::cabac::x264_8_cabac_encode_flush;
-pub use crate::src::common::cabac::x264_8_cabac_encode_init;
-pub use crate::src::common::cabac::x264_8_cabac_encode_terminal_c;
-pub use crate::src::common::cabac::x264_8_cabac_init;
-pub use crate::src::common::cabac::x264_cabac_t;
-pub use crate::src::common::common::dctcoef;
-pub use crate::src::common::common::pixel;
-pub use crate::src::common::common::udctcoef;
-pub use crate::src::common::common::x264_8_log;
-pub use crate::src::common::common::x264_frame_stat_t;
-pub use crate::src::common::common::x264_left_table_t;
-pub use crate::src::common::common::x264_lookahead_t;
-pub use crate::src::common::common::x264_ratecontrol_t;
-pub use crate::src::common::common::x264_slice_header_t;
-pub use crate::src::common::common::x264_t;
-pub use crate::src::common::common::C2Rust_Unnamed_10;
-pub use crate::src::common::common::C2Rust_Unnamed_11;
-pub use crate::src::common::common::C2Rust_Unnamed_12;
-pub use crate::src::common::common::C2Rust_Unnamed_13;
-pub use crate::src::common::common::C2Rust_Unnamed_14;
-pub use crate::src::common::common::C2Rust_Unnamed_15;
-pub use crate::src::common::common::C2Rust_Unnamed_16;
-pub use crate::src::common::common::C2Rust_Unnamed_17;
-pub use crate::src::common::common::C2Rust_Unnamed_8;
-pub use crate::src::common::common::C2Rust_Unnamed_9;
-pub use crate::src::common::common::FILLER_OVERHEAD;
-pub use crate::src::common::common::NALU_OVERHEAD;
-pub use crate::src::common::common::PIXEL_MAX;
-pub use crate::src::common::common::QP_BD_OFFSET;
-pub use crate::src::common::common::QP_MAX;
-pub use crate::src::common::common::QP_MAX_SPEC;
-pub use crate::src::common::common::SIZEOF_PIXEL;
-pub use crate::src::common::cpu::x264_cpu_name_t;
-pub use crate::src::common::cpu::x264_cpu_names;
-pub use crate::src::common::cpu::x264_cpu_num_processors;
-pub use crate::src::common::dct::x264_8_dct_init;
-pub use crate::src::common::dct::x264_8_zigzag_init;
-pub use crate::src::common::dct::x264_dct_function_t;
-pub use crate::src::common::dct::x264_zigzag_function_t;
-pub use crate::src::common::deblock::x264_8_deblock_init;
-pub use crate::src::common::deblock::x264_8_frame_deblock_row;
-pub use crate::src::common::frame::x264_8_expand_border_mbpair;
-pub use crate::src::common::frame::x264_8_frame_cond_broadcast;
-pub use crate::src::common::frame::x264_8_frame_copy_picture;
-pub use crate::src::common::frame::x264_8_frame_delete;
-pub use crate::src::common::frame::x264_8_frame_delete_list;
-pub use crate::src::common::frame::x264_8_frame_expand_border;
-pub use crate::src::common::frame::x264_8_frame_expand_border_filtered;
-pub use crate::src::common::frame::x264_8_frame_expand_border_mod16;
-pub use crate::src::common::frame::x264_8_frame_new_slice;
-pub use crate::src::common::frame::x264_8_frame_pop;
-pub use crate::src::common::frame::x264_8_frame_pop_blank_unused;
-pub use crate::src::common::frame::x264_8_frame_pop_unused;
-pub use crate::src::common::frame::x264_8_frame_push;
-pub use crate::src::common::frame::x264_8_frame_push_blank_unused;
-pub use crate::src::common::frame::x264_8_frame_push_unused;
-pub use crate::src::common::frame::x264_8_frame_shift;
-pub use crate::src::common::frame::x264_8_frame_unshift;
-pub use crate::src::common::frame::x264_8_threadslice_cond_broadcast;
-pub use crate::src::common::frame::x264_8_threadslice_cond_wait;
-pub use crate::src::common::frame::x264_8_weight_scale_plane;
-pub use crate::src::common::frame::x264_deblock_function_t;
-pub use crate::src::common::frame::x264_deblock_inter_t;
-pub use crate::src::common::frame::x264_deblock_intra_t;
-pub use crate::src::common::frame::x264_frame;
-pub use crate::src::common::frame::x264_frame_t;
-pub use crate::src::common::frame::x264_sync_frame_list_t;
-pub use crate::src::common::frame::PADH;
-pub use crate::src::common::frame::PADV;
-pub use crate::src::common::mc::x264_8_frame_filter;
-pub use crate::src::common::mc::x264_8_frame_init_lowres;
-pub use crate::src::common::vlc::x264_8_cavlc_init;
-use crate::src::encoder::analyse::rdo_c::x264_8_rdo_init;
-use crate::src::encoder::cabac::x264_8_cabac_mb_skip;
-use crate::src::encoder::cabac::x264_8_macroblock_write_cabac;
-use crate::src::encoder::cavlc::x264_8_macroblock_write_cavlc;
-pub use crate::src::encoder::encoder::bitstream_h::bs_align_1;
-pub use crate::src::encoder::encoder::bitstream_h::bs_flush;
-pub use crate::src::encoder::encoder::bitstream_h::bs_init;
-pub use crate::src::encoder::encoder::bitstream_h::bs_pos;
-pub use crate::src::encoder::encoder::bitstream_h::bs_rbsp_trailing;
-pub use crate::src::encoder::encoder::bitstream_h::bs_realign;
-pub use crate::src::encoder::encoder::bitstream_h::bs_size_ue_big;
-pub use crate::src::encoder::encoder::bitstream_h::bs_write;
-pub use crate::src::encoder::encoder::bitstream_h::bs_write1;
-pub use crate::src::encoder::encoder::bitstream_h::bs_write_se;
-pub use crate::src::encoder::encoder::bitstream_h::bs_write_ue_big;
-pub use crate::src::encoder::encoder::bitstream_h::x264_ue_size_tab;
-pub use crate::src::encoder::encoder::cabac_h::x264_cabac_pos;
-use crate::src::encoder::macroblock::x264_8_macroblock_encode;
-use crate::src::encoder::macroblock::x264_8_noise_reduction_update;
-use crate::src::encoder::set::x264_8_filler_write;
-use crate::src::encoder::set::x264_8_pps_init;
-use crate::src::encoder::set::x264_8_pps_write;
-use crate::src::encoder::set::x264_8_sei_alternative_transfer_write;
-use crate::src::encoder::set::x264_8_sei_avcintra_umid_write;
-use crate::src::encoder::set::x264_8_sei_avcintra_vanc_write;
-use crate::src::encoder::set::x264_8_sei_buffering_period_write;
-use crate::src::encoder::set::x264_8_sei_content_light_level_write;
-use crate::src::encoder::set::x264_8_sei_dec_ref_pic_marking_write;
-use crate::src::encoder::set::x264_8_sei_frame_packing_write;
-use crate::src::encoder::set::x264_8_sei_mastering_display_write;
-use crate::src::encoder::set::x264_8_sei_pic_timing_write;
-use crate::src::encoder::set::x264_8_sei_recovery_point_write;
-use crate::src::encoder::set::x264_8_sei_version_write;
-use crate::src::encoder::set::x264_8_sei_write;
-use crate::src::encoder::set::x264_8_sps_init;
-use crate::src::encoder::set::x264_8_sps_init_reconfigurable;
-use crate::src::encoder::set::x264_8_sps_init_scaling_list;
-use crate::src::encoder::set::x264_8_sps_write;
-use crate::src::encoder::set::x264_8_validate_levels;
-
-pub use crate::osdep_h::WORD_SIZE;
-pub use crate::src::common::macroblock::cabac_ctx_block_cat_e;
-pub use crate::src::common::macroblock::mb_class_e;
-pub use crate::src::common::macroblock::mb_partition_e;
-pub use crate::src::common::macroblock::x264_8_macroblock_bipred_init;
-pub use crate::src::common::macroblock::x264_8_macroblock_cache_allocate;
-pub use crate::src::common::macroblock::x264_8_macroblock_cache_free;
-pub use crate::src::common::macroblock::x264_8_macroblock_cache_load_interlaced;
-pub use crate::src::common::macroblock::x264_8_macroblock_cache_save;
-pub use crate::src::common::macroblock::x264_8_macroblock_deblock_strength;
-pub use crate::src::common::macroblock::x264_8_macroblock_slice_init;
-pub use crate::src::common::macroblock::x264_8_macroblock_thread_allocate;
-pub use crate::src::common::macroblock::x264_8_macroblock_thread_free;
-pub use crate::src::common::macroblock::x264_8_macroblock_thread_init;
-pub use crate::src::common::macroblock::B_8x8;
-pub use crate::src::common::macroblock::DCT_CHROMAU_4x4;
-pub use crate::src::common::macroblock::DCT_CHROMAU_8x8;
-pub use crate::src::common::macroblock::DCT_CHROMAV_4x4;
-pub use crate::src::common::macroblock::DCT_CHROMAV_8x8;
-pub use crate::src::common::macroblock::DCT_LUMA_4x4;
-pub use crate::src::common::macroblock::DCT_LUMA_8x8;
-pub use crate::src::common::macroblock::D_16x16;
-pub use crate::src::common::macroblock::D_16x8;
-pub use crate::src::common::macroblock::D_8x16;
-pub use crate::src::common::macroblock::D_8x8;
-pub use crate::src::common::macroblock::D_BI_4x4;
-pub use crate::src::common::macroblock::D_BI_4x8;
-pub use crate::src::common::macroblock::D_BI_8x4;
-pub use crate::src::common::macroblock::D_BI_8x8;
-pub use crate::src::common::macroblock::D_DIRECT_8x8;
-pub use crate::src::common::macroblock::D_L0_4x4;
-pub use crate::src::common::macroblock::D_L0_4x8;
-pub use crate::src::common::macroblock::D_L0_8x4;
-pub use crate::src::common::macroblock::D_L0_8x8;
-pub use crate::src::common::macroblock::D_L1_4x4;
-pub use crate::src::common::macroblock::D_L1_4x8;
-pub use crate::src::common::macroblock::D_L1_8x4;
-pub use crate::src::common::macroblock::D_L1_8x8;
-pub use crate::src::common::macroblock::I_16x16;
-pub use crate::src::common::macroblock::I_4x4;
-pub use crate::src::common::macroblock::I_8x8;
-pub use crate::src::common::macroblock::P_8x8;
-pub use crate::src::common::macroblock::B_BI_BI;
-pub use crate::src::common::macroblock::B_BI_L0;
-pub use crate::src::common::macroblock::B_BI_L1;
-pub use crate::src::common::macroblock::B_DIRECT;
-pub use crate::src::common::macroblock::B_L0_BI;
-pub use crate::src::common::macroblock::B_L0_L0;
-pub use crate::src::common::macroblock::B_L0_L1;
-pub use crate::src::common::macroblock::B_L1_BI;
-pub use crate::src::common::macroblock::B_L1_L0;
-pub use crate::src::common::macroblock::B_L1_L1;
-pub use crate::src::common::macroblock::B_SKIP;
-pub use crate::src::common::macroblock::DCT_CHROMAU_AC;
-pub use crate::src::common::macroblock::DCT_CHROMAU_DC;
-pub use crate::src::common::macroblock::DCT_CHROMAV_AC;
-pub use crate::src::common::macroblock::DCT_CHROMAV_DC;
-pub use crate::src::common::macroblock::DCT_CHROMA_AC;
-pub use crate::src::common::macroblock::DCT_CHROMA_DC;
-pub use crate::src::common::macroblock::DCT_LUMA_AC;
-pub use crate::src::common::macroblock::DCT_LUMA_DC;
-pub use crate::src::common::macroblock::I_PCM;
-pub use crate::src::common::macroblock::P_L0;
-pub use crate::src::common::macroblock::P_SKIP;
-pub use crate::src::common::macroblock::X264_MBTYPE_MAX;
-pub use crate::src::common::macroblock::X264_PARTTYPE_MAX;
-pub use crate::src::common::mc::weight_fn_t;
-pub use crate::src::common::mc::x264_8_mc_init;
-pub use crate::src::common::mc::x264_mc_functions_t_16;
-pub use crate::src::common::mc::x264_weight_t;
-pub use crate::src::common::pixel::x264_8_field_vsad;
-pub use crate::src::common::pixel::x264_8_pixel_init;
-pub use crate::src::common::pixel::x264_8_pixel_ssd_nv12;
-pub use crate::src::common::pixel::x264_8_pixel_ssd_wxh;
-pub use crate::src::common::pixel::x264_8_pixel_ssim_wxh;
-pub use crate::src::common::pixel::x264_pixel_cmp_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x3_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x4_t;
-pub use crate::src::common::pixel::x264_pixel_function_t;
-pub use crate::src::common::pixel::PIXEL_16x16;
-pub use crate::src::common::pixel::PIXEL_16x8;
-pub use crate::src::common::pixel::PIXEL_2x2;
-pub use crate::src::common::pixel::PIXEL_2x4;
-pub use crate::src::common::pixel::PIXEL_2x8;
-pub use crate::src::common::pixel::PIXEL_4x16;
-pub use crate::src::common::pixel::PIXEL_4x2;
-pub use crate::src::common::pixel::PIXEL_4x4;
-pub use crate::src::common::pixel::PIXEL_4x8;
-pub use crate::src::common::pixel::PIXEL_8x16;
-pub use crate::src::common::pixel::PIXEL_8x4;
-pub use crate::src::common::pixel::PIXEL_8x8;
-pub use crate::src::common::predict::intra16x16_pred_e;
-pub use crate::src::common::predict::intra4x4_pred_e;
-pub use crate::src::common::predict::intra8x8_pred_e;
-pub use crate::src::common::predict::intra_chroma_pred_e;
-pub use crate::src::common::predict::x264_8_predict_16x16_init;
-pub use crate::src::common::predict::x264_8_predict_4x4_init;
-pub use crate::src::common::predict::x264_8_predict_8x16c_init;
-pub use crate::src::common::predict::x264_8_predict_8x8_init;
-pub use crate::src::common::predict::x264_8_predict_8x8c_init;
-pub use crate::src::common::predict::x264_predict8x8_t;
-pub use crate::src::common::predict::x264_predict_8x8_filter_t;
-pub use crate::src::common::predict::x264_predict_t;
-pub use crate::src::common::predict::I_PRED_16x16_DC;
-pub use crate::src::common::predict::I_PRED_16x16_DC_128;
-pub use crate::src::common::predict::I_PRED_16x16_DC_LEFT;
-pub use crate::src::common::predict::I_PRED_16x16_DC_TOP;
-pub use crate::src::common::predict::I_PRED_16x16_H;
-pub use crate::src::common::predict::I_PRED_16x16_P;
-pub use crate::src::common::predict::I_PRED_16x16_V;
-pub use crate::src::common::predict::I_PRED_4x4_DC;
-pub use crate::src::common::predict::I_PRED_4x4_DC_128;
-pub use crate::src::common::predict::I_PRED_4x4_DC_LEFT;
-pub use crate::src::common::predict::I_PRED_4x4_DC_TOP;
-pub use crate::src::common::predict::I_PRED_4x4_DDL;
-pub use crate::src::common::predict::I_PRED_4x4_DDR;
-pub use crate::src::common::predict::I_PRED_4x4_H;
-pub use crate::src::common::predict::I_PRED_4x4_HD;
-pub use crate::src::common::predict::I_PRED_4x4_HU;
-pub use crate::src::common::predict::I_PRED_4x4_V;
-pub use crate::src::common::predict::I_PRED_4x4_VL;
-pub use crate::src::common::predict::I_PRED_4x4_VR;
-pub use crate::src::common::predict::I_PRED_8x8_DC;
-pub use crate::src::common::predict::I_PRED_8x8_DC_128;
-pub use crate::src::common::predict::I_PRED_8x8_DC_LEFT;
-pub use crate::src::common::predict::I_PRED_8x8_DC_TOP;
-pub use crate::src::common::predict::I_PRED_8x8_DDL;
-pub use crate::src::common::predict::I_PRED_8x8_DDR;
-pub use crate::src::common::predict::I_PRED_8x8_H;
-pub use crate::src::common::predict::I_PRED_8x8_HD;
-pub use crate::src::common::predict::I_PRED_8x8_HU;
-pub use crate::src::common::predict::I_PRED_8x8_V;
-pub use crate::src::common::predict::I_PRED_8x8_VL;
-pub use crate::src::common::predict::I_PRED_8x8_VR;
-pub use crate::src::common::predict::I_PRED_CHROMA_DC;
-pub use crate::src::common::predict::I_PRED_CHROMA_DC_128;
-pub use crate::src::common::predict::I_PRED_CHROMA_DC_LEFT;
-pub use crate::src::common::predict::I_PRED_CHROMA_DC_TOP;
-pub use crate::src::common::predict::I_PRED_CHROMA_H;
-pub use crate::src::common::predict::I_PRED_CHROMA_P;
-pub use crate::src::common::predict::I_PRED_CHROMA_V;
-pub use crate::src::common::quant::x264_8_quant_init;
-pub use crate::src::common::quant::x264_quant_function_t;
-pub use crate::src::common::set::x264_8_cqm_delete;
-pub use crate::src::common::set::x264_8_cqm_init;
-pub use crate::src::common::set::x264_8_cqm_parse_file;
-pub use crate::src::common::set::x264_pps_t;
-pub use crate::src::common::set::x264_sps_t;
-pub use crate::src::common::set::C2Rust_Unnamed_24;
-pub use crate::src::common::set::C2Rust_Unnamed_25;
-pub use crate::src::common::set::C2Rust_Unnamed_26;
-pub use crate::src::encoder::encoder::macroblock_h::i_chroma_qp_table;
-pub use crate::src::encoder::encoder::macroblock_h::x264_mb_partition_pixel_table;
-pub use crate::src::encoder::encoder::macroblock_h::x264_mb_type_list_table;
-pub use crate::src::encoder::encoder::osdep_h::endian_fix;
-pub use crate::src::encoder::encoder::osdep_h::endian_fix32;
-pub use crate::src::encoder::encoder::osdep_h::endian_fix64;
-pub use crate::src::encoder::encoder::osdep_h::x264_is_regular_file;
-pub use crate::src::encoder::encoder::pixel_h::x264_luma2chroma_pixel;
-pub use crate::src::encoder::encoder::predict_h::x264_mb_chroma_pred_mode_fix;
-pub use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode16x16_fix;
-pub use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode4x4_fix;
-use crate::src::encoder::ratecontrol::x264_8_adaptive_quant_frame;
-use crate::src::encoder::ratecontrol::x264_8_hrd_fullness;
-use crate::src::encoder::ratecontrol::x264_8_macroblock_tree_read;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_delete;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_end;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_init_reconfigurable;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_mb;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_mb_qp;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_new;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_qp;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_set_weights;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_start;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_summary;
-use crate::src::encoder::ratecontrol::x264_8_ratecontrol_zone_init;
-use crate::src::encoder::ratecontrol::x264_8_reference_build_list_optimal;
-use crate::src::encoder::ratecontrol::x264_8_thread_sync_ratecontrol;
-use crate::src::encoder::ratecontrol::x264_8_threads_distribute_ratecontrol;
-use crate::src::encoder::ratecontrol::x264_8_threads_merge_ratecontrol;
-use crate::stdlib::fabs;
-use crate::stdlib::fstat;
-use crate::stdlib::log10;
-use crate::stdlib::log2f;
-use crate::stdlib::pow;
-use crate::stdlib::pthread_cond_broadcast;
-use crate::stdlib::pthread_cond_destroy;
-use crate::stdlib::pthread_cond_init;
-pub use crate::stdlib::pthread_cond_t;
-pub use crate::stdlib::pthread_condattr_t;
-use crate::stdlib::pthread_mutex_destroy;
-use crate::stdlib::pthread_mutex_init;
-use crate::stdlib::pthread_mutex_lock;
-pub use crate::stdlib::pthread_mutex_t;
-use crate::stdlib::pthread_mutex_unlock;
-pub use crate::stdlib::pthread_mutexattr_t;
-pub use crate::stdlib::pthread_t;
-pub use crate::stdlib::C2Rust_Unnamed_6;
-
-use crate::stdlib::abs;
-pub use crate::stdlib::fclose;
-pub use crate::stdlib::fileno;
-pub use crate::stdlib::fopen;
-pub use crate::stdlib::fseeko;
-pub use crate::stdlib::fwrite;
-pub use crate::stdlib::int16_t;
-pub use crate::stdlib::int32_t;
-pub use crate::stdlib::int64_t;
-pub use crate::stdlib::int8_t;
-pub use crate::stdlib::intptr_t;
-pub use crate::stdlib::snprintf;
-pub use crate::stdlib::sprintf;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint64_t;
-pub use crate::stdlib::uint8_t;
-pub use crate::stdlib::uintptr_t;
-pub use crate::stdlib::SEEK_SET;
-pub use crate::stdlib::UINT16_MAX;
-pub use crate::stdlib::UINT32_MAX;
-
-pub use crate::stdlib::_IO_codecvt;
-pub use crate::stdlib::_IO_lock_t;
-pub use crate::stdlib::_IO_marker;
-pub use crate::stdlib::_IO_wide_data;
-pub use crate::stdlib::__pthread_mutex_s;
-use crate::stdlib::memcpy;
-use crate::stdlib::memmove;
-use crate::stdlib::memset;
-pub use crate::stdlib::stat;
-use crate::stdlib::strcmp;
-use crate::stdlib::strcpy;
-use crate::stdlib::strlen;
-pub use crate::stdlib::timespec;
-pub use crate::stdlib::_IO_FILE;
-
-pub use crate::src::common::base::x264_param_cleanup;
-use crate::src::common::tables::x264_cqm_avci100_1080_4ic;
-use crate::src::common::tables::x264_cqm_avci100_1080i_8iy;
-use crate::src::common::tables::x264_cqm_avci100_1080p_8iy;
-use crate::src::common::tables::x264_cqm_avci100_720p_4ic;
-use crate::src::common::tables::x264_cqm_avci100_720p_8iy;
-use crate::src::common::tables::x264_cqm_avci300_2160p_4ic;
-use crate::src::common::tables::x264_cqm_avci300_2160p_4iy;
-use crate::src::common::tables::x264_cqm_avci300_2160p_8iy;
-use crate::src::common::tables::x264_cqm_avci50_1080i_8iy;
-use crate::src::common::tables::x264_cqm_avci50_4ic;
-use crate::src::common::tables::x264_cqm_avci50_p_8iy;
-use crate::src::common::tables::x264_cqm_jvt4i;
-pub use crate::src::common::tables::x264_levels;
-use crate::src::common::tables::x264_zero;
-use crate::src::common::threadpool::x264_8_threadpool_delete;
-use crate::src::common::threadpool::x264_8_threadpool_init;
-use crate::src::common::threadpool::x264_8_threadpool_run;
-use crate::src::common::threadpool::x264_8_threadpool_wait;
-use crate::src::common::threadpool::x264_threadpool_t;
-pub use crate::stdlib::__blkcnt_t;
-pub use crate::stdlib::__blksize_t;
-pub use crate::stdlib::__dev_t;
-pub use crate::stdlib::__gid_t;
-pub use crate::stdlib::__ino_t;
-pub use crate::stdlib::__int16_t;
-pub use crate::stdlib::__int32_t;
-pub use crate::stdlib::__int64_t;
-pub use crate::stdlib::__int8_t;
-pub use crate::stdlib::__mode_t;
-pub use crate::stdlib::__nlink_t;
-pub use crate::stdlib::__off64_t;
-pub use crate::stdlib::__off_t;
-pub use crate::stdlib::__pthread_cond_s;
-pub use crate::stdlib::__pthread_internal_list;
-pub use crate::stdlib::__pthread_list_t;
-pub use crate::stdlib::__syscall_slong_t;
-pub use crate::stdlib::__time_t;
-pub use crate::stdlib::__uid_t;
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint64_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::stdlib::FILE;
-pub use crate::x264_h::nal_priority_e;
-pub use crate::x264_h::nal_unit_type_e;
-pub use crate::x264_h::pic_struct_e;
-pub use crate::x264_h::x264_hrd_t;
-pub use crate::x264_h::x264_image_properties_t;
-pub use crate::x264_h::x264_image_t;
-pub use crate::x264_h::x264_level_t;
-pub use crate::x264_h::x264_nal_t;
-pub use crate::x264_h::x264_param_t;
-pub use crate::x264_h::x264_picture_t_3;
-pub use crate::x264_h::x264_sei_payload_t;
-pub use crate::x264_h::x264_sei_t;
-pub use crate::x264_h::x264_zone_t;
-pub use crate::x264_h::C2Rust_Unnamed_0;
-pub use crate::x264_h::C2Rust_Unnamed_1;
-pub use crate::x264_h::C2Rust_Unnamed_2;
-pub use crate::x264_h::C2Rust_Unnamed_3;
-pub use crate::x264_h::C2Rust_Unnamed_4;
-pub use crate::x264_h::C2Rust_Unnamed_5;
-pub use crate::x264_h::X264_ANALYSE_BSUB16x16;
-pub use crate::x264_h::X264_ANALYSE_I4x4;
-pub use crate::x264_h::X264_ANALYSE_I8x8;
-pub use crate::x264_h::X264_ANALYSE_PSUB16x16;
-pub use crate::x264_h::X264_ANALYSE_PSUB8x8;
-pub use crate::x264_h::NAL_AUD;
-pub use crate::x264_h::NAL_FILLER;
-pub use crate::x264_h::NAL_PPS;
-pub use crate::x264_h::NAL_PRIORITY_DISPOSABLE;
-pub use crate::x264_h::NAL_PRIORITY_HIGH;
-pub use crate::x264_h::NAL_PRIORITY_HIGHEST;
-pub use crate::x264_h::NAL_PRIORITY_LOW;
-pub use crate::x264_h::NAL_SEI;
-pub use crate::x264_h::NAL_SLICE;
-pub use crate::x264_h::NAL_SLICE_DPA;
-pub use crate::x264_h::NAL_SLICE_DPB;
-pub use crate::x264_h::NAL_SLICE_DPC;
-pub use crate::x264_h::NAL_SLICE_IDR;
-pub use crate::x264_h::NAL_SPS;
-pub use crate::x264_h::NAL_UNKNOWN;
-pub use crate::x264_h::PIC_STRUCT_AUTO;
-pub use crate::x264_h::PIC_STRUCT_BOTTOM_TOP;
-pub use crate::x264_h::PIC_STRUCT_BOTTOM_TOP_BOTTOM;
-pub use crate::x264_h::PIC_STRUCT_DOUBLE;
-pub use crate::x264_h::PIC_STRUCT_PROGRESSIVE;
-pub use crate::x264_h::PIC_STRUCT_TOP_BOTTOM;
-pub use crate::x264_h::PIC_STRUCT_TOP_BOTTOM_TOP;
-pub use crate::x264_h::PIC_STRUCT_TRIPLE;
-pub use crate::x264_h::X264_AVCINTRA_FLAVOR_SONY;
-pub use crate::x264_h::X264_B_ADAPT_NONE;
-pub use crate::x264_h::X264_B_ADAPT_TRELLIS;
-pub use crate::x264_h::X264_B_PYRAMID_NONE;
-pub use crate::x264_h::X264_B_PYRAMID_NORMAL;
-pub use crate::x264_h::X264_B_PYRAMID_STRICT;
-pub use crate::x264_h::X264_CPU_BMI1;
-pub use crate::x264_h::X264_CPU_BMI2;
-pub use crate::x264_h::X264_CPU_CACHELINE_64;
-pub use crate::x264_h::X264_CPU_FMA3;
-pub use crate::x264_h::X264_CPU_SSE2;
-pub use crate::x264_h::X264_CPU_SSE2_IS_FAST;
-pub use crate::x264_h::X264_CPU_SSE2_IS_SLOW;
-pub use crate::x264_h::X264_CPU_SSE42;
-pub use crate::x264_h::X264_CPU_SSSE3;
-pub use crate::x264_h::X264_CQM_CUSTOM;
-pub use crate::x264_h::X264_CQM_FLAT;
-pub use crate::x264_h::X264_CSP_BGR;
-pub use crate::x264_h::X264_CSP_I400;
-pub use crate::x264_h::X264_CSP_I420;
-pub use crate::x264_h::X264_CSP_I422;
-pub use crate::x264_h::X264_CSP_I444;
-pub use crate::x264_h::X264_CSP_MASK;
-pub use crate::x264_h::X264_CSP_MAX;
-pub use crate::x264_h::X264_CSP_NONE;
-pub use crate::x264_h::X264_CSP_RGB;
-pub use crate::x264_h::X264_DIRECT_PRED_AUTO;
-pub use crate::x264_h::X264_DIRECT_PRED_NONE;
-pub use crate::x264_h::X264_DIRECT_PRED_SPATIAL;
-pub use crate::x264_h::X264_KEYINT_MAX_INFINITE;
-pub use crate::x264_h::X264_KEYINT_MIN_AUTO;
-pub use crate::x264_h::X264_LOG_DEBUG_1;
-pub use crate::x264_h::X264_LOG_ERROR_1;
-pub use crate::x264_h::X264_LOG_INFO;
-pub use crate::x264_h::X264_LOG_WARNING_1;
-pub use crate::x264_h::X264_ME_DIA;
-pub use crate::x264_h::X264_ME_ESA;
-pub use crate::x264_h::X264_ME_HEX;
-pub use crate::x264_h::X264_ME_TESA;
-pub use crate::x264_h::X264_ME_UMH;
-pub use crate::x264_h::X264_NAL_HRD_CBR;
-pub use crate::x264_h::X264_NAL_HRD_NONE;
-pub use crate::x264_h::X264_NAL_HRD_VBR;
-pub use crate::x264_h::X264_RC_ABR;
-pub use crate::x264_h::X264_RC_CQP;
-pub use crate::x264_h::X264_RC_CRF;
-pub use crate::x264_h::X264_THREADS_AUTO;
-pub use crate::x264_h::X264_TYPE_AUTO;
-pub use crate::x264_h::X264_TYPE_B;
-pub use crate::x264_h::X264_TYPE_BREF;
-pub use crate::x264_h::X264_TYPE_I;
-pub use crate::x264_h::X264_TYPE_IDR;
-pub use crate::x264_h::X264_TYPE_KEYFRAME;
-pub use crate::x264_h::X264_TYPE_P;
-pub use crate::x264_h::X264_WEIGHTP_NONE;
-pub use crate::x264_h::X264_WEIGHTP_SIMPLE;
-pub use crate::x264_h::X264_WEIGHTP_SMART;
+use crate::src::encoder::encoder::base_h::slice_type_to_char;
+use crate::src::encoder::encoder::base_h::x264_clip3;
+use crate::src::encoder::encoder::base_h::x264_clip3f;
+use crate::src::encoder::encoder::base_h::x264_scan8;
+use crate::src::encoder::encoder::bitstream_h::bs_align_1;
+use crate::src::encoder::encoder::bitstream_h::bs_flush;
+use crate::src::encoder::encoder::bitstream_h::bs_init;
+use crate::src::encoder::encoder::bitstream_h::bs_pos;
+use crate::src::encoder::encoder::bitstream_h::bs_rbsp_trailing;
+use crate::src::encoder::encoder::bitstream_h::bs_realign;
+use crate::src::encoder::encoder::bitstream_h::bs_size_ue_big;
+use crate::src::encoder::encoder::bitstream_h::bs_write;
+use crate::src::encoder::encoder::bitstream_h::bs_write1;
+use crate::src::encoder::encoder::bitstream_h::bs_write_se;
+use crate::src::encoder::encoder::bitstream_h::bs_write_ue_big;
+use crate::src::encoder::encoder::cabac_h::x264_cabac_pos;
+use crate::src::encoder::encoder::macroblock_h::i_chroma_qp_table;
+use crate::src::encoder::encoder::macroblock_h::x264_mb_partition_pixel_table;
+use crate::src::encoder::encoder::macroblock_h::x264_mb_type_list_table;
+use crate::src::encoder::encoder::osdep_h::x264_is_regular_file;
+use crate::src::encoder::encoder::pixel_h::x264_luma2chroma_pixel;
+use crate::src::encoder::encoder::predict_h::x264_mb_chroma_pred_mode_fix;
+use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode16x16_fix;
+use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode4x4_fix;
 extern "C" {
 
     pub fn x264_8_nal_encode(
@@ -2330,7 +1759,8 @@ unsafe extern "C" fn slice_header_write(
                 i_1 += 1;
             }
         } else {
-            (*(*sh).pps).b_weighted_bipred == 1 as ::core::ffi::c_int
+            // TODO: unused_must_use
+            let _ = (*(*sh).pps).b_weighted_bipred == 1 as ::core::ffi::c_int
                 && (*sh).i_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int;
         }
         if i_nal_ref_idc != 0 as ::core::ffi::c_int {
@@ -3806,7 +3236,7 @@ unsafe extern "C" fn validate_parameters(
                 ((if qp_p > (if qp_i > qp_b { qp_i } else { qp_b }) {
                     qp_p
                 } else {
-                    (if qp_i > qp_b { qp_i } else { qp_b })
+                    if qp_i > qp_b { qp_i } else { qp_b }
                 }) as ::core::ffi::c_double
                     + 0.999f64) as ::core::ffi::c_int,
                 0 as ::core::ffi::c_int,

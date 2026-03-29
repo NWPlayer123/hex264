@@ -5,43 +5,6 @@ pub struct x264_cpu_name_t {
     pub name: *const ::core::ffi::c_char,
     pub flags: crate::stdlib::uint32_t,
 }
-pub use crate::__stddef_size_t_h::size_t;
-
-pub use crate::stdlib::__cpu_mask;
-pub use crate::stdlib::__sched_cpucount;
-pub use crate::stdlib::cpu_set_t;
-use crate::stdlib::memset;
-use crate::stdlib::sched_getaffinity;
-pub use crate::stdlib::uint32_t;
-
-pub use crate::stdlib::__pid_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::x264_h::X264_CPU_AVX;
-pub use crate::x264_h::X264_CPU_AVX2;
-pub use crate::x264_h::X264_CPU_AVX512;
-pub use crate::x264_h::X264_CPU_BMI1;
-pub use crate::x264_h::X264_CPU_BMI2;
-pub use crate::x264_h::X264_CPU_CACHELINE_32;
-pub use crate::x264_h::X264_CPU_CACHELINE_64;
-pub use crate::x264_h::X264_CPU_FMA3;
-pub use crate::x264_h::X264_CPU_FMA4;
-pub use crate::x264_h::X264_CPU_LZCNT;
-pub use crate::x264_h::X264_CPU_MMX;
-pub use crate::x264_h::X264_CPU_MMX2;
-pub use crate::x264_h::X264_CPU_SLOW_ATOM;
-pub use crate::x264_h::X264_CPU_SLOW_PALIGNR;
-pub use crate::x264_h::X264_CPU_SLOW_PSHUFB;
-pub use crate::x264_h::X264_CPU_SLOW_SHUFFLE;
-pub use crate::x264_h::X264_CPU_SSE;
-pub use crate::x264_h::X264_CPU_SSE2;
-pub use crate::x264_h::X264_CPU_SSE2_IS_FAST;
-pub use crate::x264_h::X264_CPU_SSE2_IS_SLOW;
-pub use crate::x264_h::X264_CPU_SSE3;
-pub use crate::x264_h::X264_CPU_SSE4;
-pub use crate::x264_h::X264_CPU_SSE42;
-pub use crate::x264_h::X264_CPU_SSSE3;
-pub use crate::x264_h::X264_CPU_STACK_MOD4;
-pub use crate::x264_h::X264_CPU_XOP;
 #[no_mangle]
 
 pub static mut x264_cpu_names: [crate::src::common::cpu::x264_cpu_name_t; 28] = [
@@ -290,10 +253,10 @@ pub static mut x264_cpu_names: [crate::src::common::cpu::x264_cpu_name_t; 28] = 
 ];
 #[no_mangle]
 
-pub unsafe extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {
-    unsafe {
+pub extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {
+
         return 0 as crate::stdlib::uint32_t;
-    }
+
 }
 #[no_mangle]
 

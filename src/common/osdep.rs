@@ -1,12 +1,4 @@
-pub use crate::stdlib::__clockid_t;
-pub use crate::stdlib::__int64_t;
-pub use crate::stdlib::__syscall_slong_t;
-pub use crate::stdlib::__time_t;
-use crate::stdlib::clock_gettime;
-pub use crate::stdlib::clockid_t;
-pub use crate::stdlib::int64_t;
-pub use crate::stdlib::timespec;
-pub use crate::stdlib::CLOCK_MONOTONIC;
+
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_mdate() -> crate::stdlib::int64_t {

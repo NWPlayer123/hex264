@@ -156,35 +156,16 @@ pub mod common_h {
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-        unsafe {
             return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
                 -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
             } else {
                 x
             }) as crate::src::common::common::pixel;
-        }
+      
     }
 }
 
-pub use crate::__stddef_size_t_h::size_t;
-pub use crate::src::common::base::x264_union32_t;
-
-pub use crate::internal::BIT_DEPTH;
-pub use crate::src::common::common::dctcoef;
-pub use crate::src::common::common::pixel;
-pub use crate::src::common::common::FDEC_STRIDE;
-pub use crate::src::common::common::FENC_STRIDE;
-pub use crate::src::common::common::PIXEL_MAX;
-pub use crate::src::common::dct::common_h::x264_clip_pixel;
-pub use crate::stdlib::__int16_t;
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::stdlib::int16_t;
-use crate::stdlib::memcpy;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint8_t;
+use crate::src::common::dct::common_h::x264_clip_pixel;
 
 unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
     unsafe {
@@ -1577,7 +1558,7 @@ unsafe extern "C" fn add16x16_idct_dc(
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_8_dct_init(
-    mut cpu: crate::stdlib::uint32_t,
+    mut _cpu: crate::stdlib::uint32_t,
     mut dctf: *mut crate::src::common::dct::x264_dct_function_t,
 ) {
     unsafe {
@@ -4417,7 +4398,7 @@ unsafe extern "C" fn zigzag_interleave_8x8_cavlc(
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_8_zigzag_init(
-    mut cpu: crate::stdlib::uint32_t,
+    mut _cpu: crate::stdlib::uint32_t,
     mut pf_progressive: *mut crate::src::common::dct::x264_zigzag_function_t,
     mut pf_interlaced: *mut crate::src::common::dct::x264_zigzag_function_t,
 ) {

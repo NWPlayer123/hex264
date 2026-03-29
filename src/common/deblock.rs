@@ -5,13 +5,12 @@ pub mod common_h {
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-        unsafe {
             return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
                 -x >> 31 as ::core::ffi::c_int & crate::src::common::common::PIXEL_MAX
             } else {
                 x
             }) as crate::src::common::common::pixel;
-        }
+     
     }
 }
 
@@ -24,7 +23,6 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        unsafe {
             return if v < i_min {
                 i_min
             } else if v > i_max {
@@ -32,173 +30,11 @@ pub mod base_h {
             } else {
                 v
             };
-        }
     }
 }
 
-pub use crate::__stddef_null_h::NULL;
-pub use crate::__stddef_size_t_h::size_t;
-
-pub use crate::src::common::base::chroma_format_e;
-pub use crate::src::common::base::slice_type_e;
-pub use crate::src::common::base::x264_union32_t;
-pub use crate::src::common::base::x264_union64_t;
-pub use crate::src::common::base::CHROMA_400;
-pub use crate::src::common::base::CHROMA_420;
-pub use crate::src::common::base::CHROMA_422;
-pub use crate::src::common::base::CHROMA_444;
-pub use crate::src::common::base::SLICE_TYPE_B;
-pub use crate::src::common::base::SLICE_TYPE_I;
-pub use crate::src::common::base::SLICE_TYPE_P;
-pub use crate::src::common::base::X264_SCAN8_0;
-pub use crate::src::common::bitstream::bs_s;
-pub use crate::src::common::bitstream::bs_t;
-pub use crate::src::common::bitstream::x264_bitstream_function_t;
-pub use crate::src::common::bitstream::x264_run_level_t;
-pub use crate::src::common::cabac::x264_cabac_t;
-pub use crate::src::common::deblock::base_h::x264_clip3;
-pub use crate::stdlib::C2Rust_Unnamed_7;
-pub use crate::stdlib::__atomic_wide_counter;
-
-pub use crate::internal::__va_list_tag;
-pub use crate::internal::BIT_DEPTH;
-pub use crate::src::common::common::dctcoef;
-pub use crate::src::common::common::pixel;
-pub use crate::src::common::common::udctcoef;
-pub use crate::src::common::common::x264_frame_stat_t;
-pub use crate::src::common::common::x264_left_table_t;
-pub use crate::src::common::common::x264_lookahead_t;
-pub use crate::src::common::common::x264_ratecontrol_t;
-pub use crate::src::common::common::x264_slice_header_t;
-pub use crate::src::common::common::x264_t;
-pub use crate::src::common::common::C2Rust_Unnamed_10;
-pub use crate::src::common::common::C2Rust_Unnamed_11;
-pub use crate::src::common::common::C2Rust_Unnamed_12;
-pub use crate::src::common::common::C2Rust_Unnamed_13;
-pub use crate::src::common::common::C2Rust_Unnamed_14;
-pub use crate::src::common::common::C2Rust_Unnamed_15;
-pub use crate::src::common::common::C2Rust_Unnamed_16;
-pub use crate::src::common::common::C2Rust_Unnamed_17;
-pub use crate::src::common::common::C2Rust_Unnamed_8;
-pub use crate::src::common::common::C2Rust_Unnamed_9;
-pub use crate::src::common::common::FDEC_STRIDE;
-pub use crate::src::common::common::PIXEL_MAX;
-pub use crate::src::common::common::QP_BD_OFFSET;
-pub use crate::src::common::dct::x264_dct_function_t;
-pub use crate::src::common::dct::x264_zigzag_function_t;
-pub use crate::src::common::deblock::common_h::x264_clip_pixel;
-pub use crate::src::common::frame::x264_deblock_function_t;
-pub use crate::src::common::frame::x264_deblock_inter_t;
-pub use crate::src::common::frame::x264_deblock_intra_t;
-pub use crate::src::common::frame::x264_frame;
-pub use crate::src::common::frame::x264_frame_t;
-pub use crate::src::common::frame::x264_sync_frame_list_t;
-pub use crate::src::common::macroblock::macroblock_position_e;
-pub use crate::src::common::macroblock::mb_class_e;
-pub use crate::src::common::macroblock::mb_partition_e;
-pub use crate::src::common::macroblock::x264_8_prefetch_fenc;
-pub use crate::src::common::macroblock::B_8x8;
-pub use crate::src::common::macroblock::D_16x16;
-pub use crate::src::common::macroblock::D_16x8;
-pub use crate::src::common::macroblock::D_8x16;
-pub use crate::src::common::macroblock::D_8x8;
-pub use crate::src::common::macroblock::D_BI_4x4;
-pub use crate::src::common::macroblock::D_BI_4x8;
-pub use crate::src::common::macroblock::D_BI_8x4;
-pub use crate::src::common::macroblock::D_BI_8x8;
-pub use crate::src::common::macroblock::D_DIRECT_8x8;
-pub use crate::src::common::macroblock::D_L0_4x4;
-pub use crate::src::common::macroblock::D_L0_4x8;
-pub use crate::src::common::macroblock::D_L0_8x4;
-pub use crate::src::common::macroblock::D_L0_8x8;
-pub use crate::src::common::macroblock::D_L1_4x4;
-pub use crate::src::common::macroblock::D_L1_4x8;
-pub use crate::src::common::macroblock::D_L1_8x4;
-pub use crate::src::common::macroblock::D_L1_8x8;
-pub use crate::src::common::macroblock::I_16x16;
-pub use crate::src::common::macroblock::I_4x4;
-pub use crate::src::common::macroblock::I_8x8;
-pub use crate::src::common::macroblock::P_8x8;
-pub use crate::src::common::macroblock::ALL_NEIGHBORS;
-pub use crate::src::common::macroblock::B_BI_BI;
-pub use crate::src::common::macroblock::B_BI_L0;
-pub use crate::src::common::macroblock::B_BI_L1;
-pub use crate::src::common::macroblock::B_DIRECT;
-pub use crate::src::common::macroblock::B_L0_BI;
-pub use crate::src::common::macroblock::B_L0_L0;
-pub use crate::src::common::macroblock::B_L0_L1;
-pub use crate::src::common::macroblock::B_L1_BI;
-pub use crate::src::common::macroblock::B_L1_L0;
-pub use crate::src::common::macroblock::B_L1_L1;
-pub use crate::src::common::macroblock::B_SKIP;
-pub use crate::src::common::macroblock::I_PCM;
-pub use crate::src::common::macroblock::MB_LEFT;
-pub use crate::src::common::macroblock::MB_PRIVATE;
-pub use crate::src::common::macroblock::MB_TOP;
-pub use crate::src::common::macroblock::MB_TOPLEFT;
-pub use crate::src::common::macroblock::MB_TOPRIGHT;
-pub use crate::src::common::macroblock::P_L0;
-pub use crate::src::common::macroblock::P_SKIP;
-pub use crate::src::common::macroblock::X264_MBTYPE_MAX;
-pub use crate::src::common::macroblock::X264_PARTTYPE_MAX;
-pub use crate::src::common::mc::weight_fn_t;
-pub use crate::src::common::mc::x264_mc_functions_t_3;
-pub use crate::src::common::mc::x264_weight_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x3_t;
-pub use crate::src::common::pixel::x264_pixel_cmp_x4_t;
-pub use crate::src::common::pixel::x264_pixel_function_t;
-pub use crate::src::common::predict::x264_predict8x8_t;
-pub use crate::src::common::predict::x264_predict_8x8_filter_t;
-pub use crate::src::common::predict::x264_predict_t;
-pub use crate::src::common::quant::x264_quant_function_t;
-pub use crate::stdlib::pthread_cond_t;
-pub use crate::stdlib::pthread_mutex_t;
-pub use crate::stdlib::pthread_t;
-
-pub use crate::src::common::set::x264_pps_t;
-pub use crate::src::common::set::x264_sps_t;
-pub use crate::src::common::set::C2Rust_Unnamed_24;
-pub use crate::src::common::set::C2Rust_Unnamed_25;
-pub use crate::src::common::set::C2Rust_Unnamed_26;
-use crate::src::common::threadpool::x264_threadpool_t;
-pub use crate::stdlib::__pthread_cond_s;
-pub use crate::stdlib::__pthread_internal_list;
-pub use crate::stdlib::__pthread_list_t;
-pub use crate::stdlib::__pthread_mutex_s;
-use crate::stdlib::abs;
-pub use crate::stdlib::int16_t;
-pub use crate::stdlib::int32_t;
-pub use crate::stdlib::int64_t;
-pub use crate::stdlib::int8_t;
-pub use crate::stdlib::intptr_t;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint64_t;
-pub use crate::stdlib::uint8_t;
-pub use crate::stdlib::uintptr_t;
-
-pub use crate::stdlib::__int16_t;
-pub use crate::stdlib::__int32_t;
-pub use crate::stdlib::__int64_t;
-pub use crate::stdlib::__int8_t;
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint64_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::x264_h::x264_hrd_t;
-pub use crate::x264_h::x264_nal_t;
-pub use crate::x264_h::x264_param_t;
-pub use crate::x264_h::x264_sei_payload_t;
-pub use crate::x264_h::x264_sei_t;
-pub use crate::x264_h::x264_zone_t;
-pub use crate::x264_h::C2Rust_Unnamed_0;
-pub use crate::x264_h::C2Rust_Unnamed_1;
-pub use crate::x264_h::C2Rust_Unnamed_2;
-pub use crate::x264_h::C2Rust_Unnamed_3;
-pub use crate::x264_h::C2Rust_Unnamed_4;
-pub use crate::x264_h::C2Rust_Unnamed_5;
-pub use crate::x264_h::X264_MBINFO_CONSTANT;
+use crate::src::common::deblock::base_h::x264_clip3;
+use crate::src::common::deblock::common_h::x264_clip_pixel;
 
 static mut i_alpha_table: [crate::stdlib::uint8_t; 88] = [
     0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
@@ -1654,7 +1490,7 @@ unsafe extern "C" fn deblock_strength_c(
 #[inline(always)]
 
 unsafe extern "C" fn deblock_edge(
-    mut h: *mut crate::src::common::common::x264_t,
+    mut _h: *mut crate::src::common::common::x264_t,
     mut pix: *mut crate::src::common::common::pixel,
     mut i_stride: crate::stdlib::intptr_t,
     mut bS: *mut crate::stdlib::uint8_t,
@@ -1716,14 +1552,14 @@ unsafe extern "C" fn deblock_edge(
 #[inline(always)]
 
 unsafe extern "C" fn deblock_edge_intra(
-    mut h: *mut crate::src::common::common::x264_t,
+    mut _h: *mut crate::src::common::common::x264_t,
     mut pix: *mut crate::src::common::common::pixel,
     mut i_stride: crate::stdlib::intptr_t,
-    mut bS: *mut crate::stdlib::uint8_t,
+    mut _bS: *mut crate::stdlib::uint8_t,
     mut i_qp: ::core::ffi::c_int,
     mut a: ::core::ffi::c_int,
     mut b: ::core::ffi::c_int,
-    mut b_chroma: ::core::ffi::c_int,
+    mut _b_chroma: ::core::ffi::c_int,
     mut pf_intra: crate::src::common::frame::x264_deblock_intra_t,
 ) {
     unsafe {
@@ -4228,9 +4064,9 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(
 #[no_mangle]
 
 pub unsafe extern "C" fn x264_8_deblock_init(
-    mut cpu: crate::stdlib::uint32_t,
+    mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::frame::x264_deblock_function_t,
-    mut b_mbaff: ::core::ffi::c_int,
+    mut _b_mbaff: ::core::ffi::c_int,
 ) {
     unsafe {
         (*pf).deblock_luma[1 as ::core::ffi::c_int as usize] = Some(

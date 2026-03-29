@@ -193,42 +193,16 @@ pub mod rectangle_h {
         }
     }
 
-    use crate::osdep_h::WORD_SIZE;
-    use crate::src::common::base::x264_union16_t;
-    use crate::src::common::base::x264_union32_t;
-    use crate::src::common::base::x264_union64_t;
-    use crate::stdlib::__assert_fail;
-    use crate::stdlib::uint16_t;
-    use crate::stdlib::uint32_t;
-    use crate::stdlib::uint64_t;
-    use crate::stdlib::uint8_t;
-    use crate::stdlib::__ASSERT_FUNCTION;
 }
 
-pub use crate::__stddef_null_h::NULL;
 
-pub use crate::osdep_h::WORD_SIZE;
-pub use crate::src::common::base::x264_union16_t;
-pub use crate::src::common::base::x264_union32_t;
-pub use crate::src::common::base::x264_union64_t;
-pub use crate::src::common::rectangle::rectangle_h::x264_macroblock_cache_rect;
-pub use crate::stdlib::__assert_fail;
-pub use crate::stdlib::__assert_single_arg;
-pub use crate::stdlib::__ASSERT_FUNCTION;
+use crate::src::common::rectangle::rectangle_h::x264_macroblock_cache_rect;
 
-pub use crate::stdlib::__uint16_t;
-pub use crate::stdlib::__uint32_t;
-pub use crate::stdlib::__uint64_t;
-pub use crate::stdlib::__uint8_t;
-pub use crate::stdlib::uint16_t;
-pub use crate::stdlib::uint32_t;
-pub use crate::stdlib::uint64_t;
-pub use crate::stdlib::uint8_t;
 #[no_mangle]
 
 pub static mut x264_8_cache_mv_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
->; 10] = unsafe {
+>; 10] = 
     [
         Some(
             macroblock_cache_mv_1_1
@@ -262,7 +236,7 @@ pub static mut x264_8_cache_mv_func_table: [Option<
                 as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
         ),
     ]
-};
+;
 
 unsafe extern "C" fn macroblock_cache_mv_1_1(
     mut target: *mut ::core::ffi::c_void,
@@ -387,7 +361,7 @@ unsafe extern "C" fn macroblock_cache_mvd_2_4(
 
 pub static mut x264_8_cache_mvd_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
->; 10] = unsafe {
+>; 10] = 
     [
         Some(
             macroblock_cache_mvd_1_1
@@ -421,7 +395,7 @@ pub static mut x264_8_cache_mvd_func_table: [Option<
                 as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
         ),
     ]
-};
+;
 
 unsafe extern "C" fn macroblock_cache_mvd_1_1(
     mut target: *mut ::core::ffi::c_void,
@@ -516,7 +490,7 @@ unsafe extern "C" fn macroblock_cache_mvd_4_4(
 
 pub static mut x264_8_cache_ref_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
->; 10] = unsafe {
+>; 10] = 
     [
         Some(
             macroblock_cache_ref_1_1
@@ -550,7 +524,7 @@ pub static mut x264_8_cache_ref_func_table: [Option<
                 as unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
         ),
     ]
-};
+;
 
 unsafe extern "C" fn macroblock_cache_ref_1_1(
     mut target: *mut ::core::ffi::c_void,
