@@ -255,7 +255,7 @@ pub extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {
 #[no_mangle]
 pub unsafe extern "C" fn x264_cpu_num_processors() -> ::core::ffi::c_int {
     unsafe {
-        let mut p_aff: crate::stdlib::cpu_set_t = crate::stdlib::cpu_set_t { __bits: [0; 16] };
+        let mut p_aff = crate::stdlib::cpu_set_t { __bits: [0; 16] };
         crate::stdlib::memset(
             &raw mut p_aff as *mut ::core::ffi::c_void,
             0i32,

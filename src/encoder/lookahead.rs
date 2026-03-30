@@ -4,7 +4,7 @@ unsafe extern "C" fn lookahead_shift(
     mut count: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut i: ::core::ffi::c_int = count;
+        let mut i = count;
         loop {
             let c2rust_fresh0 = i;
             i = i - 1;
@@ -64,7 +64,7 @@ unsafe extern "C" fn lookahead_slicetype_decide(mut h: *mut crate::src::common::
     unsafe {
         crate::src::encoder::analyse::slicetype_c::x264_8_slicetype_decide(h);
         lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0isize));
-        let mut shift_frames: ::core::ffi::c_int =
+        let mut shift_frames =
             (**(*(*h).lookahead).next.list.offset(0isize)).i_bframes as ::core::ffi::c_int + 1i32;
         crate::stdlib::pthread_mutex_lock(&raw mut (*(*h).lookahead).ofbuf.mutex);
         while (*(*h).lookahead).ofbuf.i_size == (*(*h).lookahead).ofbuf.i_max_size {
@@ -101,8 +101,7 @@ unsafe extern "C" fn lookahead_thread(
                 break;
             } else {
                 crate::stdlib::pthread_mutex_lock(&raw mut (*(*h).lookahead).next.mutex);
-                let mut shift: ::core::ffi::c_int = if (*(*h).lookahead).next.i_max_size
-                    - (*(*h).lookahead).next.i_size
+                let mut shift = if (*(*h).lookahead).next.i_max_size - (*(*h).lookahead).next.i_size
                     < (*(*h).lookahead).ifbuf.i_size
                 {
                     (*(*h).lookahead).next.i_max_size - (*(*h).lookahead).next.i_size
@@ -158,20 +157,18 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
     mut i_slicetype_length: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut look_h: *mut crate::src::common::common::x264_t =
-            ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
-        let mut look: *mut crate::src::common::common::x264_lookahead_t =
-            crate::src::common::base::x264_malloc(::core::mem::size_of::<
-                crate::src::common::common::x264_lookahead_t,
-            >() as crate::stdlib::int64_t)
-                as *mut crate::src::common::common::x264_lookahead_t;
+        let mut look_h = ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
+        let mut look = crate::src::common::base::x264_malloc(::core::mem::size_of::<
+            crate::src::common::common::x264_lookahead_t,
+        >() as crate::stdlib::int64_t)
+            as *mut crate::src::common::common::x264_lookahead_t;
         if !look.is_null() {
             crate::stdlib::memset(
                 look as *mut ::core::ffi::c_void,
                 0i32,
                 ::core::mem::size_of::<crate::src::common::common::x264_lookahead_t>(),
             );
-            let mut i: ::core::ffi::c_int = 0i32;
+            let mut i = 0i32;
             while i < (*h).param.i_threads {
                 (*(*h).thread[i as usize]).lookahead = look;
                 i += 1;
@@ -307,9 +304,8 @@ pub unsafe extern "C" fn x264_8_lookahead_is_empty(
     unsafe {
         crate::stdlib::pthread_mutex_lock(&raw mut (*(*h).lookahead).ofbuf.mutex);
         crate::stdlib::pthread_mutex_lock(&raw mut (*(*h).lookahead).next.mutex);
-        let mut b_empty: ::core::ffi::c_int = ((*(*h).lookahead).next.i_size == 0
-            && (*(*h).lookahead).ofbuf.i_size == 0)
-            as ::core::ffi::c_int;
+        let mut b_empty = ((*(*h).lookahead).next.i_size == 0
+            && (*(*h).lookahead).ofbuf.i_size == 0) as ::core::ffi::c_int;
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).next.mutex);
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).ofbuf.mutex);
         return b_empty;
@@ -320,7 +316,7 @@ unsafe extern "C" fn lookahead_encoder_shift(mut h: *mut crate::src::common::com
         if (*(*h).lookahead).ofbuf.i_size == 0 {
             return;
         }
-        let mut i_frames: ::core::ffi::c_int =
+        let mut i_frames =
             (**(*(*h).lookahead).ofbuf.list.offset(0isize)).i_bframes as ::core::ffi::c_int + 1i32;
         loop {
             let c2rust_fresh3 = i_frames;
@@ -362,9 +358,9 @@ pub unsafe extern "C" fn x264_8_lookahead_get_frames(
             }
             crate::src::encoder::analyse::slicetype_c::x264_8_slicetype_decide(h);
             lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0isize));
-            let mut shift_frames: ::core::ffi::c_int =
-                (**(*(*h).lookahead).next.list.offset(0isize)).i_bframes as ::core::ffi::c_int
-                    + 1i32;
+            let mut shift_frames = (**(*(*h).lookahead).next.list.offset(0isize)).i_bframes
+                as ::core::ffi::c_int
+                + 1i32;
             lookahead_shift(
                 &raw mut (*(*h).lookahead).ofbuf,
                 &raw mut (*(*h).lookahead).next,

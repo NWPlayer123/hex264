@@ -93,8 +93,8 @@ pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
     mut src: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut dc: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut dc = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
             dc += *src.offset((-(1i32) + i * crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -102,9 +102,9 @@ pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
                 as ::core::ffi::c_int;
             i += 1;
         }
-        let mut dcsplat: crate::src::common::common::pixel4 =
+        let mut dcsplat =
             ((dc + 16i32 >> 5i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
@@ -117,16 +117,16 @@ pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
 }
 unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut dc = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
             dc += *src.offset((-(1i32) + i * crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
             i += 1;
         }
-        let mut dcsplat: crate::src::common::common::pixel4 =
+        let mut dcsplat =
             ((dc + 8i32 >> 4i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
@@ -139,16 +139,16 @@ unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut crate::src::common::c
 }
 unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut dc = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
             dc += *src.offset((i - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
             i += 1;
         }
-        let mut dcsplat: crate::src::common::common::pixel4 =
+        let mut dcsplat =
             ((dc + 8i32 >> 4i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
@@ -161,7 +161,7 @@ unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut crate::src::common::co
 }
 unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i =
                 (((1i32) << 8i32 - 1i32) as ::core::ffi::c_uint).wrapping_mul(0x1010101u32);
@@ -179,10 +179,9 @@ unsafe extern "C" fn predict_16x16_dc_128_c(mut src: *mut crate::src::common::co
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_16x16_h_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
-            let v: crate::src::common::common::pixel4 = (*src.offset(-1isize)
-                as crate::src::common::common::pixel4)
+            let v = (*src.offset(-1isize) as crate::src::common::common::pixel4)
                 .wrapping_mul(0x1010101u32);
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v;
@@ -196,19 +195,19 @@ pub unsafe extern "C" fn x264_8_predict_16x16_h_c(mut src: *mut crate::src::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_16x16_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut v0: crate::src::common::common::pixel4 = (*(src.offset((0i32 - 32i32) as isize)
+        let mut v0 = (*(src.offset((0i32 - 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut v1: crate::src::common::common::pixel4 = (*(src.offset((4i32 - 32i32) as isize)
+        let mut v1 = (*(src.offset((4i32 - 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut v2: crate::src::common::common::pixel4 = (*(src.offset((8i32 - 32i32) as isize)
+        let mut v2 = (*(src.offset((8i32 - 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut v3: crate::src::common::common::pixel4 = (*(src.offset((12i32 - 32i32) as isize)
+        let mut v3 = (*(src.offset((12i32 - 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v1;
@@ -222,9 +221,9 @@ pub unsafe extern "C" fn x264_8_predict_16x16_v_c(mut src: *mut crate::src::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut H: ::core::ffi::c_int = 0i32;
-        let mut V: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut H = 0i32;
+        let mut V = 0i32;
+        let mut i = 0i32;
         while i <= 7i32 {
             H += (i + 1i32)
                 * (*src.offset((8i32 + i - crate::src::common::common::FDEC_STRIDE) as isize)
@@ -240,18 +239,18 @@ pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::comm
                     ) as ::core::ffi::c_int);
             i += 1;
         }
-        let mut a: ::core::ffi::c_int = 16i32
+        let mut a = 16i32
             * (*src.offset((-(1i32) + 15i32 * crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int
                 + *src.offset((15i32 - crate::src::common::common::FDEC_STRIDE) as isize)
                     as ::core::ffi::c_int);
-        let mut b: ::core::ffi::c_int = 5i32 * H + 32i32 >> 6i32;
-        let mut c: ::core::ffi::c_int = 5i32 * V + 32i32 >> 6i32;
-        let mut i00: ::core::ffi::c_int = a - b * 7i32 - c * 7i32 + 16i32;
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut b = 5i32 * H + 32i32 >> 6i32;
+        let mut c = 5i32 * V + 32i32 >> 6i32;
+        let mut i00 = a - b * 7i32 - c * 7i32 + 16i32;
+        let mut y = 0i32;
         while y < 16i32 {
-            let mut pix: ::core::ffi::c_int = i00;
-            let mut x: ::core::ffi::c_int = 0i32;
+            let mut pix = i00;
+            let mut x = 0i32;
             while x < 16i32 {
                 *src.offset(x as isize) = x264_clip_pixel(pix >> 5i32);
                 pix += b;
@@ -265,7 +264,7 @@ pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::comm
 }
 unsafe extern "C" fn predict_8x8c_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i =
                 (((1i32) << 8i32 - 1i32) as ::core::ffi::c_uint).wrapping_mul(0x1010101u32);
@@ -278,9 +277,9 @@ unsafe extern "C" fn predict_8x8c_dc_128_c(mut src: *mut crate::src::common::com
 }
 unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc0: ::core::ffi::c_int = 0i32;
-        let mut dc1: ::core::ffi::c_int = 0i32;
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut dc0 = 0i32;
+        let mut dc1 = 0i32;
+        let mut y = 0i32;
         while y < 4i32 {
             dc0 += *src.offset((y * crate::src::common::common::FDEC_STRIDE - 1i32) as isize)
                 as ::core::ffi::c_int;
@@ -289,18 +288,18 @@ unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::co
                 as ::core::ffi::c_int;
             y += 1;
         }
-        let mut dc0splat: crate::src::common::common::pixel4 =
+        let mut dc0splat =
             ((dc0 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc1splat: crate::src::common::common::pixel4 =
+        let mut dc1splat =
             ((dc1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut y_0: ::core::ffi::c_int = 0i32;
+        let mut y_0 = 0i32;
         while y_0 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y_0 += 1;
         }
-        let mut y_1: ::core::ffi::c_int = 0i32;
+        let mut y_1 = 0i32;
         while y_1 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
@@ -311,9 +310,9 @@ unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::co
 }
 unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc0: ::core::ffi::c_int = 0i32;
-        let mut dc1: ::core::ffi::c_int = 0i32;
-        let mut x: ::core::ffi::c_int = 0i32;
+        let mut dc0 = 0i32;
+        let mut dc1 = 0i32;
+        let mut x = 0i32;
         while x < 4i32 {
             dc0 += *src.offset((x - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -321,11 +320,11 @@ unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::com
                 as ::core::ffi::c_int;
             x += 1;
         }
-        let mut dc0splat: crate::src::common::common::pixel4 =
+        let mut dc0splat =
             ((dc0 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc1splat: crate::src::common::common::pixel4 =
+        let mut dc1splat =
             ((dc1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
@@ -337,11 +336,11 @@ unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::com
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut s0: ::core::ffi::c_int = 0i32;
-        let mut s1: ::core::ffi::c_int = 0i32;
-        let mut s2: ::core::ffi::c_int = 0i32;
-        let mut s3: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut s0 = 0i32;
+        let mut s1 = 0i32;
+        let mut s2 = 0i32;
+        let mut s3 = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
             s0 += *src.offset((i - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -354,24 +353,22 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::comm
                 as ::core::ffi::c_int;
             i += 1;
         }
-        let mut dc0: crate::src::common::common::pixel4 = ((s0 + s2 + 4i32 >> 3i32)
-            as crate::src::common::common::pixel4)
+        let mut dc0 = ((s0 + s2 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut dc1: crate::src::common::common::pixel4 =
+        let mut dc1 =
             ((s1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc2: crate::src::common::common::pixel4 =
+        let mut dc2 =
             ((s3 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc3: crate::src::common::common::pixel4 = ((s1 + s3 + 4i32 >> 3i32)
-            as crate::src::common::common::pixel4)
+        let mut dc3 = ((s1 + s3 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y += 1;
         }
-        let mut y_0: ::core::ffi::c_int = 0i32;
+        let mut y_0 = 0i32;
         while y_0 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc2;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc3;
@@ -383,10 +380,9 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x8c_h_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 8i32 {
-            let mut v: crate::src::common::common::pixel4 = (*src.offset(-1isize)
-                as crate::src::common::common::pixel4)
+            let mut v = (*src.offset(-1isize) as crate::src::common::common::pixel4)
                 .wrapping_mul(0x1010101u32);
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v;
@@ -398,13 +394,13 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_h_c(mut src: *mut crate::src::commo
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x8c_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut v0: crate::src::common::common::pixel4 = (*(src.offset(0isize).offset(-(32isize))
+        let mut v0 = (*(src.offset(0isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut v1: crate::src::common::common::pixel4 = (*(src.offset(4isize).offset(-(32isize))
+        let mut v1 = (*(src.offset(4isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v1;
@@ -416,9 +412,9 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_v_c(mut src: *mut crate::src::commo
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut H: ::core::ffi::c_int = 0i32;
-        let mut V: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut H = 0i32;
+        let mut V = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
             H += (i + 1i32)
                 * (*src.offset((4i32 + i - crate::src::common::common::FDEC_STRIDE) as isize)
@@ -434,18 +430,18 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::commo
                     ) as ::core::ffi::c_int);
             i += 1;
         }
-        let mut a: ::core::ffi::c_int = 16i32
+        let mut a = 16i32
             * (*src.offset((-(1i32) + 7i32 * crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int
                 + *src.offset((7i32 - crate::src::common::common::FDEC_STRIDE) as isize)
                     as ::core::ffi::c_int);
-        let mut b: ::core::ffi::c_int = 17i32 * H + 16i32 >> 5i32;
-        let mut c: ::core::ffi::c_int = 17i32 * V + 16i32 >> 5i32;
-        let mut i00: ::core::ffi::c_int = a - 3i32 * b - 3i32 * c + 16i32;
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut b = 17i32 * H + 16i32 >> 5i32;
+        let mut c = 17i32 * V + 16i32 >> 5i32;
+        let mut i00 = a - 3i32 * b - 3i32 * c + 16i32;
+        let mut y = 0i32;
         while y < 8i32 {
-            let mut pix: ::core::ffi::c_int = i00;
-            let mut x: ::core::ffi::c_int = 0i32;
+            let mut pix = i00;
+            let mut x = 0i32;
             while x < 8i32 {
                 *src.offset(x as isize) = x264_clip_pixel(pix >> 5i32);
                 pix += b;
@@ -459,7 +455,7 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::commo
 }
 unsafe extern "C" fn predict_8x16c_dc_128_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i =
                 (((1i32) << 8i32 - 1i32) as ::core::ffi::c_uint).wrapping_mul(0x1010101u32);
@@ -472,19 +468,18 @@ unsafe extern "C" fn predict_8x16c_dc_128_c(mut src: *mut crate::src::common::co
 }
 unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
-            let mut dc: ::core::ffi::c_int = 0i32;
-            let mut y: ::core::ffi::c_int = 0i32;
+            let mut dc = 0i32;
+            let mut y = 0i32;
             while y < 4i32 {
                 dc += *src.offset((y * crate::src::common::common::FDEC_STRIDE - 1i32) as isize)
                     as ::core::ffi::c_int;
                 y += 1;
             }
-            let mut dcsplat: crate::src::common::common::pixel4 = ((dc + 2i32 >> 2i32)
-                as crate::src::common::common::pixel4)
+            let mut dcsplat = ((dc + 2i32 >> 2i32) as crate::src::common::common::pixel4)
                 .wrapping_mul(0x1010101u32);
-            let mut y_0: ::core::ffi::c_int = 0i32;
+            let mut y_0 = 0i32;
             while y_0 < 4i32 {
                 (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i =
                     dcsplat;
@@ -499,9 +494,9 @@ unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut crate::src::common::c
 }
 unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc0: ::core::ffi::c_int = 0i32;
-        let mut dc1: ::core::ffi::c_int = 0i32;
-        let mut x: ::core::ffi::c_int = 0i32;
+        let mut dc0 = 0i32;
+        let mut dc1 = 0i32;
+        let mut x = 0i32;
         while x < 4i32 {
             dc0 += *src.offset((x - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -509,11 +504,11 @@ unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut crate::src::common::co
                 as ::core::ffi::c_int;
             x += 1;
         }
-        let mut dc0splat: crate::src::common::common::pixel4 =
+        let mut dc0splat =
             ((dc0 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc1splat: crate::src::common::common::pixel4 =
+        let mut dc1splat =
             ((dc1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
@@ -527,13 +522,13 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
     mut src: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut s0: ::core::ffi::c_int = 0i32;
-        let mut s1: ::core::ffi::c_int = 0i32;
-        let mut s2: ::core::ffi::c_int = 0i32;
-        let mut s3: ::core::ffi::c_int = 0i32;
-        let mut s4: ::core::ffi::c_int = 0i32;
-        let mut s5: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut s0 = 0i32;
+        let mut s1 = 0i32;
+        let mut s2 = 0i32;
+        let mut s3 = 0i32;
+        let mut s4 = 0i32;
+        let mut s5 = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
             s0 += *src.offset((i + 0i32 - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -553,48 +548,44 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
                 as ::core::ffi::c_int;
             i += 1;
         }
-        let mut dc0: crate::src::common::common::pixel4 = ((s0 + s2 + 4i32 >> 3i32)
-            as crate::src::common::common::pixel4)
+        let mut dc0 = ((s0 + s2 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut dc1: crate::src::common::common::pixel4 =
+        let mut dc1 =
             ((s1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc2: crate::src::common::common::pixel4 =
+        let mut dc2 =
             ((s3 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc3: crate::src::common::common::pixel4 = ((s1 + s3 + 4i32 >> 3i32)
-            as crate::src::common::common::pixel4)
+        let mut dc3 = ((s1 + s3 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut dc4: crate::src::common::common::pixel4 =
+        let mut dc4 =
             ((s4 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc5: crate::src::common::common::pixel4 = ((s1 + s4 + 4i32 >> 3i32)
-            as crate::src::common::common::pixel4)
+        let mut dc5 = ((s1 + s4 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut dc6: crate::src::common::common::pixel4 =
+        let mut dc6 =
             ((s5 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut dc7: crate::src::common::common::pixel4 = ((s1 + s5 + 4i32 >> 3i32)
-            as crate::src::common::common::pixel4)
+        let mut dc7 = ((s1 + s5 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y += 1;
         }
-        let mut y_0: ::core::ffi::c_int = 0i32;
+        let mut y_0 = 0i32;
         while y_0 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc2;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc3;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y_0 += 1;
         }
-        let mut y_1: ::core::ffi::c_int = 0i32;
+        let mut y_1 = 0i32;
         while y_1 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc4;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc5;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y_1 += 1;
         }
-        let mut y_2: ::core::ffi::c_int = 0i32;
+        let mut y_2 = 0i32;
         while y_2 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc6;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc7;
@@ -606,10 +597,9 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x16c_h_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
-            let mut v: crate::src::common::common::pixel4 = (*src.offset(-1isize)
-                as crate::src::common::common::pixel4)
+            let mut v = (*src.offset(-1isize) as crate::src::common::common::pixel4)
                 .wrapping_mul(0x1010101u32);
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v;
@@ -621,13 +611,13 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_h_c(mut src: *mut crate::src::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x16c_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut v0: crate::src::common::common::pixel4 = (*(src.offset(0isize).offset(-(32isize))
+        let mut v0 = (*(src.offset(0isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut v1: crate::src::common::common::pixel4 = (*(src.offset(4isize).offset(-(32isize))
+        let mut v1 = (*(src.offset(4isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v1;
@@ -639,9 +629,9 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_v_c(mut src: *mut crate::src::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut H: ::core::ffi::c_int = 0i32;
-        let mut V: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut H = 0i32;
+        let mut V = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
             H += (i + 1i32)
                 * (*src.offset((4i32 + i - crate::src::common::common::FDEC_STRIDE) as isize)
@@ -650,7 +640,7 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::comm
                         as ::core::ffi::c_int);
             i += 1;
         }
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 8i32 {
             V += (i_0 + 1i32)
                 * (*src.offset(
@@ -661,18 +651,18 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::comm
                     ) as ::core::ffi::c_int);
             i_0 += 1;
         }
-        let mut a: ::core::ffi::c_int = 16i32
+        let mut a = 16i32
             * (*src.offset((-(1i32) + 15i32 * crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int
                 + *src.offset((7i32 - crate::src::common::common::FDEC_STRIDE) as isize)
                     as ::core::ffi::c_int);
-        let mut b: ::core::ffi::c_int = 17i32 * H + 16i32 >> 5i32;
-        let mut c: ::core::ffi::c_int = 5i32 * V + 32i32 >> 6i32;
-        let mut i00: ::core::ffi::c_int = a - 3i32 * b - 7i32 * c + 16i32;
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut b = 17i32 * H + 16i32 >> 5i32;
+        let mut c = 5i32 * V + 32i32 >> 6i32;
+        let mut i00 = a - 3i32 * b - 7i32 * c + 16i32;
+        let mut y = 0i32;
         while y < 16i32 {
-            let mut pix: ::core::ffi::c_int = i00;
-            let mut x: ::core::ffi::c_int = 0i32;
+            let mut pix = i00;
+            let mut x = 0i32;
             while x < 8i32 {
                 *src.offset(x as isize) = x264_clip_pixel(pix >> 5i32);
                 pix += b;
@@ -706,14 +696,13 @@ unsafe extern "C" fn predict_4x4_dc_128_c(mut src: *mut crate::src::common::comm
 }
 unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc: crate::src::common::common::pixel4 =
-            ((*src.offset((-(1i32) + 0i32 * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((-(1i32) + 1i32 * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((-(1i32) + 2i32 * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((-(1i32) + 3i32 * 32i32) as isize) as ::core::ffi::c_int
-                + 2i32
-                >> 2i32) as crate::src::common::common::pixel4)
-                .wrapping_mul(0x1010101u32);
+        let mut dc = ((*src.offset((-(1i32) + 0i32 * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((-(1i32) + 1i32 * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((-(1i32) + 2i32 * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((-(1i32) + 3i32 * 32i32) as isize) as ::core::ffi::c_int
+            + 2i32
+            >> 2i32) as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101u32);
         let ref mut c2rust_fresh53 = (*(src.offset((0i32 + 3i32 * 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
@@ -733,14 +722,13 @@ unsafe extern "C" fn predict_4x4_dc_left_c(mut src: *mut crate::src::common::com
 }
 unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc: crate::src::common::common::pixel4 =
-            ((*src.offset((0i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((1i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((2i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((3i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + 2i32
-                >> 2i32) as crate::src::common::common::pixel4)
-                .wrapping_mul(0x1010101u32);
+        let mut dc = ((*src.offset((0i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((1i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((2i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((3i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + 2i32
+            >> 2i32) as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101u32);
         let ref mut c2rust_fresh50 = (*(src.offset((0i32 + 3i32 * 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
@@ -761,18 +749,17 @@ unsafe extern "C" fn predict_4x4_dc_top_c(mut src: *mut crate::src::common::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_4x4_dc_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut dc: crate::src::common::common::pixel4 =
-            ((*src.offset((-(1i32) + 0i32 * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((-(1i32) + 1i32 * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((-(1i32) + 2i32 * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((-(1i32) + 3i32 * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((0i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((1i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((2i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + *src.offset((3i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
-                + 4i32
-                >> 3i32) as crate::src::common::common::pixel4)
-                .wrapping_mul(0x1010101u32);
+        let mut dc = ((*src.offset((-(1i32) + 0i32 * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((-(1i32) + 1i32 * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((-(1i32) + 2i32 * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((-(1i32) + 3i32 * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((0i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((1i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((2i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + *src.offset((3i32 + -(1i32) * 32i32) as isize) as ::core::ffi::c_int
+            + 4i32
+            >> 3i32) as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101u32);
         let ref mut c2rust_fresh8 = (*(src.offset((0i32 + 3i32 * 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
@@ -835,28 +822,28 @@ pub unsafe extern "C" fn x264_8_predict_4x4_v_c(mut src: *mut crate::src::common
 }
 unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut t0: ::core::ffi::c_int = *src
+        let mut t0 = *src
             .offset((0i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int = *src
+        let mut t1 = *src
             .offset((1i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int = *src
+        let mut t2 = *src
             .offset((2i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int = *src
+        let mut t3 = *src
             .offset((3i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int = *src
+        let mut t4 = *src
             .offset((4i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int = *src
+        let mut t5 = *src
             .offset((5i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int = *src
+        let mut t6 = *src
             .offset((6i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t7: ::core::ffi::c_int = *src
+        let mut t7 = *src
             .offset((7i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
         *src.offset((0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -905,31 +892,31 @@ unsafe extern "C" fn predict_4x4_ddl_c(mut src: *mut crate::src::common::common:
 }
 unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut lt: ::core::ffi::c_int = *src
+        let mut lt = *src
             .offset((-(1i32) + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l0: ::core::ffi::c_int = *src
+        let mut l0 = *src
             .offset((-(1i32) + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int = *src
+        let mut l1 = *src
             .offset((-(1i32) + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int = *src
+        let mut l2 = *src
             .offset((-(1i32) + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int = *src
+        let mut l3 = *src
             .offset((-(1i32) + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t0: ::core::ffi::c_int = *src
+        let mut t0 = *src
             .offset((0i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int = *src
+        let mut t1 = *src
             .offset((1i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int = *src
+        let mut t2 = *src
             .offset((2i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int = *src
+        let mut t3 = *src
             .offset((3i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
         *src.offset((3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -977,31 +964,31 @@ unsafe extern "C" fn predict_4x4_ddr_c(mut src: *mut crate::src::common::common:
 }
 unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut lt: ::core::ffi::c_int = *src
+        let mut lt = *src
             .offset((-(1i32) + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l0: ::core::ffi::c_int = *src
+        let mut l0 = *src
             .offset((-(1i32) + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int = *src
+        let mut l1 = *src
             .offset((-(1i32) + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int = *src
+        let mut l2 = *src
             .offset((-(1i32) + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut _l3: ::core::ffi::c_int = *src
+        let mut _l3 = *src
             .offset((-(1i32) + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t0: ::core::ffi::c_int = *src
+        let mut t0 = *src
             .offset((0i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int = *src
+        let mut t1 = *src
             .offset((1i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int = *src
+        let mut t2 = *src
             .offset((2i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int = *src
+        let mut t3 = *src
             .offset((3i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
         *src.offset((0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -1046,31 +1033,31 @@ unsafe extern "C" fn predict_4x4_vr_c(mut src: *mut crate::src::common::common::
 }
 unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut lt: ::core::ffi::c_int = *src
+        let mut lt = *src
             .offset((-(1i32) + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l0: ::core::ffi::c_int = *src
+        let mut l0 = *src
             .offset((-(1i32) + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int = *src
+        let mut l1 = *src
             .offset((-(1i32) + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int = *src
+        let mut l2 = *src
             .offset((-(1i32) + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int = *src
+        let mut l3 = *src
             .offset((-(1i32) + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t0: ::core::ffi::c_int = *src
+        let mut t0 = *src
             .offset((0i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int = *src
+        let mut t1 = *src
             .offset((1i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int = *src
+        let mut t2 = *src
             .offset((2i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut _t3: ::core::ffi::c_int = *src
+        let mut _t3 = *src
             .offset((3i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
         *src.offset((0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -1115,28 +1102,28 @@ unsafe extern "C" fn predict_4x4_hd_c(mut src: *mut crate::src::common::common::
 }
 unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut t0: ::core::ffi::c_int = *src
+        let mut t0 = *src
             .offset((0i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int = *src
+        let mut t1 = *src
             .offset((1i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int = *src
+        let mut t2 = *src
             .offset((2i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int = *src
+        let mut t3 = *src
             .offset((3i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int = *src
+        let mut t4 = *src
             .offset((4i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int = *src
+        let mut t5 = *src
             .offset((5i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int = *src
+        let mut t6 = *src
             .offset((6i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut _t7: ::core::ffi::c_int = *src
+        let mut _t7 = *src
             .offset((7i32 + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
         *src.offset((0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -1181,16 +1168,16 @@ unsafe extern "C" fn predict_4x4_vl_c(mut src: *mut crate::src::common::common::
 }
 unsafe extern "C" fn predict_4x4_hu_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
-        let mut l0: ::core::ffi::c_int = *src
+        let mut l0 = *src
             .offset((-(1i32) + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int = *src
+        let mut l1 = *src
             .offset((-(1i32) + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int = *src
+        let mut l2 = *src
             .offset((-(1i32) + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int = *src
+        let mut l3 = *src
             .offset((-(1i32) + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize)
             as ::core::ffi::c_int;
         *src.offset((0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -1243,7 +1230,7 @@ unsafe extern "C" fn predict_8x8_filter_c(
     mut i_filters: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut have_lt: ::core::ffi::c_int =
+        let mut have_lt =
             i_neighbor & crate::src::common::macroblock::MB_TOPLEFT as ::core::ffi::c_int;
         if i_filters & crate::src::common::macroblock::MB_LEFT as ::core::ffi::c_int != 0 {
             *edge.offset(15isize) = (*src
@@ -1319,7 +1306,7 @@ unsafe extern "C" fn predict_8x8_filter_c(
             *edge.offset(6isize) = *c2rust_fresh113;
         }
         if i_filters & crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int != 0 {
-            let mut have_tr: ::core::ffi::c_int =
+            let mut have_tr =
                 i_neighbor & crate::src::common::macroblock::MB_TOPRIGHT as ::core::ffi::c_int;
             *edge.offset(16isize) = ((if have_lt != 0 {
                 *src.offset((-(1i32) + -(1i32) * crate::src::common::common::FDEC_STRIDE) as isize)
@@ -1491,7 +1478,7 @@ unsafe extern "C" fn predict_8x8_dc_128_c(
     mut _edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i =
                 (((1i32) << 8i32 - 1i32) as ::core::ffi::c_uint).wrapping_mul(0x1010101u32);
@@ -1507,27 +1494,18 @@ unsafe extern "C" fn predict_8x8_dc_left_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut l0: ::core::ffi::c_int =
-            *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int =
-            *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int =
-            *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int =
-            *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
-        let mut l4: ::core::ffi::c_int =
-            *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
-        let mut l5: ::core::ffi::c_int =
-            *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
-        let mut l6: ::core::ffi::c_int =
-            *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
-        let mut l7: ::core::ffi::c_int =
-            *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
-        let mut dc: crate::src::common::common::pixel4 =
-            ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + 4i32 >> 3i32)
-                as crate::src::common::common::pixel4)
-                .wrapping_mul(0x1010101u32);
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
+        let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
+        let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
+        let mut l3 = *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
+        let mut l4 = *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
+        let mut l5 = *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
+        let mut l6 = *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
+        let mut l7 = *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
+        let mut dc = ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + 4i32 >> 3i32)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101u32);
+        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
@@ -1541,27 +1519,18 @@ unsafe extern "C" fn predict_8x8_dc_top_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut t0: ::core::ffi::c_int =
-            *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int =
-            *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int =
-            *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int =
-            *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int =
-            *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int =
-            *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int =
-            *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
-        let mut t7: ::core::ffi::c_int =
-            *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
-        let mut dc: crate::src::common::common::pixel4 =
-            ((t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 4i32 >> 3i32)
-                as crate::src::common::common::pixel4)
-                .wrapping_mul(0x1010101u32);
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
+        let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
+        let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
+        let mut t3 = *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
+        let mut t4 = *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
+        let mut t5 = *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
+        let mut t6 = *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
+        let mut t7 = *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
+        let mut dc = ((t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 4i32 >> 3i32)
+            as crate::src::common::common::pixel4)
+            .wrapping_mul(0x1010101u32);
+        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
@@ -1576,43 +1545,27 @@ pub unsafe extern "C" fn x264_8_predict_8x8_dc_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut l0: ::core::ffi::c_int =
-            *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int =
-            *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int =
-            *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int =
-            *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
-        let mut l4: ::core::ffi::c_int =
-            *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
-        let mut l5: ::core::ffi::c_int =
-            *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
-        let mut l6: ::core::ffi::c_int =
-            *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
-        let mut l7: ::core::ffi::c_int =
-            *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
-        let mut t0: ::core::ffi::c_int =
-            *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int =
-            *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int =
-            *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int =
-            *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int =
-            *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int =
-            *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int =
-            *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
-        let mut t7: ::core::ffi::c_int =
-            *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
-        let mut dc: crate::src::common::common::pixel4 =
+        let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
+        let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
+        let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
+        let mut l3 = *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
+        let mut l4 = *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
+        let mut l5 = *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
+        let mut l6 = *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
+        let mut l7 = *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
+        let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
+        let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
+        let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
+        let mut t3 = *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
+        let mut t4 = *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
+        let mut t5 = *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
+        let mut t6 = *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
+        let mut t7 = *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
+        let mut dc =
             ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 8i32
                 >> 4i32) as crate::src::common::common::pixel4)
                 .wrapping_mul(0x1010101u32);
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
@@ -1627,22 +1580,14 @@ pub unsafe extern "C" fn x264_8_predict_8x8_h_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut l0: ::core::ffi::c_int =
-            *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int =
-            *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int =
-            *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int =
-            *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
-        let mut l4: ::core::ffi::c_int =
-            *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
-        let mut l5: ::core::ffi::c_int =
-            *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
-        let mut l6: ::core::ffi::c_int =
-            *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
-        let mut l7: ::core::ffi::c_int =
-            *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
+        let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
+        let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
+        let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
+        let mut l3 = *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
+        let mut l4 = *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
+        let mut l5 = *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
+        let mut l6 = *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
+        let mut l7 = *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
         let ref mut c2rust_fresh0 = (*(src.offset((0i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
@@ -1707,11 +1652,11 @@ pub unsafe extern "C" fn x264_8_predict_8x8_v_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut top: [crate::src::common::common::pixel4; 2] = [
+        let mut top = [
             (*(edge.offset(16isize) as *mut crate::src::common::base::x264_union32_t)).i,
             (*(edge.offset(20isize) as *mut crate::src::common::base::x264_union32_t)).i,
         ];
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset((y * 32i32) as isize).offset(0isize)
                 as *mut crate::src::common::base::x264_union32_t))
@@ -1728,38 +1673,22 @@ unsafe extern "C" fn predict_8x8_ddl_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut t0: ::core::ffi::c_int =
-            *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int =
-            *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int =
-            *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int =
-            *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int =
-            *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int =
-            *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int =
-            *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
-        let mut t7: ::core::ffi::c_int =
-            *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
-        let mut t8: ::core::ffi::c_int =
-            *edge.offset((16i32 + 8i32) as isize) as ::core::ffi::c_int;
-        let mut t9: ::core::ffi::c_int =
-            *edge.offset((16i32 + 9i32) as isize) as ::core::ffi::c_int;
-        let mut t10: ::core::ffi::c_int =
-            *edge.offset((16i32 + 10i32) as isize) as ::core::ffi::c_int;
-        let mut t11: ::core::ffi::c_int =
-            *edge.offset((16i32 + 11i32) as isize) as ::core::ffi::c_int;
-        let mut t12: ::core::ffi::c_int =
-            *edge.offset((16i32 + 12i32) as isize) as ::core::ffi::c_int;
-        let mut t13: ::core::ffi::c_int =
-            *edge.offset((16i32 + 13i32) as isize) as ::core::ffi::c_int;
-        let mut t14: ::core::ffi::c_int =
-            *edge.offset((16i32 + 14i32) as isize) as ::core::ffi::c_int;
-        let mut t15: ::core::ffi::c_int =
-            *edge.offset((16i32 + 15i32) as isize) as ::core::ffi::c_int;
+        let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
+        let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
+        let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
+        let mut t3 = *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
+        let mut t4 = *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
+        let mut t5 = *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
+        let mut t6 = *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
+        let mut t7 = *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
+        let mut t8 = *edge.offset((16i32 + 8i32) as isize) as ::core::ffi::c_int;
+        let mut t9 = *edge.offset((16i32 + 9i32) as isize) as ::core::ffi::c_int;
+        let mut t10 = *edge.offset((16i32 + 10i32) as isize) as ::core::ffi::c_int;
+        let mut t11 = *edge.offset((16i32 + 11i32) as isize) as ::core::ffi::c_int;
+        let mut t12 = *edge.offset((16i32 + 12i32) as isize) as ::core::ffi::c_int;
+        let mut t13 = *edge.offset((16i32 + 13i32) as isize) as ::core::ffi::c_int;
+        let mut t14 = *edge.offset((16i32 + 14i32) as isize) as ::core::ffi::c_int;
+        let mut t15 = *edge.offset((16i32 + 15i32) as isize) as ::core::ffi::c_int;
         *src.offset((0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
             (t0 + 2i32 * t1 + t2 + 2i32 >> 2i32) as crate::src::common::common::pixel;
         let ref mut c2rust_fresh262 =
@@ -1957,39 +1886,23 @@ unsafe extern "C" fn predict_8x8_ddr_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut t0: ::core::ffi::c_int =
-            *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int =
-            *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int =
-            *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int =
-            *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int =
-            *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int =
-            *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int =
-            *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
-        let mut t7: ::core::ffi::c_int =
-            *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
-        let mut l0: ::core::ffi::c_int =
-            *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int =
-            *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int =
-            *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int =
-            *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
-        let mut l4: ::core::ffi::c_int =
-            *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
-        let mut l5: ::core::ffi::c_int =
-            *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
-        let mut l6: ::core::ffi::c_int =
-            *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
-        let mut l7: ::core::ffi::c_int =
-            *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
-        let mut lt: ::core::ffi::c_int = *edge.offset(15isize) as ::core::ffi::c_int;
+        let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
+        let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
+        let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
+        let mut t3 = *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
+        let mut t4 = *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
+        let mut t5 = *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
+        let mut t6 = *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
+        let mut t7 = *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
+        let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
+        let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
+        let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
+        let mut l3 = *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
+        let mut l4 = *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
+        let mut l5 = *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
+        let mut l6 = *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
+        let mut l7 = *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
+        let mut lt = *edge.offset(15isize) as ::core::ffi::c_int;
         *src.offset((0i32 + 7i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
             (l7 + 2i32 * l6 + l5 + 2i32 >> 2i32) as crate::src::common::common::pixel;
         let ref mut c2rust_fresh213 =
@@ -2187,39 +2100,23 @@ unsafe extern "C" fn predict_8x8_vr_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut t0: ::core::ffi::c_int =
-            *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int =
-            *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int =
-            *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int =
-            *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int =
-            *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int =
-            *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int =
-            *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
-        let mut t7: ::core::ffi::c_int =
-            *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
-        let mut l0: ::core::ffi::c_int =
-            *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int =
-            *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int =
-            *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int =
-            *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
-        let mut l4: ::core::ffi::c_int =
-            *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
-        let mut l5: ::core::ffi::c_int =
-            *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
-        let mut l6: ::core::ffi::c_int =
-            *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
-        let mut _l7: ::core::ffi::c_int =
-            *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
-        let mut lt: ::core::ffi::c_int = *edge.offset(15isize) as ::core::ffi::c_int;
+        let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
+        let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
+        let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
+        let mut t3 = *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
+        let mut t4 = *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
+        let mut t5 = *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
+        let mut t6 = *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
+        let mut t7 = *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
+        let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
+        let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
+        let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
+        let mut l3 = *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
+        let mut l4 = *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
+        let mut l5 = *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
+        let mut l6 = *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
+        let mut _l7 = *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
+        let mut lt = *edge.offset(15isize) as ::core::ffi::c_int;
         *src.offset((0i32 + 6i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
             (l5 + 2i32 * l4 + l3 + 2i32 >> 2i32) as crate::src::common::common::pixel;
         *src.offset((0i32 + 7i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -2408,80 +2305,64 @@ unsafe extern "C" fn predict_8x8_hd_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut t0: ::core::ffi::c_int =
-            *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int =
-            *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int =
-            *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int =
-            *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int =
-            *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int =
-            *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int =
-            *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
-        let mut _t7: ::core::ffi::c_int =
-            *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
-        let mut l0: ::core::ffi::c_int =
-            *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int =
-            *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int =
-            *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int =
-            *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
-        let mut l4: ::core::ffi::c_int =
-            *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
-        let mut l5: ::core::ffi::c_int =
-            *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
-        let mut l6: ::core::ffi::c_int =
-            *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
-        let mut l7: ::core::ffi::c_int =
-            *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
-        let mut lt: ::core::ffi::c_int = *edge.offset(15isize) as ::core::ffi::c_int;
-        let mut p1: ::core::ffi::c_int = pack8to16(
+        let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
+        let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
+        let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
+        let mut t3 = *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
+        let mut t4 = *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
+        let mut t5 = *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
+        let mut t6 = *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
+        let mut _t7 = *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
+        let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
+        let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
+        let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
+        let mut l3 = *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
+        let mut l4 = *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
+        let mut l5 = *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
+        let mut l6 = *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
+        let mut l7 = *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
+        let mut lt = *edge.offset(15isize) as ::core::ffi::c_int;
+        let mut p1 = pack8to16(
             (l6 + l7 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l5 + 2i32 * l6 + l7 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p2: ::core::ffi::c_int = pack8to16(
+        let mut p2 = pack8to16(
             (l5 + l6 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l4 + 2i32 * l5 + l6 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p3: ::core::ffi::c_int = pack8to16(
+        let mut p3 = pack8to16(
             (l4 + l5 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l3 + 2i32 * l4 + l5 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p4: ::core::ffi::c_int = pack8to16(
+        let mut p4 = pack8to16(
             (l3 + l4 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l2 + 2i32 * l3 + l4 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p5: ::core::ffi::c_int = pack8to16(
+        let mut p5 = pack8to16(
             (l2 + l3 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l1 + 2i32 * l2 + l3 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p6: ::core::ffi::c_int = pack8to16(
+        let mut p6 = pack8to16(
             (l1 + l2 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l0 + 2i32 * l1 + l2 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p7: ::core::ffi::c_int = pack8to16(
+        let mut p7 = pack8to16(
             (l0 + l1 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (lt + 2i32 * l0 + l1 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p8: ::core::ffi::c_int = pack8to16(
+        let mut p8 = pack8to16(
             (lt + l0 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l0 + 2i32 * lt + t0 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p9: ::core::ffi::c_int = pack8to16(
+        let mut p9 = pack8to16(
             (t1 + 2i32 * t0 + lt + 2i32 >> 2i32) as crate::stdlib::uint32_t,
             (t2 + 2i32 * t1 + t0 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p10: ::core::ffi::c_int = pack8to16(
+        let mut p10 = pack8to16(
             (t3 + 2i32 * t2 + t1 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
             (t4 + 2i32 * t3 + t2 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p11: ::core::ffi::c_int = pack8to16(
+        let mut p11 = pack8to16(
             (t5 + 2i32 * t4 + t3 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
             (t6 + 2i32 * t5 + t4 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
@@ -2552,38 +2433,22 @@ unsafe extern "C" fn predict_8x8_vl_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut t0: ::core::ffi::c_int =
-            *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
-        let mut t1: ::core::ffi::c_int =
-            *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
-        let mut t2: ::core::ffi::c_int =
-            *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
-        let mut t3: ::core::ffi::c_int =
-            *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
-        let mut t4: ::core::ffi::c_int =
-            *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
-        let mut t5: ::core::ffi::c_int =
-            *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
-        let mut t6: ::core::ffi::c_int =
-            *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
-        let mut t7: ::core::ffi::c_int =
-            *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
-        let mut t8: ::core::ffi::c_int =
-            *edge.offset((16i32 + 8i32) as isize) as ::core::ffi::c_int;
-        let mut t9: ::core::ffi::c_int =
-            *edge.offset((16i32 + 9i32) as isize) as ::core::ffi::c_int;
-        let mut t10: ::core::ffi::c_int =
-            *edge.offset((16i32 + 10i32) as isize) as ::core::ffi::c_int;
-        let mut t11: ::core::ffi::c_int =
-            *edge.offset((16i32 + 11i32) as isize) as ::core::ffi::c_int;
-        let mut t12: ::core::ffi::c_int =
-            *edge.offset((16i32 + 12i32) as isize) as ::core::ffi::c_int;
-        let mut _t13: ::core::ffi::c_int =
-            *edge.offset((16i32 + 13i32) as isize) as ::core::ffi::c_int;
-        let mut _t14: ::core::ffi::c_int =
-            *edge.offset((16i32 + 14i32) as isize) as ::core::ffi::c_int;
-        let mut _t15: ::core::ffi::c_int =
-            *edge.offset((16i32 + 15i32) as isize) as ::core::ffi::c_int;
+        let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
+        let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
+        let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
+        let mut t3 = *edge.offset((16i32 + 3i32) as isize) as ::core::ffi::c_int;
+        let mut t4 = *edge.offset((16i32 + 4i32) as isize) as ::core::ffi::c_int;
+        let mut t5 = *edge.offset((16i32 + 5i32) as isize) as ::core::ffi::c_int;
+        let mut t6 = *edge.offset((16i32 + 6i32) as isize) as ::core::ffi::c_int;
+        let mut t7 = *edge.offset((16i32 + 7i32) as isize) as ::core::ffi::c_int;
+        let mut t8 = *edge.offset((16i32 + 8i32) as isize) as ::core::ffi::c_int;
+        let mut t9 = *edge.offset((16i32 + 9i32) as isize) as ::core::ffi::c_int;
+        let mut t10 = *edge.offset((16i32 + 10i32) as isize) as ::core::ffi::c_int;
+        let mut t11 = *edge.offset((16i32 + 11i32) as isize) as ::core::ffi::c_int;
+        let mut t12 = *edge.offset((16i32 + 12i32) as isize) as ::core::ffi::c_int;
+        let mut _t13 = *edge.offset((16i32 + 13i32) as isize) as ::core::ffi::c_int;
+        let mut _t14 = *edge.offset((16i32 + 14i32) as isize) as ::core::ffi::c_int;
+        let mut _t15 = *edge.offset((16i32 + 15i32) as isize) as ::core::ffi::c_int;
         *src.offset((0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
             (t0 + t1 + 1i32 >> 1i32) as crate::src::common::common::pixel;
         *src.offset((0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
@@ -2770,53 +2635,44 @@ unsafe extern "C" fn predict_8x8_hu_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut l0: ::core::ffi::c_int =
-            *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
-        let mut l1: ::core::ffi::c_int =
-            *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
-        let mut l2: ::core::ffi::c_int =
-            *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
-        let mut l3: ::core::ffi::c_int =
-            *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
-        let mut l4: ::core::ffi::c_int =
-            *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
-        let mut l5: ::core::ffi::c_int =
-            *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
-        let mut l6: ::core::ffi::c_int =
-            *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
-        let mut l7: ::core::ffi::c_int =
-            *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
-        let mut p1: ::core::ffi::c_int = pack8to16(
+        let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
+        let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
+        let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
+        let mut l3 = *edge.offset((14i32 - 3i32) as isize) as ::core::ffi::c_int;
+        let mut l4 = *edge.offset((14i32 - 4i32) as isize) as ::core::ffi::c_int;
+        let mut l5 = *edge.offset((14i32 - 5i32) as isize) as ::core::ffi::c_int;
+        let mut l6 = *edge.offset((14i32 - 6i32) as isize) as ::core::ffi::c_int;
+        let mut l7 = *edge.offset((14i32 - 7i32) as isize) as ::core::ffi::c_int;
+        let mut p1 = pack8to16(
             (l0 + l1 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l0 + 2i32 * l1 + l2 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p2: ::core::ffi::c_int = pack8to16(
+        let mut p2 = pack8to16(
             (l1 + l2 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l1 + 2i32 * l2 + l3 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p3: ::core::ffi::c_int = pack8to16(
+        let mut p3 = pack8to16(
             (l2 + l3 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l2 + 2i32 * l3 + l4 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p4: ::core::ffi::c_int = pack8to16(
+        let mut p4 = pack8to16(
             (l3 + l4 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l3 + 2i32 * l4 + l5 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p5: ::core::ffi::c_int = pack8to16(
+        let mut p5 = pack8to16(
             (l4 + l5 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l4 + 2i32 * l5 + l6 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p6: ::core::ffi::c_int = pack8to16(
+        let mut p6 = pack8to16(
             (l5 + l6 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l5 + 2i32 * l6 + l7 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p7: ::core::ffi::c_int = pack8to16(
+        let mut p7 = pack8to16(
             (l6 + l7 + 1i32 >> 1i32) as crate::stdlib::uint32_t,
             (l6 + 2i32 * l7 + l7 + 2i32 >> 2i32) as crate::stdlib::uint32_t,
         ) as ::core::ffi::c_int;
-        let mut p8: ::core::ffi::c_int =
-            pack8to16(l7 as crate::stdlib::uint32_t, l7 as crate::stdlib::uint32_t)
-                as ::core::ffi::c_int;
+        let mut p8 = pack8to16(l7 as crate::stdlib::uint32_t, l7 as crate::stdlib::uint32_t)
+            as ::core::ffi::c_int;
         (*(src.offset((0i32 + 0i32 * 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = pack16to32(p1 as crate::stdlib::uint32_t, p2 as crate::stdlib::uint32_t);

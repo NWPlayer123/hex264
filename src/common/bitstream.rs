@@ -105,10 +105,9 @@ pub unsafe extern "C" fn x264_8_nal_encode(
     mut nal: *mut crate::x264_h::x264_nal_t,
 ) {
     unsafe {
-        let mut src: *mut crate::stdlib::uint8_t = (*nal).p_payload;
-        let mut end: *mut crate::stdlib::uint8_t =
-            (*nal).p_payload.offset((*nal).i_payload as isize);
-        let mut orig_dst: *mut crate::stdlib::uint8_t = dst;
+        let mut src = (*nal).p_payload;
+        let mut end = (*nal).p_payload.offset((*nal).i_payload as isize);
+        let mut orig_dst = dst;
         if (*h).param.b_annexb != 0 {
             if (*nal).b_long_startcode != 0 {
                 let c2rust_fresh7 = dst;
@@ -132,9 +131,9 @@ pub unsafe extern "C" fn x264_8_nal_encode(
         *c2rust_fresh11 =
             ((0i32) << 7i32 | (*nal).i_ref_idc << 5i32 | (*nal).i_type) as crate::stdlib::uint8_t;
         dst = (*h).bsf.nal_escape.expect("non-null function pointer")(dst, src, end);
-        let mut size: ::core::ffi::c_int = dst.offset_from(orig_dst) as ::core::ffi::c_int;
+        let mut size = dst.offset_from(orig_dst) as ::core::ffi::c_int;
         if (*h).param.i_avcintra_class != 0 {
-            let mut padding: ::core::ffi::c_int =
+            let mut padding =
                 (*nal).i_payload + (*nal).i_padding + crate::src::common::common::NALU_OVERHEAD
                     - size;
             if padding > 0i32 {
@@ -148,7 +147,7 @@ pub unsafe extern "C" fn x264_8_nal_encode(
             (*nal).i_padding = if padding > 0i32 { padding } else { 0i32 };
         }
         if (*h).param.b_annexb == 0 {
-            let mut chunk_size: ::core::ffi::c_int = size - 4i32;
+            let mut chunk_size = size - 4i32;
             *orig_dst.offset(0isize) = (chunk_size >> 24i32) as crate::stdlib::uint8_t;
             *orig_dst.offset(1isize) = (chunk_size >> 16i32) as crate::stdlib::uint8_t;
             *orig_dst.offset(2isize) = (chunk_size >> 8i32) as crate::stdlib::uint8_t;

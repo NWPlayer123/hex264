@@ -162,20 +162,16 @@ pub mod common_h {
 use crate::src::common::dct::common_h::x264_clip_pixel;
 unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
     unsafe {
-        let mut tmp: [crate::src::common::common::dctcoef; 16] = [0; 16];
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut tmp = [0; 16];
+        let mut i = 0i32;
         while i < 4i32 {
-            let mut s01: ::core::ffi::c_int = *d.offset((i * 4i32 + 0i32) as isize)
-                as ::core::ffi::c_int
+            let mut s01 = *d.offset((i * 4i32 + 0i32) as isize) as ::core::ffi::c_int
                 + *d.offset((i * 4i32 + 1i32) as isize) as ::core::ffi::c_int;
-            let mut d01: ::core::ffi::c_int = *d.offset((i * 4i32 + 0i32) as isize)
-                as ::core::ffi::c_int
+            let mut d01 = *d.offset((i * 4i32 + 0i32) as isize) as ::core::ffi::c_int
                 - *d.offset((i * 4i32 + 1i32) as isize) as ::core::ffi::c_int;
-            let mut s23: ::core::ffi::c_int = *d.offset((i * 4i32 + 2i32) as isize)
-                as ::core::ffi::c_int
+            let mut s23 = *d.offset((i * 4i32 + 2i32) as isize) as ::core::ffi::c_int
                 + *d.offset((i * 4i32 + 3i32) as isize) as ::core::ffi::c_int;
-            let mut d23: ::core::ffi::c_int = *d.offset((i * 4i32 + 2i32) as isize)
-                as ::core::ffi::c_int
+            let mut d23 = *d.offset((i * 4i32 + 2i32) as isize) as ::core::ffi::c_int
                 - *d.offset((i * 4i32 + 3i32) as isize) as ::core::ffi::c_int;
             tmp[(0i32 * 4i32 + i) as usize] = (s01 + s23) as crate::src::common::common::dctcoef;
             tmp[(1i32 * 4i32 + i) as usize] = (s01 - s23) as crate::src::common::common::dctcoef;
@@ -183,19 +179,15 @@ unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
             tmp[(3i32 * 4i32 + i) as usize] = (d01 + d23) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 4i32 {
-            let mut s01_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut s01_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int;
-            let mut d01_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut d01_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int;
-            let mut s23_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 2i32) as usize]
-                as ::core::ffi::c_int
+            let mut s23_0 = tmp[(i_0 * 4i32 + 2i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut d23_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 2i32) as usize]
-                as ::core::ffi::c_int
+            let mut d23_0 = tmp[(i_0 * 4i32 + 2i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
             *d.offset((i_0 * 4i32 + 0i32) as isize) =
                 (s01_0 + s23_0 + 1i32 >> 1i32) as crate::src::common::common::dctcoef;
@@ -211,20 +203,16 @@ unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
 }
 unsafe extern "C" fn idct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
     unsafe {
-        let mut tmp: [crate::src::common::common::dctcoef; 16] = [0; 16];
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut tmp = [0; 16];
+        let mut i = 0i32;
         while i < 4i32 {
-            let mut s01: ::core::ffi::c_int = *d.offset((i * 4i32 + 0i32) as isize)
-                as ::core::ffi::c_int
+            let mut s01 = *d.offset((i * 4i32 + 0i32) as isize) as ::core::ffi::c_int
                 + *d.offset((i * 4i32 + 1i32) as isize) as ::core::ffi::c_int;
-            let mut d01: ::core::ffi::c_int = *d.offset((i * 4i32 + 0i32) as isize)
-                as ::core::ffi::c_int
+            let mut d01 = *d.offset((i * 4i32 + 0i32) as isize) as ::core::ffi::c_int
                 - *d.offset((i * 4i32 + 1i32) as isize) as ::core::ffi::c_int;
-            let mut s23: ::core::ffi::c_int = *d.offset((i * 4i32 + 2i32) as isize)
-                as ::core::ffi::c_int
+            let mut s23 = *d.offset((i * 4i32 + 2i32) as isize) as ::core::ffi::c_int
                 + *d.offset((i * 4i32 + 3i32) as isize) as ::core::ffi::c_int;
-            let mut d23: ::core::ffi::c_int = *d.offset((i * 4i32 + 2i32) as isize)
-                as ::core::ffi::c_int
+            let mut d23 = *d.offset((i * 4i32 + 2i32) as isize) as ::core::ffi::c_int
                 - *d.offset((i * 4i32 + 3i32) as isize) as ::core::ffi::c_int;
             tmp[(0i32 * 4i32 + i) as usize] = (s01 + s23) as crate::src::common::common::dctcoef;
             tmp[(1i32 * 4i32 + i) as usize] = (s01 - s23) as crate::src::common::common::dctcoef;
@@ -232,19 +220,15 @@ unsafe extern "C" fn idct4x4dc(mut d: *mut crate::src::common::common::dctcoef) 
             tmp[(3i32 * 4i32 + i) as usize] = (d01 + d23) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 4i32 {
-            let mut s01_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut s01_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int;
-            let mut d01_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut d01_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int;
-            let mut s23_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 2i32) as usize]
-                as ::core::ffi::c_int
+            let mut s23_0 = tmp[(i_0 * 4i32 + 2i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut d23_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 2i32) as usize]
-                as ::core::ffi::c_int
+            let mut d23_0 = tmp[(i_0 * 4i32 + 2i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
             *d.offset((i_0 * 4i32 + 0i32) as isize) =
                 (s01_0 + s23_0) as crate::src::common::common::dctcoef;
@@ -263,30 +247,30 @@ unsafe extern "C" fn dct2x4dc(
     mut dct4x4: *mut [crate::src::common::common::dctcoef; 16],
 ) {
     unsafe {
-        let mut a0: ::core::ffi::c_int = (*dct4x4.offset(0isize))[0usize] as ::core::ffi::c_int
+        let mut a0 = (*dct4x4.offset(0isize))[0usize] as ::core::ffi::c_int
             + (*dct4x4.offset(1isize))[0usize] as ::core::ffi::c_int;
-        let mut a1: ::core::ffi::c_int = (*dct4x4.offset(2isize))[0usize] as ::core::ffi::c_int
+        let mut a1 = (*dct4x4.offset(2isize))[0usize] as ::core::ffi::c_int
             + (*dct4x4.offset(3isize))[0usize] as ::core::ffi::c_int;
-        let mut a2: ::core::ffi::c_int = (*dct4x4.offset(4isize))[0usize] as ::core::ffi::c_int
+        let mut a2 = (*dct4x4.offset(4isize))[0usize] as ::core::ffi::c_int
             + (*dct4x4.offset(5isize))[0usize] as ::core::ffi::c_int;
-        let mut a3: ::core::ffi::c_int = (*dct4x4.offset(6isize))[0usize] as ::core::ffi::c_int
+        let mut a3 = (*dct4x4.offset(6isize))[0usize] as ::core::ffi::c_int
             + (*dct4x4.offset(7isize))[0usize] as ::core::ffi::c_int;
-        let mut a4: ::core::ffi::c_int = (*dct4x4.offset(0isize))[0usize] as ::core::ffi::c_int
+        let mut a4 = (*dct4x4.offset(0isize))[0usize] as ::core::ffi::c_int
             - (*dct4x4.offset(1isize))[0usize] as ::core::ffi::c_int;
-        let mut a5: ::core::ffi::c_int = (*dct4x4.offset(2isize))[0usize] as ::core::ffi::c_int
+        let mut a5 = (*dct4x4.offset(2isize))[0usize] as ::core::ffi::c_int
             - (*dct4x4.offset(3isize))[0usize] as ::core::ffi::c_int;
-        let mut a6: ::core::ffi::c_int = (*dct4x4.offset(4isize))[0usize] as ::core::ffi::c_int
+        let mut a6 = (*dct4x4.offset(4isize))[0usize] as ::core::ffi::c_int
             - (*dct4x4.offset(5isize))[0usize] as ::core::ffi::c_int;
-        let mut a7: ::core::ffi::c_int = (*dct4x4.offset(6isize))[0usize] as ::core::ffi::c_int
+        let mut a7 = (*dct4x4.offset(6isize))[0usize] as ::core::ffi::c_int
             - (*dct4x4.offset(7isize))[0usize] as ::core::ffi::c_int;
-        let mut b0: ::core::ffi::c_int = a0 + a1;
-        let mut b1: ::core::ffi::c_int = a2 + a3;
-        let mut b2: ::core::ffi::c_int = a4 + a5;
-        let mut b3: ::core::ffi::c_int = a6 + a7;
-        let mut b4: ::core::ffi::c_int = a0 - a1;
-        let mut b5: ::core::ffi::c_int = a2 - a3;
-        let mut b6: ::core::ffi::c_int = a4 - a5;
-        let mut b7: ::core::ffi::c_int = a6 - a7;
+        let mut b0 = a0 + a1;
+        let mut b1 = a2 + a3;
+        let mut b2 = a4 + a5;
+        let mut b3 = a6 + a7;
+        let mut b4 = a0 - a1;
+        let mut b5 = a2 - a3;
+        let mut b6 = a4 - a5;
+        let mut b7 = a6 - a7;
         *dct.offset(0isize) = (b0 + b1) as crate::src::common::common::dctcoef;
         *dct.offset(1isize) = (b2 + b3) as crate::src::common::common::dctcoef;
         *dct.offset(2isize) = (b0 - b1) as crate::src::common::common::dctcoef;
@@ -315,9 +299,9 @@ unsafe extern "C" fn pixel_sub_wxh(
     mut i_pix2: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < i_size {
-            let mut x: ::core::ffi::c_int = 0i32;
+            let mut x = 0i32;
             while x < i_size {
                 *diff.offset((x + y * i_size) as isize) = (*pix1.offset(x as isize)
                     as ::core::ffi::c_int
@@ -337,8 +321,8 @@ unsafe extern "C" fn sub4x4_dct(
     mut pix2: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut d: [crate::src::common::common::dctcoef; 16] = [0; 16];
-        let mut tmp: [crate::src::common::common::dctcoef; 16] = [0; 16];
+        let mut d = [0; 16];
+        let mut tmp = [0; 16];
         pixel_sub_wxh(
             &raw mut d as *mut crate::src::common::common::dctcoef,
             4i32,
@@ -347,15 +331,15 @@ unsafe extern "C" fn sub4x4_dct(
             pix2,
             crate::src::common::common::FDEC_STRIDE,
         );
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
-            let mut s03: ::core::ffi::c_int = d[(i * 4i32 + 0i32) as usize] as ::core::ffi::c_int
+            let mut s03 = d[(i * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 + d[(i * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut s12: ::core::ffi::c_int = d[(i * 4i32 + 1i32) as usize] as ::core::ffi::c_int
+            let mut s12 = d[(i * 4i32 + 1i32) as usize] as ::core::ffi::c_int
                 + d[(i * 4i32 + 2i32) as usize] as ::core::ffi::c_int;
-            let mut d03: ::core::ffi::c_int = d[(i * 4i32 + 0i32) as usize] as ::core::ffi::c_int
+            let mut d03 = d[(i * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 - d[(i * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut d12: ::core::ffi::c_int = d[(i * 4i32 + 1i32) as usize] as ::core::ffi::c_int
+            let mut d12 = d[(i * 4i32 + 1i32) as usize] as ::core::ffi::c_int
                 - d[(i * 4i32 + 2i32) as usize] as ::core::ffi::c_int;
             tmp[(0i32 * 4i32 + i) as usize] = (s03 + s12) as crate::src::common::common::dctcoef;
             tmp[(1i32 * 4i32 + i) as usize] =
@@ -365,19 +349,15 @@ unsafe extern "C" fn sub4x4_dct(
                 (d03 - 2i32 * d12) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 4i32 {
-            let mut s03_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut s03_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut s12_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 1i32) as usize]
-                as ::core::ffi::c_int
+            let mut s12_0 = tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 2i32) as usize] as ::core::ffi::c_int;
-            let mut d03_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut d03_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut d12_0: ::core::ffi::c_int = tmp[(i_0 * 4i32 + 1i32) as usize]
-                as ::core::ffi::c_int
+            let mut d12_0 = tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 4i32 + 2i32) as usize] as ::core::ffi::c_int;
             *dct.offset((i_0 * 4i32 + 0i32) as isize) =
                 (s03_0 + s12_0) as crate::src::common::common::dctcoef;
@@ -444,8 +424,8 @@ unsafe extern "C" fn sub4x4_dct_dc(
     mut pix2: *mut crate::src::common::common::pixel,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut sum: ::core::ffi::c_int = 0i32;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut sum = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
             sum += *pix1.offset(0isize) as ::core::ffi::c_int
                 + *pix1.offset(1isize) as ::core::ffi::c_int
@@ -480,13 +460,13 @@ unsafe extern "C" fn sub8x8_dct_dc(
             pix1.offset((4i32 * crate::src::common::common::FENC_STRIDE + 4i32) as isize),
             pix2.offset((4i32 * crate::src::common::common::FDEC_STRIDE + 4i32) as isize),
         ) as crate::src::common::common::dctcoef;
-        let mut d0: ::core::ffi::c_int =
+        let mut d0 =
             *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut d1: ::core::ffi::c_int =
+        let mut d1 =
             *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut d2: ::core::ffi::c_int =
+        let mut d2 =
             *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut d3: ::core::ffi::c_int =
+        let mut d3 =
             *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
         *dct.offset(0isize) = (d0 + d1) as crate::src::common::common::dctcoef;
         *dct.offset(1isize) = (d0 - d1) as crate::src::common::common::dctcoef;
@@ -500,46 +480,46 @@ unsafe extern "C" fn sub8x16_dct_dc(
     mut pix2: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut a0: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a0 = sub4x4_dct_dc(
             pix1.offset((0i32 * crate::src::common::common::FENC_STRIDE + 0i32) as isize),
             pix2.offset((0i32 * crate::src::common::common::FDEC_STRIDE + 0i32) as isize),
         );
-        let mut a1: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a1 = sub4x4_dct_dc(
             pix1.offset((0i32 * crate::src::common::common::FENC_STRIDE + 4i32) as isize),
             pix2.offset((0i32 * crate::src::common::common::FDEC_STRIDE + 4i32) as isize),
         );
-        let mut a2: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a2 = sub4x4_dct_dc(
             pix1.offset((4i32 * crate::src::common::common::FENC_STRIDE + 0i32) as isize),
             pix2.offset((4i32 * crate::src::common::common::FDEC_STRIDE + 0i32) as isize),
         );
-        let mut a3: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a3 = sub4x4_dct_dc(
             pix1.offset((4i32 * crate::src::common::common::FENC_STRIDE + 4i32) as isize),
             pix2.offset((4i32 * crate::src::common::common::FDEC_STRIDE + 4i32) as isize),
         );
-        let mut a4: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a4 = sub4x4_dct_dc(
             pix1.offset((8i32 * crate::src::common::common::FENC_STRIDE + 0i32) as isize),
             pix2.offset((8i32 * crate::src::common::common::FDEC_STRIDE + 0i32) as isize),
         );
-        let mut a5: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a5 = sub4x4_dct_dc(
             pix1.offset((8i32 * crate::src::common::common::FENC_STRIDE + 4i32) as isize),
             pix2.offset((8i32 * crate::src::common::common::FDEC_STRIDE + 4i32) as isize),
         );
-        let mut a6: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a6 = sub4x4_dct_dc(
             pix1.offset((12i32 * crate::src::common::common::FENC_STRIDE + 0i32) as isize),
             pix2.offset((12i32 * crate::src::common::common::FDEC_STRIDE + 0i32) as isize),
         );
-        let mut a7: ::core::ffi::c_int = sub4x4_dct_dc(
+        let mut a7 = sub4x4_dct_dc(
             pix1.offset((12i32 * crate::src::common::common::FENC_STRIDE + 4i32) as isize),
             pix2.offset((12i32 * crate::src::common::common::FDEC_STRIDE + 4i32) as isize),
         );
-        let mut b0: ::core::ffi::c_int = a0 + a1;
-        let mut b1: ::core::ffi::c_int = a2 + a3;
-        let mut b2: ::core::ffi::c_int = a4 + a5;
-        let mut b3: ::core::ffi::c_int = a6 + a7;
-        let mut b4: ::core::ffi::c_int = a0 - a1;
-        let mut b5: ::core::ffi::c_int = a2 - a3;
-        let mut b6: ::core::ffi::c_int = a4 - a5;
-        let mut b7: ::core::ffi::c_int = a6 - a7;
+        let mut b0 = a0 + a1;
+        let mut b1 = a2 + a3;
+        let mut b2 = a4 + a5;
+        let mut b3 = a6 + a7;
+        let mut b4 = a0 - a1;
+        let mut b5 = a2 - a3;
+        let mut b6 = a4 - a5;
+        let mut b7 = a6 - a7;
         a0 = b0 + b1;
         a1 = b2 + b3;
         a2 = b4 + b5;
@@ -563,42 +543,34 @@ unsafe extern "C" fn add4x4_idct(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) {
     unsafe {
-        let mut d: [crate::src::common::common::dctcoef; 16] = [0; 16];
-        let mut tmp: [crate::src::common::common::dctcoef; 16] = [0; 16];
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut d = [0; 16];
+        let mut tmp = [0; 16];
+        let mut i = 0i32;
         while i < 4i32 {
-            let mut s02: ::core::ffi::c_int = *dct.offset((0i32 * 4i32 + i) as isize)
-                as ::core::ffi::c_int
+            let mut s02 = *dct.offset((0i32 * 4i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((2i32 * 4i32 + i) as isize) as ::core::ffi::c_int;
-            let mut d02: ::core::ffi::c_int = *dct.offset((0i32 * 4i32 + i) as isize)
-                as ::core::ffi::c_int
+            let mut d02 = *dct.offset((0i32 * 4i32 + i) as isize) as ::core::ffi::c_int
                 - *dct.offset((2i32 * 4i32 + i) as isize) as ::core::ffi::c_int;
-            let mut s13: ::core::ffi::c_int = *dct.offset((1i32 * 4i32 + i) as isize)
-                as ::core::ffi::c_int
+            let mut s13 = *dct.offset((1i32 * 4i32 + i) as isize) as ::core::ffi::c_int
                 + (*dct.offset((3i32 * 4i32 + i) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut d13: ::core::ffi::c_int =
-                (*dct.offset((1i32 * 4i32 + i) as isize) as ::core::ffi::c_int >> 1i32)
-                    - *dct.offset((3i32 * 4i32 + i) as isize) as ::core::ffi::c_int;
+            let mut d13 = (*dct.offset((1i32 * 4i32 + i) as isize) as ::core::ffi::c_int >> 1i32)
+                - *dct.offset((3i32 * 4i32 + i) as isize) as ::core::ffi::c_int;
             tmp[(i * 4i32 + 0i32) as usize] = (s02 + s13) as crate::src::common::common::dctcoef;
             tmp[(i * 4i32 + 1i32) as usize] = (d02 + d13) as crate::src::common::common::dctcoef;
             tmp[(i * 4i32 + 2i32) as usize] = (d02 - d13) as crate::src::common::common::dctcoef;
             tmp[(i * 4i32 + 3i32) as usize] = (s02 - s13) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 4i32 {
-            let mut s02_0: ::core::ffi::c_int = tmp[(0i32 * 4i32 + i_0) as usize]
-                as ::core::ffi::c_int
+            let mut s02_0 = tmp[(0i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int
                 + tmp[(2i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int;
-            let mut d02_0: ::core::ffi::c_int = tmp[(0i32 * 4i32 + i_0) as usize]
-                as ::core::ffi::c_int
+            let mut d02_0 = tmp[(0i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int
                 - tmp[(2i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int;
-            let mut s13_0: ::core::ffi::c_int = tmp[(1i32 * 4i32 + i_0) as usize]
-                as ::core::ffi::c_int
+            let mut s13_0 = tmp[(1i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int
                 + (tmp[(3i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int >> 1i32);
-            let mut d13_0: ::core::ffi::c_int =
-                (tmp[(1i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int >> 1i32)
-                    - tmp[(3i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int;
+            let mut d13_0 = (tmp[(1i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int >> 1i32)
+                - tmp[(3i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int;
             d[(0i32 * 4i32 + i_0) as usize] =
                 (s02_0 + s13_0 + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
             d[(1i32 * 4i32 + i_0) as usize] =
@@ -609,9 +581,9 @@ unsafe extern "C" fn add4x4_idct(
                 (s02_0 - s13_0 + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
             i_0 += 1;
         }
-        let mut y: ::core::ffi::c_int = 0i32;
+        let mut y = 0i32;
         while y < 4i32 {
-            let mut x: ::core::ffi::c_int = 0i32;
+            let mut x = 0i32;
             while x < 4i32 {
                 *p_dst.offset(x as isize) = x264_clip_pixel(
                     *p_dst.offset(x as isize) as ::core::ffi::c_int
@@ -670,7 +642,7 @@ unsafe extern "C" fn sub8x8_dct8(
     mut pix2: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut tmp: [crate::src::common::common::dctcoef; 64] = [0; 64];
+        let mut tmp = [0; 64];
         pixel_sub_wxh(
             &raw mut tmp as *mut crate::src::common::common::dctcoef,
             8i32,
@@ -679,32 +651,32 @@ unsafe extern "C" fn sub8x8_dct8(
             pix2,
             crate::src::common::common::FDEC_STRIDE,
         );
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 8i32 {
-            let mut s07: ::core::ffi::c_int = tmp[(0i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut s07 = tmp[(0i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 + tmp[(7i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut s16: ::core::ffi::c_int = tmp[(1i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut s16 = tmp[(1i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 + tmp[(6i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut s25: ::core::ffi::c_int = tmp[(2i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut s25 = tmp[(2i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 + tmp[(5i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut s34: ::core::ffi::c_int = tmp[(3i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut s34 = tmp[(3i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 + tmp[(4i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut a0: ::core::ffi::c_int = s07 + s34;
-            let mut a1: ::core::ffi::c_int = s16 + s25;
-            let mut a2: ::core::ffi::c_int = s07 - s34;
-            let mut a3: ::core::ffi::c_int = s16 - s25;
-            let mut d07: ::core::ffi::c_int = tmp[(0i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut a0 = s07 + s34;
+            let mut a1 = s16 + s25;
+            let mut a2 = s07 - s34;
+            let mut a3 = s16 - s25;
+            let mut d07 = tmp[(0i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 - tmp[(7i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut d16: ::core::ffi::c_int = tmp[(1i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut d16 = tmp[(1i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 - tmp[(6i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut d25: ::core::ffi::c_int = tmp[(2i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut d25 = tmp[(2i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 - tmp[(5i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut d34: ::core::ffi::c_int = tmp[(3i32 * 8i32 + i) as usize] as ::core::ffi::c_int
+            let mut d34 = tmp[(3i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 - tmp[(4i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
-            let mut a4: ::core::ffi::c_int = d16 + d25 + (d07 + (d07 >> 1i32));
-            let mut a5: ::core::ffi::c_int = d07 - d34 - (d25 + (d25 >> 1i32));
-            let mut a6: ::core::ffi::c_int = d07 + d34 - (d16 + (d16 >> 1i32));
-            let mut a7: ::core::ffi::c_int = d16 - d25 + (d34 + (d34 >> 1i32));
+            let mut a4 = d16 + d25 + (d07 + (d07 >> 1i32));
+            let mut a5 = d07 - d34 - (d25 + (d25 >> 1i32));
+            let mut a6 = d07 + d34 - (d16 + (d16 >> 1i32));
+            let mut a7 = d16 - d25 + (d34 + (d34 >> 1i32));
             tmp[(0i32 * 8i32 + i) as usize] = (a0 + a1) as crate::src::common::common::dctcoef;
             tmp[(1i32 * 8i32 + i) as usize] =
                 (a4 + (a7 >> 2i32)) as crate::src::common::common::dctcoef;
@@ -721,40 +693,32 @@ unsafe extern "C" fn sub8x8_dct8(
                 ((a4 >> 2i32) - a7) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 8i32 {
-            let mut s07_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut s07_0 = tmp[(i_0 * 8i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 8i32 + 7i32) as usize] as ::core::ffi::c_int;
-            let mut s16_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 1i32) as usize]
-                as ::core::ffi::c_int
+            let mut s16_0 = tmp[(i_0 * 8i32 + 1i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 8i32 + 6i32) as usize] as ::core::ffi::c_int;
-            let mut s25_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 2i32) as usize]
-                as ::core::ffi::c_int
+            let mut s25_0 = tmp[(i_0 * 8i32 + 2i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 8i32 + 5i32) as usize] as ::core::ffi::c_int;
-            let mut s34_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 3i32) as usize]
-                as ::core::ffi::c_int
+            let mut s34_0 = tmp[(i_0 * 8i32 + 3i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 8i32 + 4i32) as usize] as ::core::ffi::c_int;
-            let mut a0_0: ::core::ffi::c_int = s07_0 + s34_0;
-            let mut a1_0: ::core::ffi::c_int = s16_0 + s25_0;
-            let mut a2_0: ::core::ffi::c_int = s07_0 - s34_0;
-            let mut a3_0: ::core::ffi::c_int = s16_0 - s25_0;
-            let mut d07_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 0i32) as usize]
-                as ::core::ffi::c_int
+            let mut a0_0 = s07_0 + s34_0;
+            let mut a1_0 = s16_0 + s25_0;
+            let mut a2_0 = s07_0 - s34_0;
+            let mut a3_0 = s16_0 - s25_0;
+            let mut d07_0 = tmp[(i_0 * 8i32 + 0i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 8i32 + 7i32) as usize] as ::core::ffi::c_int;
-            let mut d16_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 1i32) as usize]
-                as ::core::ffi::c_int
+            let mut d16_0 = tmp[(i_0 * 8i32 + 1i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 8i32 + 6i32) as usize] as ::core::ffi::c_int;
-            let mut d25_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 2i32) as usize]
-                as ::core::ffi::c_int
+            let mut d25_0 = tmp[(i_0 * 8i32 + 2i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 8i32 + 5i32) as usize] as ::core::ffi::c_int;
-            let mut d34_0: ::core::ffi::c_int = tmp[(i_0 * 8i32 + 3i32) as usize]
-                as ::core::ffi::c_int
+            let mut d34_0 = tmp[(i_0 * 8i32 + 3i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 8i32 + 4i32) as usize] as ::core::ffi::c_int;
-            let mut a4_0: ::core::ffi::c_int = d16_0 + d25_0 + (d07_0 + (d07_0 >> 1i32));
-            let mut a5_0: ::core::ffi::c_int = d07_0 - d34_0 - (d25_0 + (d25_0 >> 1i32));
-            let mut a6_0: ::core::ffi::c_int = d07_0 + d34_0 - (d16_0 + (d16_0 >> 1i32));
-            let mut a7_0: ::core::ffi::c_int = d16_0 - d25_0 + (d34_0 + (d34_0 >> 1i32));
+            let mut a4_0 = d16_0 + d25_0 + (d07_0 + (d07_0 >> 1i32));
+            let mut a5_0 = d07_0 - d34_0 - (d25_0 + (d25_0 >> 1i32));
+            let mut a6_0 = d07_0 + d34_0 - (d16_0 + (d16_0 >> 1i32));
+            let mut a7_0 = d16_0 - d25_0 + (d34_0 + (d34_0 >> 1i32));
             *dct.offset((0i32 * 8i32 + i_0) as isize) =
                 (a0_0 + a1_0) as crate::src::common::common::dctcoef;
             *dct.offset((1i32 * 8i32 + i_0) as isize) =
@@ -811,48 +775,40 @@ unsafe extern "C" fn add8x8_idct8(
         let ref mut c2rust_fresh0 = *dct.offset(0isize);
         *c2rust_fresh0 =
             (*c2rust_fresh0 as ::core::ffi::c_int + 32i32) as crate::src::common::common::dctcoef;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 8i32 {
-            let mut a0: ::core::ffi::c_int = *dct.offset((0i32 * 8i32 + i) as isize)
-                as ::core::ffi::c_int
+            let mut a0 = *dct.offset((0i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((4i32 * 8i32 + i) as isize) as ::core::ffi::c_int;
-            let mut a2: ::core::ffi::c_int = *dct.offset((0i32 * 8i32 + i) as isize)
-                as ::core::ffi::c_int
+            let mut a2 = *dct.offset((0i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 - *dct.offset((4i32 * 8i32 + i) as isize) as ::core::ffi::c_int;
-            let mut a4: ::core::ffi::c_int =
-                (*dct.offset((2i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32)
-                    - *dct.offset((6i32 * 8i32 + i) as isize) as ::core::ffi::c_int;
-            let mut a6: ::core::ffi::c_int =
-                (*dct.offset((6i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32)
-                    + *dct.offset((2i32 * 8i32 + i) as isize) as ::core::ffi::c_int;
-            let mut b0: ::core::ffi::c_int = a0 + a6;
-            let mut b2: ::core::ffi::c_int = a2 + a4;
-            let mut b4: ::core::ffi::c_int = a2 - a4;
-            let mut b6: ::core::ffi::c_int = a0 - a6;
-            let mut a1: ::core::ffi::c_int = -(*dct.offset((3i32 * 8i32 + i) as isize)
-                as ::core::ffi::c_int)
+            let mut a4 = (*dct.offset((2i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32)
+                - *dct.offset((6i32 * 8i32 + i) as isize) as ::core::ffi::c_int;
+            let mut a6 = (*dct.offset((6i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32)
+                + *dct.offset((2i32 * 8i32 + i) as isize) as ::core::ffi::c_int;
+            let mut b0 = a0 + a6;
+            let mut b2 = a2 + a4;
+            let mut b4 = a2 - a4;
+            let mut b6 = a0 - a6;
+            let mut a1 = -(*dct.offset((3i32 * 8i32 + i) as isize) as ::core::ffi::c_int)
                 + *dct.offset((5i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 - *dct.offset((7i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 - (*dct.offset((7i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut a3: ::core::ffi::c_int = *dct.offset((1i32 * 8i32 + i) as isize)
-                as ::core::ffi::c_int
+            let mut a3 = *dct.offset((1i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((7i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 - *dct.offset((3i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 - (*dct.offset((3i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut a5: ::core::ffi::c_int = -(*dct.offset((1i32 * 8i32 + i) as isize)
-                as ::core::ffi::c_int)
+            let mut a5 = -(*dct.offset((1i32 * 8i32 + i) as isize) as ::core::ffi::c_int)
                 + *dct.offset((7i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((5i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + (*dct.offset((5i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut a7: ::core::ffi::c_int = *dct.offset((3i32 * 8i32 + i) as isize)
-                as ::core::ffi::c_int
+            let mut a7 = *dct.offset((3i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((5i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((1i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + (*dct.offset((1i32 * 8i32 + i) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut b1: ::core::ffi::c_int = (a7 >> 2i32) + a1;
-            let mut b3: ::core::ffi::c_int = a3 + (a5 >> 2i32);
-            let mut b5: ::core::ffi::c_int = (a3 >> 2i32) - a5;
-            let mut b7: ::core::ffi::c_int = a7 - (a1 >> 2i32);
+            let mut b1 = (a7 >> 2i32) + a1;
+            let mut b3 = a3 + (a5 >> 2i32);
+            let mut b5 = (a3 >> 2i32) - a5;
+            let mut b7 = a7 - (a1 >> 2i32);
             *dct.offset((0i32 * 8i32 + i) as isize) =
                 (b0 + b7) as crate::src::common::common::dctcoef;
             *dct.offset((1i32 * 8i32 + i) as isize) =
@@ -871,48 +827,42 @@ unsafe extern "C" fn add8x8_idct8(
                 (b0 - b7) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0: ::core::ffi::c_int = 0i32;
+        let mut i_0 = 0i32;
         while i_0 < 8i32 {
-            let mut a0_0: ::core::ffi::c_int = *dct.offset((i_0 * 8i32 + 0i32) as isize)
-                as ::core::ffi::c_int
+            let mut a0_0 = *dct.offset((i_0 * 8i32 + 0i32) as isize) as ::core::ffi::c_int
                 + *dct.offset((i_0 * 8i32 + 4i32) as isize) as ::core::ffi::c_int;
-            let mut a2_0: ::core::ffi::c_int = *dct.offset((i_0 * 8i32 + 0i32) as isize)
-                as ::core::ffi::c_int
+            let mut a2_0 = *dct.offset((i_0 * 8i32 + 0i32) as isize) as ::core::ffi::c_int
                 - *dct.offset((i_0 * 8i32 + 4i32) as isize) as ::core::ffi::c_int;
-            let mut a4_0: ::core::ffi::c_int =
-                (*dct.offset((i_0 * 8i32 + 2i32) as isize) as ::core::ffi::c_int >> 1i32)
-                    - *dct.offset((i_0 * 8i32 + 6i32) as isize) as ::core::ffi::c_int;
-            let mut a6_0: ::core::ffi::c_int =
-                (*dct.offset((i_0 * 8i32 + 6i32) as isize) as ::core::ffi::c_int >> 1i32)
-                    + *dct.offset((i_0 * 8i32 + 2i32) as isize) as ::core::ffi::c_int;
-            let mut b0_0: ::core::ffi::c_int = a0_0 + a6_0;
-            let mut b2_0: ::core::ffi::c_int = a2_0 + a4_0;
-            let mut b4_0: ::core::ffi::c_int = a2_0 - a4_0;
-            let mut b6_0: ::core::ffi::c_int = a0_0 - a6_0;
-            let mut a1_0: ::core::ffi::c_int = -(*dct.offset((i_0 * 8i32 + 3i32) as isize)
-                as ::core::ffi::c_int)
+            let mut a4_0 = (*dct.offset((i_0 * 8i32 + 2i32) as isize) as ::core::ffi::c_int
+                >> 1i32)
+                - *dct.offset((i_0 * 8i32 + 6i32) as isize) as ::core::ffi::c_int;
+            let mut a6_0 = (*dct.offset((i_0 * 8i32 + 6i32) as isize) as ::core::ffi::c_int
+                >> 1i32)
+                + *dct.offset((i_0 * 8i32 + 2i32) as isize) as ::core::ffi::c_int;
+            let mut b0_0 = a0_0 + a6_0;
+            let mut b2_0 = a2_0 + a4_0;
+            let mut b4_0 = a2_0 - a4_0;
+            let mut b6_0 = a0_0 - a6_0;
+            let mut a1_0 = -(*dct.offset((i_0 * 8i32 + 3i32) as isize) as ::core::ffi::c_int)
                 + *dct.offset((i_0 * 8i32 + 5i32) as isize) as ::core::ffi::c_int
                 - *dct.offset((i_0 * 8i32 + 7i32) as isize) as ::core::ffi::c_int
                 - (*dct.offset((i_0 * 8i32 + 7i32) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut a3_0: ::core::ffi::c_int = *dct.offset((i_0 * 8i32 + 1i32) as isize)
-                as ::core::ffi::c_int
+            let mut a3_0 = *dct.offset((i_0 * 8i32 + 1i32) as isize) as ::core::ffi::c_int
                 + *dct.offset((i_0 * 8i32 + 7i32) as isize) as ::core::ffi::c_int
                 - *dct.offset((i_0 * 8i32 + 3i32) as isize) as ::core::ffi::c_int
                 - (*dct.offset((i_0 * 8i32 + 3i32) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut a5_0: ::core::ffi::c_int = -(*dct.offset((i_0 * 8i32 + 1i32) as isize)
-                as ::core::ffi::c_int)
+            let mut a5_0 = -(*dct.offset((i_0 * 8i32 + 1i32) as isize) as ::core::ffi::c_int)
                 + *dct.offset((i_0 * 8i32 + 7i32) as isize) as ::core::ffi::c_int
                 + *dct.offset((i_0 * 8i32 + 5i32) as isize) as ::core::ffi::c_int
                 + (*dct.offset((i_0 * 8i32 + 5i32) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut a7_0: ::core::ffi::c_int = *dct.offset((i_0 * 8i32 + 3i32) as isize)
-                as ::core::ffi::c_int
+            let mut a7_0 = *dct.offset((i_0 * 8i32 + 3i32) as isize) as ::core::ffi::c_int
                 + *dct.offset((i_0 * 8i32 + 5i32) as isize) as ::core::ffi::c_int
                 + *dct.offset((i_0 * 8i32 + 1i32) as isize) as ::core::ffi::c_int
                 + (*dct.offset((i_0 * 8i32 + 1i32) as isize) as ::core::ffi::c_int >> 1i32);
-            let mut b1_0: ::core::ffi::c_int = (a7_0 >> 2i32) + a1_0;
-            let mut b3_0: ::core::ffi::c_int = a3_0 + (a5_0 >> 2i32);
-            let mut b5_0: ::core::ffi::c_int = (a3_0 >> 2i32) - a5_0;
-            let mut b7_0: ::core::ffi::c_int = a7_0 - (a1_0 >> 2i32);
+            let mut b1_0 = (a7_0 >> 2i32) + a1_0;
+            let mut b3_0 = a3_0 + (a5_0 >> 2i32);
+            let mut b5_0 = (a3_0 >> 2i32) - a5_0;
+            let mut b7_0 = a7_0 - (a1_0 >> 2i32);
             *dst.offset((i_0 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
                 x264_clip_pixel(
                     *dst.offset((i_0 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize)
@@ -995,7 +945,7 @@ unsafe extern "C" fn add4x4_idct_dc(
 ) {
     unsafe {
         dc = (dc as ::core::ffi::c_int + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
             *p_dst.offset(0isize) = x264_clip_pixel(
                 *p_dst.offset(0isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int,
@@ -1036,7 +986,7 @@ unsafe extern "C" fn add16x16_idct_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
             add4x4_idct_dc(p_dst.offset(0isize), *dct.offset(0isize));
             add4x4_idct_dc(p_dst.offset(4isize), *dct.offset(1isize));
@@ -1364,99 +1314,99 @@ unsafe extern "C" fn zigzag_sub_4x4_frame(
     mut p_dst: *mut crate::src::common::common::pixel,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut nz: ::core::ffi::c_int = 0i32;
-        let mut oe: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut nz = 0i32;
+        let mut oe = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(0isize) = (*p_src.offset(oe as isize) as ::core::ffi::c_int
             - *p_dst.offset(od as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(0isize) as ::core::ffi::c_int;
-        let mut oe_0: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_0: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_0 = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_0 = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(1isize) = (*p_src.offset(oe_0 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_0 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(1isize) as ::core::ffi::c_int;
-        let mut oe_1: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_1: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_1 = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_1 = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(2isize) = (*p_src.offset(oe_1 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_1 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(2isize) as ::core::ffi::c_int;
-        let mut oe_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_2 = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_2 = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(3isize) = (*p_src.offset(oe_2 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_2 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(3isize) as ::core::ffi::c_int;
-        let mut oe_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_3 = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_3 = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(4isize) = (*p_src.offset(oe_3 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_3 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(4isize) as ::core::ffi::c_int;
-        let mut oe_4: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_4: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_4 = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_4 = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(5isize) = (*p_src.offset(oe_4 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_4 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(5isize) as ::core::ffi::c_int;
-        let mut oe_5: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_5: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_5 = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_5 = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(6isize) = (*p_src.offset(oe_5 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_5 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(6isize) as ::core::ffi::c_int;
-        let mut oe_6: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_6: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_6 = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_6 = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(7isize) = (*p_src.offset(oe_6 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_6 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(7isize) as ::core::ffi::c_int;
-        let mut oe_7: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_7: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_7 = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_7 = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(8isize) = (*p_src.offset(oe_7 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_7 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(8isize) as ::core::ffi::c_int;
-        let mut oe_8: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_8: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_8 = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_8 = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(9isize) = (*p_src.offset(oe_8 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_8 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(9isize) as ::core::ffi::c_int;
-        let mut oe_9: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_9: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_9 = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_9 = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(10isize) = (*p_src.offset(oe_9 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_9 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(10isize) as ::core::ffi::c_int;
-        let mut oe_10: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_10: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_10 = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_10 = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(11isize) = (*p_src.offset(oe_10 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_10 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(11isize) as ::core::ffi::c_int;
-        let mut oe_11: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_11: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_11 = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_11 = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(12isize) = (*p_src.offset(oe_11 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_11 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(12isize) as ::core::ffi::c_int;
-        let mut oe_12: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_12: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_12 = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_12 = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(13isize) = (*p_src.offset(oe_12 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_12 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(13isize) as ::core::ffi::c_int;
-        let mut oe_13: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_13: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_13 = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_13 = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(14isize) = (*p_src.offset(oe_13 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_13 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(14isize) as ::core::ffi::c_int;
-        let mut oe_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_14 = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_14 = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(15isize) = (*p_src.offset(oe_14 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
@@ -1490,99 +1440,99 @@ unsafe extern "C" fn zigzag_sub_4x4_field(
     mut p_dst: *mut crate::src::common::common::pixel,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut nz: ::core::ffi::c_int = 0i32;
-        let mut oe: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut nz = 0i32;
+        let mut oe = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(0isize) = (*p_src.offset(oe as isize) as ::core::ffi::c_int
             - *p_dst.offset(od as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(0isize) as ::core::ffi::c_int;
-        let mut oe_0: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_0: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_0 = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_0 = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(1isize) = (*p_src.offset(oe_0 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_0 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(1isize) as ::core::ffi::c_int;
-        let mut oe_1: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_1: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_1 = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_1 = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(2isize) = (*p_src.offset(oe_1 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_1 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(2isize) as ::core::ffi::c_int;
-        let mut oe_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_2 = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_2 = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(3isize) = (*p_src.offset(oe_2 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_2 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(3isize) as ::core::ffi::c_int;
-        let mut oe_3: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_3: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_3 = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_3 = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(4isize) = (*p_src.offset(oe_3 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_3 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(4isize) as ::core::ffi::c_int;
-        let mut oe_4: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_4: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_4 = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_4 = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(5isize) = (*p_src.offset(oe_4 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_4 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(5isize) as ::core::ffi::c_int;
-        let mut oe_5: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_5: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_5 = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_5 = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(6isize) = (*p_src.offset(oe_5 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_5 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(6isize) as ::core::ffi::c_int;
-        let mut oe_6: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_6: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_6 = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_6 = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(7isize) = (*p_src.offset(oe_6 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_6 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(7isize) as ::core::ffi::c_int;
-        let mut oe_7: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_7: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_7 = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_7 = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(8isize) = (*p_src.offset(oe_7 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_7 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(8isize) as ::core::ffi::c_int;
-        let mut oe_8: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_8: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_8 = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_8 = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(9isize) = (*p_src.offset(oe_8 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_8 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(9isize) as ::core::ffi::c_int;
-        let mut oe_9: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_9: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_9 = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_9 = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(10isize) = (*p_src.offset(oe_9 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_9 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(10isize) as ::core::ffi::c_int;
-        let mut oe_10: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_10: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_10 = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_10 = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(11isize) = (*p_src.offset(oe_10 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_10 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(11isize) as ::core::ffi::c_int;
-        let mut oe_11: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_11: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_11 = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_11 = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(12isize) = (*p_src.offset(oe_11 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_11 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(12isize) as ::core::ffi::c_int;
-        let mut oe_12: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_12: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_12 = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_12 = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(13isize) = (*p_src.offset(oe_12 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_12 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(13isize) as ::core::ffi::c_int;
-        let mut oe_13: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_13: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_13 = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_13 = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(14isize) = (*p_src.offset(oe_13 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_13 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(14isize) as ::core::ffi::c_int;
-        let mut oe_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_14 = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_14 = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(15isize) = (*p_src.offset(oe_14 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
@@ -1617,99 +1567,99 @@ unsafe extern "C" fn zigzag_sub_4x4ac_frame(
     mut dc: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut nz: ::core::ffi::c_int = 0i32;
-        let mut oe: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut nz = 0i32;
+        let mut oe = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *dc = (*p_src.offset(oe as isize) as ::core::ffi::c_int
             - *p_dst.offset(od as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         *level.offset(0isize) = 0i16;
-        let mut oe_0: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_0: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_0 = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_0 = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(1isize) = (*p_src.offset(oe_0 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_0 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(1isize) as ::core::ffi::c_int;
-        let mut oe_1: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_1: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_1 = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_1 = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(2isize) = (*p_src.offset(oe_1 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_1 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(2isize) as ::core::ffi::c_int;
-        let mut oe_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_2 = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_2 = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(3isize) = (*p_src.offset(oe_2 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_2 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(3isize) as ::core::ffi::c_int;
-        let mut oe_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_3 = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_3 = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(4isize) = (*p_src.offset(oe_3 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_3 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(4isize) as ::core::ffi::c_int;
-        let mut oe_4: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_4: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_4 = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_4 = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(5isize) = (*p_src.offset(oe_4 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_4 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(5isize) as ::core::ffi::c_int;
-        let mut oe_5: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_5: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_5 = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_5 = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(6isize) = (*p_src.offset(oe_5 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_5 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(6isize) as ::core::ffi::c_int;
-        let mut oe_6: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_6: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_6 = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_6 = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(7isize) = (*p_src.offset(oe_6 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_6 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(7isize) as ::core::ffi::c_int;
-        let mut oe_7: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_7: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_7 = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_7 = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(8isize) = (*p_src.offset(oe_7 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_7 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(8isize) as ::core::ffi::c_int;
-        let mut oe_8: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_8: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_8 = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_8 = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(9isize) = (*p_src.offset(oe_8 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_8 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(9isize) as ::core::ffi::c_int;
-        let mut oe_9: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_9: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_9 = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_9 = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(10isize) = (*p_src.offset(oe_9 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_9 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(10isize) as ::core::ffi::c_int;
-        let mut oe_10: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_10: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_10 = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_10 = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(11isize) = (*p_src.offset(oe_10 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_10 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(11isize) as ::core::ffi::c_int;
-        let mut oe_11: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_11: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_11 = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_11 = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(12isize) = (*p_src.offset(oe_11 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_11 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(12isize) as ::core::ffi::c_int;
-        let mut oe_12: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_12: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_12 = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_12 = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(13isize) = (*p_src.offset(oe_12 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_12 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(13isize) as ::core::ffi::c_int;
-        let mut oe_13: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_13: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_13 = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_13 = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(14isize) = (*p_src.offset(oe_13 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_13 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(14isize) as ::core::ffi::c_int;
-        let mut oe_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_14 = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_14 = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(15isize) = (*p_src.offset(oe_14 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
@@ -1744,99 +1694,99 @@ unsafe extern "C" fn zigzag_sub_4x4ac_field(
     mut dc: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut nz: ::core::ffi::c_int = 0i32;
-        let mut oe: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut nz = 0i32;
+        let mut oe = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *dc = (*p_src.offset(oe as isize) as ::core::ffi::c_int
             - *p_dst.offset(od as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         *level.offset(0isize) = 0i16;
-        let mut oe_0: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_0: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_0 = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_0 = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(1isize) = (*p_src.offset(oe_0 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_0 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(1isize) as ::core::ffi::c_int;
-        let mut oe_1: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_1: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_1 = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_1 = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(2isize) = (*p_src.offset(oe_1 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_1 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(2isize) as ::core::ffi::c_int;
-        let mut oe_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_2 = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_2 = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(3isize) = (*p_src.offset(oe_2 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_2 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(3isize) as ::core::ffi::c_int;
-        let mut oe_3: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_3: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_3 = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_3 = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(4isize) = (*p_src.offset(oe_3 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_3 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(4isize) as ::core::ffi::c_int;
-        let mut oe_4: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_4: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_4 = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_4 = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(5isize) = (*p_src.offset(oe_4 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_4 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(5isize) as ::core::ffi::c_int;
-        let mut oe_5: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_5: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_5 = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_5 = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(6isize) = (*p_src.offset(oe_5 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_5 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(6isize) as ::core::ffi::c_int;
-        let mut oe_6: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_6: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_6 = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_6 = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(7isize) = (*p_src.offset(oe_6 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_6 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(7isize) as ::core::ffi::c_int;
-        let mut oe_7: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_7: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_7 = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_7 = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(8isize) = (*p_src.offset(oe_7 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_7 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(8isize) as ::core::ffi::c_int;
-        let mut oe_8: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_8: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_8 = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_8 = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(9isize) = (*p_src.offset(oe_8 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_8 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(9isize) as ::core::ffi::c_int;
-        let mut oe_9: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_9: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_9 = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_9 = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(10isize) = (*p_src.offset(oe_9 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_9 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(10isize) as ::core::ffi::c_int;
-        let mut oe_10: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_10: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_10 = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_10 = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(11isize) = (*p_src.offset(oe_10 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_10 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(11isize) as ::core::ffi::c_int;
-        let mut oe_11: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_11: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_11 = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_11 = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(12isize) = (*p_src.offset(oe_11 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_11 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(12isize) as ::core::ffi::c_int;
-        let mut oe_12: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_12: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_12 = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_12 = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(13isize) = (*p_src.offset(oe_12 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_12 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(13isize) as ::core::ffi::c_int;
-        let mut oe_13: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_13: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_13 = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_13 = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(14isize) = (*p_src.offset(oe_13 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_13 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(14isize) as ::core::ffi::c_int;
-        let mut oe_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_14: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_14 = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_14 = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(15isize) = (*p_src.offset(oe_14 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
@@ -1870,387 +1820,387 @@ unsafe extern "C" fn zigzag_sub_8x8_frame(
     mut p_dst: *mut crate::src::common::common::pixel,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut nz: ::core::ffi::c_int = 0i32;
-        let mut oe: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut nz = 0i32;
+        let mut oe = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(0isize) = (*p_src.offset(oe as isize) as ::core::ffi::c_int
             - *p_dst.offset(od as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(0isize) as ::core::ffi::c_int;
-        let mut oe_0: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_0: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_0 = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_0 = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(1isize) = (*p_src.offset(oe_0 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_0 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(1isize) as ::core::ffi::c_int;
-        let mut oe_1: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_1: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_1 = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_1 = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(2isize) = (*p_src.offset(oe_1 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_1 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(2isize) as ::core::ffi::c_int;
-        let mut oe_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_2: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_2 = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_2 = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(3isize) = (*p_src.offset(oe_2 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_2 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(3isize) as ::core::ffi::c_int;
-        let mut oe_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_3 = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_3 = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(4isize) = (*p_src.offset(oe_3 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_3 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(4isize) as ::core::ffi::c_int;
-        let mut oe_4: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_4: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_4 = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_4 = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(5isize) = (*p_src.offset(oe_4 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_4 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(5isize) as ::core::ffi::c_int;
-        let mut oe_5: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_5: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_5 = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_5 = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(6isize) = (*p_src.offset(oe_5 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_5 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(6isize) as ::core::ffi::c_int;
-        let mut oe_6: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_6: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_6 = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_6 = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(7isize) = (*p_src.offset(oe_6 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_6 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(7isize) as ::core::ffi::c_int;
-        let mut oe_7: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_7: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_7 = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_7 = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(8isize) = (*p_src.offset(oe_7 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_7 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(8isize) as ::core::ffi::c_int;
-        let mut oe_8: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_8: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_8 = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_8 = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(9isize) = (*p_src.offset(oe_8 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_8 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(9isize) as ::core::ffi::c_int;
-        let mut oe_9: ::core::ffi::c_int = 0i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_9: ::core::ffi::c_int = 0i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_9 = 0i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_9 = 0i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(10isize) = (*p_src.offset(oe_9 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_9 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(10isize) as ::core::ffi::c_int;
-        let mut oe_10: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_10: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_10 = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_10 = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(11isize) = (*p_src.offset(oe_10 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_10 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(11isize) as ::core::ffi::c_int;
-        let mut oe_11: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_11: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_11 = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_11 = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(12isize) = (*p_src.offset(oe_11 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_11 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(12isize) as ::core::ffi::c_int;
-        let mut oe_12: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_12: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_12 = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_12 = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(13isize) = (*p_src.offset(oe_12 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_12 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(13isize) as ::core::ffi::c_int;
-        let mut oe_13: ::core::ffi::c_int = 4i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_13: ::core::ffi::c_int = 4i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_13 = 4i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_13 = 4i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(14isize) = (*p_src.offset(oe_13 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_13 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(14isize) as ::core::ffi::c_int;
-        let mut oe_14: ::core::ffi::c_int = 5i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_14: ::core::ffi::c_int = 5i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_14 = 5i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_14 = 5i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(15isize) = (*p_src.offset(oe_14 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(15isize) as ::core::ffi::c_int;
-        let mut oe_15: ::core::ffi::c_int = 4i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_15: ::core::ffi::c_int = 4i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_15 = 4i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_15 = 4i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(16isize) = (*p_src.offset(oe_15 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_15 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(16isize) as ::core::ffi::c_int;
-        let mut oe_16: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_16: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_16 = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_16 = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(17isize) = (*p_src.offset(oe_16 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_16 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(17isize) as ::core::ffi::c_int;
-        let mut oe_17: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_17: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_17 = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_17 = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(18isize) = (*p_src.offset(oe_17 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_17 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(18isize) as ::core::ffi::c_int;
-        let mut oe_18: ::core::ffi::c_int = 1i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_18: ::core::ffi::c_int = 1i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_18 = 1i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_18 = 1i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(19isize) = (*p_src.offset(oe_18 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_18 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(19isize) as ::core::ffi::c_int;
-        let mut oe_19: ::core::ffi::c_int = 0i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_19: ::core::ffi::c_int = 0i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_19 = 0i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_19 = 0i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(20isize) = (*p_src.offset(oe_19 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_19 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(20isize) as ::core::ffi::c_int;
-        let mut oe_20: ::core::ffi::c_int = 0i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_20: ::core::ffi::c_int = 0i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_20 = 0i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_20 = 0i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(21isize) = (*p_src.offset(oe_20 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_20 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(21isize) as ::core::ffi::c_int;
-        let mut oe_21: ::core::ffi::c_int = 1i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_21: ::core::ffi::c_int = 1i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_21 = 1i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_21 = 1i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(22isize) = (*p_src.offset(oe_21 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_21 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(22isize) as ::core::ffi::c_int;
-        let mut oe_22: ::core::ffi::c_int = 2i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_22: ::core::ffi::c_int = 2i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_22 = 2i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_22 = 2i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(23isize) = (*p_src.offset(oe_22 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_22 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(23isize) as ::core::ffi::c_int;
-        let mut oe_23: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_23: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_23 = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_23 = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(24isize) = (*p_src.offset(oe_23 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_23 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(24isize) as ::core::ffi::c_int;
-        let mut oe_24: ::core::ffi::c_int = 4i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_24: ::core::ffi::c_int = 4i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_24 = 4i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_24 = 4i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(25isize) = (*p_src.offset(oe_24 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_24 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(25isize) as ::core::ffi::c_int;
-        let mut oe_25: ::core::ffi::c_int = 5i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_25: ::core::ffi::c_int = 5i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_25 = 5i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_25 = 5i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(26isize) = (*p_src.offset(oe_25 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_25 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(26isize) as ::core::ffi::c_int;
-        let mut oe_26: ::core::ffi::c_int = 6i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_26: ::core::ffi::c_int = 6i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_26 = 6i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_26 = 6i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(27isize) = (*p_src.offset(oe_26 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_26 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(27isize) as ::core::ffi::c_int;
-        let mut oe_27: ::core::ffi::c_int = 7i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_27: ::core::ffi::c_int = 7i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_27 = 7i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_27 = 7i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(28isize) = (*p_src.offset(oe_27 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_27 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(28isize) as ::core::ffi::c_int;
-        let mut oe_28: ::core::ffi::c_int = 6i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_28: ::core::ffi::c_int = 6i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_28 = 6i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_28 = 6i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(29isize) = (*p_src.offset(oe_28 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_28 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(29isize) as ::core::ffi::c_int;
-        let mut oe_29: ::core::ffi::c_int = 5i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_29: ::core::ffi::c_int = 5i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_29 = 5i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_29 = 5i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(30isize) = (*p_src.offset(oe_29 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_29 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(30isize) as ::core::ffi::c_int;
-        let mut oe_30: ::core::ffi::c_int = 4i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_30: ::core::ffi::c_int = 4i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_30 = 4i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_30 = 4i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(31isize) = (*p_src.offset(oe_30 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_30 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(31isize) as ::core::ffi::c_int;
-        let mut oe_31: ::core::ffi::c_int = 3i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_31: ::core::ffi::c_int = 3i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_31 = 3i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_31 = 3i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(32isize) = (*p_src.offset(oe_31 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_31 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(32isize) as ::core::ffi::c_int;
-        let mut oe_32: ::core::ffi::c_int = 2i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_32: ::core::ffi::c_int = 2i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_32 = 2i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_32 = 2i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(33isize) = (*p_src.offset(oe_32 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_32 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(33isize) as ::core::ffi::c_int;
-        let mut oe_33: ::core::ffi::c_int = 1i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_33: ::core::ffi::c_int = 1i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_33 = 1i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_33 = 1i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(34isize) = (*p_src.offset(oe_33 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_33 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(34isize) as ::core::ffi::c_int;
-        let mut oe_34: ::core::ffi::c_int = 0i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_34: ::core::ffi::c_int = 0i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_34 = 0i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_34 = 0i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(35isize) = (*p_src.offset(oe_34 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_34 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(35isize) as ::core::ffi::c_int;
-        let mut oe_35: ::core::ffi::c_int = 1i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_35: ::core::ffi::c_int = 1i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_35 = 1i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_35 = 1i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(36isize) = (*p_src.offset(oe_35 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_35 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(36isize) as ::core::ffi::c_int;
-        let mut oe_36: ::core::ffi::c_int = 2i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_36: ::core::ffi::c_int = 2i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_36 = 2i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_36 = 2i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(37isize) = (*p_src.offset(oe_36 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_36 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(37isize) as ::core::ffi::c_int;
-        let mut oe_37: ::core::ffi::c_int = 3i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_37: ::core::ffi::c_int = 3i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_37 = 3i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_37 = 3i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(38isize) = (*p_src.offset(oe_37 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_37 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(38isize) as ::core::ffi::c_int;
-        let mut oe_38: ::core::ffi::c_int = 4i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_38: ::core::ffi::c_int = 4i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_38 = 4i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_38 = 4i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(39isize) = (*p_src.offset(oe_38 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_38 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(39isize) as ::core::ffi::c_int;
-        let mut oe_39: ::core::ffi::c_int = 5i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_39: ::core::ffi::c_int = 5i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_39 = 5i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_39 = 5i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(40isize) = (*p_src.offset(oe_39 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_39 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(40isize) as ::core::ffi::c_int;
-        let mut oe_40: ::core::ffi::c_int = 6i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_40: ::core::ffi::c_int = 6i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_40 = 6i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_40 = 6i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(41isize) = (*p_src.offset(oe_40 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_40 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(41isize) as ::core::ffi::c_int;
-        let mut oe_41: ::core::ffi::c_int = 7i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_41: ::core::ffi::c_int = 7i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_41 = 7i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_41 = 7i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(42isize) = (*p_src.offset(oe_41 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_41 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(42isize) as ::core::ffi::c_int;
-        let mut oe_42: ::core::ffi::c_int = 7i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_42: ::core::ffi::c_int = 7i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_42 = 7i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_42 = 7i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(43isize) = (*p_src.offset(oe_42 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_42 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(43isize) as ::core::ffi::c_int;
-        let mut oe_43: ::core::ffi::c_int = 6i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_43: ::core::ffi::c_int = 6i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_43 = 6i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_43 = 6i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(44isize) = (*p_src.offset(oe_43 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_43 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(44isize) as ::core::ffi::c_int;
-        let mut oe_44: ::core::ffi::c_int = 5i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_44: ::core::ffi::c_int = 5i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_44 = 5i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_44 = 5i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(45isize) = (*p_src.offset(oe_44 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_44 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(45isize) as ::core::ffi::c_int;
-        let mut oe_45: ::core::ffi::c_int = 4i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_45: ::core::ffi::c_int = 4i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_45 = 4i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_45 = 4i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(46isize) = (*p_src.offset(oe_45 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_45 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(46isize) as ::core::ffi::c_int;
-        let mut oe_46: ::core::ffi::c_int = 3i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_46: ::core::ffi::c_int = 3i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_46 = 3i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_46 = 3i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(47isize) = (*p_src.offset(oe_46 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_46 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(47isize) as ::core::ffi::c_int;
-        let mut oe_47: ::core::ffi::c_int = 2i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_47: ::core::ffi::c_int = 2i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_47 = 2i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_47 = 2i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(48isize) = (*p_src.offset(oe_47 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_47 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(48isize) as ::core::ffi::c_int;
-        let mut oe_48: ::core::ffi::c_int = 3i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_48: ::core::ffi::c_int = 3i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_48 = 3i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_48 = 3i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(49isize) = (*p_src.offset(oe_48 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_48 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(49isize) as ::core::ffi::c_int;
-        let mut oe_49: ::core::ffi::c_int = 4i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_49: ::core::ffi::c_int = 4i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_49 = 4i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_49 = 4i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(50isize) = (*p_src.offset(oe_49 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_49 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(50isize) as ::core::ffi::c_int;
-        let mut oe_50: ::core::ffi::c_int = 5i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_50: ::core::ffi::c_int = 5i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_50 = 5i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_50 = 5i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(51isize) = (*p_src.offset(oe_50 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_50 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(51isize) as ::core::ffi::c_int;
-        let mut oe_51: ::core::ffi::c_int = 6i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_51: ::core::ffi::c_int = 6i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_51 = 6i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_51 = 6i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(52isize) = (*p_src.offset(oe_51 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_51 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(52isize) as ::core::ffi::c_int;
-        let mut oe_52: ::core::ffi::c_int = 7i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_52: ::core::ffi::c_int = 7i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_52 = 7i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_52 = 7i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(53isize) = (*p_src.offset(oe_52 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_52 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(53isize) as ::core::ffi::c_int;
-        let mut oe_53: ::core::ffi::c_int = 7i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_53: ::core::ffi::c_int = 7i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_53 = 7i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_53 = 7i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(54isize) = (*p_src.offset(oe_53 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_53 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(54isize) as ::core::ffi::c_int;
-        let mut oe_54: ::core::ffi::c_int = 6i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_54: ::core::ffi::c_int = 6i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_54 = 6i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_54 = 6i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(55isize) = (*p_src.offset(oe_54 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_54 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(55isize) as ::core::ffi::c_int;
-        let mut oe_55: ::core::ffi::c_int = 5i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_55: ::core::ffi::c_int = 5i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_55 = 5i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_55 = 5i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(56isize) = (*p_src.offset(oe_55 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_55 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(56isize) as ::core::ffi::c_int;
-        let mut oe_56: ::core::ffi::c_int = 4i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_56: ::core::ffi::c_int = 4i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_56 = 4i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_56 = 4i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(57isize) = (*p_src.offset(oe_56 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_56 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(57isize) as ::core::ffi::c_int;
-        let mut oe_57: ::core::ffi::c_int = 5i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_57: ::core::ffi::c_int = 5i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_57 = 5i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_57 = 5i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(58isize) = (*p_src.offset(oe_57 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_57 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(58isize) as ::core::ffi::c_int;
-        let mut oe_58: ::core::ffi::c_int = 6i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_58: ::core::ffi::c_int = 6i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_58 = 6i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_58 = 6i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(59isize) = (*p_src.offset(oe_58 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_58 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(59isize) as ::core::ffi::c_int;
-        let mut oe_59: ::core::ffi::c_int = 7i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_59: ::core::ffi::c_int = 7i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_59 = 7i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_59 = 7i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(60isize) = (*p_src.offset(oe_59 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_59 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(60isize) as ::core::ffi::c_int;
-        let mut oe_60: ::core::ffi::c_int = 7i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_60: ::core::ffi::c_int = 7i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_60 = 7i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_60 = 7i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(61isize) = (*p_src.offset(oe_60 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_60 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(61isize) as ::core::ffi::c_int;
-        let mut oe_61: ::core::ffi::c_int = 6i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_61: ::core::ffi::c_int = 6i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_61 = 6i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_61 = 6i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(62isize) = (*p_src.offset(oe_61 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_61 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(62isize) as ::core::ffi::c_int;
-        let mut oe_62: ::core::ffi::c_int = 7i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_62: ::core::ffi::c_int = 7i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_62 = 7i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_62 = 7i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(63isize) = (*p_src.offset(oe_62 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_62 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
@@ -2344,387 +2294,387 @@ unsafe extern "C" fn zigzag_sub_8x8_field(
     mut p_dst: *mut crate::src::common::common::pixel,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut nz: ::core::ffi::c_int = 0i32;
-        let mut oe: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od: ::core::ffi::c_int = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut nz = 0i32;
+        let mut oe = 0i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od = 0i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(0isize) = (*p_src.offset(oe as isize) as ::core::ffi::c_int
             - *p_dst.offset(od as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(0isize) as ::core::ffi::c_int;
-        let mut oe_0: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_0: ::core::ffi::c_int = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_0 = 0i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_0 = 0i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(1isize) = (*p_src.offset(oe_0 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_0 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(1isize) as ::core::ffi::c_int;
-        let mut oe_1: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_1: ::core::ffi::c_int = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_1 = 0i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_1 = 0i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(2isize) = (*p_src.offset(oe_1 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_1 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(2isize) as ::core::ffi::c_int;
-        let mut oe_2: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_2: ::core::ffi::c_int = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_2 = 1i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_2 = 1i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(3isize) = (*p_src.offset(oe_2 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_2 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(3isize) as ::core::ffi::c_int;
-        let mut oe_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_3: ::core::ffi::c_int = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_3 = 1i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_3 = 1i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(4isize) = (*p_src.offset(oe_3 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_3 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(4isize) as ::core::ffi::c_int;
-        let mut oe_4: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_4: ::core::ffi::c_int = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_4 = 0i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_4 = 0i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(5isize) = (*p_src.offset(oe_4 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_4 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(5isize) as ::core::ffi::c_int;
-        let mut oe_5: ::core::ffi::c_int = 0i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_5: ::core::ffi::c_int = 0i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_5 = 0i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_5 = 0i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(6isize) = (*p_src.offset(oe_5 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_5 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(6isize) as ::core::ffi::c_int;
-        let mut oe_6: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_6: ::core::ffi::c_int = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_6 = 1i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_6 = 1i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(7isize) = (*p_src.offset(oe_6 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_6 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(7isize) as ::core::ffi::c_int;
-        let mut oe_7: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_7: ::core::ffi::c_int = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_7 = 2i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_7 = 2i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(8isize) = (*p_src.offset(oe_7 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_7 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(8isize) as ::core::ffi::c_int;
-        let mut oe_8: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_8: ::core::ffi::c_int = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_8 = 1i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_8 = 1i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(9isize) = (*p_src.offset(oe_8 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_8 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(9isize) as ::core::ffi::c_int;
-        let mut oe_9: ::core::ffi::c_int = 0i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_9: ::core::ffi::c_int = 0i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_9 = 0i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_9 = 0i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(10isize) = (*p_src.offset(oe_9 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_9 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(10isize) as ::core::ffi::c_int;
-        let mut oe_10: ::core::ffi::c_int = 0i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_10: ::core::ffi::c_int = 0i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_10 = 0i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_10 = 0i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(11isize) = (*p_src.offset(oe_10 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_10 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(11isize) as ::core::ffi::c_int;
-        let mut oe_11: ::core::ffi::c_int = 0i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_11: ::core::ffi::c_int = 0i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_11 = 0i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_11 = 0i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(12isize) = (*p_src.offset(oe_11 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_11 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(12isize) as ::core::ffi::c_int;
-        let mut oe_12: ::core::ffi::c_int = 1i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_12: ::core::ffi::c_int = 1i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_12 = 1i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_12 = 1i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(13isize) = (*p_src.offset(oe_12 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_12 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(13isize) as ::core::ffi::c_int;
-        let mut oe_13: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_13: ::core::ffi::c_int = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_13 = 2i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_13 = 2i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(14isize) = (*p_src.offset(oe_13 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_13 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(14isize) as ::core::ffi::c_int;
-        let mut oe_14: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_14: ::core::ffi::c_int = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_14 = 3i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_14 = 3i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(15isize) = (*p_src.offset(oe_14 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(15isize) as ::core::ffi::c_int;
-        let mut oe_15: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_15: ::core::ffi::c_int = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_15 = 2i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_15 = 2i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(16isize) = (*p_src.offset(oe_15 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_15 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(16isize) as ::core::ffi::c_int;
-        let mut oe_16: ::core::ffi::c_int = 1i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_16: ::core::ffi::c_int = 1i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_16 = 1i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_16 = 1i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(17isize) = (*p_src.offset(oe_16 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_16 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(17isize) as ::core::ffi::c_int;
-        let mut oe_17: ::core::ffi::c_int = 1i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_17: ::core::ffi::c_int = 1i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_17 = 1i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_17 = 1i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(18isize) = (*p_src.offset(oe_17 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_17 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(18isize) as ::core::ffi::c_int;
-        let mut oe_18: ::core::ffi::c_int = 1i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_18: ::core::ffi::c_int = 1i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_18 = 1i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_18 = 1i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(19isize) = (*p_src.offset(oe_18 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_18 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(19isize) as ::core::ffi::c_int;
-        let mut oe_19: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_19: ::core::ffi::c_int = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_19 = 2i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_19 = 2i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(20isize) = (*p_src.offset(oe_19 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_19 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(20isize) as ::core::ffi::c_int;
-        let mut oe_20: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_20: ::core::ffi::c_int = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_20 = 3i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_20 = 3i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(21isize) = (*p_src.offset(oe_20 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_20 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(21isize) as ::core::ffi::c_int;
-        let mut oe_21: ::core::ffi::c_int = 4i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_21: ::core::ffi::c_int = 4i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_21 = 4i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_21 = 4i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(22isize) = (*p_src.offset(oe_21 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_21 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(22isize) as ::core::ffi::c_int;
-        let mut oe_22: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_22: ::core::ffi::c_int = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_22 = 3i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_22 = 3i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(23isize) = (*p_src.offset(oe_22 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_22 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(23isize) as ::core::ffi::c_int;
-        let mut oe_23: ::core::ffi::c_int = 2i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_23: ::core::ffi::c_int = 2i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_23 = 2i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_23 = 2i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(24isize) = (*p_src.offset(oe_23 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_23 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(24isize) as ::core::ffi::c_int;
-        let mut oe_24: ::core::ffi::c_int = 2i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_24: ::core::ffi::c_int = 2i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_24 = 2i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_24 = 2i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(25isize) = (*p_src.offset(oe_24 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_24 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(25isize) as ::core::ffi::c_int;
-        let mut oe_25: ::core::ffi::c_int = 2i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_25: ::core::ffi::c_int = 2i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_25 = 2i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_25 = 2i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(26isize) = (*p_src.offset(oe_25 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_25 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(26isize) as ::core::ffi::c_int;
-        let mut oe_26: ::core::ffi::c_int = 2i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_26: ::core::ffi::c_int = 2i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_26 = 2i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_26 = 2i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(27isize) = (*p_src.offset(oe_26 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_26 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(27isize) as ::core::ffi::c_int;
-        let mut oe_27: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_27: ::core::ffi::c_int = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_27 = 3i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_27 = 3i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(28isize) = (*p_src.offset(oe_27 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_27 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(28isize) as ::core::ffi::c_int;
-        let mut oe_28: ::core::ffi::c_int = 4i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_28: ::core::ffi::c_int = 4i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_28 = 4i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_28 = 4i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(29isize) = (*p_src.offset(oe_28 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_28 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(29isize) as ::core::ffi::c_int;
-        let mut oe_29: ::core::ffi::c_int = 5i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_29: ::core::ffi::c_int = 5i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_29 = 5i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_29 = 5i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(30isize) = (*p_src.offset(oe_29 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_29 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(30isize) as ::core::ffi::c_int;
-        let mut oe_30: ::core::ffi::c_int = 4i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_30: ::core::ffi::c_int = 4i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_30 = 4i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_30 = 4i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(31isize) = (*p_src.offset(oe_30 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_30 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(31isize) as ::core::ffi::c_int;
-        let mut oe_31: ::core::ffi::c_int = 3i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_31: ::core::ffi::c_int = 3i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_31 = 3i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_31 = 3i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(32isize) = (*p_src.offset(oe_31 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_31 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(32isize) as ::core::ffi::c_int;
-        let mut oe_32: ::core::ffi::c_int = 3i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_32: ::core::ffi::c_int = 3i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_32 = 3i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_32 = 3i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(33isize) = (*p_src.offset(oe_32 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_32 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(33isize) as ::core::ffi::c_int;
-        let mut oe_33: ::core::ffi::c_int = 3i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_33: ::core::ffi::c_int = 3i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_33 = 3i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_33 = 3i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(34isize) = (*p_src.offset(oe_33 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_33 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(34isize) as ::core::ffi::c_int;
-        let mut oe_34: ::core::ffi::c_int = 3i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_34: ::core::ffi::c_int = 3i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_34 = 3i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_34 = 3i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(35isize) = (*p_src.offset(oe_34 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_34 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(35isize) as ::core::ffi::c_int;
-        let mut oe_35: ::core::ffi::c_int = 4i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_35: ::core::ffi::c_int = 4i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_35 = 4i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_35 = 4i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(36isize) = (*p_src.offset(oe_35 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_35 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(36isize) as ::core::ffi::c_int;
-        let mut oe_36: ::core::ffi::c_int = 5i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_36: ::core::ffi::c_int = 5i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_36 = 5i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_36 = 5i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(37isize) = (*p_src.offset(oe_36 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_36 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(37isize) as ::core::ffi::c_int;
-        let mut oe_37: ::core::ffi::c_int = 6i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_37: ::core::ffi::c_int = 6i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_37 = 6i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_37 = 6i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(38isize) = (*p_src.offset(oe_37 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_37 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(38isize) as ::core::ffi::c_int;
-        let mut oe_38: ::core::ffi::c_int = 5i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_38: ::core::ffi::c_int = 5i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_38 = 5i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_38 = 5i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(39isize) = (*p_src.offset(oe_38 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_38 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(39isize) as ::core::ffi::c_int;
-        let mut oe_39: ::core::ffi::c_int = 4i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_39: ::core::ffi::c_int = 4i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_39 = 4i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_39 = 4i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(40isize) = (*p_src.offset(oe_39 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_39 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(40isize) as ::core::ffi::c_int;
-        let mut oe_40: ::core::ffi::c_int = 4i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_40: ::core::ffi::c_int = 4i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_40 = 4i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_40 = 4i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(41isize) = (*p_src.offset(oe_40 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_40 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(41isize) as ::core::ffi::c_int;
-        let mut oe_41: ::core::ffi::c_int = 4i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_41: ::core::ffi::c_int = 4i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_41 = 4i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_41 = 4i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(42isize) = (*p_src.offset(oe_41 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_41 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(42isize) as ::core::ffi::c_int;
-        let mut oe_42: ::core::ffi::c_int = 4i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_42: ::core::ffi::c_int = 4i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_42 = 4i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_42 = 4i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(43isize) = (*p_src.offset(oe_42 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_42 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(43isize) as ::core::ffi::c_int;
-        let mut oe_43: ::core::ffi::c_int = 5i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_43: ::core::ffi::c_int = 5i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_43 = 5i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_43 = 5i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(44isize) = (*p_src.offset(oe_43 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_43 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(44isize) as ::core::ffi::c_int;
-        let mut oe_44: ::core::ffi::c_int = 6i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_44: ::core::ffi::c_int = 6i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_44 = 6i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_44 = 6i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(45isize) = (*p_src.offset(oe_44 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_44 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(45isize) as ::core::ffi::c_int;
-        let mut oe_45: ::core::ffi::c_int = 6i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_45: ::core::ffi::c_int = 6i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_45 = 6i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_45 = 6i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(46isize) = (*p_src.offset(oe_45 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_45 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(46isize) as ::core::ffi::c_int;
-        let mut oe_46: ::core::ffi::c_int = 5i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_46: ::core::ffi::c_int = 5i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_46 = 5i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_46 = 5i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(47isize) = (*p_src.offset(oe_46 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_46 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(47isize) as ::core::ffi::c_int;
-        let mut oe_47: ::core::ffi::c_int = 5i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_47: ::core::ffi::c_int = 5i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_47 = 5i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_47 = 5i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(48isize) = (*p_src.offset(oe_47 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_47 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(48isize) as ::core::ffi::c_int;
-        let mut oe_48: ::core::ffi::c_int = 5i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_48: ::core::ffi::c_int = 5i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_48 = 5i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_48 = 5i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(49isize) = (*p_src.offset(oe_48 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_48 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(49isize) as ::core::ffi::c_int;
-        let mut oe_49: ::core::ffi::c_int = 5i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_49: ::core::ffi::c_int = 5i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_49 = 5i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_49 = 5i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(50isize) = (*p_src.offset(oe_49 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_49 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(50isize) as ::core::ffi::c_int;
-        let mut oe_50: ::core::ffi::c_int = 6i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_50: ::core::ffi::c_int = 6i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_50 = 6i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_50 = 6i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(51isize) = (*p_src.offset(oe_50 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_50 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(51isize) as ::core::ffi::c_int;
-        let mut oe_51: ::core::ffi::c_int = 7i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_51: ::core::ffi::c_int = 7i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_51 = 7i32 + 0i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_51 = 7i32 + 0i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(52isize) = (*p_src.offset(oe_51 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_51 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(52isize) as ::core::ffi::c_int;
-        let mut oe_52: ::core::ffi::c_int = 7i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_52: ::core::ffi::c_int = 7i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_52 = 7i32 + 1i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_52 = 7i32 + 1i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(53isize) = (*p_src.offset(oe_52 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_52 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(53isize) as ::core::ffi::c_int;
-        let mut oe_53: ::core::ffi::c_int = 6i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_53: ::core::ffi::c_int = 6i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_53 = 6i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_53 = 6i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(54isize) = (*p_src.offset(oe_53 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_53 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(54isize) as ::core::ffi::c_int;
-        let mut oe_54: ::core::ffi::c_int = 6i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_54: ::core::ffi::c_int = 6i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_54 = 6i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_54 = 6i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(55isize) = (*p_src.offset(oe_54 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_54 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(55isize) as ::core::ffi::c_int;
-        let mut oe_55: ::core::ffi::c_int = 6i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_55: ::core::ffi::c_int = 6i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_55 = 6i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_55 = 6i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(56isize) = (*p_src.offset(oe_55 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_55 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(56isize) as ::core::ffi::c_int;
-        let mut oe_56: ::core::ffi::c_int = 6i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_56: ::core::ffi::c_int = 6i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_56 = 6i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_56 = 6i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(57isize) = (*p_src.offset(oe_56 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_56 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(57isize) as ::core::ffi::c_int;
-        let mut oe_57: ::core::ffi::c_int = 7i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_57: ::core::ffi::c_int = 7i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_57 = 7i32 + 2i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_57 = 7i32 + 2i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(58isize) = (*p_src.offset(oe_57 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_57 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(58isize) as ::core::ffi::c_int;
-        let mut oe_58: ::core::ffi::c_int = 7i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_58: ::core::ffi::c_int = 7i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_58 = 7i32 + 3i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_58 = 7i32 + 3i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(59isize) = (*p_src.offset(oe_58 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_58 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(59isize) as ::core::ffi::c_int;
-        let mut oe_59: ::core::ffi::c_int = 7i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_59: ::core::ffi::c_int = 7i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_59 = 7i32 + 4i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_59 = 7i32 + 4i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(60isize) = (*p_src.offset(oe_59 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_59 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(60isize) as ::core::ffi::c_int;
-        let mut oe_60: ::core::ffi::c_int = 7i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_60: ::core::ffi::c_int = 7i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_60 = 7i32 + 5i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_60 = 7i32 + 5i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(61isize) = (*p_src.offset(oe_60 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_60 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(61isize) as ::core::ffi::c_int;
-        let mut oe_61: ::core::ffi::c_int = 7i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_61: ::core::ffi::c_int = 7i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_61 = 7i32 + 6i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_61 = 7i32 + 6i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(62isize) = (*p_src.offset(oe_61 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_61 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(62isize) as ::core::ffi::c_int;
-        let mut oe_62: ::core::ffi::c_int = 7i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
-        let mut od_62: ::core::ffi::c_int = 7i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
+        let mut oe_62 = 7i32 + 7i32 * crate::src::common::common::FENC_STRIDE;
+        let mut od_62 = 7i32 + 7i32 * crate::src::common::common::FDEC_STRIDE;
         *level.offset(63isize) = (*p_src.offset(oe_62 as isize) as ::core::ffi::c_int
             - *p_dst.offset(od_62 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
@@ -2818,10 +2768,10 @@ unsafe extern "C" fn zigzag_interleave_8x8_cavlc(
     mut nnz: *mut crate::stdlib::uint8_t,
 ) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
-            let mut nz: ::core::ffi::c_int = 0i32;
-            let mut j: ::core::ffi::c_int = 0i32;
+            let mut nz = 0i32;
+            let mut j = 0i32;
             while j < 16i32 {
                 nz |= *src.offset((i + j * 4i32) as isize) as ::core::ffi::c_int;
                 *dst.offset((i * 16i32 + j) as isize) = *src.offset((i + j * 4i32) as isize);

@@ -20,8 +20,7 @@ unsafe extern "C" fn threadpool_thread(
 ) -> *mut ::core::ffi::c_void {
     unsafe {
         while (*pool).exit == 0 {
-            let mut job: *mut x264_threadpool_job_t =
-                ::core::ptr::null_mut::<x264_threadpool_job_t>();
+            let mut job = ::core::ptr::null_mut::<x264_threadpool_job_t>();
             crate::stdlib::pthread_mutex_lock(&raw mut (*pool).run.mutex);
             while (*pool).exit == 0 && (*pool).run.i_size == 0 {
                 crate::stdlib::pthread_cond_wait(
@@ -60,7 +59,7 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
         if (0i32) < 0i32 {
             return -(1i32);
         }
-        let mut pool: *mut x264_threadpool_t = crate::src::common::base::x264_malloc(
+        let mut pool = crate::src::common::base::x264_malloc(
             ::core::mem::size_of::<x264_threadpool_t>() as crate::stdlib::int64_t,
         ) as *mut x264_threadpool_t;
         if !pool.is_null() {
@@ -90,18 +89,18 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                         (*pool).threads,
                     ) != 0)
                 {
-                    let mut i: ::core::ffi::c_int = 0i32;
+                    let mut i = 0i32;
                     loop {
                         if !(i < (*pool).threads) {
                             c2rust_current_block = 11584701595673473500;
                             break;
                         }
-                        let mut job: *mut x264_threadpool_job_t =
-                            crate::src::common::base::x264_malloc(::core::mem::size_of::<
-                                x264_threadpool_job_t,
-                            >()
-                                as crate::stdlib::int64_t)
-                                as *mut x264_threadpool_job_t;
+                        let mut job = crate::src::common::base::x264_malloc(::core::mem::size_of::<
+                            x264_threadpool_job_t,
+                        >(
+                        )
+                            as crate::stdlib::int64_t)
+                            as *mut x264_threadpool_job_t;
                         if job.is_null() {
                             c2rust_current_block = 11983467789922532698;
                             break;
@@ -115,7 +114,7 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                     match c2rust_current_block {
                         11983467789922532698 => {}
                         _ => {
-                            let mut i_0: ::core::ffi::c_int = 0i32;
+                            let mut i_0 = 0i32;
                             loop {
                                 if !(i_0 < (*pool).threads) {
                                     c2rust_current_block = 5634871135123216486;
@@ -176,9 +175,8 @@ pub unsafe extern "C" fn x264_8_threadpool_run(
     mut arg: *mut ::core::ffi::c_void,
 ) {
     unsafe {
-        let mut job: *mut x264_threadpool_job_t =
-            crate::src::common::frame::x264_8_sync_frame_list_pop(&raw mut (*pool).uninit)
-                as *mut x264_threadpool_job_t;
+        let mut job = crate::src::common::frame::x264_8_sync_frame_list_pop(&raw mut (*pool).uninit)
+            as *mut x264_threadpool_job_t;
         (*job).func = func;
         (*job).arg = arg;
         crate::src::common::frame::x264_8_sync_frame_list_push(
@@ -195,18 +193,17 @@ pub unsafe extern "C" fn x264_8_threadpool_wait(
     unsafe {
         crate::stdlib::pthread_mutex_lock(&raw mut (*pool).done.mutex);
         loop {
-            let mut i: ::core::ffi::c_int = 0i32;
+            let mut i = 0i32;
             while i < (*pool).done.i_size {
                 if (*(*(*pool).done.list.offset(i as isize) as *mut x264_threadpool_job_t)).arg
                     == arg
                 {
-                    let mut job: *mut x264_threadpool_job_t =
-                        crate::src::common::frame::x264_8_frame_shift(
-                            (*pool).done.list.offset(i as isize),
-                        ) as *mut x264_threadpool_job_t;
+                    let mut job = crate::src::common::frame::x264_8_frame_shift(
+                        (*pool).done.list.offset(i as isize),
+                    ) as *mut x264_threadpool_job_t;
                     (*pool).done.i_size -= 1;
                     crate::stdlib::pthread_mutex_unlock(&raw mut (*pool).done.mutex);
-                    let mut ret: *mut ::core::ffi::c_void = (*job).ret;
+                    let mut ret = (*job).ret;
                     crate::src::common::frame::x264_8_sync_frame_list_push(
                         &raw mut (*pool).uninit,
                         job as *mut crate::src::common::frame::x264_frame,
@@ -226,7 +223,7 @@ unsafe extern "C" fn threadpool_list_delete(
     mut slist: *mut crate::src::common::frame::x264_sync_frame_list_t,
 ) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while !(*(*slist).list.offset(i as isize)).is_null() {
             crate::src::common::base::x264_free(
                 *(*slist).list.offset(i as isize) as *mut ::core::ffi::c_void
@@ -245,7 +242,7 @@ pub unsafe extern "C" fn x264_8_threadpool_delete(mut pool: *mut x264_threadpool
         ::core::ptr::write_volatile(&mut (*pool).exit as *mut ::core::ffi::c_int, 1i32);
         crate::stdlib::pthread_cond_broadcast(&raw mut (*pool).run.cv_fill);
         crate::stdlib::pthread_mutex_unlock(&raw mut (*pool).run.mutex);
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < (*pool).threads {
             crate::stdlib::pthread_join(
                 *(*pool).thread_handle.offset(i as isize),

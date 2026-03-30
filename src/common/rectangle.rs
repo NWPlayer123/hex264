@@ -8,20 +8,20 @@ pub mod rectangle_h {
         mut v: crate::stdlib::uint32_t,
     ) {
         unsafe {
-            let mut d: *mut crate::stdlib::uint8_t = dst as *mut crate::stdlib::uint8_t;
-            let mut v2: crate::stdlib::uint16_t = (if s >= 2i32 {
+            let mut d = dst as *mut crate::stdlib::uint8_t;
+            let mut v2 = (if s >= 2i32 {
                 v
             } else {
                 v.wrapping_mul(0x101u32)
             }) as crate::stdlib::uint16_t;
-            let mut v4: crate::stdlib::uint32_t = if s >= 4i32 {
+            let mut v4 = if s >= 4i32 {
                 v
             } else if s >= 2i32 {
                 v.wrapping_mul(0x10001u32)
             } else {
                 v.wrapping_mul(0x1010101u32)
             };
-            let mut v8: crate::stdlib::uint64_t = (v4 as crate::stdlib::uint64_t)
+            let mut v8 = (v4 as crate::stdlib::uint64_t)
                 .wrapping_add((v4 as crate::stdlib::uint64_t) << 32i32);
             s *= 8i32;
             if w == 2i32 {

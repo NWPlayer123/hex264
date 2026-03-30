@@ -34,28 +34,27 @@ static mut cabac_contexts: [[[crate::stdlib::uint8_t; 1024]; 52]; 4] = [[[0; 102
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::common::x264_t) {
     unsafe {
-        let mut ctx_count: ::core::ffi::c_int = if crate::src::common::base::CHROMA_444
-            as ::core::ffi::c_int
+        let mut ctx_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
         {
             1024i32
         } else {
             460i32
         };
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while i < 4i32 {
-            let mut cabac_context_init: *const [[crate::stdlib::int8_t; 2]; 1024] = if i == 0i32 {
+            let mut cabac_context_init = if i == 0i32 {
                 &raw const crate::src::common::tables::x264_cabac_context_init_I
             } else {
                 (&raw const crate::src::common::tables::x264_cabac_context_init_PB
                     as *const [[crate::stdlib::int8_t; 2]; 1024])
                     .offset((i - 1i32) as isize)
             };
-            let mut qp: ::core::ffi::c_int = 0i32;
+            let mut qp = 0i32;
             while qp <= crate::src::common::common::QP_MAX_SPEC {
-                let mut j: ::core::ffi::c_int = 0i32;
+                let mut j = 0i32;
                 while j < ctx_count {
-                    let mut state: ::core::ffi::c_int = x264_clip3(
+                    let mut state = x264_clip3(
                         ((*cabac_context_init)[j as usize][0usize] as ::core::ffi::c_int * qp
                             >> 4i32)
                             + (*cabac_context_init)[j as usize][1usize] as ::core::ffi::c_int,
@@ -137,14 +136,14 @@ pub unsafe extern "C" fn x264_8_cabac_encode_init(
 unsafe extern "C" fn cabac_putbyte(mut cb: *mut crate::src::common::cabac::x264_cabac_t) {
     unsafe {
         if (*cb).i_queue >= 0i32 {
-            let mut out: ::core::ffi::c_int = (*cb).i_low >> (*cb).i_queue + 10i32;
+            let mut out = (*cb).i_low >> (*cb).i_queue + 10i32;
             (*cb).i_low &= ((0x400i32) << (*cb).i_queue) - 1i32;
             (*cb).i_queue -= 8i32;
             if out & 0xffi32 == 0xffi32 {
                 (*cb).i_bytes_outstanding += 1;
             } else {
-                let mut carry: ::core::ffi::c_int = out >> 8i32;
-                let mut bytes_outstanding: ::core::ffi::c_int = (*cb).i_bytes_outstanding;
+                let mut carry = out >> 8i32;
+                let mut bytes_outstanding = (*cb).i_bytes_outstanding;
                 let ref mut c2rust_fresh0 = *(*cb).p.offset(-1isize);
                 *c2rust_fresh0 =
                     (*c2rust_fresh0 as ::core::ffi::c_int + carry) as crate::stdlib::uint8_t;
@@ -165,9 +164,8 @@ unsafe extern "C" fn cabac_putbyte(mut cb: *mut crate::src::common::cabac::x264_
 #[inline]
 unsafe extern "C" fn cabac_encode_renorm(mut cb: *mut crate::src::common::cabac::x264_cabac_t) {
     unsafe {
-        let mut shift: ::core::ffi::c_int = crate::src::common::tables::x264_cabac_renorm_shift
-            [((*cb).i_range >> 3i32) as usize]
-            as ::core::ffi::c_int;
+        let mut shift = crate::src::common::tables::x264_cabac_renorm_shift
+            [((*cb).i_range >> 3i32) as usize] as ::core::ffi::c_int;
         (*cb).i_range <<= shift;
         (*cb).i_low <<= shift;
         (*cb).i_queue += shift;
@@ -181,8 +179,8 @@ pub unsafe extern "C" fn x264_8_cabac_encode_decision_c(
     mut b: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut i_state: ::core::ffi::c_int = (*cb).state[i_ctx as usize] as ::core::ffi::c_int;
-        let mut i_range_lps: ::core::ffi::c_int = crate::src::common::tables::x264_cabac_range_lps
+        let mut i_state = (*cb).state[i_ctx as usize] as ::core::ffi::c_int;
+        let mut i_range_lps = crate::src::common::tables::x264_cabac_range_lps
             [(i_state >> 1i32) as usize][(((*cb).i_range >> 6i32) - 4i32) as usize]
             as ::core::ffi::c_int;
         (*cb).i_range -= i_range_lps;
@@ -232,14 +230,12 @@ pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
     mut val: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut v: crate::stdlib::uint32_t =
-            (val + ((1i32) << exp_bits)) as crate::stdlib::uint32_t;
-        let mut k: ::core::ffi::c_int = 31i32 - v.leading_zeros() as i32;
-        let mut x: crate::stdlib::uint32_t =
-            ((bypass_lut[(k - exp_bits) as usize] as crate::stdlib::uint32_t) << exp_bits)
-                .wrapping_add(v);
+        let mut v = (val + ((1i32) << exp_bits)) as crate::stdlib::uint32_t;
+        let mut k = 31i32 - v.leading_zeros() as i32;
+        let mut x = ((bypass_lut[(k - exp_bits) as usize] as crate::stdlib::uint32_t) << exp_bits)
+            .wrapping_add(v);
         k = 2i32 * k + 1i32 - exp_bits;
-        let mut i: ::core::ffi::c_int = (k - 1i32 & 7i32) + 1i32;
+        let mut i = (k - 1i32 & 7i32) + 1i32;
         loop {
             k -= i;
             (*cb).i_low <<= i;

@@ -461,7 +461,7 @@ pub unsafe extern "C" fn x264_8_log(
 ) {
     unsafe {
         if h.is_null() || i_level <= (*h).param.i_log_level {
-            let mut arg: ::core::ffi::VaListImpl = c2rust_args.clone();
+            let mut arg = c2rust_args.clone();
             if h.is_null() {
                 crate::src::common::base::x264_log_default(
                     crate::__stddef_null_h::NULL,

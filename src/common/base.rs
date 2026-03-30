@@ -246,12 +246,12 @@ pub unsafe extern "C" fn x264_reduce_fraction(
     mut d: *mut crate::stdlib::uint32_t,
 ) {
     unsafe {
-        let mut a: crate::stdlib::uint32_t = *n;
-        let mut b: crate::stdlib::uint32_t = *d;
+        let mut a = *n;
+        let mut b = *d;
         if a == 0 || b == 0 {
             return;
         }
-        let mut c: crate::stdlib::uint32_t = a.wrapping_rem(b);
+        let mut c = a.wrapping_rem(b);
         while c != 0 {
             a = b;
             b = c;
@@ -267,12 +267,12 @@ pub unsafe extern "C" fn x264_reduce_fraction64(
     mut d: *mut crate::stdlib::uint64_t,
 ) {
     unsafe {
-        let mut a: crate::stdlib::uint64_t = *n;
-        let mut b: crate::stdlib::uint64_t = *d;
+        let mut a = *n;
+        let mut b = *d;
         if a == 0 || b == 0 {
             return;
         }
-        let mut c: crate::stdlib::uint64_t = a.wrapping_rem(b);
+        let mut c = a.wrapping_rem(b);
         while c != 0 {
             a = b;
             b = c;
@@ -290,8 +290,7 @@ pub unsafe extern "C" fn x264_log_default(
     mut arg: ::core::ffi::VaList,
 ) {
     unsafe {
-        let mut psz_prefix: *mut ::core::ffi::c_char =
-            ::core::ptr::null_mut::<::core::ffi::c_char>();
+        let mut psz_prefix = ::core::ptr::null_mut::<::core::ffi::c_char>();
         match i_level {
             crate::x264_h::X264_LOG_ERROR => {
                 psz_prefix = b"error\0".as_ptr() as *mut ::core::ffi::c_char;
@@ -324,7 +323,7 @@ pub unsafe extern "C" fn x264_log_internal(
     mut c2rust_args: ...
 ) {
     unsafe {
-        let mut arg: ::core::ffi::VaListImpl = c2rust_args.clone();
+        let mut arg = c2rust_args.clone();
         x264_log_default(
             crate::__stddef_null_h::NULL,
             i_level,
@@ -349,16 +348,14 @@ pub unsafe extern "C" fn x264_malloc(
             );
             return crate::__stddef_null_h::NULL;
         }
-        let mut align_buf: *mut crate::stdlib::uint8_t =
-            ::core::ptr::null_mut::<crate::stdlib::uint8_t>();
+        let mut align_buf = ::core::ptr::null_mut::<crate::stdlib::uint8_t>();
         if i_size >= (HUGE_PAGE_SIZE * 7i32 / 8i32) as crate::stdlib::int64_t {
             align_buf = crate::stdlib::memalign(
                 HUGE_PAGE_SIZE as crate::__stddef_size_t_h::size_t,
                 i_size as crate::__stddef_size_t_h::size_t,
             ) as *mut crate::stdlib::uint8_t;
             if !align_buf.is_null() {
-                let mut madv_size: crate::__stddef_size_t_h::size_t = (i_size
-                    + HUGE_PAGE_SIZE as crate::stdlib::int64_t
+                let mut madv_size = (i_size + HUGE_PAGE_SIZE as crate::stdlib::int64_t
                     - (HUGE_PAGE_SIZE * 7i32 / 8i32) as crate::stdlib::int64_t
                     & !(HUGE_PAGE_SIZE - 1i32) as crate::stdlib::int64_t)
                     as crate::__stddef_size_t_h::size_t;
@@ -398,16 +395,15 @@ pub unsafe extern "C" fn x264_slurp_file(
     mut filename: *const ::core::ffi::c_char,
 ) -> *mut ::core::ffi::c_char {
     unsafe {
-        let mut b_error: ::core::ffi::c_int = 0i32;
-        let mut buf: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        let mut fh: *mut crate::stdlib::FILE =
-            crate::stdlib::fopen(filename, b"rb\0".as_ptr() as *const ::core::ffi::c_char);
+        let mut b_error = 0i32;
+        let mut buf = ::core::ptr::null_mut::<::core::ffi::c_char>();
+        let mut fh = crate::stdlib::fopen(filename, b"rb\0".as_ptr() as *const ::core::ffi::c_char);
         if fh.is_null() {
             return ::core::ptr::null_mut::<::core::ffi::c_char>();
         }
         b_error |=
             (crate::stdlib::fseeko(fh, 0i64, crate::stdlib::SEEK_END) < 0i32) as ::core::ffi::c_int;
-        let mut i_size: crate::stdlib::int64_t = crate::stdlib::ftello(fh);
+        let mut i_size = crate::stdlib::ftello(fh);
         b_error |= (i_size <= 0i64) as ::core::ffi::c_int;
         if crate::osdep_h::WORD_SIZE == 4i32 {
             b_error |=
@@ -450,9 +446,9 @@ pub unsafe extern "C" fn x264_param_strdup(
     mut src: *const ::core::ffi::c_char,
 ) -> *mut ::core::ffi::c_char {
     unsafe {
-        let mut res: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
+        let mut res = ::core::ptr::null_mut::<::core::ffi::c_char>();
         let mut c2rust_current_block: u64;
-        let mut buf: *mut strdup_buffer = (*param).opaque as *mut strdup_buffer;
+        let mut buf = (*param).opaque as *mut strdup_buffer;
         if buf.is_null() {
             buf = crate::stdlib::malloc(
                 (8usize).wrapping_add(
@@ -476,7 +472,7 @@ pub unsafe extern "C" fn x264_param_strdup(
             {
                 c2rust_current_block = 5854223930975509075;
             } else {
-                let mut new_size: ::core::ffi::c_int = (*buf).size * 2i32;
+                let mut new_size = (*buf).size * 2i32;
                 buf = crate::stdlib::realloc(
                     buf as *mut ::core::ffi::c_void,
                     (8usize).wrapping_add(
@@ -520,9 +516,9 @@ pub unsafe extern "C" fn x264_param_strdup(
 #[no_mangle]
 pub unsafe extern "C" fn x264_param_cleanup(mut param: *mut crate::x264_h::x264_param_t) {
     unsafe {
-        let mut buf: *mut strdup_buffer = (*param).opaque as *mut strdup_buffer;
+        let mut buf = (*param).opaque as *mut strdup_buffer;
         if !buf.is_null() {
-            let mut i: ::core::ffi::c_int = 0i32;
+            let mut i = 0i32;
             while i < (*buf).count {
                 crate::stdlib::free(
                     *(&raw mut (*buf).ptr as *mut *mut ::core::ffi::c_void).offset(i as isize),
@@ -642,7 +638,7 @@ pub unsafe extern "C" fn x264_picture_alloc(
                 height_fix8: [256i32 * 1i32, 0, 0],
             },
         ];
-        let mut csp: ::core::ffi::c_int = i_csp & crate::x264_h::X264_CSP_MASK;
+        let mut csp = i_csp & crate::x264_h::X264_CSP_MASK;
         if csp <= crate::x264_h::X264_CSP_NONE
             || csp >= crate::x264_h::X264_CSP_MAX
             || csp == crate::x264_h::X264_CSP_V210
@@ -652,22 +648,21 @@ pub unsafe extern "C" fn x264_picture_alloc(
         x264_picture_init(pic);
         (*pic).img.i_csp = i_csp;
         (*pic).img.i_plane = csp_tab[csp as usize].planes;
-        let mut depth_factor: ::core::ffi::c_int =
-            if i_csp & crate::x264_h::X264_CSP_HIGH_DEPTH != 0 {
-                2i32
-            } else {
-                1i32
-            };
-        let mut plane_offset: [crate::stdlib::int64_t; 3] = [0i64, 0, 0];
-        let mut frame_size: crate::stdlib::int64_t = 0i64;
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut depth_factor = if i_csp & crate::x264_h::X264_CSP_HIGH_DEPTH != 0 {
+            2i32
+        } else {
+            1i32
+        };
+        let mut plane_offset = [0i64, 0, 0];
+        let mut frame_size = 0i64;
+        let mut i = 0i32;
         while i < (*pic).img.i_plane {
-            let mut stride: ::core::ffi::c_int = ((i_width as crate::stdlib::int64_t
+            let mut stride = ((i_width as crate::stdlib::int64_t
                 * csp_tab[csp as usize].width_fix8[i as usize] as crate::stdlib::int64_t
                 >> 8i32)
                 * depth_factor as crate::stdlib::int64_t)
                 as ::core::ffi::c_int;
-            let mut plane_size: crate::stdlib::int64_t = (i_height as crate::stdlib::int64_t
+            let mut plane_size = (i_height as crate::stdlib::int64_t
                 * csp_tab[csp as usize].height_fix8[i as usize] as crate::stdlib::int64_t
                 >> 8i32)
                 * stride as crate::stdlib::int64_t;
@@ -680,7 +675,7 @@ pub unsafe extern "C" fn x264_picture_alloc(
         if (*pic).img.plane[0usize].is_null() {
             return -(1i32);
         }
-        let mut i_0: ::core::ffi::c_int = 1i32;
+        let mut i_0 = 1i32;
         while i_0 < (*pic).img.i_plane {
             (*pic).img.plane[i_0 as usize] =
                 (*pic).img.plane[0usize].offset(plane_offset[i_0 as usize] as isize);
@@ -879,9 +874,8 @@ unsafe extern "C" fn param_apply_preset(
     mut preset: *const ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut end: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        let mut i: ::core::ffi::c_int =
-            crate::stdlib::strtol(preset, &raw mut end, 10i32) as ::core::ffi::c_int;
+        let mut end = ::core::ptr::null_mut::<::core::ffi::c_char>();
+        let mut i = crate::stdlib::strtol(preset, &raw mut end, 10i32) as ::core::ffi::c_int;
         if *end as ::core::ffi::c_int == 0i32
             && i >= 0i32
             && i < (::core::mem::size_of::<[*const ::core::ffi::c_char; 11]>())
@@ -1034,8 +1028,8 @@ unsafe extern "C" fn param_apply_tune(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut c2rust_current_block: u64;
-        let mut psy_tuning_used: ::core::ffi::c_int = 0i32;
-        let mut len: ::core::ffi::c_int = 0;
+        let mut psy_tuning_used = 0i32;
+        let mut len = 0;
         loop {
             tune = tune.offset(crate::stdlib::strspn(
                 tune,
@@ -1314,8 +1308,8 @@ pub unsafe extern "C" fn x264_param_apply_profile(
         if profile.is_null() {
             return 0i32;
         }
-        let qp_bd_offset: ::core::ffi::c_int = 6i32 * ((*param).i_bitdepth - 8i32);
-        let mut p: ::core::ffi::c_int = profile_string_to_int(profile);
+        let qp_bd_offset = 6i32 * ((*param).i_bitdepth - 8i32);
+        let mut p = profile_string_to_int(profile);
         if p < 0i32 {
             x264_log_internal(
                 crate::x264_h::X264_LOG_ERROR,
@@ -1418,7 +1412,7 @@ unsafe extern "C" fn parse_enum(
     mut dst: *mut ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         while !(*names.offset(i as isize)).is_null() {
             if **names.offset(i as isize) as ::core::ffi::c_int != 0
                 && crate::stdlib::strcasecmp(arg, *names.offset(i as isize)) == 0
@@ -1437,9 +1431,9 @@ unsafe extern "C" fn parse_cqm(
     mut length: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0i32;
+        let mut i = 0i32;
         loop {
-            let mut coef: ::core::ffi::c_int = 0;
+            let mut coef = 0;
             if crate::stdlib::sscanf(
                 str,
                 b"%d\0".as_ptr() as *const ::core::ffi::c_char,
@@ -1497,9 +1491,8 @@ unsafe extern "C" fn atoi_internal(
     mut b_error: *mut ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut end: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        let mut v: ::core::ffi::c_int =
-            crate::stdlib::strtol(str, &raw mut end, 0i32) as ::core::ffi::c_int;
+        let mut end = ::core::ptr::null_mut::<::core::ffi::c_char>();
+        let mut v = crate::stdlib::strtol(str, &raw mut end, 0i32) as ::core::ffi::c_int;
         if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
             *b_error = 1i32;
         }
@@ -1511,8 +1504,8 @@ unsafe extern "C" fn atof_internal(
     mut b_error: *mut ::core::ffi::c_int,
 ) -> ::core::ffi::c_double {
     unsafe {
-        let mut end: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        let mut v: ::core::ffi::c_double = crate::stdlib::strtod(str, &raw mut end);
+        let mut end = ::core::ptr::null_mut::<::core::ffi::c_char>();
+        let mut v = crate::stdlib::strtod(str, &raw mut end);
         if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
             *b_error = 1i32;
         }
@@ -1526,11 +1519,11 @@ pub unsafe extern "C" fn x264_param_parse(
     mut value: *const ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut name_buf: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        let mut b_error: ::core::ffi::c_int = 0i32;
-        let mut errortype: ::core::ffi::c_int = crate::x264_h::X264_PARAM_BAD_VALUE;
-        let mut name_was_bool: ::core::ffi::c_int = 0;
-        let mut value_was_null: ::core::ffi::c_int = value.is_null() as ::core::ffi::c_int;
+        let mut name_buf = ::core::ptr::null_mut::<::core::ffi::c_char>();
+        let mut b_error = 0i32;
+        let mut errortype = crate::x264_h::X264_PARAM_BAD_VALUE;
+        let mut name_was_bool = 0;
+        let mut value_was_null = value.is_null() as ::core::ffi::c_int;
         if name.is_null() {
             return crate::x264_h::X264_PARAM_BAD_NAME;
         }
@@ -1541,7 +1534,7 @@ pub unsafe extern "C" fn x264_param_parse(
             value = value.offset(1);
         }
         if !crate::stdlib::strchr(name, '_' as i32).is_null() {
-            let mut c: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
+            let mut c = ::core::ptr::null_mut::<::core::ffi::c_char>();
             name_buf = crate::stdlib::strdup(name);
             if name_buf.is_null() {
                 return crate::x264_h::X264_PARAM_ALLOC_FAILED;
@@ -1592,15 +1585,13 @@ pub unsafe extern "C" fn x264_param_parse(
                 0u32
             };
             if b_error != 0 {
-                let mut buf: *mut ::core::ffi::c_char = crate::stdlib::strdup(value);
+                let mut buf = crate::stdlib::strdup(value);
                 if !buf.is_null() {
-                    let mut tok: *mut ::core::ffi::c_char =
-                        ::core::ptr::null_mut::<::core::ffi::c_char>();
-                    let mut saveptr: *mut ::core::ffi::c_char =
-                        ::core::ptr::null_mut::<::core::ffi::c_char>();
+                    let mut tok = ::core::ptr::null_mut::<::core::ffi::c_char>();
+                    let mut saveptr = ::core::ptr::null_mut::<::core::ffi::c_char>();
                     b_error = 0i32;
                     (*p).cpu = 0u32;
-                    let mut init: *mut ::core::ffi::c_char = buf;
+                    let mut init = buf;
                     loop {
                         tok = crate::stdlib::strtok_r(
                             init,
@@ -1610,7 +1601,7 @@ pub unsafe extern "C" fn x264_param_parse(
                         if tok.is_null() {
                             break;
                         }
-                        let mut i: ::core::ffi::c_int = 0i32;
+                        let mut i = 0i32;
                         while (*(&raw const crate::src::common::cpu::x264_cpu_names
                             as *const crate::src::common::cpu::x264_cpu_name_t)
                             .offset(i as isize))
@@ -1873,8 +1864,8 @@ pub unsafe extern "C" fn x264_param_parse(
             );
         } else if crate::stdlib::strcmp(name, b"fps\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
-            let mut i_fps_num: crate::stdlib::int64_t = 0;
-            let mut i_fps_den: crate::stdlib::int64_t = 0;
+            let mut i_fps_num = 0;
+            let mut i_fps_den = 0;
             if crate::stdlib::sscanf(
                 value,
                 b"%ld/%ld\0".as_ptr() as *const ::core::ffi::c_char,
@@ -1890,7 +1881,7 @@ pub unsafe extern "C" fn x264_param_parse(
                     || i_fps_den > crate::stdlib::UINT32_MAX as crate::stdlib::int64_t)
                     as ::core::ffi::c_int;
             } else {
-                let mut fps: ::core::ffi::c_double = atof_internal(value, &raw mut b_error);
+                let mut fps = atof_internal(value, &raw mut b_error);
                 if fps < 0.0005 || fps > crate::limits_h::INT_MAX as ::core::ffi::c_double {
                     b_error = 1i32;
                 } else if fps <= crate::limits_h::INT_MAX as ::core::ffi::c_double / 1000.0 {
@@ -2543,8 +2534,7 @@ pub unsafe extern "C" fn x264_param_parse(
             (*p).rc.f_aq_strength = atof_internal(value, &raw mut b_error) as ::core::ffi::c_float;
         } else if crate::stdlib::strcmp(name, b"pass\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
-            let mut pass: ::core::ffi::c_int =
-                x264_clip3(atoi_internal(value, &raw mut b_error), 0i32, 3i32);
+            let mut pass = x264_clip3(atoi_internal(value, &raw mut b_error), 0i32, 3i32);
             (*p).rc.b_stat_write = pass & 1i32;
             (*p).rc.b_stat_read = pass & 2i32;
         } else if crate::stdlib::strcmp(name, b"stats\0".as_ptr() as *const ::core::ffi::c_char)
@@ -2719,15 +2709,14 @@ pub unsafe extern "C" fn x264_param2string(
     mut b_res: ::core::ffi::c_int,
 ) -> *mut ::core::ffi::c_char {
     unsafe {
-        let mut len: ::core::ffi::c_int = 2000i32;
+        let mut len = 2000i32;
         if !(*p).rc.psz_zones.is_null() {
             len = (len as crate::__stddef_size_t_h::size_t)
                 .wrapping_add(crate::stdlib::strlen((*p).rc.psz_zones))
                 as ::core::ffi::c_int;
         }
-        let mut s: *mut ::core::ffi::c_char =
-            x264_malloc(len as crate::stdlib::int64_t) as *mut ::core::ffi::c_char;
-        let mut buf: *mut ::core::ffi::c_char = s;
+        let mut s = x264_malloc(len as crate::stdlib::int64_t) as *mut ::core::ffi::c_char;
+        let mut buf = s;
         if buf.is_null() {
             return ::core::ptr::null_mut::<::core::ffi::c_char>();
         }
