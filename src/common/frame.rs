@@ -1114,7 +1114,7 @@ pub unsafe extern "C" fn x264_8_frame_delete(
 }
 unsafe extern "C" fn get_plane_ptr(
     mut h: *mut crate::src::common::common::x264_t,
-    mut src: *mut crate::x264_h::x264_picture_t_1,
+    mut src: *mut crate::x264_h::x264_picture_t,
     mut pix: *mut *mut crate::stdlib::uint8_t,
     mut stride: *mut ::core::ffi::c_int,
     mut plane: ::core::ffi::c_int,
@@ -1148,7 +1148,7 @@ unsafe extern "C" fn get_plane_ptr(
 pub unsafe extern "C" fn x264_8_frame_copy_picture(
     mut h: *mut crate::src::common::common::x264_t,
     mut dst: *mut crate::src::common::frame::x264_frame_t,
-    mut src: *mut crate::x264_h::x264_picture_t_1,
+    mut src: *mut crate::x264_h::x264_picture_t,
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut i_csp = (*src).img.i_csp & crate::x264_h::X264_CSP_MASK;

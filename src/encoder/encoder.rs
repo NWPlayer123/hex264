@@ -6817,8 +6817,8 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
     mut pi_nal: *mut ::core::ffi::c_int,
-    mut pic_in: *mut crate::x264_h::x264_picture_t_3,
-    mut pic_out: *mut crate::x264_h::x264_picture_t_3,
+    mut pic_in: *mut crate::x264_h::x264_picture_t,
+    mut pic_out: *mut crate::x264_h::x264_picture_t,
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut thread_current = ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
@@ -6864,7 +6864,7 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
             if crate::src::common::frame::x264_8_frame_copy_picture(
                 h,
                 fenc,
-                pic_in as *mut crate::x264_h::x264_picture_t_1,
+                pic_in as *mut crate::x264_h::x264_picture_t,
             ) < 0i32
             {
                 return -(1i32);
@@ -7647,7 +7647,7 @@ unsafe extern "C" fn encoder_frame_end(
     mut thread_current: *mut crate::src::common::common::x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
     mut pi_nal: *mut ::core::ffi::c_int,
-    mut pic_out: *mut crate::x264_h::x264_picture_t_3,
+    mut pic_out: *mut crate::x264_h::x264_picture_t,
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut psz_message = [0; 80];

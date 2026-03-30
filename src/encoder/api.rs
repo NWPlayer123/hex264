@@ -25,8 +25,8 @@ extern "C" {
         _: *mut crate::src::common::common::x264_t,
         pp_nal: *mut *mut crate::x264_h::x264_nal_t,
         pi_nal: *mut ::core::ffi::c_int,
-        pic_in: *mut crate::x264_h::x264_picture_t_2,
-        pic_out: *mut crate::x264_h::x264_picture_t_2,
+        pic_in: *mut crate::x264_h::x264_picture_t,
+        pic_out: *mut crate::x264_h::x264_picture_t,
     ) -> ::core::ffi::c_int;
     pub fn x264_8_encoder_close(_: *mut crate::src::common::common::x264_t);
     pub fn x264_8_encoder_delayed_frames(
@@ -76,8 +76,8 @@ pub struct x264_api_t {
             *mut crate::src::common::common::x264_t,
             *mut *mut crate::x264_h::x264_nal_t,
             *mut ::core::ffi::c_int,
-            *mut crate::x264_h::x264_picture_t_2,
-            *mut crate::x264_h::x264_picture_t_2,
+            *mut crate::x264_h::x264_picture_t,
+            *mut crate::x264_h::x264_picture_t,
         ) -> ::core::ffi::c_int,
     >,
     pub encoder_close: Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t) -> ()>,
@@ -143,8 +143,8 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                         *mut crate::src::common::common::x264_t,
                         *mut *mut crate::x264_h::x264_nal_t,
                         *mut ::core::ffi::c_int,
-                        *mut crate::x264_h::x264_picture_t_2,
-                        *mut crate::x264_h::x264_picture_t_2,
+                        *mut crate::x264_h::x264_picture_t,
+                        *mut crate::x264_h::x264_picture_t,
                     ) -> ::core::ffi::c_int,
             );
             (*api).encoder_close = Some(
@@ -251,8 +251,8 @@ pub unsafe extern "C" fn x264_encoder_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
     mut pi_nal: *mut ::core::ffi::c_int,
-    mut pic_in: *mut crate::x264_h::x264_picture_t_2,
-    mut pic_out: *mut crate::x264_h::x264_picture_t_2,
+    mut pic_in: *mut crate::x264_h::x264_picture_t,
+    mut pic_out: *mut crate::x264_h::x264_picture_t,
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut api = h as *mut x264_api_t;

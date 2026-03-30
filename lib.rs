@@ -532,54 +532,6 @@ pub mod x264_h {
         pub extra_sei: crate::x264_h::x264_sei_t,
         pub opaque: *mut ::core::ffi::c_void,
     }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    pub struct x264_picture_t_1 {
-        pub i_type: ::core::ffi::c_int,
-        pub i_qpplus1: ::core::ffi::c_int,
-        pub i_pic_struct: ::core::ffi::c_int,
-        pub b_keyframe: ::core::ffi::c_int,
-        pub i_pts: crate::stdlib::int64_t,
-        pub i_dts: crate::stdlib::int64_t,
-        pub param: *mut crate::x264_h::x264_param_t,
-        pub img: crate::x264_h::x264_image_t,
-        pub prop: crate::x264_h::x264_image_properties_t,
-        pub hrd_timing: crate::x264_h::x264_hrd_t,
-        pub extra_sei: crate::x264_h::x264_sei_t,
-        pub opaque: *mut ::core::ffi::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    pub struct x264_picture_t_2 {
-        pub i_type: ::core::ffi::c_int,
-        pub i_qpplus1: ::core::ffi::c_int,
-        pub i_pic_struct: ::core::ffi::c_int,
-        pub b_keyframe: ::core::ffi::c_int,
-        pub i_pts: crate::stdlib::int64_t,
-        pub i_dts: crate::stdlib::int64_t,
-        pub param: *mut crate::x264_h::x264_param_t,
-        pub img: crate::x264_h::x264_image_t,
-        pub prop: crate::x264_h::x264_image_properties_t,
-        pub hrd_timing: crate::x264_h::x264_hrd_t,
-        pub extra_sei: crate::x264_h::x264_sei_t,
-        pub opaque: *mut ::core::ffi::c_void,
-    }
-    #[derive(Copy, Clone)]
-    #[repr(C)]
-    pub struct x264_picture_t_3 {
-        pub i_type: ::core::ffi::c_int,
-        pub i_qpplus1: ::core::ffi::c_int,
-        pub i_pic_struct: ::core::ffi::c_int,
-        pub b_keyframe: ::core::ffi::c_int,
-        pub i_pts: crate::stdlib::int64_t,
-        pub i_dts: crate::stdlib::int64_t,
-        pub param: *mut crate::x264_h::x264_param_t,
-        pub img: crate::x264_h::x264_image_t,
-        pub prop: crate::x264_h::x264_image_properties_t,
-        pub hrd_timing: crate::x264_h::x264_hrd_t,
-        pub extra_sei: crate::x264_h::x264_sei_t,
-        pub opaque: *mut ::core::ffi::c_void,
-    }
 }
 pub mod internal {
     pub type __builtin_va_list = [crate::internal::__va_list_tag; 1];
