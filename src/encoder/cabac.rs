@@ -1007,10 +1007,10 @@ unsafe extern "C" fn cabac_mvd(
         );
         let mut mdx = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0usize]
             as ::core::ffi::c_int
-            - mvp[0usize] as ::core::ffi::c_int;
+            - mvp[0usize];
         let mut mdy = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1usize]
             as ::core::ffi::c_int
-            - mvp[1usize] as ::core::ffi::c_int;
+            - mvp[1usize];
         let mut amvd = x264_cabac_mvd_sum(
             &raw mut *(&raw mut *(&raw mut (*h).mb.cache.mvd
                 as *mut [[crate::stdlib::uint8_t; 2]; 40])

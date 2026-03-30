@@ -719,8 +719,7 @@ unsafe extern "C" fn optimize_chroma_round(
         let mut sum = 0i32;
         let mut i = 0i32;
         while i < (if chroma422 != 0 { 8i32 } else { 4i32 }) {
-            sum |= *ref_0.offset(i as isize) as ::core::ffi::c_int
-                ^ out[i as usize] as ::core::ffi::c_int;
+            sum |= *ref_0.offset(i as isize) as ::core::ffi::c_int ^ out[i as usize];
             i += 1;
         }
         return sum >> 6i32;
@@ -750,7 +749,7 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
         let mut sum = 0i32;
         let mut i = 0i32;
         while i < (if chroma422 != 0 { 8i32 } else { 4i32 }) {
-            sum |= dct_orig[i as usize] as ::core::ffi::c_int;
+            sum |= dct_orig[i as usize];
             i += 1;
         }
         if sum >> 6i32 == 0 {

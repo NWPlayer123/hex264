@@ -639,8 +639,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                         .i = pmv;
                     bpred_cost <<= 4i32;
                     loop {
-                        let mut mx = mvc_temp[(i + 1i32) as usize][0usize] as ::core::ffi::c_int;
-                        let mut my = mvc_temp[(i + 1i32) as usize][1usize] as ::core::ffi::c_int;
+                        let mut mx = mvc_temp[(i + 1i32) as usize][0usize];
+                        let mut my = mvc_temp[(i + 1i32) as usize][1usize];
                         let mut stride2_0 = 16isize;
                         let mut src_0 = (*h).mc.get_ref.expect("non-null function pointer")(
                             &raw mut pix as *mut crate::src::common::common::pixel,
@@ -669,10 +669,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             break;
                         }
                     }
-                    bpred_mx = mvc_temp[((bpred_cost & 15i32) + 1i32) as usize][0usize]
-                        as ::core::ffi::c_int;
-                    bpred_my = mvc_temp[((bpred_cost & 15i32) + 1i32) as usize][1usize]
-                        as ::core::ffi::c_int;
+                    bpred_mx = mvc_temp[((bpred_cost & 15i32) + 1i32) as usize][0usize];
+                    bpred_my = mvc_temp[((bpred_cost & 15i32) + 1i32) as usize][1usize];
                     bpred_cost >>= 4i32;
                 }
             }
@@ -754,10 +752,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                         .i = pmv;
                     bcost <<= 4i32;
                     loop {
-                        let mut mx_0 =
-                            mvc_temp[(i_0 + 1i32) as usize][0usize] as ::core::ffi::c_int;
-                        let mut my_0 =
-                            mvc_temp[(i_0 + 1i32) as usize][1usize] as ::core::ffi::c_int;
+                        let mut mx_0 = mvc_temp[(i_0 + 1i32) as usize][0usize];
+                        let mut my_0 = mvc_temp[(i_0 + 1i32) as usize][1usize];
                         cost_2 = (*h).pixf.fpelcmp[i_pixel as usize]
                             .expect("non-null function pointer")(
                             p_fenc,
@@ -775,8 +771,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             break;
                         }
                     }
-                    bmx = mvc_temp[((bcost & 15i32) + 1i32) as usize][0usize] as ::core::ffi::c_int;
-                    bmy = mvc_temp[((bcost & 15i32) + 1i32) as usize][1usize] as ::core::ffi::c_int;
+                    bmx = mvc_temp[((bcost & 15i32) + 1i32) as usize][0usize];
+                    bmy = mvc_temp[((bcost & 15i32) + 1i32) as usize][1usize];
                     bcost >>= 4i32;
                 }
             }

@@ -941,7 +941,7 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                             c2rust_current_block = 6381850087970354452;
                             break;
                         }
-                        if i_type as ::core::ffi::c_int != i_type_actual as ::core::ffi::c_int
+                        if i_type != i_type_actual as ::core::ffi::c_int
                             && (*rc).mbtree.qpbuf_pos == 1i32
                         {
                             crate::src::common::common::x264_8_log(
@@ -950,12 +950,12 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                                 b"MB-tree frametype %d doesn't match actual frametype %d.\n\0"
                                     .as_ptr()
                                     as *const ::core::ffi::c_char,
-                                i_type as ::core::ffi::c_int,
+                                i_type,
                                 i_type_actual as ::core::ffi::c_int,
                             );
                             return -(1i32);
                         }
-                        if i_type as ::core::ffi::c_int != i_type_actual as ::core::ffi::c_int {
+                        if i_type != i_type_actual as ::core::ffi::c_int {
                             c2rust_current_block = 12675440807659640239;
                         } else {
                             c2rust_current_block = 11812396948646013369;
@@ -2396,7 +2396,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                                 if !(e < 14i32) {
                                                     (*rce_0).qscale =
                                                         qp2qscale(qp_rc) as ::core::ffi::c_double;
-                                                    total_qp_aq += qp_aq as ::core::ffi::c_double;
+                                                    total_qp_aq += qp_aq;
                                                     p = next;
                                                     i_2 += 1;
                                                     continue;

@@ -1095,8 +1095,8 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
             return 1i32;
         }
         if (*h).param.i_threads > 1i32
-            && (mv[0usize][1usize] as ::core::ffi::c_int > (*h).mb.mv_max_spel[1usize]
-                || mv[1usize][1usize] as ::core::ffi::c_int > (*h).mb.mv_max_spel[1usize])
+            && (mv[0usize][1usize] > (*h).mb.mv_max_spel[1usize]
+                || mv[1usize][1usize] > (*h).mb.mv_max_spel[1usize])
         {
             return 0i32;
         }

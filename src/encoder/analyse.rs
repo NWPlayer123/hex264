@@ -2319,7 +2319,7 @@ pub mod rdo_c {
                     x264_cabac_size_decision_noup2(cabac_state_sig.offset(0isize), 1i64)
                         + x264_cabac_size_decision_noup2(cabac_state_last.offset(0isize), 1i64);
                 *dct.offset(0isize) = trellis_dc_shortcut(
-                    orig_coefs[0usize] as ::core::ffi::c_int,
+                    orig_coefs[0usize],
                     quant_coefs[0usize] as ::core::ffi::c_int,
                     *unquant_mf.offset(0isize),
                     *coef_weight2.offset(0isize) as ::core::ffi::c_int,
@@ -2462,8 +2462,7 @@ pub mod rdo_c {
                         j_0 += 1;
                     }
                 } else {
-                    let mut sign_coef =
-                        orig_coefs[*zigzag.offset(i_0 as isize) as usize] as ::core::ffi::c_int;
+                    let mut sign_coef = orig_coefs[*zigzag.offset(i_0 as isize) as usize];
                     let mut abs_coef = crate::stdlib::abs(sign_coef);
                     let mut q = crate::stdlib::abs(quant_coefs[i_0 as usize] as ::core::ffi::c_int);
                     let mut cost_siglast = [0; 3];
@@ -2725,8 +2724,7 @@ pub mod rdo_c {
                                 j_3 += 1;
                             }
                         } else {
-                            let mut sign_coef_0 = orig_coefs[*zigzag.offset(i_0 as isize) as usize]
-                                as ::core::ffi::c_int;
+                            let mut sign_coef_0 = orig_coefs[*zigzag.offset(i_0 as isize) as usize];
                             let mut abs_coef_0 = crate::stdlib::abs(sign_coef_0);
                             let mut q_0 =
                                 crate::stdlib::abs(quant_coefs[i_0 as usize] as ::core::ffi::c_int);
@@ -10027,10 +10025,10 @@ pub mod cabac_c {
             );
             let mut mdx = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
                 [0usize] as ::core::ffi::c_int
-                - mvp[0usize] as ::core::ffi::c_int;
+                - mvp[0usize];
             let mut mdy = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
                 [1usize] as ::core::ffi::c_int
-                - mvp[1usize] as ::core::ffi::c_int;
+                - mvp[1usize];
             let mut amvd = x264_cabac_mvd_sum(
                 &raw mut *(&raw mut *(&raw mut (*h).mb.cache.mvd
                     as *mut [[crate::stdlib::uint8_t; 2]; 40])
@@ -12828,12 +12826,12 @@ pub mod cavlc_c {
             (*s).i_bits_encoded += bs_size_se(
                 (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0usize]
                     as ::core::ffi::c_int
-                    - mvp[0usize] as ::core::ffi::c_int,
+                    - mvp[0usize],
             );
             (*s).i_bits_encoded += bs_size_se(
                 (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1usize]
                     as ::core::ffi::c_int
-                    - mvp[1usize] as ::core::ffi::c_int,
+                    - mvp[1usize],
             );
         }
     }

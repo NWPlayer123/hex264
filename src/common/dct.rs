@@ -333,14 +333,10 @@ unsafe extern "C" fn sub4x4_dct(
         );
         let mut i = 0i32;
         while i < 4i32 {
-            let mut s03 = d[(i * 4i32 + 0i32) as usize] as ::core::ffi::c_int
-                + d[(i * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut s12 = d[(i * 4i32 + 1i32) as usize] as ::core::ffi::c_int
-                + d[(i * 4i32 + 2i32) as usize] as ::core::ffi::c_int;
-            let mut d03 = d[(i * 4i32 + 0i32) as usize] as ::core::ffi::c_int
-                - d[(i * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            let mut d12 = d[(i * 4i32 + 1i32) as usize] as ::core::ffi::c_int
-                - d[(i * 4i32 + 2i32) as usize] as ::core::ffi::c_int;
+            let mut s03 = d[(i * 4i32 + 0i32) as usize] + d[(i * 4i32 + 3i32) as usize];
+            let mut s12 = d[(i * 4i32 + 1i32) as usize] + d[(i * 4i32 + 2i32) as usize];
+            let mut d03 = d[(i * 4i32 + 0i32) as usize] - d[(i * 4i32 + 3i32) as usize];
+            let mut d12 = d[(i * 4i32 + 1i32) as usize] - d[(i * 4i32 + 2i32) as usize];
             tmp[(0i32 * 4i32 + i) as usize] = (s03 + s12) as crate::src::common::common::dctcoef;
             tmp[(1i32 * 4i32 + i) as usize] =
                 (2i32 * d03 + d12) as crate::src::common::common::dctcoef;

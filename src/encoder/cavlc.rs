@@ -718,13 +718,13 @@ unsafe extern "C" fn cavlc_mvd(
             s,
             (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][0usize]
                 as ::core::ffi::c_int
-                - mvp[0usize] as ::core::ffi::c_int,
+                - mvp[0usize],
         );
         bs_write_se(
             s,
             (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize][1usize]
                 as ::core::ffi::c_int
-                - mvp[1usize] as ::core::ffi::c_int,
+                - mvp[1usize],
         );
     }
 }
