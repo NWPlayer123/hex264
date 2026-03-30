@@ -590,18 +590,6 @@ use crate::src::encoder::encoder::pixel_h::x264_luma2chroma_pixel;
 use crate::src::encoder::encoder::predict_h::x264_mb_chroma_pred_mode_fix;
 use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode4x4_fix;
-extern "C" {
-    pub fn x264_8_nal_encode(
-        h: *mut crate::src::common::common::x264_t,
-        dst: *mut crate::stdlib::uint8_t,
-        nal: *mut crate::x264_h::x264_nal_t,
-    );
-    pub fn x264_8_macroblock_cache_load_progressive(
-        h: *mut crate::src::common::common::x264_t,
-        i_mb_x: ::core::ffi::c_int,
-        i_mb_y: ::core::ffi::c_int,
-    );
-}
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct C2Rust_Unnamed_22 {
@@ -4808,7 +4796,11 @@ unsafe extern "C" fn encoder_encapsulate_nals(
                     == crate::x264_h::NAL_PPS as ::core::ffi::c_int
                 || (*h).param.i_avcintra_class != 0)
                 as ::core::ffi::c_int;
-            x264_8_nal_encode(h, nal_buffer, (*h).out.nal.offset(i_3 as isize));
+            crate::src::common::bitstream::x264_8_nal_encode(
+                h,
+                nal_buffer,
+                (*h).out.nal.offset(i_3 as isize),
+            );
             nal_buffer = nal_buffer.offset((*(*h).out.nal.offset(i_3 as isize)).i_payload as isize);
             i_3 += 1;
         }
@@ -6113,7 +6105,9 @@ unsafe extern "C" fn slice_write(
                     h, i_mb_x, i_mb_y,
                 );
             } else {
-                x264_8_macroblock_cache_load_progressive(h, i_mb_x, i_mb_y);
+                crate::src::common::macroblock::x264_8_macroblock_cache_load_progressive(
+                    h, i_mb_x, i_mb_y,
+                );
             }
             crate::src::encoder::analyse::x264_8_macroblock_analyse(h);
             loop {

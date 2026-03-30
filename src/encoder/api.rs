@@ -1,46 +1,3 @@
-extern "C" {
-    pub fn x264_8_encoder_open(
-        _: *mut crate::x264_h::x264_param_t,
-        _: *mut ::core::ffi::c_void,
-    ) -> *mut crate::src::common::common::x264_t;
-    pub fn x264_8_nal_encode(
-        h: *mut crate::src::common::common::x264_t,
-        dst: *mut crate::stdlib::uint8_t,
-        nal: *mut crate::x264_h::x264_nal_t,
-    );
-    pub fn x264_8_encoder_reconfig(
-        _: *mut crate::src::common::common::x264_t,
-        _: *mut crate::x264_h::x264_param_t,
-    ) -> ::core::ffi::c_int;
-    pub fn x264_8_encoder_parameters(
-        _: *mut crate::src::common::common::x264_t,
-        _: *mut crate::x264_h::x264_param_t,
-    );
-    pub fn x264_8_encoder_headers(
-        _: *mut crate::src::common::common::x264_t,
-        pp_nal: *mut *mut crate::x264_h::x264_nal_t,
-        pi_nal: *mut ::core::ffi::c_int,
-    ) -> ::core::ffi::c_int;
-    pub fn x264_8_encoder_encode(
-        _: *mut crate::src::common::common::x264_t,
-        pp_nal: *mut *mut crate::x264_h::x264_nal_t,
-        pi_nal: *mut ::core::ffi::c_int,
-        pic_in: *mut crate::x264_h::x264_picture_t,
-        pic_out: *mut crate::x264_h::x264_picture_t,
-    ) -> ::core::ffi::c_int;
-    pub fn x264_8_encoder_close(_: *mut crate::src::common::common::x264_t);
-    pub fn x264_8_encoder_delayed_frames(
-        _: *mut crate::src::common::common::x264_t,
-    ) -> ::core::ffi::c_int;
-    pub fn x264_8_encoder_maximum_delayed_frames(
-        _: *mut crate::src::common::common::x264_t,
-    ) -> ::core::ffi::c_int;
-    pub fn x264_8_encoder_intra_refresh(_: *mut crate::src::common::common::x264_t);
-    pub fn x264_8_encoder_invalidate_reference(
-        _: *mut crate::src::common::common::x264_t,
-        pts: crate::stdlib::int64_t,
-    ) -> ::core::ffi::c_int;
-}
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct x264_api_t {
@@ -108,7 +65,7 @@ pub unsafe extern "C" fn x264_encoder_open_165(
         }
         if (*param).i_bitdepth == 8i32 {
             (*api).nal_encode = Some(
-                x264_8_nal_encode
+                crate::src::common::bitstream::x264_8_nal_encode
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         *mut crate::stdlib::uint8_t,
@@ -116,21 +73,21 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                     ) -> (),
             );
             (*api).encoder_reconfig = Some(
-                x264_8_encoder_reconfig
+                crate::src::encoder::encoder::x264_8_encoder_reconfig
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         *mut crate::x264_h::x264_param_t,
                     ) -> ::core::ffi::c_int,
             );
             (*api).encoder_parameters = Some(
-                x264_8_encoder_parameters
+                crate::src::encoder::encoder::x264_8_encoder_parameters
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         *mut crate::x264_h::x264_param_t,
                     ) -> (),
             );
             (*api).encoder_headers = Some(
-                x264_8_encoder_headers
+                crate::src::encoder::encoder::x264_8_encoder_headers
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         *mut *mut crate::x264_h::x264_nal_t,
@@ -138,7 +95,7 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                     ) -> ::core::ffi::c_int,
             );
             (*api).encoder_encode = Some(
-                x264_8_encoder_encode
+                crate::src::encoder::encoder::x264_8_encoder_encode
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         *mut *mut crate::x264_h::x264_nal_t,
@@ -148,33 +105,36 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                     ) -> ::core::ffi::c_int,
             );
             (*api).encoder_close = Some(
-                x264_8_encoder_close
+                crate::src::encoder::encoder::x264_8_encoder_close
                     as unsafe extern "C" fn(*mut crate::src::common::common::x264_t) -> (),
             );
             (*api).encoder_delayed_frames = Some(
-                x264_8_encoder_delayed_frames
+                crate::src::encoder::encoder::x264_8_encoder_delayed_frames
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                     ) -> ::core::ffi::c_int,
             );
             (*api).encoder_maximum_delayed_frames = Some(
-                x264_8_encoder_maximum_delayed_frames
+                crate::src::encoder::encoder::x264_8_encoder_maximum_delayed_frames
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                     ) -> ::core::ffi::c_int,
             );
             (*api).encoder_intra_refresh = Some(
-                x264_8_encoder_intra_refresh
+                crate::src::encoder::encoder::x264_8_encoder_intra_refresh
                     as unsafe extern "C" fn(*mut crate::src::common::common::x264_t) -> (),
             );
             (*api).encoder_invalidate_reference = Some(
-                x264_8_encoder_invalidate_reference
+                crate::src::encoder::encoder::x264_8_encoder_invalidate_reference
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         crate::stdlib::int64_t,
                     ) -> ::core::ffi::c_int,
             );
-            (*api).x264 = x264_8_encoder_open(param, api as *mut ::core::ffi::c_void);
+            (*api).x264 = crate::src::encoder::encoder::x264_8_encoder_open(
+                param,
+                api as *mut ::core::ffi::c_void,
+            );
         } else {
             crate::src::common::base::x264_log_internal(
                 crate::x264_h::X264_LOG_ERROR_1,
