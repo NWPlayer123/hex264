@@ -19185,262 +19185,262 @@ pub static mut x264_cabac_renorm_shift: [crate::stdlib::uint8_t; 64] = [
 ];
 #[no_mangle]
 pub static mut x264_cabac_entropy: [crate::stdlib::uint16_t; 128] = [
-    (0.0273f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.7370f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0288f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.6618f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0303f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.5866f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0320f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.5114f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0337f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.4362f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0355f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.3610f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0375f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.2859f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0395f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.2106f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0416f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.1354f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0439f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (5.0602f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0463f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.9851f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0488f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.9099f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0515f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.8347f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0543f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.7595f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0572f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.6843f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0604f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.6091f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0637f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.5339f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0671f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.4588f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0708f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.3836f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0747f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.3083f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0788f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.2332f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0832f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.1580f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0878f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.0828f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0926f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (4.0076f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.0977f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.9324f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1032f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.8572f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1089f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.7820f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1149f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.7068f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1214f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.6316f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1282f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.5565f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1353f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.4813f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1429f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.4061f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1510f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.3309f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1596f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.2557f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1686f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.1805f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1782f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.1053f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1884f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (3.0301f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.1992f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.9549f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.2107f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.8797f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.2229f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.8046f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.2358f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.7294f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.2496f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.6542f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.2642f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.5790f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.2798f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.5038f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.2964f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.4286f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.3142f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.3534f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.3331f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.2782f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.3532f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.2030f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.3748f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.1278f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.3979f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (2.0527f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.4226f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.9775f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.4491f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.9023f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.4776f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.8271f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.5082f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.7519f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.5412f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.6767f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.5768f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.6015f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.6152f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.5263f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.6568f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.4511f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.7020f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.3759f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.7513f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.3008f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.8050f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.2256f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.8638f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.1504f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (0.9285f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.0752f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.0000f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
-    (1.0000f64 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double
-        + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0273 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.7370 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0288 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.6618 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0303 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.5866 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0320 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.5114 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0337 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.4362 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0355 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.3610 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0375 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.2859 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0395 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.2106 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0416 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.1354 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0439 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (5.0602 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0463 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.9851 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0488 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.9099 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0515 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.8347 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0543 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.7595 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0572 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.6843 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0604 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.6091 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0637 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.5339 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0671 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.4588 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0708 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.3836 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0747 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.3083 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0788 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.2332 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0832 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.1580 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0878 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.0828 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0926 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (4.0076 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.0977 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.9324 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1032 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.8572 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1089 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.7820 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1149 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.7068 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1214 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.6316 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1282 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.5565 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1353 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.4813 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1429 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.4061 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1510 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.3309 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1596 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.2557 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1686 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.1805 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1782 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.1053 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1884 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (3.0301 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.1992 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.9549 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.2107 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.8797 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.2229 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.8046 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.2358 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.7294 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.2496 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.6542 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.2642 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.5790 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.2798 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.5038 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.2964 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.4286 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.3142 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.3534 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.3331 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.2782 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.3532 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.2030 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.3748 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.1278 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.3979 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (2.0527 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.4226 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.9775 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.4491 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.9023 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.4776 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.8271 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.5082 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.7519 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.5412 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.6767 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.5768 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.6015 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.6152 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.5263 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.6568 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.4511 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.7020 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.3759 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.7513 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.3008 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.8050 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.2256 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.8638 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.1504 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (0.9285 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.0752 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.0000 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
+    (1.0000 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_double + 0.5)
+        as ::core::ffi::c_int as crate::stdlib::uint16_t,
 ];
 #[no_mangle]
 pub static mut x264_significant_coeff_flag_offset_8x8: [[crate::stdlib::uint8_t; 64]; 2] = [
@@ -24044,2694 +24044,2678 @@ unsafe extern "C" fn c2rust_run_static_initializers() {
     unsafe {
         x264_dct4_weight_tab = [
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.76777f64
+                (1.76777
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.11803f64
+                (1.11803
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.70711f64
+                (0.70711
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
         ];
         x264_dct8_weight_tab = [
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 4 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 4 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 3 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 3 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 5 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 5 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (1.0000f64
+                (1.0000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (0.8859f64
+                (0.8859
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (1.6000f64
+                (1.6000
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 3 as ::core::ffi::c_int {
-                (0.9415f64
+                (0.9415
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 4 as ::core::ffi::c_int {
-                (1.2651f64
+                (1.2651
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 5 as ::core::ffi::c_int {
-                (1.1910f64
+                (1.1910
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
         ];
         x264_dct4_weight2_tab = [
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 0 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 0 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 1 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 1 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,
             (if 2 as ::core::ffi::c_int == 0 as ::core::ffi::c_int {
-                (3.125f64
+                (3.125
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int {
-                (1.25f64
+                (1.25
                     * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
                         as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                    + 0.5) as ::core::ffi::c_int
             } else if 2 as ::core::ffi::c_int == 2 as ::core::ffi::c_int {
-                (0.5f64
-                    * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
-                        as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int
+                (0.5 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int)
+                    as ::core::ffi::c_double
+                    + 0.5) as ::core::ffi::c_int
             } else {
                 0 as ::core::ffi::c_int
             }) as crate::stdlib::uint32_t,

@@ -44,7 +44,7 @@ pub mod slicetype_c {
         pub output_inter: *mut ::core::ffi::c_int,
         pub output_intra: *mut ::core::ffi::c_int,
     }
-    pub const MBTREE_PRECISION: ::core::ffi::c_float = 0.5f32;
+    pub const MBTREE_PRECISION: ::core::ffi::c_float = 0.5;
 }
 pub mod rdo_c {
     #[no_mangle]

@@ -3339,19 +3339,19 @@ unsafe extern "C" fn ssim_end1(
     mut s12: ::core::ffi::c_int,
 ) -> ::core::ffi::c_float {
     unsafe {
-        static mut ssim_c1: ::core::ffi::c_int = (0.01f64
-            * 0.01f64
+        static mut ssim_c1: ::core::ffi::c_int = (0.01
+            * 0.01
             * crate::src::common::common::PIXEL_MAX as ::core::ffi::c_double
             * crate::src::common::common::PIXEL_MAX as ::core::ffi::c_double
             * 64 as ::core::ffi::c_int as ::core::ffi::c_double
-            + 0.5f64) as ::core::ffi::c_int;
-        static mut ssim_c2: ::core::ffi::c_int = (0.03f64
-            * 0.03f64
+            + 0.5) as ::core::ffi::c_int;
+        static mut ssim_c2: ::core::ffi::c_int = (0.03
+            * 0.03
             * crate::src::common::common::PIXEL_MAX as ::core::ffi::c_double
             * crate::src::common::common::PIXEL_MAX as ::core::ffi::c_double
             * 64 as ::core::ffi::c_int as ::core::ffi::c_double
             * 63 as ::core::ffi::c_int as ::core::ffi::c_double
-            + 0.5f64) as ::core::ffi::c_int;
+            + 0.5) as ::core::ffi::c_int;
         let mut fs1: ::core::ffi::c_int = s1;
         let mut fs2: ::core::ffi::c_int = s2;
         let mut fss: ::core::ffi::c_int = ss;
@@ -3370,7 +3370,7 @@ unsafe extern "C" fn ssim_end4(
     mut width: ::core::ffi::c_int,
 ) -> ::core::ffi::c_float {
     unsafe {
-        let mut ssim: ::core::ffi::c_float = 0.0f32;
+        let mut ssim: ::core::ffi::c_float = 0.0;
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < width {
             ssim += ssim_end1(
@@ -3418,7 +3418,7 @@ pub unsafe extern "C" fn x264_8_pixel_ssim_wxh(
 ) -> ::core::ffi::c_float {
     unsafe {
         let mut z: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-        let mut ssim: ::core::ffi::c_float = 0.0f32;
+        let mut ssim: ::core::ffi::c_float = 0.0;
         let mut sum0: *mut [::core::ffi::c_int; 4] = buf as *mut [::core::ffi::c_int; 4];
         let mut sum1: *mut [::core::ffi::c_int; 4] = sum0
             .offset((width >> 2 as ::core::ffi::c_int) as isize)

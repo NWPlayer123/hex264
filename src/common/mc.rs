@@ -9010,10 +9010,10 @@ unsafe extern "C" fn mbtree_propagate_cost(
                 (intra_cost - inter_cost) as ::core::ffi::c_float;
             let mut propagate_denom: ::core::ffi::c_float = intra_cost as ::core::ffi::c_float;
             *dst.offset(i as isize) = (if ((propagate_amount * propagate_num / propagate_denom
-                + 0.5f32) as ::core::ffi::c_int)
+                + 0.5) as ::core::ffi::c_int)
                 < 32767 as ::core::ffi::c_int
             {
-                (propagate_amount * propagate_num / propagate_denom + 0.5f32) as ::core::ffi::c_int
+                (propagate_amount * propagate_num / propagate_denom + 0.5) as ::core::ffi::c_int
             } else {
                 32767 as ::core::ffi::c_int
             }) as crate::stdlib::int16_t;
@@ -9293,7 +9293,7 @@ unsafe extern "C" fn mbtree_fix8_unpack(
             *dst.offset(i as isize) = endian_fix16(*src.offset(i as isize))
                 as crate::stdlib::int16_t
                 as ::core::ffi::c_int as ::core::ffi::c_float
-                * (1.0f32 / 256.0f32);
+                * (1.0 / 256.0);
             i += 1;
         }
     }

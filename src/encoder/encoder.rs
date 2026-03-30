@@ -1205,7 +1205,7 @@ unsafe extern "C" fn calc_psnr(
             / ((crate::src::common::common::PIXEL_MAX * crate::src::common::common::PIXEL_MAX)
                 as ::core::ffi::c_double
                 * size);
-        if mse <= 0.0000000001f64 {
+        if mse <= 0.0000000001 {
             return 100 as ::core::ffi::c_int as ::core::ffi::c_double;
         }
         return -10.0f64 * crate::stdlib::log10(mse);
@@ -1215,7 +1215,7 @@ unsafe extern "C" fn calc_ssim_db(mut ssim: ::core::ffi::c_double) -> ::core::ff
     unsafe {
         let mut inv_ssim: ::core::ffi::c_double =
             1 as ::core::ffi::c_int as ::core::ffi::c_double - ssim;
-        if inv_ssim <= 0.0000000001f64 {
+        if inv_ssim <= 0.0000000001 {
             return 100 as ::core::ffi::c_int as ::core::ffi::c_double;
         }
         return -10.0f64 * crate::stdlib::log10(inv_ssim);
@@ -2194,14 +2194,14 @@ unsafe extern "C" fn validate_parameters(
             score += ((*h).param.i_keyint_max == 12 as ::core::ffi::c_int) as ::core::ffi::c_int;
             score += ((*h).param.rc.i_qp_min == 2 as ::core::ffi::c_int) as ::core::ffi::c_int;
             score += ((*h).param.rc.i_qp_max == 31 as ::core::ffi::c_int) as ::core::ffi::c_int;
-            score += ((*h).param.rc.f_qcompress as ::core::ffi::c_double == 0.5f64)
-                as ::core::ffi::c_int;
             score +=
-                (crate::stdlib::fabs((*h).param.rc.f_ip_factor as ::core::ffi::c_double - 1.25f64)
-                    < 0.01f64) as ::core::ffi::c_int;
+                ((*h).param.rc.f_qcompress as ::core::ffi::c_double == 0.5) as ::core::ffi::c_int;
             score +=
-                (crate::stdlib::fabs((*h).param.rc.f_pb_factor as ::core::ffi::c_double - 1.25f64)
-                    < 0.01f64) as ::core::ffi::c_int;
+                (crate::stdlib::fabs((*h).param.rc.f_ip_factor as ::core::ffi::c_double - 1.25)
+                    < 0.01) as ::core::ffi::c_int;
+            score +=
+                (crate::stdlib::fabs((*h).param.rc.f_pb_factor as ::core::ffi::c_double - 1.25)
+                    < 0.01) as ::core::ffi::c_int;
             score += ((*h).param.analyse.inter == 0 as ::core::ffi::c_uint
                 && (*h).param.analyse.i_subpel_refine == 8 as ::core::ffi::c_int)
                 as ::core::ffi::c_int;
@@ -3098,13 +3098,13 @@ unsafe extern "C" fn validate_parameters(
         );
         (*h).param.rc.f_ip_factor = x264_clip3f(
             (*h).param.rc.f_ip_factor as ::core::ffi::c_double,
-            0.01f64,
-            10.0f64,
+            0.01,
+            10.0,
         ) as ::core::ffi::c_float;
         (*h).param.rc.f_pb_factor = x264_clip3f(
             (*h).param.rc.f_pb_factor as ::core::ffi::c_double,
-            0.01f64,
-            10.0f64,
+            0.01,
+            10.0,
         ) as ::core::ffi::c_float;
         if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CRF {
             (*h).param.rc.i_qp_constant = ((*h).param.rc.f_rf_constant
@@ -3175,7 +3175,7 @@ unsafe extern "C" fn validate_parameters(
                         qp_b
                     }
                 }) as ::core::ffi::c_double
-                    + 0.999f64) as ::core::ffi::c_int,
+                    + 0.999) as ::core::ffi::c_int,
                 0 as ::core::ffi::c_int,
                 crate::src::common::common::QP_MAX,
             );
@@ -3539,11 +3539,9 @@ unsafe extern "C" fn validate_parameters(
             (*h).param.i_timebase_num = (*h).param.i_fps_den;
             (*h).param.i_timebase_den = (*h).param.i_fps_num;
         }
-        (*h).param.rc.f_qcompress = x264_clip3f(
-            (*h).param.rc.f_qcompress as ::core::ffi::c_double,
-            0.0f64,
-            1.0f64,
-        ) as ::core::ffi::c_float;
+        (*h).param.rc.f_qcompress =
+            x264_clip3f((*h).param.rc.f_qcompress as ::core::ffi::c_double, 0.0, 1.0)
+                as ::core::ffi::c_float;
         if (*h).param.i_keyint_max == 1 as ::core::ffi::c_int
             || (*h).param.rc.f_qcompress == 1 as ::core::ffi::c_int as ::core::ffi::c_float
         {
@@ -3727,7 +3725,7 @@ unsafe extern "C" fn validate_parameters(
             (((*h).param.analyse.f_psy_rd
                 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_float)
                 as ::core::ffi::c_double
-                + 0.5f64) as ::core::ffi::c_int
+                + 0.5) as ::core::ffi::c_int
         } else {
             0 as ::core::ffi::c_int
         };
@@ -3735,7 +3733,7 @@ unsafe extern "C" fn validate_parameters(
             (((*h).param.analyse.f_psy_trellis / 4 as ::core::ffi::c_int as ::core::ffi::c_float
                 * ((1 as ::core::ffi::c_int) << 8 as ::core::ffi::c_int) as ::core::ffi::c_float)
                 as ::core::ffi::c_double
-                + 0.5f64) as ::core::ffi::c_int
+                + 0.5) as ::core::ffi::c_int
         } else {
             0 as ::core::ffi::c_int
         };
@@ -5022,12 +5020,12 @@ pub unsafe extern "C" fn x264_8_encoder_open(
                                                                                                                         * 4 as ::core::ffi::c_int) as ::core::ffi::c_double
                                                                                                                         * (if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR {
                                                                                                                             crate::stdlib::pow(
-                                                                                                                                0.95f64,
+                                                                                                                                0.95,
                                                                                                                                 (*h).param.rc.i_qp_min as ::core::ffi::c_double,
                                                                                                                             )
                                                                                                                         } else {
                                                                                                                             crate::stdlib::pow(
-                                                                                                                                0.95f64,
+                                                                                                                                0.95,
                                                                                                                                 (*h).param.rc.i_qp_constant as ::core::ffi::c_double,
                                                                                                                             )
                                                                                                                                 * (if 1 as ::core::ffi::c_int as ::core::ffi::c_float
@@ -8523,7 +8521,7 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
                     + pocdiff;
                 if (*(*h).fdec).i_frames_since_pir >= (*h).param.i_keyint_max
                     || (*h).b_queued_intra_refresh != 0
-                        && (*(*h).fdec).f_pir_position as ::core::ffi::c_double + 0.5f64
+                        && (*(*h).fdec).f_pir_position as ::core::ffi::c_double + 0.5
                             >= (*h).mb.i_mb_width as ::core::ffi::c_double
                 {
                     (*(*h).fdec).f_pir_position = 0 as ::core::ffi::c_int as ::core::ffi::c_float;
@@ -8533,10 +8531,10 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
                 }
                 (*(*h).fdec).i_pir_start_col = ((*(*h).fdec).f_pir_position
                     as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int;
+                    + 0.5) as ::core::ffi::c_int;
                 (*(*h).fdec).f_pir_position += increment * pocdiff as ::core::ffi::c_float;
                 (*(*h).fdec).i_pir_end_col = ((*(*h).fdec).f_pir_position as ::core::ffi::c_double
-                    + 0.5f64) as ::core::ffi::c_int;
+                    + 0.5) as ::core::ffi::c_int;
                 if (*(*h).fdec).i_pir_end_col >= (*h).mb.i_mb_width - 1 as ::core::ffi::c_int {
                     (*(*h).fdec).f_pir_position = (*h).mb.i_mb_width as ::core::ffi::c_float;
                     (*(*h).fdec).i_pir_end_col = (*h).mb.i_mb_width - 1 as ::core::ffi::c_int;
@@ -9786,7 +9784,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut crate::src::common::co
                 [crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int as usize]
                 as ::core::ffi::c_double
                 * (*h).mb.i_mb_count as ::core::ffi::c_double
-                / 100.0f64;
+                / 100.0;
             print_intra(
                 i_mb_count,
                 i_count_0,
@@ -9812,7 +9810,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut crate::src::common::co
                 [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize]
                 as ::core::ffi::c_double
                 * (*h).mb.i_mb_count as ::core::ffi::c_double
-                / 100.0f64;
+                / 100.0;
             let mut i_mb_size: *mut crate::stdlib::int64_t = &raw mut *(&raw mut i_mb_count_size
                 as *mut [crate::stdlib::int64_t; 7])
                 .offset(crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as isize)
@@ -9871,7 +9869,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut crate::src::common::co
                 [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
                 as ::core::ffi::c_double
                 * (*h).mb.i_mb_count as ::core::ffi::c_double
-                / 100.0f64;
+                / 100.0;
             let mut i_mb_size_0: *mut crate::stdlib::int64_t = &raw mut *(&raw mut i_mb_count_size
                 as *mut [crate::stdlib::int64_t; 7])
                 .offset(crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as isize)
@@ -9925,7 +9923,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut crate::src::common::co
                 + list_count[1 as ::core::ffi::c_int as usize]
                 + list_count[2 as ::core::ffi::c_int as usize])
                 as ::core::ffi::c_double
-                / 100.0f64;
+                / 100.0;
             crate::stdlib::sprintf(
                 (&raw mut buf as *mut ::core::ffi::c_char).offset(crate::stdlib::strlen(
                     &raw mut buf as *mut ::core::ffi::c_char,

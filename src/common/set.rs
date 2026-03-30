@@ -1056,10 +1056,10 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                             as ::core::ffi::c_double,
                                                         pos * (crate::src::common::common::QP_MAX - crate::src::common::common::QP_MAX_SPEC)
                                                             as ::core::ffi::c_double
-                                                            / 10.0f64,
+                                                            / 10.0,
                                                     )
-                                                        * 0.003f64
-                                                        - 0.003f64)
+                                                        * 0.003
+                                                        - 0.003)
                                                         * start_1;
                                                     *nr_offset.offset(i_7 as isize) = (if bias
                                                         + 0.5f64

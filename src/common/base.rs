@@ -2043,11 +2043,11 @@ pub unsafe extern "C" fn x264_param_parse(
                     as ::core::ffi::c_int;
             } else {
                 let mut fps: ::core::ffi::c_double = atof_internal(value, &raw mut b_error);
-                if fps < 0.0005f64 || fps > crate::limits_h::INT_MAX as ::core::ffi::c_double {
+                if fps < 0.0005 || fps > crate::limits_h::INT_MAX as ::core::ffi::c_double {
                     b_error = 1 as ::core::ffi::c_int;
-                } else if fps <= crate::limits_h::INT_MAX as ::core::ffi::c_double / 1000.0f64 {
+                } else if fps <= crate::limits_h::INT_MAX as ::core::ffi::c_double / 1000.0 {
                     (*p).i_fps_num =
-                        (fps * 1000.0f64 + 0.5f64) as ::core::ffi::c_int as crate::stdlib::uint32_t;
+                        (fps * 1000.0 + 0.5) as ::core::ffi::c_int as crate::stdlib::uint32_t;
                     (*p).i_fps_den = 1000 as crate::stdlib::uint32_t;
                 } else {
                     (*p).i_fps_num =

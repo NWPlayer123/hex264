@@ -607,8 +607,7 @@ pub mod base_h {
     #[inline(always)]
     pub unsafe extern "C" fn x264_exp2fix8(mut x: ::core::ffi::c_float) -> ::core::ffi::c_int {
         unsafe {
-            let mut i: ::core::ffi::c_int =
-                (x * (-64.0f32 / 6.0f32) + 512.5f32) as ::core::ffi::c_int;
+            let mut i: ::core::ffi::c_int = (x * (-64.0f32 / 6.0) + 512.5) as ::core::ffi::c_int;
             if i < 0 as ::core::ffi::c_int {
                 return 0 as ::core::ffi::c_int;
             }
@@ -5569,7 +5568,7 @@ pub mod slicetype_c {
         unsafe {
             let mut i_delta_index: ::core::ffi::c_int =
                 (*fenc).i_frame - (*ref_0).i_frame - 1 as ::core::ffi::c_int;
-            let epsilon: ::core::ffi::c_float = 1.0f32 / 128.0f32;
+            let epsilon: ::core::ffi::c_float = 1.0 / 128.0;
             let mut weights: *mut crate::src::common::mc::x264_weight_t =
                 &raw mut *(&raw mut (*fenc).weight
                     as *mut [crate::src::common::mc::x264_weight_t; 3])
@@ -5646,8 +5645,8 @@ pub mod slicetype_c {
             let mut chroma_denom: ::core::ffi::c_int = 7 as ::core::ffi::c_int;
             if b_lookahead == 0 {
                 while chroma_denom > 0 as ::core::ffi::c_int {
-                    let mut thresh: ::core::ffi::c_float = 127.0f32
-                        / ((1 as ::core::ffi::c_int) << chroma_denom) as ::core::ffi::c_float;
+                    let mut thresh: ::core::ffi::c_float =
+                        127.0 / ((1 as ::core::ffi::c_int) << chroma_denom) as ::core::ffi::c_float;
                     if guess_scale[1 as ::core::ffi::c_int as usize] < thresh
                         && guess_scale[2 as ::core::ffi::c_int as usize] < thresh
                     {
@@ -5676,8 +5675,8 @@ pub mod slicetype_c {
                 let mut origscore: ::core::ffi::c_uint = 0;
                 let mut found: ::core::ffi::c_int = 0;
                 if crate::stdlib::fabsf(ref_mean[plane_0 as usize] - fenc_mean[plane_0 as usize])
-                    < 0.5f32
-                    && crate::stdlib::fabsf(1.0f32 - guess_scale[plane_0 as usize]) < epsilon
+                    < 0.5
+                    && crate::stdlib::fabsf(1.0 - guess_scale[plane_0 as usize]) < epsilon
                 {
                     (*weights.offset(plane_0 as isize)).i_scale =
                         1 as ::core::ffi::c_int as crate::stdlib::int32_t;
@@ -6366,7 +6365,7 @@ pub mod slicetype_c {
                                 - ref_mean[plane_0 as usize] * cur_scale as ::core::ffi::c_float
                                     / ((1 as ::core::ffi::c_int) << mindenom)
                                         as ::core::ffi::c_float
-                                + 0.5f32 * b_lookahead as ::core::ffi::c_float)
+                                + 0.5 * b_lookahead as ::core::ffi::c_float)
                                 as ::core::ffi::c_int;
                             if cur_offset < -(128 as ::core::ffi::c_int)
                                 || cur_offset > 127 as ::core::ffi::c_int
@@ -6468,7 +6467,7 @@ pub mod slicetype_c {
                             || minscale == (1 as ::core::ffi::c_int) << mindenom
                                 && minoff == 0 as ::core::ffi::c_int
                             || minscore as ::core::ffi::c_float / origscore as ::core::ffi::c_float
-                                > 0.998f32
+                                > 0.998
                         {
                             (*weights.offset(plane_0 as isize)).i_scale =
                                 1 as ::core::ffi::c_int as crate::stdlib::int32_t;
@@ -8082,24 +8081,24 @@ pub mod slicetype_c {
             let mut fps_factor: ::core::ffi::c_int = crate::stdlib::round(
                 x264_clip3f(
                     average_duration as ::core::ffi::c_double,
-                    (0.01f32
+                    (0.01
                         / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                             as ::core::ffi::c_int
                             + 1 as ::core::ffi::c_int)
                             as ::core::ffi::c_float) as ::core::ffi::c_double,
-                    (1.00f32
+                    (1.00
                         / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                             as ::core::ffi::c_int
                             + 1 as ::core::ffi::c_int)
                             as ::core::ffi::c_float) as ::core::ffi::c_double,
                 ) / x264_clip3f(
                     (*frame).f_duration as ::core::ffi::c_double,
-                    (0.01f32
+                    (0.01
                         / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                             as ::core::ffi::c_int
                             + 1 as ::core::ffi::c_int)
                             as ::core::ffi::c_float) as ::core::ffi::c_double,
-                    (1.00f32
+                    (1.00
                         / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                             as ::core::ffi::c_int
                             + 1 as ::core::ffi::c_int)
@@ -8107,7 +8106,7 @@ pub mod slicetype_c {
                 ) * 256 as ::core::ffi::c_int as ::core::ffi::c_double
                     / crate::slicetype_c::MBTREE_PRECISION as ::core::ffi::c_double,
             ) as ::core::ffi::c_int;
-            let mut weightdelta: ::core::ffi::c_float = 0.0f32;
+            let mut weightdelta: ::core::ffi::c_float = 0.0;
             if ref0_distance != 0
                 && (*frame).f_weighted_cost_delta
                     [(ref0_distance - 1 as ::core::ffi::c_int) as usize]
@@ -8119,7 +8118,7 @@ pub mod slicetype_c {
                         as ::core::ffi::c_double)
                     as ::core::ffi::c_float;
             }
-            let mut strength: ::core::ffi::c_float = 5.0f32 * (1.0f32 - (*h).param.rc.f_qcompress);
+            let mut strength: ::core::ffi::c_float = 5.0 * (1.0 - (*h).param.rc.f_qcompress);
             let mut mb_index: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while mb_index < (*h).mb.i_mb_count {
                 let mut intra_cost: ::core::ffi::c_int =
@@ -8192,29 +8191,29 @@ pub mod slicetype_c {
                 (**frames.offset(b as isize)).lowres_costs[(b - p0) as usize][(p1 - b) as usize];
             let mut fps_factor: ::core::ffi::c_float = (x264_clip3f(
                 (**frames.offset(b as isize)).f_duration as ::core::ffi::c_double,
-                (0.01f32
+                (0.01
                     / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                         as ::core::ffi::c_int
                         + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
                     as ::core::ffi::c_double,
-                (1.00f32
+                (1.00
                     / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                         as ::core::ffi::c_int
                         + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
                     as ::core::ffi::c_double,
             ) / (x264_clip3f(
                 average_duration as ::core::ffi::c_double,
-                (0.01f32
+                (0.01
                     / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                         as ::core::ffi::c_int
                         + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
                     as ::core::ffi::c_double,
-                (1.00f32
+                (1.00
                     / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
                         as ::core::ffi::c_int
                         + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
                     as ::core::ffi::c_double,
-            ) * 256.0f64)
+            ) * 256.0)
                 * crate::slicetype_c::MBTREE_PRECISION as ::core::ffi::c_double)
                 as ::core::ffi::c_float;
             if referenced == 0 {
@@ -8311,7 +8310,7 @@ pub mod slicetype_c {
             let mut idx: ::core::ffi::c_int = (b_intra == 0) as ::core::ffi::c_int;
             let mut cur_nonb: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
             let mut bframes: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-            let mut total_duration: ::core::ffi::c_float = 0.0f32;
+            let mut total_duration: ::core::ffi::c_float = 0.0;
             let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while j <= num_frames {
                 total_duration += (**frames.offset(j as isize)).f_duration;
@@ -8925,10 +8924,10 @@ pub mod slicetype_c {
             let mut i_gop_size: ::core::ffi::c_int =
                 (*frame).i_frame - (*(*h).lookahead).i_last_keyframe;
             let mut f_thresh_max: ::core::ffi::c_float =
-                ((*h).param.i_scenecut_threshold as ::core::ffi::c_double / 100.0f64)
+                ((*h).param.i_scenecut_threshold as ::core::ffi::c_double / 100.0)
                     as ::core::ffi::c_float;
             let mut f_thresh_min: ::core::ffi::c_float =
-                (f_thresh_max as ::core::ffi::c_double * 0.25f64) as ::core::ffi::c_float;
+                (f_thresh_max as ::core::ffi::c_double * 0.25) as ::core::ffi::c_float;
             if (*h).param.i_keyint_min == (*h).param.i_keyint_max {
                 f_thresh_min = f_thresh_max;
             }
@@ -8947,7 +8946,7 @@ pub mod slicetype_c {
                             as ::core::ffi::c_float;
             }
             let mut res: ::core::ffi::c_int = (pcost as ::core::ffi::c_double
-                >= (1.0f64 - f_bias as ::core::ffi::c_double) * icost as ::core::ffi::c_double)
+                >= (1.0 - f_bias as ::core::ffi::c_double) * icost as ::core::ffi::c_double)
                 as ::core::ffi::c_int;
             if res != 0 && real_scenecut != 0 {
                 let mut imb: ::core::ffi::c_int = (*frame).i_intra_mbs[(p1 - p0) as usize];
@@ -18511,10 +18510,10 @@ unsafe extern "C" fn init_costs(
             while i <= 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * mv_range {
                 let ref mut c2rust_fresh2 = *(*h).cost_mv[qp as usize].offset(i as isize);
                 *c2rust_fresh2 = (if ((lambda as ::core::ffi::c_float * *logs.offset(i as isize)
-                    + 0.5f32) as ::core::ffi::c_int)
+                    + 0.5) as ::core::ffi::c_int)
                     < 65535 as ::core::ffi::c_int
                 {
-                    (lambda as ::core::ffi::c_float * *logs.offset(i as isize) + 0.5f32)
+                    (lambda as ::core::ffi::c_float * *logs.offset(i as isize) + 0.5)
                         as ::core::ffi::c_int
                 } else {
                     65535 as ::core::ffi::c_int
@@ -18619,9 +18618,8 @@ pub unsafe extern "C" fn x264_8_analyse_init_costs(
         let mut i: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
         while i <= 2 as ::core::ffi::c_int * 4 as ::core::ffi::c_int * mv_range {
             *logs.offset(i as isize) =
-                crate::stdlib::log2f((i + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
-                    * 2.0f32
-                    + 1.718f32;
+                crate::stdlib::log2f((i + 1 as ::core::ffi::c_int) as ::core::ffi::c_float) * 2.0
+                    + 1.718;
             i += 1;
         }
         let mut qp: ::core::ffi::c_int = if (*h).param.rc.i_qp_min
