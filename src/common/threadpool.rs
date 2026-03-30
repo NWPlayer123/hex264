@@ -52,7 +52,6 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
     mut threads: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut c2rust_current_block: u64;
         if threads <= 0i32 {
             return -(1i32);
         }
@@ -89,8 +88,9 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                         (*pool).threads,
                     ) != 0)
                 {
-                    let mut i = 0i32;
+                    let mut c2rust_current_block: u64;
                     loop {
+                        let mut i = 0i32;
                         if !(i < (*pool).threads) {
                             c2rust_current_block = 11584701595673473500;
                             break;
@@ -114,8 +114,8 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                     match c2rust_current_block {
                         11983467789922532698 => {}
                         _ => {
-                            let mut i_0 = 0i32;
                             loop {
+                                let mut i_0 = 0i32;
                                 if !(i_0 < (*pool).threads) {
                                     c2rust_current_block = 5634871135123216486;
                                     break;
@@ -238,11 +238,11 @@ unsafe extern "C" fn threadpool_list_delete(
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_threadpool_delete(mut pool: *mut x264_threadpool_t) {
     unsafe {
+        let mut i = 0i32;
         crate::stdlib::pthread_mutex_lock(&raw mut (*pool).run.mutex);
         ::core::ptr::write_volatile(&mut (*pool).exit as *mut ::core::ffi::c_int, 1i32);
         crate::stdlib::pthread_cond_broadcast(&raw mut (*pool).run.cv_fill);
         crate::stdlib::pthread_mutex_unlock(&raw mut (*pool).run.mutex);
-        let mut i = 0i32;
         while i < (*pool).threads {
             crate::stdlib::pthread_join(
                 *(*pool).thread_handle.offset(i as isize),

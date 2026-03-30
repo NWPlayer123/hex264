@@ -448,8 +448,8 @@ unsafe extern "C" fn dequant_4x4(
                 i += 1;
             }
         } else {
-            let f = (1i32) << -i_qbits - 1i32;
             let mut i_0 = 0i32;
+            let f = (1i32) << -i_qbits - 1i32;
             while i_0 < 16i32 {
                 *dct.offset(i_0 as isize) = (*dct.offset(i_0 as isize) as ::core::ffi::c_int
                     * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
@@ -479,8 +479,8 @@ unsafe extern "C" fn dequant_8x8(
                 i += 1;
             }
         } else {
-            let f = (1i32) << -i_qbits - 1i32;
             let mut i_0 = 0i32;
+            let f = (1i32) << -i_qbits - 1i32;
             while i_0 < 64i32 {
                 *dct.offset(i_0 as isize) = (*dct.offset(i_0 as isize) as ::core::ffi::c_int
                     * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
@@ -500,8 +500,8 @@ unsafe extern "C" fn dequant_4x4_dc(
     unsafe {
         let i_qbits = i_qp / 6i32 - 6i32;
         if i_qbits >= 0i32 {
-            let i_dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qbits;
             let mut i = 0i32;
+            let i_dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qbits;
             while i < 16i32 {
                 let ref mut c2rust_fresh6 = *dct.offset(i as isize);
                 *c2rust_fresh6 = (*c2rust_fresh6 as ::core::ffi::c_int * i_dmf)
@@ -509,9 +509,9 @@ unsafe extern "C" fn dequant_4x4_dc(
                 i += 1;
             }
         } else {
+            let mut i_0 = 0i32;
             let i_dmf_0 = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize];
             let f = (1i32) << -i_qbits - 1i32;
-            let mut i_0 = 0i32;
             while i_0 < 16i32 {
                 *dct.offset(i_0 as isize) =
                     (*dct.offset(i_0 as isize) as ::core::ffi::c_int * i_dmf_0 + f >> -i_qbits)
@@ -703,6 +703,8 @@ unsafe extern "C" fn optimize_chroma_round(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut out = [0; 8];
+        let mut sum = 0i32;
+        let mut i = 0i32;
         if chroma422 != 0 {
             optimize_chroma_idct_dequant_2x4(
                 &raw mut out as *mut crate::src::common::common::dctcoef,
@@ -716,8 +718,6 @@ unsafe extern "C" fn optimize_chroma_round(
                 dequant_mf,
             );
         }
-        let mut sum = 0i32;
-        let mut i = 0i32;
         while i < (if chroma422 != 0 { 8i32 } else { 4i32 }) {
             sum |= *ref_0.offset(i as isize) as ::core::ffi::c_int ^ out[i as usize];
             i += 1;
@@ -733,6 +733,9 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut dct_orig = [0; 8];
+        let mut sum = 0i32;
+        let mut i = 0i32;
+        let mut nz = 0i32;
         if chroma422 != 0 {
             optimize_chroma_idct_dequant_2x4(
                 &raw mut dct_orig as *mut crate::src::common::common::dctcoef,
@@ -746,8 +749,6 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
                 dequant_mf,
             );
         }
-        let mut sum = 0i32;
-        let mut i = 0i32;
         while i < (if chroma422 != 0 { 8i32 } else { 4i32 }) {
             sum |= dct_orig[i as usize];
             i += 1;
@@ -755,7 +756,6 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
         if sum >> 6i32 == 0 {
             return 0i32;
         }
-        let mut nz = 0i32;
         let mut coeff = if chroma422 != 0 { 7i32 } else { 3i32 };
         while coeff >= 0i32 {
             let mut level = *dct.offset(coeff as isize) as ::core::ffi::c_int;
@@ -827,6 +827,7 @@ unsafe extern "C" fn decimate_score_internal(
     mut i_max: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
+        let mut i_score = 0i32;
         let mut ds_table = if i_max == 64i32 {
             &raw const crate::src::common::tables::x264_decimate_table8
                 as *const crate::stdlib::uint8_t
@@ -834,12 +835,12 @@ unsafe extern "C" fn decimate_score_internal(
             &raw const crate::src::common::tables::x264_decimate_table4
                 as *const crate::stdlib::uint8_t
         };
-        let mut i_score = 0i32;
         let mut idx = i_max - 1i32;
         while idx >= 0i32 && *dct.offset(idx as isize) as ::core::ffi::c_int == 0i32 {
             idx -= 1;
         }
         while idx >= 0i32 {
+            let mut i_run = 0i32;
             let c2rust_fresh4 = idx;
             idx = idx - 1;
             if (*dct.offset(c2rust_fresh4 as isize) as ::core::ffi::c_int + 1i32)
@@ -848,7 +849,6 @@ unsafe extern "C" fn decimate_score_internal(
             {
                 return 9i32;
             }
-            let mut i_run = 0i32;
             while idx >= 0i32 && *dct.offset(idx as isize) as ::core::ffi::c_int == 0i32 {
                 idx -= 1;
                 i_run += 1;
@@ -939,10 +939,10 @@ unsafe extern "C" fn coeff_level_run4(
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
 ) -> ::core::ffi::c_int {
     unsafe {
-        (*runlevel).last = coeff_last4(dct);
-        let mut i_last = (*runlevel).last;
         let mut i_total = 0i32;
         let mut mask = 0i32;
+        (*runlevel).last = coeff_last4(dct);
+        let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh3 = i_total;
             i_total = i_total + 1;
@@ -967,10 +967,10 @@ unsafe extern "C" fn coeff_level_run8(
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
 ) -> ::core::ffi::c_int {
     unsafe {
-        (*runlevel).last = coeff_last8(dct);
-        let mut i_last = (*runlevel).last;
         let mut i_total = 0i32;
         let mut mask = 0i32;
+        (*runlevel).last = coeff_last8(dct);
+        let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh2 = i_total;
             i_total = i_total + 1;
@@ -995,10 +995,10 @@ unsafe extern "C" fn coeff_level_run15(
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
 ) -> ::core::ffi::c_int {
     unsafe {
-        (*runlevel).last = coeff_last15(dct);
-        let mut i_last = (*runlevel).last;
         let mut i_total = 0i32;
         let mut mask = 0i32;
+        (*runlevel).last = coeff_last15(dct);
+        let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh1 = i_total;
             i_total = i_total + 1;
@@ -1023,10 +1023,10 @@ unsafe extern "C" fn coeff_level_run16(
     mut runlevel: *mut crate::src::common::bitstream::x264_run_level_t,
 ) -> ::core::ffi::c_int {
     unsafe {
-        (*runlevel).last = coeff_last16(dct);
-        let mut i_last = (*runlevel).last;
         let mut i_total = 0i32;
         let mut mask = 0i32;
+        (*runlevel).last = coeff_last16(dct);
+        let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh0 = i_total;
             i_total = i_total + 1;

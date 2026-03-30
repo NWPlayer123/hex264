@@ -95,6 +95,7 @@ pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
     unsafe {
         let mut dc = 0i32;
         let mut i = 0i32;
+        let mut i_0 = 0i32;
         while i < 16i32 {
             dc += *src.offset((-(1i32) + i * crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -104,7 +105,6 @@ pub unsafe extern "C" fn x264_8_predict_16x16_dc_c(
         }
         let mut dcsplat =
             ((dc + 16i32 >> 5i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut i_0 = 0i32;
         while i_0 < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
@@ -119,6 +119,7 @@ unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut crate::src::common::c
     unsafe {
         let mut dc = 0i32;
         let mut i = 0i32;
+        let mut i_0 = 0i32;
         while i < 16i32 {
             dc += *src.offset((-(1i32) + i * crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -126,7 +127,6 @@ unsafe extern "C" fn predict_16x16_dc_left_c(mut src: *mut crate::src::common::c
         }
         let mut dcsplat =
             ((dc + 8i32 >> 4i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut i_0 = 0i32;
         while i_0 < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
@@ -141,6 +141,7 @@ unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut crate::src::common::co
     unsafe {
         let mut dc = 0i32;
         let mut i = 0i32;
+        let mut i_0 = 0i32;
         while i < 16i32 {
             dc += *src.offset((i - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -148,7 +149,6 @@ unsafe extern "C" fn predict_16x16_dc_top_c(mut src: *mut crate::src::common::co
         }
         let mut dcsplat =
             ((dc + 8i32 >> 4i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut i_0 = 0i32;
         while i_0 < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dcsplat;
@@ -195,6 +195,7 @@ pub unsafe extern "C" fn x264_8_predict_16x16_h_c(mut src: *mut crate::src::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_16x16_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
+        let mut i = 0i32;
         let mut v0 = (*(src.offset((0i32 - 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
@@ -207,7 +208,6 @@ pub unsafe extern "C" fn x264_8_predict_16x16_v_c(mut src: *mut crate::src::comm
         let mut v3 = (*(src.offset((12i32 - 32i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut i = 0i32;
         while i < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v1;
@@ -224,6 +224,7 @@ pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::comm
         let mut H = 0i32;
         let mut V = 0i32;
         let mut i = 0i32;
+        let mut y = 0i32;
         while i <= 7i32 {
             H += (i + 1i32)
                 * (*src.offset((8i32 + i - crate::src::common::common::FDEC_STRIDE) as isize)
@@ -247,10 +248,9 @@ pub unsafe extern "C" fn x264_8_predict_16x16_p_c(mut src: *mut crate::src::comm
         let mut b = 5i32 * H + 32i32 >> 6i32;
         let mut c = 5i32 * V + 32i32 >> 6i32;
         let mut i00 = a - b * 7i32 - c * 7i32 + 16i32;
-        let mut y = 0i32;
         while y < 16i32 {
-            let mut pix = i00;
             let mut x = 0i32;
+            let mut pix = i00;
             while x < 16i32 {
                 *src.offset(x as isize) = x264_clip_pixel(pix >> 5i32);
                 pix += b;
@@ -280,6 +280,8 @@ unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::co
         let mut dc0 = 0i32;
         let mut dc1 = 0i32;
         let mut y = 0i32;
+        let mut y_0 = 0i32;
+        let mut y_1 = 0i32;
         while y < 4i32 {
             dc0 += *src.offset((y * crate::src::common::common::FDEC_STRIDE - 1i32) as isize)
                 as ::core::ffi::c_int;
@@ -292,14 +294,12 @@ unsafe extern "C" fn predict_8x8c_dc_left_c(mut src: *mut crate::src::common::co
             ((dc0 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
         let mut dc1splat =
             ((dc1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut y_0 = 0i32;
         while y_0 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y_0 += 1;
         }
-        let mut y_1 = 0i32;
         while y_1 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
@@ -313,6 +313,7 @@ unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::com
         let mut dc0 = 0i32;
         let mut dc1 = 0i32;
         let mut x = 0i32;
+        let mut y = 0i32;
         while x < 4i32 {
             dc0 += *src.offset((x - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -324,7 +325,6 @@ unsafe extern "C" fn predict_8x8c_dc_top_c(mut src: *mut crate::src::common::com
             ((dc0 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
         let mut dc1splat =
             ((dc1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
@@ -341,6 +341,8 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::comm
         let mut s2 = 0i32;
         let mut s3 = 0i32;
         let mut i = 0i32;
+        let mut y = 0i32;
+        let mut y_0 = 0i32;
         while i < 4i32 {
             s0 += *src.offset((i - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -361,14 +363,12 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_dc_c(mut src: *mut crate::src::comm
             ((s3 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
         let mut dc3 = ((s1 + s3 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut y = 0i32;
         while y < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y += 1;
         }
-        let mut y_0 = 0i32;
         while y_0 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc2;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc3;
@@ -394,13 +394,13 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_h_c(mut src: *mut crate::src::commo
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x8c_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
+        let mut i = 0i32;
         let mut v0 = (*(src.offset(0isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
         let mut v1 = (*(src.offset(4isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut i = 0i32;
         while i < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v1;
@@ -415,6 +415,7 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::commo
         let mut H = 0i32;
         let mut V = 0i32;
         let mut i = 0i32;
+        let mut y = 0i32;
         while i < 4i32 {
             H += (i + 1i32)
                 * (*src.offset((4i32 + i - crate::src::common::common::FDEC_STRIDE) as isize)
@@ -438,10 +439,9 @@ pub unsafe extern "C" fn x264_8_predict_8x8c_p_c(mut src: *mut crate::src::commo
         let mut b = 17i32 * H + 16i32 >> 5i32;
         let mut c = 17i32 * V + 16i32 >> 5i32;
         let mut i00 = a - 3i32 * b - 3i32 * c + 16i32;
-        let mut y = 0i32;
         while y < 8i32 {
-            let mut pix = i00;
             let mut x = 0i32;
+            let mut pix = i00;
             while x < 8i32 {
                 *src.offset(x as isize) = x264_clip_pixel(pix >> 5i32);
                 pix += b;
@@ -472,6 +472,7 @@ unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut crate::src::common::c
         while i < 4i32 {
             let mut dc = 0i32;
             let mut y = 0i32;
+            let mut y_0 = 0i32;
             while y < 4i32 {
                 dc += *src.offset((y * crate::src::common::common::FDEC_STRIDE - 1i32) as isize)
                     as ::core::ffi::c_int;
@@ -479,7 +480,6 @@ unsafe extern "C" fn predict_8x16c_dc_left_c(mut src: *mut crate::src::common::c
             }
             let mut dcsplat = ((dc + 2i32 >> 2i32) as crate::src::common::common::pixel4)
                 .wrapping_mul(0x1010101u32);
-            let mut y_0 = 0i32;
             while y_0 < 4i32 {
                 (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i =
                     dcsplat;
@@ -497,6 +497,7 @@ unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut crate::src::common::co
         let mut dc0 = 0i32;
         let mut dc1 = 0i32;
         let mut x = 0i32;
+        let mut y = 0i32;
         while x < 4i32 {
             dc0 += *src.offset((x - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -508,7 +509,6 @@ unsafe extern "C" fn predict_8x16c_dc_top_c(mut src: *mut crate::src::common::co
             ((dc0 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
         let mut dc1splat =
             ((dc1 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
-        let mut y = 0i32;
         while y < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0splat;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1splat;
@@ -529,6 +529,10 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
         let mut s4 = 0i32;
         let mut s5 = 0i32;
         let mut i = 0i32;
+        let mut y = 0i32;
+        let mut y_0 = 0i32;
+        let mut y_1 = 0i32;
+        let mut y_2 = 0i32;
         while i < 4i32 {
             s0 += *src.offset((i + 0i32 - crate::src::common::common::FDEC_STRIDE) as isize)
                 as ::core::ffi::c_int;
@@ -564,28 +568,24 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_dc_c(
             ((s5 + 2i32 >> 2i32) as crate::src::common::common::pixel4).wrapping_mul(0x1010101u32);
         let mut dc7 = ((s1 + s5 + 4i32 >> 3i32) as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut y = 0i32;
         while y < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc1;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y += 1;
         }
-        let mut y_0 = 0i32;
         while y_0 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc2;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc3;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y_0 += 1;
         }
-        let mut y_1 = 0i32;
         while y_1 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc4;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc5;
             src = src.offset(crate::src::common::common::FDEC_STRIDE as isize);
             y_1 += 1;
         }
-        let mut y_2 = 0i32;
         while y_2 < 4i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc6;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc7;
@@ -611,13 +611,13 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_h_c(mut src: *mut crate::src::comm
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_8x16c_v_c(mut src: *mut crate::src::common::common::pixel) {
     unsafe {
+        let mut i = 0i32;
         let mut v0 = (*(src.offset(0isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
         let mut v1 = (*(src.offset(4isize).offset(-(32isize))
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        let mut i = 0i32;
         while i < 16i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v0;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v1;
@@ -632,6 +632,8 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::comm
         let mut H = 0i32;
         let mut V = 0i32;
         let mut i = 0i32;
+        let mut i_0 = 0i32;
+        let mut y = 0i32;
         while i < 4i32 {
             H += (i + 1i32)
                 * (*src.offset((4i32 + i - crate::src::common::common::FDEC_STRIDE) as isize)
@@ -640,7 +642,6 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::comm
                         as ::core::ffi::c_int);
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0 < 8i32 {
             V += (i_0 + 1i32)
                 * (*src.offset(
@@ -659,10 +660,9 @@ pub unsafe extern "C" fn x264_8_predict_8x16c_p_c(mut src: *mut crate::src::comm
         let mut b = 17i32 * H + 16i32 >> 5i32;
         let mut c = 5i32 * V + 32i32 >> 6i32;
         let mut i00 = a - 3i32 * b - 7i32 * c + 16i32;
-        let mut y = 0i32;
         while y < 16i32 {
-            let mut pix = i00;
             let mut x = 0i32;
+            let mut pix = i00;
             while x < 8i32 {
                 *src.offset(x as isize) = x264_clip_pixel(pix >> 5i32);
                 pix += b;
@@ -1494,6 +1494,7 @@ unsafe extern "C" fn predict_8x8_dc_left_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
+        let mut y = 0i32;
         let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
         let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
         let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
@@ -1505,7 +1506,6 @@ unsafe extern "C" fn predict_8x8_dc_left_c(
         let mut dc = ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + 4i32 >> 3i32)
             as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
@@ -1519,6 +1519,7 @@ unsafe extern "C" fn predict_8x8_dc_top_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
+        let mut y = 0i32;
         let mut t0 = *edge.offset((16i32 + 0i32) as isize) as ::core::ffi::c_int;
         let mut t1 = *edge.offset((16i32 + 1i32) as isize) as ::core::ffi::c_int;
         let mut t2 = *edge.offset((16i32 + 2i32) as isize) as ::core::ffi::c_int;
@@ -1530,7 +1531,6 @@ unsafe extern "C" fn predict_8x8_dc_top_c(
         let mut dc = ((t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 4i32 >> 3i32)
             as crate::src::common::common::pixel4)
             .wrapping_mul(0x1010101u32);
-        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
@@ -1545,6 +1545,7 @@ pub unsafe extern "C" fn x264_8_predict_8x8_dc_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
+        let mut y = 0i32;
         let mut l0 = *edge.offset((14i32 - 0i32) as isize) as ::core::ffi::c_int;
         let mut l1 = *edge.offset((14i32 - 1i32) as isize) as ::core::ffi::c_int;
         let mut l2 = *edge.offset((14i32 - 2i32) as isize) as ::core::ffi::c_int;
@@ -1565,7 +1566,6 @@ pub unsafe extern "C" fn x264_8_predict_8x8_dc_c(
             ((l0 + l1 + l2 + l3 + l4 + l5 + l6 + l7 + t0 + t1 + t2 + t3 + t4 + t5 + t6 + t7 + 8i32
                 >> 4i32) as crate::src::common::common::pixel4)
                 .wrapping_mul(0x1010101u32);
-        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
             (*(src.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = dc;
@@ -1652,11 +1652,11 @@ pub unsafe extern "C" fn x264_8_predict_8x8_v_c(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
+        let mut y = 0i32;
         let mut top = [
             (*(edge.offset(16isize) as *mut crate::src::common::base::x264_union32_t)).i,
             (*(edge.offset(20isize) as *mut crate::src::common::base::x264_union32_t)).i,
         ];
-        let mut y = 0i32;
         while y < 8i32 {
             (*(src.offset((y * 32i32) as isize).offset(0isize)
                 as *mut crate::src::common::base::x264_union32_t))

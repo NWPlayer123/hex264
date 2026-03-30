@@ -362,6 +362,7 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv(
     mut mvp: *mut crate::stdlib::int16_t,
 ) {
     unsafe {
+        let mut c2rust_current_block_51: u64;
         let i8 = x264_scan8[idx as usize] as ::core::ffi::c_int;
         let i_ref = (*h).mb.cache.ref_0[i_list as usize][i8 as usize] as ::core::ffi::c_int;
         let mut i_refa =
@@ -460,7 +461,6 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv(
         let mut i_count = (i_refa == i_ref) as ::core::ffi::c_int
             + (i_refb == i_ref) as ::core::ffi::c_int
             + (i_refc == i_ref) as ::core::ffi::c_int;
-        let mut c2rust_current_block_51: u64;
         if i_count > 1i32 {
             c2rust_current_block_51 = 3332763991548347748;
         } else if i_count == 1i32 {
@@ -498,6 +498,7 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_16x16(
     mut mvp: *mut crate::stdlib::int16_t,
 ) {
     unsafe {
+        let mut c2rust_current_block_11: u64;
         let mut i_refa = (*h).mb.cache.ref_0[i_list as usize]
             [(crate::src::common::base::X264_SCAN8_0 - 1i32) as usize]
             as ::core::ffi::c_int;
@@ -539,7 +540,6 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_16x16(
         let mut i_count = (i_refa == i_ref) as ::core::ffi::c_int
             + (i_refb == i_ref) as ::core::ffi::c_int
             + (i_refc == i_ref) as ::core::ffi::c_int;
-        let mut c2rust_current_block_11: u64;
         if i_count > 1i32 {
             c2rust_current_block_11 = 15136211980786176673;
         } else if i_count == 1i32 {
@@ -610,6 +610,9 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
     unsafe {
+        let mut offset = 1i32;
+        let mut yshift = 1i32;
+        let mut i8 = 0i32;
         let mut mb_x = (*h).mb.i_mb_x;
         let mut mb_y = (*h).mb.i_mb_y;
         let mut mb_xy = (*h).mb.i_mb_xy;
@@ -627,8 +630,6 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
         ];
         let mut preshift = (*h).mb.b_interlaced;
         let mut postshift = (*h).mb.b_interlaced;
-        let mut offset = 1i32;
-        let mut yshift = 1i32;
         (*h).mb.i_partition = partition_col[0usize];
         if (*h).param.b_interlaced != 0
             && *(*(*h).fref[1usize][0usize]).field.offset(mb_xy as isize) as ::core::ffi::c_int
@@ -728,7 +729,6 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
             >> (crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
                 - (*h).mb.i_partition
                 >> 1i32);
-        let mut i8 = 0i32;
         while i8 < max_i8 {
             let mut x8 = i8 & 1i32;
             let mut y8 = i8 >> 1i32;
@@ -839,6 +839,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
         let mut ref_0 = [0; 2];
         let mut mv = [[0; 2]; 2];
         let mut i_list = 0i32;
+        let mut i8 = 0i32;
         while i_list < 2i32 {
             let mut i_refa = (*h).mb.cache.ref_0[i_list as usize]
                 [(crate::src::common::base::X264_SCAN8_0 - 1i32) as usize]
@@ -1128,8 +1129,6 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
             >> (crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
                 - (*h).mb.i_partition
                 >> 1i32);
-        let mut c2rust_current_block_59: u64;
-        let mut i8 = 0i32;
         while i8 < max_i8 {
             let x8 = i8 & 1i32;
             let y8 = i8 >> 1i32;
@@ -1157,6 +1156,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
                     || type_col[y8 as usize]
                         == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int))
             {
+                let mut c2rust_current_block_59: u64;
                 let mut idx = 0;
                 if *l1ref0.offset(o8 as isize) as ::core::ffi::c_int == 0i32 {
                     idx = 0i32;
@@ -1506,8 +1506,8 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
     mut i_mvc: *mut ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut mvr = (*h).mb.mvr[i_list as usize][i_ref as usize];
         let mut i = 0i32;
+        let mut mvr = (*h).mb.mvr[i_list as usize][i_ref as usize];
         if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int
             && (*h).mb.cache.ref_0[i_list as usize][x264_scan8[12usize] as usize]
                 as ::core::ffi::c_int

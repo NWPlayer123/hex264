@@ -555,9 +555,9 @@ unsafe extern "C" fn deblock_strength_c(
     unsafe {
         let mut dir = 0i32;
         while dir < 2i32 {
+            let mut edge = 0i32;
             let mut s1 = if dir != 0 { 1i32 } else { 8i32 };
             let mut s2 = if dir != 0 { 8i32 } else { 1i32 };
-            let mut edge = 0i32;
             while edge < 4i32 {
                 let mut i = 0i32;
                 let mut loc = crate::src::common::base::X264_SCAN8_0 + edge * s2;
@@ -619,13 +619,13 @@ unsafe extern "C" fn deblock_edge(
     mut pf_inter: crate::src::common::frame::x264_deblock_inter_t,
 ) {
     unsafe {
+        let mut tc = [0; 4];
         let mut index_a = i_qp + a;
         let mut index_b = i_qp + b;
         let mut alpha = (i_alpha_table[(index_a + 24i32) as usize] as ::core::ffi::c_int)
             << crate::internal::BIT_DEPTH - 8i32;
         let mut beta = (i_beta_table[(index_b + 24i32) as usize] as ::core::ffi::c_int)
             << crate::internal::BIT_DEPTH - 8i32;
-        let mut tc = [0; 4];
         if (*(bS as *mut crate::src::common::base::x264_union32_t)).i == 0
             || alpha == 0
             || beta == 0
@@ -751,6 +751,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
     mut mb_y: ::core::ffi::c_int,
 ) {
     unsafe {
+        let mut mb_x = 0i32;
         let mut b_interlaced = (*h).sh.b_mbaff;
         let mut a = (*h).sh.i_alpha_c0_offset - crate::src::common::common::QP_BD_OFFSET;
         let mut b = (*h).sh.i_beta_offset - crate::src::common::common::QP_BD_OFFSET;
@@ -780,7 +781,6 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
         } else {
             1isize
         };
-        let mut mb_x = 0i32;
         while mb_x < (*h).mb.i_mb_width {
             crate::src::common::macroblock::x264_8_prefetch_fenc(h, (*h).fdec, mb_x, mb_y);
             macroblock_cache_load_neighbours_deblock(h, mb_x, mb_y);
@@ -1621,8 +1621,8 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int
                         != 0
                 {
-                    let mut mbn_xy = mb_xy - 2i32 * (*h).mb.i_mb_stride;
                     let mut j = 0i32;
+                    let mut mbn_xy = mb_xy - 2i32 * (*h).mb.i_mb_stride;
                     while j < 2i32 {
                         let mut qpt = *(*h).mb.qp.offset(mbn_xy as isize) as ::core::ffi::c_int;
                         let mut qp_top = qp + qpt + 1i32 >> 1i32;

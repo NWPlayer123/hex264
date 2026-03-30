@@ -157,18 +157,17 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
     mut i_slicetype_length: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut look_h = ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
         let mut look = crate::src::common::base::x264_malloc(::core::mem::size_of::<
             crate::src::common::common::x264_lookahead_t,
         >() as crate::stdlib::int64_t)
             as *mut crate::src::common::common::x264_lookahead_t;
         if !look.is_null() {
+            let mut i = 0i32;
             crate::stdlib::memset(
                 look as *mut ::core::ffi::c_void,
                 0i32,
                 ::core::mem::size_of::<crate::src::common::common::x264_lookahead_t>(),
             );
-            let mut i = 0i32;
             while i < (*h).param.i_threads {
                 (*(*h).thread[i as usize]).lookahead = look;
                 i += 1;
@@ -192,6 +191,7 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
                     (*h).frames.i_delay + 3i32,
                 ) != 0)
             {
+                let mut look_h = ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
                 if (*h).param.i_sync_lookahead == 0 {
                     return 0i32;
                 }

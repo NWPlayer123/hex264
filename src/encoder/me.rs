@@ -65,13 +65,13 @@ pub mod common_h {
     ) -> ::core::ffi::c_int {
         unsafe {
             let mut cnt = 0i32;
+            let mut i = 0i32;
             let mut qpel_limit = [
                 ((*mv_limit.offset(0isize))[0usize] as ::core::ffi::c_int) << 2i32,
                 ((*mv_limit.offset(0isize))[1usize] as ::core::ffi::c_int) << 2i32,
                 ((*mv_limit.offset(1isize))[0usize] as ::core::ffi::c_int) << 2i32,
                 ((*mv_limit.offset(1isize))[1usize] as ::core::ffi::c_int) << 2i32,
             ];
-            let mut i = 0i32;
             while i < i_mvc {
                 let mut mv = (*(&raw mut *mvc.offset(i as isize)
                     as *mut crate::src::common::base::x264_union32_t))
@@ -553,24 +553,23 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
 ) {
     unsafe {
         let mut c2rust_current_block: u64;
+        let mut bmx = 0;
+        let mut bmy = 0;
+        let mut pmx = 0;
+        let mut pmy = 0;
+        let mut mvc_temp = [[0; 2]; 16];
+        let mut costs = [0; 16];
+        let mut pmv = 0;
+        let mut bpred_mv = 0u32;
         let bw = x264_pixel_size[(*m).i_pixel as usize].w as ::core::ffi::c_int;
         let bh = x264_pixel_size[(*m).i_pixel as usize].h as ::core::ffi::c_int;
         let i_pixel = (*m).i_pixel;
         let stride = (*m).i_stride[0usize];
         let mut i_me_range = (*h).param.analyse.i_me_range;
-        let mut bmx = 0;
-        let mut bmy = 0;
         let mut bcost = crate::src::encoder::me::COST_MAX;
         let mut bpred_cost = crate::src::encoder::me::COST_MAX;
-        let mut omx = 0;
-        let mut omy = 0;
-        let mut pmx = 0;
-        let mut pmy = 0;
         let mut p_fenc = (*m).p_fenc[0usize];
         let mut p_fref_w = (*m).p_fref_w;
-        let mut pix = [0; 256];
-        let mut mvc_temp = [[0; 2]; 16];
-        let mut costs = [0; 16];
         let mut mv_x_min = (*h).mb.mv_limit_fpel[0usize][0usize] as ::core::ffi::c_int;
         let mut mv_y_min = (*h).mb.mv_limit_fpel[0usize][1usize] as ::core::ffi::c_int;
         let mut mv_x_max = (*h).mb.mv_limit_fpel[1usize][0usize] as ::core::ffi::c_int;
@@ -580,8 +579,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
         let mut mv_max = (mv_x_max as crate::stdlib::uint32_t) << 16i32
             | mv_y_max as crate::stdlib::uint32_t & 0x7fffu32
             | 0x8000u32;
-        let mut pmv = 0;
-        let mut bpred_mv = 0u32;
         let mut p_cost_mvx = (*m)
             .p_cost_mv
             .offset(-((*m).mvp[0usize] as ::core::ffi::c_int as isize));
@@ -589,6 +586,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
             .p_cost_mv
             .offset(-((*m).mvp[1usize] as ::core::ffi::c_int as isize));
         if (*h).mb.i_subpel_refine >= 3i32 {
+            let mut pix = [0; 256];
+            let mut stride2 = 16isize;
             let mut bpred_mx = x264_clip3(
                 (*m).mvp[0usize] as ::core::ffi::c_int,
                 mv_x_min * 4i32,
@@ -602,7 +601,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
             pmv = pack16to32_mask(bpred_mx, bpred_my);
             pmx = bpred_mx + 2i32 >> 2i32;
             pmy = bpred_my + 2i32 >> 2i32;
-            let mut stride2 = 16isize;
             let mut src = (*h).mc.get_ref.expect("non-null function pointer")(
                 &raw mut pix as *mut crate::src::common::common::pixel,
                 &raw mut stride2,
@@ -631,17 +629,17 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     pmv,
                 );
                 if valid_mvcs > 0i32 {
-                    let mut i = 1i32;
-                    let mut cost = 0;
                     (*(&raw mut *(&raw mut mvc_temp as *mut [crate::stdlib::int16_t; 2])
                         .offset(1isize)
                         as *mut crate::src::common::base::x264_union32_t))
                         .i = pmv;
                     bpred_cost <<= 4i32;
                     loop {
+                        let mut i = 1i32;
+                        let mut cost = 0;
+                        let mut stride2_0 = 16isize;
                         let mut mx = mvc_temp[(i + 1i32) as usize][0usize];
                         let mut my = mvc_temp[(i + 1i32) as usize][1usize];
-                        let mut stride2_0 = 16isize;
                         let mut src_0 = (*h).mc.get_ref.expect("non-null function pointer")(
                             &raw mut pix as *mut crate::src::common::common::pixel,
                             &raw mut stride2_0,
@@ -744,14 +742,14 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     pmv,
                 );
                 if valid_mvcs_0 > 0i32 {
-                    let mut i_0 = 1i32;
-                    let mut cost_2 = 0;
                     (*(&raw mut *(&raw mut mvc_temp as *mut [crate::stdlib::int16_t; 2])
                         .offset(1isize)
                         as *mut crate::src::common::base::x264_union32_t))
                         .i = pmv;
                     bcost <<= 4i32;
                     loop {
+                        let mut i_0 = 1i32;
+                        let mut cost_2 = 0;
                         let mut mx_0 = mvc_temp[(i_0 + 1i32) as usize][0usize];
                         let mut my_0 = mvc_temp[(i_0 + 1i32) as usize][1usize];
                         cost_2 = (*h).pixf.fpelcmp[i_pixel as usize]
@@ -864,10 +862,10 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                 c2rust_current_block = 3583450109353833130;
             }
             crate::x264_h::X264_ME_UMH_1 => {
+                let mut omx = 0;
+                let mut omy = 0;
                 static mut pixel_size_shift: [crate::stdlib::uint8_t; 7] =
                     [0u8, 1u8, 1u8, 2u8, 3u8, 3u8, 4u8];
-                let mut ucost2 = 0;
-                let mut cross_start = 1i32;
                 let mut ucost1 = bcost;
                 omx = pmx;
                 omy = pmy;
@@ -971,6 +969,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                 if i_pixel == crate::src::common::pixel::PIXEL_4x4 as ::core::ffi::c_int {
                     c2rust_current_block = 3583450109353833130;
                 } else {
+                    let mut ucost2 = 0;
+                    let mut cross_start = 1i32;
                     ucost2 = bcost;
                     if bmx | bmy != 0 && bmx - pmx | bmy - pmy != 0 {
                         omx = bmx;
@@ -1143,8 +1143,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                         {
                             c2rust_current_block = 14127502640287082657;
                         } else if bcost == ucost2 {
-                            let mut range = i_me_range >> 1i32 | 1i32;
                             let mut i_3 = 3i32;
+                            let mut range = i_me_range >> 1i32 | 1i32;
                             if range
                                 <= (if mv_x_max - omx < omx - mv_x_min {
                                     mv_x_max - omx
@@ -1489,14 +1489,14 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                         14127502640287082657 => {}
                         _ => {
                             if i_mvc != 0 {
+                                let mut mvd = 0;
+                                let mut denom = 1i32;
                                 static mut range_mul: [[crate::stdlib::uint8_t; 4]; 4] = [
                                     [3u8, 3u8, 4u8, 4u8],
                                     [3u8, 4u8, 4u8, 4u8],
                                     [4u8, 4u8, 4u8, 5u8],
                                     [4u8, 4u8, 5u8, 6u8],
                                 ];
-                                let mut mvd = 0;
-                                let mut denom = 1i32;
                                 if i_mvc == 1i32 {
                                     if i_pixel
                                         == crate::src::common::pixel::PIXEL_16x16
@@ -1849,8 +1849,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             omy = bmy;
                             let mut p_cost_omvx = p_cost_mvx.offset((omx * 4i32) as isize);
                             let mut p_cost_omvy = p_cost_mvy.offset((omy * 4i32) as isize);
-                            let mut i_5 = 1i32;
                             loop {
+                                let mut i_5 = 1i32;
                                 static mut hex4: [[crate::stdlib::int8_t; 2]; 16] = [
                                     [0i8, -4i8],
                                     [0i8, 4i8],
@@ -2200,6 +2200,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                 }
             }
             crate::x264_h::X264_ME_ESA_1 | crate::x264_h::X264_ME_TESA => {
+                let mut enc_dc = [0; 4];
+                let mut xn = 0;
                 let min_x = if bmx - i_me_range > mv_x_min {
                     bmx - i_me_range
                 } else {
@@ -2222,7 +2224,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                 };
                 let width = max_x - min_x + 3i32 & !(3i32);
                 let mut sums_base = (*m).integral;
-                let mut enc_dc = [0; 4];
                 let mut sad_size =
                     if i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int {
                         crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
@@ -2231,7 +2232,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     };
                 let mut delta = x264_pixel_size[sad_size as usize].w as ::core::ffi::c_int;
                 let mut xs = (*h).scratch_buffer as *mut crate::stdlib::int16_t;
-                let mut xn = 0;
                 let mut cost_fpel_mvx = (*h).cost_mv_fpel[(*h).mb.i_qp as usize]
                     [(-((*m).mvp[0usize] as ::core::ffi::c_int) & 3i32) as usize]
                     .offset((-((*m).mvp[0usize] as ::core::ffi::c_int) >> 2i32) as isize);
@@ -2267,11 +2267,12 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     enc_dc[1usize] = enc_dc[2usize];
                 }
                 if (*h).mb.i_me_method == crate::x264_h::X264_ME_TESA {
+                    let mut nmvsad = 0i32;
+                    let mut i_9 = 0i32;
                     let mut mvsads = xs
                         .offset((width + 31i32 & !(31i32)) as isize)
                         .offset(4isize)
                         as *mut crate::src::common::common::mvsad_t;
-                    let mut nmvsad = 0i32;
                     let mut sad_thresh = if i_me_range <= 16i32 {
                         10i32
                     } else if i_me_range <= 24i32 {
@@ -2291,10 +2292,10 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             + *p_cost_mvy.offset((bmy * 4i32) as isize) as ::core::ffi::c_int);
                     let mut my_2 = min_y;
                     while my_2 <= max_y {
-                        let mut i_6 = 0;
                         let mut ycost =
                             *p_cost_mvy.offset((my_2 * 4i32) as isize) as ::core::ffi::c_int;
                         if !(bsad <= ycost) {
+                            let mut i_6 = 0;
                             bsad -= ycost;
                             xn = (*h).pixf.ads[i_pixel as usize]
                                 .expect("non-null function pointer")(
@@ -2310,10 +2311,11 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             );
                             i_6 = 0i32;
                             while i_6 < xn - 2i32 {
+                                let mut sads = [0; 4];
+                                let mut j_0 = 0i32;
                                 let mut ref_0 = p_fref_w
                                     .offset(min_x as isize)
                                     .offset((my_2 * stride) as isize);
-                                let mut sads = [0; 4];
                                 (*h).pixf.sad_x3[i_pixel as usize]
                                     .expect("non-null function pointer")(
                                     p_fenc,
@@ -2329,7 +2331,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                                     stride as crate::stdlib::intptr_t,
                                     &raw mut sads as *mut ::core::ffi::c_int,
                                 );
-                                let mut j_0 = 0i32;
                                 while j_0 < 3i32 {
                                     let mut sad = sads[j_0 as usize]
                                         + *cost_fpel_mvx
@@ -2449,7 +2450,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             *mvsads.offset(bi as isize) = *mvsads.offset(nmvsad as isize);
                         }
                     }
-                    let mut i_9 = 0i32;
                     while i_9 < nmvsad {
                         let mut cost_13 = (*h).pixf.fpelcmp[i_pixel as usize]
                             .expect("non-null function pointer")(
@@ -2486,10 +2486,10 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                 } else {
                     let mut my_3 = min_y;
                     while my_3 <= max_y {
-                        let mut i_10 = 0;
                         let mut ycost_0 =
                             *p_cost_mvy.offset((my_3 * 4i32) as isize) as ::core::ffi::c_int;
                         if !(bcost <= ycost_0) {
+                            let mut i_10 = 0;
                             bcost -= ycost_0;
                             xn = (*h).pixf.ads[i_pixel as usize]
                                 .expect("non-null function pointer")(
@@ -2947,6 +2947,9 @@ unsafe extern "C" fn refine_subpel(
     mut b_refine_qpel: ::core::ffi::c_int,
 ) {
     unsafe {
+        let mut pix = [0; 1152];
+        let mut costs = [0; 4];
+        let mut bdir = 0;
         let bw = x264_pixel_size[(*m).i_pixel as usize].w as ::core::ffi::c_int;
         let bh = x264_pixel_size[(*m).i_pixel as usize].h as ::core::ffi::c_int;
         let mut p_cost_mvx = (*m)
@@ -2970,13 +2973,10 @@ unsafe extern "C" fn refine_subpel(
         } else {
             0i32
         };
-        let mut pix = [0; 1152];
-        let mut costs = [0; 4];
         let mut bmx = (*m).mv[0usize] as ::core::ffi::c_int;
         let mut bmy = (*m).mv[1usize] as ::core::ffi::c_int;
         let mut bcost = (*m).cost;
         let mut odir = -(1i32);
-        let mut bdir = 0;
         if hpel_iters != 0 {
             if (*h).mb.i_subpel_refine < 3i32 {
                 let mut mx = x264_clip3(
@@ -3020,9 +3020,9 @@ unsafe extern "C" fn refine_subpel(
             bcost <<= 6i32;
             let mut i = hpel_iters;
             while i > 0i32 {
+                let mut stride_0 = 64isize;
                 let mut omx = bmx;
                 let mut omy = bmy;
-                let mut stride_0 = 64isize;
                 let mut src0 = (*h).mc.get_ref.expect("non-null function pointer")(
                     &raw mut pix as *mut crate::src::common::common::pixel,
                     &raw mut stride_0,
@@ -3921,6 +3921,8 @@ unsafe extern "C" fn me_refine_bidir(
     mut rd: ::core::ffi::c_int,
 ) {
     unsafe {
+        let mut visited = [[[0; 8]; 8]; 8];
+        let mut pass = 0i32;
         let mut x = i8 & 1i32;
         let mut y = i8 >> 1i32;
         let mut s8 = crate::src::common::base::X264_SCAN8_0 + 2i32 * x + 16i32 * y;
@@ -3937,10 +3939,6 @@ unsafe extern "C" fn me_refine_bidir(
         let i_pixel = (*m0).i_pixel;
         let bw = x264_pixel_size[i_pixel as usize].w as ::core::ffi::c_int;
         let bh = x264_pixel_size[i_pixel as usize].h as ::core::ffi::c_int;
-        let mut pixy_buf = [[[0; 256]; 9]; 2];
-        let mut pixu_buf = [[[0; 256]; 9]; 2];
-        let mut pixv_buf = [[[0; 256]; 9]; 2];
-        let mut src = [[[::core::ptr::null_mut::<crate::src::common::common::pixel>(); 9]; 2]; 3];
         let mut chromapix = (*h).luma2chroma_pixel[i_pixel as usize] as ::core::ffi::c_int;
         let mut chroma_v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
@@ -3983,17 +3981,12 @@ unsafe extern "C" fn me_refine_bidir(
         } else {
             0i32
         };
-        let mut stride = [[[0; 9]; 2]; 3];
         let mut bm0x = (*m0).mv[0usize] as ::core::ffi::c_int;
         let mut bm0y = (*m0).mv[1usize] as ::core::ffi::c_int;
         let mut bm1x = (*m1).mv[0usize] as ::core::ffi::c_int;
         let mut bm1y = (*m1).mv[1usize] as ::core::ffi::c_int;
         let mut bcost = crate::src::encoder::me::COST_MAX;
-        let mut mc_list0 = 1i32;
-        let mut mc_list1 = 1i32;
         let mut bcostrd = crate::src::encoder::me::COST_MAX64;
-        let mut amvd = 0;
-        let mut visited = [[[0; 8]; 8]; 8];
         static mut dia4d: [[crate::stdlib::int8_t; 4]; 33] = [
             [0i8, 0i8, 0i8, 0i8],
             [0i8, 0i8, 0i8, 1i8],
@@ -4075,8 +4068,15 @@ unsafe extern "C" fn me_refine_bidir(
             &raw mut visited as *mut ::core::ffi::c_void,
             ::core::mem::size_of::<[[[crate::stdlib::uint8_t; 8]; 8]; 8]>(),
         );
-        let mut pass = 0i32;
         while pass < 8i32 {
+            let mut pixy_buf = [[[0; 256]; 9]; 2];
+            let mut pixu_buf = [[[0; 256]; 9]; 2];
+            let mut pixv_buf = [[[0; 256]; 9]; 2];
+            let mut src =
+                [[[::core::ptr::null_mut::<crate::src::common::common::pixel>(); 9]; 2]; 3];
+            let mut stride = [[[0; 9]; 2]; 3];
+            let mut mc_list0 = 1i32;
+            let mut mc_list1 = 1i32;
             let mut bestj = 0i32;
             if mc_list0 != 0 {
                 let mut j = x264_8_iter_kludge;
@@ -4473,6 +4473,7 @@ unsafe extern "C" fn me_refine_bidir(
             pass += 1;
         }
         if rd != 0 {
+            let mut amvd = 0;
             x264_macroblock_cache_mv(
                 h,
                 2i32 * x,
@@ -4559,6 +4560,12 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
     mut i_list: ::core::ffi::c_int,
 ) {
     unsafe {
+        let mut satd = 0;
+        let mut bsatd = 0;
+        let mut pixu = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
+        let mut pixv = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
+        let mut j = 0i32;
+        let mut i_0 = 0i32;
         let mut cache_mv = &raw mut *(&raw mut *(&raw mut (*h).mb.cache.mv
             as *mut [[crate::stdlib::int16_t; 2]; 40])
             .offset(i_list as isize)
@@ -4581,8 +4588,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
         let mut bcost = crate::src::encoder::me::COST_MAX64;
         let mut bmx = (*m).mv[0usize] as ::core::ffi::c_int;
         let mut bmy = (*m).mv[1usize] as ::core::ffi::c_int;
-        let mut satd = 0;
-        let mut bsatd = 0;
         let mut dir = -(2i32);
         let mut i8 = i4 >> 2i32;
         let mut pix = (*(&raw mut (*h).mb.pic.p_fdec
@@ -4592,8 +4597,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             *(&raw const block_idx_xy_fdec as *const crate::stdlib::uint16_t).offset(i4 as isize)
                 as isize,
         );
-        let mut pixu = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
-        let mut pixv = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
         if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
         {
@@ -4886,7 +4889,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
         dir = -(2i32);
         let mut omx = bmx;
         let mut omy = bmy;
-        let mut j = 0i32;
         while j < 6i32 {
             if 1i32 == 0
                 || !(omx + hex2[(j + 1i32) as usize][0usize] as ::core::ffi::c_int == pmx
@@ -5014,6 +5016,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
         if dir != -(2i32) {
             let mut i = 1i32;
             while i < 10i32 {
+                let mut j_0 = 0i32;
                 let odir = mod6m1[(dir + 1i32) as usize] as ::core::ffi::c_int;
                 if bmy < (*h).mb.mv_min_spel[1usize] + 3i32
                     || bmy > (*h).mb.mv_max_spel[1usize] - 3i32
@@ -5023,7 +5026,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                 dir = -(2i32);
                 omx = bmx;
                 omy = bmy;
-                let mut j_0 = 0i32;
                 while j_0 < 3i32 {
                     if 1i32 == 0
                         || !(omx + hex2[(odir + j_0) as usize][0usize] as ::core::ffi::c_int == pmx
@@ -5168,7 +5170,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
         }
         omx = bmx;
         omy = bmy;
-        let mut i_0 = 0i32;
         while i_0 < 8i32 {
             if 1i32 == 0
                 || !(omx + square1[(i_0 + 1i32) as usize][0usize] as ::core::ffi::c_int == pmx

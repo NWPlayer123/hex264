@@ -348,6 +348,7 @@ unsafe extern "C" fn scaling_list_write(
             bs_write1(s, 1u32);
             bs_write_se(s, -(8i32));
         } else {
+            let mut j = 0i32;
             bs_write1(s, 1u32);
             let mut run = len;
             while run > 1i32 {
@@ -369,7 +370,6 @@ unsafe extern "C" fn scaling_list_write(
             {
                 run = len;
             }
-            let mut j = 0i32;
             while j < run {
                 bs_write_se(
                     s,
@@ -401,8 +401,8 @@ pub unsafe extern "C" fn x264_8_sei_write(
     mut payload_type: ::core::ffi::c_int,
 ) {
     unsafe {
-        bs_realign(s);
         let mut i = 0i32;
+        bs_realign(s);
         while i <= payload_type - 255i32 {
             bs_write(s, 8i32, 255u32);
             i += 255i32;
@@ -854,6 +854,7 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
                 }
             }
             crate::x264_h::X264_CQM_CUSTOM_1 => {
+                let mut i_1 = 0i32;
                 transpose(
                     &raw mut (*param).cqm_4iy as *mut crate::stdlib::uint8_t,
                     4i32,
@@ -910,7 +911,6 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
                 (*sps).scaling_list
                     [(crate::src::common::set::CQM_8PC as ::core::ffi::c_int + 4i32) as usize] =
                     &raw mut (*param).cqm_8pc as *mut crate::stdlib::uint8_t;
-                let mut i_1 = 0i32;
                 while i_1 < 8i32 {
                     let mut j = 0i32;
                     while j < (if i_1 < 4i32 { 16i32 } else { 64i32 }) {
@@ -1058,6 +1058,7 @@ pub unsafe extern "C" fn x264_8_sps_write(
                 (*sps).vui.b_aspect_ratio_info_present as crate::stdlib::uint32_t,
             );
             if (*sps).vui.b_aspect_ratio_info_present != 0 {
+                let mut i = 0i32;
                 static mut sar: [C2Rust_Unnamed_24; 17] = [
                     C2Rust_Unnamed_24 {
                         w: 1u8,
@@ -1145,7 +1146,6 @@ pub unsafe extern "C" fn x264_8_sps_write(
                         sar: 255u8,
                     },
                 ];
-                let mut i = 0i32;
                 while sar[i as usize].sar as ::core::ffi::c_int != 255i32 {
                     if sar[i as usize].w as ::core::ffi::c_int == (*sps).vui.i_sar_width
                         && sar[i as usize].h as ::core::ffi::c_int == (*sps).vui.i_sar_height
@@ -1504,7 +1504,6 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
             0x20u8, 0xd9u8, 0x23u8, 0xeeu8, 0xefu8,
         ];
         let mut opts = crate::src::common::base::x264_param2string(&raw mut (*h).param, 0i32);
-        let mut length = 0;
         if opts.is_null() {
             return -(1i32);
         }
@@ -1515,6 +1514,7 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
             crate::src::common::base::x264_free(opts as *mut ::core::ffi::c_void);
             return -(1i32);
         } else {
+            let mut length = 0;
             crate::stdlib::memcpy(
                 payload as *mut ::core::ffi::c_void,
                 &raw const uuid as *const ::core::ffi::c_void,
@@ -1552,7 +1552,6 @@ pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
 ) {
     unsafe {
-        let mut sps = &raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t;
         let mut q = crate::src::common::bitstream::bs_s {
             p_start: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
             p: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
@@ -1562,6 +1561,7 @@ pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf = [0; 100];
+        let mut sps = &raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t;
         (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
@@ -1597,7 +1597,6 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
 ) {
     unsafe {
-        let mut sps = &raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t;
         let mut q = crate::src::common::bitstream::bs_s {
             p_start: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
             p: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
@@ -1607,6 +1606,7 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf = [0; 100];
+        let mut sps = &raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t;
         (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
@@ -1629,12 +1629,12 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
             );
         }
         if (*sps).vui.b_pic_struct_present != 0 {
+            let mut i = 0i32;
             bs_write(
                 &raw mut q,
                 4i32,
                 ((*(*h).fenc).i_pic_struct - 1i32) as crate::stdlib::uint32_t,
             );
-            let mut i = 0i32;
             while i < num_clock_ts[(*(*h).fenc).i_pic_struct as usize] as ::core::ffi::c_int {
                 bs_write1(&raw mut q, 0u32);
                 i += 1;
@@ -1655,7 +1655,6 @@ pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
 ) {
     unsafe {
-        let mut quincunx_sampling_flag = ((*h).param.i_frame_packing == 0i32) as ::core::ffi::c_int;
         let mut q = crate::src::common::bitstream::bs_s {
             p_start: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
             p: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
@@ -1665,6 +1664,7 @@ pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf = [0; 100];
+        let mut quincunx_sampling_flag = ((*h).param.i_frame_packing == 0i32) as ::core::ffi::c_int;
         (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
@@ -1882,8 +1882,8 @@ pub unsafe extern "C" fn x264_8_filler_write(
     mut filler: ::core::ffi::c_int,
 ) {
     unsafe {
-        bs_realign(s);
         let mut i = 0i32;
+        bs_realign(s);
         while i < filler {
             bs_write(s, 8i32, 0xffu32);
             i += 1;
@@ -1898,7 +1898,6 @@ pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
 ) {
     unsafe {
-        let mut sh = &raw mut (*h).sh_backup;
         let mut q = crate::src::common::bitstream::bs_s {
             p_start: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
             p: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
@@ -1908,6 +1907,7 @@ pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf = [0; 100];
+        let mut sh = &raw mut (*h).sh_backup;
         (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
@@ -1953,8 +1953,8 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut data = [0; 512];
-        let mut msg = b"UMID\0".as_ptr() as *const ::core::ffi::c_char;
         let len = 497i32;
+        let mut msg = b"UMID\0".as_ptr() as *const ::core::ffi::c_char;
         crate::stdlib::memset(
             &raw mut data as *mut ::core::ffi::c_void,
             0xffi32,

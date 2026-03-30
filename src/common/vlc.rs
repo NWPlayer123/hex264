@@ -11,6 +11,7 @@ pub static mut x264_8_run_before: [crate::stdlib::uint32_t; 65536] = [0; 65536];
 pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i_suffix = 0i32;
+        let mut i = 2u32;
         while i_suffix < 7i32 {
             let mut level =
                 (-crate::src::common::bitstream::LEVEL_TABLE_SIZE / 2i32) as crate::stdlib::int16_t;
@@ -70,7 +71,6 @@ pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::commo
         }
         x264_8_run_before[0usize] = 0u32;
         x264_8_run_before[1usize] = 0u32;
-        let mut i = 2u32;
         while i < ((1i32) << 16i32) as crate::stdlib::uint32_t {
             let mut runlevel = crate::src::common::bitstream::x264_run_level_t {
                 last: 0,
@@ -81,6 +81,7 @@ pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::commo
             let mut size = 0i32;
             let mut bits = 0i32;
             let mut j = 0i32;
+            let mut j_0 = 0i32;
             while j < 16i32 {
                 dct[j as usize] = (i & ((1i32) << j) as crate::stdlib::uint32_t)
                     as crate::src::common::common::dctcoef;
@@ -94,7 +95,6 @@ pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::commo
             );
             let mut zeros = runlevel.last + 1i32 - total;
             let mut mask_0 = i << i.leading_zeros() as i32 + 1i32;
-            let mut j_0 = 0i32;
             while j_0 < total - 1i32 && zeros > 0i32 {
                 let mut idx = (if zeros < 7i32 { zeros } else { 7i32 }) - 1i32;
                 let mut run = mask_0.leading_zeros() as i32;

@@ -164,6 +164,7 @@ unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
     unsafe {
         let mut tmp = [0; 16];
         let mut i = 0i32;
+        let mut i_0 = 0i32;
         while i < 4i32 {
             let mut s01 = *d.offset((i * 4i32 + 0i32) as isize) as ::core::ffi::c_int
                 + *d.offset((i * 4i32 + 1i32) as isize) as ::core::ffi::c_int;
@@ -179,7 +180,6 @@ unsafe extern "C" fn dct4x4dc(mut d: *mut crate::src::common::common::dctcoef) {
             tmp[(3i32 * 4i32 + i) as usize] = (d01 + d23) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0 < 4i32 {
             let mut s01_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int;
@@ -205,6 +205,7 @@ unsafe extern "C" fn idct4x4dc(mut d: *mut crate::src::common::common::dctcoef) 
     unsafe {
         let mut tmp = [0; 16];
         let mut i = 0i32;
+        let mut i_0 = 0i32;
         while i < 4i32 {
             let mut s01 = *d.offset((i * 4i32 + 0i32) as isize) as ::core::ffi::c_int
                 + *d.offset((i * 4i32 + 1i32) as isize) as ::core::ffi::c_int;
@@ -220,7 +221,6 @@ unsafe extern "C" fn idct4x4dc(mut d: *mut crate::src::common::common::dctcoef) 
             tmp[(3i32 * 4i32 + i) as usize] = (d01 + d23) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0 < 4i32 {
             let mut s01_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 1i32) as usize] as ::core::ffi::c_int;
@@ -323,6 +323,8 @@ unsafe extern "C" fn sub4x4_dct(
     unsafe {
         let mut d = [0; 16];
         let mut tmp = [0; 16];
+        let mut i = 0i32;
+        let mut i_0 = 0i32;
         pixel_sub_wxh(
             &raw mut d as *mut crate::src::common::common::dctcoef,
             4i32,
@@ -331,7 +333,6 @@ unsafe extern "C" fn sub4x4_dct(
             pix2,
             crate::src::common::common::FDEC_STRIDE,
         );
-        let mut i = 0i32;
         while i < 4i32 {
             let mut s03 = d[(i * 4i32 + 0i32) as usize] + d[(i * 4i32 + 3i32) as usize];
             let mut s12 = d[(i * 4i32 + 1i32) as usize] + d[(i * 4i32 + 2i32) as usize];
@@ -345,7 +346,6 @@ unsafe extern "C" fn sub4x4_dct(
                 (d03 - 2i32 * d12) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0 < 4i32 {
             let mut s03_0 = tmp[(i_0 * 4i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
@@ -542,6 +542,8 @@ unsafe extern "C" fn add4x4_idct(
         let mut d = [0; 16];
         let mut tmp = [0; 16];
         let mut i = 0i32;
+        let mut i_0 = 0i32;
+        let mut y = 0i32;
         while i < 4i32 {
             let mut s02 = *dct.offset((0i32 * 4i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((2i32 * 4i32 + i) as isize) as ::core::ffi::c_int;
@@ -557,7 +559,6 @@ unsafe extern "C" fn add4x4_idct(
             tmp[(i * 4i32 + 3i32) as usize] = (s02 - s13) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0 < 4i32 {
             let mut s02_0 = tmp[(0i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int
                 + tmp[(2i32 * 4i32 + i_0) as usize] as ::core::ffi::c_int;
@@ -577,7 +578,6 @@ unsafe extern "C" fn add4x4_idct(
                 (s02_0 - s13_0 + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
             i_0 += 1;
         }
-        let mut y = 0i32;
         while y < 4i32 {
             let mut x = 0i32;
             while x < 4i32 {
@@ -639,6 +639,8 @@ unsafe extern "C" fn sub8x8_dct8(
 ) {
     unsafe {
         let mut tmp = [0; 64];
+        let mut i = 0i32;
+        let mut i_0 = 0i32;
         pixel_sub_wxh(
             &raw mut tmp as *mut crate::src::common::common::dctcoef,
             8i32,
@@ -647,7 +649,6 @@ unsafe extern "C" fn sub8x8_dct8(
             pix2,
             crate::src::common::common::FDEC_STRIDE,
         );
-        let mut i = 0i32;
         while i < 8i32 {
             let mut s07 = tmp[(0i32 * 8i32 + i) as usize] as ::core::ffi::c_int
                 + tmp[(7i32 * 8i32 + i) as usize] as ::core::ffi::c_int;
@@ -689,7 +690,6 @@ unsafe extern "C" fn sub8x8_dct8(
                 ((a4 >> 2i32) - a7) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0 < 8i32 {
             let mut s07_0 = tmp[(i_0 * 8i32 + 0i32) as usize] as ::core::ffi::c_int
                 + tmp[(i_0 * 8i32 + 7i32) as usize] as ::core::ffi::c_int;
@@ -768,10 +768,11 @@ unsafe extern "C" fn add8x8_idct8(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) {
     unsafe {
+        let mut i = 0i32;
+        let mut i_0 = 0i32;
         let ref mut c2rust_fresh0 = *dct.offset(0isize);
         *c2rust_fresh0 =
             (*c2rust_fresh0 as ::core::ffi::c_int + 32i32) as crate::src::common::common::dctcoef;
-        let mut i = 0i32;
         while i < 8i32 {
             let mut a0 = *dct.offset((0i32 * 8i32 + i) as isize) as ::core::ffi::c_int
                 + *dct.offset((4i32 * 8i32 + i) as isize) as ::core::ffi::c_int;
@@ -823,7 +824,6 @@ unsafe extern "C" fn add8x8_idct8(
                 (b0 - b7) as crate::src::common::common::dctcoef;
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0 < 8i32 {
             let mut a0_0 = *dct.offset((i_0 * 8i32 + 0i32) as isize) as ::core::ffi::c_int
                 + *dct.offset((i_0 * 8i32 + 4i32) as isize) as ::core::ffi::c_int;
@@ -940,8 +940,8 @@ unsafe extern "C" fn add4x4_idct_dc(
     mut dc: crate::src::common::common::dctcoef,
 ) {
     unsafe {
-        dc = (dc as ::core::ffi::c_int + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
         let mut i = 0i32;
+        dc = (dc as ::core::ffi::c_int + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
         while i < 4i32 {
             *p_dst.offset(0isize) = x264_clip_pixel(
                 *p_dst.offset(0isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int,

@@ -160,12 +160,6 @@ pub unsafe extern "C" fn x264_8_cqm_init(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut c2rust_current_block: u64;
-        let mut def_quant4 = [[0; 16]; 6];
-        let mut def_quant8 = [[0; 64]; 6];
-        let mut def_dequant4 = [[0; 16]; 6];
-        let mut def_dequant8 = [[0; 64]; 6];
-        let mut quant4_mf = [[[0; 16]; 6]; 4];
-        let mut quant8_mf = [[[0; 64]; 6]; 4];
         let mut deadzone = [
             32i32 - (*h).param.analyse.i_luma_deadzone[1usize],
             32i32 - (*h).param.analyse.i_luma_deadzone[0usize],
@@ -186,15 +180,15 @@ pub unsafe extern "C" fn x264_8_cqm_init(
         } else {
             0i32
         };
-        let mut i = 0i32;
         loop {
+            let mut i = 0i32;
+            let mut j = 0i32;
             if !(i < 4i32) {
                 c2rust_current_block = 5529461102203738653;
                 break;
             }
             let mut size = 4i32 * 4i32;
             let mut start = if 4i32 == 8i32 { 4i32 } else { 0i32 };
-            let mut j = 0i32;
             while j < i {
                 if crate::stdlib::memcmp(
                     (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).scaling_list
@@ -290,15 +284,15 @@ pub unsafe extern "C" fn x264_8_cqm_init(
         }
         match c2rust_current_block {
             5529461102203738653 => {
-                let mut i_0 = 0i32;
                 loop {
+                    let mut i_0 = 0i32;
+                    let mut j_0 = 0i32;
                     if !(i_0 < num_8x8_lists) {
                         c2rust_current_block = 7419121793134201633;
                         break;
                     }
                     let mut size_0 = 8i32 * 8i32;
                     let mut start_0 = if 8i32 == 8i32 { 4i32 } else { 0i32 };
-                    let mut j_0 = 0i32;
                     while j_0 < i_0 {
                         if crate::stdlib::memcmp(
                             (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
@@ -402,9 +396,18 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                 match c2rust_current_block {
                     16190416820810941155 => {}
                     _ => {
+                        let mut def_quant4 = [[0; 16]; 6];
+                        let mut def_quant8 = [[0; 64]; 6];
+                        let mut def_dequant4 = [[0; 16]; 6];
+                        let mut def_dequant8 = [[0; 64]; 6];
+                        let mut quant4_mf = [[[0; 16]; 6]; 4];
+                        let mut quant8_mf = [[[0; 64]; 6]; 4];
                         let mut q = 0i32;
+                        let mut q_0 = 0i32;
+                        let mut q_1 = 0i32;
                         while q < 6i32 {
                             let mut i_1 = 0i32;
+                            let mut i_2 = 0i32;
                             while i_1 < 16i32 {
                                 let mut j_1 = (i_1 & 1i32) + (i_1 >> 2i32 & 1i32);
                                 def_dequant4[q as usize][i_1 as usize] =
@@ -413,7 +416,6 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                     quant4_scale[q as usize][j_1 as usize] as ::core::ffi::c_int;
                                 i_1 += 1;
                             }
-                            let mut i_2 = 0i32;
                             while i_2 < 64i32 {
                                 let mut j_2 = quant8_scan
                                     [(i_2 >> 1i32 & 12i32 | i_2 & 3i32) as usize]
@@ -426,9 +428,9 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                             }
                             q += 1;
                         }
-                        let mut q_0 = 0i32;
                         while q_0 < 6i32 {
                             let mut i_list = 0i32;
+                            let mut i_list_0 = 0i32;
                             while i_list < 4i32 {
                                 let mut i_3 = 0i32;
                                 while i_3 < 16i32 {
@@ -459,7 +461,6 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 }
                                 i_list += 1;
                             }
-                            let mut i_list_0 = 0i32;
                             while i_list_0 < num_8x8_lists {
                                 let mut i_4 = 0i32;
                                 while i_4 < 64i32 {
@@ -492,7 +493,6 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                             }
                             q_0 += 1;
                         }
-                        let mut q_1 = 0i32;
                         while q_1 <= crate::src::common::common::QP_MAX_SPEC {
                             let mut j_3 = 0;
                             let mut i_list_1 = 0i32;
@@ -700,6 +700,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 {
                                     let mut dct8x8 = cat & 1i32;
                                     if !((*h).param.analyse.b_transform_8x8 == 0 && dct8x8 != 0) {
+                                        let mut i_7 = 0i32;
                                         let mut size_1 = if dct8x8 != 0 { 64i32 } else { 16i32 };
                                         let mut nr_offset = &raw mut *(&raw mut *(*h)
                                             .nr_offset_emergency
@@ -715,8 +716,6 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             - crate::src::common::common::QP_MAX_SPEC)
                                             * 2i32
                                             / 3i32;
-                                        let mut chroma_threshold = 0i32;
-                                        let mut i_7 = 0i32;
                                         while i_7 < size_1 {
                                             let mut max = ((1i32)
                                                 << 7i32 + crate::internal::BIT_DEPTH)
@@ -732,6 +731,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                 let mut thresh = if i_7 == 0i32 {
                                                     dc_threshold
                                                 } else if cat >= 2i32 {
+                                                    let mut chroma_threshold = 0i32;
                                                     chroma_threshold
                                                 } else {
                                                     luma_threshold
@@ -853,6 +853,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
 pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i = 0i32;
+        let mut i_0 = 0i32;
         while i < 4i32 {
             let mut j = 0i32;
             while j < i {
@@ -889,7 +890,6 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
             }
             i += 1;
         }
-        let mut i_0 = 0i32;
         while i_0
             < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                 == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -946,6 +946,7 @@ unsafe extern "C" fn cqm_parse_jmlist(
     mut length: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
+        let mut i = 0i32;
         let mut p = crate::stdlib::strstr(buf, name);
         if p.is_null() {
             crate::stdlib::memset(
@@ -960,7 +961,6 @@ unsafe extern "C" fn cqm_parse_jmlist(
             p = p.offset(1);
         }
         let mut nextvar = crate::stdlib::strstr(p, b"INT\0".as_ptr() as *const ::core::ffi::c_char);
-        let mut i = 0i32;
         while i < length
             && {
                 p = crate::stdlib::strpbrk(p, b" \t\n,\0".as_ptr() as *const ::core::ffi::c_char);
@@ -1018,7 +1018,6 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
     mut filename: *const ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut p = ::core::ptr::null_mut::<::core::ffi::c_char>();
         let mut b_error = 0i32;
         (*h).param.i_cqm_preset = crate::x264_h::X264_CQM_CUSTOM;
         let mut buf = crate::src::common::base::x264_slurp_file(filename);
@@ -1032,6 +1031,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
             return -(1i32);
         }
         loop {
+            let mut p = ::core::ptr::null_mut::<::core::ffi::c_char>();
             p = crate::stdlib::strchr(buf, '#' as i32);
             if p.is_null() {
                 break;

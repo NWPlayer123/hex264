@@ -7331,8 +7331,8 @@ unsafe extern "C" fn pixel_avg_weight_wxh(
     mut i_weight1: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut i_weight2 = 64i32 - i_weight1;
         let mut y = 0i32;
+        let mut i_weight2 = 64i32 - i_weight1;
         while y < height {
             let mut x = 0i32;
             while x < width {
@@ -8012,13 +8012,15 @@ unsafe extern "C" fn hpel_filter(
     mut buf: *mut crate::stdlib::int16_t,
 ) {
     unsafe {
+        let mut y = 0i32;
         let pad = if crate::internal::BIT_DEPTH > 9i32 {
             -(10i32) * crate::src::common::common::PIXEL_MAX
         } else {
             0i32
         };
-        let mut y = 0i32;
         while y < height {
+            let mut x_0 = 0i32;
+            let mut x_1 = 0i32;
             let mut x = -(2i32);
             while x < width + 3i32 {
                 let mut v = *src.offset(x as crate::stdlib::intptr_t - 2isize * stride)
@@ -8038,7 +8040,6 @@ unsafe extern "C" fn hpel_filter(
                 *buf.offset((x + 2i32) as isize) = (v + pad) as crate::stdlib::int16_t;
                 x += 1;
             }
-            let mut x_0 = 0i32;
             while x_0 < width {
                 *dstc.offset(x_0 as isize) = x264_clip_pixel(
                     *buf.offset(2isize).offset((x_0 - 2i32 * 1i32) as isize) as ::core::ffi::c_int
@@ -8059,7 +8060,6 @@ unsafe extern "C" fn hpel_filter(
                 );
                 x_0 += 1;
             }
-            let mut x_1 = 0i32;
             while x_1 < width {
                 *dsth.offset(x_1 as isize) = x264_clip_pixel(
                     *src.offset((x_1 - 2i32 * 1i32) as isize) as ::core::ffi::c_int
@@ -8224,6 +8224,7 @@ unsafe extern "C" fn mc_chroma(
     mut i_height: ::core::ffi::c_int,
 ) {
     unsafe {
+        let mut y = 0i32;
         let mut d8x = mvx & 0x7i32;
         let mut d8y = mvy & 0x7i32;
         let mut cA = (8i32 - d8x) * (8i32 - d8y);
@@ -8235,7 +8236,6 @@ unsafe extern "C" fn mc_chroma(
                 + ((mvx >> 3i32) * 2i32) as crate::stdlib::intptr_t,
         );
         let mut srcp = src.offset(i_src_stride);
-        let mut y = 0i32;
         while y < i_height {
             let mut x = 0i32;
             while x < i_width {
@@ -8444,10 +8444,10 @@ unsafe extern "C" fn plane_copy_deinterleave_v210_c(
     unsafe {
         let mut l = 0i32;
         while l < h {
+            let mut n = 0i32;
             let mut dsty0 = dsty;
             let mut dstc0 = dstc;
             let mut src0 = src;
-            let mut n = 0i32;
             while n < w {
                 let c2rust_fresh1 = src0;
                 src0 = src0.offset(1);
@@ -8571,11 +8571,11 @@ unsafe extern "C" fn integral_init4h(
     mut stride: crate::stdlib::intptr_t,
 ) {
     unsafe {
+        let mut x = 0i32;
         let mut v = *pix.offset(0isize) as ::core::ffi::c_int
             + *pix.offset(1isize) as ::core::ffi::c_int
             + *pix.offset(2isize) as ::core::ffi::c_int
             + *pix.offset(3isize) as ::core::ffi::c_int;
-        let mut x = 0i32;
         while (x as crate::stdlib::intptr_t) < stride - 4isize {
             *sum.offset(x as isize) = (v + *sum.offset(x as crate::stdlib::intptr_t - stride)
                 as ::core::ffi::c_int)
@@ -8592,6 +8592,7 @@ unsafe extern "C" fn integral_init8h(
     mut stride: crate::stdlib::intptr_t,
 ) {
     unsafe {
+        let mut x = 0i32;
         let mut v = *pix.offset(0isize) as ::core::ffi::c_int
             + *pix.offset(1isize) as ::core::ffi::c_int
             + *pix.offset(2isize) as ::core::ffi::c_int
@@ -8600,7 +8601,6 @@ unsafe extern "C" fn integral_init8h(
             + *pix.offset(5isize) as ::core::ffi::c_int
             + *pix.offset(6isize) as ::core::ffi::c_int
             + *pix.offset(7isize) as ::core::ffi::c_int;
-        let mut x = 0i32;
         while (x as crate::stdlib::intptr_t) < stride - 8isize {
             *sum.offset(x as isize) = (v + *sum.offset(x as crate::stdlib::intptr_t - stride)
                 as ::core::ffi::c_int)
@@ -8618,6 +8618,7 @@ unsafe extern "C" fn integral_init4v(
 ) {
     unsafe {
         let mut x = 0i32;
+        let mut x_0 = 0i32;
         while (x as crate::stdlib::intptr_t) < stride - 8isize {
             *sum4.offset(x as isize) = (*sum8.offset(x as crate::stdlib::intptr_t + 4isize * stride)
                 as ::core::ffi::c_int
@@ -8625,7 +8626,6 @@ unsafe extern "C" fn integral_init4v(
                 as crate::stdlib::uint16_t;
             x += 1;
         }
-        let mut x_0 = 0i32;
         while (x_0 as crate::stdlib::intptr_t) < stride - 8isize {
             *sum8.offset(x_0 as isize) = (*sum8
                 .offset(x_0 as crate::stdlib::intptr_t + 8isize * stride)
@@ -8660,11 +8660,13 @@ pub unsafe extern "C" fn x264_8_frame_init_lowres(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
 ) {
     unsafe {
+        let mut y = 0i32;
+        let mut y_0 = 0i32;
+        let mut y_1 = 0i32;
         let mut src = (*frame).plane[0usize];
         let mut i_stride = (*frame).i_stride[0usize];
         let mut i_height = (*frame).i_lines[0usize];
         let mut i_width = (*frame).i_width[0usize];
-        let mut y = 0i32;
         while y < i_height {
             *src.offset((i_width + y * i_stride) as isize) =
                 *src.offset((i_width - 1i32 + y * i_stride) as isize);
@@ -8695,7 +8697,6 @@ pub unsafe extern "C" fn x264_8_frame_init_lowres(
             -(1i32),
             ::core::mem::size_of::<[[::core::ffi::c_int; 18]; 18]>(),
         );
-        let mut y_0 = 0i32;
         while y_0 < (*h).param.i_bframe + 2i32 {
             let mut x = 0i32;
             while x < (*h).param.i_bframe + 2i32 {
@@ -8704,7 +8705,6 @@ pub unsafe extern "C" fn x264_8_frame_init_lowres(
             }
             y_0 += 1;
         }
-        let mut y_1 = 0i32;
         while y_1 <= ((*h).param.i_bframe != 0) as ::core::ffi::c_int {
             let mut x_0 = 0i32;
             while x_0 <= (*h).param.i_bframe {
@@ -8730,9 +8730,9 @@ unsafe extern "C" fn frame_init_lowres_core(
     unsafe {
         let mut y = 0i32;
         while y < height {
+            let mut x = 0i32;
             let mut src1 = src0.offset(src_stride);
             let mut src2 = src1.offset(src_stride);
-            let mut x = 0i32;
             while x < width {
                 *dst0.offset(x as isize) =
                     ((*src0.offset((2i32 * x) as isize) as ::core::ffi::c_int
@@ -8799,8 +8799,8 @@ unsafe extern "C" fn mbtree_propagate_cost(
     mut len: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut fps = *fps_factor;
         let mut i = 0i32;
+        let mut fps = *fps_factor;
         while i < len {
             let mut intra_cost = *intra_costs.offset(i as isize) as ::core::ffi::c_int;
             let mut inter_cost = if (*intra_costs.offset(i as isize) as ::core::ffi::c_int)
@@ -8842,10 +8842,10 @@ unsafe extern "C" fn mbtree_propagate_list(
     mut list: ::core::ffi::c_int,
 ) {
     unsafe {
+        let mut i = 0i32;
         let mut stride = (*h).mb.i_mb_stride as ::core::ffi::c_uint;
         let mut width = (*h).mb.i_mb_width as ::core::ffi::c_uint;
         let mut height = (*h).mb.i_mb_height as ::core::ffi::c_uint;
-        let mut i = 0i32;
         while i < len {
             let mut lists_used = *lowres_costs.offset(i as isize) as ::core::ffi::c_int
                 >> crate::src::common::frame::LOWRES_COST_SHIFT;
@@ -9603,6 +9603,7 @@ pub unsafe extern "C" fn x264_8_frame_filter(
     mut b_end: ::core::ffi::c_int,
 ) {
     unsafe {
+        let mut p = 0i32;
         let b_interlaced = (*h).param.b_interlaced;
         let mut start = mb_y * 16i32 - 8i32;
         let mut height = (if b_end != 0 {
@@ -9613,7 +9614,6 @@ pub unsafe extern "C" fn x264_8_frame_filter(
         if mb_y & b_interlaced != 0 {
             return;
         }
-        let mut p = 0i32;
         while p
             < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                 == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -9639,6 +9639,7 @@ pub unsafe extern "C" fn x264_8_frame_filter(
                 );
             }
             if b_interlaced != 0 {
+                let mut i = 0i32;
                 stride = (*frame).i_stride[p as usize] << 1i32;
                 start = (mb_y * 16i32 >> 1i32) - 8i32;
                 let mut height_fld = ((if b_end != 0 {
@@ -9648,7 +9649,6 @@ pub unsafe extern "C" fn x264_8_frame_filter(
                 }) >> 1i32)
                     + 8i32;
                 offs = start * stride - 8i32;
-                let mut i = 0i32;
                 while i < 2i32 {
                     (*h).mc.hpel_filter.expect("non-null function pointer")(
                         (*frame).filtered_fld[p as usize][1usize].offset(offs as isize),
@@ -9728,8 +9728,8 @@ pub unsafe extern "C" fn x264_8_frame_filter(
                                     as ::core::ffi::c_int
                         }) as isize),
                     );
-                let mut sum4 = ::core::ptr::null_mut::<crate::stdlib::uint16_t>();
                 if (*h).frames.b_have_sub8x8_esa != 0 {
+                    let mut sum4 = ::core::ptr::null_mut::<crate::stdlib::uint16_t>();
                     (*h).mc.integral_init4h.expect("non-null function pointer")(
                         sum8,
                         pix,

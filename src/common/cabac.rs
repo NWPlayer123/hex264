@@ -34,6 +34,7 @@ static mut cabac_contexts: [[[crate::stdlib::uint8_t; 1024]; 52]; 4] = [[[0; 102
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::common::x264_t) {
     unsafe {
+        let mut i = 0i32;
         let mut ctx_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
         {
@@ -41,8 +42,8 @@ pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::comm
         } else {
             460i32
         };
-        let mut i = 0i32;
         while i < 4i32 {
+            let mut qp = 0i32;
             let mut cabac_context_init = if i == 0i32 {
                 &raw const crate::src::common::tables::x264_cabac_context_init_I
             } else {
@@ -50,7 +51,6 @@ pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::comm
                     as *const [[crate::stdlib::int8_t; 2]; 1024])
                     .offset((i - 1i32) as isize)
             };
-            let mut qp = 0i32;
             while qp <= crate::src::common::common::QP_MAX_SPEC {
                 let mut j = 0i32;
                 while j < ctx_count {
