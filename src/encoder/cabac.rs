@@ -1225,7 +1225,6 @@ unsafe extern "C" fn cabac_qp_delta(
 ) {
     unsafe {
         let mut i_dqp: ::core::ffi::c_int = (*h).mb.i_qp - (*h).mb.i_last_qp;
-        let mut ctx: ::core::ffi::c_int = 0;
         if (*h).mb.i_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
             && *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) == 0
             && (*h).mb.i_qp > (*h).mb.i_last_qp
@@ -1233,7 +1232,7 @@ unsafe extern "C" fn cabac_qp_delta(
             (*h).mb.i_qp = (*h).mb.i_last_qp;
             i_dqp = 0 as ::core::ffi::c_int;
         }
-        ctx = ((*h).mb.i_last_dqp != 0
+        let mut ctx: ::core::ffi::c_int = ((*h).mb.i_last_dqp != 0
             && (*(*h).mb.type_0.offset((*h).mb.i_mb_prev_xy as isize) as ::core::ffi::c_int
                 == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
                 || *(*h).mb.cbp.offset((*h).mb.i_mb_prev_xy as isize) as ::core::ffi::c_int
@@ -1558,8 +1557,6 @@ unsafe extern "C" fn cabac_mvd(
 ) -> crate::stdlib::uint16_t {
     unsafe {
         let mut mvp: [crate::stdlib::int16_t; 2] = [0; 2];
-        let mut mdx: ::core::ffi::c_int = 0;
-        let mut mdy: ::core::ffi::c_int = 0;
         crate::src::common::mvpred::x264_8_mb_predict_mv(
             h as *mut crate::src::common::common::x264_t,
             i_list,
@@ -1567,11 +1564,13 @@ unsafe extern "C" fn cabac_mvd(
             width,
             &raw mut mvp as *mut crate::stdlib::int16_t,
         );
-        mdx = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
-            [0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+        let mut mdx: ::core::ffi::c_int = (*h).mb.cache.mv[i_list as usize]
+            [x264_scan8[idx as usize] as usize][0 as ::core::ffi::c_int as usize]
+            as ::core::ffi::c_int
             - mvp[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int;
-        mdy = (*h).mb.cache.mv[i_list as usize][x264_scan8[idx as usize] as usize]
-            [1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+        let mut mdy: ::core::ffi::c_int = (*h).mb.cache.mv[i_list as usize]
+            [x264_scan8[idx as usize] as usize][1 as ::core::ffi::c_int as usize]
+            as ::core::ffi::c_int
             - mvp[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int;
         let mut amvd: crate::stdlib::uint16_t = x264_cabac_mvd_sum(
             &raw mut *(&raw mut *(&raw mut (*h).mb.cache.mvd
@@ -2942,7 +2941,6 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
     unsafe {
         let i_mb_type: ::core::ffi::c_int = (*h).mb.i_type;
         let i_mb_pos_start: ::core::ffi::c_int = x264_cabac_pos(cb) as ::core::ffi::c_int;
-        let mut i_mb_pos_tex: ::core::ffi::c_int = 0;
         if (*h).sh.b_mbaff != 0
             && ((*h).mb.i_mb_y & 1 as ::core::ffi::c_int == 0
                 || (*(*h)
@@ -2973,7 +2971,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                 chroma,
             );
         }
-        i_mb_pos_tex = x264_cabac_pos(cb);
+        let mut i_mb_pos_tex: ::core::ffi::c_int = x264_cabac_pos(cb);
         (*h).stat.frame.i_mv_bits += i_mb_pos_tex - i_mb_pos_start;
         if i_mb_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int {
             let mut s: crate::src::common::bitstream::bs_t = crate::src::common::bitstream::bs_s {

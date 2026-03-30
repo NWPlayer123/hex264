@@ -941,47 +941,45 @@ unsafe extern "C" fn mb_mc_01xywh(
         let mut tmp0: [crate::src::common::common::pixel; 256] = [0; 256];
         let mut tmp1: [crate::src::common::common::pixel; 256] = [0; 256];
         let mut src0: *mut crate::src::common::common::pixel =
-            ::core::ptr::null_mut::<crate::src::common::common::pixel>();
+            (*h).mc.get_ref.expect("non-null function pointer")(
+                &raw mut tmp0 as *mut crate::src::common::common::pixel,
+                &raw mut i_stride0,
+                (&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
+                    as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
+                    .offset(0 as ::core::ffi::c_int as isize)
+                    as *mut [*mut crate::src::common::common::pixel; 12])
+                    .offset(i_ref0 as isize)
+                    as *mut *mut crate::src::common::common::pixel)
+                    .offset((0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int) as isize)
+                    as *mut *mut crate::src::common::common::pixel,
+                (*h).mb.pic.i_stride[0 as ::core::ffi::c_int as usize] as crate::stdlib::intptr_t,
+                mvx0,
+                mvy0,
+                4 as ::core::ffi::c_int * width,
+                4 as ::core::ffi::c_int * height,
+                &raw mut crate::src::common::tables::x264_zero as *mut crate::stdlib::uint8_t
+                    as *const crate::src::common::mc::x264_weight_t,
+            );
         let mut src1: *mut crate::src::common::common::pixel =
-            ::core::ptr::null_mut::<crate::src::common::common::pixel>();
-        src0 = (*h).mc.get_ref.expect("non-null function pointer")(
-            &raw mut tmp0 as *mut crate::src::common::common::pixel,
-            &raw mut i_stride0,
-            (&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
-                as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
-                .offset(0 as ::core::ffi::c_int as isize)
-                as *mut [*mut crate::src::common::common::pixel; 12])
-                .offset(i_ref0 as isize)
-                as *mut *mut crate::src::common::common::pixel)
-                .offset((0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int) as isize)
-                as *mut *mut crate::src::common::common::pixel,
-            (*h).mb.pic.i_stride[0 as ::core::ffi::c_int as usize] as crate::stdlib::intptr_t,
-            mvx0,
-            mvy0,
-            4 as ::core::ffi::c_int * width,
-            4 as ::core::ffi::c_int * height,
-            &raw mut crate::src::common::tables::x264_zero as *mut crate::stdlib::uint8_t
-                as *const crate::src::common::mc::x264_weight_t,
-        );
-        src1 = (*h).mc.get_ref.expect("non-null function pointer")(
-            &raw mut tmp1 as *mut crate::src::common::common::pixel,
-            &raw mut i_stride1,
-            (&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
-                as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
-                .offset(1 as ::core::ffi::c_int as isize)
-                as *mut [*mut crate::src::common::common::pixel; 12])
-                .offset(i_ref1 as isize)
-                as *mut *mut crate::src::common::common::pixel)
-                .offset((0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int) as isize)
-                as *mut *mut crate::src::common::common::pixel,
-            (*h).mb.pic.i_stride[0 as ::core::ffi::c_int as usize] as crate::stdlib::intptr_t,
-            mvx1,
-            mvy1,
-            4 as ::core::ffi::c_int * width,
-            4 as ::core::ffi::c_int * height,
-            &raw mut crate::src::common::tables::x264_zero as *mut crate::stdlib::uint8_t
-                as *const crate::src::common::mc::x264_weight_t,
-        );
+            (*h).mc.get_ref.expect("non-null function pointer")(
+                &raw mut tmp1 as *mut crate::src::common::common::pixel,
+                &raw mut i_stride1,
+                (&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
+                    as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
+                    .offset(1 as ::core::ffi::c_int as isize)
+                    as *mut [*mut crate::src::common::common::pixel; 12])
+                    .offset(i_ref1 as isize)
+                    as *mut *mut crate::src::common::common::pixel)
+                    .offset((0 as ::core::ffi::c_int * 4 as ::core::ffi::c_int) as isize)
+                    as *mut *mut crate::src::common::common::pixel,
+                (*h).mb.pic.i_stride[0 as ::core::ffi::c_int as usize] as crate::stdlib::intptr_t,
+                mvx1,
+                mvy1,
+                4 as ::core::ffi::c_int * width,
+                4 as ::core::ffi::c_int * height,
+                &raw mut crate::src::common::tables::x264_zero as *mut crate::stdlib::uint8_t
+                    as *const crate::src::common::mc::x264_weight_t,
+            );
         (*h).mc.avg[i_mode as usize].expect("non-null function pointer")(
             (*(&raw mut (*h).mb.pic.p_fdec as *mut *mut crate::src::common::common::pixel)
                 .offset(0 as ::core::ffi::c_int as isize))
@@ -5767,11 +5765,10 @@ unsafe extern "C" fn macroblock_cache_load(
         }
         if (*h).param.b_cabac != 0 {
             if b_mbaff != 0 {
-                let mut left_xy: ::core::ffi::c_int = 0;
                 let mut top_xy: ::core::ffi::c_int = 0;
                 let mut mb_xy: ::core::ffi::c_int =
                     mb_x + (mb_y & !(1 as ::core::ffi::c_int)) * (*h).mb.i_mb_stride;
-                left_xy = mb_xy - 1 as ::core::ffi::c_int;
+                let mut left_xy: ::core::ffi::c_int = mb_xy - 1 as ::core::ffi::c_int;
                 if mb_y & 1 as ::core::ffi::c_int != 0
                     && mb_x > 0 as ::core::ffi::c_int
                     && (*h).mb.field_decoding_flag

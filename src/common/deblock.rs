@@ -769,7 +769,6 @@ unsafe extern "C" fn deblock_edge_luma_c(
             && crate::stdlib::abs(q1 - q0) < beta
         {
             let mut tc: ::core::ffi::c_int = tc0 as ::core::ffi::c_int;
-            let mut delta: ::core::ffi::c_int = 0;
             if crate::stdlib::abs(p2 - p0) < beta {
                 if tc0 != 0 {
                     *pix.offset(
@@ -800,7 +799,7 @@ unsafe extern "C" fn deblock_edge_luma_c(
                 }
                 tc += 1;
             }
-            delta = x264_clip3(
+            let mut delta: ::core::ffi::c_int = x264_clip3(
                 (q0 - p0) * 4 as ::core::ffi::c_int + (p1 - q1) + 4 as ::core::ffi::c_int
                     >> 3 as ::core::ffi::c_int,
                 -tc,

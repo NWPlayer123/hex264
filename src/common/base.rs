@@ -254,11 +254,10 @@ pub unsafe extern "C" fn x264_reduce_fraction(
     unsafe {
         let mut a: crate::stdlib::uint32_t = *n;
         let mut b: crate::stdlib::uint32_t = *d;
-        let mut c: crate::stdlib::uint32_t = 0;
         if a == 0 || b == 0 {
             return;
         }
-        c = a.wrapping_rem(b);
+        let mut c: crate::stdlib::uint32_t = a.wrapping_rem(b);
         while c != 0 {
             a = b;
             b = c;
@@ -276,11 +275,10 @@ pub unsafe extern "C" fn x264_reduce_fraction64(
     unsafe {
         let mut a: crate::stdlib::uint64_t = *n;
         let mut b: crate::stdlib::uint64_t = *d;
-        let mut c: crate::stdlib::uint64_t = 0;
         if a == 0 || b == 0 {
             return;
         }
-        c = a.wrapping_rem(b);
+        let mut c: crate::stdlib::uint64_t = a.wrapping_rem(b);
         while c != 0 {
             a = b;
             b = c;
@@ -337,8 +335,7 @@ pub unsafe extern "C" fn x264_log_internal(
     mut c2rust_args: ...
 ) {
     unsafe {
-        let mut arg: ::core::ffi::VaListImpl;
-        arg = c2rust_args.clone();
+        let mut arg: ::core::ffi::VaListImpl = c2rust_args.clone();
         x264_log_default(
             crate::__stddef_null_h::NULL,
             i_level,
@@ -419,7 +416,6 @@ pub unsafe extern "C" fn x264_slurp_file(
 ) -> *mut ::core::ffi::c_char {
     unsafe {
         let mut b_error: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-        let mut i_size: crate::stdlib::int64_t = 0;
         let mut buf: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
         let mut fh: *mut crate::stdlib::FILE =
             crate::stdlib::fopen(filename, b"rb\0".as_ptr() as *const ::core::ffi::c_char)
@@ -430,7 +426,8 @@ pub unsafe extern "C" fn x264_slurp_file(
         b_error |=
             (crate::stdlib::fseeko(fh, 0 as crate::stdlib::__off64_t, crate::stdlib::SEEK_END)
                 < 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
-        i_size = crate::stdlib::ftello(fh) as crate::stdlib::int64_t;
+        let mut i_size: crate::stdlib::int64_t =
+            crate::stdlib::ftello(fh) as crate::stdlib::int64_t;
         b_error |= (i_size <= 0 as crate::stdlib::int64_t) as ::core::ffi::c_int;
         if crate::osdep_h::WORD_SIZE == 4 as ::core::ffi::c_int {
             b_error |=
@@ -1745,11 +1742,9 @@ pub unsafe extern "C" fn x264_param_parse(
                         ::core::ptr::null_mut::<::core::ffi::c_char>();
                     let mut saveptr: *mut ::core::ffi::c_char =
                         ::core::ptr::null_mut::<::core::ffi::c_char>();
-                    let mut init: *mut ::core::ffi::c_char =
-                        ::core::ptr::null_mut::<::core::ffi::c_char>();
                     b_error = 0 as ::core::ffi::c_int;
                     (*p).cpu = 0 as crate::stdlib::uint32_t;
-                    init = buf;
+                    let mut init: *mut ::core::ffi::c_char = buf;
                     loop {
                         tok = crate::stdlib::strtok_r(
                             init,
@@ -2887,15 +2882,14 @@ pub unsafe extern "C" fn x264_param2string(
 ) -> *mut ::core::ffi::c_char {
     unsafe {
         let mut len: ::core::ffi::c_int = 2000 as ::core::ffi::c_int;
-        let mut buf: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        let mut s: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
         if !(*p).rc.psz_zones.is_null() {
             len = (len as crate::__stddef_size_t_h::size_t)
                 .wrapping_add(crate::stdlib::strlen((*p).rc.psz_zones))
                 as ::core::ffi::c_int as ::core::ffi::c_int;
         }
-        s = x264_malloc(len as crate::stdlib::int64_t) as *mut ::core::ffi::c_char;
-        buf = s;
+        let mut s: *mut ::core::ffi::c_char =
+            x264_malloc(len as crate::stdlib::int64_t) as *mut ::core::ffi::c_char;
+        let mut buf: *mut ::core::ffi::c_char = s;
         if buf.is_null() {
             return ::core::ptr::null_mut::<::core::ffi::c_char>();
         }

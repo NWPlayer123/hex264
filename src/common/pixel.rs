@@ -727,12 +727,11 @@ pub unsafe extern "C" fn x264_8_pixel_ssd_wxh(
 ) -> crate::stdlib::uint64_t {
     unsafe {
         let mut i_ssd: crate::stdlib::uint64_t = 0 as crate::stdlib::uint64_t;
-        let mut y: ::core::ffi::c_int = 0;
         let mut align: ::core::ffi::c_int =
             ((pix1 as crate::stdlib::intptr_t | pix2 as crate::stdlib::intptr_t | i_pix1 | i_pix2)
                 & 15 as ::core::ffi::c_int as crate::stdlib::intptr_t
                 == 0) as ::core::ffi::c_int;
-        y = 0 as ::core::ffi::c_int;
+        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while y < i_height - 15 as ::core::ffi::c_int {
             let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             if align != 0 {
@@ -1814,7 +1813,6 @@ unsafe extern "C" fn pixel_hadamard_ac(
         let mut a1: sum2_t = 0;
         let mut a2: sum2_t = 0;
         let mut a3: sum2_t = 0;
-        let mut dc: sum2_t = 0;
         let mut sum4: sum2_t = 0 as sum2_t;
         let mut sum8: sum2_t = 0 as sum2_t;
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
@@ -1925,10 +1923,11 @@ unsafe extern "C" fn pixel_hadamard_ac(
             );
             i_1 += 1;
         }
-        dc = tmp[0 as ::core::ffi::c_int as usize]
+        let mut dc: sum2_t = tmp[0 as ::core::ffi::c_int as usize]
             .wrapping_add(tmp[8 as ::core::ffi::c_int as usize])
             .wrapping_add(tmp[16 as ::core::ffi::c_int as usize])
-            .wrapping_add(tmp[24 as ::core::ffi::c_int as usize]) as sum_t as sum2_t;
+            .wrapping_add(tmp[24 as ::core::ffi::c_int as usize])
+            as sum_t as sum2_t;
         sum4 = (sum4 as sum_t as sum2_t)
             .wrapping_add(sum4 >> BITS_PER_SUM)
             .wrapping_sub(dc);
@@ -3505,8 +3504,6 @@ pub unsafe extern "C" fn x264_8_field_vsad(
     mut mb_y: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut score_field: ::core::ffi::c_int = 0;
-        let mut score_frame: ::core::ffi::c_int = 0;
         let mut stride: ::core::ffi::c_int =
             (*(*h).fenc).i_stride[0 as ::core::ffi::c_int as usize];
         let mut mb_stride: ::core::ffi::c_int = (*h).mb.i_mb_stride;
@@ -3520,16 +3517,18 @@ pub unsafe extern "C" fn x264_8_field_vsad(
             } else {
                 32 as ::core::ffi::c_int
             };
-        score_frame = (*h).pixf.vsad.expect("non-null function pointer")(
-            fenc,
-            stride as crate::stdlib::intptr_t,
-            mbpair_height,
-        );
-        score_field = (*h).pixf.vsad.expect("non-null function pointer")(
-            fenc,
-            (stride * 2 as ::core::ffi::c_int) as crate::stdlib::intptr_t,
-            mbpair_height >> 1 as ::core::ffi::c_int,
-        );
+        let mut score_frame: ::core::ffi::c_int =
+            (*h).pixf.vsad.expect("non-null function pointer")(
+                fenc,
+                stride as crate::stdlib::intptr_t,
+                mbpair_height,
+            );
+        let mut score_field: ::core::ffi::c_int =
+            (*h).pixf.vsad.expect("non-null function pointer")(
+                fenc,
+                (stride * 2 as ::core::ffi::c_int) as crate::stdlib::intptr_t,
+                mbpair_height >> 1 as ::core::ffi::c_int,
+            );
         score_field += (*h).pixf.vsad.expect("non-null function pointer")(
             fenc.offset(stride as isize),
             (stride * 2 as ::core::ffi::c_int) as crate::stdlib::intptr_t,

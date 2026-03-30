@@ -349,8 +349,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                 } else {
                     0 as ::core::ffi::c_int
                 };
-            let mut j: ::core::ffi::c_int = 0;
-            j = 0 as ::core::ffi::c_int;
+            let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while j < i {
                 if crate::stdlib::memcmp(
                     (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).scaling_list
@@ -481,8 +480,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                         } else {
                             0 as ::core::ffi::c_int
                         };
-                    let mut j_0: ::core::ffi::c_int = 0;
-                    j_0 = 0 as ::core::ffi::c_int;
+                    let mut j_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                     while j_0 < i_0 {
                         if crate::stdlib::memcmp(
                             (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
@@ -1165,8 +1163,7 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
     unsafe {
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < 4 as ::core::ffi::c_int {
-            let mut j: ::core::ffi::c_int = 0;
-            j = 0 as ::core::ffi::c_int;
+            let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while j < i {
                 if (*h).quant4_mf[i as usize] == (*h).quant4_mf[j as usize] {
                     break;
@@ -1211,8 +1208,7 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
                 2 as ::core::ffi::c_int
             })
         {
-            let mut j_0: ::core::ffi::c_int = 0;
-            j_0 = 0 as ::core::ffi::c_int;
+            let mut j_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while j_0 < i_0 {
                 if (*h).quant8_mf[i_0 as usize] == (*h).quant8_mf[j_0 as usize] {
                     break;
@@ -1259,7 +1255,6 @@ unsafe extern "C" fn cqm_parse_jmlist(
     mut length: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0;
         let mut p: *mut ::core::ffi::c_char = crate::stdlib::strstr(buf, name);
         if p.is_null() {
             crate::stdlib::memset(
@@ -1275,7 +1270,7 @@ unsafe extern "C" fn cqm_parse_jmlist(
         }
         let mut nextvar: *mut ::core::ffi::c_char =
             crate::stdlib::strstr(p, b"INT\0".as_ptr() as *const ::core::ffi::c_char);
-        i = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i < length
             && {
                 p = crate::stdlib::strpbrk(p, b" \t\n,\0".as_ptr() as *const ::core::ffi::c_char);

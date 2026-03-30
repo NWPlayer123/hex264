@@ -8321,8 +8321,6 @@ unsafe extern "C" fn mc_chroma(
     mut i_height: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut srcp: *mut crate::src::common::common::pixel =
-            ::core::ptr::null_mut::<crate::src::common::common::pixel>();
         let mut d8x: ::core::ffi::c_int = mvx & 0x7 as ::core::ffi::c_int;
         let mut d8y: ::core::ffi::c_int = mvy & 0x7 as ::core::ffi::c_int;
         let mut cA: ::core::ffi::c_int =
@@ -8335,7 +8333,8 @@ unsafe extern "C" fn mc_chroma(
                 + ((mvx >> 3 as ::core::ffi::c_int) * 2 as ::core::ffi::c_int)
                     as crate::stdlib::intptr_t) as isize,
         );
-        srcp = src.offset(i_src_stride as isize) as *mut crate::src::common::common::pixel;
+        let mut srcp: *mut crate::src::common::common::pixel =
+            src.offset(i_src_stride as isize) as *mut crate::src::common::common::pixel;
         let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while y < i_height {
             let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;

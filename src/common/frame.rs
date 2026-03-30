@@ -234,8 +234,6 @@ unsafe extern "C" fn frame_new(
         let mut preallocs: [*mut *mut crate::stdlib::uint8_t; 1024] =
             [::core::ptr::null_mut::<*mut crate::stdlib::uint8_t>(); 1024];
         let mut c2rust_current_block: u64;
-        let mut frame: *mut crate::src::common::frame::x264_frame_t =
-            ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
         let mut i_csp: ::core::ffi::c_int = frame_internal_csp((*h).param.i_csp);
         let mut i_mb_count: ::core::ffi::c_int = (*h).mb.i_mb_count;
         let mut i_stride: ::core::ffi::c_int = 0;
@@ -261,10 +259,11 @@ unsafe extern "C" fn frame_new(
         let mut disalign: ::core::ffi::c_int = ((1 as ::core::ffi::c_int)
             << 10 as ::core::ffi::c_int)
             / crate::src::common::common::SIZEOF_PIXEL;
-        frame = crate::src::common::base::x264_malloc(::core::mem::size_of::<
-            crate::src::common::frame::x264_frame_t,
-        >() as crate::stdlib::int64_t)
-            as *mut crate::src::common::frame::x264_frame_t;
+        let mut frame: *mut crate::src::common::frame::x264_frame_t =
+            crate::src::common::base::x264_malloc(::core::mem::size_of::<
+                crate::src::common::frame::x264_frame_t,
+            >() as crate::stdlib::int64_t)
+                as *mut crate::src::common::frame::x264_frame_t;
         if !frame.is_null() {
             crate::stdlib::memset(
                 frame as *mut ::core::ffi::c_void,
@@ -2328,8 +2327,6 @@ pub unsafe extern "C" fn x264_8_frame_pop(
     mut list: *mut *mut crate::src::common::frame::x264_frame_t,
 ) -> *mut crate::src::common::frame::x264_frame_t {
     unsafe {
-        let mut frame: *mut crate::src::common::frame::x264_frame_t =
-            ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
         let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         '_c2rust_label: {
             if !(*list.offset(0 as ::core::ffi::c_int as isize)).is_null() {
@@ -2346,7 +2343,7 @@ pub unsafe extern "C" fn x264_8_frame_pop(
         while !(*list.offset((i + 1 as ::core::ffi::c_int) as isize)).is_null() {
             i += 1;
         }
-        frame = *list.offset(i as isize);
+        let mut frame: *mut crate::src::common::frame::x264_frame_t = *list.offset(i as isize);
         let ref mut c2rust_fresh3 = *list.offset(i as isize);
         *c2rust_fresh3 = ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
         return frame;
@@ -2382,8 +2379,7 @@ pub unsafe extern "C" fn x264_8_frame_shift(
     unsafe {
         let mut frame: *mut crate::src::common::frame::x264_frame_t =
             *list.offset(0 as ::core::ffi::c_int as isize);
-        let mut i: ::core::ffi::c_int = 0;
-        i = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while !(*list.offset(i as isize)).is_null() {
             let ref mut c2rust_fresh7 = *list.offset(i as isize);
             *c2rust_fresh7 = *list.offset((i + 1 as ::core::ffi::c_int) as isize);
@@ -2539,8 +2535,7 @@ pub unsafe extern "C" fn x264_8_weight_scale_plane(
 ) {
     unsafe {
         while i_height > 0 as ::core::ffi::c_int {
-            let mut x: ::core::ffi::c_int = 0;
-            x = 0 as ::core::ffi::c_int;
+            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while x < i_width - 8 as ::core::ffi::c_int {
                 (*(*w)
                     .weightfn
@@ -2684,14 +2679,13 @@ pub unsafe extern "C" fn x264_8_sync_frame_list_pop(
     mut slist: *mut crate::src::common::frame::x264_sync_frame_list_t,
 ) -> *mut crate::src::common::frame::x264_frame_t {
     unsafe {
-        let mut frame: *mut crate::src::common::frame::x264_frame_t =
-            ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
         crate::stdlib::pthread_mutex_lock(&raw mut (*slist).mutex);
         while (*slist).i_size == 0 {
             crate::stdlib::pthread_cond_wait(&raw mut (*slist).cv_fill, &raw mut (*slist).mutex);
         }
         (*slist).i_size -= 1;
-        frame = *(*slist).list.offset((*slist).i_size as isize);
+        let mut frame: *mut crate::src::common::frame::x264_frame_t =
+            *(*slist).list.offset((*slist).i_size as isize);
         let ref mut c2rust_fresh38 = *(*slist).list.offset((*slist).i_size as isize);
         *c2rust_fresh38 = ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
         crate::stdlib::pthread_cond_broadcast(&raw mut (*slist).cv_empty);

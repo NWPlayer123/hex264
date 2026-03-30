@@ -64,9 +64,8 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
         if (0 as ::core::ffi::c_int) < 0 as ::core::ffi::c_int {
             return -(1 as ::core::ffi::c_int);
         }
-        let mut pool: *mut x264_threadpool_t = ::core::ptr::null_mut::<x264_threadpool_t>();
-        pool = crate::src::common::base::x264_malloc(
-            ::core::mem::size_of::<x264_threadpool_t>() as crate::stdlib::int64_t
+        let mut pool: *mut x264_threadpool_t = crate::src::common::base::x264_malloc(
+            ::core::mem::size_of::<x264_threadpool_t>() as crate::stdlib::int64_t,
         ) as *mut x264_threadpool_t;
         if !pool.is_null() {
             crate::stdlib::memset(
@@ -105,12 +104,11 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                             break;
                         }
                         let mut job: *mut x264_threadpool_job_t =
-                            ::core::ptr::null_mut::<x264_threadpool_job_t>();
-                        job = crate::src::common::base::x264_malloc(::core::mem::size_of::<
-                            x264_threadpool_job_t,
-                        >()
-                            as crate::stdlib::int64_t)
-                            as *mut x264_threadpool_job_t;
+                            crate::src::common::base::x264_malloc(::core::mem::size_of::<
+                                x264_threadpool_job_t,
+                            >()
+                                as crate::stdlib::int64_t)
+                                as *mut x264_threadpool_job_t;
                         if job.is_null() {
                             c2rust_current_block = 11983467789922532698;
                             break;

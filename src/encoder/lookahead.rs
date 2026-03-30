@@ -181,11 +181,10 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
         let mut look_h: *mut crate::src::common::common::x264_t =
             ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
         let mut look: *mut crate::src::common::common::x264_lookahead_t =
-            ::core::ptr::null_mut::<crate::src::common::common::x264_lookahead_t>();
-        look = crate::src::common::base::x264_malloc(::core::mem::size_of::<
-            crate::src::common::common::x264_lookahead_t,
-        >() as crate::stdlib::int64_t)
-            as *mut crate::src::common::common::x264_lookahead_t;
+            crate::src::common::base::x264_malloc(::core::mem::size_of::<
+                crate::src::common::common::x264_lookahead_t,
+            >() as crate::stdlib::int64_t)
+                as *mut crate::src::common::common::x264_lookahead_t;
         if !look.is_null() {
             crate::stdlib::memset(
                 look as *mut ::core::ffi::c_void,

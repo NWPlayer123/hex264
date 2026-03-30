@@ -803,9 +803,8 @@ unsafe extern "C" fn scaling_list_write(
             bs_write1(s, 1 as crate::stdlib::uint32_t);
             bs_write_se(s, -(8 as ::core::ffi::c_int));
         } else {
-            let mut run: ::core::ffi::c_int = 0;
             bs_write1(s, 1 as crate::stdlib::uint32_t);
-            run = len;
+            let mut run: ::core::ffi::c_int = len;
             while run > 1 as ::core::ffi::c_int {
                 if *list.offset(*zigzag.offset((run - 1 as ::core::ffi::c_int) as isize) as isize)
                     as ::core::ffi::c_int
@@ -859,9 +858,8 @@ pub unsafe extern "C" fn x264_8_sei_write(
     mut payload_type: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0;
         bs_realign(s);
-        i = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
         while i <= payload_type - 255 as ::core::ffi::c_int {
             bs_write(s, 8 as ::core::ffi::c_int, 255 as crate::stdlib::uint32_t);
             i += 255 as ::core::ffi::c_int;
@@ -1572,7 +1570,6 @@ pub unsafe extern "C" fn x264_8_sps_write(
                 (*sps).vui.b_aspect_ratio_info_present as crate::stdlib::uint32_t,
             );
             if (*sps).vui.b_aspect_ratio_info_present != 0 {
-                let mut i: ::core::ffi::c_int = 0;
                 static mut sar: [C2Rust_Unnamed_24; 17] = [
                     C2Rust_Unnamed_24 {
                         w: 1 as crate::stdlib::uint8_t,
@@ -1660,7 +1657,7 @@ pub unsafe extern "C" fn x264_8_sps_write(
                         sar: 255 as crate::stdlib::uint8_t,
                     },
                 ];
-                i = 0 as ::core::ffi::c_int;
+                let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
                 while sar[i as usize].sar as ::core::ffi::c_int != 255 as ::core::ffi::c_int {
                     if sar[i as usize].w as ::core::ffi::c_int == (*sps).vui.i_sar_width
                         && sar[i as usize].h as ::core::ffi::c_int == (*sps).vui.i_sar_height
@@ -2099,12 +2096,11 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
             &raw mut (*h).param as *mut _ as *mut crate::x264_h::x264_param_t,
             0 as ::core::ffi::c_int,
         );
-        let mut payload: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
         let mut length: ::core::ffi::c_int = 0;
         if opts.is_null() {
             return -(1 as ::core::ffi::c_int);
         }
-        payload = crate::src::common::base::x264_malloc(
+        let mut payload: *mut ::core::ffi::c_char = crate::src::common::base::x264_malloc(
             (200 as crate::__stddef_size_t_h::size_t).wrapping_add(crate::stdlib::strlen(opts))
                 as crate::stdlib::int64_t,
         ) as *mut ::core::ffi::c_char;

@@ -1347,22 +1347,21 @@ unsafe extern "C" fn cavlc_block_residual_internal(
                 mask: 0,
                 level: [0; 18],
             };
-        let mut i_total: ::core::ffi::c_int = 0;
-        let mut i_trailing: ::core::ffi::c_int = 0;
-        let mut i_total_zero: ::core::ffi::c_int = 0;
-        let mut i_suffix_length: ::core::ffi::c_int = 0;
-        let mut i_sign: ::core::ffi::c_uint = 0;
-        i_total = (*h).quantf.coeff_level_run[ctx_block_cat as usize]
-            .expect("non-null function pointer")(l, &raw mut runlevel);
+        let mut i_total: ::core::ffi::c_int = (*h).quantf.coeff_level_run[ctx_block_cat as usize]
+            .expect("non-null function pointer")(
+            l, &raw mut runlevel
+        );
         (&raw mut crate::src::common::vlc::x264_8_run_before as *mut crate::stdlib::uint32_t)
             .offset(runlevel.mask as isize) as *mut crate::stdlib::uint32_t;
-        i_total_zero = (runlevel.last + 1 as crate::stdlib::int32_t
-            - i_total as crate::stdlib::int32_t) as ::core::ffi::c_int;
+        let mut i_total_zero: ::core::ffi::c_int = (runlevel.last + 1 as crate::stdlib::int32_t
+            - i_total as crate::stdlib::int32_t)
+            as ::core::ffi::c_int;
         runlevel.level[(i_total + 0 as ::core::ffi::c_int) as usize] =
             2 as crate::src::common::common::dctcoef;
         runlevel.level[(i_total + 1 as ::core::ffi::c_int) as usize] =
             2 as crate::src::common::common::dctcoef;
-        i_trailing = (runlevel.level[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+        let mut i_trailing: ::core::ffi::c_int = (runlevel.level[0 as ::core::ffi::c_int as usize]
+            as ::core::ffi::c_int
             + 1 as ::core::ffi::c_int
             | 1 as ::core::ffi::c_int
                 - runlevel.level[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int)
@@ -1381,15 +1380,16 @@ unsafe extern "C" fn cavlc_block_residual_internal(
                 >> 31 as ::core::ffi::c_int
                 & 4 as ::core::ffi::c_int;
         i_trailing = ctz_index[i_trailing as usize] as ::core::ffi::c_int;
-        i_sign = (runlevel.level[2 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-            >> 31 as ::core::ffi::c_int
-            & 1 as ::core::ffi::c_int
-            | runlevel.level[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+        let mut i_sign: ::core::ffi::c_uint =
+            (runlevel.level[2 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
                 >> 31 as ::core::ffi::c_int
-                & 2 as ::core::ffi::c_int
-            | runlevel.level[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-                >> 31 as ::core::ffi::c_int
-                & 4 as ::core::ffi::c_int) as ::core::ffi::c_uint;
+                & 1 as ::core::ffi::c_int
+                | runlevel.level[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+                    >> 31 as ::core::ffi::c_int
+                    & 2 as ::core::ffi::c_int
+                | runlevel.level[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
+                    >> 31 as ::core::ffi::c_int
+                    & 4 as ::core::ffi::c_int) as ::core::ffi::c_uint;
         i_sign >>= 3 as ::core::ffi::c_int - i_trailing;
         bs_write(
             s,
@@ -1400,7 +1400,7 @@ unsafe extern "C" fn cavlc_block_residual_internal(
                 [(i_total - 1 as ::core::ffi::c_int) as usize][i_trailing as usize]
                 .i_bits as crate::stdlib::uint32_t,
         );
-        i_suffix_length = (i_total > 10 as ::core::ffi::c_int
+        let mut i_suffix_length: ::core::ffi::c_int = (i_total > 10 as ::core::ffi::c_int
             && i_trailing < 3 as ::core::ffi::c_int)
             as ::core::ffi::c_int;
         bs_write(s, i_trailing, i_sign as crate::stdlib::uint32_t);

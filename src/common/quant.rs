@@ -842,8 +842,6 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut dct_orig: [crate::src::common::common::dctcoef; 8] = [0; 8];
-        let mut coeff: ::core::ffi::c_int = 0;
-        let mut nz: ::core::ffi::c_int = 0;
         if chroma422 != 0 {
             optimize_chroma_idct_dequant_2x4(
                 &raw mut dct_orig as *mut crate::src::common::common::dctcoef,
@@ -872,8 +870,8 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
         if sum >> 6 as ::core::ffi::c_int == 0 {
             return 0 as ::core::ffi::c_int;
         }
-        nz = 0 as ::core::ffi::c_int;
-        coeff = if chroma422 != 0 {
+        let mut nz: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut coeff: ::core::ffi::c_int = if chroma422 != 0 {
             7 as ::core::ffi::c_int
         } else {
             3 as ::core::ffi::c_int
@@ -972,7 +970,6 @@ unsafe extern "C" fn decimate_score_internal(
             idx -= 1;
         }
         while idx >= 0 as ::core::ffi::c_int {
-            let mut i_run: ::core::ffi::c_int = 0;
             let c2rust_fresh4 = idx;
             idx = idx - 1;
             if (*dct.offset(c2rust_fresh4 as isize) as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
@@ -981,7 +978,7 @@ unsafe extern "C" fn decimate_score_internal(
             {
                 return 9 as ::core::ffi::c_int;
             }
-            i_run = 0 as ::core::ffi::c_int;
+            let mut i_run: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
             while idx >= 0 as ::core::ffi::c_int
                 && *dct.offset(idx as isize) as ::core::ffi::c_int == 0 as ::core::ffi::c_int
             {

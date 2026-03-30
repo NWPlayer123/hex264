@@ -1529,26 +1529,26 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_direct16x16(
             b_available = mb_predict_mv_direct16x16_temporal(h);
         }
         if !b_changed.is_null() && b_available != 0 {
-            let mut changed: ::core::ffi::c_int = 0;
-            changed = ((*(&raw mut *(&raw mut *(&raw mut (*h).mb.cache.direct_mv
-                as *mut [[crate::stdlib::int16_t; 2]; 4])
-                .offset(0 as ::core::ffi::c_int as isize)
-                as *mut [crate::stdlib::int16_t; 2])
-                .offset(0 as ::core::ffi::c_int as isize)
-                as *mut crate::stdlib::int16_t
-                as *mut crate::src::common::base::x264_union32_t))
-                .i
-                ^ (*(&raw mut *(&raw mut *(&raw mut (*h).mb.cache.mv
-                    as *mut [[crate::stdlib::int16_t; 2]; 40])
+            let mut changed: ::core::ffi::c_int =
+                ((*(&raw mut *(&raw mut *(&raw mut (*h).mb.cache.direct_mv
+                    as *mut [[crate::stdlib::int16_t; 2]; 4])
                     .offset(0 as ::core::ffi::c_int as isize)
                     as *mut [crate::stdlib::int16_t; 2])
-                    .offset(
-                        *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
-                            .offset(0 as ::core::ffi::c_int as isize)
-                            as isize,
-                    ) as *mut crate::stdlib::int16_t
+                    .offset(0 as ::core::ffi::c_int as isize)
+                    as *mut crate::stdlib::int16_t
                     as *mut crate::src::common::base::x264_union32_t))
-                    .i) as ::core::ffi::c_int;
+                    .i
+                    ^ (*(&raw mut *(&raw mut *(&raw mut (*h).mb.cache.mv
+                        as *mut [[crate::stdlib::int16_t; 2]; 40])
+                        .offset(0 as ::core::ffi::c_int as isize)
+                        as *mut [crate::stdlib::int16_t; 2])
+                        .offset(
+                            *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
+                                .offset(0 as ::core::ffi::c_int as isize)
+                                as isize,
+                        ) as *mut crate::stdlib::int16_t
+                        as *mut crate::src::common::base::x264_union32_t))
+                        .i) as ::core::ffi::c_int;
             changed |= ((*(&raw mut *(&raw mut *(&raw mut (*h).mb.cache.direct_mv
                 as *mut [[crate::stdlib::int16_t; 2]; 4])
                 .offset(1 as ::core::ffi::c_int as isize)
