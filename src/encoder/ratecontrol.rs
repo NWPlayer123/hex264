@@ -1,8 +1,8 @@
 pub mod base_h {
     pub static mut slice_type_to_char: [::core::ffi::c_char; 3] = [
-        'P' as i32 as ::core::ffi::c_char,
-        'B' as i32 as ::core::ffi::c_char,
-        'I' as i32 as ::core::ffi::c_char,
+        'P' as ::core::ffi::c_char,
+        'B' as ::core::ffi::c_char,
+        'I' as ::core::ffi::c_char,
     ];
     #[inline(always)]
     pub extern "C" fn x264_clip3(
@@ -36,18 +36,17 @@ pub mod base_h {
     pub unsafe extern "C" fn x264_exp2fix8(mut x: ::core::ffi::c_float) -> ::core::ffi::c_int {
         unsafe {
             let mut i: ::core::ffi::c_int = (x * (-64.0f32 / 6.0) + 512.5) as ::core::ffi::c_int;
-            if i < 0 as ::core::ffi::c_int {
-                return 0 as ::core::ffi::c_int;
+            if i < 0i32 {
+                return 0i32;
             }
-            if i > 1023 as ::core::ffi::c_int {
-                return 0xffff as ::core::ffi::c_int;
+            if i > 1023i32 {
+                return 0xffffi32;
             }
-            return (crate::src::common::tables::x264_exp2_lut
-                [(i & 63 as ::core::ffi::c_int) as usize]
+            return (crate::src::common::tables::x264_exp2_lut[(i & 63i32) as usize]
                 as ::core::ffi::c_int
-                + 256 as ::core::ffi::c_int)
-                << (i >> 6 as ::core::ffi::c_int)
-                >> 8 as ::core::ffi::c_int;
+                + 256i32)
+                << (i >> 6i32)
+                >> 8i32;
         }
     }
     #[inline(always)]
@@ -55,7 +54,7 @@ pub mod base_h {
         unsafe {
             let mut lz: ::core::ffi::c_int = x.leading_zeros() as i32;
             return crate::src::common::tables::x264_log2_lut
-                [(x << lz >> 24 as ::core::ffi::c_int & 0x7f as crate::stdlib::uint32_t) as usize]
+                [(x << lz >> 24i32 & 0x7fu32) as usize]
                 + crate::src::common::tables::x264_log2_lz_lut[lz as usize];
         }
     }
@@ -93,10 +92,10 @@ pub mod osdep_h {
                 __glibc_reserved: [0; 3],
             };
             if crate::stdlib::fstat(crate::stdlib::fileno(filehandle), &raw mut file_stat) != 0 {
-                return 1 as ::core::ffi::c_int;
+                return 1i32;
             }
             return (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t
-                == 0o100000 as crate::stdlib::__mode_t) as ::core::ffi::c_int;
+                == 0o100000u32) as ::core::ffi::c_int;
         }
     }
 }
@@ -266,15 +265,11 @@ unsafe extern "C" fn qscale2bits(
             * crate::stdlib::pow((*rce).qscale / qscale, 1.1f64)
             + (*rce).mv_bits as ::core::ffi::c_double
                 * crate::stdlib::pow(
-                    (if (*rce).qscale > 1 as ::core::ffi::c_int as ::core::ffi::c_double {
+                    (if (*rce).qscale > 1f64 {
                         (*rce).qscale
                     } else {
-                        1 as ::core::ffi::c_int as ::core::ffi::c_double
-                    }) / (if qscale > 1 as ::core::ffi::c_int as ::core::ffi::c_double {
-                        qscale
-                    } else {
-                        1 as ::core::ffi::c_int as ::core::ffi::c_double
-                    }),
+                        1f64
+                    }) / (if qscale > 1f64 { qscale } else { 1f64 }),
                     0.5f64,
                 )
             + (*rce).misc_bits as ::core::ffi::c_double;
@@ -290,8 +285,7 @@ unsafe extern "C" fn ac_energy_var(
 ) -> crate::stdlib::uint32_t {
     unsafe {
         let mut sum: crate::stdlib::uint32_t = sum_ssd as crate::stdlib::uint32_t;
-        let mut ssd: crate::stdlib::uint32_t =
-            (sum_ssd >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t;
+        let mut ssd: crate::stdlib::uint32_t = (sum_ssd >> 32i32) as crate::stdlib::uint32_t;
         if b_store != 0 {
             (*frame).i_pixel_sum[i as usize] = (*frame).i_pixel_sum[i as usize].wrapping_add(sum);
             (*frame).i_pixel_ssd[i as usize] =
@@ -315,20 +309,18 @@ unsafe extern "C" fn ac_energy_plane(
 ) -> crate::stdlib::uint32_t {
     unsafe {
         let mut height: ::core::ffi::c_int = if b_chroma != 0 {
-            16 as ::core::ffi::c_int
+            16i32
                 >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                     == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                     as ::core::ffi::c_int
         } else {
-            16 as ::core::ffi::c_int
+            16i32
         };
         let mut stride: ::core::ffi::c_int = (*frame).i_stride[i as usize];
         let mut offset: ::core::ffi::c_int = if b_field != 0 {
-            16 as ::core::ffi::c_int * mb_x
-                + height * (mb_y & !(1 as ::core::ffi::c_int)) * stride
-                + (mb_y & 1 as ::core::ffi::c_int) * stride
+            16i32 * mb_x + height * (mb_y & !(1i32)) * stride + (mb_y & 1i32) * stride
         } else {
-            16 as ::core::ffi::c_int * mb_x + height * mb_y * stride
+            16i32 * mb_x + height * mb_y * stride
         };
         stride <<= b_field;
         if b_chroma != 0 {
@@ -336,7 +328,7 @@ unsafe extern "C" fn ac_energy_plane(
             let mut chromapix: ::core::ffi::c_int = (*h).luma2chroma_pixel
                 [crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                 as ::core::ffi::c_int;
-            let mut shift: ::core::ffi::c_int = 7 as ::core::ffi::c_int
+            let mut shift: ::core::ffi::c_int = 7i32
                 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                     == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                     as ::core::ffi::c_int;
@@ -344,7 +336,7 @@ unsafe extern "C" fn ac_energy_plane(
                 .load_deinterleave_chroma_fenc
                 .expect("non-null function pointer")(
                 &raw mut pix as *mut crate::src::common::common::pixel,
-                (*frame).plane[1 as ::core::ffi::c_int as usize].offset(offset as isize),
+                (*frame).plane[1usize].offset(offset as isize),
                 stride as crate::stdlib::intptr_t,
                 height,
             );
@@ -355,20 +347,18 @@ unsafe extern "C" fn ac_energy_plane(
                 ),
                 shift,
                 frame,
-                1 as ::core::ffi::c_int,
+                1i32,
                 b_store,
             )
             .wrapping_add(ac_energy_var(
                 (*h).pixf.var[chromapix as usize].expect("non-null function pointer")(
-                    (&raw mut pix as *mut crate::src::common::common::pixel).offset(
-                        (crate::src::common::common::FENC_STRIDE / 2 as ::core::ffi::c_int)
-                            as isize,
-                    ),
+                    (&raw mut pix as *mut crate::src::common::common::pixel)
+                        .offset((crate::src::common::common::FENC_STRIDE / 2i32) as isize),
                     crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
                 ),
                 shift,
                 frame,
-                2 as ::core::ffi::c_int,
+                2i32,
                 b_store,
             ));
         } else {
@@ -379,7 +369,7 @@ unsafe extern "C" fn ac_energy_plane(
                     (*frame).plane[i as usize].offset(offset as isize),
                     stride as crate::stdlib::intptr_t,
                 ),
-                8 as ::core::ffi::c_int,
+                8i32,
                 frame,
                 i,
                 b_store,
@@ -396,96 +386,33 @@ unsafe extern "C" fn ac_energy_mb(
 ) -> crate::stdlib::uint32_t {
     unsafe {
         let mut var: crate::stdlib::uint32_t = 0;
-        crate::src::common::macroblock::x264_8_prefetch_fenc(
-            h as *mut crate::src::common::common::x264_t,
-            frame as *mut crate::src::common::frame::x264_frame,
-            mb_x,
-            mb_y,
-        );
+        crate::src::common::macroblock::x264_8_prefetch_fenc(h, frame, mb_x, mb_y);
         if (*h).mb.b_adaptive_mbaff != 0 {
-            let mut var_interlaced: crate::stdlib::uint32_t = ac_energy_plane(
-                h,
-                mb_x,
-                mb_y,
-                frame,
-                0 as ::core::ffi::c_int,
-                0 as ::core::ffi::c_int,
-                1 as ::core::ffi::c_int,
-                1 as ::core::ffi::c_int,
-            );
-            let mut var_progressive: crate::stdlib::uint32_t = ac_energy_plane(
-                h,
-                mb_x,
-                mb_y,
-                frame,
-                0 as ::core::ffi::c_int,
-                0 as ::core::ffi::c_int,
-                0 as ::core::ffi::c_int,
-                0 as ::core::ffi::c_int,
-            );
+            let mut var_interlaced: crate::stdlib::uint32_t =
+                ac_energy_plane(h, mb_x, mb_y, frame, 0i32, 0i32, 1i32, 1i32);
+            let mut var_progressive: crate::stdlib::uint32_t =
+                ac_energy_plane(h, mb_x, mb_y, frame, 0i32, 0i32, 0i32, 0i32);
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                 == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             {
                 var_interlaced = var_interlaced.wrapping_add(ac_energy_plane(
-                    h,
-                    mb_x,
-                    mb_y,
-                    frame,
-                    1 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
+                    h, mb_x, mb_y, frame, 1i32, 0i32, 1i32, 1i32,
                 ));
                 var_progressive = var_progressive.wrapping_add(ac_energy_plane(
-                    h,
-                    mb_x,
-                    mb_y,
-                    frame,
-                    1 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
+                    h, mb_x, mb_y, frame, 1i32, 0i32, 0i32, 0i32,
                 ));
                 var_interlaced = var_interlaced.wrapping_add(ac_energy_plane(
-                    h,
-                    mb_x,
-                    mb_y,
-                    frame,
-                    2 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
+                    h, mb_x, mb_y, frame, 2i32, 0i32, 1i32, 1i32,
                 ));
                 var_progressive = var_progressive.wrapping_add(ac_energy_plane(
-                    h,
-                    mb_x,
-                    mb_y,
-                    frame,
-                    2 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
+                    h, mb_x, mb_y, frame, 2i32, 0i32, 0i32, 0i32,
                 ));
             } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 var_interlaced = var_interlaced.wrapping_add(ac_energy_plane(
-                    h,
-                    mb_x,
-                    mb_y,
-                    frame,
-                    1 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
+                    h, mb_x, mb_y, frame, 1i32, 1i32, 1i32, 1i32,
                 ));
                 var_progressive = var_progressive.wrapping_add(ac_energy_plane(
-                    h,
-                    mb_x,
-                    mb_y,
-                    frame,
-                    1 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
+                    h, mb_x, mb_y, frame, 1i32, 1i32, 0i32, 0i32,
                 ));
             }
             var = if var_interlaced < var_progressive {
@@ -499,10 +426,10 @@ unsafe extern "C" fn ac_energy_mb(
                 mb_x,
                 mb_y,
                 frame,
-                0 as ::core::ffi::c_int,
-                0 as ::core::ffi::c_int,
+                0i32,
+                0i32,
                 (*h).param.b_interlaced,
-                1 as ::core::ffi::c_int,
+                1i32,
             );
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                 == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -512,20 +439,20 @@ unsafe extern "C" fn ac_energy_mb(
                     mb_x,
                     mb_y,
                     frame,
-                    1 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
+                    1i32,
+                    0i32,
                     (*h).param.b_interlaced,
-                    1 as ::core::ffi::c_int,
+                    1i32,
                 ));
                 var = var.wrapping_add(ac_energy_plane(
                     h,
                     mb_x,
                     mb_y,
                     frame,
-                    2 as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
+                    2i32,
+                    0i32,
                     (*h).param.b_interlaced,
-                    1 as ::core::ffi::c_int,
+                    1i32,
                 ));
             } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 var = var.wrapping_add(ac_energy_plane(
@@ -533,10 +460,10 @@ unsafe extern "C" fn ac_energy_mb(
                     mb_x,
                     mb_y,
                     frame,
-                    1 as ::core::ffi::c_int,
-                    1 as ::core::ffi::c_int,
+                    1i32,
+                    1i32,
                     (*h).param.b_interlaced,
-                    1 as ::core::ffi::c_int,
+                    1i32,
                 ));
             }
         }
@@ -550,20 +477,18 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
     mut quant_offsets: *mut ::core::ffi::c_float,
 ) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-        while i < 3 as ::core::ffi::c_int {
-            (*frame).i_pixel_sum[i as usize] = 0 as crate::stdlib::uint32_t;
-            (*frame).i_pixel_ssd[i as usize] = 0 as crate::stdlib::uint64_t;
+        let mut i: ::core::ffi::c_int = 0i32;
+        while i < 3i32 {
+            (*frame).i_pixel_sum[i as usize] = 0u32;
+            (*frame).i_pixel_ssd[i as usize] = 0u64;
             i += 1;
         }
         if (*h).param.rc.i_aq_mode == crate::x264_h::X264_AQ_NONE
-            || (*h).param.rc.f_aq_strength == 0 as ::core::ffi::c_int as ::core::ffi::c_float
+            || (*h).param.rc.f_aq_strength == 0f32
         {
-            if (*h).param.rc.i_aq_mode != 0
-                && (*h).param.rc.f_aq_strength == 0 as ::core::ffi::c_int as ::core::ffi::c_float
-            {
+            if (*h).param.rc.i_aq_mode != 0 && (*h).param.rc.f_aq_strength == 0f32 {
                 if !quant_offsets.is_null() {
-                    let mut mb_xy: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    let mut mb_xy: ::core::ffi::c_int = 0i32;
                     while mb_xy < (*h).mb.i_mb_count {
                         let ref mut c2rust_fresh6 = *(*frame).f_qp_offset_aq.offset(mb_xy as isize);
                         *c2rust_fresh6 = *quant_offsets.offset(mb_xy as isize);
@@ -571,7 +496,7 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
                         mb_xy += 1;
                     }
                     if (*h).frames.b_have_lowres != 0 {
-                        let mut mb_xy_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        let mut mb_xy_0: ::core::ffi::c_int = 0i32;
                         while mb_xy_0 < (*h).mb.i_mb_count {
                             *(*frame).i_inv_qscale_factor.offset(mb_xy_0 as isize) =
                                 x264_exp2fix8(*(*frame).f_qp_offset.offset(mb_xy_0 as isize))
@@ -582,32 +507,29 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
                 } else {
                     crate::stdlib::memset(
                         (*frame).f_qp_offset as *mut ::core::ffi::c_void,
-                        0 as ::core::ffi::c_int,
+                        0i32,
                         ((*h).mb.i_mb_count as crate::__stddef_size_t_h::size_t)
-                            .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()
-                                as crate::__stddef_size_t_h::size_t),
+                            .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()),
                     );
                     crate::stdlib::memset(
                         (*frame).f_qp_offset_aq as *mut ::core::ffi::c_void,
-                        0 as ::core::ffi::c_int,
+                        0i32,
                         ((*h).mb.i_mb_count as crate::__stddef_size_t_h::size_t)
-                            .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()
-                                as crate::__stddef_size_t_h::size_t),
+                            .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()),
                     );
                     if (*h).frames.b_have_lowres != 0 {
-                        let mut mb_xy_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        let mut mb_xy_1: ::core::ffi::c_int = 0i32;
                         while mb_xy_1 < (*h).mb.i_mb_count {
-                            *(*frame).i_inv_qscale_factor.offset(mb_xy_1 as isize) =
-                                256 as crate::stdlib::uint16_t;
+                            *(*frame).i_inv_qscale_factor.offset(mb_xy_1 as isize) = 256u16;
                             mb_xy_1 += 1;
                         }
                     }
                 }
             }
             if (*h).param.analyse.i_weighted_pred != 0 {
-                let mut mb_y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut mb_y: ::core::ffi::c_int = 0i32;
                 while mb_y < (*h).mb.i_mb_height {
-                    let mut mb_x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    let mut mb_x: ::core::ffi::c_int = 0i32;
                     while mb_x < (*h).mb.i_mb_width {
                         ac_energy_mb(h, mb_x, mb_y, frame);
                         mb_x += 1;
@@ -625,20 +547,17 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
                 || (*h).param.rc.i_aq_mode == crate::x264_h::X264_AQ_AUTOVARIANCE_BIASED
             {
                 let mut bit_depth_correction: ::core::ffi::c_float = 1.0
-                    / ((1 as ::core::ffi::c_int)
-                        << 2 as ::core::ffi::c_int
-                            * (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int))
+                    / ((1i32) << 2i32 * (crate::internal::BIT_DEPTH - 8i32))
                         as ::core::ffi::c_float;
                 let mut avg_adj_pow2: ::core::ffi::c_float = 0.0;
-                let mut mb_y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut mb_y_0: ::core::ffi::c_int = 0i32;
                 while mb_y_0 < (*h).mb.i_mb_height {
-                    let mut mb_x_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    let mut mb_x_0: ::core::ffi::c_int = 0i32;
                     while mb_x_0 < (*h).mb.i_mb_width {
                         let mut energy: crate::stdlib::uint32_t =
                             ac_energy_mb(h, mb_x_0, mb_y_0, frame);
                         let mut qp_adj: ::core::ffi::c_float = crate::stdlib::powf(
-                            energy as ::core::ffi::c_float * bit_depth_correction
-                                + 1 as ::core::ffi::c_int as ::core::ffi::c_float,
+                            energy as ::core::ffi::c_float * bit_depth_correction + 1f32,
                             0.125,
                         );
                         *(*frame)
@@ -658,9 +577,9 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
             } else {
                 strength = (*h).param.rc.f_aq_strength * 1.0397f32;
             }
-            let mut mb_y_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut mb_y_1: ::core::ffi::c_int = 0i32;
             while mb_y_1 < (*h).mb.i_mb_height {
-                let mut mb_x_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut mb_x_1: ::core::ffi::c_int = 0i32;
                 while mb_x_1 < (*h).mb.i_mb_width {
                     let mut qp_adj_0: ::core::ffi::c_float = 0.;
                     let mut mb_xy_2: ::core::ffi::c_int = mb_x_1 + mb_y_1 * (*h).mb.i_mb_stride;
@@ -675,14 +594,10 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
                         let mut energy_0: crate::stdlib::uint32_t =
                             ac_energy_mb(h, mb_x_1, mb_y_1, frame);
                         qp_adj_0 = strength
-                            * (x264_log2(if energy_0 > 1 as crate::stdlib::uint32_t {
-                                energy_0
-                            } else {
-                                1 as crate::stdlib::uint32_t
-                            }) - (14.427f32
-                                + (2 as ::core::ffi::c_int
-                                    * (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int))
-                                    as ::core::ffi::c_float));
+                            * (x264_log2(if energy_0 > 1u32 { energy_0 } else { 1u32 })
+                                - (14.427f32
+                                    + (2i32 * (crate::internal::BIT_DEPTH - 8i32))
+                                        as ::core::ffi::c_float));
                     }
                     if !quant_offsets.is_null() {
                         qp_adj_0 += *quant_offsets.offset(mb_xy_2 as isize);
@@ -699,28 +614,26 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
                 mb_y_1 += 1;
             }
         }
-        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-        while i_0 < 3 as ::core::ffi::c_int {
+        let mut i_0: ::core::ffi::c_int = 0i32;
+        while i_0 < 3i32 {
             let mut ssd: crate::stdlib::uint64_t = (*frame).i_pixel_ssd[i_0 as usize];
             let mut sum: crate::stdlib::uint64_t =
                 (*frame).i_pixel_sum[i_0 as usize] as crate::stdlib::uint64_t;
-            let mut width: ::core::ffi::c_int = 16 as ::core::ffi::c_int * (*h).mb.i_mb_width
+            let mut width: ::core::ffi::c_int = 16i32 * (*h).mb.i_mb_width
                 >> (i_0 != 0
                     && (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                         || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int))
                     as ::core::ffi::c_int;
-            let mut height: ::core::ffi::c_int = 16 as ::core::ffi::c_int * (*h).mb.i_mb_height
+            let mut height: ::core::ffi::c_int = 16i32 * (*h).mb.i_mb_height
                 >> (i_0 != 0
                     && crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                     as ::core::ffi::c_int;
             (*frame).i_pixel_ssd[i_0 as usize] = ssd.wrapping_sub(
                 sum.wrapping_mul(sum)
-                    .wrapping_add(
-                        (width * height / 2 as ::core::ffi::c_int) as crate::stdlib::uint64_t,
-                    )
+                    .wrapping_add((width * height / 2i32) as crate::stdlib::uint64_t)
                     .wrapping_div((width * height) as crate::stdlib::uint64_t),
             );
             i_0 += 1;
@@ -734,52 +647,39 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
     unsafe {
         let mut c2rust_current_block: u64;
         let mut srcdim: [::core::ffi::c_float; 2] = [
-            (*rc).mbtree.srcdim[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_float / 16.0,
-            (*rc).mbtree.srcdim[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_float / 16.0,
+            (*rc).mbtree.srcdim[0usize] as ::core::ffi::c_float / 16.0,
+            (*rc).mbtree.srcdim[1usize] as ::core::ffi::c_float / 16.0,
         ];
         let mut dstdim: [::core::ffi::c_float; 2] = [
             (*h).param.i_width as ::core::ffi::c_float / 16.0,
             (*h).param.i_height as ::core::ffi::c_float / 16.0,
         ];
         let mut srcdimi: [::core::ffi::c_int; 2] = [
-            crate::stdlib::ceil(srcdim[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_double)
-                as ::core::ffi::c_int,
-            crate::stdlib::ceil(srcdim[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_double)
-                as ::core::ffi::c_int,
+            crate::stdlib::ceil(srcdim[0usize] as ::core::ffi::c_double) as ::core::ffi::c_int,
+            crate::stdlib::ceil(srcdim[1usize] as ::core::ffi::c_double) as ::core::ffi::c_int,
         ];
         let mut dstdimi: [::core::ffi::c_int; 2] = [
-            crate::stdlib::ceil(dstdim[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_double)
-                as ::core::ffi::c_int,
-            crate::stdlib::ceil(dstdim[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_double)
-                as ::core::ffi::c_int,
+            crate::stdlib::ceil(dstdim[0usize] as ::core::ffi::c_double) as ::core::ffi::c_int,
+            crate::stdlib::ceil(dstdim[1usize] as ::core::ffi::c_double) as ::core::ffi::c_int,
         ];
         if (*h).param.b_interlaced != 0 || (*h).param.b_fake_interlaced != 0 {
-            srcdimi[1 as ::core::ffi::c_int as usize] = srcdimi[1 as ::core::ffi::c_int as usize]
-                + 1 as ::core::ffi::c_int
-                & !(1 as ::core::ffi::c_int);
-            dstdimi[1 as ::core::ffi::c_int as usize] = dstdimi[1 as ::core::ffi::c_int as usize]
-                + 1 as ::core::ffi::c_int
-                & !(1 as ::core::ffi::c_int);
+            srcdimi[1usize] = srcdimi[1usize] + 1i32 & !(1i32);
+            dstdimi[1usize] = dstdimi[1usize] + 1i32 & !(1i32);
         }
-        (*rc).mbtree.src_mb_count =
-            srcdimi[0 as ::core::ffi::c_int as usize] * srcdimi[1 as ::core::ffi::c_int as usize];
-        (*rc).mbtree.qp_buffer[0 as ::core::ffi::c_int as usize] =
-            crate::src::common::base::x264_malloc(
-                ((*rc).mbtree.src_mb_count as usize)
-                    .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>() as usize)
-                    as crate::stdlib::int64_t,
-            ) as *mut crate::stdlib::uint16_t;
-        if !(*rc).mbtree.qp_buffer[0 as ::core::ffi::c_int as usize].is_null() {
+        (*rc).mbtree.src_mb_count = srcdimi[0usize] * srcdimi[1usize];
+        (*rc).mbtree.qp_buffer[0usize] = crate::src::common::base::x264_malloc(
+            ((*rc).mbtree.src_mb_count as usize)
+                .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>())
+                as crate::stdlib::int64_t,
+        ) as *mut crate::stdlib::uint16_t;
+        if !(*rc).mbtree.qp_buffer[0usize].is_null() {
             if (*h).param.i_bframe_pyramid != 0 && (*h).param.rc.b_stat_read != 0 {
-                (*rc).mbtree.qp_buffer[1 as ::core::ffi::c_int as usize] =
-                    crate::src::common::base::x264_malloc(
-                        ((*rc).mbtree.src_mb_count as usize).wrapping_mul(::core::mem::size_of::<
-                            crate::stdlib::uint16_t,
-                        >(
-                        )
-                            as usize) as crate::stdlib::int64_t,
-                    ) as *mut crate::stdlib::uint16_t;
-                if (*rc).mbtree.qp_buffer[1 as ::core::ffi::c_int as usize].is_null() {
+                (*rc).mbtree.qp_buffer[1usize] = crate::src::common::base::x264_malloc(
+                    ((*rc).mbtree.src_mb_count as usize)
+                        .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>())
+                        as crate::stdlib::int64_t,
+                ) as *mut crate::stdlib::uint16_t;
+                if (*rc).mbtree.qp_buffer[1usize].is_null() {
                     c2rust_current_block = 15546540007840481838;
                 } else {
                     c2rust_current_block = 5399440093318478209;
@@ -790,58 +690,46 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
             match c2rust_current_block {
                 15546540007840481838 => {}
                 _ => {
-                    (*rc).mbtree.qpbuf_pos = -(1 as ::core::ffi::c_int);
-                    if srcdimi[0 as ::core::ffi::c_int as usize]
-                        == dstdimi[0 as ::core::ffi::c_int as usize]
-                        && srcdimi[1 as ::core::ffi::c_int as usize]
-                            == dstdimi[1 as ::core::ffi::c_int as usize]
-                    {
-                        return 0 as ::core::ffi::c_int;
+                    (*rc).mbtree.qpbuf_pos = -(1i32);
+                    if srcdimi[0usize] == dstdimi[0usize] && srcdimi[1usize] == dstdimi[1usize] {
+                        return 0i32;
                     }
-                    (*rc).mbtree.rescale_enabled = 1 as ::core::ffi::c_int;
-                    (*rc).mbtree.scale_buffer[0 as ::core::ffi::c_int as usize] =
-                        crate::src::common::base::x264_malloc(
-                            ((srcdimi[0 as ::core::ffi::c_int as usize]
-                                * srcdimi[1 as ::core::ffi::c_int as usize])
-                                as usize)
-                                .wrapping_mul(
-                                    ::core::mem::size_of::<::core::ffi::c_float>() as usize
-                                ) as crate::stdlib::int64_t,
-                        ) as *mut ::core::ffi::c_float;
-                    if !(*rc).mbtree.scale_buffer[0 as ::core::ffi::c_int as usize].is_null() {
-                        (*rc).mbtree.scale_buffer[1 as ::core::ffi::c_int as usize] =
-                            crate::src::common::base::x264_malloc(
-                                ((dstdimi[0 as ::core::ffi::c_int as usize]
-                                    * srcdimi[1 as ::core::ffi::c_int as usize])
-                                    as usize)
-                                    .wrapping_mul(
-                                        ::core::mem::size_of::<::core::ffi::c_float>() as usize
-                                    ) as crate::stdlib::int64_t,
-                            ) as *mut ::core::ffi::c_float;
-                        if !(*rc).mbtree.scale_buffer[1 as ::core::ffi::c_int as usize].is_null() {
-                            let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    (*rc).mbtree.rescale_enabled = 1i32;
+                    (*rc).mbtree.scale_buffer[0usize] = crate::src::common::base::x264_malloc(
+                        ((srcdimi[0usize] * srcdimi[1usize]) as usize)
+                            .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>())
+                            as crate::stdlib::int64_t,
+                    )
+                        as *mut ::core::ffi::c_float;
+                    if !(*rc).mbtree.scale_buffer[0usize].is_null() {
+                        (*rc).mbtree.scale_buffer[1usize] = crate::src::common::base::x264_malloc(
+                            ((dstdimi[0usize] * srcdimi[1usize]) as usize)
+                                .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>())
+                                as crate::stdlib::int64_t,
+                        )
+                            as *mut ::core::ffi::c_float;
+                        if !(*rc).mbtree.scale_buffer[1usize].is_null() {
+                            let mut i: ::core::ffi::c_int = 0i32;
                             loop {
-                                if !(i < 2 as ::core::ffi::c_int) {
+                                if !(i < 2i32) {
                                     c2rust_current_block = 3160140712158701372;
                                     break;
                                 }
                                 if srcdim[i as usize] > dstdim[i as usize] {
-                                    (*rc).mbtree.filtersize[i as usize] = 1 as ::core::ffi::c_int
-                                        + (2 as ::core::ffi::c_int * srcdimi[i as usize]
-                                            + dstdimi[i as usize]
-                                            - 1 as ::core::ffi::c_int)
+                                    (*rc).mbtree.filtersize[i as usize] = 1i32
+                                        + (2i32 * srcdimi[i as usize] + dstdimi[i as usize] - 1i32)
                                             / dstdimi[i as usize];
                                 } else {
-                                    (*rc).mbtree.filtersize[i as usize] = 3 as ::core::ffi::c_int;
+                                    (*rc).mbtree.filtersize[i as usize] = 3i32;
                                 }
                                 (*rc).mbtree.coeffs[i as usize] =
                                     crate::src::common::base::x264_malloc(
                                         (((*rc).mbtree.filtersize[i as usize] * dstdimi[i as usize])
                                             as usize)
-                                            .wrapping_mul(
-                                                ::core::mem::size_of::<::core::ffi::c_float>()
-                                                    as usize,
-                                            )
+                                            .wrapping_mul(::core::mem::size_of::<
+                                                ::core::ffi::c_float,
+                                            >(
+                                            ))
                                             as crate::stdlib::int64_t,
                                     )
                                         as *mut ::core::ffi::c_float;
@@ -850,9 +738,9 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
                                     break;
                                 }
                                 (*rc).mbtree.pos[i as usize] = crate::src::common::base::x264_malloc(
-                                    (dstdimi[i as usize] as usize).wrapping_mul(
-                                        ::core::mem::size_of::<::core::ffi::c_int>() as usize,
-                                    ) as crate::stdlib::int64_t,
+                                    (dstdimi[i as usize] as usize)
+                                        .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>())
+                                        as crate::stdlib::int64_t,
                                 )
                                     as *mut ::core::ffi::c_int;
                                 if (*rc).mbtree.pos[i as usize].is_null() {
@@ -869,14 +757,14 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
                                 let mut dstinsrc: ::core::ffi::c_float = 0.5 * inc - 0.5;
                                 let mut filtersize: ::core::ffi::c_int =
                                     (*rc).mbtree.filtersize[i as usize];
-                                let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                let mut j: ::core::ffi::c_int = 0i32;
                                 while j < dstdimi[i as usize] {
                                     let mut pos: ::core::ffi::c_int = (dstinsrc
                                         - (filtersize as ::core::ffi::c_float - 2.0) * 0.5)
                                         as ::core::ffi::c_int;
                                     let mut sum: ::core::ffi::c_float = 0.0;
                                     *(*rc).mbtree.pos[i as usize].offset(j as isize) = pos;
-                                    let mut k: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                    let mut k: ::core::ffi::c_int = 0i32;
                                     while k < filtersize {
                                         let mut d: ::core::ffi::c_float = (crate::stdlib::fabs(
                                             ((pos + k) as ::core::ffi::c_float - dstinsrc)
@@ -884,20 +772,15 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
                                         ) * dmul
                                             as ::core::ffi::c_double)
                                             as ::core::ffi::c_float;
-                                        let mut coeff: ::core::ffi::c_float = if 1.0 - d
-                                            > 0 as ::core::ffi::c_int as ::core::ffi::c_float
-                                        {
-                                            1.0 - d
-                                        } else {
-                                            0 as ::core::ffi::c_int as ::core::ffi::c_float
-                                        };
+                                        let mut coeff: ::core::ffi::c_float =
+                                            if 1.0 - d > 0f32 { 1.0 - d } else { 0f32 };
                                         *(*rc).mbtree.coeffs[i as usize]
                                             .offset((j * filtersize + k) as isize) = coeff;
                                         sum += coeff;
                                         k += 1;
                                     }
                                     sum = 1.0 / sum;
-                                    let mut k_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                    let mut k_0: ::core::ffi::c_int = 0i32;
                                     while k_0 < filtersize {
                                         *(*rc).mbtree.coeffs[i as usize]
                                             .offset((j * filtersize + k_0) as isize) *= sum;
@@ -911,11 +794,9 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
                             match c2rust_current_block {
                                 15546540007840481838 => {}
                                 _ => {
-                                    (*rc).mbtree.srcdim[0 as ::core::ffi::c_int as usize] =
-                                        srcdimi[0 as ::core::ffi::c_int as usize];
-                                    (*rc).mbtree.srcdim[1 as ::core::ffi::c_int as usize] =
-                                        srcdimi[1 as ::core::ffi::c_int as usize];
-                                    return 0 as ::core::ffi::c_int;
+                                    (*rc).mbtree.srcdim[0usize] = srcdimi[0usize];
+                                    (*rc).mbtree.srcdim[1usize] = srcdimi[1usize];
+                                    return 0i32;
                                 }
                             }
                         }
@@ -923,13 +804,13 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
                 }
             }
         }
-        return -(1 as ::core::ffi::c_int);
+        return -(1i32);
     }
 }
 unsafe extern "C" fn macroblock_tree_rescale_destroy(mut rc: *mut x264_ratecontrol_t) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-        while i < 2 as ::core::ffi::c_int {
+        let mut i: ::core::ffi::c_int = 0i32;
+        while i < 2i32 {
             crate::src::common::base::x264_free(
                 (*rc).mbtree.qp_buffer[i as usize] as *mut ::core::ffi::c_void,
             );
@@ -957,12 +838,10 @@ unsafe extern "C" fn tapfilter(
 ) -> ::core::ffi::c_float {
     unsafe {
         let mut sum: ::core::ffi::c_float = 0.0;
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0i32;
         while i < filtersize {
-            sum += *src.offset(
-                (x264_clip3(pos, 0 as ::core::ffi::c_int, max - 1 as ::core::ffi::c_int) * stride)
-                    as isize,
-            ) * *coeff.offset(i as isize);
+            sum += *src.offset((x264_clip3(pos, 0i32, max - 1i32) * stride) as isize)
+                * *coeff.offset(i as isize);
             i += 1;
             pos += 1;
         }
@@ -975,25 +854,21 @@ unsafe extern "C" fn macroblock_tree_rescale(
     mut dst: *mut ::core::ffi::c_float,
 ) {
     unsafe {
-        let mut input: *mut ::core::ffi::c_float =
-            (*rc).mbtree.scale_buffer[0 as ::core::ffi::c_int as usize];
-        let mut output: *mut ::core::ffi::c_float =
-            (*rc).mbtree.scale_buffer[1 as ::core::ffi::c_int as usize];
-        let mut filtersize: ::core::ffi::c_int =
-            (*rc).mbtree.filtersize[0 as ::core::ffi::c_int as usize];
-        let mut stride: ::core::ffi::c_int = (*rc).mbtree.srcdim[0 as ::core::ffi::c_int as usize];
-        let mut height: ::core::ffi::c_int = (*rc).mbtree.srcdim[1 as ::core::ffi::c_int as usize];
-        let mut y: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut input: *mut ::core::ffi::c_float = (*rc).mbtree.scale_buffer[0usize];
+        let mut output: *mut ::core::ffi::c_float = (*rc).mbtree.scale_buffer[1usize];
+        let mut filtersize: ::core::ffi::c_int = (*rc).mbtree.filtersize[0usize];
+        let mut stride: ::core::ffi::c_int = (*rc).mbtree.srcdim[0usize];
+        let mut height: ::core::ffi::c_int = (*rc).mbtree.srcdim[1usize];
+        let mut y: ::core::ffi::c_int = 0i32;
         while y < height {
-            let mut coeff: *mut ::core::ffi::c_float =
-                (*rc).mbtree.coeffs[0 as ::core::ffi::c_int as usize];
-            let mut x: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut coeff: *mut ::core::ffi::c_float = (*rc).mbtree.coeffs[0usize];
+            let mut x: ::core::ffi::c_int = 0i32;
             while x < (*h).mb.i_mb_width {
                 *output.offset(x as isize) = tapfilter(
                     input,
-                    *(*rc).mbtree.pos[0 as ::core::ffi::c_int as usize].offset(x as isize),
+                    *(*rc).mbtree.pos[0usize].offset(x as isize),
                     stride,
-                    1 as ::core::ffi::c_int,
+                    1i32,
                     coeff,
                     filtersize,
                 );
@@ -1004,20 +879,19 @@ unsafe extern "C" fn macroblock_tree_rescale(
             input = input.offset(stride as isize);
             output = output.offset((*h).mb.i_mb_width as isize);
         }
-        input = (*rc).mbtree.scale_buffer[1 as ::core::ffi::c_int as usize];
+        input = (*rc).mbtree.scale_buffer[1usize];
         output = dst;
-        filtersize = (*rc).mbtree.filtersize[1 as ::core::ffi::c_int as usize];
+        filtersize = (*rc).mbtree.filtersize[1usize];
         stride = (*h).mb.i_mb_width;
-        height = (*rc).mbtree.srcdim[1 as ::core::ffi::c_int as usize];
-        let mut x_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        height = (*rc).mbtree.srcdim[1usize];
+        let mut x_0: ::core::ffi::c_int = 0i32;
         while x_0 < (*h).mb.i_mb_width {
-            let mut coeff_0: *mut ::core::ffi::c_float =
-                (*rc).mbtree.coeffs[1 as ::core::ffi::c_int as usize];
-            let mut y_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut coeff_0: *mut ::core::ffi::c_float = (*rc).mbtree.coeffs[1usize];
+            let mut y_0: ::core::ffi::c_int = 0i32;
             while y_0 < (*h).mb.i_mb_height {
                 *output.offset((y_0 * stride) as isize) = tapfilter(
                     input,
-                    *(*rc).mbtree.pos[1 as ::core::ffi::c_int as usize].offset(y_0 as isize),
+                    *(*rc).mbtree.pos[1usize].offset(y_0 as isize),
                     height,
                     stride,
                     coeff_0,
@@ -1045,7 +919,7 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
             (*(*rc).entry.offset((*frame).i_frame as isize)).pict_type as crate::stdlib::uint8_t;
         if (*(*rc).entry.offset((*frame).i_frame as isize)).kept_as_ref != 0 {
             let mut i_type: crate::stdlib::uint8_t = 0;
-            if (*rc).mbtree.qpbuf_pos < 0 as ::core::ffi::c_int {
+            if (*rc).mbtree.qpbuf_pos < 0i32 {
                 c2rust_current_block = 12675440807659640239;
             } else {
                 c2rust_current_block = 11812396948646013369;
@@ -1056,8 +930,8 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                         (*rc).mbtree.qpbuf_pos += 1;
                         if crate::stdlib::fread(
                             &raw mut i_type as *mut ::core::ffi::c_void,
-                            1 as crate::__stddef_size_t_h::size_t,
-                            1 as crate::__stddef_size_t_h::size_t,
+                            1usize,
+                            1usize,
                             (*rc).p_mbtree_stat_file_in,
                         ) == 0
                         {
@@ -1067,8 +941,7 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                         if crate::stdlib::fread(
                             (*rc).mbtree.qp_buffer[(*rc).mbtree.qpbuf_pos as usize]
                                 as *mut ::core::ffi::c_void,
-                            ::core::mem::size_of::<crate::stdlib::uint16_t>()
-                                as crate::__stddef_size_t_h::size_t,
+                            ::core::mem::size_of::<crate::stdlib::uint16_t>(),
                             (*rc).mbtree.src_mb_count as crate::__stddef_size_t_h::size_t,
                             (*rc).p_mbtree_stat_file_in,
                         ) != (*rc).mbtree.src_mb_count as ::core::ffi::c_uint
@@ -1078,10 +951,10 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                             break;
                         }
                         if i_type as ::core::ffi::c_int != i_type_actual as ::core::ffi::c_int
-                            && (*rc).mbtree.qpbuf_pos == 1 as ::core::ffi::c_int
+                            && (*rc).mbtree.qpbuf_pos == 1i32
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"MB-tree frametype %d doesn't match actual frametype %d.\n\0"
                                     .as_ptr()
@@ -1089,7 +962,7 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                                 i_type as ::core::ffi::c_int,
                                 i_type_actual as ::core::ffi::c_int,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         if i_type as ::core::ffi::c_int != i_type_actual as ::core::ffi::c_int {
                             c2rust_current_block = 12675440807659640239;
@@ -1100,7 +973,7 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                     _ => {
                         let mut dst: *mut ::core::ffi::c_float =
                             if (*rc).mbtree.rescale_enabled != 0 {
-                                (*rc).mbtree.scale_buffer[0 as ::core::ffi::c_int as usize]
+                                (*rc).mbtree.scale_buffer[0usize]
                             } else {
                                 (*frame).f_qp_offset
                             };
@@ -1115,7 +988,7 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                             macroblock_tree_rescale(h, rc, (*frame).f_qp_offset);
                         }
                         if (*h).frames.b_have_lowres != 0 {
-                            let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                            let mut i: ::core::ffi::c_int = 0i32;
                             while i < (*h).mb.i_mb_count {
                                 *(*frame).i_inv_qscale_factor.offset(i as isize) =
                                     x264_exp2fix8(*(*frame).f_qp_offset.offset(i as isize))
@@ -1133,18 +1006,18 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
                 5689001924483802034 => {}
                 _ => {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_ERROR_1,
                         b"Incomplete MB-tree stats file.\n\0".as_ptr()
                             as *const ::core::ffi::c_char,
                     );
-                    return -(1 as ::core::ffi::c_int);
+                    return -(1i32);
                 }
             }
         } else {
             x264_8_adaptive_quant_frame(h, frame, quant_offsets);
         }
-        return 0 as ::core::ffi::c_int;
+        return 0i32;
     }
 }
 #[no_mangle]
@@ -1165,75 +1038,59 @@ pub unsafe extern "C" fn x264_8_reference_build_list_optimal(
                 weightfn: ::core::ptr::null_mut::<crate::src::common::mc::weight_fn_t>(),
             }; 3]; 16];
         let mut refcount: [::core::ffi::c_int; 16] = [0; 16];
-        if (*rce).refs != (*h).i_ref[0 as ::core::ffi::c_int as usize] {
-            return -(1 as ::core::ffi::c_int);
+        if (*rce).refs != (*h).i_ref[0usize] {
+            return -(1i32);
         }
         crate::stdlib::memcpy(
-            &raw mut frames as *mut *mut crate::src::common::frame::x264_frame_t
-                as *mut ::core::ffi::c_void,
+            &raw mut frames as *mut ::core::ffi::c_void,
             &raw mut *(&raw mut (*h).fref
                 as *mut [*mut crate::src::common::frame::x264_frame_t; 19])
-                .offset(0 as ::core::ffi::c_int as isize)
-                as *mut *mut crate::src::common::frame::x264_frame_t
-                as *const ::core::ffi::c_void,
-            ::core::mem::size_of::<[*mut crate::src::common::frame::x264_frame_t; 16]>()
-                as crate::__stddef_size_t_h::size_t,
+                .offset(0isize) as *const ::core::ffi::c_void,
+            ::core::mem::size_of::<[*mut crate::src::common::frame::x264_frame_t; 16]>(),
         );
         crate::stdlib::memcpy(
-            &raw mut refcount as *mut ::core::ffi::c_int as *mut ::core::ffi::c_void,
-            &raw mut (*rce).refcount as *mut ::core::ffi::c_int as *const ::core::ffi::c_void,
-            ::core::mem::size_of::<[::core::ffi::c_int; 16]>() as crate::__stddef_size_t_h::size_t,
+            &raw mut refcount as *mut ::core::ffi::c_void,
+            &raw mut (*rce).refcount as *const ::core::ffi::c_void,
+            ::core::mem::size_of::<[::core::ffi::c_int; 16]>(),
         );
         crate::stdlib::memcpy(
-            &raw mut weights as *mut [crate::src::common::mc::x264_weight_t; 3]
-                as *mut ::core::ffi::c_void,
-            &raw mut (*(*h).fenc).weight as *mut [crate::src::common::mc::x264_weight_t; 3]
-                as *const ::core::ffi::c_void,
-            ::core::mem::size_of::<[[crate::src::common::mc::x264_weight_t; 3]; 16]>()
-                as crate::__stddef_size_t_h::size_t,
+            &raw mut weights as *mut ::core::ffi::c_void,
+            &raw mut (*(*h).fenc).weight as *const ::core::ffi::c_void,
+            ::core::mem::size_of::<[[crate::src::common::mc::x264_weight_t; 3]; 16]>(),
         );
         crate::stdlib::memset(
             (&raw mut *(&raw mut (*(*h).fenc).weight
                 as *mut [crate::src::common::mc::x264_weight_t; 3])
-                .offset(1 as ::core::ffi::c_int as isize)
-                as *mut crate::src::common::mc::x264_weight_t)
-                .offset(0 as ::core::ffi::c_int as isize)
-                as *mut crate::src::common::mc::x264_weight_t
-                as *mut ::core::ffi::c_void,
-            0 as ::core::ffi::c_int,
-            ::core::mem::size_of::<[[crate::src::common::mc::x264_weight_t; 3]; 15]>()
-                as crate::__stddef_size_t_h::size_t,
+                .offset(1isize) as *mut crate::src::common::mc::x264_weight_t)
+                .offset(0isize) as *mut ::core::ffi::c_void,
+            0i32,
+            ::core::mem::size_of::<[[crate::src::common::mc::x264_weight_t; 3]; 15]>(),
         );
-        let mut ref_0: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-        while ref_0 < (*h).i_ref[0 as ::core::ffi::c_int as usize] {
-            let mut max: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
-            let mut bestref: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-            let mut i: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-            while i < (*h).i_ref[0 as ::core::ffi::c_int as usize] {
+        let mut ref_0: ::core::ffi::c_int = 1i32;
+        while ref_0 < (*h).i_ref[0usize] {
+            let mut max: ::core::ffi::c_int = -(1i32);
+            let mut bestref: ::core::ffi::c_int = 1i32;
+            let mut i: ::core::ffi::c_int = 1i32;
+            while i < (*h).i_ref[0usize] {
                 if refcount[i as usize] > max {
                     max = refcount[i as usize];
                     bestref = i;
                 }
                 i += 1;
             }
-            refcount[bestref as usize] = -(1 as ::core::ffi::c_int);
-            (*h).fref[0 as ::core::ffi::c_int as usize][ref_0 as usize] = frames[bestref as usize];
+            refcount[bestref as usize] = -(1i32);
+            (*h).fref[0usize][ref_0 as usize] = frames[bestref as usize];
             crate::stdlib::memcpy(
                 &raw mut *(&raw mut (*(*h).fenc).weight
                     as *mut [crate::src::common::mc::x264_weight_t; 3])
-                    .offset(ref_0 as isize)
-                    as *mut crate::src::common::mc::x264_weight_t
-                    as *mut ::core::ffi::c_void,
+                    .offset(ref_0 as isize) as *mut ::core::ffi::c_void,
                 &raw mut *(&raw mut weights as *mut [crate::src::common::mc::x264_weight_t; 3])
-                    .offset(bestref as isize)
-                    as *mut crate::src::common::mc::x264_weight_t
-                    as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<[crate::src::common::mc::x264_weight_t; 3]>()
-                    as crate::__stddef_size_t_h::size_t,
+                    .offset(bestref as isize) as *const ::core::ffi::c_void,
+                ::core::mem::size_of::<[crate::src::common::mc::x264_weight_t; 3]>(),
             );
             ref_0 += 1;
         }
-        return 0 as ::core::ffi::c_int;
+        return 0i32;
     }
 }
 unsafe extern "C" fn strcat_filename(
@@ -1244,8 +1101,7 @@ unsafe extern "C" fn strcat_filename(
         let mut output: *mut ::core::ffi::c_char = crate::src::common::base::x264_malloc(
             crate::stdlib::strlen(input)
                 .wrapping_add(crate::stdlib::strlen(suffix))
-                .wrapping_add(1 as crate::__stddef_size_t_h::size_t)
-                as crate::stdlib::int64_t,
+                .wrapping_add(1usize) as crate::stdlib::int64_t,
         ) as *mut ::core::ffi::c_char;
         if output.is_null() {
             return ::core::ptr::null_mut::<::core::ffi::c_char>();
@@ -1268,28 +1124,24 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
         if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CRF {
             let mut base_cplx: ::core::ffi::c_double = ((*h).mb.i_mb_count
                 * (if (*h).param.i_bframe != 0 {
-                    120 as ::core::ffi::c_int
+                    120i32
                 } else {
-                    80 as ::core::ffi::c_int
+                    80i32
                 })) as ::core::ffi::c_double;
             let mut mbtree_offset: ::core::ffi::c_double = if (*h).param.rc.b_mb_tree != 0 {
                 (1.0 - (*h).param.rc.f_qcompress as ::core::ffi::c_double) * 13.5
             } else {
-                0 as ::core::ffi::c_int as ::core::ffi::c_double
+                0f64
             };
-            (*rc).rate_factor_constant = crate::stdlib::pow(
-                base_cplx,
-                1 as ::core::ffi::c_int as ::core::ffi::c_double - (*rc).qcompress,
-            ) / qp2qscale(
-                ((*h).param.rc.f_rf_constant as ::core::ffi::c_double
-                    + mbtree_offset
-                    + crate::src::common::common::QP_BD_OFFSET as ::core::ffi::c_double)
-                    as ::core::ffi::c_float,
-            ) as ::core::ffi::c_double;
+            (*rc).rate_factor_constant = crate::stdlib::pow(base_cplx, 1f64 - (*rc).qcompress)
+                / qp2qscale(
+                    ((*h).param.rc.f_rf_constant as ::core::ffi::c_double
+                        + mbtree_offset
+                        + crate::src::common::common::QP_BD_OFFSET as ::core::ffi::c_double)
+                        as ::core::ffi::c_float,
+                ) as ::core::ffi::c_double;
         }
-        if (*h).param.rc.i_vbv_max_bitrate > 0 as ::core::ffi::c_int
-            && (*h).param.rc.i_vbv_buffer_size > 0 as ::core::ffi::c_int
-        {
+        if (*h).param.rc.i_vbv_max_bitrate > 0i32 && (*h).param.rc.i_vbv_buffer_size > 0i32 {
             if (*rc).b_vbv_min_rate != 0 {
                 (*h).param.rc.i_vbv_max_bitrate = (*h).param.rc.i_bitrate;
             }
@@ -1301,7 +1153,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     ((*h).param.rc.i_vbv_max_bitrate as ::core::ffi::c_double / (*rc).fps)
                         as ::core::ffi::c_int;
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"VBV buffer size cannot be smaller than one frame, using %d kbit\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -1309,9 +1161,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                 );
             }
             let mut kilobit_size: ::core::ffi::c_int = if (*h).param.i_avcintra_class != 0 {
-                1024 as ::core::ffi::c_int
+                1024i32
             } else {
-                1000 as ::core::ffi::c_int
+                1000i32
             };
             let mut vbv_buffer_size: ::core::ffi::c_int =
                 (*h).param.rc.i_vbv_buffer_size * kilobit_size;
@@ -1321,7 +1173,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
-                    .i_cpb_cnt = 1 as ::core::ffi::c_int;
+                    .i_cpb_cnt = 1i32;
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
@@ -1330,14 +1182,14 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
-                    .i_time_offset_length = 0 as ::core::ffi::c_int;
+                    .i_time_offset_length = 0i32;
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
                     .i_bit_rate_scale = x264_clip3(
                     (vbv_max_bitrate as ::core::ffi::c_uint).trailing_zeros() as i32 - BR_SHIFT,
-                    0 as ::core::ffi::c_int,
-                    15 as ::core::ffi::c_int,
+                    0i32,
+                    15i32,
                 );
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
@@ -1366,8 +1218,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     .hrd
                     .i_cpb_size_scale = x264_clip3(
                     (vbv_buffer_size as ::core::ffi::c_uint).trailing_zeros() as i32 - CPB_SHIFT,
-                    0 as ::core::ffi::c_int,
-                    15 as ::core::ffi::c_int,
+                    0i32,
+                    15i32,
                 );
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
@@ -1400,7 +1252,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .i_num_units_in_tick as ::core::ffi::c_double)
-                    < 2147483647 as ::core::ffi::c_int as ::core::ffi::c_double
+                    < 2147483647f64
                 {
                     (*h).param.i_keyint_max as ::core::ffi::c_double
                         * 0.5
@@ -1411,7 +1263,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                             .vui
                             .i_num_units_in_tick as ::core::ffi::c_double
                 } else {
-                    2147483647 as ::core::ffi::c_int as ::core::ffi::c_double
+                    2147483647f64
                 })
                     as ::core::ffi::c_int;
                 let mut max_dpb_output_delay: ::core::ffi::c_int =
@@ -1440,30 +1292,27 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
-                    .i_initial_cpb_removal_delay_length = 2 as ::core::ffi::c_int
+                    .i_initial_cpb_removal_delay_length = 2i32
                     + x264_clip3(
-                        32 as ::core::ffi::c_int
-                            - (max_delay as ::core::ffi::c_uint).leading_zeros() as i32,
-                        4 as ::core::ffi::c_int,
-                        22 as ::core::ffi::c_int,
+                        32i32 - (max_delay as ::core::ffi::c_uint).leading_zeros() as i32,
+                        4i32,
+                        22i32,
                     );
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
                     .i_cpb_removal_delay_length = x264_clip3(
-                    32 as ::core::ffi::c_int
-                        - (max_cpb_output_delay as ::core::ffi::c_uint).leading_zeros() as i32,
-                    4 as ::core::ffi::c_int,
-                    31 as ::core::ffi::c_int,
+                    32i32 - (max_cpb_output_delay as ::core::ffi::c_uint).leading_zeros() as i32,
+                    4i32,
+                    31i32,
                 );
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
                     .i_dpb_output_delay_length = x264_clip3(
-                    32 as ::core::ffi::c_int
-                        - (max_dpb_output_delay as ::core::ffi::c_uint).leading_zeros() as i32,
-                    4 as ::core::ffi::c_int,
-                    31 as ::core::ffi::c_int,
+                    32i32 - (max_dpb_output_delay as ::core::ffi::c_uint).leading_zeros() as i32,
+                    4i32,
+                    31i32,
                 );
                 vbv_buffer_size = (*(&raw mut (*h).sps
                     as *mut crate::src::common::set::x264_sps_t))
@@ -1477,7 +1326,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     .i_bit_rate_unscaled;
             } else if (*h).param.i_nal_hrd != 0 && b_init == 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"VBV parameters cannot be changed when NAL HRD is in use\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -1505,10 +1354,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                 (*rc).cbr_decay = 1.0f64
                     - (*rc).buffer_rate / (*rc).buffer_size
                         * 0.5f64
-                        * (if 0 as ::core::ffi::c_int as ::core::ffi::c_double
-                            > 1.5f64 - (*rc).buffer_rate * (*rc).fps / (*rc).bitrate
-                        {
-                            0 as ::core::ffi::c_int as ::core::ffi::c_double
+                        * (if 0f64 > 1.5f64 - (*rc).buffer_rate * (*rc).fps / (*rc).bitrate {
+                            0f64
                         } else {
                             1.5f64 - (*rc).buffer_rate * (*rc).fps / (*rc).bitrate
                         });
@@ -1518,17 +1365,14 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
             {
                 (*rc).rate_factor_max_increment =
                     (*h).param.rc.f_rf_constant_max - (*h).param.rc.f_rf_constant;
-                if (*rc).rate_factor_max_increment
-                    <= 0 as ::core::ffi::c_int as ::core::ffi::c_float
-                {
+                if (*rc).rate_factor_max_increment <= 0f32 {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_WARNING_1,
                         b"CRF max must be greater than CRF\n\0".as_ptr()
                             as *const ::core::ffi::c_char,
                     );
-                    (*rc).rate_factor_max_increment =
-                        0 as ::core::ffi::c_int as ::core::ffi::c_float;
+                    (*rc).rate_factor_max_increment = 0f32;
                 }
             }
             if b_init != 0 {
@@ -1537,8 +1381,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                         ((*h).param.rc.f_vbv_buffer_init
                             / (*h).param.rc.i_vbv_buffer_size as ::core::ffi::c_float)
                             as ::core::ffi::c_double,
-                        0 as ::core::ffi::c_int as ::core::ffi::c_double,
-                        1 as ::core::ffi::c_int as ::core::ffi::c_double,
+                        0f64,
+                        1f64,
                     ) as ::core::ffi::c_float;
                 }
                 (*h).param.rc.f_vbv_buffer_init = x264_clip3f(
@@ -1549,8 +1393,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     } else {
                         (*rc).buffer_rate / (*rc).buffer_size
                     },
-                    0 as ::core::ffi::c_int as ::core::ffi::c_double,
-                    1 as ::core::ffi::c_int as ::core::ffi::c_double,
+                    0f64,
+                    1f64,
                 ) as ::core::ffi::c_float;
                 (*rc).buffer_fill_final_min = ((*rc).buffer_size
                     * (*h).param.rc.f_vbv_buffer_init as ::core::ffi::c_double
@@ -1559,7 +1403,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                         .i_time_scale as ::core::ffi::c_double)
                     as crate::stdlib::int64_t;
                 (*rc).buffer_fill_final = (*rc).buffer_fill_final_min;
-                (*rc).b_vbv = 1 as ::core::ffi::c_int;
+                (*rc).b_vbv = 1i32;
                 (*rc).b_vbv_min_rate = ((*rc).b_2pass == 0
                     && (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR
                     && (*h).param.rc.i_vbv_max_bitrate <= (*h).param.rc.i_bitrate)
@@ -1568,8 +1412,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
         }
     }
 }
-pub const BR_SHIFT: ::core::ffi::c_int = 6 as ::core::ffi::c_int;
-pub const CPB_SHIFT: ::core::ffi::c_int = 4 as ::core::ffi::c_int;
+pub const BR_SHIFT: ::core::ffi::c_int = 6i32;
+pub const CPB_SHIFT: ::core::ffi::c_int = 4i32;
 pub const MAX_DURATION: ::core::ffi::c_double = 0.5;
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_new(
@@ -1578,25 +1422,20 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
     unsafe {
         let mut w: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
         let mut num_preds: ::core::ffi::c_int = 0;
-        static mut pred_coeff_table: [::core::ffi::c_float; 3] = [
-            1.0f64 as ::core::ffi::c_float,
-            1.0f64 as ::core::ffi::c_float,
-            1.5f64 as ::core::ffi::c_float,
-        ];
+        static mut pred_coeff_table: [::core::ffi::c_float; 3] = [1f32, 1f32, 1.5f32];
         let mut c2rust_current_block: u64;
         let mut rc: *mut x264_ratecontrol_t = ::core::ptr::null_mut::<x264_ratecontrol_t>();
         (*h).rc = crate::src::common::base::x264_malloc(
             ((*h).param.i_threads as usize)
-                .wrapping_mul(::core::mem::size_of::<x264_ratecontrol_t>() as usize)
+                .wrapping_mul(::core::mem::size_of::<x264_ratecontrol_t>())
                 as crate::stdlib::int64_t,
         ) as *mut x264_ratecontrol_t;
         if !(*h).rc.is_null() {
             crate::stdlib::memset(
                 (*h).rc as *mut ::core::ffi::c_void,
-                0 as ::core::ffi::c_int,
+                0i32,
                 ((*h).param.i_threads as crate::__stddef_size_t_h::size_t)
-                    .wrapping_mul(::core::mem::size_of::<x264_ratecontrol_t>()
-                        as crate::__stddef_size_t_h::size_t),
+                    .wrapping_mul(::core::mem::size_of::<x264_ratecontrol_t>()),
             );
             rc = (*h).rc;
             (*rc).b_abr = ((*h).param.rc.i_rc_method != crate::x264_h::X264_RC_CQP
@@ -1604,9 +1443,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
             (*rc).b_2pass = ((*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR
                 && (*h).param.rc.b_stat_read != 0)
                 as ::core::ffi::c_int;
-            if (*h).param.i_fps_num > 0 as crate::stdlib::uint32_t
-                && (*h).param.i_fps_den > 0 as crate::stdlib::uint32_t
-            {
+            if (*h).param.i_fps_num > 0u32 && (*h).param.i_fps_den > 0u32 {
                 (*rc).fps = ((*h).param.i_fps_num as ::core::ffi::c_float
                     / (*h).param.i_fps_den as ::core::ffi::c_float)
                     as ::core::ffi::c_double;
@@ -1614,8 +1451,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                 (*rc).fps = 25.0f64;
             }
             if (*h).param.rc.b_mb_tree != 0 {
-                (*h).param.rc.f_pb_factor = 1 as ::core::ffi::c_int as ::core::ffi::c_float;
-                (*rc).qcompress = 1 as ::core::ffi::c_int as ::core::ffi::c_double;
+                (*h).param.rc.f_pb_factor = 1f32;
+                (*rc).qcompress = 1f64;
             } else {
                 (*rc).qcompress = (*h).param.rc.f_qcompress as ::core::ffi::c_double;
             }
@@ -1627,20 +1464,20 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                 });
             (*rc).rate_tolerance = (*h).param.rc.f_rate_tolerance as ::core::ffi::c_double;
             (*rc).nmb = (*h).mb.i_mb_count;
-            (*rc).last_non_b_pict_type = -(1 as ::core::ffi::c_int);
+            (*rc).last_non_b_pict_type = -(1i32);
             (*rc).cbr_decay = 1.0;
             if (*h).param.rc.i_rc_method != crate::x264_h::X264_RC_ABR
                 && (*h).param.rc.b_stat_read != 0
             {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_ERROR_1,
                     b"CRF/CQP is incompatible with 2pass.\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
                 );
-                return -(1 as ::core::ffi::c_int);
+                return -(1i32);
             }
-            x264_8_ratecontrol_init_reconfigurable(h, 1 as ::core::ffi::c_int);
+            x264_8_ratecontrol_init_reconfigurable(h, 1i32);
             if (*h).param.i_nal_hrd != 0 {
                 let mut denom: crate::stdlib::uint64_t = ((*(&raw mut (*h).sps
                     as *mut crate::src::common::set::x264_sps_t))
@@ -1653,9 +1490,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             .vui
                             .i_time_scale as crate::stdlib::uint64_t,
                     );
-                let mut num: crate::stdlib::uint64_t = 90000 as crate::stdlib::uint64_t;
+                let mut num: crate::stdlib::uint64_t = 90000u64;
                 crate::src::common::base::x264_reduce_fraction64(&raw mut num, &raw mut denom);
-                (*rc).hrd_multiply_denom = (90000 as crate::stdlib::uint64_t).wrapping_div(num);
+                (*rc).hrd_multiply_denom = (90000u64).wrapping_div(num);
                 let mut bits_required: ::core::ffi::c_double =
                     crate::stdlib::log2(num as ::core::ffi::c_double)
                         + crate::stdlib::log2(
@@ -1670,19 +1507,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 .i_cpb_size_unscaled
                                 as ::core::ffi::c_double,
                         );
-                if bits_required >= 63 as ::core::ffi::c_int as ::core::ffi::c_double {
+                if bits_required >= 63f64 {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_ERROR_1,
                         b"HRD with very large timescale and bufsize not supported\n\0".as_ptr()
                             as *const ::core::ffi::c_char,
                     );
-                    return -(1 as ::core::ffi::c_int);
+                    return -(1i32);
                 }
             }
             if (*rc).rate_tolerance < 0.01 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"bitrate tolerance too small, using .01\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -1696,7 +1533,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                 (*rc).accum_p_qp = ((if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CRF {
                     (*h).param.rc.f_rf_constant
                 } else {
-                    24 as ::core::ffi::c_int as ::core::ffi::c_float
+                    24f32
                 }) + crate::src::common::common::QP_BD_OFFSET
                     as ::core::ffi::c_float)
                     as ::core::ffi::c_double
@@ -1720,7 +1557,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                 x264_clip3(
                     ((*h).param.rc.i_qp_constant as ::core::ffi::c_double - (*rc).ip_offset + 0.5)
                         as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
+                    0i32,
                     crate::src::common::common::QP_MAX,
                 );
             (*rc).qp_constant
@@ -1728,23 +1565,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                 x264_clip3(
                     ((*h).param.rc.i_qp_constant as ::core::ffi::c_double + (*rc).pb_offset + 0.5)
                         as ::core::ffi::c_int,
-                    0 as ::core::ffi::c_int,
+                    0i32,
                     crate::src::common::common::QP_MAX,
                 );
             (*h).mb.ip_offset = ((*rc).ip_offset + 0.5) as ::core::ffi::c_int;
-            (*rc).lstep = crate::stdlib::pow(
-                2 as ::core::ffi::c_int as ::core::ffi::c_double,
-                (*h).param.rc.i_qp_step as ::core::ffi::c_double / 6.0,
-            );
+            (*rc).lstep =
+                crate::stdlib::pow(2f64, (*h).param.rc.i_qp_step as ::core::ffi::c_double / 6.0);
             (*rc).last_qscale = qp2qscale(
-                (26 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET)
-                    as ::core::ffi::c_float,
+                (26i32 + crate::src::common::common::QP_BD_OFFSET) as ::core::ffi::c_float,
             ) as ::core::ffi::c_double;
-            num_preds =
-                (*h).param.b_sliced_threads * (*h).param.i_threads + 1 as ::core::ffi::c_int;
+            num_preds = (*h).param.b_sliced_threads * (*h).param.i_threads + 1i32;
             (*rc).pred = crate::src::common::base::x264_malloc(
-                (5 as usize)
-                    .wrapping_mul(::core::mem::size_of::<predictor_t>() as usize)
+                (5usize)
+                    .wrapping_mul(::core::mem::size_of::<predictor_t>())
                     .wrapping_mul(num_preds as usize) as crate::stdlib::int64_t,
             ) as *mut predictor_t;
             if !(*rc).pred.is_null() {
@@ -1753,13 +1586,13 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         ::core::mem::size_of::<predictor_t>() as crate::stdlib::int64_t
                     ) as *mut predictor_t;
                 if !(*rc).pred_b_from_p.is_null() {
-                    let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                    while i < 3 as ::core::ffi::c_int {
+                    let mut i: ::core::ffi::c_int = 0i32;
+                    while i < 3i32 {
                         (*rc).last_qscale_for[i as usize] = qp2qscale(
                             (if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CRF {
                                 (*h).param.rc.f_rf_constant
                             } else {
-                                24 as ::core::ffi::c_int as ::core::ffi::c_float
+                                24f32
                             }) + crate::src::common::common::QP_BD_OFFSET as ::core::ffi::c_float,
                         )
                             as ::core::ffi::c_double;
@@ -1769,36 +1602,21 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         (*rc).lmax[i as usize] =
                             qp2qscale((*h).param.rc.i_qp_max as ::core::ffi::c_float)
                                 as ::core::ffi::c_double;
-                        let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        let mut j: ::core::ffi::c_int = 0i32;
                         while j < num_preds {
-                            (*(*rc)
-                                .pred
-                                .offset((i + j * 5 as ::core::ffi::c_int) as isize))
-                            .coeff_min = pred_coeff_table[i as usize]
-                                / 2 as ::core::ffi::c_int as ::core::ffi::c_float;
-                            (*(*rc)
-                                .pred
-                                .offset((i + j * 5 as ::core::ffi::c_int) as isize))
-                            .coeff = pred_coeff_table[i as usize];
-                            (*(*rc)
-                                .pred
-                                .offset((i + j * 5 as ::core::ffi::c_int) as isize))
-                            .count = 1.0f32;
-                            (*(*rc)
-                                .pred
-                                .offset((i + j * 5 as ::core::ffi::c_int) as isize))
-                            .decay = 0.5f32;
-                            (*(*rc)
-                                .pred
-                                .offset((i + j * 5 as ::core::ffi::c_int) as isize))
-                            .offset = 0.0f32;
+                            (*(*rc).pred.offset((i + j * 5i32) as isize)).coeff_min =
+                                pred_coeff_table[i as usize] / 2f32;
+                            (*(*rc).pred.offset((i + j * 5i32) as isize)).coeff =
+                                pred_coeff_table[i as usize];
+                            (*(*rc).pred.offset((i + j * 5i32) as isize)).count = 1.0f32;
+                            (*(*rc).pred.offset((i + j * 5i32) as isize)).decay = 0.5f32;
+                            (*(*rc).pred.offset((i + j * 5i32) as isize)).offset = 0.0f32;
                             j += 1;
                         }
-                        let mut j_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                        while j_0 < 2 as ::core::ffi::c_int {
-                            (*rc).row_preds[i as usize][j_0 as usize].coeff_min = (0.25
-                                / 4 as ::core::ffi::c_int as ::core::ffi::c_double)
-                                as ::core::ffi::c_float;
+                        let mut j_0: ::core::ffi::c_int = 0i32;
+                        while j_0 < 2i32 {
+                            (*rc).row_preds[i as usize][j_0 as usize].coeff_min =
+                                (0.25 / 4f64) as ::core::ffi::c_float;
                             (*rc).row_preds[i as usize][j_0 as usize].coeff = 0.25;
                             (*rc).row_preds[i as usize][j_0 as usize].count = 1.0;
                             (*rc).row_preds[i as usize][j_0 as usize].decay = 0.5;
@@ -1807,20 +1625,18 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         }
                         i += 1;
                     }
-                    (*(*rc).pred_b_from_p).coeff_min = (0.5
-                        / 2 as ::core::ffi::c_int as ::core::ffi::c_double)
-                        as ::core::ffi::c_float;
+                    (*(*rc).pred_b_from_p).coeff_min = (0.5 / 2f64) as ::core::ffi::c_float;
                     (*(*rc).pred_b_from_p).coeff = 0.5;
                     (*(*rc).pred_b_from_p).count = 1.0;
                     (*(*rc).pred_b_from_p).decay = 0.5;
                     (*(*rc).pred_b_from_p).offset = 0.0;
-                    if parse_zones(h) < 0 as ::core::ffi::c_int {
+                    if parse_zones(h) < 0i32 {
                         crate::src::common::common::x264_8_log(
-                            h as *mut crate::src::common::common::x264_t,
+                            h,
                             crate::x264_h::X264_LOG_ERROR_1,
                             b"failed to parse zones\n\0".as_ptr() as *const ::core::ffi::c_char,
                         );
-                        return -(1 as ::core::ffi::c_int);
+                        return -(1i32);
                     }
                     if (*h).param.rc.b_stat_read != 0 {
                         '_c2rust_label: {
@@ -1831,7 +1647,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         as *const ::core::ffi::c_char,
                                     b"encoder/ratecontrol.c\0".as_ptr()
                                         as *const ::core::ffi::c_char,
-                                    874 as ::core::ffi::c_uint,
+                                    874u32,
                                     b"int x264_8_ratecontrol_new(x264_t *)\0".as_ptr()
                                         as *const ::core::ffi::c_char,
                                 );
@@ -1842,53 +1658,51 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         let mut stats_buf: *mut ::core::ffi::c_char = stats_in;
                         if stats_buf.is_null() {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"ratecontrol_init: can't open stats file\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         if (*h).param.rc.b_mb_tree != 0 {
                             let mut mbtree_stats_in: *mut ::core::ffi::c_char = strcat_filename(
                                 (*h).param.rc.psz_stat_in,
-                                b".mbtree\0".as_ptr() as *const ::core::ffi::c_char
-                                    as *mut ::core::ffi::c_char,
+                                b".mbtree\0".as_ptr() as *mut ::core::ffi::c_char,
                             );
                             if mbtree_stats_in.is_null() {
-                                return -(1 as ::core::ffi::c_int);
+                                return -(1i32);
                             }
                             (*rc).p_mbtree_stat_file_in = crate::stdlib::fopen(
                                 mbtree_stats_in,
                                 b"rb\0".as_ptr() as *const ::core::ffi::c_char,
-                            )
-                                as *mut crate::stdlib::FILE;
+                            );
                             crate::src::common::base::x264_free(
                                 mbtree_stats_in as *mut ::core::ffi::c_void,
                             );
                             if (*rc).p_mbtree_stat_file_in.is_null() {
                                 crate::src::common::common::x264_8_log(
-                                    h as *mut crate::src::common::common::x264_t,
+                                    h,
                                     crate::x264_h::X264_LOG_ERROR_1,
                                     b"ratecontrol_init: can't open mbtree stats file\n\0".as_ptr()
                                         as *const ::core::ffi::c_char,
                                 );
-                                return -(1 as ::core::ffi::c_int);
+                                return -(1i32);
                             }
                         }
                         if crate::stdlib::strncmp(
                             stats_buf,
                             b"#options:\0".as_ptr() as *const ::core::ffi::c_char,
-                            9 as crate::__stddef_size_t_h::size_t,
+                            9usize,
                         ) != 0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"options list in stats file not valid\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         let mut i_0: ::core::ffi::c_int = 0;
                         let mut j_1: ::core::ffi::c_int = 0;
@@ -1897,27 +1711,27 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         let mut opts: *mut ::core::ffi::c_char = stats_buf;
                         stats_in = crate::stdlib::strchr(stats_buf, '\n' as i32);
                         if stats_in.is_null() {
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
-                        *stats_in = '\0' as i32 as ::core::ffi::c_char;
+                        *stats_in = '\0' as ::core::ffi::c_char;
                         stats_in = stats_in.offset(1);
                         if crate::stdlib::sscanf(
                             opts,
                             b"#options: %dx%d\0".as_ptr() as *const ::core::ffi::c_char,
                             &raw mut i_0,
                             &raw mut j_1,
-                        ) != 2 as ::core::ffi::c_int
+                        ) != 2i32
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"resolution specified in stats file not valid\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         } else if (*h).param.rc.b_mb_tree != 0 {
-                            (*rc).mbtree.srcdim[0 as ::core::ffi::c_int as usize] = i_0;
-                            (*rc).mbtree.srcdim[1 as ::core::ffi::c_int as usize] = j_1;
+                            (*rc).mbtree.srcdim[0usize] = i_0;
+                            (*rc).mbtree.srcdim[1usize] = j_1;
                         }
                         let mut res_factor: ::core::ffi::c_float = (*h).param.i_width
                             as ::core::ffi::c_float
@@ -1935,19 +1749,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 b"timebase=%u/%u\0".as_ptr() as *const ::core::ffi::c_char,
                                 &raw mut k,
                                 &raw mut l,
-                            ) != 2 as ::core::ffi::c_int
+                            ) != 2i32
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"timebase specified in stats file not valid\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         if k != (*h).param.i_timebase_num || l != (*h).param.i_timebase_den {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"timebase mismatch with 1st pass (%u/%u vs %u/%u)\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
@@ -1956,7 +1770,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 k,
                                 l,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -1968,18 +1782,18 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 b"bitdepth=%d\0".as_ptr() as *const ::core::ffi::c_char,
                                 &raw mut i_0,
                             ) != 0
-                            && 8 as ::core::ffi::c_int != i_0
+                            && 8i32 != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different bitdepth setting than first pass (%d vs %d)\n\0"
                                     .as_ptr()
                                     as *const ::core::ffi::c_char,
-                                8 as ::core::ffi::c_int,
+                                8i32,
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -1991,25 +1805,25 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 b"weightp=%d\0".as_ptr() as *const ::core::ffi::c_char,
                                 &raw mut i_0,
                             ) != 0
-                            && (if 0 as ::core::ffi::c_int > (*h).param.analyse.i_weighted_pred {
-                                0 as ::core::ffi::c_int
+                            && (if 0i32 > (*h).param.analyse.i_weighted_pred {
+                                0i32
                             } else {
                                 (*h).param.analyse.i_weighted_pred
                             }) != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different weightp setting than first pass (%d vs %d)\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
-                                if 0 as ::core::ffi::c_int > (*h).param.analyse.i_weighted_pred {
-                                    0 as ::core::ffi::c_int
+                                if 0i32 > (*h).param.analyse.i_weighted_pred {
+                                    0i32
                                 } else {
                                     (*h).param.analyse.i_weighted_pred
                                 },
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2024,14 +1838,14 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             && (*h).param.i_bframe != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different bframes setting than first pass (%d vs %d)\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                                 (*h).param.i_bframe,
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2046,7 +1860,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             && (*h).param.i_bframe_pyramid != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different b_pyramid setting than first pass (%d vs %d)\n\0"
                                     .as_ptr()
@@ -2054,7 +1868,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 (*h).param.i_bframe_pyramid,
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2069,7 +1883,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             && (*h).param.b_intra_refresh != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different intra_refresh setting than first pass (%d vs %d)\n\0"
                                     .as_ptr()
@@ -2077,7 +1891,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 (*h).param.b_intra_refresh,
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2092,7 +1906,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             && (*h).param.b_open_gop != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different open_gop setting than first pass (%d vs %d)\n\0"
                                     .as_ptr()
@@ -2100,7 +1914,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 (*h).param.b_open_gop,
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2115,7 +1929,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             && (*h).param.b_bluray_compat != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different bluray_compat setting than first pass (%d vs %d)\n\0"
                                     .as_ptr()
@@ -2123,7 +1937,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 (*h).param.b_bluray_compat,
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2138,14 +1952,14 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             && (*h).param.rc.b_mb_tree != i_0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"different mbtree setting than first pass (%d vs %d)\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                                 (*h).param.rc.b_mb_tree,
                                 i_0,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2176,7 +1990,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             ) != 0
                             {
                                 crate::src::common::common::x264_8_log(
-                                    h as *mut crate::src::common::common::x264_t,
+                                    h,
                                     crate::x264_h::X264_LOG_ERROR_1,
                                     b"different interlaced setting than first pass (%s vs %s)\n\0"
                                         .as_ptr()
@@ -2184,7 +1998,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                     current,
                                     &raw mut buf as *mut ::core::ffi::c_char,
                                 );
-                                return -(1 as ::core::ffi::c_int);
+                                return -(1i32);
                             }
                         }
                         p = crate::stdlib::strstr(
@@ -2192,7 +2006,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             b"keyint=\0".as_ptr() as *const ::core::ffi::c_char,
                         );
                         if !p.is_null() {
-                            p = p.offset(7 as ::core::ffi::c_int as isize);
+                            p = p.offset(7isize);
                             let mut buf_0: [::core::ffi::c_char; 13] =
                                 ::core::mem::transmute::<[u8; 13], [::core::ffi::c_char; 13]>(
                                     *b"infinite \0\0\0\0",
@@ -2211,7 +2025,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             ) != 0
                             {
                                 crate::src::common::common::x264_8_log(
-                                    h as *mut crate::src::common::common::x264_t,
+                                    h,
                                     crate::x264_h::X264_LOG_ERROR_1,
                                     b"different keyint setting than first pass (%.*s vs %.*s)\n\0"
                                         .as_ptr()
@@ -2219,7 +2033,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                     crate::stdlib::strlen(
                                         &raw mut buf_0 as *mut ::core::ffi::c_char,
                                     )
-                                    .wrapping_sub(1 as crate::__stddef_size_t_h::size_t),
+                                    .wrapping_sub(1usize),
                                     &raw mut buf_0 as *mut ::core::ffi::c_char,
                                     crate::stdlib::strcspn(
                                         p,
@@ -2227,7 +2041,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                     ),
                                     p,
                                 );
-                                return -(1 as ::core::ffi::c_int);
+                                return -(1i32);
                             }
                         }
                         if !crate::stdlib::strstr(
@@ -2238,7 +2052,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             && (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_WARNING_1,
                                 b"1st pass was lossless, bitrate prediction will be inaccurate\n\0"
                                     .as_ptr()
@@ -2254,12 +2068,12 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 == crate::x264_h::X264_DIRECT_PRED_AUTO
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_WARNING_1,
                                 b"direct=auto not used on the first pass\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                             );
-                            (*h).mb.b_direct_auto_write = 1 as ::core::ffi::c_int;
+                            (*h).mb.b_direct_auto_write = 1i32;
                         }
                         p = crate::stdlib::strstr(
                             opts,
@@ -2277,12 +2091,12 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             (*h).param.i_bframe_adaptive = i_0;
                         } else if (*h).param.i_bframe != 0 {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"b_adapt method specified in stats file not valid\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         if ((*h).param.rc.b_mb_tree != 0 || (*h).param.rc.i_vbv_buffer_size != 0)
                             && {
@@ -2301,28 +2115,25 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             (*h).param.rc.i_lookahead = i_0;
                         }
                         p = stats_in;
-                        let mut num_entries: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
+                        let mut num_entries: ::core::ffi::c_int = -(1i32);
                         while !p.is_null() {
-                            p = crate::stdlib::strchr(
-                                p.offset(1 as ::core::ffi::c_int as isize),
-                                ';' as i32,
-                            );
+                            p = crate::stdlib::strchr(p.offset(1isize), ';' as i32);
                             num_entries += 1;
                         }
                         if num_entries == 0 {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"empty stats file\n\0".as_ptr() as *const ::core::ffi::c_char,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         (*rc).num_entries = num_entries;
                         if (*h).param.i_frame_total < (*rc).num_entries
-                            && (*h).param.i_frame_total > 0 as ::core::ffi::c_int
+                            && (*h).param.i_frame_total > 0i32
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_WARNING_1,
                                 b"2nd pass has fewer frames than 1st pass (%d vs %d)\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
@@ -2332,73 +2143,64 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         }
                         if (*h).param.i_frame_total > (*rc).num_entries {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"2nd pass has more frames than 1st pass (%d vs %d)\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                                 (*h).param.i_frame_total,
                                 (*rc).num_entries,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         (*rc).entry = crate::src::common::base::x264_malloc(
-                            ((*rc).num_entries as usize).wrapping_mul(::core::mem::size_of::<
-                                ratecontrol_entry_t,
-                            >(
-                            )
-                                as usize) as crate::stdlib::int64_t,
+                            ((*rc).num_entries as usize)
+                                .wrapping_mul(::core::mem::size_of::<ratecontrol_entry_t>())
+                                as crate::stdlib::int64_t,
                         ) as *mut ratecontrol_entry_t;
                         if (*rc).entry.is_null() {
                             c2rust_current_block = 2822377315416241595;
                         } else {
                             crate::stdlib::memset(
                                 (*rc).entry as *mut ::core::ffi::c_void,
-                                0 as ::core::ffi::c_int,
+                                0i32,
                                 ((*rc).num_entries as crate::__stddef_size_t_h::size_t)
-                                    .wrapping_mul(::core::mem::size_of::<ratecontrol_entry_t>()
-                                        as crate::__stddef_size_t_h::size_t),
+                                    .wrapping_mul(::core::mem::size_of::<ratecontrol_entry_t>()),
                             );
                             (*rc).entry_out =
                                 crate::src::common::base::x264_malloc(
                                     ((*rc).num_entries as usize).wrapping_mul(
-                                        ::core::mem::size_of::<*mut ratecontrol_entry_t>() as usize,
+                                        ::core::mem::size_of::<*mut ratecontrol_entry_t>(),
                                     ) as crate::stdlib::int64_t,
                                 ) as *mut *mut ratecontrol_entry_t;
                             if (*rc).entry_out.is_null() {
                                 c2rust_current_block = 2822377315416241595;
                             } else {
-                                let mut i_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                let mut i_1: ::core::ffi::c_int = 0i32;
                                 while i_1 < (*rc).num_entries {
                                     let mut rce: *mut ratecontrol_entry_t =
-                                        (*rc).entry.offset(i_1 as isize)
-                                            as *mut ratecontrol_entry_t;
+                                        (*rc).entry.offset(i_1 as isize);
                                     (*rce).pict_type = crate::src::common::base::SLICE_TYPE_P
                                         as ::core::ffi::c_int;
                                     (*rce).new_qscale = qp2qscale(
-                                        (20 as ::core::ffi::c_int
-                                            + crate::src::common::common::QP_BD_OFFSET)
+                                        (20i32 + crate::src::common::common::QP_BD_OFFSET)
                                             as ::core::ffi::c_float,
                                     )
                                         as ::core::ffi::c_double;
                                     (*rce).qscale = (*rce).new_qscale;
-                                    (*rce).misc_bits = (*rc).nmb + 10 as ::core::ffi::c_int;
-                                    (*rce).new_qp = 0 as ::core::ffi::c_int as ::core::ffi::c_float;
+                                    (*rce).misc_bits = (*rc).nmb + 10i32;
+                                    (*rce).new_qp = 0f32;
                                     let ref mut c2rust_fresh0 =
                                         *(*rc).entry_out.offset(i_1 as isize);
                                     *c2rust_fresh0 = rce;
                                     i_1 += 1;
                                 }
                                 p = stats_in;
-                                let mut total_qp_aq: ::core::ffi::c_double =
-                                    0 as ::core::ffi::c_int as ::core::ffi::c_double;
-                                let mut i_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                let mut total_qp_aq: ::core::ffi::c_double = 0f64;
+                                let mut i_2: ::core::ffi::c_int = 0i32;
                                 while i_2 < (*rc).num_entries {
-                                    let mut frame_number: ::core::ffi::c_int =
-                                        0 as ::core::ffi::c_int;
-                                    let mut frame_out_number: ::core::ffi::c_int =
-                                        0 as ::core::ffi::c_int;
-                                    let mut pict_type: ::core::ffi::c_char =
-                                        0 as ::core::ffi::c_char;
+                                    let mut frame_number: ::core::ffi::c_int = 0i32;
+                                    let mut frame_out_number: ::core::ffi::c_int = 0i32;
+                                    let mut pict_type: ::core::ffi::c_char = 0i8;
                                     let mut qp_rc: ::core::ffi::c_float = 0.;
                                     let mut qp_aq: ::core::ffi::c_float = 0.;
                                     let mut ref_0: ::core::ffi::c_int = 0;
@@ -2407,7 +2209,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                     if !next.is_null() {
                                         let c2rust_fresh1 = next;
                                         next = next.offset(1);
-                                        *c2rust_fresh1 = 0 as ::core::ffi::c_char;
+                                        *c2rust_fresh1 = 0i8;
                                     }
                                     let mut e: ::core::ffi::c_int = crate::stdlib::sscanf(
                                         p,
@@ -2415,24 +2217,22 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         &raw mut frame_number,
                                         &raw mut frame_out_number,
                                     );
-                                    if frame_number < 0 as ::core::ffi::c_int
-                                        || frame_number >= (*rc).num_entries
-                                    {
+                                    if frame_number < 0i32 || frame_number >= (*rc).num_entries {
                                         crate::src::common::common::x264_8_log(
-                                            h as *mut crate::src::common::common::x264_t,
+                                            h,
                                             crate::x264_h::X264_LOG_ERROR_1,
                                             b"bad frame number (%d) at stats line %d\n\0".as_ptr()
                                                 as *const ::core::ffi::c_char,
                                             frame_number,
                                             i_2,
                                         );
-                                        return -(1 as ::core::ffi::c_int);
+                                        return -(1i32);
                                     }
-                                    if frame_out_number < 0 as ::core::ffi::c_int
+                                    if frame_out_number < 0i32
                                         || frame_out_number >= (*rc).num_entries
                                     {
                                         crate::src::common::common::x264_8_log(
-                                            h as *mut crate::src::common::common::x264_t,
+                                            h,
                                             crate::x264_h::X264_LOG_ERROR_1,
                                             b"bad frame output number (%d) at stats line %d\n\0"
                                                 .as_ptr()
@@ -2440,15 +2240,14 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                             frame_out_number,
                                             i_2,
                                         );
-                                        return -(1 as ::core::ffi::c_int);
+                                        return -(1i32);
                                     }
                                     let mut rce_0: *mut ratecontrol_entry_t =
-                                        (*rc).entry.offset(frame_number as isize)
-                                            as *mut ratecontrol_entry_t;
+                                        (*rc).entry.offset(frame_number as isize);
                                     let ref mut c2rust_fresh2 =
                                         *(*rc).entry_out.offset(frame_out_number as isize);
                                     *c2rust_fresh2 = rce_0;
-                                    (*rce_0).direct_mode = 0 as ::core::ffi::c_char;
+                                    (*rce_0).direct_mode = 0i8;
                                     e
                                         += crate::stdlib::sscanf(
                                             p,
@@ -2491,10 +2290,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         b"ref:\0".as_ptr() as *const ::core::ffi::c_char,
                                     );
                                     if !p.is_null() {
-                                        p = p.offset(4 as ::core::ffi::c_int as isize);
-                                        ref_0 = 0 as ::core::ffi::c_int;
+                                        p = p.offset(4isize);
+                                        ref_0 = 0i32;
                                         loop {
-                                            if !(ref_0 < 16 as ::core::ffi::c_int) {
+                                            if !(ref_0 < 16i32) {
                                                 c2rust_current_block = 9728093949049737828;
                                                 break;
                                             }
@@ -2503,17 +2302,13 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                                 b" %d\0".as_ptr() as *const ::core::ffi::c_char,
                                                 (&raw mut (*rce_0).refcount
                                                     as *mut ::core::ffi::c_int)
-                                                    .offset(ref_0 as isize)
-                                                    as *mut ::core::ffi::c_int,
-                                            ) != 1 as ::core::ffi::c_int
+                                                    .offset(ref_0 as isize),
+                                            ) != 1i32
                                             {
                                                 c2rust_current_block = 9728093949049737828;
                                                 break;
                                             }
-                                            p = crate::stdlib::strchr(
-                                                p.offset(1 as ::core::ffi::c_int as isize),
-                                                ' ' as i32,
-                                            );
+                                            p = crate::stdlib::strchr(p.offset(1isize), ' ' as i32);
                                             if p.is_null() {
                                                 c2rust_current_block = 5991871592215859566;
                                                 break;
@@ -2524,14 +2319,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                             5991871592215859566 => {}
                                             _ => {
                                                 (*rce_0).refs = ref_0;
-                                                (*rce_0).i_weight_denom
-                                                    [1 as ::core::ffi::c_int as usize] = -(1
-                                                    as ::core::ffi::c_int)
-                                                    as crate::stdlib::int16_t;
-                                                (*rce_0).i_weight_denom
-                                                    [0 as ::core::ffi::c_int as usize] = (*rce_0)
-                                                    .i_weight_denom
-                                                    [1 as ::core::ffi::c_int as usize];
+                                                (*rce_0).i_weight_denom[1usize] = -1i16;
+                                                (*rce_0).i_weight_denom[0usize] =
+                                                    (*rce_0).i_weight_denom[1usize];
                                                 w = crate::stdlib::strchr(p, 'w' as i32);
                                                 if !w.is_null() {
                                                     let mut count: ::core::ffi::c_int =
@@ -2542,109 +2332,51 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                                                 as *const ::core::ffi::c_char,
                                                             (&raw mut (*rce_0).i_weight_denom
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    0 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(0isize),
                                                             (&raw mut *(&raw mut (*rce_0).weight
                                                                 as *mut [crate::stdlib::int16_t; 2])
-                                                                .offset(
-                                                                    0 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
+                                                                .offset(0isize)
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    0 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(0isize),
                                                             (&raw mut *(&raw mut (*rce_0).weight
                                                                 as *mut [crate::stdlib::int16_t; 2])
-                                                                .offset(
-                                                                    0 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
+                                                                .offset(0isize)
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    1 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(1isize),
                                                             (&raw mut (*rce_0).i_weight_denom
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    1 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(1isize),
                                                             (&raw mut *(&raw mut (*rce_0).weight
                                                                 as *mut [crate::stdlib::int16_t; 2])
-                                                                .offset(
-                                                                    1 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
+                                                                .offset(1isize)
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    0 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(0isize),
                                                             (&raw mut *(&raw mut (*rce_0).weight
                                                                 as *mut [crate::stdlib::int16_t; 2])
-                                                                .offset(
-                                                                    1 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
+                                                                .offset(1isize)
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    1 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(1isize),
                                                             (&raw mut *(&raw mut (*rce_0).weight
                                                                 as *mut [crate::stdlib::int16_t; 2])
-                                                                .offset(
-                                                                    2 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
+                                                                .offset(2isize)
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    0 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(0isize),
                                                             (&raw mut *(&raw mut (*rce_0).weight
                                                                 as *mut [crate::stdlib::int16_t; 2])
-                                                                .offset(
-                                                                    2 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
+                                                                .offset(2isize)
                                                                 as *mut crate::stdlib::int16_t)
-                                                                .offset(
-                                                                    1 as ::core::ffi::c_int
-                                                                        as isize,
-                                                                )
-                                                                as *mut crate::stdlib::int16_t,
+                                                                .offset(1isize),
                                                         );
-                                                    if count == 3 as ::core::ffi::c_int {
-                                                        (*rce_0).i_weight_denom
-                                                            [1 as ::core::ffi::c_int as usize] = -(1
-                                                            as ::core::ffi::c_int)
-                                                            as crate::stdlib::int16_t;
-                                                    } else if count != 8 as ::core::ffi::c_int {
-                                                        (*rce_0).i_weight_denom
-                                                            [1 as ::core::ffi::c_int as usize] = -(1
-                                                            as ::core::ffi::c_int)
-                                                            as crate::stdlib::int16_t;
-                                                        (*rce_0).i_weight_denom
-                                                            [0 as ::core::ffi::c_int as usize] =
-                                                            (*rce_0).i_weight_denom
-                                                                [1 as ::core::ffi::c_int as usize];
+                                                    if count == 3i32 {
+                                                        (*rce_0).i_weight_denom[1usize] = -1i16;
+                                                    } else if count != 8i32 {
+                                                        (*rce_0).i_weight_denom[1usize] = -1i16;
+                                                        (*rce_0).i_weight_denom[0usize] =
+                                                            (*rce_0).i_weight_denom[1usize];
                                                     }
                                                 }
                                                 if pict_type as ::core::ffi::c_int != 'b' as i32 {
-                                                    (*rce_0).kept_as_ref = 1 as ::core::ffi::c_int;
+                                                    (*rce_0).kept_as_ref = 1i32;
                                                 }
                                                 match pict_type as ::core::ffi::c_int {
                                                     73 => {
@@ -2683,10 +2415,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                                                 as ::core::ffi::c_int;
                                                     }
                                                     _ => {
-                                                        e = -(1 as ::core::ffi::c_int);
+                                                        e = -(1i32);
                                                     }
                                                 }
-                                                if !(e < 14 as ::core::ffi::c_int) {
+                                                if !(e < 14i32) {
                                                     (*rce_0).qscale =
                                                         qp2qscale(qp_rc) as ::core::ffi::c_double;
                                                     total_qp_aq += qp_aq as ::core::ffi::c_double;
@@ -2698,7 +2430,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         }
                                     }
                                     crate::src::common::common::x264_8_log(
-                                        h as *mut crate::src::common::common::x264_t,
+                                        h,
                                         crate::x264_h::X264_LOG_ERROR_1,
                                         b"statistics are damaged at line %d, parser out=%d\n\0"
                                             .as_ptr()
@@ -2706,7 +2438,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         i_2,
                                         e,
                                     );
-                                    return -(1 as ::core::ffi::c_int);
+                                    return -(1i32);
                                 }
                                 if (*h).param.b_stitchable == 0 {
                                     (*(&raw mut (*h).pps
@@ -2715,27 +2447,21 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         / (*rc).num_entries as ::core::ffi::c_double
                                         + 0.5f64)
                                         as ::core::ffi::c_int)
-                                        < 51 as ::core::ffi::c_int
-                                            + 6 as ::core::ffi::c_int
-                                                * (8 as ::core::ffi::c_int
-                                                    - 8 as ::core::ffi::c_int)
+                                        < 51i32 + 6i32 * (8i32 - 8i32)
                                     {
                                         (total_qp_aq / (*rc).num_entries as ::core::ffi::c_double
                                             + 0.5f64)
                                             as ::core::ffi::c_int
                                     } else {
-                                        51 as ::core::ffi::c_int
-                                            + 6 as ::core::ffi::c_int
-                                                * (8 as ::core::ffi::c_int
-                                                    - 8 as ::core::ffi::c_int)
+                                        51i32 + 6i32 * (8i32 - 8i32)
                                     };
                                 }
                                 crate::src::common::base::x264_free(
                                     stats_buf as *mut ::core::ffi::c_void,
                                 );
                                 if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR {
-                                    if init_pass2(h) < 0 as ::core::ffi::c_int {
-                                        return -(1 as ::core::ffi::c_int);
+                                    if init_pass2(h) < 0i32 {
+                                        return -(1i32);
                                     }
                                 }
                                 c2rust_current_block = 2756754640271984560;
@@ -2750,31 +2476,28 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             if (*h).param.rc.b_stat_write != 0 {
                                 (*rc).psz_stat_file_tmpname = strcat_filename(
                                     (*h).param.rc.psz_stat_out,
-                                    b".temp\0".as_ptr() as *const ::core::ffi::c_char
-                                        as *mut ::core::ffi::c_char,
+                                    b".temp\0".as_ptr() as *mut ::core::ffi::c_char,
                                 );
                                 if (*rc).psz_stat_file_tmpname.is_null() {
-                                    return -(1 as ::core::ffi::c_int);
+                                    return -(1i32);
                                 }
                                 (*rc).p_stat_file_out = crate::stdlib::fopen(
                                     (*rc).psz_stat_file_tmpname,
                                     b"wb\0".as_ptr() as *const ::core::ffi::c_char,
-                                )
-                                    as *mut crate::stdlib::FILE;
+                                );
                                 if (*rc).p_stat_file_out.is_null() {
                                     crate::src::common::common::x264_8_log(
-                                        h as *mut crate::src::common::common::x264_t,
+                                        h,
                                         crate::x264_h::X264_LOG_ERROR_1,
                                         b"ratecontrol_init: can't open stats file\n\0".as_ptr()
                                             as *const ::core::ffi::c_char,
                                     );
-                                    return -(1 as ::core::ffi::c_int);
+                                    return -(1i32);
                                 }
                                 let mut p_0: *mut ::core::ffi::c_char =
                                     crate::src::common::base::x264_param2string(
-                                        &raw mut (*h).param as *mut _
-                                            as *mut crate::x264_h::x264_param_t,
-                                        1 as ::core::ffi::c_int,
+                                        &raw mut (*h).param,
+                                        1i32,
                                     );
                                 if !p_0.is_null() {
                                     crate::stdlib::fprintf(
@@ -2789,33 +2512,30 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 if (*h).param.rc.b_mb_tree != 0 && (*h).param.rc.b_stat_read == 0 {
                                     (*rc).psz_mbtree_stat_file_tmpname = strcat_filename(
                                         (*h).param.rc.psz_stat_out,
-                                        b".mbtree.temp\0".as_ptr() as *const ::core::ffi::c_char
-                                            as *mut ::core::ffi::c_char,
+                                        b".mbtree.temp\0".as_ptr() as *mut ::core::ffi::c_char,
                                     );
                                     (*rc).psz_mbtree_stat_file_name = strcat_filename(
                                         (*h).param.rc.psz_stat_out,
-                                        b".mbtree\0".as_ptr() as *const ::core::ffi::c_char
-                                            as *mut ::core::ffi::c_char,
+                                        b".mbtree\0".as_ptr() as *mut ::core::ffi::c_char,
                                     );
                                     if (*rc).psz_mbtree_stat_file_tmpname.is_null()
                                         || (*rc).psz_mbtree_stat_file_name.is_null()
                                     {
-                                        return -(1 as ::core::ffi::c_int);
+                                        return -(1i32);
                                     }
                                     (*rc).p_mbtree_stat_file_out = crate::stdlib::fopen(
                                         (*rc).psz_mbtree_stat_file_tmpname,
                                         b"wb\0".as_ptr() as *const ::core::ffi::c_char,
-                                    )
-                                        as *mut crate::stdlib::FILE;
+                                    );
                                     if (*rc).p_mbtree_stat_file_out.is_null() {
                                         crate::src::common::common::x264_8_log(
-                                            h as *mut crate::src::common::common::x264_t,
+                                            h,
                                             crate::x264_h::X264_LOG_ERROR_1,
                                             b"ratecontrol_init: can't open mbtree stats file\n\0"
                                                 .as_ptr()
                                                 as *const ::core::ffi::c_char,
                                         );
-                                        return -(1 as ::core::ffi::c_int);
+                                        return -(1i32);
                                     }
                                 }
                             }
@@ -2824,21 +2544,18 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                     || (*h).param.rc.b_stat_write != 0)
                             {
                                 if (*h).param.rc.b_stat_read == 0 {
-                                    (*rc).mbtree.srcdim[0 as ::core::ffi::c_int as usize] =
-                                        (*h).param.i_width;
-                                    (*rc).mbtree.srcdim[1 as ::core::ffi::c_int as usize] =
-                                        (*h).param.i_height;
+                                    (*rc).mbtree.srcdim[0usize] = (*h).param.i_width;
+                                    (*rc).mbtree.srcdim[1usize] = (*h).param.i_height;
                                 }
-                                if macroblock_tree_rescale_init(h, rc) < 0 as ::core::ffi::c_int {
-                                    return -(1 as ::core::ffi::c_int);
+                                if macroblock_tree_rescale_init(h, rc) < 0i32 {
+                                    return -(1i32);
                                 }
                             }
-                            let mut i_3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                            let mut i_3: ::core::ffi::c_int = 0i32;
                             while i_3 < (*h).param.i_threads {
                                 (*(*h).thread[i_3 as usize]).rc = rc.offset(i_3 as isize);
                                 if i_3 != 0 {
-                                    *rc.offset(i_3 as isize) =
-                                        *rc.offset(0 as ::core::ffi::c_int as isize);
+                                    *rc.offset(i_3 as isize) = *rc.offset(0isize);
                                     (*(*h).thread[i_3 as usize]).param = (*h).param;
                                     (*(*h).thread[i_3 as usize]).mb.b_variable_qp =
                                         (*h).mb.b_variable_qp;
@@ -2846,13 +2563,13 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 }
                                 i_3 += 1;
                             }
-                            return 0 as ::core::ffi::c_int;
+                            return 0i32;
                         }
                     }
                 }
             }
         }
-        return -(1 as ::core::ffi::c_int);
+        return -(1i32);
     }
 }
 unsafe extern "C" fn parse_zone(
@@ -2861,12 +2578,12 @@ unsafe extern "C" fn parse_zone(
     mut p: *mut ::core::ffi::c_char,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut len: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut len: ::core::ffi::c_int = 0i32;
         let mut tok: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
         let mut saveptr: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
         (*z).param = ::core::ptr::null_mut::<crate::x264_h::x264_param_t>();
-        (*z).f_bitrate_factor = 1 as ::core::ffi::c_int as ::core::ffi::c_float;
-        if 3 as ::core::ffi::c_int
+        (*z).f_bitrate_factor = 1f32;
+        if 3i32
             <= crate::stdlib::sscanf(
                 p,
                 b"%d,%d,q=%d%n\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2876,8 +2593,8 @@ unsafe extern "C" fn parse_zone(
                 &raw mut len,
             )
         {
-            (*z).b_force_qp = 1 as ::core::ffi::c_int;
-        } else if 3 as ::core::ffi::c_int
+            (*z).b_force_qp = 1i32;
+        } else if 3i32
             <= crate::stdlib::sscanf(
                 p,
                 b"%d,%d,b=%f%n\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2887,8 +2604,8 @@ unsafe extern "C" fn parse_zone(
                 &raw mut len,
             )
         {
-            (*z).b_force_qp = 0 as ::core::ffi::c_int;
-        } else if 2 as ::core::ffi::c_int
+            (*z).b_force_qp = 0i32;
+        } else if 2i32
             <= crate::stdlib::sscanf(
                 p,
                 b"%d,%d%n\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2897,38 +2614,36 @@ unsafe extern "C" fn parse_zone(
                 &raw mut len,
             )
         {
-            (*z).b_force_qp = 0 as ::core::ffi::c_int;
+            (*z).b_force_qp = 0i32;
         } else {
             crate::src::common::common::x264_8_log(
-                h as *mut crate::src::common::common::x264_t,
+                h,
                 crate::x264_h::X264_LOG_ERROR_1,
                 b"invalid zone: \"%s\"\n\0".as_ptr() as *const ::core::ffi::c_char,
                 p,
             );
-            return -(1 as ::core::ffi::c_int);
+            return -(1i32);
         }
         p = p.offset(len as isize);
         if *p == 0 {
-            return 0 as ::core::ffi::c_int;
+            return 0i32;
         }
         (*z).param = crate::src::common::base::x264_malloc(::core::mem::size_of::<
             crate::x264_h::x264_param_t,
         >() as crate::stdlib::int64_t) as *mut crate::x264_h::x264_param_t;
         if (*z).param.is_null() {
-            return -(1 as ::core::ffi::c_int);
+            return -(1i32);
         } else {
             crate::stdlib::memcpy(
                 (*z).param as *mut ::core::ffi::c_void,
                 &raw mut (*h).param as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<crate::x264_h::x264_param_t>()
-                    as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<crate::x264_h::x264_param_t>(),
             );
             (*(*z).param).opaque = crate::__stddef_null_h::NULL;
             (*(*z).param).param_free = Some(
                 crate::src::common::base::x264_free
                     as unsafe extern "C" fn(*mut ::core::ffi::c_void) -> (),
-            )
-                as Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> ()>;
+            );
             loop {
                 tok = crate::stdlib::strtok_r(
                     p,
@@ -2940,28 +2655,22 @@ unsafe extern "C" fn parse_zone(
                 }
                 let mut val: *mut ::core::ffi::c_char = crate::stdlib::strchr(tok, '=' as i32);
                 if !val.is_null() {
-                    *val = '\0' as i32 as ::core::ffi::c_char;
+                    *val = '\0' as ::core::ffi::c_char;
                     val = val.offset(1);
                 }
-                if crate::src::common::base::x264_param_parse(
-                    (*z).param as *mut crate::x264_h::x264_param_t
-                        as *mut crate::x264_h::x264_param_t,
-                    tok,
-                    val,
-                ) != 0
-                {
+                if crate::src::common::base::x264_param_parse((*z).param, tok, val) != 0 {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_ERROR_1,
                         b"invalid zone param: %s = %s\n\0".as_ptr() as *const ::core::ffi::c_char,
                         tok,
                         val,
                     );
-                    return -(1 as ::core::ffi::c_int);
+                    return -(1i32);
                 }
                 p = ::core::ptr::null_mut::<::core::ffi::c_char>();
             }
-            return 0 as ::core::ffi::c_int;
+            return 0i32;
         };
     }
 }
@@ -2974,15 +2683,14 @@ unsafe extern "C" fn parse_zones(
         if !(*h).param.rc.psz_zones.is_null() && (*h).param.rc.i_zones == 0 {
             let mut p: *mut ::core::ffi::c_char = ::core::ptr::null_mut::<::core::ffi::c_char>();
             let mut psz_zones: *mut ::core::ffi::c_char = crate::src::common::base::x264_malloc(
-                crate::stdlib::strlen((*h).param.rc.psz_zones)
-                    .wrapping_add(1 as crate::__stddef_size_t_h::size_t)
+                crate::stdlib::strlen((*h).param.rc.psz_zones).wrapping_add(1usize)
                     as crate::stdlib::int64_t,
             ) as *mut ::core::ffi::c_char;
             if psz_zones.is_null() {
                 c2rust_current_block = 17294107561870585226;
             } else {
                 crate::stdlib::strcpy(psz_zones, (*h).param.rc.psz_zones);
-                (*h).param.rc.i_zones = 1 as ::core::ffi::c_int;
+                (*h).param.rc.i_zones = 1i32;
                 p = psz_zones;
                 while *p != 0 {
                     (*h).param.rc.i_zones +=
@@ -2991,34 +2699,28 @@ unsafe extern "C" fn parse_zones(
                 }
                 (*h).param.rc.zones = crate::src::common::base::x264_malloc(
                     ((*h).param.rc.i_zones as usize)
-                        .wrapping_mul(::core::mem::size_of::<crate::x264_h::x264_zone_t>() as usize)
+                        .wrapping_mul(::core::mem::size_of::<crate::x264_h::x264_zone_t>())
                         as crate::stdlib::int64_t,
                 ) as *mut crate::x264_h::x264_zone_t;
                 if (*h).param.rc.zones.is_null() {
                     c2rust_current_block = 17294107561870585226;
                 } else {
                     p = psz_zones;
-                    let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    let mut i: ::core::ffi::c_int = 0i32;
                     while i < (*h).param.rc.i_zones {
                         let mut i_tok: ::core::ffi::c_int = crate::stdlib::strcspn(
                             p,
                             b"/\0".as_ptr() as *const ::core::ffi::c_char,
                         )
                             as ::core::ffi::c_int;
-                        *p.offset(i_tok as isize) = 0 as ::core::ffi::c_char;
-                        if parse_zone(
-                            h,
-                            (*h).param.rc.zones.offset(i as isize)
-                                as *mut crate::x264_h::x264_zone_t,
-                            p,
-                        ) != 0
-                        {
+                        *p.offset(i_tok as isize) = 0i8;
+                        if parse_zone(h, (*h).param.rc.zones.offset(i as isize), p) != 0 {
                             crate::src::common::base::x264_free(
                                 psz_zones as *mut ::core::ffi::c_void,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
-                        p = p.offset((i_tok + 1 as ::core::ffi::c_int) as isize);
+                        p = p.offset((i_tok + 1i32) as isize);
                         i += 1;
                     }
                     crate::src::common::base::x264_free(psz_zones as *mut ::core::ffi::c_void);
@@ -3030,94 +2732,76 @@ unsafe extern "C" fn parse_zones(
         }
         match c2rust_current_block {
             11584701595673473500 => {
-                if (*h).param.rc.i_zones > 0 as ::core::ffi::c_int {
-                    let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                if (*h).param.rc.i_zones > 0i32 {
+                    let mut i_0: ::core::ffi::c_int = 0i32;
                     while i_0 < (*h).param.rc.i_zones {
                         let mut z: crate::x264_h::x264_zone_t =
                             *(*h).param.rc.zones.offset(i_0 as isize);
-                        if z.i_start < 0 as ::core::ffi::c_int || z.i_start > z.i_end {
+                        if z.i_start < 0i32 || z.i_start > z.i_end {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"invalid zone: start=%d end=%d\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                                 z.i_start,
                                 z.i_end,
                             );
-                            return -(1 as ::core::ffi::c_int);
-                        } else if z.b_force_qp == 0
-                            && z.f_bitrate_factor <= 0 as ::core::ffi::c_int as ::core::ffi::c_float
-                        {
+                            return -(1i32);
+                        } else if z.b_force_qp == 0 && z.f_bitrate_factor <= 0f32 {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_ERROR_1,
                                 b"invalid zone: bitrate_factor=%f\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                                 z.f_bitrate_factor as ::core::ffi::c_double,
                             );
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                         i_0 += 1;
                     }
-                    (*rc).i_zones = (*h).param.rc.i_zones + 1 as ::core::ffi::c_int;
+                    (*rc).i_zones = (*h).param.rc.i_zones + 1i32;
                     (*rc).zones = crate::src::common::base::x264_malloc(
-                        ((*rc).i_zones as usize).wrapping_mul(::core::mem::size_of::<
-                            crate::x264_h::x264_zone_t,
-                        >() as usize) as crate::stdlib::int64_t,
+                        ((*rc).i_zones as usize)
+                            .wrapping_mul(::core::mem::size_of::<crate::x264_h::x264_zone_t>())
+                            as crate::stdlib::int64_t,
                     ) as *mut crate::x264_h::x264_zone_t;
                     if (*rc).zones.is_null() {
                         c2rust_current_block = 17294107561870585226;
                     } else {
                         crate::stdlib::memcpy(
-                            (*rc).zones.offset(1 as ::core::ffi::c_int as isize)
-                                as *mut ::core::ffi::c_void,
+                            (*rc).zones.offset(1isize) as *mut ::core::ffi::c_void,
                             (*h).param.rc.zones as *const ::core::ffi::c_void,
-                            (((*rc).i_zones - 1 as ::core::ffi::c_int)
-                                as crate::__stddef_size_t_h::size_t)
-                                .wrapping_mul(::core::mem::size_of::<crate::x264_h::x264_zone_t>()
-                                    as crate::__stddef_size_t_h::size_t),
+                            (((*rc).i_zones - 1i32) as crate::__stddef_size_t_h::size_t)
+                                .wrapping_mul(::core::mem::size_of::<crate::x264_h::x264_zone_t>()),
                         );
-                        (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).i_start =
-                            0 as ::core::ffi::c_int;
-                        (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).i_end =
-                            crate::limits_h::INT_MAX;
-                        (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).b_force_qp =
-                            0 as ::core::ffi::c_int;
-                        (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).f_bitrate_factor =
-                            1 as ::core::ffi::c_int as ::core::ffi::c_float;
-                        let ref mut c2rust_fresh3 =
-                            (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).param;
+                        (*(*rc).zones.offset(0isize)).i_start = 0i32;
+                        (*(*rc).zones.offset(0isize)).i_end = crate::limits_h::INT_MAX;
+                        (*(*rc).zones.offset(0isize)).b_force_qp = 0i32;
+                        (*(*rc).zones.offset(0isize)).f_bitrate_factor = 1f32;
+                        let ref mut c2rust_fresh3 = (*(*rc).zones.offset(0isize)).param;
                         *c2rust_fresh3 =
                             crate::src::common::base::x264_malloc(::core::mem::size_of::<
                                 crate::x264_h::x264_param_t,
                             >()
                                 as crate::stdlib::int64_t)
                                 as *mut crate::x264_h::x264_param_t;
-                        if (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize))
-                            .param
-                            .is_null()
-                        {
+                        if (*(*rc).zones.offset(0isize)).param.is_null() {
                             c2rust_current_block = 17294107561870585226;
                         } else {
                             crate::stdlib::memcpy(
-                                (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).param
-                                    as *mut ::core::ffi::c_void,
+                                (*(*rc).zones.offset(0isize)).param as *mut ::core::ffi::c_void,
                                 &raw mut (*h).param as *const ::core::ffi::c_void,
-                                ::core::mem::size_of::<crate::x264_h::x264_param_t>()
-                                    as crate::__stddef_size_t_h::size_t,
+                                ::core::mem::size_of::<crate::x264_h::x264_param_t>(),
                             );
                             let ref mut c2rust_fresh4 =
-                                (*(*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).param)
-                                    .opaque;
+                                (*(*(*rc).zones.offset(0isize)).param).opaque;
                             *c2rust_fresh4 = crate::__stddef_null_h::NULL;
-                            let mut i_1: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+                            let mut i_1: ::core::ffi::c_int = 1i32;
                             while i_1 < (*rc).i_zones {
                                 if (*(*rc).zones.offset(i_1 as isize)).param.is_null() {
                                     let ref mut c2rust_fresh5 =
                                         (*(*rc).zones.offset(i_1 as isize)).param;
-                                    *c2rust_fresh5 =
-                                        (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize))
-                                            .param;
+                                    *c2rust_fresh5 = (*(*rc).zones.offset(0isize)).param;
                                 }
                                 i_1 += 1;
                             }
@@ -3129,12 +2813,12 @@ unsafe extern "C" fn parse_zones(
                 }
                 match c2rust_current_block {
                     17294107561870585226 => {}
-                    _ => return 0 as ::core::ffi::c_int,
+                    _ => return 0i32,
                 }
             }
             _ => {}
         }
-        return -(1 as ::core::ffi::c_int);
+        return -(1i32);
     }
 }
 unsafe extern "C" fn get_zone(
@@ -3143,10 +2827,9 @@ unsafe extern "C" fn get_zone(
 ) -> *mut crate::x264_h::x264_zone_t {
     unsafe {
         let mut rc: *mut x264_ratecontrol_t = (*h).rc;
-        let mut i: ::core::ffi::c_int = (*rc).i_zones - 1 as ::core::ffi::c_int;
-        while i >= 0 as ::core::ffi::c_int {
-            let mut z: *mut crate::x264_h::x264_zone_t =
-                (*rc).zones.offset(i as isize) as *mut crate::x264_h::x264_zone_t;
+        let mut i: ::core::ffi::c_int = (*rc).i_zones - 1i32;
+        while i >= 0i32 {
+            let mut z: *mut crate::x264_h::x264_zone_t = (*rc).zones.offset(i as isize);
             if frame_num >= (*z).i_start && frame_num <= (*z).i_end {
                 return z;
             }
@@ -3167,24 +2850,21 @@ pub unsafe extern "C" fn x264_8_ratecontrol_summary(
         {
             let mut base_cplx: ::core::ffi::c_double = ((*h).mb.i_mb_count
                 * (if (*h).param.i_bframe != 0 {
-                    120 as ::core::ffi::c_int
+                    120i32
                 } else {
-                    80 as ::core::ffi::c_int
+                    80i32
                 })) as ::core::ffi::c_double;
             let mut mbtree_offset: ::core::ffi::c_double = if (*h).param.rc.b_mb_tree != 0 {
                 (1.0 - (*h).param.rc.f_qcompress as ::core::ffi::c_double) * 13.5
             } else {
-                0 as ::core::ffi::c_int as ::core::ffi::c_double
+                0f64
             };
             crate::src::common::common::x264_8_log(
-                h as *mut crate::src::common::common::x264_t,
+                h,
                 crate::x264_h::X264_LOG_INFO,
                 b"final ratefactor: %.2f\n\0".as_ptr() as *const ::core::ffi::c_char,
                 qscale2qp(
-                    (crate::stdlib::pow(
-                        base_cplx,
-                        1 as ::core::ffi::c_int as ::core::ffi::c_double - (*rc).qcompress,
-                    ) * (*rc).cplxr_sum
+                    (crate::stdlib::pow(base_cplx, 1f64 - (*rc).qcompress) * (*rc).cplxr_sum
                         / (*rc).wanted_bits_window) as ::core::ffi::c_float,
                 ) as ::core::ffi::c_double
                     - mbtree_offset
@@ -3203,10 +2883,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_delete(mut h: *mut crate::src::commo
             crate::stdlib::fclose((*rc).p_stat_file_out);
             if (*h).i_frame >= (*rc).num_entries && b_regular_file != 0 {
                 if crate::stdlib::rename((*rc).psz_stat_file_tmpname, (*h).param.rc.psz_stat_out)
-                    != 0 as ::core::ffi::c_int
+                    != 0i32
                 {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_ERROR_1,
                         b"failed to rename \"%s\" to \"%s\"\n\0".as_ptr()
                             as *const ::core::ffi::c_char,
@@ -3226,10 +2906,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_delete(mut h: *mut crate::src::commo
                 if crate::stdlib::rename(
                     (*rc).psz_mbtree_stat_file_tmpname,
                     (*rc).psz_mbtree_stat_file_name,
-                ) != 0 as ::core::ffi::c_int
+                ) != 0i32
                 {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_ERROR_1,
                         b"failed to rename \"%s\" to \"%s\"\n\0".as_ptr()
                             as *const ::core::ffi::c_char,
@@ -3254,26 +2934,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_delete(mut h: *mut crate::src::commo
         crate::src::common::base::x264_free((*rc).entry_out as *mut ::core::ffi::c_void);
         macroblock_tree_rescale_destroy(rc);
         if !(*rc).zones.is_null() {
-            crate::src::common::base::x264_param_cleanup(
-                (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).param
-                    as *mut crate::x264_h::x264_param_t
-                    as *mut crate::x264_h::x264_param_t,
-            );
+            crate::src::common::base::x264_param_cleanup((*(*rc).zones.offset(0isize)).param);
             crate::src::common::base::x264_free(
-                (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).param
-                    as *mut ::core::ffi::c_void,
+                (*(*rc).zones.offset(0isize)).param as *mut ::core::ffi::c_void,
             );
-            let mut i: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+            let mut i: ::core::ffi::c_int = 1i32;
             while i < (*rc).i_zones {
-                if (*(*rc).zones.offset(i as isize)).param
-                    != (*(*rc).zones.offset(0 as ::core::ffi::c_int as isize)).param
+                if (*(*rc).zones.offset(i as isize)).param != (*(*rc).zones.offset(0isize)).param
                     && (*(*(*rc).zones.offset(i as isize)).param)
                         .param_free
                         .is_some()
                 {
                     crate::src::common::base::x264_param_cleanup(
-                        (*(*rc).zones.offset(i as isize)).param as *mut crate::x264_h::x264_param_t
-                            as *mut crate::x264_h::x264_param_t,
+                        (*(*rc).zones.offset(i as isize)).param,
                     );
                     (*(*(*rc).zones.offset(i as isize)).param)
                         .param_free
@@ -3296,7 +2969,7 @@ unsafe extern "C" fn accum_p_qp_update(
         let mut rc: *mut x264_ratecontrol_t = (*h).rc;
         (*rc).accum_p_qp *= 0.95;
         (*rc).accum_p_norm *= 0.95;
-        (*rc).accum_p_norm += 1 as ::core::ffi::c_int as ::core::ffi::c_double;
+        (*rc).accum_p_norm += 1f64;
         if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int {
             (*rc).accum_p_qp += qp as ::core::ffi::c_double + (*rc).ip_offset;
         } else {
@@ -3314,11 +2987,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_zone_init(
         if !zone.is_null()
             && ((*rc).prev_zone.is_null() || (*zone).param != (*(*rc).prev_zone).param)
         {
-            crate::src::encoder::encoder::x264_8_encoder_reconfig_apply(
-                h as *mut crate::src::common::common::x264_t,
-                (*zone).param as *mut crate::x264_h::x264_param_t
-                    as *mut crate::x264_h::x264_param_t,
-            );
+            crate::src::encoder::encoder::x264_8_encoder_reconfig_apply(h, (*zone).param);
         }
         (*rc).prev_zone = zone;
     }
@@ -3337,19 +3006,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
         if (*h).param.rc.b_stat_read != 0 {
             let mut frame: ::core::ffi::c_int = (*(*h).fenc).i_frame;
             '_c2rust_label: {
-                if frame >= 0 as ::core::ffi::c_int && frame < (*rc).num_entries {
+                if frame >= 0i32 && frame < (*rc).num_entries {
                 } else {
                     crate::stdlib::__assert_fail(
                         b"frame >= 0 && frame < rc->num_entries\0".as_ptr()
                             as *const ::core::ffi::c_char,
                         b"encoder/ratecontrol.c\0".as_ptr() as *const ::core::ffi::c_char,
-                        1444 as ::core::ffi::c_uint,
+                        1444u32,
                         b"void x264_8_ratecontrol_start(x264_t *, int, int)\0".as_ptr()
                             as *const ::core::ffi::c_char,
                     );
                 }
             };
-            (*rc).rce = (*rc).entry.offset(frame as isize) as *mut ratecontrol_entry_t;
+            (*rc).rce = (*rc).entry.offset(frame as isize);
             rce = (*rc).rce;
             if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int
                 && (*h).param.analyse.i_direct_mv_pred == crate::x264_h::X264_DIRECT_PRED_AUTO
@@ -3365,24 +3034,21 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
         if (*rc).b_vbv != 0 {
             crate::stdlib::memset(
                 (*(*h).fdec).i_row_bits as *mut ::core::ffi::c_void,
-                0 as ::core::ffi::c_int,
+                0i32,
                 ((*h).mb.i_mb_height as crate::__stddef_size_t_h::size_t)
-                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>()
-                        as crate::__stddef_size_t_h::size_t),
+                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>()),
             );
             crate::stdlib::memset(
                 (*(*h).fdec).f_row_qp as *mut ::core::ffi::c_void,
-                0 as ::core::ffi::c_int,
+                0i32,
                 ((*h).mb.i_mb_height as crate::__stddef_size_t_h::size_t)
-                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()
-                        as crate::__stddef_size_t_h::size_t),
+                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()),
             );
             crate::stdlib::memset(
                 (*(*h).fdec).f_row_qscale as *mut ::core::ffi::c_void,
-                0 as ::core::ffi::c_int,
+                0i32,
                 ((*h).mb.i_mb_height as crate::__stddef_size_t_h::size_t)
-                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()
-                        as crate::__stddef_size_t_h::size_t),
+                    .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>()),
             );
             (*rc).row_pred = &raw mut *(&raw mut (*rc).row_preds as *mut [predictor_t; 2])
                 .offset((*h).sh.i_type as isize) as *mut predictor_t;
@@ -3398,29 +3064,29 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
             let mut l: *const crate::x264_h::x264_level_t =
                 &raw const crate::src::common::tables::x264_levels
                     as *const crate::x264_h::x264_level_t;
-            while (*l).level_idc as ::core::ffi::c_int != 0 as ::core::ffi::c_int
+            while (*l).level_idc as ::core::ffi::c_int != 0i32
                 && (*l).level_idc as ::core::ffi::c_int != (*h).param.i_level_idc
             {
                 l = l.offset(1);
             }
             let mut mincr: ::core::ffi::c_int = (*l).mincr as ::core::ffi::c_int;
             if (*h).param.b_bluray_compat != 0 {
-                mincr = 4 as ::core::ffi::c_int;
+                mincr = 4i32;
             }
             if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_profile_idc
                 > crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
             {
                 (*rc).frame_size_maximum = 1e9f64;
-            } else if (*h).i_frame == 0 as ::core::ffi::c_int {
+            } else if (*h).i_frame == 0i32 {
                 let mut fr: ::core::ffi::c_double = 1.0
-                    / (if (*h).param.i_level_idc >= 60 as ::core::ffi::c_int {
-                        300 as ::core::ffi::c_int
+                    / (if (*h).param.i_level_idc >= 60i32 {
+                        300i32
                     } else {
-                        172 as ::core::ffi::c_int
+                        172i32
                     }) as ::core::ffi::c_double;
                 let mut pic_size_in_mbs: ::core::ffi::c_int =
                     (*h).mb.i_mb_width * (*h).mb.i_mb_height;
-                (*rc).frame_size_maximum = (384 as ::core::ffi::c_int * crate::internal::BIT_DEPTH)
+                (*rc).frame_size_maximum = (384i32 * crate::internal::BIT_DEPTH)
                     as ::core::ffi::c_double
                     * (if pic_size_in_mbs as ::core::ffi::c_double
                         > fr * (*l).mbps as ::core::ffi::c_double
@@ -3431,7 +3097,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
                     })
                     / mincr as ::core::ffi::c_double;
             } else {
-                (*rc).frame_size_maximum = (384 as ::core::ffi::c_int * crate::internal::BIT_DEPTH)
+                (*rc).frame_size_maximum = (384i32 * crate::internal::BIT_DEPTH)
                     as ::core::ffi::c_double
                     * ((*(*h).fenc).i_cpb_duration as ::core::ffi::c_double
                         * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
@@ -3461,7 +3127,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
                     [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
                     + (*rc).qp_constant
                         [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize])
-                    / 2 as ::core::ffi::c_int) as ::core::ffi::c_float;
+                    / 2i32) as ::core::ffi::c_float;
             } else {
                 q = (*rc).qp_constant[(*h).sh.i_type as usize] as ::core::ffi::c_float;
             }
@@ -3472,20 +3138,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
                             [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize])
                         as ::core::ffi::c_float;
                 } else {
-                    q -= 6 as ::core::ffi::c_int as ::core::ffi::c_float
-                        * crate::stdlib::log2f((*zone).f_bitrate_factor);
+                    q -= 6f32 * crate::stdlib::log2f((*zone).f_bitrate_factor);
                 }
             }
         }
         if i_force_qp != crate::x264_h::X264_QP_AUTO {
-            q = (i_force_qp - 1 as ::core::ffi::c_int) as ::core::ffi::c_float;
+            q = (i_force_qp - 1i32) as ::core::ffi::c_float;
         }
         q = x264_clip3f(
             q as ::core::ffi::c_double,
             (*h).param.rc.i_qp_min as ::core::ffi::c_double,
             (*h).param.rc.i_qp_max as ::core::ffi::c_double,
         ) as ::core::ffi::c_float;
-        (*rc).qpa_aq_prev = 0 as ::core::ffi::c_int;
+        (*rc).qpa_aq_prev = 0i32;
         (*rc).qpa_aq = (*rc).qpa_aq_prev;
         (*rc).qpa_rc_prev = (*rc).qpa_aq as ::core::ffi::c_float;
         (*rc).qpa_rc = (*rc).qpa_rc_prev;
@@ -3509,61 +3174,38 @@ unsafe extern "C" fn predict_row_size(
     unsafe {
         let mut rc: *mut x264_ratecontrol_t = (*h).rc;
         let mut pred_s: ::core::ffi::c_float = predict_size(
-            (*rc).row_pred.offset(0 as ::core::ffi::c_int as isize) as *mut predictor_t,
+            (*rc).row_pred.offset(0isize),
             qscale,
             *(*(*h).fdec).i_row_satd.offset(y as isize) as ::core::ffi::c_float,
         );
         if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
-            || qscale
-                >= *(*(*h).fref[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize])
-                    .f_row_qscale
-                    .offset(y as isize)
+            || qscale >= *(*(*h).fref[0usize][0usize]).f_row_qscale.offset(y as isize)
         {
             if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int
-                && (*(*h).fref[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize])
-                    .i_type
-                    == (*(*h).fdec).i_type
-                && *(*(*h).fref[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize])
-                    .f_row_qscale
-                    .offset(y as isize)
-                    > 0 as ::core::ffi::c_int as ::core::ffi::c_float
-                && *(*(*h).fref[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize])
-                    .i_row_satd
-                    .offset(y as isize)
-                    > 0 as ::core::ffi::c_int
+                && (*(*h).fref[0usize][0usize]).i_type == (*(*h).fdec).i_type
+                && *(*(*h).fref[0usize][0usize]).f_row_qscale.offset(y as isize) > 0f32
+                && *(*(*h).fref[0usize][0usize]).i_row_satd.offset(y as isize) > 0i32
                 && crate::stdlib::abs(
-                    *(*(*h).fref[0 as ::core::ffi::c_int as usize]
-                        [0 as ::core::ffi::c_int as usize])
-                        .i_row_satd
-                        .offset(y as isize)
+                    *(*(*h).fref[0usize][0usize]).i_row_satd.offset(y as isize)
                         - *(*(*h).fdec).i_row_satd.offset(y as isize),
-                ) < *(*(*h).fdec).i_row_satd.offset(y as isize) / 2 as ::core::ffi::c_int
+                ) < *(*(*h).fdec).i_row_satd.offset(y as isize) / 2i32
             {
-                let mut pred_t: ::core::ffi::c_float = (*(*(*h).fref
-                    [0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize])
-                    .i_row_bits
-                    .offset(y as isize)
-                    * *(*(*h).fdec).i_row_satd.offset(y as isize)
-                    / *(*(*h).fref[0 as ::core::ffi::c_int as usize]
-                        [0 as ::core::ffi::c_int as usize])
-                        .i_row_satd
-                        .offset(y as isize))
-                    as ::core::ffi::c_float
-                    * *(*(*h).fref[0 as ::core::ffi::c_int as usize]
-                        [0 as ::core::ffi::c_int as usize])
-                        .f_row_qscale
-                        .offset(y as isize)
-                    / qscale;
+                let mut pred_t: ::core::ffi::c_float =
+                    (*(*(*h).fref[0usize][0usize]).i_row_bits.offset(y as isize)
+                        * *(*(*h).fdec).i_row_satd.offset(y as isize)
+                        / *(*(*h).fref[0usize][0usize]).i_row_satd.offset(y as isize))
+                        as ::core::ffi::c_float
+                        * *(*(*h).fref[0usize][0usize]).f_row_qscale.offset(y as isize)
+                        / qscale;
                 return (pred_s + pred_t) * 0.5f32;
             }
             return pred_s;
         } else {
             let mut pred_intra: ::core::ffi::c_float = predict_size(
-                (*rc).row_pred.offset(1 as ::core::ffi::c_int as isize) as *mut predictor_t,
+                (*rc).row_pred.offset(1isize),
                 qscale,
-                *(*(*h).fdec).i_row_satds[0 as ::core::ffi::c_int as usize]
-                    [0 as ::core::ffi::c_int as usize]
-                    .offset(y as isize) as ::core::ffi::c_float,
+                *(*(*h).fdec).i_row_satds[0usize][0usize].offset(y as isize)
+                    as ::core::ffi::c_float,
             );
             return pred_intra + pred_s;
         };
@@ -3574,7 +3216,7 @@ unsafe extern "C" fn row_bits_so_far(
     mut y: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut bits: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut bits: ::core::ffi::c_int = 0i32;
         let mut i: ::core::ffi::c_int = (*h).i_threadslice_start;
         while i <= y {
             bits += *(*(*h).fdec).i_row_bits.offset(i as isize);
@@ -3590,8 +3232,8 @@ unsafe extern "C" fn predict_row_size_to_end(
 ) -> ::core::ffi::c_float {
     unsafe {
         let mut qscale: ::core::ffi::c_float = qp2qscale(qp);
-        let mut bits: ::core::ffi::c_float = 0 as ::core::ffi::c_int as ::core::ffi::c_float;
-        let mut i: ::core::ffi::c_int = y + 1 as ::core::ffi::c_int;
+        let mut bits: ::core::ffi::c_float = 0f32;
+        let mut i: ::core::ffi::c_int = y + 1i32;
         while i < (*h).i_threadslice_end {
             bits += predict_row_size(h, i, qscale);
             i += 1;
@@ -3609,39 +3251,35 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
         let y: ::core::ffi::c_int = (*h).mb.i_mb_y;
         *(*(*h).fdec).i_row_bits.offset(y as isize) += bits;
         (*rc).qpa_aq += (*h).mb.i_qp;
-        if (*h).mb.i_mb_x != (*h).mb.i_mb_width - 1 as ::core::ffi::c_int {
-            return 0 as ::core::ffi::c_int;
+        if (*h).mb.i_mb_x != (*h).mb.i_mb_width - 1i32 {
+            return 0i32;
         }
         (*rc).qpa_rc += (*rc).qpm * (*h).mb.i_mb_width as ::core::ffi::c_float;
         if (*rc).b_vbv == 0 {
-            return 0 as ::core::ffi::c_int;
+            return 0i32;
         }
         let mut qscale: ::core::ffi::c_float = qp2qscale((*rc).qpm);
         *(*(*h).fdec).f_row_qp.offset(y as isize) = (*rc).qpm;
         *(*(*h).fdec).f_row_qscale.offset(y as isize) = qscale;
         update_predictor(
-            (*rc).row_pred.offset(0 as ::core::ffi::c_int as isize) as *mut predictor_t,
+            (*rc).row_pred.offset(0isize),
             qscale,
             *(*(*h).fdec).i_row_satd.offset(y as isize) as ::core::ffi::c_float,
             *(*(*h).fdec).i_row_bits.offset(y as isize) as ::core::ffi::c_float,
         );
         if (*h).sh.i_type != crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
-            && (*rc).qpm
-                < *(*(*h).fref[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize])
-                    .f_row_qp
-                    .offset(y as isize)
+            && (*rc).qpm < *(*(*h).fref[0usize][0usize]).f_row_qp.offset(y as isize)
         {
             update_predictor(
-                (*rc).row_pred.offset(1 as ::core::ffi::c_int as isize) as *mut predictor_t,
+                (*rc).row_pred.offset(1isize),
                 qscale,
-                *(*(*h).fdec).i_row_satds[0 as ::core::ffi::c_int as usize]
-                    [0 as ::core::ffi::c_int as usize]
-                    .offset(y as isize) as ::core::ffi::c_float,
+                *(*(*h).fdec).i_row_satds[0usize][0usize].offset(y as isize)
+                    as ::core::ffi::c_float,
                 *(*(*h).fdec).i_row_bits.offset(y as isize) as ::core::ffi::c_float,
             );
         }
-        if (*h).sh.b_mbaff != 0 && y & 1 as ::core::ffi::c_int == 0 {
-            return 0 as ::core::ffi::c_int;
+        if (*h).sh.b_mbaff != 0 && y & 1i32 == 0 {
+            return 0i32;
         }
         let mut can_reencode_row: ::core::ffi::c_int = ((*h).sh.i_first_mb
             <= ((*h).mb.i_mb_y - (*h).sh.b_mbaff) * (*h).mb.i_mb_stride)
@@ -3697,12 +3335,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
         } else {
             (*rc).buffer_fill - (*rc).buffer_rate * max_frame_error as ::core::ffi::c_double
         }) as ::core::ffi::c_float;
-        let mut size_of_other_slices: ::core::ffi::c_float =
-            0 as ::core::ffi::c_int as ::core::ffi::c_float;
+        let mut size_of_other_slices: ::core::ffi::c_float = 0f32;
         if (*h).param.b_sliced_threads != 0 {
-            let mut bits_so_far_of_other_slices: ::core::ffi::c_float =
-                0 as ::core::ffi::c_int as ::core::ffi::c_float;
-            let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut bits_so_far_of_other_slices: ::core::ffi::c_float = 0f32;
+            let mut i: ::core::ffi::c_int = 0i32;
             while i < (*h).param.i_threads {
                 if h != (*h).thread[i as usize] {
                     size_of_other_slices += (*(*(*h).thread[i as usize]).rc).frame_size_estimated;
@@ -3736,47 +3372,39 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
             size_of_other_slices = (size_of_other_slices - size_of_other_slices_planned) * weight
                 + size_of_other_slices_planned;
         }
-        if y < (*h).i_threadslice_end - 1 as ::core::ffi::c_int {
+        if y < (*h).i_threadslice_end - 1i32 {
             if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int {
                 qp_min = if qp_min
-                    > (if *(*(*h).fref[0 as ::core::ffi::c_int as usize]
-                        [0 as ::core::ffi::c_int as usize])
+                    > (if *(*(*h).fref[0usize][0usize])
                         .f_row_qp
-                        .offset((y + 1 as ::core::ffi::c_int) as isize)
-                        > *(*(*h).fref[1 as ::core::ffi::c_int as usize]
-                            [0 as ::core::ffi::c_int as usize])
+                        .offset((y + 1i32) as isize)
+                        > *(*(*h).fref[1usize][0usize])
                             .f_row_qp
-                            .offset((y + 1 as ::core::ffi::c_int) as isize)
+                            .offset((y + 1i32) as isize)
                     {
-                        *(*(*h).fref[0 as ::core::ffi::c_int as usize]
-                            [0 as ::core::ffi::c_int as usize])
+                        *(*(*h).fref[0usize][0usize])
                             .f_row_qp
-                            .offset((y + 1 as ::core::ffi::c_int) as isize)
+                            .offset((y + 1i32) as isize)
                     } else {
-                        *(*(*h).fref[1 as ::core::ffi::c_int as usize]
-                            [0 as ::core::ffi::c_int as usize])
+                        *(*(*h).fref[1usize][0usize])
                             .f_row_qp
-                            .offset((y + 1 as ::core::ffi::c_int) as isize)
+                            .offset((y + 1i32) as isize)
                     }) {
                     qp_min
-                } else if *(*(*h).fref[0 as ::core::ffi::c_int as usize]
-                    [0 as ::core::ffi::c_int as usize])
+                } else if *(*(*h).fref[0usize][0usize])
                     .f_row_qp
-                    .offset((y + 1 as ::core::ffi::c_int) as isize)
-                    > *(*(*h).fref[1 as ::core::ffi::c_int as usize]
-                        [0 as ::core::ffi::c_int as usize])
+                    .offset((y + 1i32) as isize)
+                    > *(*(*h).fref[1usize][0usize])
                         .f_row_qp
-                        .offset((y + 1 as ::core::ffi::c_int) as isize)
+                        .offset((y + 1i32) as isize)
                 {
-                    *(*(*h).fref[0 as ::core::ffi::c_int as usize]
-                        [0 as ::core::ffi::c_int as usize])
+                    *(*(*h).fref[0usize][0usize])
                         .f_row_qp
-                        .offset((y + 1 as ::core::ffi::c_int) as isize)
+                        .offset((y + 1i32) as isize)
                 } else {
-                    *(*(*h).fref[1 as ::core::ffi::c_int as usize]
-                        [0 as ::core::ffi::c_int as usize])
+                    *(*(*h).fref[1usize][0usize])
                         .f_row_qp
-                        .offset((y + 1 as ::core::ffi::c_int) as isize)
+                        .offset((y + 1i32) as isize)
                 };
                 (*rc).qpm = if (*rc).qpm > qp_min {
                     (*rc).qpm
@@ -3837,10 +3465,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
                 bits_so_far + predict_row_size_to_end(h, y, (*rc).qpm) + size_of_other_slices;
             while (*rc).qpm > qp_min
                 && (*rc).qpm < prev_row_qp
-                && ((*rc).qpm
-                    > *(*(*h).fdec)
-                        .f_row_qp
-                        .offset(0 as ::core::ffi::c_int as isize)
+                && ((*rc).qpm > *(*(*h).fdec).f_row_qp.offset(0isize)
                     || (*rc).single_frame_vbv != 0)
                 && b2 < max_frame_size
                 && ((b2 as ::core::ffi::c_double) < (*rc).frame_size_planned * 0.8 || b2 < b_max)
@@ -3866,11 +3491,11 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
                 ) as ::core::ffi::c_float;
                 (*rc).qpa_rc = (*rc).qpa_rc_prev;
                 (*rc).qpa_aq = (*rc).qpa_aq_prev;
-                *(*(*h).fdec).i_row_bits.offset(y as isize) = 0 as ::core::ffi::c_int;
+                *(*(*h).fdec).i_row_bits.offset(y as isize) = 0i32;
                 *(*(*h).fdec)
                     .i_row_bits
-                    .offset((y - (*h).sh.b_mbaff) as isize) = 0 as ::core::ffi::c_int;
-                return -(1 as ::core::ffi::c_int);
+                    .offset((y - (*h).sh.b_mbaff) as isize) = 0i32;
+                return -(1i32);
             }
         } else {
             ::core::ptr::write_volatile(
@@ -3889,16 +3514,16 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
                 (*rc).qpm = qp_max;
                 (*rc).qpa_rc = (*rc).qpa_rc_prev;
                 (*rc).qpa_aq = (*rc).qpa_aq_prev;
-                *(*(*h).fdec).i_row_bits.offset(y as isize) = 0 as ::core::ffi::c_int;
+                *(*(*h).fdec).i_row_bits.offset(y as isize) = 0i32;
                 *(*(*h).fdec)
                     .i_row_bits
-                    .offset((y - (*h).sh.b_mbaff) as isize) = 0 as ::core::ffi::c_int;
-                return -(1 as ::core::ffi::c_int);
+                    .offset((y - (*h).sh.b_mbaff) as isize) = 0i32;
+                return -(1i32);
             }
         }
         (*rc).qpa_rc_prev = (*rc).qpa_rc;
         (*rc).qpa_aq_prev = (*rc).qpa_aq;
-        return 0 as ::core::ffi::c_int;
+        return 0i32;
     }
 }
 #[no_mangle]
@@ -3950,23 +3575,21 @@ pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
             if frame_num >= (*rc).num_entries {
                 (*h).param.rc.i_qp_constant = (if (*h).stat.i_frame_count
                     [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize]
-                    == 0 as ::core::ffi::c_int
+                    == 0i32
                 {
-                    (24 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET)
-                        as ::core::ffi::c_double
+                    (24i32 + crate::src::common::common::QP_BD_OFFSET) as ::core::ffi::c_double
                 } else {
-                    1 as ::core::ffi::c_int as ::core::ffi::c_double
-                        + (*h).stat.f_frame_qp
+                    1f64 + (*h).stat.f_frame_qp
+                        [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize]
+                        / (*h).stat.i_frame_count
                             [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize]
-                            / (*h).stat.i_frame_count[crate::src::common::base::SLICE_TYPE_P
-                                as ::core::ffi::c_int
-                                as usize] as ::core::ffi::c_double
+                            as ::core::ffi::c_double
                 }) as ::core::ffi::c_int;
                 (*rc).qp_constant
                     [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize] =
                     x264_clip3(
                         (*h).param.rc.i_qp_constant,
-                        0 as ::core::ffi::c_int,
+                        0i32,
                         crate::src::common::common::QP_MAX,
                     );
                 (*rc).qp_constant
@@ -3977,7 +3600,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
                                 / (*h).param.rc.f_ip_factor,
                         ) as ::core::ffi::c_double
                             + 0.5f64) as ::core::ffi::c_int,
-                        0 as ::core::ffi::c_int,
+                        0i32,
                         crate::src::common::common::QP_MAX,
                     );
                 (*rc).qp_constant
@@ -3988,18 +3611,18 @@ pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
                                 * (*h).param.rc.f_pb_factor,
                         ) as ::core::ffi::c_double
                             + 0.5f64) as ::core::ffi::c_int,
-                        0 as ::core::ffi::c_int,
+                        0i32,
                         crate::src::common::common::QP_MAX,
                     );
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_ERROR_1,
                     b"2nd pass has more frames than 1st pass (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
                     (*rc).num_entries,
                 );
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_ERROR_1,
                     b"continuing anyway, at constant QP=%d\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -4007,22 +3630,22 @@ pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
                 );
                 if (*h).param.i_bframe_adaptive != 0 {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_ERROR_1,
                         b"disabling adaptive B-frames\n\0".as_ptr() as *const ::core::ffi::c_char,
                     );
                 }
-                let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut i: ::core::ffi::c_int = 0i32;
                 while i < (*h).param.i_threads {
-                    (*(*(*h).thread[i as usize]).rc).b_abr = 0 as ::core::ffi::c_int;
-                    (*(*(*h).thread[i as usize]).rc).b_2pass = 0 as ::core::ffi::c_int;
+                    (*(*(*h).thread[i as usize]).rc).b_abr = 0i32;
+                    (*(*(*h).thread[i as usize]).rc).b_2pass = 0i32;
                     (*(*h).thread[i as usize]).param.rc.i_rc_method = crate::x264_h::X264_RC_CQP;
-                    (*(*h).thread[i as usize]).param.rc.b_stat_read = 0 as ::core::ffi::c_int;
-                    (*(*h).thread[i as usize]).param.i_bframe_adaptive = 0 as ::core::ffi::c_int;
-                    (*(*h).thread[i as usize]).param.i_scenecut_threshold = 0 as ::core::ffi::c_int;
-                    (*(*h).thread[i as usize]).param.rc.b_mb_tree = 0 as ::core::ffi::c_int;
-                    if (*(*h).thread[i as usize]).param.i_bframe > 1 as ::core::ffi::c_int {
-                        (*(*h).thread[i as usize]).param.i_bframe = 1 as ::core::ffi::c_int;
+                    (*(*h).thread[i as usize]).param.rc.b_stat_read = 0i32;
+                    (*(*h).thread[i as usize]).param.i_bframe_adaptive = 0i32;
+                    (*(*h).thread[i as usize]).param.i_scenecut_threshold = 0i32;
+                    (*(*h).thread[i as usize]).param.rc.b_mb_tree = 0i32;
+                    if (*(*h).thread[i as usize]).param.i_bframe > 1i32 {
+                        (*(*h).thread[i as usize]).param.i_bframe = 1i32;
                     }
                     i += 1;
                 }
@@ -4040,77 +3663,51 @@ pub unsafe extern "C" fn x264_8_ratecontrol_set_weights(
     mut frm: *mut crate::src::common::frame::x264_frame_t,
 ) {
     unsafe {
-        let mut rce: *mut ratecontrol_entry_t =
-            (*(*h).rc).entry.offset((*frm).i_frame as isize) as *mut ratecontrol_entry_t;
-        if (*h).param.analyse.i_weighted_pred <= 0 as ::core::ffi::c_int {
+        let mut rce: *mut ratecontrol_entry_t = (*(*h).rc).entry.offset((*frm).i_frame as isize);
+        if (*h).param.analyse.i_weighted_pred <= 0i32 {
             return;
         }
-        if (*rce).i_weight_denom[0 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-            >= 0 as ::core::ffi::c_int
-        {
-            (*frm).weight[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize]
-                .i_scale = (*rce).weight[0 as ::core::ffi::c_int as usize]
-                [0 as ::core::ffi::c_int as usize]
-                as crate::stdlib::int32_t;
-            (*frm).weight[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize]
-                .i_denom =
-                (*rce).i_weight_denom[0 as ::core::ffi::c_int as usize] as crate::stdlib::int32_t;
-            (*frm).weight[0 as ::core::ffi::c_int as usize][0 as ::core::ffi::c_int as usize]
-                .i_offset = (*rce).weight[0 as ::core::ffi::c_int as usize]
-                [1 as ::core::ffi::c_int as usize]
-                as crate::stdlib::int32_t;
+        if (*rce).i_weight_denom[0usize] as ::core::ffi::c_int >= 0i32 {
+            (*frm).weight[0usize][0usize].i_scale =
+                (*rce).weight[0usize][0usize] as crate::stdlib::int32_t;
+            (*frm).weight[0usize][0usize].i_denom =
+                (*rce).i_weight_denom[0usize] as crate::stdlib::int32_t;
+            (*frm).weight[0usize][0usize].i_offset =
+                (*rce).weight[0usize][1usize] as crate::stdlib::int32_t;
             (*h).mc.weight_cache.expect("non-null function pointer")(
                 h,
                 (&raw mut *(&raw mut (*frm).weight
                     as *mut [crate::src::common::mc::x264_weight_t; 3])
-                    .offset(0 as ::core::ffi::c_int as isize)
-                    as *mut crate::src::common::mc::x264_weight_t)
-                    .offset(0 as ::core::ffi::c_int as isize)
-                    as *mut crate::src::common::mc::x264_weight_t,
+                    .offset(0isize) as *mut crate::src::common::mc::x264_weight_t)
+                    .offset(0isize),
             );
         }
-        if (*rce).i_weight_denom[1 as ::core::ffi::c_int as usize] as ::core::ffi::c_int
-            >= 0 as ::core::ffi::c_int
-        {
-            (*frm).weight[0 as ::core::ffi::c_int as usize][1 as ::core::ffi::c_int as usize]
-                .i_scale = (*rce).weight[1 as ::core::ffi::c_int as usize]
-                [0 as ::core::ffi::c_int as usize]
-                as crate::stdlib::int32_t;
-            (*frm).weight[0 as ::core::ffi::c_int as usize][1 as ::core::ffi::c_int as usize]
-                .i_denom =
-                (*rce).i_weight_denom[1 as ::core::ffi::c_int as usize] as crate::stdlib::int32_t;
-            (*frm).weight[0 as ::core::ffi::c_int as usize][1 as ::core::ffi::c_int as usize]
-                .i_offset = (*rce).weight[1 as ::core::ffi::c_int as usize]
-                [1 as ::core::ffi::c_int as usize]
-                as crate::stdlib::int32_t;
+        if (*rce).i_weight_denom[1usize] as ::core::ffi::c_int >= 0i32 {
+            (*frm).weight[0usize][1usize].i_scale =
+                (*rce).weight[1usize][0usize] as crate::stdlib::int32_t;
+            (*frm).weight[0usize][1usize].i_denom =
+                (*rce).i_weight_denom[1usize] as crate::stdlib::int32_t;
+            (*frm).weight[0usize][1usize].i_offset =
+                (*rce).weight[1usize][1usize] as crate::stdlib::int32_t;
             (*h).mc.weight_cache.expect("non-null function pointer")(
                 h,
                 (&raw mut *(&raw mut (*frm).weight
                     as *mut [crate::src::common::mc::x264_weight_t; 3])
-                    .offset(0 as ::core::ffi::c_int as isize)
-                    as *mut crate::src::common::mc::x264_weight_t)
-                    .offset(1 as ::core::ffi::c_int as isize)
-                    as *mut crate::src::common::mc::x264_weight_t,
+                    .offset(0isize) as *mut crate::src::common::mc::x264_weight_t)
+                    .offset(1isize),
             );
-            (*frm).weight[0 as ::core::ffi::c_int as usize][2 as ::core::ffi::c_int as usize]
-                .i_scale = (*rce).weight[2 as ::core::ffi::c_int as usize]
-                [0 as ::core::ffi::c_int as usize]
-                as crate::stdlib::int32_t;
-            (*frm).weight[0 as ::core::ffi::c_int as usize][2 as ::core::ffi::c_int as usize]
-                .i_denom =
-                (*rce).i_weight_denom[1 as ::core::ffi::c_int as usize] as crate::stdlib::int32_t;
-            (*frm).weight[0 as ::core::ffi::c_int as usize][2 as ::core::ffi::c_int as usize]
-                .i_offset = (*rce).weight[2 as ::core::ffi::c_int as usize]
-                [1 as ::core::ffi::c_int as usize]
-                as crate::stdlib::int32_t;
+            (*frm).weight[0usize][2usize].i_scale =
+                (*rce).weight[2usize][0usize] as crate::stdlib::int32_t;
+            (*frm).weight[0usize][2usize].i_denom =
+                (*rce).i_weight_denom[1usize] as crate::stdlib::int32_t;
+            (*frm).weight[0usize][2usize].i_offset =
+                (*rce).weight[2usize][1usize] as crate::stdlib::int32_t;
             (*h).mc.weight_cache.expect("non-null function pointer")(
                 h,
                 (&raw mut *(&raw mut (*frm).weight
                     as *mut [crate::src::common::mc::x264_weight_t; 3])
-                    .offset(0 as ::core::ffi::c_int as isize)
-                    as *mut crate::src::common::mc::x264_weight_t)
-                    .offset(2 as ::core::ffi::c_int as isize)
-                    as *mut crate::src::common::mc::x264_weight_t,
+                    .offset(0isize) as *mut crate::src::common::mc::x264_weight_t)
+                    .offset(2isize),
             );
         }
     }
@@ -4153,7 +3750,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
             let mut c_type: ::core::ffi::c_char = (if (*h).sh.i_type
                 == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
             {
-                if (*(*h).fenc).i_poc == 0 as ::core::ffi::c_int {
+                if (*(*h).fenc).i_poc == 0i32 {
                     'I' as i32
                 } else {
                     'i' as i32
@@ -4166,20 +3763,18 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
             } else {
                 'b' as i32
             }) as ::core::ffi::c_char;
-            let mut dir_frame: ::core::ffi::c_int = (*h).stat.frame.i_direct_score
-                [1 as ::core::ffi::c_int as usize]
-                - (*h).stat.frame.i_direct_score[0 as ::core::ffi::c_int as usize];
-            let mut dir_avg: ::core::ffi::c_int = (*h).stat.i_direct_score
-                [1 as ::core::ffi::c_int as usize]
-                - (*h).stat.i_direct_score[0 as ::core::ffi::c_int as usize];
+            let mut dir_frame: ::core::ffi::c_int =
+                (*h).stat.frame.i_direct_score[1usize] - (*h).stat.frame.i_direct_score[0usize];
+            let mut dir_avg: ::core::ffi::c_int =
+                (*h).stat.i_direct_score[1usize] - (*h).stat.i_direct_score[0usize];
             let mut c_direct: ::core::ffi::c_char = (if (*h).mb.b_direct_auto_write != 0 {
-                if dir_frame > 0 as ::core::ffi::c_int {
+                if dir_frame > 0i32 {
                     's' as i32
-                } else if dir_frame < 0 as ::core::ffi::c_int {
+                } else if dir_frame < 0i32 {
                     't' as i32
-                } else if dir_avg > 0 as ::core::ffi::c_int {
+                } else if dir_avg > 0i32 {
                     's' as i32
-                } else if dir_avg < 0 as ::core::ffi::c_int {
+                } else if dir_avg < 0i32 {
                     't' as i32
                 } else {
                     '-' as i32
@@ -4205,20 +3800,20 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 (*h).stat.frame.i_mb_count_p,
                 (*h).stat.frame.i_mb_count_skip,
                 c_direct as ::core::ffi::c_int,
-            ) < 0 as ::core::ffi::c_int
+            ) < 0i32
             {
                 c2rust_current_block = 12447577463904507897;
             } else {
                 let mut use_old_stats: ::core::ffi::c_int = ((*h).param.rc.b_stat_read
-                    != 0 && (*(*rc).rce).refs > 1 as ::core::ffi::c_int)
+                    != 0 && (*(*rc).rce).refs > 1i32)
                     as ::core::ffi::c_int;
-                let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut i_0: ::core::ffi::c_int = 0i32;
                 loop {
                     if !(i_0
                         < (if use_old_stats != 0 {
                             (*(*rc).rce).refs
                         } else {
-                            (*h).i_ref[0 as ::core::ffi::c_int as usize]
+                            (*h).i_ref[0usize]
                         }))
                     {
                         c2rust_current_block = 8236137900636309791;
@@ -4230,26 +3825,23 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                         (*h)
                             .stat
                             .frame
-                            .i_mb_count_ref[0 as ::core::ffi::c_int
-                            as usize][(i_0 * 2 as ::core::ffi::c_int) as usize]
+                            .i_mb_count_ref[0usize][(i_0 * 2i32) as usize]
                             + (*h)
                                 .stat
                                 .frame
-                                .i_mb_count_ref[0 as ::core::ffi::c_int
-                                as usize][(i_0 * 2 as ::core::ffi::c_int
-                                + 1 as ::core::ffi::c_int) as usize]
+                                .i_mb_count_ref[0usize][(i_0 * 2i32
+                                + 1i32) as usize]
                     } else {
                         (*h)
                             .stat
                             .frame
-                            .i_mb_count_ref[0 as ::core::ffi::c_int
-                            as usize][i_0 as usize]
+                            .i_mb_count_ref[0usize][i_0 as usize]
                     };
                     if crate::stdlib::fprintf(
                         (*rc).p_stat_file_out,
                         b"%d \0".as_ptr() as *const ::core::ffi::c_char,
                         refcount,
-                    ) < 0 as ::core::ffi::c_int
+                    ) < 0i32
                     {
                         c2rust_current_block = 12447577463904507897;
                         break;
@@ -4262,8 +3854,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                         if (*h).param.analyse.i_weighted_pred >= crate::x264_h::X264_WEIGHTP_SIMPLE
                             && !(*h)
                                 .sh
-                                .weight[0 as ::core::ffi::c_int
-                                    as usize][0 as ::core::ffi::c_int as usize]
+                                .weight[0usize][0usize]
                                 .weightfn
                                 .is_null()
                         {
@@ -4272,32 +3863,27 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                                 b"w:%d,%d,%d\0".as_ptr() as *const ::core::ffi::c_char,
                                 (*h)
                                     .sh
-                                    .weight[0 as ::core::ffi::c_int
-                                        as usize][0 as ::core::ffi::c_int as usize]
+                                    .weight[0usize][0usize]
                                     .i_denom,
                                 (*h)
                                     .sh
-                                    .weight[0 as ::core::ffi::c_int
-                                        as usize][0 as ::core::ffi::c_int as usize]
+                                    .weight[0usize][0usize]
                                     .i_scale,
                                 (*h)
                                     .sh
-                                    .weight[0 as ::core::ffi::c_int
-                                        as usize][0 as ::core::ffi::c_int as usize]
+                                    .weight[0usize][0usize]
                                     .i_offset,
-                            ) < 0 as ::core::ffi::c_int
+                            ) < 0i32
                             {
                                 c2rust_current_block = 12447577463904507897;
                             } else if !(*h)
                                 .sh
-                                .weight[0 as ::core::ffi::c_int
-                                    as usize][1 as ::core::ffi::c_int as usize]
+                                .weight[0usize][1usize]
                                 .weightfn
                                 .is_null()
                                 || !(*h)
                                     .sh
-                                    .weight[0 as ::core::ffi::c_int
-                                        as usize][2 as ::core::ffi::c_int as usize]
+                                    .weight[0usize][2usize]
                                     .weightfn
                                     .is_null()
                             {
@@ -4307,30 +3893,25 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                                         as *const ::core::ffi::c_char,
                                     (*h)
                                         .sh
-                                        .weight[0 as ::core::ffi::c_int
-                                            as usize][1 as ::core::ffi::c_int as usize]
+                                        .weight[0usize][1usize]
                                         .i_denom,
                                     (*h)
                                         .sh
-                                        .weight[0 as ::core::ffi::c_int
-                                            as usize][1 as ::core::ffi::c_int as usize]
+                                        .weight[0usize][1usize]
                                         .i_scale,
                                     (*h)
                                         .sh
-                                        .weight[0 as ::core::ffi::c_int
-                                            as usize][1 as ::core::ffi::c_int as usize]
+                                        .weight[0usize][1usize]
                                         .i_offset,
                                     (*h)
                                         .sh
-                                        .weight[0 as ::core::ffi::c_int
-                                            as usize][2 as ::core::ffi::c_int as usize]
+                                        .weight[0usize][2usize]
                                         .i_scale,
                                     (*h)
                                         .sh
-                                        .weight[0 as ::core::ffi::c_int
-                                            as usize][2 as ::core::ffi::c_int as usize]
+                                        .weight[0usize][2usize]
                                         .i_offset,
-                                ) < 0 as ::core::ffi::c_int
+                                ) < 0i32
                                 {
                                     c2rust_current_block = 12447577463904507897;
                                 } else {
@@ -4339,7 +3920,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                             } else if crate::stdlib::fprintf(
                                 (*rc).p_stat_file_out,
                                 b" \0".as_ptr() as *const ::core::ffi::c_char,
-                            ) < 0 as ::core::ffi::c_int
+                            ) < 0i32
                             {
                                 c2rust_current_block = 12447577463904507897;
                             } else {
@@ -4354,7 +3935,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                                 if crate::stdlib::fprintf(
                                     (*rc).p_stat_file_out,
                                     b";\n\0".as_ptr() as *const ::core::ffi::c_char,
-                                ) < 0 as ::core::ffi::c_int
+                                ) < 0i32
                                 {
                                     c2rust_current_block = 12447577463904507897;
                                 } else if (*h).param.rc.b_mb_tree != 0
@@ -4368,22 +3949,22 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                                         .expect(
                                             "non-null function pointer",
                                         )(
-                                        (*rc).mbtree.qp_buffer[0 as ::core::ffi::c_int as usize],
+                                        (*rc).mbtree.qp_buffer[0usize],
                                         (*(*h).fenc).f_qp_offset,
                                         (*h).mb.i_mb_count,
                                     );
                                     if crate::stdlib::fwrite(
                                         &raw mut i_type as *const ::core::ffi::c_void,
-                                        1 as crate::__stddef_size_t_h::size_t,
-                                        1 as crate::__stddef_size_t_h::size_t,
+                                        1usize,
+                                        1usize,
                                         (*rc).p_mbtree_stat_file_out,
-                                    ) < 1 as ::core::ffi::c_ulong
+                                    ) < 1u64
                                     {
                                         c2rust_current_block = 12447577463904507897;
                                     } else if crate::stdlib::fwrite(
-                                        (*rc).mbtree.qp_buffer[0 as ::core::ffi::c_int as usize]
+                                        (*rc).mbtree.qp_buffer[0usize]
                                             as *const ::core::ffi::c_void,
-                                        ::core::mem::size_of::<crate::stdlib::uint16_t>() as crate::__stddef_size_t_h::size_t,
+                                        ::core::mem::size_of::<crate::stdlib::uint16_t>(),
                                         (*h).mb.i_mb_count as crate::__stddef_size_t_h::size_t,
                                         (*rc).p_mbtree_stat_file_out,
                                     )
@@ -4406,12 +3987,12 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 15125582407903384992 => {}
                 _ => {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_ERROR_1,
                         b"ratecontrol_end: stats file could not be written to\n\0".as_ptr()
                             as *const ::core::ffi::c_char,
                     );
-                    return -(1 as ::core::ffi::c_int);
+                    return -(1i32);
                 }
             }
         }
@@ -4443,32 +4024,27 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                     update_predictor(
                         (*rc).pred_b_from_p,
                         qp2qscale((*rc).qpa_rc),
-                        (*(*h).fref[1 as ::core::ffi::c_int as usize][((*h).i_ref
-                            [1 as ::core::ffi::c_int as usize]
-                            - 1 as ::core::ffi::c_int)
-                            as usize])
-                            .i_satd as ::core::ffi::c_float,
+                        (*(*h).fref[1usize][((*h).i_ref[1usize] - 1i32) as usize]).i_satd
+                            as ::core::ffi::c_float,
                         ((*rc).bframe_bits / (*rc).bframes) as ::core::ffi::c_float,
                     );
-                    (*rc).bframe_bits = 0 as ::core::ffi::c_int;
+                    (*rc).bframe_bits = 0i32;
                 }
             }
         }
         *filler = update_vbv(h, bits);
-        (*rc).filler_bits_sum += (*filler * 8 as ::core::ffi::c_int) as crate::stdlib::int64_t;
+        (*rc).filler_bits_sum += (*filler * 8i32) as crate::stdlib::int64_t;
         if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
             .vui
             .b_nal_hrd_parameters_present
             != 0
         {
-            if (*(*h).fenc).i_frame == 0 as ::core::ffi::c_int {
-                (*(*h).fenc).hrd_timing.cpb_initial_arrival_time =
-                    0 as ::core::ffi::c_int as ::core::ffi::c_double;
+            if (*(*h).fenc).i_frame == 0i32 {
+                (*(*h).fenc).hrd_timing.cpb_initial_arrival_time = 0f64;
                 (*rc).initial_cpb_removal_delay = (*h).initial_cpb_removal_delay;
                 (*rc).initial_cpb_removal_delay_offset = (*h).initial_cpb_removal_delay_offset;
-                (*rc).nrt_first_access_unit = (*rc).initial_cpb_removal_delay
-                    as ::core::ffi::c_double
-                    / 90000 as ::core::ffi::c_int as ::core::ffi::c_double;
+                (*rc).nrt_first_access_unit =
+                    (*rc).initial_cpb_removal_delay as ::core::ffi::c_double / 90000f64;
                 (*(*h).fenc).hrd_timing.cpb_removal_time = (*rc).nrt_first_access_unit;
             } else {
                 (*(*h).fenc).hrd_timing.cpb_removal_time = (*rc).nrt_first_access_unit
@@ -4487,12 +4063,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 }
                 let mut cpb_earliest_arrival_time: ::core::ffi::c_double =
                     (*(*h).fenc).hrd_timing.cpb_removal_time
-                        - (*rc).initial_cpb_removal_delay as ::core::ffi::c_double
-                            / 90000 as ::core::ffi::c_int as ::core::ffi::c_double;
+                        - (*rc).initial_cpb_removal_delay as ::core::ffi::c_double / 90000f64;
                 if (*(*h).fenc).b_keyframe == 0 {
-                    cpb_earliest_arrival_time -= (*rc).initial_cpb_removal_delay_offset
-                        as ::core::ffi::c_double
-                        / 90000 as ::core::ffi::c_int as ::core::ffi::c_double;
+                    cpb_earliest_arrival_time -=
+                        (*rc).initial_cpb_removal_delay_offset as ::core::ffi::c_double / 90000f64;
                 }
                 if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
@@ -4512,15 +4086,13 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 }
             }
             let mut filler_bits: ::core::ffi::c_int = if *filler != 0 {
-                (if 5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int - (*h).param.b_annexb
-                    > *filler
-                {
-                    5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int - (*h).param.b_annexb
+                (if 5i32 + 1i32 - (*h).param.b_annexb > *filler {
+                    5i32 + 1i32 - (*h).param.b_annexb
                 } else {
                     *filler
-                }) * 8 as ::core::ffi::c_int
+                }) * 8i32
             } else {
-                0 as ::core::ffi::c_int
+                0i32
             };
             (*rc).previous_cpb_final_arrival_time =
                 (*(*h).fenc).hrd_timing.cpb_initial_arrival_time
@@ -4540,7 +4112,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                     .i_time_scale as ::core::ffi::c_double
                 + (*(*h).fenc).hrd_timing.cpb_removal_time;
         }
-        return 0 as ::core::ffi::c_int;
+        return 0i32;
     }
 }
 unsafe extern "C" fn get_qscale(
@@ -4563,36 +4135,28 @@ unsafe extern "C" fn get_qscale(
                         .i_time_scale as ::core::ffi::c_double;
             q = crate::stdlib::pow(
                 (0.04f32
-                    / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
-                        + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
-                    as ::core::ffi::c_double
+                    / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
+                        as ::core::ffi::c_float) as ::core::ffi::c_double
                     / x264_clip3f(
                         (*rce).i_duration as ::core::ffi::c_double * timescale,
                         (0.01f32
-                            / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
-                                + 1 as ::core::ffi::c_int)
+                            / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                                 as ::core::ffi::c_float)
                             as ::core::ffi::c_double,
                         (1.00f32
-                            / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
-                                + 1 as ::core::ffi::c_int)
+                            / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                                 as ::core::ffi::c_float)
                             as ::core::ffi::c_double,
                     ),
-                (1 as ::core::ffi::c_int as ::core::ffi::c_float - (*h).param.rc.f_qcompress)
-                    as ::core::ffi::c_double,
+                (1f32 - (*h).param.rc.f_qcompress) as ::core::ffi::c_double,
             );
         } else {
             q = crate::stdlib::pow(
                 (*rce).blurred_complexity as ::core::ffi::c_double,
-                1 as ::core::ffi::c_int as ::core::ffi::c_double - (*rcc).qcompress,
+                1f64 - (*rcc).qcompress,
             );
         }
-        if q.is_finite() as i32 == 0 || (*rce).tex_bits + (*rce).mv_bits == 0 as ::core::ffi::c_int
-        {
+        if q.is_finite() as i32 == 0 || (*rce).tex_bits + (*rce).mv_bits == 0i32 {
             q = (*rcc).last_qscale_for[(*rce).pict_type as usize];
         } else {
             (*rcc).last_rceq = q;
@@ -4626,13 +4190,12 @@ unsafe extern "C" fn get_diff_limited_q(
                     as ::core::ffi::c_double;
             let mut ip_factor: ::core::ffi::c_double =
                 (*h).param.rc.f_ip_factor as ::core::ffi::c_double;
-            if (*rcc).accum_p_norm <= 0 as ::core::ffi::c_int as ::core::ffi::c_double {
+            if (*rcc).accum_p_norm <= 0f64 {
                 q = iq;
-            } else if (*rcc).accum_p_norm >= 1 as ::core::ffi::c_int as ::core::ffi::c_double {
+            } else if (*rcc).accum_p_norm >= 1f64 {
                 q = pq / ip_factor;
             } else {
-                q = (*rcc).accum_p_norm * pq / ip_factor
-                    + (1 as ::core::ffi::c_int as ::core::ffi::c_double - (*rcc).accum_p_norm) * iq;
+                q = (*rcc).accum_p_norm * pq / ip_factor + (1f64 - (*rcc).accum_p_norm) * iq;
             }
         } else if pict_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int {
             q = (*rcc).last_qscale_for[(*rcc).last_non_b_pict_type as usize];
@@ -4642,14 +4205,14 @@ unsafe extern "C" fn get_diff_limited_q(
         } else if pict_type == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int
             && (*rcc).last_non_b_pict_type
                 == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int
-            && (*rce).tex_bits == 0 as ::core::ffi::c_int
+            && (*rce).tex_bits == 0i32
         {
             q = (*rcc).last_qscale_for
                 [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize];
         }
         if (*rcc).last_non_b_pict_type == pict_type
             && (pict_type != crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
-                || (*rcc).last_accum_p_norm < 1 as ::core::ffi::c_int as ::core::ffi::c_double)
+                || (*rcc).last_accum_p_norm < 1f64)
         {
             let mut last_q: ::core::ffi::c_double = (*rcc).last_qscale_for[pict_type as usize];
             let mut max_qscale: ::core::ffi::c_double = last_q * (*rcc).lstep;
@@ -4666,21 +4229,20 @@ unsafe extern "C" fn get_diff_limited_q(
         }
         if pict_type == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int {
             (*rcc).last_accum_p_norm = (*rcc).accum_p_norm;
-            (*rcc).accum_p_norm = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
-            (*rcc).accum_p_qp = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
+            (*rcc).accum_p_norm = 0f64;
+            (*rcc).accum_p_qp = 0f64;
         }
         if pict_type == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int {
-            let mut mask: ::core::ffi::c_float = (1 as ::core::ffi::c_int as ::core::ffi::c_double
+            let mut mask: ::core::ffi::c_float = (1f64
                 - crate::stdlib::pow(
                     ((*rce).i_count as ::core::ffi::c_float / (*rcc).nmb as ::core::ffi::c_float)
                         as ::core::ffi::c_double,
-                    2 as ::core::ffi::c_int as ::core::ffi::c_double,
+                    2f64,
                 )) as ::core::ffi::c_float;
             (*rcc).accum_p_qp = mask as ::core::ffi::c_double
                 * (qscale2qp(q as ::core::ffi::c_float) as ::core::ffi::c_double
                     + (*rcc).accum_p_qp);
-            (*rcc).accum_p_norm = mask as ::core::ffi::c_double
-                * (1 as ::core::ffi::c_int as ::core::ffi::c_double + (*rcc).accum_p_norm);
+            (*rcc).accum_p_norm = mask as ::core::ffi::c_double * (1f64 + (*rcc).accum_p_norm);
         }
         if !zone.is_null() {
             if (*zone).b_force_qp != 0 {
@@ -4709,7 +4271,7 @@ unsafe extern "C" fn update_predictor(
 ) {
     unsafe {
         let mut range: ::core::ffi::c_float = 1.5;
-        if var < 10 as ::core::ffi::c_int as ::core::ffi::c_float {
+        if var < 10f32 {
             return;
         }
         let mut old_coeff: ::core::ffi::c_float = (*p).coeff / (*p).count;
@@ -4726,10 +4288,10 @@ unsafe extern "C" fn update_predictor(
             (old_coeff * range) as ::core::ffi::c_double,
         ) as ::core::ffi::c_float;
         let mut new_offset: ::core::ffi::c_float = bits * q - new_coeff_clipped * var;
-        if new_offset >= 0 as ::core::ffi::c_int as ::core::ffi::c_float {
+        if new_offset >= 0f32 {
             new_coeff = new_coeff_clipped;
         } else {
-            new_offset = 0 as ::core::ffi::c_int as ::core::ffi::c_float;
+            new_offset = 0f32;
         }
         (*p).count *= (*p).decay;
         (*p).coeff *= (*p).decay;
@@ -4744,14 +4306,14 @@ unsafe extern "C" fn update_vbv(
     mut bits: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut filler: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut filler: ::core::ffi::c_int = 0i32;
         let mut bitrate: ::core::ffi::c_int = (*(&raw mut (*h).sps
             as *mut crate::src::common::set::x264_sps_t))
             .vui
             .hrd
             .i_bit_rate_unscaled;
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
-        let mut rct: *mut x264_ratecontrol_t = (*(*h).thread[0 as ::core::ffi::c_int as usize]).rc;
+        let mut rct: *mut x264_ratecontrol_t = (*(*h).thread[0usize]).rc;
         let mut buffer_size: crate::stdlib::int64_t =
             (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                 .vui
@@ -4762,7 +4324,7 @@ unsafe extern "C" fn update_vbv(
                     .i_time_scale as crate::stdlib::int64_t;
         if (*rcc).last_satd >= (*h).mb.i_mb_count {
             update_predictor(
-                (*rct).pred.offset((*h).sh.i_type as isize) as *mut predictor_t,
+                (*rct).pred.offset((*h).sh.i_type as isize),
                 qp2qscale((*rcc).qpa_rc),
                 (*rcc).last_satd as ::core::ffi::c_float,
                 bits as ::core::ffi::c_float,
@@ -4778,12 +4340,11 @@ unsafe extern "C" fn update_vbv(
                     .i_time_scale as crate::stdlib::uint64_t,
             );
         (*rct).buffer_fill_final = ((*rct).buffer_fill_final as crate::stdlib::uint64_t)
-            .wrapping_sub(buffer_diff) as crate::stdlib::int64_t
+            .wrapping_sub(buffer_diff) as crate::stdlib::int64_t;
+        (*rct).buffer_fill_final_min = ((*rct).buffer_fill_final_min as crate::stdlib::uint64_t)
+            .wrapping_sub(buffer_diff)
             as crate::stdlib::int64_t;
-        (*rct).buffer_fill_final_min =
-            ((*rct).buffer_fill_final_min as crate::stdlib::uint64_t).wrapping_sub(buffer_diff)
-                as crate::stdlib::int64_t as crate::stdlib::int64_t;
-        if (*rct).buffer_fill_final_min < 0 as crate::stdlib::int64_t {
+        if (*rct).buffer_fill_final_min < 0i64 {
             let mut underflow: ::core::ffi::c_double = (*rct).buffer_fill_final_min
                 as ::core::ffi::c_double
                 / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
@@ -4793,7 +4354,7 @@ unsafe extern "C" fn update_vbv(
                 && (*rcc).qpm >= (*rcc).qp_novbv + (*rcc).rate_factor_max_increment
             {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_DEBUG_1,
                     b"VBV underflow due to CRF-max (frame %d, %.0f bits)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -4802,7 +4363,7 @@ unsafe extern "C" fn update_vbv(
                 );
             } else {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"VBV underflow (frame %d, %.0f bits)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -4810,7 +4371,7 @@ unsafe extern "C" fn update_vbv(
                     underflow,
                 );
             }
-            (*rct).buffer_fill_final_min = 0 as crate::stdlib::int64_t;
+            (*rct).buffer_fill_final_min = 0i64;
             (*rct).buffer_fill_final = (*rct).buffer_fill_final_min;
         }
         if (*h).param.i_avcintra_class != 0 {
@@ -4825,44 +4386,39 @@ unsafe extern "C" fn update_vbv(
                 .wrapping_mul((*(*h).fenc).i_cpb_duration as crate::stdlib::uint64_t);
         }
         (*rct).buffer_fill_final = ((*rct).buffer_fill_final as crate::stdlib::uint64_t)
-            .wrapping_add(buffer_diff) as crate::stdlib::int64_t
+            .wrapping_add(buffer_diff) as crate::stdlib::int64_t;
+        (*rct).buffer_fill_final_min = ((*rct).buffer_fill_final_min as crate::stdlib::uint64_t)
+            .wrapping_add(buffer_diff)
             as crate::stdlib::int64_t;
-        (*rct).buffer_fill_final_min =
-            ((*rct).buffer_fill_final_min as crate::stdlib::uint64_t).wrapping_add(buffer_diff)
-                as crate::stdlib::int64_t as crate::stdlib::int64_t;
         if (*rct).buffer_fill_final > buffer_size {
             if (*h).param.rc.b_filler != 0 {
                 let mut scale: crate::stdlib::int64_t =
                     (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .i_time_scale as crate::stdlib::int64_t
-                        * 8 as crate::stdlib::int64_t;
-                filler = (((*rct).buffer_fill_final - buffer_size + scale
-                    - 1 as crate::stdlib::int64_t)
-                    / scale) as ::core::ffi::c_int;
+                        * 8i64;
+                filler = (((*rct).buffer_fill_final - buffer_size + scale - 1i64) / scale)
+                    as ::core::ffi::c_int;
                 bits = if (*h).param.i_avcintra_class != 0 {
-                    filler * 8 as ::core::ffi::c_int
+                    filler * 8i32
                 } else {
-                    (if 5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int - (*h).param.b_annexb
-                        > filler
-                    {
-                        5 as ::core::ffi::c_int + 1 as ::core::ffi::c_int - (*h).param.b_annexb
+                    (if 5i32 + 1i32 - (*h).param.b_annexb > filler {
+                        5i32 + 1i32 - (*h).param.b_annexb
                     } else {
                         filler
-                    }) * 8 as ::core::ffi::c_int
+                    }) * 8i32
                 };
                 buffer_diff = (bits as crate::stdlib::uint64_t).wrapping_mul(
                     (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .i_time_scale as crate::stdlib::uint64_t,
                 );
-                (*rct).buffer_fill_final =
-                    ((*rct).buffer_fill_final as crate::stdlib::uint64_t).wrapping_sub(buffer_diff)
-                        as crate::stdlib::int64_t as crate::stdlib::int64_t;
+                (*rct).buffer_fill_final = ((*rct).buffer_fill_final as crate::stdlib::uint64_t)
+                    .wrapping_sub(buffer_diff)
+                    as crate::stdlib::int64_t;
                 (*rct).buffer_fill_final_min =
                     ((*rct).buffer_fill_final_min as crate::stdlib::uint64_t)
-                        .wrapping_sub(buffer_diff) as crate::stdlib::int64_t
-                        as crate::stdlib::int64_t;
+                        .wrapping_sub(buffer_diff) as crate::stdlib::int64_t;
             } else {
                 (*rct).buffer_fill_final = if (*rct).buffer_fill_final < buffer_size {
                     (*rct).buffer_fill_final
@@ -4882,7 +4438,7 @@ unsafe extern "C" fn update_vbv(
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
-        let mut rct: *mut x264_ratecontrol_t = (*(*h).thread[0 as ::core::ffi::c_int as usize]).rc;
+        let mut rct: *mut x264_ratecontrol_t = (*(*h).thread[0usize]).rc;
         let mut denom: crate::stdlib::uint64_t =
             ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                 .vui
@@ -4907,16 +4463,16 @@ pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::com
                         .i_time_scale as crate::stdlib::uint64_t,
                 );
         let mut multiply_factor: crate::stdlib::uint64_t =
-            (90000 as crate::stdlib::uint64_t).wrapping_div((*rct).hrd_multiply_denom);
-        if (*rct).buffer_fill_final < 0 as crate::stdlib::int64_t
+            (90000u64).wrapping_div((*rct).hrd_multiply_denom);
+        if (*rct).buffer_fill_final < 0i64
             || (*rct).buffer_fill_final > cpb_size as crate::stdlib::int64_t
         {
             crate::src::common::common::x264_8_log(
-                h as *mut crate::src::common::common::x264_t,
+                h,
                 crate::x264_h::X264_LOG_WARNING_1,
                 b"CPB %s: %.0f bits in a %.0f-bit buffer\n\0".as_ptr()
                     as *const ::core::ffi::c_char,
-                if (*rct).buffer_fill_final < 0 as crate::stdlib::int64_t {
+                if (*rct).buffer_fill_final < 0i64 {
                     b"underflow\0".as_ptr() as *const ::core::ffi::c_char
                 } else {
                     b"overflow\0".as_ptr() as *const ::core::ffi::c_char
@@ -4955,16 +4511,15 @@ unsafe extern "C" fn update_vbv_plan(
 ) {
     unsafe {
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
-        (*rcc).buffer_fill =
-            ((*(*(*h).thread[0 as ::core::ffi::c_int as usize]).rc).buffer_fill_final_min
-                / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as crate::stdlib::int64_t) as ::core::ffi::c_double;
-        if (*h).i_thread_frames > 1 as ::core::ffi::c_int {
+        (*rcc).buffer_fill = ((*(*(*h).thread[0usize]).rc).buffer_fill_final_min
+            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
+                .vui
+                .i_time_scale as crate::stdlib::int64_t)
+            as ::core::ffi::c_double;
+        if (*h).i_thread_frames > 1i32 {
             let mut j: ::core::ffi::c_int =
-                rcc.offset_from((*(*h).thread[0 as ::core::ffi::c_int as usize]).rc)
-                    as ::core::ffi::c_long as ::core::ffi::c_int;
-            let mut i: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+                rcc.offset_from((*(*h).thread[0usize]).rc) as ::core::ffi::c_int;
+            let mut i: ::core::ffi::c_int = 1i32;
             while i < (*h).i_thread_frames {
                 let mut t: *mut crate::src::common::common::x264_t =
                     (*h).thread[((j + i) % (*h).i_thread_frames) as usize];
@@ -4976,12 +4531,11 @@ unsafe extern "C" fn update_vbv_plan(
                         (*(*t).rc).frame_size_estimated as ::core::ffi::c_double
                     };
                     (*rcc).buffer_fill -= bits;
-                    (*rcc).buffer_fill =
-                        if (*rcc).buffer_fill > 0 as ::core::ffi::c_int as ::core::ffi::c_double {
-                            (*rcc).buffer_fill
-                        } else {
-                            0 as ::core::ffi::c_int as ::core::ffi::c_double
-                        };
+                    (*rcc).buffer_fill = if (*rcc).buffer_fill > 0f64 {
+                        (*rcc).buffer_fill
+                    } else {
+                        0f64
+                    };
                     (*rcc).buffer_fill += (*(*t).rc).buffer_rate;
                     (*rcc).buffer_fill = if (*rcc).buffer_fill < (*rcc).buffer_size {
                         (*rcc).buffer_fill
@@ -5026,9 +4580,7 @@ unsafe extern "C" fn clip_qscale(
             let mut min2: ::core::ffi::c_double = crate::stdlib::log(lmin);
             let mut max2: ::core::ffi::c_double = crate::stdlib::log(lmax);
             q = (crate::stdlib::log(q) - min2) / (max2 - min2) - 0.5f64;
-            q = 1.0f64
-                / (1.0f64
-                    + crate::stdlib::exp(-(4 as ::core::ffi::c_int) as ::core::ffi::c_double * q));
+            q = 1.0f64 / (1.0f64 + crate::stdlib::exp(-4f64 * q));
             q = q * (max2 - min2) + min2;
             return crate::stdlib::exp(q);
         } else {
@@ -5043,7 +4595,7 @@ unsafe extern "C" fn vbv_pass1(
 ) -> ::core::ffi::c_double {
     unsafe {
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
-        if (*rcc).b_vbv != 0 && (*rcc).last_satd > 0 as ::core::ffi::c_int {
+        if (*rcc).b_vbv != 0 && (*rcc).last_satd > 0i32 {
             let mut q0: ::core::ffi::c_double = q;
             let mut fenc_cpb_duration: ::core::ffi::c_double = (*(*h).fenc).i_cpb_duration
                 as ::core::ffi::c_double
@@ -5054,39 +4606,32 @@ unsafe extern "C" fn vbv_pass1(
                     .vui
                     .i_time_scale as ::core::ffi::c_double;
             if (*h).param.rc.i_lookahead != 0 {
-                let mut terminate: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                let mut iterations: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                while iterations < 1000 as ::core::ffi::c_int
-                    && terminate != 3 as ::core::ffi::c_int
-                {
+                let mut terminate: ::core::ffi::c_int = 0i32;
+                let mut iterations: ::core::ffi::c_int = 0i32;
+                while iterations < 1000i32 && terminate != 3i32 {
                     let mut frame_q: [::core::ffi::c_double; 3] = [0.; 3];
                     let mut cur_bits: ::core::ffi::c_double = predict_size(
-                        (*rcc).pred.offset((*h).sh.i_type as isize) as *mut predictor_t,
+                        (*rcc).pred.offset((*h).sh.i_type as isize),
                         q as ::core::ffi::c_float,
                         (*rcc).last_satd as ::core::ffi::c_float,
                     )
                         as ::core::ffi::c_double;
                     let mut buffer_fill_cur: ::core::ffi::c_double = (*rcc).buffer_fill - cur_bits;
-                    let mut total_duration: ::core::ffi::c_double =
-                        0 as ::core::ffi::c_int as ::core::ffi::c_double;
+                    let mut total_duration: ::core::ffi::c_double = 0f64;
                     let mut last_duration: ::core::ffi::c_double = fenc_cpb_duration;
-                    frame_q[0 as ::core::ffi::c_int as usize] = if (*h).sh.i_type
+                    frame_q[0usize] = if (*h).sh.i_type
                         == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
                     {
                         q * (*h).param.rc.f_ip_factor as ::core::ffi::c_double
                     } else {
                         q
                     };
-                    frame_q[1 as ::core::ffi::c_int as usize] = frame_q
-                        [0 as ::core::ffi::c_int as usize]
-                        * (*h).param.rc.f_pb_factor as ::core::ffi::c_double;
-                    frame_q[2 as ::core::ffi::c_int as usize] = frame_q
-                        [0 as ::core::ffi::c_int as usize]
-                        / (*h).param.rc.f_ip_factor as ::core::ffi::c_double;
-                    let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                    while buffer_fill_cur >= 0 as ::core::ffi::c_int as ::core::ffi::c_double
-                        && buffer_fill_cur <= (*rcc).buffer_size
-                    {
+                    frame_q[1usize] =
+                        frame_q[0usize] * (*h).param.rc.f_pb_factor as ::core::ffi::c_double;
+                    frame_q[2usize] =
+                        frame_q[0usize] / (*h).param.rc.f_ip_factor as ::core::ffi::c_double;
+                    let mut j: ::core::ffi::c_int = 0i32;
+                    while buffer_fill_cur >= 0f64 && buffer_fill_cur <= (*rcc).buffer_size {
                         total_duration += last_duration;
                         buffer_fill_cur += (*rcc).vbv_max_rate * last_duration;
                         let mut i_type: ::core::ffi::c_int =
@@ -5109,7 +4654,7 @@ unsafe extern "C" fn vbv_pass1(
                             crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int
                         };
                         cur_bits = predict_size(
-                            (*rcc).pred.offset(i_type as isize) as *mut predictor_t,
+                            (*rcc).pred.offset(i_type as isize),
                             frame_q[i_type as usize] as ::core::ffi::c_float,
                             i_satd as ::core::ffi::c_float,
                         ) as ::core::ffi::c_double;
@@ -5127,7 +4672,7 @@ unsafe extern "C" fn vbv_pass1(
                     };
                     if buffer_fill_cur < target_fill {
                         q *= 1.01;
-                        terminate |= 1 as ::core::ffi::c_int;
+                        terminate |= 1i32;
                     } else {
                         target_fill = x264_clip3f(
                             (*rcc).buffer_fill - total_duration * (*rcc).vbv_max_rate * 0.5,
@@ -5138,7 +4683,7 @@ unsafe extern "C" fn vbv_pass1(
                             break;
                         }
                         q /= 1.01;
-                        terminate |= 2 as ::core::ffi::c_int;
+                        terminate |= 2i32;
                     }
                     iterations += 1;
                 }
@@ -5156,24 +4701,23 @@ unsafe extern "C" fn vbv_pass1(
                     );
                 }
                 let mut bits: ::core::ffi::c_double = predict_size(
-                    (*rcc).pred.offset((*h).sh.i_type as isize) as *mut predictor_t,
+                    (*rcc).pred.offset((*h).sh.i_type as isize),
                     q as ::core::ffi::c_float,
                     (*rcc).last_satd as ::core::ffi::c_float,
                 ) as ::core::ffi::c_double;
                 let mut max_fill_factor: ::core::ffi::c_double =
                     (if (*h).param.rc.i_vbv_buffer_size as ::core::ffi::c_double
-                        >= (5 as ::core::ffi::c_int * (*h).param.rc.i_vbv_max_bitrate)
-                            as ::core::ffi::c_double
+                        >= (5i32 * (*h).param.rc.i_vbv_max_bitrate) as ::core::ffi::c_double
                             / (*rcc).fps
                     {
-                        2 as ::core::ffi::c_int
+                        2i32
                     } else {
-                        1 as ::core::ffi::c_int
+                        1i32
                     }) as ::core::ffi::c_double;
                 let mut min_fill_factor: ::core::ffi::c_double = (if (*rcc).single_frame_vbv != 0 {
-                    1 as ::core::ffi::c_int
+                    1i32
                 } else {
-                    2 as ::core::ffi::c_int
+                    2i32
                 })
                     as ::core::ffi::c_double;
                 if bits > (*rcc).buffer_fill / max_fill_factor {
@@ -5194,7 +4738,7 @@ unsafe extern "C" fn vbv_pass1(
             {
                 let mut nb: ::core::ffi::c_int = (*rcc).bframes;
                 let mut bits_0: ::core::ffi::c_double = predict_size(
-                    (*rcc).pred.offset((*h).sh.i_type as isize) as *mut predictor_t,
+                    (*rcc).pred.offset((*h).sh.i_type as isize),
                     q as ::core::ffi::c_float,
                     (*rcc).last_satd as ::core::ffi::c_float,
                 ) as ::core::ffi::c_double;
@@ -5205,16 +4749,15 @@ unsafe extern "C" fn vbv_pass1(
                         as ::core::ffi::c_float,
                     (*rcc).last_satd as ::core::ffi::c_float,
                 ) as ::core::ffi::c_double;
-                let mut bframe_cpb_duration: ::core::ffi::c_double =
-                    0 as ::core::ffi::c_int as ::core::ffi::c_double;
-                let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut bframe_cpb_duration: ::core::ffi::c_double = 0f64;
+                let mut i: ::core::ffi::c_int = 0i32;
                 while i < nb {
                     bframe_cpb_duration += (*(*h).fenc).f_planned_cpb_duration[i as usize];
                     i += 1;
                 }
                 if bbits * nb as ::core::ffi::c_double > bframe_cpb_duration * (*rcc).vbv_max_rate {
-                    nb = 0 as ::core::ffi::c_int;
-                    bframe_cpb_duration = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
+                    nb = 0i32;
+                    bframe_cpb_duration = 0f64;
                 }
                 pbbits += nb as ::core::ffi::c_double * bbits;
                 let mut minigop_cpb_duration: ::core::ffi::c_double =
@@ -5229,11 +4772,7 @@ unsafe extern "C" fn vbv_pass1(
                         bits_0 / (0.5f64 * (*rcc).buffer_size)
                     };
                 }
-                q = if q0 / 2 as ::core::ffi::c_int as ::core::ffi::c_double > q {
-                    q0 / 2 as ::core::ffi::c_int as ::core::ffi::c_double
-                } else {
-                    q
-                };
+                q = if q0 / 2f64 > q { q0 / 2f64 } else { q };
             }
             if (*rcc).b_vbv_min_rate == 0 {
                 q = if q0 > q { q0 } else { q };
@@ -5249,7 +4788,7 @@ unsafe extern "C" fn rate_estimate_qscale(
         let mut q: ::core::ffi::c_float = 0.;
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
         let mut rce: ratecontrol_entry_t = ratecontrol_entry_t {
-            pict_type: 0 as ::core::ffi::c_int,
+            pict_type: 0i32,
             frame_type: 0,
             kept_as_ref: 0,
             qscale: 0.,
@@ -5274,7 +4813,7 @@ unsafe extern "C" fn rate_estimate_qscale(
             out_num: 0,
         };
         let mut pict_type: ::core::ffi::c_int = (*h).sh.i_type;
-        let mut total_bits: crate::stdlib::int64_t = 8 as crate::stdlib::int64_t
+        let mut total_bits: crate::stdlib::int64_t = 8i64
             * ((*h).stat.i_frame_size
                 [crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int as usize]
                 + (*h).stat.i_frame_size
@@ -5286,7 +4825,7 @@ unsafe extern "C" fn rate_estimate_qscale(
             rce = *(*rcc).rce;
             if pict_type != rce.pict_type {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_ERROR_1,
                     b"slice=%c but 2pass stats say %c\n\0".as_ptr() as *const ::core::ffi::c_char,
                     slice_type_to_char[pict_type as usize] as ::core::ffi::c_int,
@@ -5295,48 +4834,33 @@ unsafe extern "C" fn rate_estimate_qscale(
             }
         }
         if pict_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int {
-            let mut i0: ::core::ffi::c_int =
-                ((*(*h).fref_nearest[0 as ::core::ffi::c_int as usize]).i_type
-                    == crate::x264_h::X264_TYPE_I
-                    || (*(*h).fref_nearest[0 as ::core::ffi::c_int as usize]).i_type
-                        == crate::x264_h::X264_TYPE_IDR
-                    || (*(*h).fref_nearest[0 as ::core::ffi::c_int as usize]).i_type
-                        == crate::x264_h::X264_TYPE_KEYFRAME) as ::core::ffi::c_int;
-            let mut i1: ::core::ffi::c_int =
-                ((*(*h).fref_nearest[1 as ::core::ffi::c_int as usize]).i_type
-                    == crate::x264_h::X264_TYPE_I
-                    || (*(*h).fref_nearest[1 as ::core::ffi::c_int as usize]).i_type
-                        == crate::x264_h::X264_TYPE_IDR
-                    || (*(*h).fref_nearest[1 as ::core::ffi::c_int as usize]).i_type
-                        == crate::x264_h::X264_TYPE_KEYFRAME) as ::core::ffi::c_int;
-            let mut dt0: ::core::ffi::c_int = crate::stdlib::abs(
-                (*(*h).fenc).i_poc - (*(*h).fref_nearest[0 as ::core::ffi::c_int as usize]).i_poc,
-            );
-            let mut dt1: ::core::ffi::c_int = crate::stdlib::abs(
-                (*(*h).fenc).i_poc - (*(*h).fref_nearest[1 as ::core::ffi::c_int as usize]).i_poc,
-            );
-            let mut q0: ::core::ffi::c_float =
-                (*(*h).fref_nearest[0 as ::core::ffi::c_int as usize]).f_qp_avg_rc;
-            let mut q1: ::core::ffi::c_float =
-                (*(*h).fref_nearest[1 as ::core::ffi::c_int as usize]).f_qp_avg_rc;
-            if (*(*h).fref_nearest[0 as ::core::ffi::c_int as usize]).i_type
-                == crate::x264_h::X264_TYPE_BREF
-            {
-                q0 = (q0 as ::core::ffi::c_double
-                    - (*rcc).pb_offset / 2 as ::core::ffi::c_int as ::core::ffi::c_double)
-                    as ::core::ffi::c_float;
+            let mut i0: ::core::ffi::c_int = ((*(*h).fref_nearest[0usize]).i_type
+                == crate::x264_h::X264_TYPE_I
+                || (*(*h).fref_nearest[0usize]).i_type == crate::x264_h::X264_TYPE_IDR
+                || (*(*h).fref_nearest[0usize]).i_type == crate::x264_h::X264_TYPE_KEYFRAME)
+                as ::core::ffi::c_int;
+            let mut i1: ::core::ffi::c_int = ((*(*h).fref_nearest[1usize]).i_type
+                == crate::x264_h::X264_TYPE_I
+                || (*(*h).fref_nearest[1usize]).i_type == crate::x264_h::X264_TYPE_IDR
+                || (*(*h).fref_nearest[1usize]).i_type == crate::x264_h::X264_TYPE_KEYFRAME)
+                as ::core::ffi::c_int;
+            let mut dt0: ::core::ffi::c_int =
+                crate::stdlib::abs((*(*h).fenc).i_poc - (*(*h).fref_nearest[0usize]).i_poc);
+            let mut dt1: ::core::ffi::c_int =
+                crate::stdlib::abs((*(*h).fenc).i_poc - (*(*h).fref_nearest[1usize]).i_poc);
+            let mut q0: ::core::ffi::c_float = (*(*h).fref_nearest[0usize]).f_qp_avg_rc;
+            let mut q1: ::core::ffi::c_float = (*(*h).fref_nearest[1usize]).f_qp_avg_rc;
+            if (*(*h).fref_nearest[0usize]).i_type == crate::x264_h::X264_TYPE_BREF {
+                q0 =
+                    (q0 as ::core::ffi::c_double - (*rcc).pb_offset / 2f64) as ::core::ffi::c_float;
             }
-            if (*(*h).fref_nearest[1 as ::core::ffi::c_int as usize]).i_type
-                == crate::x264_h::X264_TYPE_BREF
-            {
-                q1 = (q1 as ::core::ffi::c_double
-                    - (*rcc).pb_offset / 2 as ::core::ffi::c_int as ::core::ffi::c_double)
-                    as ::core::ffi::c_float;
+            if (*(*h).fref_nearest[1usize]).i_type == crate::x264_h::X264_TYPE_BREF {
+                q1 =
+                    (q1 as ::core::ffi::c_double - (*rcc).pb_offset / 2f64) as ::core::ffi::c_float;
             }
             if i0 != 0 && i1 != 0 {
-                q = (((q0 + q1) / 2 as ::core::ffi::c_int as ::core::ffi::c_float)
-                    as ::core::ffi::c_double
-                    + (*rcc).ip_offset) as ::core::ffi::c_float;
+                q = (((q0 + q1) / 2f32) as ::core::ffi::c_double + (*rcc).ip_offset)
+                    as ::core::ffi::c_float;
             } else if i0 != 0 {
                 q = q1;
             } else if i1 != 0 {
@@ -5346,9 +4870,7 @@ unsafe extern "C" fn rate_estimate_qscale(
                     / (dt0 + dt1) as ::core::ffi::c_float;
             }
             if (*(*h).fenc).b_kept_as_ref != 0 {
-                q = (q as ::core::ffi::c_double
-                    + (*rcc).pb_offset / 2 as ::core::ffi::c_int as ::core::ffi::c_double)
-                    as ::core::ffi::c_float;
+                q = (q as ::core::ffi::c_double + (*rcc).pb_offset / 2f64) as ::core::ffi::c_float;
             } else {
                 q = (q as ::core::ffi::c_double + (*rcc).pb_offset) as ::core::ffi::c_float;
             }
@@ -5360,11 +4882,8 @@ unsafe extern "C" fn rate_estimate_qscale(
                 (*rcc).frame_size_planned = predict_size(
                     (*rcc).pred_b_from_p,
                     q,
-                    (*(*h).fref[1 as ::core::ffi::c_int as usize][((*h).i_ref
-                        [1 as ::core::ffi::c_int as usize]
-                        - 1 as ::core::ffi::c_int)
-                        as usize])
-                        .i_satd as ::core::ffi::c_float,
+                    (*(*h).fref[1usize][((*h).i_ref[1usize] - 1i32) as usize]).i_satd
+                        as ::core::ffi::c_float,
                 ) as ::core::ffi::c_double;
             }
             if (*rcc).b_vbv != 0 {
@@ -5393,22 +4912,17 @@ unsafe extern "C" fn rate_estimate_qscale(
             );
             if (*rcc).b_vbv != 0 {
                 (*rcc).last_satd =
-                    crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(
-                        h as *mut crate::src::common::common::x264_t,
-                    );
+                    crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(h);
             }
             return q;
         } else {
-            let mut abr_buffer: ::core::ffi::c_double = 2 as ::core::ffi::c_int
-                as ::core::ffi::c_double
-                * (*rcc).rate_tolerance
-                * (*rcc).bitrate;
+            let mut abr_buffer: ::core::ffi::c_double =
+                2f64 * (*rcc).rate_tolerance * (*rcc).bitrate;
             let mut predicted_bits: ::core::ffi::c_double = total_bits as ::core::ffi::c_double;
-            if (*h).i_thread_frames > 1 as ::core::ffi::c_int {
+            if (*h).i_thread_frames > 1i32 {
                 let mut j: ::core::ffi::c_int =
-                    rcc.offset_from((*(*h).thread[0 as ::core::ffi::c_int as usize]).rc)
-                        as ::core::ffi::c_long as ::core::ffi::c_int;
-                let mut i: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+                    rcc.offset_from((*(*h).thread[0usize]).rc) as ::core::ffi::c_int;
+                let mut i: ::core::ffi::c_int = 1i32;
                 while i < (*h).i_thread_frames {
                     let mut t: *mut crate::src::common::common::x264_t =
                         (*h).thread[((j + i) % (*h).i_thread_frames) as usize];
@@ -5430,12 +4944,11 @@ unsafe extern "C" fn rate_estimate_qscale(
                 if (*rcc).num_entries > (*h).i_frame {
                     let mut final_bits: ::core::ffi::c_double = (**(*rcc)
                         .entry_out
-                        .offset(((*rcc).num_entries - 1 as ::core::ffi::c_int) as isize))
+                        .offset(((*rcc).num_entries - 1i32) as isize))
                     .expected_bits;
                     let mut video_pos: ::core::ffi::c_double = rce.expected_bits / final_bits;
                     let mut scale_factor: ::core::ffi::c_double = crate::stdlib::sqrt(
-                        (1 as ::core::ffi::c_int as ::core::ffi::c_double - video_pos)
-                            * (*rcc).num_entries as ::core::ffi::c_double,
+                        (1f64 - video_pos) * (*rcc).num_entries as ::core::ffi::c_double,
                     );
                     abr_buffer *= 0.5f64
                         * (if scale_factor > 0.5f64 {
@@ -5447,21 +4960,15 @@ unsafe extern "C" fn rate_estimate_qscale(
                 let mut diff: ::core::ffi::c_double = predicted_bits - rce.expected_bits;
                 q = rce.new_qscale as ::core::ffi::c_float;
                 q = (q as ::core::ffi::c_double
-                    / x264_clip3f(
-                        (abr_buffer - diff) / abr_buffer,
-                        0.5f64,
-                        2 as ::core::ffi::c_int as ::core::ffi::c_double,
-                    )) as ::core::ffi::c_float;
+                    / x264_clip3f((abr_buffer - diff) / abr_buffer, 0.5f64, 2f64))
+                    as ::core::ffi::c_float;
                 if (*h).i_frame as ::core::ffi::c_double >= (*rcc).fps
-                    && (*rcc).expected_bits_sum >= 1 as ::core::ffi::c_int as ::core::ffi::c_double
+                    && (*rcc).expected_bits_sum >= 1f64
                 {
                     let mut cur_time: ::core::ffi::c_double = (*h).i_frame as ::core::ffi::c_double
                         / (*rcc).num_entries as ::core::ffi::c_double;
-                    let mut w: ::core::ffi::c_double = x264_clip3f(
-                        cur_time * 100 as ::core::ffi::c_int as ::core::ffi::c_double,
-                        0.0f64,
-                        1.0f64,
-                    );
+                    let mut w: ::core::ffi::c_double =
+                        x264_clip3f(cur_time * 100f64, 0.0f64, 1.0f64);
                     q = (q as ::core::ffi::c_double
                         * crate::stdlib::pow(
                             total_bits as ::core::ffi::c_double / (*rcc).expected_bits_sum,
@@ -5476,10 +4983,9 @@ unsafe extern "C" fn rate_estimate_qscale(
                         (*rcc).buffer_fill + (*rcc).buffer_rate - expected_size;
                     let mut expected_fullness: ::core::ffi::c_double =
                         rce.expected_vbv / (*rcc).buffer_size;
-                    let mut qmax: ::core::ffi::c_double = q as ::core::ffi::c_double
-                        * (2 as ::core::ffi::c_int as ::core::ffi::c_double - expected_fullness);
-                    let mut size_constraint: ::core::ffi::c_double =
-                        1 as ::core::ffi::c_int as ::core::ffi::c_double + expected_fullness;
+                    let mut qmax: ::core::ffi::c_double =
+                        q as ::core::ffi::c_double * (2f64 - expected_fullness);
+                    let mut size_constraint: ::core::ffi::c_double = 1f64 + expected_fullness;
                     qmax = if qmax > rce.new_qscale {
                         qmax
                     } else {
@@ -5491,59 +4997,47 @@ unsafe extern "C" fn rate_estimate_qscale(
                     qmax = if qmax < lmax { qmax } else { lmax };
                     while expected_vbv < rce.expected_vbv / size_constraint
                         && (q as ::core::ffi::c_double) < qmax
-                        || expected_vbv < 0 as ::core::ffi::c_int as ::core::ffi::c_double
-                            && (q as ::core::ffi::c_double) < lmax
+                        || expected_vbv < 0f64 && (q as ::core::ffi::c_double) < lmax
                     {
                         q = (q as ::core::ffi::c_double * 1.05f64) as ::core::ffi::c_float;
                         expected_size = qscale2bits(&raw mut rce, q as ::core::ffi::c_double);
                         expected_vbv = (*rcc).buffer_fill + (*rcc).buffer_rate - expected_size;
                     }
                     (*rcc).last_satd =
-                        crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(
-                            h as *mut crate::src::common::common::x264_t,
-                        );
+                        crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(h);
                 }
                 q = x264_clip3f(q as ::core::ffi::c_double, lmin, lmax) as ::core::ffi::c_float;
             } else {
                 let mut wanted_bits: ::core::ffi::c_double = 0.;
-                let mut overflow: ::core::ffi::c_double =
-                    1 as ::core::ffi::c_int as ::core::ffi::c_double;
+                let mut overflow: ::core::ffi::c_double = 1f64;
                 (*rcc).last_satd =
-                    crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(
-                        h as *mut crate::src::common::common::x264_t,
-                    );
+                    crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(h);
                 (*rcc).short_term_cplxsum *= 0.5f64;
                 (*rcc).short_term_cplxcount *= 0.5f64;
                 (*rcc).short_term_cplxsum += (*rcc).last_satd as ::core::ffi::c_double
                     / (x264_clip3f(
                         (*(*h).fenc).f_duration as ::core::ffi::c_double,
                         (0.01f32
-                            / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
-                                + 1 as ::core::ffi::c_int)
+                            / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                                 as ::core::ffi::c_float)
                             as ::core::ffi::c_double,
                         (1.00f32
-                            / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
-                                + 1 as ::core::ffi::c_int)
+                            / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                                 as ::core::ffi::c_float)
                             as ::core::ffi::c_double,
                     ) / (0.04f32
-                        / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
-                            + 1 as ::core::ffi::c_int)
+                        / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                             as ::core::ffi::c_float)
                         as ::core::ffi::c_double);
                 (*rcc).short_term_cplxcount += 1.;
                 rce.tex_bits = (*rcc).last_satd;
                 rce.blurred_complexity = ((*rcc).short_term_cplxsum / (*rcc).short_term_cplxcount)
                     as ::core::ffi::c_float;
-                rce.mv_bits = 0 as ::core::ffi::c_int;
+                rce.mv_bits = 0i32;
                 rce.p_count = (*rcc).nmb;
-                rce.i_count = 0 as ::core::ffi::c_int;
-                rce.s_count = 0 as ::core::ffi::c_int;
-                rce.qscale = 1 as ::core::ffi::c_int as ::core::ffi::c_double;
+                rce.i_count = 0i32;
+                rce.s_count = 0i32;
+                rce.qscale = 1f64;
                 rce.pict_type = pict_type;
                 rce.i_duration = (*(*h).fenc).i_duration;
                 if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CRF {
@@ -5564,32 +5058,30 @@ unsafe extern "C" fn rate_estimate_qscale(
                         let mut i_frame_done: ::core::ffi::c_int = (*h).i_frame;
                         let mut time_done: ::core::ffi::c_double =
                             i_frame_done as ::core::ffi::c_double / (*rcc).fps;
-                        if (*h).param.b_vfr_input != 0 && i_frame_done > 0 as ::core::ffi::c_int {
+                        if (*h).param.b_vfr_input != 0 && i_frame_done > 0i32 {
                             time_done = ((*(*h).fenc).i_reordered_pts - (*h).i_reordered_pts_delay)
                                 as ::core::ffi::c_double
                                 * (*h).param.i_timebase_num as ::core::ffi::c_double
                                 / (*h).param.i_timebase_den as ::core::ffi::c_double;
                         }
                         wanted_bits = time_done * (*rcc).bitrate;
-                        if wanted_bits > 0 as ::core::ffi::c_int as ::core::ffi::c_double {
-                            abr_buffer *= if 1 as ::core::ffi::c_int as ::core::ffi::c_double
-                                > crate::stdlib::sqrt(time_done)
-                            {
-                                1 as ::core::ffi::c_int as ::core::ffi::c_double
+                        if wanted_bits > 0f64 {
+                            abr_buffer *= if 1f64 > crate::stdlib::sqrt(time_done) {
+                                1f64
                             } else {
                                 crate::stdlib::sqrt(time_done)
                             };
                             overflow = x264_clip3f(
                                 1.0f64 + (predicted_bits - wanted_bits) / abr_buffer,
                                 0.5f64,
-                                2 as ::core::ffi::c_int as ::core::ffi::c_double,
+                                2f64,
                             );
                             q = (q as ::core::ffi::c_double * overflow) as ::core::ffi::c_float;
                         }
                     }
                 }
                 if pict_type == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
-                    && (*h).param.i_keyint_max > 1 as ::core::ffi::c_int
+                    && (*h).param.i_keyint_max > 1i32
                     && (*rcc).last_non_b_pict_type
                         != crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int
                 {
@@ -5597,13 +5089,13 @@ unsafe extern "C" fn rate_estimate_qscale(
                         ((*rcc).accum_p_qp / (*rcc).accum_p_norm) as ::core::ffi::c_float,
                     );
                     q /= (*h).param.rc.f_ip_factor;
-                } else if (*h).i_frame > 0 as ::core::ffi::c_int {
+                } else if (*h).i_frame > 0i32 {
                     if (*h).param.rc.i_rc_method != crate::x264_h::X264_RC_CRF {
                         let mut lmin_0: ::core::ffi::c_double =
                             (*rcc).last_qscale_for[pict_type as usize] / (*rcc).lstep;
                         let mut lmax_0: ::core::ffi::c_double =
                             (*rcc).last_qscale_for[pict_type as usize] * (*rcc).lstep;
-                        if overflow > 1.1f64 && (*h).i_frame > 3 as ::core::ffi::c_int {
+                        if overflow > 1.1f64 && (*h).i_frame > 3i32 {
                             lmax_0 *= (*rcc).lstep;
                         } else if overflow < 0.9f64 {
                             lmin_0 /= (*rcc).lstep;
@@ -5612,13 +5104,13 @@ unsafe extern "C" fn rate_estimate_qscale(
                             as ::core::ffi::c_float;
                     }
                 } else if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CRF
-                    && (*rcc).qcompress != 1 as ::core::ffi::c_int as ::core::ffi::c_double
+                    && (*rcc).qcompress != 1f64
                 {
                     q = qp2qscale(
                         (if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CRF {
                             (*h).param.rc.f_rf_constant
                         } else {
-                            24 as ::core::ffi::c_int as ::core::ffi::c_float
+                            24f32
                         }) + crate::src::common::common::QP_BD_OFFSET as ::core::ffi::c_float,
                     ) / (*h).param.rc.f_ip_factor;
                 }
@@ -5627,9 +5119,7 @@ unsafe extern "C" fn rate_estimate_qscale(
             }
             (*rcc).last_qscale = q as ::core::ffi::c_double;
             (*rcc).last_qscale_for[pict_type as usize] = (*rcc).last_qscale;
-            if !((*rcc).b_2pass != 0 && (*rcc).b_vbv == 0)
-                && (*(*h).fenc).i_frame == 0 as ::core::ffi::c_int
-            {
+            if !((*rcc).b_2pass != 0 && (*rcc).b_vbv == 0) && (*(*h).fenc).i_frame == 0i32 {
                 (*rcc).last_qscale_for
                     [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize] =
                     (q * (*h).param.rc.f_ip_factor) as ::core::ffi::c_double;
@@ -5638,7 +5128,7 @@ unsafe extern "C" fn rate_estimate_qscale(
                 (*rcc).frame_size_planned = qscale2bits(&raw mut rce, q as ::core::ffi::c_double);
             } else {
                 (*rcc).frame_size_planned = predict_size(
-                    (*rcc).pred.offset((*h).sh.i_type as isize) as *mut predictor_t,
+                    (*rcc).pred.offset((*h).sh.i_type as isize),
                     q,
                     (*rcc).last_satd as ::core::ffi::c_float,
                 ) as ::core::ffi::c_double;
@@ -5680,14 +5170,14 @@ unsafe extern "C" fn rate_estimate_qscale(
 }
 unsafe extern "C" fn threads_normalize_predictors(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
-        let mut totalsize: ::core::ffi::c_double = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut totalsize: ::core::ffi::c_double = 0f64;
+        let mut i: ::core::ffi::c_int = 0i32;
         while i < (*h).param.i_threads {
             totalsize += (*(*(*h).thread[i as usize]).rc).slice_size_planned;
             i += 1;
         }
         let mut factor: ::core::ffi::c_double = (*(*h).rc).frame_size_planned / totalsize;
-        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i_0: ::core::ffi::c_int = 0i32;
         while i_0 < (*h).param.i_threads {
             (*(*(*h).thread[i_0 as usize]).rc).slice_size_planned *= factor;
             i_0 += 1;
@@ -5702,60 +5192,56 @@ pub unsafe extern "C" fn x264_8_threads_distribute_ratecontrol(
         let mut row: ::core::ffi::c_int = 0;
         let mut rc: *mut x264_ratecontrol_t = (*h).rc;
         let mut qscale: ::core::ffi::c_float = qp2qscale((*rc).qpm);
-        if (*h).i_frame == 0 as ::core::ffi::c_int {
-            let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        if (*h).i_frame == 0i32 {
+            let mut i: ::core::ffi::c_int = 0i32;
             while i < (*h).param.i_threads {
                 let mut t: *mut crate::src::common::common::x264_t = (*h).thread[i as usize];
                 if t != h {
                     crate::stdlib::memcpy(
-                        &raw mut (*(*t).rc).row_preds as *mut [predictor_t; 2]
-                            as *mut ::core::ffi::c_void,
-                        &raw mut (*rc).row_preds as *mut [predictor_t; 2]
-                            as *const ::core::ffi::c_void,
-                        ::core::mem::size_of::<[[predictor_t; 2]; 3]>()
-                            as crate::__stddef_size_t_h::size_t,
+                        &raw mut (*(*t).rc).row_preds as *mut ::core::ffi::c_void,
+                        &raw mut (*rc).row_preds as *const ::core::ffi::c_void,
+                        ::core::mem::size_of::<[[predictor_t; 2]; 3]>(),
                     );
                 }
                 i += 1;
             }
         }
-        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i_0: ::core::ffi::c_int = 0i32;
         while i_0 < (*h).param.i_threads {
             let mut t_0: *mut crate::src::common::common::x264_t = (*h).thread[i_0 as usize];
             if t_0 != h {
                 crate::stdlib::memcpy(
                     (*t_0).rc as *mut ::core::ffi::c_void,
                     rc as *const ::core::ffi::c_void,
-                    576 as crate::__stddef_size_t_h::size_t,
+                    576usize,
                 );
             }
             (*(*t_0).rc).row_pred =
                 &raw mut *(&raw mut (*(*t_0).rc).row_preds as *mut [predictor_t; 2])
                     .offset((*h).sh.i_type as isize) as *mut predictor_t;
             if (*rc).b_vbv != 0 && (*rc).frame_size_planned != 0. {
-                let mut size: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut size: ::core::ffi::c_int = 0i32;
                 row = (*t_0).i_threadslice_start;
                 while row < (*t_0).i_threadslice_end {
                     size += *(*(*h).fdec).i_row_satd.offset(row as isize);
                     row += 1;
                 }
                 (*(*t_0).rc).slice_size_planned = predict_size(
-                    (*rc).pred.offset(
-                        ((*h).sh.i_type + (i_0 + 1 as ::core::ffi::c_int) * 5 as ::core::ffi::c_int)
-                            as isize,
-                    ) as *mut predictor_t,
+                    (*rc)
+                        .pred
+                        .offset(((*h).sh.i_type + (i_0 + 1i32) * 5i32) as isize),
                     qscale,
                     size as ::core::ffi::c_float,
                 ) as ::core::ffi::c_double;
             } else {
-                (*(*t_0).rc).slice_size_planned = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
+                (*(*t_0).rc).slice_size_planned = 0f64;
             }
             i_0 += 1;
         }
         if (*rc).b_vbv != 0 && (*rc).frame_size_planned != 0. {
             threads_normalize_predictors(h);
             if (*rc).single_frame_vbv != 0 {
-                let mut i_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut i_1: ::core::ffi::c_int = 0i32;
                 while i_1 < (*h).param.i_threads {
                     let mut t_1: *mut crate::src::common::common::x264_t =
                         (*h).thread[i_1 as usize];
@@ -5766,15 +5252,14 @@ pub unsafe extern "C" fn x264_8_threads_distribute_ratecontrol(
                         0.25,
                     )
                         as ::core::ffi::c_float;
-                    (*(*t_1).rc).slice_size_planned +=
-                        (2 as ::core::ffi::c_int as ::core::ffi::c_float * max_frame_error)
-                            as ::core::ffi::c_double
-                            * (*rc).frame_size_planned;
+                    (*(*t_1).rc).slice_size_planned += (2f32 * max_frame_error)
+                        as ::core::ffi::c_double
+                        * (*rc).frame_size_planned;
                     i_1 += 1;
                 }
                 threads_normalize_predictors(h);
             }
-            let mut i_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut i_2: ::core::ffi::c_int = 0i32;
             while i_2 < (*h).param.i_threads {
                 ::core::ptr::write_volatile(
                     &mut (*(*(*h).thread[i_2 as usize]).rc).frame_size_estimated
@@ -5792,12 +5277,12 @@ pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
 ) {
     unsafe {
         let mut rc: *mut x264_ratecontrol_t = (*h).rc;
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0i32;
         while i < (*h).param.i_threads {
             let mut t: *mut crate::src::common::common::x264_t = (*h).thread[i as usize];
             let mut rct: *mut x264_ratecontrol_t = (*(*h).thread[i as usize]).rc;
             if (*h).param.rc.i_vbv_buffer_size != 0 {
-                let mut size: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                let mut size: ::core::ffi::c_int = 0i32;
                 let mut row: ::core::ffi::c_int = (*t).i_threadslice_start;
                 while row < (*t).i_threadslice_end {
                     size += *(*(*h).fdec).i_row_satd.offset(row as isize);
@@ -5809,10 +5294,9 @@ pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
                 let mut mb_count: ::core::ffi::c_int =
                     ((*t).i_threadslice_end - (*t).i_threadslice_start) * (*h).mb.i_mb_width;
                 update_predictor(
-                    (*rc).pred.offset(
-                        ((*h).sh.i_type + (i + 1 as ::core::ffi::c_int) * 5 as ::core::ffi::c_int)
-                            as isize,
-                    ) as *mut predictor_t,
+                    (*rc)
+                        .pred
+                        .offset(((*h).sh.i_type + (i + 1i32) * 5i32) as isize),
                     qp2qscale((*rct).qpa_rc / mb_count as ::core::ffi::c_float),
                     size as ::core::ffi::c_float,
                     bits as ::core::ffi::c_float,
@@ -5837,99 +5321,97 @@ pub unsafe extern "C" fn x264_8_thread_sync_ratecontrol(
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).accum_p_qp as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).accum_p_qp as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).accum_p_norm as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).accum_p_norm as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).last_satd as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).last_satd as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_int>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_int>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).last_rceq as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).last_rceq as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).last_qscale_for as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).last_qscale_for as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<[::core::ffi::c_double; 3]>()
-                    as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<[::core::ffi::c_double; 3]>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).last_non_b_pict_type as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).last_non_b_pict_type as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_int>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_int>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).short_term_cplxsum as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).short_term_cplxsum as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).short_term_cplxcount as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).short_term_cplxcount as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).bframes as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).bframes as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_int>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_int>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).prev_zone as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).prev_zone as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<*mut crate::x264_h::x264_zone_t>()
-                    as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<*mut crate::x264_h::x264_zone_t>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).mbtree.qpbuf_pos as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).mbtree.qpbuf_pos as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_int>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_int>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).bitrate as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).bitrate as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).buffer_size as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).buffer_size as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).buffer_rate as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).buffer_rate as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).vbv_max_rate as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).vbv_max_rate as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).single_frame_vbv as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).single_frame_vbv as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_int>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_int>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).cbr_decay as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).cbr_decay as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).rate_factor_constant as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).rate_factor_constant as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_double>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_double>(),
             );
             crate::stdlib::memcpy(
                 &raw mut (*(*cur).rc).rate_factor_max_increment as *mut ::core::ffi::c_void,
                 &raw mut (*(*prev).rc).rate_factor_max_increment as *const ::core::ffi::c_void,
-                ::core::mem::size_of::<::core::ffi::c_float>() as crate::__stddef_size_t_h::size_t,
+                ::core::mem::size_of::<::core::ffi::c_float>(),
             );
         }
         if cur != next {
@@ -5958,11 +5440,10 @@ unsafe extern "C" fn find_underflow(
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
         let buffer_min: ::core::ffi::c_double = 0.1 * (*rcc).buffer_size;
         let buffer_max: ::core::ffi::c_double = 0.9 * (*rcc).buffer_size;
-        let mut fill: ::core::ffi::c_double =
-            *fills.offset((*t0 - 1 as ::core::ffi::c_int) as isize);
+        let mut fill: ::core::ffi::c_double = *fills.offset((*t0 - 1i32) as isize);
         let mut parity: ::core::ffi::c_double = if over != 0 { 1.0 } else { -1.0 };
-        let mut start: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
-        let mut end: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
+        let mut start: ::core::ffi::c_int = -(1i32);
+        let mut end: ::core::ffi::c_int = -(1i32);
         let mut i: ::core::ffi::c_int = *t0;
         while i < (*rcc).num_entries {
             fill += ((**(*rcc).entry_out.offset(i as isize)).i_cpb_duration
@@ -5979,26 +5460,21 @@ unsafe extern "C" fn find_underflow(
                     (**(*rcc).entry_out.offset(i as isize)).new_qscale,
                 ))
                 * parity;
-            fill = x264_clip3f(
-                fill,
-                0 as ::core::ffi::c_int as ::core::ffi::c_double,
-                (*rcc).buffer_size,
-            );
+            fill = x264_clip3f(fill, 0f64, (*rcc).buffer_size);
             *fills.offset(i as isize) = fill;
-            if fill <= buffer_min || i == 0 as ::core::ffi::c_int {
-                if end >= 0 as ::core::ffi::c_int {
+            if fill <= buffer_min || i == 0i32 {
+                if end >= 0i32 {
                     break;
                 }
                 start = i;
-            } else if fill >= buffer_max && start >= 0 as ::core::ffi::c_int {
+            } else if fill >= buffer_max && start >= 0i32 {
                 end = i;
             }
             i += 1;
         }
         *t0 = start;
         *t1 = end;
-        return (start >= 0 as ::core::ffi::c_int && end >= 0 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        return (start >= 0i32 && end >= 0i32) as ::core::ffi::c_int;
     }
 }
 unsafe extern "C" fn fix_underflow(
@@ -6013,8 +5489,8 @@ unsafe extern "C" fn fix_underflow(
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
         let mut qscale_orig: ::core::ffi::c_double = 0.;
         let mut qscale_new: ::core::ffi::c_double = 0.;
-        let mut adjusted: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-        if t0 > 0 as ::core::ffi::c_int {
+        let mut adjusted: ::core::ffi::c_int = 0i32;
+        if t0 > 0i32 {
             t0 += 1;
         }
         let mut i: ::core::ffi::c_int = t0;
@@ -6035,9 +5511,8 @@ unsafe extern "C" fn count_expected_bits(
 ) -> ::core::ffi::c_double {
     unsafe {
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
-        let mut expected_bits: ::core::ffi::c_double =
-            0 as ::core::ffi::c_int as ::core::ffi::c_double;
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut expected_bits: ::core::ffi::c_double = 0f64;
+        let mut i: ::core::ffi::c_int = 0i32;
         while i < (*rcc).num_entries {
             let mut rce: *mut ratecontrol_entry_t = *(*rcc).entry_out.offset(i as isize);
             (*rce).expected_bits = expected_bits;
@@ -6053,26 +5528,25 @@ unsafe extern "C" fn vbv_pass2(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
-        let mut expected_bits: ::core::ffi::c_double =
-            0 as ::core::ffi::c_int as ::core::ffi::c_double;
+        let mut expected_bits: ::core::ffi::c_double = 0f64;
         let mut adjustment: ::core::ffi::c_double = 0.;
-        let mut prev_bits: ::core::ffi::c_double = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
+        let mut prev_bits: ::core::ffi::c_double = 0f64;
         let mut t0: ::core::ffi::c_int = 0;
         let mut t1: ::core::ffi::c_int = 0;
         let mut qscale_min: ::core::ffi::c_double =
             qp2qscale((*h).param.rc.i_qp_min as ::core::ffi::c_float) as ::core::ffi::c_double;
         let mut qscale_max: ::core::ffi::c_double =
             qp2qscale((*h).param.rc.i_qp_max as ::core::ffi::c_float) as ::core::ffi::c_double;
-        let mut _iterations: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut _iterations: ::core::ffi::c_int = 0i32;
         let mut adj_min: ::core::ffi::c_int = 0;
         let mut adj_max: ::core::ffi::c_int = 0;
         let mut fills: *mut ::core::ffi::c_double = crate::src::common::base::x264_malloc(
-            (((*rcc).num_entries + 1 as ::core::ffi::c_int) as usize)
-                .wrapping_mul(::core::mem::size_of::<::core::ffi::c_double>() as usize)
+            (((*rcc).num_entries + 1i32) as usize)
+                .wrapping_mul(::core::mem::size_of::<::core::ffi::c_double>())
                 as crate::stdlib::int64_t,
         ) as *mut ::core::ffi::c_double;
         if fills.is_null() {
-            return -(1 as ::core::ffi::c_int);
+            return -(1i32);
         } else {
             fills = fills.offset(1);
             loop {
@@ -6093,30 +5567,22 @@ unsafe extern "C" fn vbv_pass2(
                     } else {
                         0.9f64
                     };
-                    *fills.offset(-(1 as ::core::ffi::c_int) as isize) = (*rcc).buffer_size
+                    *fills.offset(-1isize) = (*rcc).buffer_size
                         * (*h).param.rc.f_vbv_buffer_init as ::core::ffi::c_double;
-                    t0 = 0 as ::core::ffi::c_int;
-                    adj_min = 1 as ::core::ffi::c_int;
+                    t0 = 0i32;
+                    adj_min = 1i32;
                     while adj_min != 0
-                        && find_underflow(
-                            h,
-                            fills,
-                            &raw mut t0,
-                            &raw mut t1,
-                            1 as ::core::ffi::c_int,
-                        ) != 0
+                        && find_underflow(h, fills, &raw mut t0, &raw mut t1, 1i32) != 0
                     {
                         adj_min = fix_underflow(h, t0, t1, adjustment, qscale_min, qscale_max);
                         t0 = t1;
                     }
                 }
-                *fills.offset(-(1 as ::core::ffi::c_int) as isize) = (*rcc).buffer_size
+                *fills.offset(-1isize) = (*rcc).buffer_size
                     * (1.0f64 - (*h).param.rc.f_vbv_buffer_init as ::core::ffi::c_double);
-                t0 = 0 as ::core::ffi::c_int;
-                adj_max = 1 as ::core::ffi::c_int;
-                while adj_max != 0
-                    && find_underflow(h, fills, &raw mut t0, &raw mut t1, 0 as ::core::ffi::c_int)
-                        != 0
+                t0 = 0i32;
+                adj_max = 1i32;
+                while adj_max != 0 && find_underflow(h, fills, &raw mut t0, &raw mut t1, 0i32) != 0
                 {
                     adj_max = fix_underflow(h, t0, t1, 1.001f64, qscale_min, qscale_max);
                 }
@@ -6130,22 +5596,20 @@ unsafe extern "C" fn vbv_pass2(
             }
             if adj_max == 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"vbv-maxrate issue, qpmax or vbv-maxrate too low\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
                 );
             }
-            let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut i: ::core::ffi::c_int = 0i32;
             while i < (*rcc).num_entries {
                 (**(*rcc).entry_out.offset(i as isize)).expected_vbv =
                     (*rcc).buffer_size - *fills.offset(i as isize);
                 i += 1;
             }
-            crate::src::common::base::x264_free(
-                fills.offset(-(1 as ::core::ffi::c_int as isize)) as *mut ::core::ffi::c_void
-            );
-            return 0 as ::core::ffi::c_int;
+            crate::src::common::base::x264_free(fills.offset(-(1isize)) as *mut ::core::ffi::c_void);
+            return 0i32;
         };
     }
 }
@@ -6155,7 +5619,7 @@ unsafe extern "C" fn init_pass2(
     unsafe {
         let mut c2rust_current_block: u64;
         let mut rcc: *mut x264_ratecontrol_t = (*h).rc;
-        let mut all_const_bits: crate::stdlib::uint64_t = 0 as crate::stdlib::uint64_t;
+        let mut all_const_bits: crate::stdlib::uint64_t = 0u64;
         let mut timescale: ::core::ffi::c_double =
             (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                 .vui
@@ -6163,8 +5627,8 @@ unsafe extern "C" fn init_pass2(
                 / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .i_time_scale as ::core::ffi::c_double;
-        let mut duration: ::core::ffi::c_double = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut duration: ::core::ffi::c_double = 0f64;
+        let mut i: ::core::ffi::c_int = 0i32;
         while i < (*rcc).num_entries {
             duration += (*(*rcc).entry.offset(i as isize)).i_duration as ::core::ffi::c_double;
             i += 1;
@@ -6178,29 +5642,26 @@ unsafe extern "C" fn init_pass2(
         let mut qblur: ::core::ffi::c_double = (*h).param.rc.f_qblur as ::core::ffi::c_double;
         let mut cplxblur: ::core::ffi::c_double =
             (*h).param.rc.f_complexity_blur as ::core::ffi::c_double;
-        let filter_size: ::core::ffi::c_int =
-            (qblur * 4 as ::core::ffi::c_int as ::core::ffi::c_double) as ::core::ffi::c_int
-                | 1 as ::core::ffi::c_int;
+        let filter_size: ::core::ffi::c_int = (qblur * 4f64) as ::core::ffi::c_int | 1i32;
         let mut expected_bits: ::core::ffi::c_double = 0.;
         let mut blurred_qscale: *mut ::core::ffi::c_double =
             ::core::ptr::null_mut::<::core::ffi::c_double>();
         let mut base_cplx: ::core::ffi::c_double = ((*h).mb.i_mb_count
             * (if (*h).param.i_bframe != 0 {
-                120 as ::core::ffi::c_int
+                120i32
             } else {
-                80 as ::core::ffi::c_int
+                80i32
             })) as ::core::ffi::c_double;
-        let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i_0: ::core::ffi::c_int = 0i32;
         while i_0 < (*rcc).num_entries {
-            let mut rce: *mut ratecontrol_entry_t =
-                (*rcc).entry.offset(i_0 as isize) as *mut ratecontrol_entry_t;
+            let mut rce: *mut ratecontrol_entry_t = (*rcc).entry.offset(i_0 as isize);
             all_const_bits =
                 all_const_bits.wrapping_add((*rce).misc_bits as crate::stdlib::uint64_t);
             i_0 += 1;
         }
         if all_available_bits < all_const_bits {
             crate::src::common::common::x264_8_log(
-                h as *mut crate::src::common::common::x264_t,
+                h,
                 crate::x264_h::X264_LOG_ERROR_1,
                 b"requested bitrate is too low. estimated minimum is %d kbps\n\0".as_ptr()
                     as *const ::core::ffi::c_char,
@@ -6208,48 +5669,36 @@ unsafe extern "C" fn init_pass2(
                     / ((*rcc).num_entries as ::core::ffi::c_double * 1000.0f64))
                     as ::core::ffi::c_int,
             );
-            return -(1 as ::core::ffi::c_int);
+            return -(1i32);
         }
-        let mut i_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i_1: ::core::ffi::c_int = 0i32;
         while i_1 < (*rcc).num_entries {
-            let mut rce_0: *mut ratecontrol_entry_t =
-                (*rcc).entry.offset(i_1 as isize) as *mut ratecontrol_entry_t;
-            let mut weight_sum: ::core::ffi::c_double =
-                0 as ::core::ffi::c_int as ::core::ffi::c_double;
-            let mut cplx_sum: ::core::ffi::c_double =
-                0 as ::core::ffi::c_int as ::core::ffi::c_double;
+            let mut rce_0: *mut ratecontrol_entry_t = (*rcc).entry.offset(i_1 as isize);
+            let mut weight_sum: ::core::ffi::c_double = 0f64;
+            let mut cplx_sum: ::core::ffi::c_double = 0f64;
             let mut weight: ::core::ffi::c_double = 1.0;
             let mut gaussian_weight: ::core::ffi::c_double = 0.;
-            let mut j: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-            while (j as ::core::ffi::c_double)
-                < cplxblur * 2 as ::core::ffi::c_int as ::core::ffi::c_double
-                && j < (*rcc).num_entries - i_1
-            {
-                let mut rcj: *mut ratecontrol_entry_t =
-                    (*rcc).entry.offset((i_1 + j) as isize) as *mut ratecontrol_entry_t;
+            let mut j: ::core::ffi::c_int = 1i32;
+            while (j as ::core::ffi::c_double) < cplxblur * 2f64 && j < (*rcc).num_entries - i_1 {
+                let mut rcj: *mut ratecontrol_entry_t = (*rcc).entry.offset((i_1 + j) as isize);
                 let mut frame_duration: ::core::ffi::c_double = x264_clip3f(
                     (*rcj).i_duration as ::core::ffi::c_double * timescale,
                     (0.01
-                        / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
-                            + 1 as ::core::ffi::c_int)
+                        / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                             as ::core::ffi::c_float) as ::core::ffi::c_double,
                     (1.00
-                        / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
-                            + 1 as ::core::ffi::c_int)
+                        / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                             as ::core::ffi::c_float) as ::core::ffi::c_double,
                 ) / (0.04
-                    / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
-                        + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
+                    / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
+                        as ::core::ffi::c_float)
                     as ::core::ffi::c_double;
-                weight *= 1 as ::core::ffi::c_int as ::core::ffi::c_double
+                weight *= 1f64
                     - crate::stdlib::pow(
                         ((*rcj).i_count as ::core::ffi::c_float
                             / (*rcc).nmb as ::core::ffi::c_float)
                             as ::core::ffi::c_double,
-                        2 as ::core::ffi::c_int as ::core::ffi::c_double,
+                        2f64,
                     );
                 if weight < 0.0001 {
                     break;
@@ -6258,49 +5707,38 @@ unsafe extern "C" fn init_pass2(
                     weight * crate::stdlib::exp((-j * j) as ::core::ffi::c_double / 200.0);
                 weight_sum += gaussian_weight;
                 cplx_sum += gaussian_weight
-                    * (qscale2bits(rcj, 1 as ::core::ffi::c_int as ::core::ffi::c_double)
-                        - (*rcj).misc_bits as ::core::ffi::c_double)
+                    * (qscale2bits(rcj, 1f64) - (*rcj).misc_bits as ::core::ffi::c_double)
                     / frame_duration;
                 j += 1;
             }
             weight = 1.0;
-            let mut j_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-            while j_0 as ::core::ffi::c_double
-                <= cplxblur * 2 as ::core::ffi::c_int as ::core::ffi::c_double
-                && j_0 <= i_1
-            {
-                let mut rcj_0: *mut ratecontrol_entry_t =
-                    (*rcc).entry.offset((i_1 - j_0) as isize) as *mut ratecontrol_entry_t;
+            let mut j_0: ::core::ffi::c_int = 0i32;
+            while j_0 as ::core::ffi::c_double <= cplxblur * 2f64 && j_0 <= i_1 {
+                let mut rcj_0: *mut ratecontrol_entry_t = (*rcc).entry.offset((i_1 - j_0) as isize);
                 let mut frame_duration_0: ::core::ffi::c_double = x264_clip3f(
                     (*rcj_0).i_duration as ::core::ffi::c_double * timescale,
                     (0.01
-                        / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
-                            + 1 as ::core::ffi::c_int)
+                        / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                             as ::core::ffi::c_float) as ::core::ffi::c_double,
                     (1.00
-                        / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
-                            + 1 as ::core::ffi::c_int)
+                        / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
                             as ::core::ffi::c_float) as ::core::ffi::c_double,
                 ) / (0.04
-                    / (((*h).param.i_frame_packing == 5 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
-                        + 1 as ::core::ffi::c_int) as ::core::ffi::c_float)
+                    / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
+                        as ::core::ffi::c_float)
                     as ::core::ffi::c_double;
                 gaussian_weight =
                     weight * crate::stdlib::exp((-j_0 * j_0) as ::core::ffi::c_double / 200.0);
                 weight_sum += gaussian_weight;
                 cplx_sum += gaussian_weight
-                    * (qscale2bits(rcj_0, 1 as ::core::ffi::c_int as ::core::ffi::c_double)
-                        - (*rcj_0).misc_bits as ::core::ffi::c_double)
+                    * (qscale2bits(rcj_0, 1f64) - (*rcj_0).misc_bits as ::core::ffi::c_double)
                     / frame_duration_0;
-                weight *= 1 as ::core::ffi::c_int as ::core::ffi::c_double
+                weight *= 1f64
                     - crate::stdlib::pow(
                         ((*rcj_0).i_count as ::core::ffi::c_float
                             / (*rcc).nmb as ::core::ffi::c_float)
                             as ::core::ffi::c_double,
-                        2 as ::core::ffi::c_int as ::core::ffi::c_double,
+                        2f64,
                     );
                 if weight < 0.0001 {
                     break;
@@ -6311,13 +5749,13 @@ unsafe extern "C" fn init_pass2(
             i_1 += 1;
         }
         let mut qscale: *mut ::core::ffi::c_double = crate::src::common::base::x264_malloc(
-            (::core::mem::size_of::<::core::ffi::c_double>() as usize)
+            (::core::mem::size_of::<::core::ffi::c_double>())
                 .wrapping_mul((*rcc).num_entries as usize) as crate::stdlib::int64_t,
         ) as *mut ::core::ffi::c_double;
         if !qscale.is_null() {
-            if filter_size > 1 as ::core::ffi::c_int {
+            if filter_size > 1i32 {
                 blurred_qscale = crate::src::common::base::x264_malloc(
-                    (::core::mem::size_of::<::core::ffi::c_double>() as usize)
+                    (::core::mem::size_of::<::core::ffi::c_double>())
                         .wrapping_mul((*rcc).num_entries as usize)
                         as crate::stdlib::int64_t,
                 ) as *mut ::core::ffi::c_double;
@@ -6333,73 +5771,58 @@ unsafe extern "C" fn init_pass2(
             match c2rust_current_block {
                 13029897179669627124 => {}
                 _ => {
-                    expected_bits = 1 as ::core::ffi::c_int as ::core::ffi::c_double;
-                    let mut i_2: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                    expected_bits = 1f64;
+                    let mut i_2: ::core::ffi::c_int = 0i32;
                     while i_2 < (*rcc).num_entries {
-                        let mut q: ::core::ffi::c_double = get_qscale(
-                            h,
-                            (*rcc).entry.offset(i_2 as isize) as *mut ratecontrol_entry_t,
-                            1.0,
-                            i_2,
-                        );
-                        expected_bits += qscale2bits(
-                            (*rcc).entry.offset(i_2 as isize) as *mut ratecontrol_entry_t,
-                            q,
-                        );
+                        let mut q: ::core::ffi::c_double =
+                            get_qscale(h, (*rcc).entry.offset(i_2 as isize), 1.0, i_2);
+                        expected_bits += qscale2bits((*rcc).entry.offset(i_2 as isize), q);
                         (*rcc).last_qscale_for
                             [(*(*rcc).entry.offset(i_2 as isize)).pict_type as usize] = q;
                         i_2 += 1;
                     }
                     step_mult = all_available_bits as ::core::ffi::c_double / expected_bits;
-                    rate_factor = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
+                    rate_factor = 0f64;
                     let mut step: ::core::ffi::c_double = 1E4 * step_mult;
                     while step > 1E-7 * step_mult {
-                        expected_bits = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
+                        expected_bits = 0f64;
                         rate_factor += step;
-                        (*rcc).last_non_b_pict_type = -(1 as ::core::ffi::c_int);
-                        (*rcc).last_accum_p_norm = 1 as ::core::ffi::c_int as ::core::ffi::c_double;
-                        (*rcc).accum_p_norm = 0 as ::core::ffi::c_int as ::core::ffi::c_double;
-                        (*rcc).last_qscale_for[2 as ::core::ffi::c_int as usize] =
-                            crate::stdlib::pow(
-                                base_cplx,
-                                1 as ::core::ffi::c_int as ::core::ffi::c_double - (*rcc).qcompress,
-                            ) / rate_factor;
-                        (*rcc).last_qscale_for[1 as ::core::ffi::c_int as usize] =
-                            (*rcc).last_qscale_for[2 as ::core::ffi::c_int as usize];
-                        (*rcc).last_qscale_for[0 as ::core::ffi::c_int as usize] =
-                            (*rcc).last_qscale_for[1 as ::core::ffi::c_int as usize];
-                        let mut i_3: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        (*rcc).last_non_b_pict_type = -(1i32);
+                        (*rcc).last_accum_p_norm = 1f64;
+                        (*rcc).accum_p_norm = 0f64;
+                        (*rcc).last_qscale_for[2usize] =
+                            crate::stdlib::pow(base_cplx, 1f64 - (*rcc).qcompress) / rate_factor;
+                        (*rcc).last_qscale_for[1usize] = (*rcc).last_qscale_for[2usize];
+                        (*rcc).last_qscale_for[0usize] = (*rcc).last_qscale_for[1usize];
+                        let mut i_3: ::core::ffi::c_int = 0i32;
                         while i_3 < (*rcc).num_entries {
                             *qscale.offset(i_3 as isize) = get_qscale(
                                 h,
-                                (*rcc).entry.offset(i_3 as isize) as *mut ratecontrol_entry_t,
+                                (*rcc).entry.offset(i_3 as isize),
                                 rate_factor,
-                                -(1 as ::core::ffi::c_int),
+                                -(1i32),
                             );
                             (*rcc).last_qscale_for
                                 [(*(*rcc).entry.offset(i_3 as isize)).pict_type as usize] =
                                 *qscale.offset(i_3 as isize);
                             i_3 += 1;
                         }
-                        let mut i_4: ::core::ffi::c_int =
-                            (*rcc).num_entries - 1 as ::core::ffi::c_int;
-                        while i_4 >= 0 as ::core::ffi::c_int {
+                        let mut i_4: ::core::ffi::c_int = (*rcc).num_entries - 1i32;
+                        while i_4 >= 0i32 {
                             *qscale.offset(i_4 as isize) = get_diff_limited_q(
                                 h,
-                                (*rcc).entry.offset(i_4 as isize) as *mut ratecontrol_entry_t,
+                                (*rcc).entry.offset(i_4 as isize),
                                 *qscale.offset(i_4 as isize),
                                 i_4,
                             );
                             '_c2rust_label: {
-                                if *qscale.offset(i_4 as isize)
-                                    >= 0 as ::core::ffi::c_int as ::core::ffi::c_double
-                                {
+                                if *qscale.offset(i_4 as isize) >= 0f64 {
                                 } else {
                                     crate::stdlib::__assert_fail(
                                         b"qscale[i] >= 0\0".as_ptr() as *const ::core::ffi::c_char,
                                         b"encoder/ratecontrol.c\0".as_ptr()
                                             as *const ::core::ffi::c_char,
-                                        3050 as ::core::ffi::c_uint,
+                                        3050u32,
                                         b"int init_pass2(x264_t *)\0".as_ptr()
                                             as *const ::core::ffi::c_char,
                                     );
@@ -6407,43 +5830,39 @@ unsafe extern "C" fn init_pass2(
                             };
                             i_4 -= 1;
                         }
-                        if filter_size > 1 as ::core::ffi::c_int {
+                        if filter_size > 1i32 {
                             '_c2rust_label_0: {
-                                if filter_size % 2 as ::core::ffi::c_int == 1 as ::core::ffi::c_int
-                                {
+                                if filter_size % 2i32 == 1i32 {
                                 } else {
                                     crate::stdlib::__assert_fail(
                                         b"filter_size%2 == 1\0".as_ptr()
                                             as *const ::core::ffi::c_char,
                                         b"encoder/ratecontrol.c\0".as_ptr()
                                             as *const ::core::ffi::c_char,
-                                        3056 as ::core::ffi::c_uint,
+                                        3056u32,
                                         b"int init_pass2(x264_t *)\0".as_ptr()
                                             as *const ::core::ffi::c_char,
                                     );
                                 }
                             };
-                            let mut i_5: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                            let mut i_5: ::core::ffi::c_int = 0i32;
                             while i_5 < (*rcc).num_entries {
                                 let mut rce_1: *mut ratecontrol_entry_t =
-                                    (*rcc).entry.offset(i_5 as isize) as *mut ratecontrol_entry_t;
+                                    (*rcc).entry.offset(i_5 as isize);
                                 let mut q_0: ::core::ffi::c_double = 0.0;
                                 let mut sum: ::core::ffi::c_double = 0.0;
-                                let mut j_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                                let mut j_1: ::core::ffi::c_int = 0i32;
                                 while j_1 < filter_size {
                                     let mut idx: ::core::ffi::c_int =
-                                        i_5 + j_1 - filter_size / 2 as ::core::ffi::c_int;
+                                        i_5 + j_1 - filter_size / 2i32;
                                     let mut d: ::core::ffi::c_double =
                                         (idx - i_5) as ::core::ffi::c_double;
-                                    let mut coeff: ::core::ffi::c_double = if qblur
-                                        == 0 as ::core::ffi::c_int as ::core::ffi::c_double
-                                    {
+                                    let mut coeff: ::core::ffi::c_double = if qblur == 0f64 {
                                         1.0
                                     } else {
                                         crate::stdlib::exp(-d * d / (qblur * qblur))
                                     };
-                                    if !(idx < 0 as ::core::ffi::c_int || idx >= (*rcc).num_entries)
-                                    {
+                                    if !(idx < 0i32 || idx >= (*rcc).num_entries) {
                                         if !((*rce_1).pict_type
                                             != (*(*rcc).entry.offset(idx as isize)).pict_type)
                                         {
@@ -6457,26 +5876,24 @@ unsafe extern "C" fn init_pass2(
                                 i_5 += 1;
                             }
                         }
-                        let mut i_6: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        let mut i_6: ::core::ffi::c_int = 0i32;
                         while i_6 < (*rcc).num_entries {
                             let mut rce_2: *mut ratecontrol_entry_t =
-                                (*rcc).entry.offset(i_6 as isize) as *mut ratecontrol_entry_t;
+                                (*rcc).entry.offset(i_6 as isize);
                             (*rce_2).new_qscale = clip_qscale(
                                 h,
                                 (*rce_2).pict_type,
                                 *blurred_qscale.offset(i_6 as isize),
                             );
                             '_c2rust_label_1: {
-                                if (*rce_2).new_qscale
-                                    >= 0 as ::core::ffi::c_int as ::core::ffi::c_double
-                                {
+                                if (*rce_2).new_qscale >= 0f64 {
                                 } else {
                                     crate::stdlib::__assert_fail(
                                         b"rce->new_qscale >= 0\0".as_ptr()
                                             as *const ::core::ffi::c_char,
                                         b"encoder/ratecontrol.c\0".as_ptr()
                                             as *const ::core::ffi::c_char,
-                                        3083 as ::core::ffi::c_uint,
+                                        3083u32,
                                         b"int init_pass2(x264_t *)\0".as_ptr()
                                             as *const ::core::ffi::c_char,
                                     );
@@ -6491,14 +5908,14 @@ unsafe extern "C" fn init_pass2(
                         step *= 0.5;
                     }
                     crate::src::common::base::x264_free(qscale as *mut ::core::ffi::c_void);
-                    if filter_size > 1 as ::core::ffi::c_int {
+                    if filter_size > 1i32 {
                         crate::src::common::base::x264_free(
                             blurred_qscale as *mut ::core::ffi::c_void,
                         );
                     }
                     if (*rcc).b_vbv != 0 {
                         if vbv_pass2(h, all_available_bits as ::core::ffi::c_double) != 0 {
-                            return -(1 as ::core::ffi::c_int);
+                            return -(1i32);
                         }
                     }
                     expected_bits = count_expected_bits(h);
@@ -6506,9 +5923,8 @@ unsafe extern "C" fn init_pass2(
                         expected_bits / all_available_bits as ::core::ffi::c_double - 1.0,
                     ) > 0.01
                     {
-                        let mut avgq: ::core::ffi::c_double =
-                            0 as ::core::ffi::c_int as ::core::ffi::c_double;
-                        let mut i_7: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+                        let mut avgq: ::core::ffi::c_double = 0f64;
+                        let mut i_7: ::core::ffi::c_int = 0i32;
                         while i_7 < (*rcc).num_entries {
                             avgq += (*(*rcc).entry.offset(i_7 as isize)).new_qscale;
                             i_7 += 1;
@@ -6521,14 +5937,14 @@ unsafe extern "C" fn init_pass2(
                             || (*rcc).b_vbv == 0
                         {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_WARNING_1,
                                 b"Error: 2pass curve failed to converge\n\0".as_ptr()
                                     as *const ::core::ffi::c_char,
                             );
                         }
                         crate::src::common::common::x264_8_log(
-                            h as *mut crate::src::common::common::x264_t,
+                            h,
                             crate::x264_h::X264_LOG_WARNING_1,
                             b"target: %.2f kbit/s, expected: %.2f kbit/s, avg QP: %.4f\n\0".as_ptr()
                                 as *const ::core::ffi::c_char,
@@ -6539,13 +5955,11 @@ unsafe extern "C" fn init_pass2(
                             avgq,
                         );
                         if expected_bits < all_available_bits as ::core::ffi::c_double
-                            && avgq
-                                < ((*h).param.rc.i_qp_min + 2 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_double
+                            && avgq < ((*h).param.rc.i_qp_min + 2i32) as ::core::ffi::c_double
                         {
-                            if (*h).param.rc.i_qp_min > 0 as ::core::ffi::c_int {
+                            if (*h).param.rc.i_qp_min > 0i32 {
                                 crate::src::common::common::x264_8_log(
-                                    h as *mut crate::src::common::common::x264_t,
+                                    h,
                                     crate::x264_h::X264_LOG_WARNING_1,
                                     b"try reducing target bitrate or reducing qp_min (currently %d)\n\0"
                                         .as_ptr() as *const ::core::ffi::c_char,
@@ -6553,20 +5967,18 @@ unsafe extern "C" fn init_pass2(
                                 );
                             } else {
                                 crate::src::common::common::x264_8_log(
-                                    h as *mut crate::src::common::common::x264_t,
+                                    h,
                                     crate::x264_h::X264_LOG_WARNING_1,
                                     b"try reducing target bitrate\n\0".as_ptr()
                                         as *const ::core::ffi::c_char,
                                 );
                             }
                         } else if expected_bits > all_available_bits as ::core::ffi::c_double
-                            && avgq
-                                > ((*h).param.rc.i_qp_max - 2 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_double
+                            && avgq > ((*h).param.rc.i_qp_max - 2i32) as ::core::ffi::c_double
                         {
                             if (*h).param.rc.i_qp_max < crate::src::common::common::QP_MAX {
                                 crate::src::common::common::x264_8_log(
-                                    h as *mut crate::src::common::common::x264_t,
+                                    h,
                                     crate::x264_h::X264_LOG_WARNING_1,
                                     b"try increasing target bitrate or increasing qp_max (currently %d)\n\0"
                                         .as_ptr() as *const ::core::ffi::c_char,
@@ -6574,7 +5986,7 @@ unsafe extern "C" fn init_pass2(
                                 );
                             } else {
                                 crate::src::common::common::x264_8_log(
-                                    h as *mut crate::src::common::common::x264_t,
+                                    h,
                                     crate::x264_h::X264_LOG_WARNING_1,
                                     b"try increasing target bitrate\n\0".as_ptr()
                                         as *const ::core::ffi::c_char,
@@ -6582,16 +5994,16 @@ unsafe extern "C" fn init_pass2(
                             }
                         } else if !((*rcc).b_2pass != 0 && (*rcc).b_vbv != 0) {
                             crate::src::common::common::x264_8_log(
-                                h as *mut crate::src::common::common::x264_t,
+                                h,
                                 crate::x264_h::X264_LOG_WARNING_1,
                                 b"internal error\n\0".as_ptr() as *const ::core::ffi::c_char,
                             );
                         }
                     }
-                    return 0 as ::core::ffi::c_int;
+                    return 0i32;
                 }
             }
         }
-        return -(1 as ::core::ffi::c_int);
+        return -(1i32);
     }
 }

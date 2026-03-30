@@ -101,14 +101,12 @@ pub unsafe extern "C" fn x264_encoder_open_165(
     mut param: *mut crate::x264_h::x264_param_t,
 ) -> *mut crate::src::common::common::x264_t {
     unsafe {
-        let mut api: *mut x264_api_t = crate::stdlib::calloc(
-            1 as crate::__stddef_size_t_h::size_t,
-            ::core::mem::size_of::<x264_api_t>() as crate::__stddef_size_t_h::size_t,
-        ) as *mut x264_api_t;
+        let mut api: *mut x264_api_t =
+            crate::stdlib::calloc(1usize, ::core::mem::size_of::<x264_api_t>()) as *mut x264_api_t;
         if api.is_null() {
             return ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
         }
-        if (*param).i_bitdepth == 8 as ::core::ffi::c_int {
+        if (*param).i_bitdepth == 8i32 {
             (*api).nal_encode = Some(
                 x264_8_nal_encode
                     as unsafe extern "C" fn(
@@ -116,40 +114,21 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                         *mut crate::stdlib::uint8_t,
                         *mut crate::x264_h::x264_nal_t,
                     ) -> (),
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                        *mut crate::stdlib::uint8_t,
-                        *mut crate::x264_h::x264_nal_t,
-                    ) -> (),
-                >;
+            );
             (*api).encoder_reconfig = Some(
                 x264_8_encoder_reconfig
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         *mut crate::x264_h::x264_param_t,
                     ) -> ::core::ffi::c_int,
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                        *mut crate::x264_h::x264_param_t,
-                    ) -> ::core::ffi::c_int,
-                >;
+            );
             (*api).encoder_parameters = Some(
                 x264_8_encoder_parameters
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         *mut crate::x264_h::x264_param_t,
                     ) -> (),
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                        *mut crate::x264_h::x264_param_t,
-                    ) -> (),
-                >;
+            );
             (*api).encoder_headers = Some(
                 x264_8_encoder_headers
                     as unsafe extern "C" fn(
@@ -157,14 +136,7 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                         *mut *mut crate::x264_h::x264_nal_t,
                         *mut ::core::ffi::c_int,
                     ) -> ::core::ffi::c_int,
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                        *mut *mut crate::x264_h::x264_nal_t,
-                        *mut ::core::ffi::c_int,
-                    ) -> ::core::ffi::c_int,
-                >;
+            );
             (*api).encoder_encode = Some(
                 x264_8_encoder_encode
                     as unsafe extern "C" fn(
@@ -174,61 +146,34 @@ pub unsafe extern "C" fn x264_encoder_open_165(
                         *mut crate::x264_h::x264_picture_t_2,
                         *mut crate::x264_h::x264_picture_t_2,
                     ) -> ::core::ffi::c_int,
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                        *mut *mut crate::x264_h::x264_nal_t,
-                        *mut ::core::ffi::c_int,
-                        *mut crate::x264_h::x264_picture_t_2,
-                        *mut crate::x264_h::x264_picture_t_2,
-                    ) -> ::core::ffi::c_int,
-                >;
+            );
             (*api).encoder_close = Some(
                 x264_8_encoder_close
                     as unsafe extern "C" fn(*mut crate::src::common::common::x264_t) -> (),
-            )
-                as Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t) -> ()>;
+            );
             (*api).encoder_delayed_frames = Some(
                 x264_8_encoder_delayed_frames
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                     ) -> ::core::ffi::c_int,
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                    ) -> ::core::ffi::c_int,
-                >;
+            );
             (*api).encoder_maximum_delayed_frames = Some(
                 x264_8_encoder_maximum_delayed_frames
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                     ) -> ::core::ffi::c_int,
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                    ) -> ::core::ffi::c_int,
-                >;
+            );
             (*api).encoder_intra_refresh = Some(
                 x264_8_encoder_intra_refresh
                     as unsafe extern "C" fn(*mut crate::src::common::common::x264_t) -> (),
-            )
-                as Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t) -> ()>;
+            );
             (*api).encoder_invalidate_reference = Some(
                 x264_8_encoder_invalidate_reference
                     as unsafe extern "C" fn(
                         *mut crate::src::common::common::x264_t,
                         crate::stdlib::int64_t,
                     ) -> ::core::ffi::c_int,
-            )
-                as Option<
-                    unsafe extern "C" fn(
-                        *mut crate::src::common::common::x264_t,
-                        crate::stdlib::int64_t,
-                    ) -> ::core::ffi::c_int,
-                >;
+            );
             (*api).x264 = x264_8_encoder_open(param, api as *mut ::core::ffi::c_void);
         } else {
             crate::src::common::base::x264_log_internal(

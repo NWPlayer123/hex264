@@ -1,18 +1,12 @@
 // =============== BEGIN common_h ================
 use crate::src::encoder::ratecontrol::x264_ratecontrol_t;
-pub const QP_BD_OFFSET: ::core::ffi::c_int =
-    6 as ::core::ffi::c_int * (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int);
-pub const QP_MAX_SPEC: ::core::ffi::c_int =
-    51 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET;
-pub const QP_MAX: ::core::ffi::c_int =
-    crate::src::common::common::QP_MAX_SPEC + 18 as ::core::ffi::c_int;
-pub const PIXEL_MAX: ::core::ffi::c_int =
-    ((1 as ::core::ffi::c_int) << crate::internal::BIT_DEPTH) - 1 as ::core::ffi::c_int;
-pub const X264_LOOKAHEAD_QP: ::core::ffi::c_int =
-    12 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET;
-pub const NALU_OVERHEAD: ::core::ffi::c_int = 5 as ::core::ffi::c_int;
-pub const FILLER_OVERHEAD: ::core::ffi::c_int =
-    crate::src::common::common::NALU_OVERHEAD + 1 as ::core::ffi::c_int;
+pub const QP_BD_OFFSET: ::core::ffi::c_int = 6i32 * (crate::internal::BIT_DEPTH - 8i32);
+pub const QP_MAX_SPEC: ::core::ffi::c_int = 51i32 + crate::src::common::common::QP_BD_OFFSET;
+pub const QP_MAX: ::core::ffi::c_int = crate::src::common::common::QP_MAX_SPEC + 18i32;
+pub const PIXEL_MAX: ::core::ffi::c_int = ((1i32) << crate::internal::BIT_DEPTH) - 1i32;
+pub const X264_LOOKAHEAD_QP: ::core::ffi::c_int = 12i32 + crate::src::common::common::QP_BD_OFFSET;
+pub const NALU_OVERHEAD: ::core::ffi::c_int = 5i32;
+pub const FILLER_OVERHEAD: ::core::ffi::c_int = crate::src::common::common::NALU_OVERHEAD + 1i32;
 pub type pixel = crate::stdlib::uint8_t;
 pub type pixel4 = crate::stdlib::uint32_t;
 pub type dctcoef = crate::stdlib::int16_t;
@@ -403,8 +397,8 @@ pub struct C2Rust_Unnamed_15 {
     pub p_integral: [[*mut crate::stdlib::uint16_t; 16]; 2],
     pub i_stride: [::core::ffi::c_int; 3],
 }
-pub const FENC_STRIDE: ::core::ffi::c_int = 16 as ::core::ffi::c_int;
-pub const FDEC_STRIDE: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
+pub const FENC_STRIDE: ::core::ffi::c_int = 16i32;
+pub const FDEC_STRIDE: ::core::ffi::c_int = 32i32;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct C2Rust_Unnamed_16 {

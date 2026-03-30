@@ -59,7 +59,7 @@ pub struct x264_bitstream_function_t {
         ) -> (),
     >,
 }
-pub const LEVEL_TABLE_SIZE: ::core::ffi::c_int = 128 as ::core::ffi::c_int;
+pub const LEVEL_TABLE_SIZE: ::core::ffi::c_int = 128i32;
 unsafe extern "C" fn nal_escape_c(
     mut dst: *mut crate::stdlib::uint8_t,
     mut src: *mut crate::stdlib::uint8_t,
@@ -81,14 +81,13 @@ unsafe extern "C" fn nal_escape_c(
             *c2rust_fresh3 = *c2rust_fresh2;
         }
         while src < end {
-            if *src.offset(0 as ::core::ffi::c_int as isize) as ::core::ffi::c_int
-                <= 0x3 as ::core::ffi::c_int
-                && *dst.offset(-(2 as ::core::ffi::c_int) as isize) == 0
-                && *dst.offset(-(1 as ::core::ffi::c_int) as isize) == 0
+            if *src.offset(0isize) as ::core::ffi::c_int <= 0x3i32
+                && *dst.offset(-2isize) == 0
+                && *dst.offset(-1isize) == 0
             {
                 let c2rust_fresh4 = dst;
                 dst = dst.offset(1);
-                *c2rust_fresh4 = 0x3 as crate::stdlib::uint8_t;
+                *c2rust_fresh4 = 0x3u8;
             }
             let c2rust_fresh5 = src;
             src = src.offset(1);
@@ -114,56 +113,46 @@ pub unsafe extern "C" fn x264_8_nal_encode(
             if (*nal).b_long_startcode != 0 {
                 let c2rust_fresh7 = dst;
                 dst = dst.offset(1);
-                *c2rust_fresh7 = 0 as crate::stdlib::uint8_t;
+                *c2rust_fresh7 = 0u8;
             }
             let c2rust_fresh8 = dst;
             dst = dst.offset(1);
-            *c2rust_fresh8 = 0 as crate::stdlib::uint8_t;
+            *c2rust_fresh8 = 0u8;
             let c2rust_fresh9 = dst;
             dst = dst.offset(1);
-            *c2rust_fresh9 = 0 as crate::stdlib::uint8_t;
+            *c2rust_fresh9 = 0u8;
             let c2rust_fresh10 = dst;
             dst = dst.offset(1);
-            *c2rust_fresh10 = 0x1 as crate::stdlib::uint8_t;
+            *c2rust_fresh10 = 0x1u8;
         } else {
-            dst = dst.offset(4 as ::core::ffi::c_int as isize);
+            dst = dst.offset(4isize);
         }
         let c2rust_fresh11 = dst;
         dst = dst.offset(1);
-        *c2rust_fresh11 = ((0 as ::core::ffi::c_int) << 7 as ::core::ffi::c_int
-            | (*nal).i_ref_idc << 5 as ::core::ffi::c_int
-            | (*nal).i_type) as crate::stdlib::uint8_t;
+        *c2rust_fresh11 =
+            ((0i32) << 7i32 | (*nal).i_ref_idc << 5i32 | (*nal).i_type) as crate::stdlib::uint8_t;
         dst = (*h).bsf.nal_escape.expect("non-null function pointer")(dst, src, end);
-        let mut size: ::core::ffi::c_int =
-            dst.offset_from(orig_dst) as ::core::ffi::c_long as ::core::ffi::c_int;
+        let mut size: ::core::ffi::c_int = dst.offset_from(orig_dst) as ::core::ffi::c_int;
         if (*h).param.i_avcintra_class != 0 {
             let mut padding: ::core::ffi::c_int =
                 (*nal).i_payload + (*nal).i_padding + crate::src::common::common::NALU_OVERHEAD
                     - size;
-            if padding > 0 as ::core::ffi::c_int {
+            if padding > 0i32 {
                 crate::stdlib::memset(
                     dst as *mut ::core::ffi::c_void,
-                    0 as ::core::ffi::c_int,
+                    0i32,
                     padding as crate::__stddef_size_t_h::size_t,
                 );
                 size += padding;
             }
-            (*nal).i_padding = if padding > 0 as ::core::ffi::c_int {
-                padding
-            } else {
-                0 as ::core::ffi::c_int
-            };
+            (*nal).i_padding = if padding > 0i32 { padding } else { 0i32 };
         }
         if (*h).param.b_annexb == 0 {
-            let mut chunk_size: ::core::ffi::c_int = size - 4 as ::core::ffi::c_int;
-            *orig_dst.offset(0 as ::core::ffi::c_int as isize) =
-                (chunk_size >> 24 as ::core::ffi::c_int) as crate::stdlib::uint8_t;
-            *orig_dst.offset(1 as ::core::ffi::c_int as isize) =
-                (chunk_size >> 16 as ::core::ffi::c_int) as crate::stdlib::uint8_t;
-            *orig_dst.offset(2 as ::core::ffi::c_int as isize) =
-                (chunk_size >> 8 as ::core::ffi::c_int) as crate::stdlib::uint8_t;
-            *orig_dst.offset(3 as ::core::ffi::c_int as isize) =
-                (chunk_size >> 0 as ::core::ffi::c_int) as crate::stdlib::uint8_t;
+            let mut chunk_size: ::core::ffi::c_int = size - 4i32;
+            *orig_dst.offset(0isize) = (chunk_size >> 24i32) as crate::stdlib::uint8_t;
+            *orig_dst.offset(1isize) = (chunk_size >> 16i32) as crate::stdlib::uint8_t;
+            *orig_dst.offset(2isize) = (chunk_size >> 8i32) as crate::stdlib::uint8_t;
+            *orig_dst.offset(3isize) = (chunk_size >> 0i32) as crate::stdlib::uint8_t;
         }
         (*nal).i_payload = size;
         (*nal).p_payload = orig_dst;
@@ -177,9 +166,8 @@ pub unsafe extern "C" fn x264_8_bitstream_init(
     unsafe {
         crate::stdlib::memset(
             pf as *mut ::core::ffi::c_void,
-            0 as ::core::ffi::c_int,
-            ::core::mem::size_of::<crate::src::common::bitstream::x264_bitstream_function_t>()
-                as crate::__stddef_size_t_h::size_t,
+            0i32,
+            ::core::mem::size_of::<crate::src::common::bitstream::x264_bitstream_function_t>(),
         );
         (*pf).nal_escape = Some(
             nal_escape_c
@@ -188,13 +176,6 @@ pub unsafe extern "C" fn x264_8_bitstream_init(
                     *mut crate::stdlib::uint8_t,
                     *mut crate::stdlib::uint8_t,
                 ) -> *mut crate::stdlib::uint8_t,
-        )
-            as Option<
-                unsafe extern "C" fn(
-                    *mut crate::stdlib::uint8_t,
-                    *mut crate::stdlib::uint8_t,
-                    *mut crate::stdlib::uint8_t,
-                ) -> *mut crate::stdlib::uint8_t,
-            >;
+        );
     }
 }

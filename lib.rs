@@ -19,16 +19,16 @@ pub mod __stddef_size_t_h {
     pub type size_t = usize;
 }
 pub mod config_h {
-    pub const HAVE_GPL: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const HAVE_INTERLACED: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    pub const HAVE_GPL: ::core::ffi::c_int = 1i32;
+    pub const HAVE_INTERLACED: ::core::ffi::c_int = 1i32;
 }
 pub mod slicetype_c {
-    pub const PAD_SIZE: ::core::ffi::c_int = 32 as ::core::ffi::c_int;
-    pub const NUM_INTS: ::core::ffi::c_int = 4 as ::core::ffi::c_int;
-    pub const COST_EST: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const COST_EST_AQ: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const INTRA_MBS: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    pub const NUM_ROWS: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
+    pub const PAD_SIZE: ::core::ffi::c_int = 32i32;
+    pub const NUM_INTS: ::core::ffi::c_int = 4i32;
+    pub const COST_EST: ::core::ffi::c_int = 0i32;
+    pub const COST_EST_AQ: ::core::ffi::c_int = 1i32;
+    pub const INTRA_MBS: ::core::ffi::c_int = 2i32;
+    pub const NUM_ROWS: ::core::ffi::c_int = 3i32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct x264_slicetype_slice_t {
@@ -52,11 +52,10 @@ pub mod rdo_c {
         [[0; 128]; 15];
     #[no_mangle]
     pub static mut x264_8_cabac_size_unary: [[crate::stdlib::uint16_t; 128]; 15] = [[0; 128]; 15];
-    pub const TRELLIS_SCORE_MAX: ::core::ffi::c_ulonglong = !(0 as ::core::ffi::c_ulonglong);
-    pub const TRELLIS_SCORE_BIAS: ::core::ffi::c_ulonglong =
-        (1 as ::core::ffi::c_ulonglong) << 60 as ::core::ffi::c_int;
-    pub const CABAC_SIZE_BITS: ::core::ffi::c_int = 8 as ::core::ffi::c_int;
-    pub const LAMBDA_BITS: ::core::ffi::c_int = 4 as ::core::ffi::c_int;
+    pub const TRELLIS_SCORE_MAX: ::core::ffi::c_ulonglong = !(0u64);
+    pub const TRELLIS_SCORE_BIAS: ::core::ffi::c_ulonglong = (1u64) << 60i32;
+    pub const CABAC_SIZE_BITS: ::core::ffi::c_int = 8i32;
+    pub const LAMBDA_BITS: ::core::ffi::c_int = 4i32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct trellis_node_t {
@@ -76,8 +75,8 @@ pub mod __stddef_null_h {
         ::core::ptr::null::<::core::ffi::c_void>() as *mut ::core::ffi::c_void;
 }
 pub mod osdep_h {
-    pub const NATIVE_ALIGN: ::core::ffi::c_int = 64 as ::core::ffi::c_int;
-    pub const WORD_SIZE: ::core::ffi::c_int = 8 as ::core::ffi::c_int;
+    pub const NATIVE_ALIGN: ::core::ffi::c_int = 64i32;
+    pub const WORD_SIZE: ::core::ffi::c_int = 8i32;
 }
 pub mod x264_config_h {
     pub const X264_CHROMA_FORMAT: ::core::ffi::c_int = crate::x264_h::X264_CSP_I444;
@@ -89,7 +88,7 @@ pub mod limits_h {
     pub const INT_MAX: ::core::ffi::c_int = crate::internal::__INT_MAX__;
 }
 pub mod x264_h {
-    pub const X264_BUILD: ::core::ffi::c_int = 165 as ::core::ffi::c_int;
+    pub const X264_BUILD: ::core::ffi::c_int = 165i32;
     pub type nal_unit_type_e = ::core::ffi::c_uint;
     pub const NAL_UNKNOWN: crate::x264_h::nal_unit_type_e = 0;
     pub const NAL_SLICE: crate::x264_h::nal_unit_type_e = 1;
@@ -119,142 +118,115 @@ pub mod x264_h {
         pub p_payload: *mut crate::stdlib::uint8_t,
         pub i_padding: ::core::ffi::c_int,
     }
-    pub const X264_CPU_MMX: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 0 as ::core::ffi::c_int;
-    pub const X264_CPU_MMX2: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 1 as ::core::ffi::c_int;
-    pub const X264_CPU_SSE: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 2 as ::core::ffi::c_int;
-    pub const X264_CPU_SSE2: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 3 as ::core::ffi::c_int;
-    pub const X264_CPU_LZCNT: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 4 as ::core::ffi::c_int;
-    pub const X264_CPU_SSE3: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 5 as ::core::ffi::c_int;
-    pub const X264_CPU_SSSE3: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 6 as ::core::ffi::c_int;
-    pub const X264_CPU_SSE4: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 7 as ::core::ffi::c_int;
-    pub const X264_CPU_SSE42: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 8 as ::core::ffi::c_int;
-    pub const X264_CPU_AVX: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 9 as ::core::ffi::c_int;
-    pub const X264_CPU_XOP: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 10 as ::core::ffi::c_int;
-    pub const X264_CPU_FMA4: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 11 as ::core::ffi::c_int;
-    pub const X264_CPU_FMA3: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 12 as ::core::ffi::c_int;
-    pub const X264_CPU_BMI1: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 13 as ::core::ffi::c_int;
-    pub const X264_CPU_BMI2: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 14 as ::core::ffi::c_int;
-    pub const X264_CPU_AVX2: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 15 as ::core::ffi::c_int;
-    pub const X264_CPU_AVX512: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 16 as ::core::ffi::c_int;
-    pub const X264_CPU_CACHELINE_32: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 17 as ::core::ffi::c_int;
-    pub const X264_CPU_CACHELINE_64: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 18 as ::core::ffi::c_int;
-    pub const X264_CPU_SSE2_IS_SLOW: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 19 as ::core::ffi::c_int;
-    pub const X264_CPU_SSE2_IS_FAST: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 20 as ::core::ffi::c_int;
-    pub const X264_CPU_SLOW_SHUFFLE: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 21 as ::core::ffi::c_int;
-    pub const X264_CPU_STACK_MOD4: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 22 as ::core::ffi::c_int;
-    pub const X264_CPU_SLOW_ATOM: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 23 as ::core::ffi::c_int;
-    pub const X264_CPU_SLOW_PSHUFB: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 24 as ::core::ffi::c_int;
-    pub const X264_CPU_SLOW_PALIGNR: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 25 as ::core::ffi::c_int;
-    pub const X264_ANALYSE_I4x4: ::core::ffi::c_uint = 0x1 as ::core::ffi::c_uint;
-    pub const X264_ANALYSE_I8x8: ::core::ffi::c_uint = 0x2 as ::core::ffi::c_uint;
-    pub const X264_ANALYSE_PSUB16x16: ::core::ffi::c_uint = 0x10 as ::core::ffi::c_uint;
-    pub const X264_ANALYSE_PSUB8x8: ::core::ffi::c_uint = 0x20 as ::core::ffi::c_uint;
-    pub const X264_ANALYSE_BSUB16x16: ::core::ffi::c_uint = 0x100 as ::core::ffi::c_uint;
-    pub const X264_DIRECT_PRED_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_DIRECT_PRED_SPATIAL: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_DIRECT_PRED_AUTO: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
-    pub const X264_ME_DIA: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    pub const X264_CPU_MMX: ::core::ffi::c_uint = (1u32) << 0i32;
+    pub const X264_CPU_MMX2: ::core::ffi::c_uint = (1u32) << 1i32;
+    pub const X264_CPU_SSE: ::core::ffi::c_uint = (1u32) << 2i32;
+    pub const X264_CPU_SSE2: ::core::ffi::c_uint = (1u32) << 3i32;
+    pub const X264_CPU_LZCNT: ::core::ffi::c_uint = (1u32) << 4i32;
+    pub const X264_CPU_SSE3: ::core::ffi::c_uint = (1u32) << 5i32;
+    pub const X264_CPU_SSSE3: ::core::ffi::c_uint = (1u32) << 6i32;
+    pub const X264_CPU_SSE4: ::core::ffi::c_uint = (1u32) << 7i32;
+    pub const X264_CPU_SSE42: ::core::ffi::c_uint = (1u32) << 8i32;
+    pub const X264_CPU_AVX: ::core::ffi::c_uint = (1u32) << 9i32;
+    pub const X264_CPU_XOP: ::core::ffi::c_uint = (1u32) << 10i32;
+    pub const X264_CPU_FMA4: ::core::ffi::c_uint = (1u32) << 11i32;
+    pub const X264_CPU_FMA3: ::core::ffi::c_uint = (1u32) << 12i32;
+    pub const X264_CPU_BMI1: ::core::ffi::c_uint = (1u32) << 13i32;
+    pub const X264_CPU_BMI2: ::core::ffi::c_uint = (1u32) << 14i32;
+    pub const X264_CPU_AVX2: ::core::ffi::c_uint = (1u32) << 15i32;
+    pub const X264_CPU_AVX512: ::core::ffi::c_uint = (1u32) << 16i32;
+    pub const X264_CPU_CACHELINE_32: ::core::ffi::c_uint = (1u32) << 17i32;
+    pub const X264_CPU_CACHELINE_64: ::core::ffi::c_uint = (1u32) << 18i32;
+    pub const X264_CPU_SSE2_IS_SLOW: ::core::ffi::c_uint = (1u32) << 19i32;
+    pub const X264_CPU_SSE2_IS_FAST: ::core::ffi::c_uint = (1u32) << 20i32;
+    pub const X264_CPU_SLOW_SHUFFLE: ::core::ffi::c_uint = (1u32) << 21i32;
+    pub const X264_CPU_STACK_MOD4: ::core::ffi::c_uint = (1u32) << 22i32;
+    pub const X264_CPU_SLOW_ATOM: ::core::ffi::c_uint = (1u32) << 23i32;
+    pub const X264_CPU_SLOW_PSHUFB: ::core::ffi::c_uint = (1u32) << 24i32;
+    pub const X264_CPU_SLOW_PALIGNR: ::core::ffi::c_uint = (1u32) << 25i32;
+    pub const X264_ANALYSE_I4x4: ::core::ffi::c_uint = 0x1u32;
+    pub const X264_ANALYSE_I8x8: ::core::ffi::c_uint = 0x2u32;
+    pub const X264_ANALYSE_PSUB16x16: ::core::ffi::c_uint = 0x10u32;
+    pub const X264_ANALYSE_PSUB8x8: ::core::ffi::c_uint = 0x20u32;
+    pub const X264_ANALYSE_BSUB16x16: ::core::ffi::c_uint = 0x100u32;
+    pub const X264_DIRECT_PRED_NONE: ::core::ffi::c_int = 0i32;
+    pub const X264_DIRECT_PRED_SPATIAL: ::core::ffi::c_int = 1i32;
+    pub const X264_DIRECT_PRED_AUTO: ::core::ffi::c_int = 3i32;
+    pub const X264_ME_DIA: ::core::ffi::c_int = 0i32;
     pub const X264_ME_DIA_1: ::core::ffi::c_int = 0;
-    pub const X264_ME_HEX: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    pub const X264_ME_HEX: ::core::ffi::c_int = 1i32;
     pub const X264_ME_HEX_1: ::core::ffi::c_int = 1;
-    pub const X264_ME_UMH: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    pub const X264_ME_UMH: ::core::ffi::c_int = 2i32;
     pub const X264_ME_UMH_1: ::core::ffi::c_int = 2;
-    pub const X264_ME_ESA: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
+    pub const X264_ME_ESA: ::core::ffi::c_int = 3i32;
     pub const X264_ME_ESA_1: ::core::ffi::c_int = 3;
-    pub const X264_ME_TESA: ::core::ffi::c_int = 4 as ::core::ffi::c_int;
-    pub const X264_CQM_FLAT: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_CQM_JVT: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    pub const X264_ME_TESA: ::core::ffi::c_int = 4i32;
+    pub const X264_CQM_FLAT: ::core::ffi::c_int = 0i32;
+    pub const X264_CQM_JVT: ::core::ffi::c_int = 1i32;
     pub const X264_CQM_JVT_1: ::core::ffi::c_int = 1;
-    pub const X264_CQM_CUSTOM: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    pub const X264_CQM_CUSTOM: ::core::ffi::c_int = 2i32;
     pub const X264_CQM_CUSTOM_1: ::core::ffi::c_int = 2;
-    pub const X264_RC_CQP: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_RC_CRF: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_RC_ABR: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    pub const X264_QP_AUTO: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_AQ_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_AQ_VARIANCE: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_AQ_AUTOVARIANCE: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    pub const X264_AQ_AUTOVARIANCE_BIASED: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
-    pub const X264_B_ADAPT_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_B_ADAPT_FAST: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_B_ADAPT_TRELLIS: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    pub const X264_WEIGHTP_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_WEIGHTP_SIMPLE: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_WEIGHTP_SMART: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    pub const X264_B_PYRAMID_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_B_PYRAMID_STRICT: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_B_PYRAMID_NORMAL: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
-    pub const X264_KEYINT_MIN_AUTO: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_KEYINT_MAX_INFINITE: ::core::ffi::c_int =
-        (1 as ::core::ffi::c_int) << 30 as ::core::ffi::c_int;
-    pub const X264_AVCINTRA_FLAVOR_PANASONIC: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_AVCINTRA_FLAVOR_SONY: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_CSP_MASK: ::core::ffi::c_int = 0xff as ::core::ffi::c_int;
-    pub const X264_CSP_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_CSP_I400: ::core::ffi::c_int = 0x1 as ::core::ffi::c_int;
-    pub const X264_CSP_I420: ::core::ffi::c_int = 0x2 as ::core::ffi::c_int;
-    pub const X264_CSP_YV12: ::core::ffi::c_int = 0x3 as ::core::ffi::c_int;
-    pub const X264_CSP_NV12: ::core::ffi::c_int = 0x4 as ::core::ffi::c_int;
-    pub const X264_CSP_NV21: ::core::ffi::c_int = 0x5 as ::core::ffi::c_int;
-    pub const X264_CSP_I422: ::core::ffi::c_int = 0x6 as ::core::ffi::c_int;
-    pub const X264_CSP_YV16: ::core::ffi::c_int = 0x7 as ::core::ffi::c_int;
-    pub const X264_CSP_NV16: ::core::ffi::c_int = 0x8 as ::core::ffi::c_int;
-    pub const X264_CSP_YUYV: ::core::ffi::c_int = 0x9 as ::core::ffi::c_int;
-    pub const X264_CSP_UYVY: ::core::ffi::c_int = 0xa as ::core::ffi::c_int;
-    pub const X264_CSP_V210: ::core::ffi::c_int = 0xb as ::core::ffi::c_int;
-    pub const X264_CSP_I444: ::core::ffi::c_int = 0xc as ::core::ffi::c_int;
-    pub const X264_CSP_YV24: ::core::ffi::c_int = 0xd as ::core::ffi::c_int;
-    pub const X264_CSP_BGR: ::core::ffi::c_int = 0xe as ::core::ffi::c_int;
-    pub const X264_CSP_BGRA: ::core::ffi::c_int = 0xf as ::core::ffi::c_int;
-    pub const X264_CSP_RGB: ::core::ffi::c_int = 0x10 as ::core::ffi::c_int;
-    pub const X264_CSP_MAX: ::core::ffi::c_int = 0x11 as ::core::ffi::c_int;
-    pub const X264_CSP_VFLIP: ::core::ffi::c_int = 0x1000 as ::core::ffi::c_int;
-    pub const X264_CSP_HIGH_DEPTH: ::core::ffi::c_int = 0x2000 as ::core::ffi::c_int;
-    pub const X264_TYPE_AUTO: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_TYPE_IDR: ::core::ffi::c_int = 0x1 as ::core::ffi::c_int;
-    pub const X264_TYPE_I: ::core::ffi::c_int = 0x2 as ::core::ffi::c_int;
-    pub const X264_TYPE_P: ::core::ffi::c_int = 0x3 as ::core::ffi::c_int;
-    pub const X264_TYPE_BREF: ::core::ffi::c_int = 0x4 as ::core::ffi::c_int;
-    pub const X264_TYPE_B: ::core::ffi::c_int = 0x5 as ::core::ffi::c_int;
-    pub const X264_TYPE_KEYFRAME: ::core::ffi::c_int = 0x6 as ::core::ffi::c_int;
+    pub const X264_RC_CQP: ::core::ffi::c_int = 0i32;
+    pub const X264_RC_CRF: ::core::ffi::c_int = 1i32;
+    pub const X264_RC_ABR: ::core::ffi::c_int = 2i32;
+    pub const X264_QP_AUTO: ::core::ffi::c_int = 0i32;
+    pub const X264_AQ_NONE: ::core::ffi::c_int = 0i32;
+    pub const X264_AQ_VARIANCE: ::core::ffi::c_int = 1i32;
+    pub const X264_AQ_AUTOVARIANCE: ::core::ffi::c_int = 2i32;
+    pub const X264_AQ_AUTOVARIANCE_BIASED: ::core::ffi::c_int = 3i32;
+    pub const X264_B_ADAPT_NONE: ::core::ffi::c_int = 0i32;
+    pub const X264_B_ADAPT_FAST: ::core::ffi::c_int = 1i32;
+    pub const X264_B_ADAPT_TRELLIS: ::core::ffi::c_int = 2i32;
+    pub const X264_WEIGHTP_NONE: ::core::ffi::c_int = 0i32;
+    pub const X264_WEIGHTP_SIMPLE: ::core::ffi::c_int = 1i32;
+    pub const X264_WEIGHTP_SMART: ::core::ffi::c_int = 2i32;
+    pub const X264_B_PYRAMID_NONE: ::core::ffi::c_int = 0i32;
+    pub const X264_B_PYRAMID_STRICT: ::core::ffi::c_int = 1i32;
+    pub const X264_B_PYRAMID_NORMAL: ::core::ffi::c_int = 2i32;
+    pub const X264_KEYINT_MIN_AUTO: ::core::ffi::c_int = 0i32;
+    pub const X264_KEYINT_MAX_INFINITE: ::core::ffi::c_int = (1i32) << 30i32;
+    pub const X264_AVCINTRA_FLAVOR_PANASONIC: ::core::ffi::c_int = 0i32;
+    pub const X264_AVCINTRA_FLAVOR_SONY: ::core::ffi::c_int = 1i32;
+    pub const X264_CSP_MASK: ::core::ffi::c_int = 0xffi32;
+    pub const X264_CSP_NONE: ::core::ffi::c_int = 0i32;
+    pub const X264_CSP_I400: ::core::ffi::c_int = 0x1i32;
+    pub const X264_CSP_I420: ::core::ffi::c_int = 0x2i32;
+    pub const X264_CSP_YV12: ::core::ffi::c_int = 0x3i32;
+    pub const X264_CSP_NV12: ::core::ffi::c_int = 0x4i32;
+    pub const X264_CSP_NV21: ::core::ffi::c_int = 0x5i32;
+    pub const X264_CSP_I422: ::core::ffi::c_int = 0x6i32;
+    pub const X264_CSP_YV16: ::core::ffi::c_int = 0x7i32;
+    pub const X264_CSP_NV16: ::core::ffi::c_int = 0x8i32;
+    pub const X264_CSP_YUYV: ::core::ffi::c_int = 0x9i32;
+    pub const X264_CSP_UYVY: ::core::ffi::c_int = 0xai32;
+    pub const X264_CSP_V210: ::core::ffi::c_int = 0xbi32;
+    pub const X264_CSP_I444: ::core::ffi::c_int = 0xci32;
+    pub const X264_CSP_YV24: ::core::ffi::c_int = 0xdi32;
+    pub const X264_CSP_BGR: ::core::ffi::c_int = 0xei32;
+    pub const X264_CSP_BGRA: ::core::ffi::c_int = 0xfi32;
+    pub const X264_CSP_RGB: ::core::ffi::c_int = 0x10i32;
+    pub const X264_CSP_MAX: ::core::ffi::c_int = 0x11i32;
+    pub const X264_CSP_VFLIP: ::core::ffi::c_int = 0x1000i32;
+    pub const X264_CSP_HIGH_DEPTH: ::core::ffi::c_int = 0x2000i32;
+    pub const X264_TYPE_AUTO: ::core::ffi::c_int = 0i32;
+    pub const X264_TYPE_IDR: ::core::ffi::c_int = 0x1i32;
+    pub const X264_TYPE_I: ::core::ffi::c_int = 0x2i32;
+    pub const X264_TYPE_P: ::core::ffi::c_int = 0x3i32;
+    pub const X264_TYPE_BREF: ::core::ffi::c_int = 0x4i32;
+    pub const X264_TYPE_B: ::core::ffi::c_int = 0x5i32;
+    pub const X264_TYPE_KEYFRAME: ::core::ffi::c_int = 0x6i32;
     pub const X264_LOG_ERROR: ::core::ffi::c_int = 0;
-    pub const X264_LOG_ERROR_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+    pub const X264_LOG_ERROR_1: ::core::ffi::c_int = 0i32;
     pub const X264_LOG_WARNING: ::core::ffi::c_int = 1;
-    pub const X264_LOG_WARNING_1: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_LOG_INFO: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    pub const X264_LOG_WARNING_1: ::core::ffi::c_int = 1i32;
+    pub const X264_LOG_INFO: ::core::ffi::c_int = 2i32;
     pub const X264_LOG_DEBUG: ::core::ffi::c_int = 3;
-    pub const X264_LOG_DEBUG_1: ::core::ffi::c_int = 3 as ::core::ffi::c_int;
-    pub const X264_THREADS_AUTO: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_SYNC_LOOKAHEAD_AUTO: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
-    pub const X264_NAL_HRD_NONE: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const X264_NAL_HRD_VBR: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
-    pub const X264_NAL_HRD_CBR: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    pub const X264_LOG_DEBUG_1: ::core::ffi::c_int = 3i32;
+    pub const X264_THREADS_AUTO: ::core::ffi::c_int = 0i32;
+    pub const X264_SYNC_LOOKAHEAD_AUTO: ::core::ffi::c_int = -(1i32);
+    pub const X264_NAL_HRD_NONE: ::core::ffi::c_int = 0i32;
+    pub const X264_NAL_HRD_VBR: ::core::ffi::c_int = 1i32;
+    pub const X264_NAL_HRD_CBR: ::core::ffi::c_int = 2i32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct x264_zone_t {
@@ -489,9 +461,9 @@ pub mod x264_h {
         pub direct8x8: crate::stdlib::uint8_t,
         pub frame_only: crate::stdlib::uint8_t,
     }
-    pub const X264_PARAM_BAD_NAME: ::core::ffi::c_int = -(1 as ::core::ffi::c_int);
-    pub const X264_PARAM_BAD_VALUE: ::core::ffi::c_int = -(2 as ::core::ffi::c_int);
-    pub const X264_PARAM_ALLOC_FAILED: ::core::ffi::c_int = -(3 as ::core::ffi::c_int);
+    pub const X264_PARAM_BAD_NAME: ::core::ffi::c_int = -(1i32);
+    pub const X264_PARAM_BAD_VALUE: ::core::ffi::c_int = -(2i32);
+    pub const X264_PARAM_ALLOC_FAILED: ::core::ffi::c_int = -(3i32);
     pub type pic_struct_e = ::core::ffi::c_uint;
     pub const PIC_STRUCT_AUTO: crate::x264_h::pic_struct_e = 0;
     pub const PIC_STRUCT_PROGRESSIVE: crate::x264_h::pic_struct_e = 1;
@@ -543,8 +515,7 @@ pub mod x264_h {
         pub f_psnr: [::core::ffi::c_double; 3],
         pub f_crf_avg: ::core::ffi::c_double,
     }
-    pub const X264_MBINFO_CONSTANT: ::core::ffi::c_uint =
-        (1 as ::core::ffi::c_uint) << 0 as ::core::ffi::c_int;
+    pub const X264_MBINFO_CONSTANT: ::core::ffi::c_uint = (1u32) << 0i32;
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct x264_picture_t {
@@ -620,8 +591,8 @@ pub mod internal {
         pub overflow_arg_area: *mut ::core::ffi::c_void,
         pub reg_save_area: *mut ::core::ffi::c_void,
     }
-    pub const BIT_DEPTH: ::core::ffi::c_int = 8 as ::core::ffi::c_int;
-    pub const __INT_MAX__: ::core::ffi::c_int = 2147483647 as ::core::ffi::c_int;
+    pub const BIT_DEPTH: ::core::ffi::c_int = 8i32;
+    pub const __INT_MAX__: ::core::ffi::c_int = 2147483647i32;
 }
 pub mod stdlib {
     extern "C" {
@@ -882,8 +853,8 @@ pub mod stdlib {
         pub __low: ::core::ffi::c_uint,
         pub __high: ::core::ffi::c_uint,
     }
-    pub const __S_IFMT: ::core::ffi::c_int = 0o170000 as ::core::ffi::c_int;
-    pub const CLOCK_MONOTONIC: ::core::ffi::c_int = 1 as ::core::ffi::c_int;
+    pub const __S_IFMT: ::core::ffi::c_int = 0o170000i32;
+    pub const CLOCK_MONOTONIC: ::core::ffi::c_int = 1i32;
     pub type clockid_t = crate::stdlib::__clockid_t;
     pub type __cpu_mask = ::core::ffi::c_ulong;
     #[derive(Copy, Clone)]
@@ -904,7 +875,7 @@ pub mod stdlib {
     pub const _IScntrl: crate::stdlib::C2Rust_Unnamed_7 = 2;
     pub const _ISpunct: crate::stdlib::C2Rust_Unnamed_7 = 4;
     pub const _ISalnum: crate::stdlib::C2Rust_Unnamed_7 = 8;
-    pub const MADV_HUGEPAGE: ::core::ffi::c_int = 14 as ::core::ffi::c_int;
+    pub const MADV_HUGEPAGE: ::core::ffi::c_int = 14i32;
     pub type pthread_t = ::core::ffi::c_ulong;
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -940,13 +911,12 @@ pub mod stdlib {
     }
     pub type intptr_t = isize;
     pub type uintptr_t = usize;
-    pub const INT16_MIN: ::core::ffi::c_int =
-        -(32767 as ::core::ffi::c_int) - 1 as ::core::ffi::c_int;
-    pub const INT16_MAX: ::core::ffi::c_int = 32767 as ::core::ffi::c_int;
-    pub const INT32_MAX: ::core::ffi::c_int = 2147483647 as ::core::ffi::c_int;
-    pub const UINT16_MAX: ::core::ffi::c_int = 65535 as ::core::ffi::c_int;
-    pub const UINT32_MAX: ::core::ffi::c_uint = 4294967295 as ::core::ffi::c_uint;
-    pub const SIZE_MAX: ::core::ffi::c_ulong = 18446744073709551615 as ::core::ffi::c_ulong;
+    pub const INT16_MIN: ::core::ffi::c_int = -(32767i32) - 1i32;
+    pub const INT16_MAX: ::core::ffi::c_int = 32767i32;
+    pub const INT32_MAX: ::core::ffi::c_int = 2147483647i32;
+    pub const UINT16_MAX: ::core::ffi::c_int = 65535i32;
+    pub const UINT32_MAX: ::core::ffi::c_uint = 4294967295u32;
+    pub const SIZE_MAX: ::core::ffi::c_ulong = 18446744073709551615u64;
     pub type int8_t = crate::stdlib::__int8_t;
     pub type int16_t = crate::stdlib::__int16_t;
     pub type int32_t = crate::stdlib::__int32_t;
@@ -956,8 +926,8 @@ pub mod stdlib {
     pub type uint32_t = crate::stdlib::__uint32_t;
     pub type uint64_t = crate::stdlib::__uint64_t;
     pub type va_list = crate::__stdarg___gnuc_va_list_h::__gnuc_va_list;
-    pub const SEEK_SET: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-    pub const SEEK_END: ::core::ffi::c_int = 2 as ::core::ffi::c_int;
+    pub const SEEK_SET: ::core::ffi::c_int = 0i32;
+    pub const SEEK_END: ::core::ffi::c_int = 2i32;
     pub type _IO_lock_t = ();
     #[derive(Copy, Clone, BitfieldStruct)]
     #[repr(C)]

@@ -6,20 +6,19 @@ pub mod bitstream_h {
         mut i_data: ::core::ffi::c_int,
     ) {
         unsafe {
-            let mut offset: ::core::ffi::c_int = (p_data as crate::stdlib::intptr_t
-                & 3 as ::core::ffi::c_int as crate::stdlib::intptr_t)
-                as ::core::ffi::c_int;
+            let mut offset: ::core::ffi::c_int =
+                (p_data as crate::stdlib::intptr_t & 3isize) as ::core::ffi::c_int;
             (*s).p_start = (p_data as *mut crate::stdlib::uint8_t).offset(-(offset as isize));
             (*s).p = (*s).p_start;
             (*s).p_end = (p_data as *mut crate::stdlib::uint8_t).offset(i_data as isize);
-            (*s).i_left = (crate::osdep_h::WORD_SIZE - offset) * 8 as ::core::ffi::c_int;
+            (*s).i_left = (crate::osdep_h::WORD_SIZE - offset) * 8i32;
             if offset != 0 {
                 (*s).cur_bits =
                     endian_fix32((*((*s).p as *mut crate::src::common::base::x264_union32_t)).i)
                         as crate::stdlib::uintptr_t;
-                (*s).cur_bits >>= (4 as ::core::ffi::c_int - offset) * 8 as ::core::ffi::c_int;
+                (*s).cur_bits >>= (4i32 - offset) * 8i32;
             } else {
-                (*s).cur_bits = 0 as crate::stdlib::uintptr_t;
+                (*s).cur_bits = 0usize;
             };
         }
     }
@@ -28,38 +27,34 @@ pub mod bitstream_h {
         mut s: *mut crate::src::common::bitstream::bs_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            return (8 as ::core::ffi::c_long
-                * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
-                + (crate::osdep_h::WORD_SIZE * 8 as ::core::ffi::c_int) as ::core::ffi::c_long
+            return (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
+                + (crate::osdep_h::WORD_SIZE * 8i32) as ::core::ffi::c_long
                 - (*s).i_left as ::core::ffi::c_long) as ::core::ffi::c_int;
         }
     }
     #[inline]
     pub unsafe extern "C" fn bs_flush(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
-            (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i = endian_fix32(
-                ((*s).cur_bits << ((*s).i_left & 31 as ::core::ffi::c_int))
-                    as crate::stdlib::uint32_t,
-            );
-            (*s).p = (*s).p.offset(
-                (crate::osdep_h::WORD_SIZE - ((*s).i_left >> 3 as ::core::ffi::c_int)) as isize,
-            );
-            (*s).i_left = crate::osdep_h::WORD_SIZE * 8 as ::core::ffi::c_int;
+            (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i =
+                endian_fix32(((*s).cur_bits << ((*s).i_left & 31i32)) as crate::stdlib::uint32_t);
+            (*s).p = (*s)
+                .p
+                .offset((crate::osdep_h::WORD_SIZE - ((*s).i_left >> 3i32)) as isize);
+            (*s).i_left = crate::osdep_h::WORD_SIZE * 8i32;
         }
     }
     #[inline]
     pub unsafe extern "C" fn bs_realign(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
-            let mut offset: ::core::ffi::c_int = ((*s).p as crate::stdlib::intptr_t
-                & 3 as ::core::ffi::c_int as crate::stdlib::intptr_t)
-                as ::core::ffi::c_int;
+            let mut offset: ::core::ffi::c_int =
+                ((*s).p as crate::stdlib::intptr_t & 3isize) as ::core::ffi::c_int;
             if offset != 0 {
                 (*s).p = (*s).p.offset(-(offset as isize));
-                (*s).i_left = (crate::osdep_h::WORD_SIZE - offset) * 8 as ::core::ffi::c_int;
+                (*s).i_left = (crate::osdep_h::WORD_SIZE - offset) * 8i32;
                 (*s).cur_bits =
                     endian_fix32((*((*s).p as *mut crate::src::common::base::x264_union32_t)).i)
                         as crate::stdlib::uintptr_t;
-                (*s).cur_bits >>= (4 as ::core::ffi::c_int - offset) * 8 as ::core::ffi::c_int;
+                (*s).cur_bits >>= (4i32 - offset) * 8i32;
             }
         }
     }
@@ -70,14 +65,14 @@ pub mod bitstream_h {
         mut i_bits: crate::stdlib::uint32_t,
     ) {
         unsafe {
-            if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
+            if crate::osdep_h::WORD_SIZE == 8i32 {
                 (*s).cur_bits = (*s).cur_bits << i_count | i_bits as crate::stdlib::uintptr_t;
                 (*s).i_left -= i_count;
-                if (*s).i_left <= 32 as ::core::ffi::c_int {
+                if (*s).i_left <= 32i32 {
                     (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i =
                         endian_fix((*s).cur_bits << (*s).i_left) as crate::stdlib::uint32_t;
-                    (*s).i_left += 32 as ::core::ffi::c_int;
-                    (*s).p = (*s).p.offset(4 as ::core::ffi::c_int as isize);
+                    (*s).i_left += 32i32;
+                    (*s).p = (*s).p.offset(4isize);
                 }
             } else if i_count < (*s).i_left {
                 (*s).cur_bits = (*s).cur_bits << i_count | i_bits as crate::stdlib::uintptr_t;
@@ -88,9 +83,9 @@ pub mod bitstream_h {
                     (*s).cur_bits << (*s).i_left | (i_bits >> i_count) as crate::stdlib::uintptr_t;
                 (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i =
                     endian_fix((*s).cur_bits) as crate::stdlib::uint32_t;
-                (*s).p = (*s).p.offset(4 as ::core::ffi::c_int as isize);
+                (*s).p = (*s).p.offset(4isize);
                 (*s).cur_bits = i_bits as crate::stdlib::uintptr_t;
-                (*s).i_left = 32 as ::core::ffi::c_int - i_count;
+                (*s).i_left = 32i32 - i_count;
             };
         }
     }
@@ -100,12 +95,8 @@ pub mod bitstream_h {
         mut i_bits: crate::stdlib::uint32_t,
     ) {
         unsafe {
-            bs_write(
-                s,
-                16 as ::core::ffi::c_int,
-                i_bits >> 16 as ::core::ffi::c_int,
-            );
-            bs_write(s, 16 as ::core::ffi::c_int, i_bits);
+            bs_write(s, 16i32, i_bits >> 16i32);
+            bs_write(s, 16i32, i_bits);
         }
     }
     #[inline]
@@ -114,291 +105,48 @@ pub mod bitstream_h {
         mut i_bit: crate::stdlib::uint32_t,
     ) {
         unsafe {
-            (*s).cur_bits <<= 1 as ::core::ffi::c_int;
+            (*s).cur_bits <<= 1i32;
             (*s).cur_bits |= i_bit as crate::stdlib::uintptr_t;
             (*s).i_left -= 1;
-            if (*s).i_left
-                == crate::osdep_h::WORD_SIZE * 8 as ::core::ffi::c_int - 32 as ::core::ffi::c_int
-            {
+            if (*s).i_left == crate::osdep_h::WORD_SIZE * 8i32 - 32i32 {
                 (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i =
                     endian_fix32((*s).cur_bits as crate::stdlib::uint32_t);
-                (*s).p = (*s).p.offset(4 as ::core::ffi::c_int as isize);
-                (*s).i_left = crate::osdep_h::WORD_SIZE * 8 as ::core::ffi::c_int;
+                (*s).p = (*s).p.offset(4isize);
+                (*s).i_left = crate::osdep_h::WORD_SIZE * 8i32;
             }
         }
     }
     #[inline]
     pub unsafe extern "C" fn bs_align_10(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
-            if (*s).i_left & 7 as ::core::ffi::c_int != 0 {
+            if (*s).i_left & 7i32 != 0 {
                 bs_write(
                     s,
-                    (*s).i_left & 7 as ::core::ffi::c_int,
-                    ((1 as ::core::ffi::c_int)
-                        << ((*s).i_left & 7 as ::core::ffi::c_int) - 1 as ::core::ffi::c_int)
-                        as crate::stdlib::uint32_t,
+                    (*s).i_left & 7i32,
+                    ((1i32) << ((*s).i_left & 7i32) - 1i32) as crate::stdlib::uint32_t,
                 );
             }
             bs_flush(s);
         }
     }
     pub static mut x264_ue_size_tab: [crate::stdlib::uint8_t; 256] = [
-        1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-        15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
+        1u8, 1u8, 3u8, 3u8, 5u8, 5u8, 5u8, 5u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 9u8, 9u8,
+        9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 11u8, 11u8, 11u8,
+        11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8,
+        11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
     ];
     #[inline]
     pub unsafe extern "C" fn bs_write_ue_big(
@@ -406,28 +154,20 @@ pub mod bitstream_h {
         mut val: ::core::ffi::c_uint,
     ) {
         unsafe {
-            let mut size: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut size: ::core::ffi::c_int = 0i32;
             val = val.wrapping_add(1);
             let mut tmp: ::core::ffi::c_int = val as ::core::ffi::c_int;
-            if tmp >= 0x10000 as ::core::ffi::c_int {
-                size = 32 as ::core::ffi::c_int;
-                tmp >>= 16 as ::core::ffi::c_int;
+            if tmp >= 0x10000i32 {
+                size = 32i32;
+                tmp >>= 16i32;
             }
-            if tmp >= 0x100 as ::core::ffi::c_int {
-                size += 16 as ::core::ffi::c_int;
-                tmp >>= 8 as ::core::ffi::c_int;
+            if tmp >= 0x100i32 {
+                size += 16i32;
+                tmp >>= 8i32;
             }
             size += x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int;
-            bs_write(
-                s,
-                size >> 1 as ::core::ffi::c_int,
-                0 as crate::stdlib::uint32_t,
-            );
-            bs_write(
-                s,
-                (size >> 1 as ::core::ffi::c_int) + 1 as ::core::ffi::c_int,
-                val as crate::stdlib::uint32_t,
-            );
+            bs_write(s, size >> 1i32, 0u32);
+            bs_write(s, (size >> 1i32) + 1i32, val);
         }
     }
     #[inline]
@@ -436,16 +176,15 @@ pub mod bitstream_h {
         mut val: ::core::ffi::c_int,
     ) {
         unsafe {
-            let mut size: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-            let mut tmp: ::core::ffi::c_int =
-                1 as ::core::ffi::c_int - val * 2 as ::core::ffi::c_int;
-            if tmp < 0 as ::core::ffi::c_int {
-                tmp = val * 2 as ::core::ffi::c_int;
+            let mut size: ::core::ffi::c_int = 0i32;
+            let mut tmp: ::core::ffi::c_int = 1i32 - val * 2i32;
+            if tmp < 0i32 {
+                tmp = val * 2i32;
             }
             val = tmp;
-            if tmp >= 0x100 as ::core::ffi::c_int {
-                size = 16 as ::core::ffi::c_int;
-                tmp >>= 8 as ::core::ffi::c_int;
+            if tmp >= 0x100i32 {
+                size = 16i32;
+                tmp >>= 8i32;
             }
             size += x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int;
             bs_write(s, size, val as crate::stdlib::uint32_t);
@@ -454,28 +193,21 @@ pub mod bitstream_h {
     #[inline]
     pub unsafe extern "C" fn bs_rbsp_trailing(mut s: *mut crate::src::common::bitstream::bs_t) {
         unsafe {
-            bs_write1(s, 1 as crate::stdlib::uint32_t);
-            bs_write(
-                s,
-                (*s).i_left & 7 as ::core::ffi::c_int,
-                0 as crate::stdlib::uint32_t,
-            );
+            bs_write1(s, 1u32);
+            bs_write(s, (*s).i_left & 7i32, 0u32);
         }
     }
     #[inline(always)]
     pub unsafe extern "C" fn bs_size_se(mut val: ::core::ffi::c_int) -> ::core::ffi::c_int {
         unsafe {
-            let mut tmp: ::core::ffi::c_int =
-                1 as ::core::ffi::c_int - val * 2 as ::core::ffi::c_int;
-            if tmp < 0 as ::core::ffi::c_int {
-                tmp = val * 2 as ::core::ffi::c_int;
+            let mut tmp: ::core::ffi::c_int = 1i32 - val * 2i32;
+            if tmp < 0i32 {
+                tmp = val * 2i32;
             }
-            if tmp < 256 as ::core::ffi::c_int {
+            if tmp < 256i32 {
                 return x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int;
             } else {
-                return x264_ue_size_tab[(tmp >> 8 as ::core::ffi::c_int) as usize]
-                    as ::core::ffi::c_int
-                    + 16 as ::core::ffi::c_int;
+                return x264_ue_size_tab[(tmp >> 8i32) as usize] as ::core::ffi::c_int + 16i32;
             };
         }
     }
@@ -485,23 +217,21 @@ pub mod bitstream_h {
 pub mod osdep_h {
     #[inline(always)]
     pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
-        return (x << 24 as ::core::ffi::c_int)
-            .wrapping_add(x << 8 as ::core::ffi::c_int & 0xff0000 as crate::stdlib::uint32_t)
-            .wrapping_add(x >> 8 as ::core::ffi::c_int & 0xff00 as crate::stdlib::uint32_t)
-            .wrapping_add(x >> 24 as ::core::ffi::c_int);
+        return (x << 24i32)
+            .wrapping_add(x << 8i32 & 0xff0000u32)
+            .wrapping_add(x >> 8i32 & 0xff00u32)
+            .wrapping_add(x >> 24i32);
     }
     #[inline(always)]
     pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
-        return (endian_fix32((x >> 32 as ::core::ffi::c_int) as crate::stdlib::uint32_t)
-            as crate::stdlib::uint64_t)
+        return (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
             .wrapping_add(
-                (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
-                    << 32 as ::core::ffi::c_int,
+                (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t) << 32i32,
             );
     }
     #[inline(always)]
     pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
-        return if crate::osdep_h::WORD_SIZE == 8 as ::core::ffi::c_int {
+        return if crate::osdep_h::WORD_SIZE == 8i32 {
             endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
         } else {
             endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
@@ -511,174 +241,26 @@ pub mod osdep_h {
 pub mod macroblock_h {
     pub static mut x264_zigzag_scan4: [[crate::stdlib::uint8_t; 16]; 2] = [
         [
-            0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            4 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            12 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            10 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
+            0u8, 4u8, 1u8, 2u8, 5u8, 8u8, 12u8, 9u8, 6u8, 3u8, 7u8, 10u8, 13u8, 14u8, 11u8, 15u8,
         ],
         [
-            0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            4 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            10 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            12 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
+            0u8, 1u8, 4u8, 2u8, 3u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 11u8, 12u8, 13u8, 14u8, 15u8,
         ],
     ];
     pub static mut x264_zigzag_scan8: [[crate::stdlib::uint8_t; 64]; 2] = [
         [
-            0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            24 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            17 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            10 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            4 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            25 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            32 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            40 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            33 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            26 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            19 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            12 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            20 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            27 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            34 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            41 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            48 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            56 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            49 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            42 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            35 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            28 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            21 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            22 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            29 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            36 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            43 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            50 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            57 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            58 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            51 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            44 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            37 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            30 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            23 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            31 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            38 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            45 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            52 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            59 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            60 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            53 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            46 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            39 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            47 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            54 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            61 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            62 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            55 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            63 as ::core::ffi::c_int as crate::stdlib::uint8_t,
+            0u8, 8u8, 1u8, 2u8, 9u8, 16u8, 24u8, 17u8, 10u8, 3u8, 4u8, 11u8, 18u8, 25u8, 32u8,
+            40u8, 33u8, 26u8, 19u8, 12u8, 5u8, 6u8, 13u8, 20u8, 27u8, 34u8, 41u8, 48u8, 56u8, 49u8,
+            42u8, 35u8, 28u8, 21u8, 14u8, 7u8, 15u8, 22u8, 29u8, 36u8, 43u8, 50u8, 57u8, 58u8,
+            51u8, 44u8, 37u8, 30u8, 23u8, 31u8, 38u8, 45u8, 52u8, 59u8, 60u8, 53u8, 46u8, 39u8,
+            47u8, 54u8, 61u8, 62u8, 55u8, 63u8,
         ],
         [
-            0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            4 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            10 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            16 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            11 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            5 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            12 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            17 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            24 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            18 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            13 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            14 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            15 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            19 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            25 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            32 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            26 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            20 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            21 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            22 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            23 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            27 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            33 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            40 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            34 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            28 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            29 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            30 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            31 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            35 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            41 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            48 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            42 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            36 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            37 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            38 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            39 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            43 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            49 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            50 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            44 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            45 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            46 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            47 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            51 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            56 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            57 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            52 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            53 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            54 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            55 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            58 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            59 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            60 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            61 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            62 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            63 as ::core::ffi::c_int as crate::stdlib::uint8_t,
+            0u8, 1u8, 2u8, 8u8, 9u8, 3u8, 4u8, 10u8, 16u8, 11u8, 5u8, 6u8, 7u8, 12u8, 17u8, 24u8,
+            18u8, 13u8, 14u8, 15u8, 19u8, 25u8, 32u8, 26u8, 20u8, 21u8, 22u8, 23u8, 27u8, 33u8,
+            40u8, 34u8, 28u8, 29u8, 30u8, 31u8, 35u8, 41u8, 48u8, 42u8, 36u8, 37u8, 38u8, 39u8,
+            43u8, 49u8, 50u8, 44u8, 45u8, 46u8, 47u8, 51u8, 56u8, 57u8, 52u8, 53u8, 54u8, 55u8,
+            58u8, 59u8, 60u8, 61u8, 62u8, 63u8,
         ],
     ];
 }
@@ -703,41 +285,17 @@ pub struct C2Rust_Unnamed_24 {
     pub h: crate::stdlib::uint8_t,
     pub sar: crate::stdlib::uint8_t,
 }
-static mut num_clock_ts: [crate::stdlib::uint8_t; 10] = [
-    0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    1 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    2 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-];
+static mut num_clock_ts: [crate::stdlib::uint8_t; 10] =
+    [0u8, 1u8, 1u8, 1u8, 2u8, 2u8, 3u8, 3u8, 2u8, 3u8];
 static mut avcintra_uuid: [crate::stdlib::uint8_t; 16] = [
-    0xf7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x49 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x3e as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0xb3 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0xd4 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x47 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x96 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x86 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x86 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0xc9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x70 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x7b as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x64 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x37 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-    0x2a as ::core::ffi::c_int as crate::stdlib::uint8_t,
+    0xf7u8, 0x49u8, 0x3eu8, 0xb3u8, 0xd4u8, 0u8, 0x47u8, 0x96u8, 0x86u8, 0x86u8, 0xc9u8, 0x70u8,
+    0x7bu8, 0x64u8, 0x37u8, 0x2au8,
 ];
 unsafe extern "C" fn transpose(mut buf: *mut crate::stdlib::uint8_t, mut w: ::core::ffi::c_int) {
     unsafe {
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0i32;
         while i < w {
-            let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut j: ::core::ffi::c_int = 0i32;
             while j < i {
                 let mut t: crate::stdlib::uint8_t = *buf.offset((w * i + j) as isize);
                 *buf.offset((w * i + j) as isize) = *buf.offset((w * j + i) as isize);
@@ -754,19 +312,13 @@ unsafe extern "C" fn scaling_list_write(
     mut idx: ::core::ffi::c_int,
 ) {
     unsafe {
-        let len: ::core::ffi::c_int = if idx < 4 as ::core::ffi::c_int {
-            16 as ::core::ffi::c_int
-        } else {
-            64 as ::core::ffi::c_int
-        };
-        let mut zigzag: *const crate::stdlib::uint8_t = if idx < 4 as ::core::ffi::c_int {
+        let len: ::core::ffi::c_int = if idx < 4i32 { 16i32 } else { 64i32 };
+        let mut zigzag: *const crate::stdlib::uint8_t = if idx < 4i32 {
             &raw const *(&raw const x264_zigzag_scan4 as *const [crate::stdlib::uint8_t; 16])
-                .offset(0 as ::core::ffi::c_int as isize)
-                as *const crate::stdlib::uint8_t
+                .offset(0isize) as *const crate::stdlib::uint8_t
         } else {
             &raw const *(&raw const x264_zigzag_scan8 as *const [crate::stdlib::uint8_t; 64])
-                .offset(0 as ::core::ffi::c_int as isize)
-                as *const crate::stdlib::uint8_t
+                .offset(0isize) as *const crate::stdlib::uint8_t
         };
         let mut list: *const crate::stdlib::uint8_t = (*sps).scaling_list[idx as usize];
         let mut def_list: *const crate::stdlib::uint8_t =
@@ -774,16 +326,12 @@ unsafe extern "C" fn scaling_list_write(
                 (*sps).scaling_list[crate::src::common::set::CQM_4IY as ::core::ffi::c_int as usize]
             } else if idx == crate::src::common::set::CQM_4PC as ::core::ffi::c_int {
                 (*sps).scaling_list[crate::src::common::set::CQM_4PY as ::core::ffi::c_int as usize]
-            } else if idx
-                == crate::src::common::set::CQM_8IC as ::core::ffi::c_int + 4 as ::core::ffi::c_int
-            {
-                (*sps).scaling_list[(crate::src::common::set::CQM_8IY as ::core::ffi::c_int
-                    + 4 as ::core::ffi::c_int) as usize]
-            } else if idx
-                == crate::src::common::set::CQM_8PC as ::core::ffi::c_int + 4 as ::core::ffi::c_int
-            {
-                (*sps).scaling_list[(crate::src::common::set::CQM_8PY as ::core::ffi::c_int
-                    + 4 as ::core::ffi::c_int) as usize]
+            } else if idx == crate::src::common::set::CQM_8IC as ::core::ffi::c_int + 4i32 {
+                (*sps).scaling_list
+                    [(crate::src::common::set::CQM_8IY as ::core::ffi::c_int + 4i32) as usize]
+            } else if idx == crate::src::common::set::CQM_8PC as ::core::ffi::c_int + 4i32 {
+                (*sps).scaling_list
+                    [(crate::src::common::set::CQM_8PY as ::core::ffi::c_int + 4i32) as usize]
             } else {
                 crate::src::common::tables::x264_cqm_jvt[idx as usize]
             };
@@ -793,23 +341,22 @@ unsafe extern "C" fn scaling_list_write(
             len as crate::__stddef_size_t_h::size_t,
         ) == 0
         {
-            bs_write1(s, 0 as crate::stdlib::uint32_t);
+            bs_write1(s, 0u32);
         } else if crate::stdlib::memcmp(
             list as *const ::core::ffi::c_void,
             crate::src::common::tables::x264_cqm_jvt[idx as usize] as *const ::core::ffi::c_void,
             len as crate::__stddef_size_t_h::size_t,
         ) == 0
         {
-            bs_write1(s, 1 as crate::stdlib::uint32_t);
-            bs_write_se(s, -(8 as ::core::ffi::c_int));
+            bs_write1(s, 1u32);
+            bs_write_se(s, -(8i32));
         } else {
-            bs_write1(s, 1 as crate::stdlib::uint32_t);
+            bs_write1(s, 1u32);
             let mut run: ::core::ffi::c_int = len;
-            while run > 1 as ::core::ffi::c_int {
-                if *list.offset(*zigzag.offset((run - 1 as ::core::ffi::c_int) as isize) as isize)
+            while run > 1i32 {
+                if *list.offset(*zigzag.offset((run - 1i32) as isize) as isize)
                     as ::core::ffi::c_int
-                    != *list
-                        .offset(*zigzag.offset((run - 2 as ::core::ffi::c_int) as isize) as isize)
+                    != *list.offset(*zigzag.offset((run - 2i32) as isize) as isize)
                         as ::core::ffi::c_int
                 {
                     break;
@@ -825,17 +372,16 @@ unsafe extern "C" fn scaling_list_write(
             {
                 run = len;
             }
-            let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut j: ::core::ffi::c_int = 0i32;
             while j < run {
                 bs_write_se(
                     s,
                     (*list.offset(*zigzag.offset(j as isize) as isize) as ::core::ffi::c_int
-                        - (if j > 0 as ::core::ffi::c_int {
-                            *list.offset(
-                                *zigzag.offset((j - 1 as ::core::ffi::c_int) as isize) as isize
-                            ) as ::core::ffi::c_int
+                        - (if j > 0i32 {
+                            *list.offset(*zigzag.offset((j - 1i32) as isize) as isize)
+                                as ::core::ffi::c_int
                         } else {
-                            8 as ::core::ffi::c_int
+                            8i32
                         })) as crate::stdlib::int8_t as ::core::ffi::c_int,
                 );
                 j += 1;
@@ -859,31 +405,23 @@ pub unsafe extern "C" fn x264_8_sei_write(
 ) {
     unsafe {
         bs_realign(s);
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-        while i <= payload_type - 255 as ::core::ffi::c_int {
-            bs_write(s, 8 as ::core::ffi::c_int, 255 as crate::stdlib::uint32_t);
-            i += 255 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0i32;
+        while i <= payload_type - 255i32 {
+            bs_write(s, 8i32, 255u32);
+            i += 255i32;
         }
-        bs_write(
-            s,
-            8 as ::core::ffi::c_int,
-            (payload_type - i) as crate::stdlib::uint32_t,
-        );
-        i = 0 as ::core::ffi::c_int;
-        while i <= payload_size - 255 as ::core::ffi::c_int {
-            bs_write(s, 8 as ::core::ffi::c_int, 255 as crate::stdlib::uint32_t);
-            i += 255 as ::core::ffi::c_int;
+        bs_write(s, 8i32, (payload_type - i) as crate::stdlib::uint32_t);
+        i = 0i32;
+        while i <= payload_size - 255i32 {
+            bs_write(s, 8i32, 255u32);
+            i += 255i32;
         }
-        bs_write(
-            s,
-            8 as ::core::ffi::c_int,
-            (payload_size - i) as crate::stdlib::uint32_t,
-        );
-        i = 0 as ::core::ffi::c_int;
+        bs_write(s, 8i32, (payload_size - i) as crate::stdlib::uint32_t);
+        i = 0i32;
         while i < payload_size {
             bs_write(
                 s,
-                8 as ::core::ffi::c_int,
+                8i32,
                 *payload.offset(i as isize) as crate::stdlib::uint32_t,
             );
             i += 1;
@@ -901,15 +439,12 @@ pub unsafe extern "C" fn x264_8_sps_init(
     unsafe {
         let mut csp: ::core::ffi::c_int = (*param).i_csp & crate::x264_h::X264_CSP_MASK;
         (*sps).i_id = i_id;
-        (*sps).i_mb_width =
-            ((*param).i_width + 15 as ::core::ffi::c_int) / 16 as ::core::ffi::c_int;
-        (*sps).i_mb_height =
-            ((*param).i_height + 15 as ::core::ffi::c_int) / 16 as ::core::ffi::c_int;
+        (*sps).i_mb_width = ((*param).i_width + 15i32) / 16i32;
+        (*sps).i_mb_height = ((*param).i_height + 15i32) / 16i32;
         (*sps).b_frame_mbs_only =
             !((*param).b_interlaced != 0 || (*param).b_fake_interlaced != 0) as ::core::ffi::c_int;
         if (*sps).b_frame_mbs_only == 0 {
-            (*sps).i_mb_height =
-                (*sps).i_mb_height + 1 as ::core::ffi::c_int & !(1 as ::core::ffi::c_int);
+            (*sps).i_mb_height = (*sps).i_mb_height + 1i32 & !(1i32);
         }
         (*sps).i_chroma_format_idc = if csp >= crate::x264_h::X264_CSP_I444 {
             crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -920,10 +455,9 @@ pub unsafe extern "C" fn x264_8_sps_init(
         } else {
             crate::src::common::base::CHROMA_400 as ::core::ffi::c_int
         };
-        (*sps).b_qpprime_y_zero_transform_bypass = ((*param).rc.i_rc_method
-            == crate::x264_h::X264_RC_CQP
-            && (*param).rc.i_qp_constant == 0 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        (*sps).b_qpprime_y_zero_transform_bypass =
+            ((*param).rc.i_rc_method == crate::x264_h::X264_RC_CQP
+                && (*param).rc.i_qp_constant == 0i32) as ::core::ffi::c_int;
         if (*sps).b_qpprime_y_zero_transform_bypass != 0
             || (*sps).i_chroma_format_idc
                 == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -934,7 +468,7 @@ pub unsafe extern "C" fn x264_8_sps_init(
             == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
         {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH422 as ::core::ffi::c_int;
-        } else if crate::internal::BIT_DEPTH > 8 as ::core::ffi::c_int {
+        } else if crate::internal::BIT_DEPTH > 8i32 {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH10 as ::core::ffi::c_int;
         } else if (*param).analyse.b_transform_8x8 != 0
             || (*param).i_cqm_preset != crate::x264_h::X264_CQM_FLAT
@@ -943,10 +477,10 @@ pub unsafe extern "C" fn x264_8_sps_init(
         {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int;
         } else if (*param).b_cabac != 0
-            || (*param).i_bframe > 0 as ::core::ffi::c_int
+            || (*param).i_bframe > 0i32
             || (*param).b_interlaced != 0
             || (*param).b_fake_interlaced != 0
-            || (*param).analyse.i_weighted_pred > 0 as ::core::ffi::c_int
+            || (*param).analyse.i_weighted_pred > 0i32
         {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int;
         } else {
@@ -958,60 +492,60 @@ pub unsafe extern "C" fn x264_8_sps_init(
         (*sps).b_constraint_set1 = ((*sps).i_profile_idc
             <= crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int)
             as ::core::ffi::c_int;
-        (*sps).b_constraint_set2 = 0 as ::core::ffi::c_int;
-        (*sps).b_constraint_set3 = 0 as ::core::ffi::c_int;
+        (*sps).b_constraint_set2 = 0i32;
+        (*sps).b_constraint_set3 = 0i32;
         (*sps).i_level_idc = (*param).i_level_idc;
-        if (*param).i_level_idc == 9 as ::core::ffi::c_int
+        if (*param).i_level_idc == 9i32
             && ((*sps).i_profile_idc
                 == crate::src::common::base::PROFILE_BASELINE as ::core::ffi::c_int
                 || (*sps).i_profile_idc
                     == crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int)
         {
-            (*sps).b_constraint_set3 = 1 as ::core::ffi::c_int;
-            (*sps).i_level_idc = 11 as ::core::ffi::c_int;
+            (*sps).b_constraint_set3 = 1i32;
+            (*sps).i_level_idc = 11i32;
         }
-        if (*param).i_keyint_max == 1 as ::core::ffi::c_int
+        if (*param).i_keyint_max == 1i32
             && (*sps).i_profile_idc >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
         {
-            (*sps).b_constraint_set3 = 1 as ::core::ffi::c_int;
+            (*sps).b_constraint_set3 = 1i32;
         }
         (*sps).vui.i_num_reorder_frames = if (*param).i_bframe_pyramid != 0 {
-            2 as ::core::ffi::c_int
+            2i32
         } else if (*param).i_bframe != 0 {
-            1 as ::core::ffi::c_int
+            1i32
         } else {
-            0 as ::core::ffi::c_int
+            0i32
         };
-        (*sps).i_num_ref_frames = if (16 as ::core::ffi::c_int)
+        (*sps).i_num_ref_frames = if (16i32)
             < (if (*param).i_frame_reference
-                > (if 1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+                > (if 1i32 + (*sps).vui.i_num_reorder_frames
                     > (if (if (*param).i_bframe_pyramid != 0 {
-                        4 as ::core::ffi::c_int
+                        4i32
                     } else {
-                        1 as ::core::ffi::c_int
+                        1i32
                     }) > (*param).i_dpb_size
                     {
                         if (*param).i_bframe_pyramid != 0 {
-                            4 as ::core::ffi::c_int
+                            4i32
                         } else {
-                            1 as ::core::ffi::c_int
+                            1i32
                         }
                     } else {
                         (*param).i_dpb_size
                     })
                 {
-                    1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+                    1i32 + (*sps).vui.i_num_reorder_frames
                 } else {
                     if (if (*param).i_bframe_pyramid != 0 {
-                        4 as ::core::ffi::c_int
+                        4i32
                     } else {
-                        1 as ::core::ffi::c_int
+                        1i32
                     }) > (*param).i_dpb_size
                     {
                         if (*param).i_bframe_pyramid != 0 {
-                            4 as ::core::ffi::c_int
+                            4i32
                         } else {
-                            1 as ::core::ffi::c_int
+                            1i32
                         }
                     } else {
                         (*param).i_dpb_size
@@ -1020,70 +554,70 @@ pub unsafe extern "C" fn x264_8_sps_init(
             {
                 (*param).i_frame_reference
             } else {
-                if 1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+                if 1i32 + (*sps).vui.i_num_reorder_frames
                     > (if (if (*param).i_bframe_pyramid != 0 {
-                        4 as ::core::ffi::c_int
+                        4i32
                     } else {
-                        1 as ::core::ffi::c_int
+                        1i32
                     }) > (*param).i_dpb_size
                     {
                         if (*param).i_bframe_pyramid != 0 {
-                            4 as ::core::ffi::c_int
+                            4i32
                         } else {
-                            1 as ::core::ffi::c_int
+                            1i32
                         }
                     } else {
                         (*param).i_dpb_size
                     })
                 {
-                    1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+                    1i32 + (*sps).vui.i_num_reorder_frames
                 } else {
                     if (if (*param).i_bframe_pyramid != 0 {
-                        4 as ::core::ffi::c_int
+                        4i32
                     } else {
-                        1 as ::core::ffi::c_int
+                        1i32
                     }) > (*param).i_dpb_size
                     {
                         if (*param).i_bframe_pyramid != 0 {
-                            4 as ::core::ffi::c_int
+                            4i32
                         } else {
-                            1 as ::core::ffi::c_int
+                            1i32
                         }
                     } else {
                         (*param).i_dpb_size
                     }
                 }
             }) {
-            16 as ::core::ffi::c_int
+            16i32
         } else if (*param).i_frame_reference
-            > (if 1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+            > (if 1i32 + (*sps).vui.i_num_reorder_frames
                 > (if (if (*param).i_bframe_pyramid != 0 {
-                    4 as ::core::ffi::c_int
+                    4i32
                 } else {
-                    1 as ::core::ffi::c_int
+                    1i32
                 }) > (*param).i_dpb_size
                 {
                     if (*param).i_bframe_pyramid != 0 {
-                        4 as ::core::ffi::c_int
+                        4i32
                     } else {
-                        1 as ::core::ffi::c_int
+                        1i32
                     }
                 } else {
                     (*param).i_dpb_size
                 })
             {
-                1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+                1i32 + (*sps).vui.i_num_reorder_frames
             } else {
                 if (if (*param).i_bframe_pyramid != 0 {
-                    4 as ::core::ffi::c_int
+                    4i32
                 } else {
-                    1 as ::core::ffi::c_int
+                    1i32
                 }) > (*param).i_dpb_size
                 {
                     if (*param).i_bframe_pyramid != 0 {
-                        4 as ::core::ffi::c_int
+                        4i32
                     } else {
-                        1 as ::core::ffi::c_int
+                        1i32
                     }
                 } else {
                     (*param).i_dpb_size
@@ -1091,33 +625,33 @@ pub unsafe extern "C" fn x264_8_sps_init(
             })
         {
             (*param).i_frame_reference
-        } else if 1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+        } else if 1i32 + (*sps).vui.i_num_reorder_frames
             > (if (if (*param).i_bframe_pyramid != 0 {
-                4 as ::core::ffi::c_int
+                4i32
             } else {
-                1 as ::core::ffi::c_int
+                1i32
             }) > (*param).i_dpb_size
             {
                 if (*param).i_bframe_pyramid != 0 {
-                    4 as ::core::ffi::c_int
+                    4i32
                 } else {
-                    1 as ::core::ffi::c_int
+                    1i32
                 }
             } else {
                 (*param).i_dpb_size
             })
         {
-            1 as ::core::ffi::c_int + (*sps).vui.i_num_reorder_frames
+            1i32 + (*sps).vui.i_num_reorder_frames
         } else if (if (*param).i_bframe_pyramid != 0 {
-            4 as ::core::ffi::c_int
+            4i32
         } else {
-            1 as ::core::ffi::c_int
+            1i32
         }) > (*param).i_dpb_size
         {
             if (*param).i_bframe_pyramid != 0 {
-                4 as ::core::ffi::c_int
+                4i32
             } else {
-                1 as ::core::ffi::c_int
+                1i32
             }
         } else {
             (*param).i_dpb_size
@@ -1126,122 +660,113 @@ pub unsafe extern "C" fn x264_8_sps_init(
         (*sps).i_num_ref_frames -= ((*param).i_bframe_pyramid
             == crate::x264_h::X264_B_PYRAMID_STRICT)
             as ::core::ffi::c_int;
-        if (*param).i_keyint_max == 1 as ::core::ffi::c_int {
-            (*sps).i_num_ref_frames = 0 as ::core::ffi::c_int;
-            (*sps).vui.i_max_dec_frame_buffering = 0 as ::core::ffi::c_int;
+        if (*param).i_keyint_max == 1i32 {
+            (*sps).i_num_ref_frames = 0i32;
+            (*sps).vui.i_max_dec_frame_buffering = 0i32;
         }
         let mut max_frame_num: ::core::ffi::c_int = (*sps).vui.i_max_dec_frame_buffering
-            * (((*param).i_bframe_pyramid != 0) as ::core::ffi::c_int + 1 as ::core::ffi::c_int)
-            + 1 as ::core::ffi::c_int;
+            * (((*param).i_bframe_pyramid != 0) as ::core::ffi::c_int + 1i32)
+            + 1i32;
         if (*param).b_intra_refresh != 0 {
             let mut time_to_recovery: ::core::ffi::c_int =
-                (if ((*sps).i_mb_width - 1 as ::core::ffi::c_int) < (*param).i_keyint_max {
-                    (*sps).i_mb_width - 1 as ::core::ffi::c_int
+                (if ((*sps).i_mb_width - 1i32) < (*param).i_keyint_max {
+                    (*sps).i_mb_width - 1i32
                 } else {
                     (*param).i_keyint_max
                 }) + (*param).i_bframe
-                    - 1 as ::core::ffi::c_int;
-            max_frame_num = if max_frame_num > time_to_recovery + 1 as ::core::ffi::c_int {
+                    - 1i32;
+            max_frame_num = if max_frame_num > time_to_recovery + 1i32 {
                 max_frame_num
             } else {
-                time_to_recovery + 1 as ::core::ffi::c_int
+                time_to_recovery + 1i32
             };
         }
-        (*sps).i_log2_max_frame_num = 4 as ::core::ffi::c_int;
-        while (1 as ::core::ffi::c_int) << (*sps).i_log2_max_frame_num <= max_frame_num {
+        (*sps).i_log2_max_frame_num = 4i32;
+        while (1i32) << (*sps).i_log2_max_frame_num <= max_frame_num {
             (*sps).i_log2_max_frame_num += 1;
         }
         (*sps).i_poc_type = if (*param).i_bframe != 0
             || (*param).b_interlaced != 0
             || (*param).i_avcintra_class != 0
         {
-            0 as ::core::ffi::c_int
+            0i32
         } else {
-            2 as ::core::ffi::c_int
+            2i32
         };
-        if (*sps).i_poc_type == 0 as ::core::ffi::c_int {
-            let mut max_delta_poc: ::core::ffi::c_int = ((*param).i_bframe
-                + 2 as ::core::ffi::c_int)
-                * (((*param).i_bframe_pyramid != 0) as ::core::ffi::c_int
-                    + 1 as ::core::ffi::c_int)
-                * 2 as ::core::ffi::c_int;
-            (*sps).i_log2_max_poc_lsb = 4 as ::core::ffi::c_int;
-            while (1 as ::core::ffi::c_int) << (*sps).i_log2_max_poc_lsb
-                <= max_delta_poc * 2 as ::core::ffi::c_int
-            {
+        if (*sps).i_poc_type == 0i32 {
+            let mut max_delta_poc: ::core::ffi::c_int = ((*param).i_bframe + 2i32)
+                * (((*param).i_bframe_pyramid != 0) as ::core::ffi::c_int + 1i32)
+                * 2i32;
+            (*sps).i_log2_max_poc_lsb = 4i32;
+            while (1i32) << (*sps).i_log2_max_poc_lsb <= max_delta_poc * 2i32 {
                 (*sps).i_log2_max_poc_lsb += 1;
             }
         }
-        (*sps).b_vui = 1 as ::core::ffi::c_int;
-        (*sps).b_gaps_in_frame_num_value_allowed = 0 as ::core::ffi::c_int;
+        (*sps).b_vui = 1i32;
+        (*sps).b_gaps_in_frame_num_value_allowed = 0i32;
         (*sps).b_mb_adaptive_frame_field = (*param).b_interlaced;
-        (*sps).b_direct8x8_inference = 1 as ::core::ffi::c_int;
+        (*sps).b_direct8x8_inference = 1i32;
         x264_8_sps_init_reconfigurable(sps, param);
-        (*sps).vui.b_overscan_info_present = ((*param).vui.i_overscan > 0 as ::core::ffi::c_int
-            && (*param).vui.i_overscan <= 2 as ::core::ffi::c_int)
+        (*sps).vui.b_overscan_info_present = ((*param).vui.i_overscan > 0i32
+            && (*param).vui.i_overscan <= 2i32)
             as ::core::ffi::c_int;
         if (*sps).vui.b_overscan_info_present != 0 {
-            (*sps).vui.b_overscan_info = if (*param).vui.i_overscan == 2 as ::core::ffi::c_int {
-                1 as ::core::ffi::c_int
+            (*sps).vui.b_overscan_info = if (*param).vui.i_overscan == 2i32 {
+                1i32
             } else {
-                0 as ::core::ffi::c_int
+                0i32
             };
         }
-        (*sps).vui.b_signal_type_present = 0 as ::core::ffi::c_int;
-        (*sps).vui.i_vidformat = if (*param).vui.i_vidformat >= 0 as ::core::ffi::c_int
-            && (*param).vui.i_vidformat <= 5 as ::core::ffi::c_int
+        (*sps).vui.b_signal_type_present = 0i32;
+        (*sps).vui.i_vidformat =
+            if (*param).vui.i_vidformat >= 0i32 && (*param).vui.i_vidformat <= 5i32 {
+                (*param).vui.i_vidformat
+            } else {
+                5i32
+            };
+        (*sps).vui.b_fullrange =
+            if (*param).vui.b_fullrange >= 0i32 && (*param).vui.b_fullrange <= 1i32 {
+                (*param).vui.b_fullrange
+            } else if csp >= crate::x264_h::X264_CSP_BGR {
+                1i32
+            } else {
+                0i32
+            };
+        (*sps).vui.b_color_description_present = 0i32;
+        (*sps).vui.i_colorprim =
+            if (*param).vui.i_colorprim >= 0i32 && (*param).vui.i_colorprim <= 12i32 {
+                (*param).vui.i_colorprim
+            } else {
+                2i32
+            };
+        (*sps).vui.i_transfer =
+            if (*param).vui.i_transfer >= 0i32 && (*param).vui.i_transfer <= 18i32 {
+                (*param).vui.i_transfer
+            } else {
+                2i32
+            };
+        (*sps).vui.i_colmatrix =
+            if (*param).vui.i_colmatrix >= 0i32 && (*param).vui.i_colmatrix <= 14i32 {
+                (*param).vui.i_colmatrix
+            } else if csp >= crate::x264_h::X264_CSP_BGR {
+                0i32
+            } else {
+                2i32
+            };
+        if (*sps).vui.i_colorprim != 2i32
+            || (*sps).vui.i_transfer != 2i32
+            || (*sps).vui.i_colmatrix != 2i32
         {
-            (*param).vui.i_vidformat
-        } else {
-            5 as ::core::ffi::c_int
-        };
-        (*sps).vui.b_fullrange = if (*param).vui.b_fullrange >= 0 as ::core::ffi::c_int
-            && (*param).vui.b_fullrange <= 1 as ::core::ffi::c_int
-        {
-            (*param).vui.b_fullrange
-        } else if csp >= crate::x264_h::X264_CSP_BGR {
-            1 as ::core::ffi::c_int
-        } else {
-            0 as ::core::ffi::c_int
-        };
-        (*sps).vui.b_color_description_present = 0 as ::core::ffi::c_int;
-        (*sps).vui.i_colorprim = if (*param).vui.i_colorprim >= 0 as ::core::ffi::c_int
-            && (*param).vui.i_colorprim <= 12 as ::core::ffi::c_int
-        {
-            (*param).vui.i_colorprim
-        } else {
-            2 as ::core::ffi::c_int
-        };
-        (*sps).vui.i_transfer = if (*param).vui.i_transfer >= 0 as ::core::ffi::c_int
-            && (*param).vui.i_transfer <= 18 as ::core::ffi::c_int
-        {
-            (*param).vui.i_transfer
-        } else {
-            2 as ::core::ffi::c_int
-        };
-        (*sps).vui.i_colmatrix = if (*param).vui.i_colmatrix >= 0 as ::core::ffi::c_int
-            && (*param).vui.i_colmatrix <= 14 as ::core::ffi::c_int
-        {
-            (*param).vui.i_colmatrix
-        } else if csp >= crate::x264_h::X264_CSP_BGR {
-            0 as ::core::ffi::c_int
-        } else {
-            2 as ::core::ffi::c_int
-        };
-        if (*sps).vui.i_colorprim != 2 as ::core::ffi::c_int
-            || (*sps).vui.i_transfer != 2 as ::core::ffi::c_int
-            || (*sps).vui.i_colmatrix != 2 as ::core::ffi::c_int
-        {
-            (*sps).vui.b_color_description_present = 1 as ::core::ffi::c_int;
+            (*sps).vui.b_color_description_present = 1i32;
         }
-        if (*sps).vui.i_vidformat != 5 as ::core::ffi::c_int
+        if (*sps).vui.i_vidformat != 5i32
             || (*sps).vui.b_fullrange != 0
             || (*sps).vui.b_color_description_present != 0
         {
-            (*sps).vui.b_signal_type_present = 1 as ::core::ffi::c_int;
+            (*sps).vui.b_signal_type_present = 1i32;
         }
-        (*sps).vui.b_chroma_loc_info_present = ((*param).vui.i_chroma_loc > 0 as ::core::ffi::c_int
-            && (*param).vui.i_chroma_loc <= 5 as ::core::ffi::c_int
+        (*sps).vui.b_chroma_loc_info_present = ((*param).vui.i_chroma_loc > 0i32
+            && (*param).vui.i_chroma_loc <= 5i32
             && (*sps).i_chroma_format_idc
                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
             as ::core::ffi::c_int;
@@ -1249,44 +774,38 @@ pub unsafe extern "C" fn x264_8_sps_init(
             (*sps).vui.i_chroma_loc_top = (*param).vui.i_chroma_loc;
             (*sps).vui.i_chroma_loc_bottom = (*param).vui.i_chroma_loc;
         }
-        (*sps).vui.b_timing_info_present = ((*param).i_timebase_num > 0 as crate::stdlib::uint32_t
-            && (*param).i_timebase_den > 0 as crate::stdlib::uint32_t)
+        (*sps).vui.b_timing_info_present = ((*param).i_timebase_num > 0u32
+            && (*param).i_timebase_den > 0u32)
             as ::core::ffi::c_int;
         if (*sps).vui.b_timing_info_present != 0 {
             (*sps).vui.i_num_units_in_tick = (*param).i_timebase_num;
-            (*sps).vui.i_time_scale = (*param)
-                .i_timebase_den
-                .wrapping_mul(2 as crate::stdlib::uint32_t);
+            (*sps).vui.i_time_scale = (*param).i_timebase_den.wrapping_mul(2u32);
             (*sps).vui.b_fixed_frame_rate = ((*param).b_vfr_input == 0) as ::core::ffi::c_int;
         }
-        (*sps).vui.b_vcl_hrd_parameters_present = 0 as ::core::ffi::c_int;
+        (*sps).vui.b_vcl_hrd_parameters_present = 0i32;
         (*sps).vui.b_nal_hrd_parameters_present = ((*param).i_nal_hrd != 0) as ::core::ffi::c_int;
         (*sps).vui.b_pic_struct_present = (*param).b_pic_struct;
         (*sps).vui.b_bitstream_restriction = !((*sps).b_constraint_set3 != 0
             && (*sps).i_profile_idc >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int)
             as ::core::ffi::c_int;
         if (*sps).vui.b_bitstream_restriction != 0 {
-            (*sps).vui.b_motion_vectors_over_pic_boundaries = 1 as ::core::ffi::c_int;
-            (*sps).vui.i_max_bytes_per_pic_denom = 0 as ::core::ffi::c_int;
-            (*sps).vui.i_max_bits_per_mb_denom = 0 as ::core::ffi::c_int;
+            (*sps).vui.b_motion_vectors_over_pic_boundaries = 1i32;
+            (*sps).vui.i_max_bytes_per_pic_denom = 0i32;
+            (*sps).vui.i_max_bits_per_mb_denom = 0i32;
             (*sps).vui.i_log2_max_mv_length_vertical = crate::stdlib::log2f(
-                (if 1 as ::core::ffi::c_int
-                    > (*param).analyse.i_mv_range * 4 as ::core::ffi::c_int
-                        - 1 as ::core::ffi::c_int
-                {
-                    1 as ::core::ffi::c_int
+                (if 1i32 > (*param).analyse.i_mv_range * 4i32 - 1i32 {
+                    1i32
                 } else {
-                    (*param).analyse.i_mv_range * 4 as ::core::ffi::c_int - 1 as ::core::ffi::c_int
+                    (*param).analyse.i_mv_range * 4i32 - 1i32
                 }) as ::core::ffi::c_float,
             ) as ::core::ffi::c_int
-                + 1 as ::core::ffi::c_int;
+                + 1i32;
             (*sps).vui.i_log2_max_mv_length_horizontal = (*sps).vui.i_log2_max_mv_length_vertical;
         }
         (*sps).b_avcintra_hd = ((*param).i_avcintra_class != 0
-            && (*param).i_avcintra_class <= 200 as ::core::ffi::c_int)
+            && (*param).i_avcintra_class <= 200i32)
             as ::core::ffi::c_int;
-        (*sps).b_avcintra_4k =
-            ((*param).i_avcintra_class > 200 as ::core::ffi::c_int) as ::core::ffi::c_int;
+        (*sps).b_avcintra_4k = ((*param).i_avcintra_class > 200i32) as ::core::ffi::c_int;
         (*sps).i_cqm_preset = (*param).i_cqm_preset;
     }
 }
@@ -1298,21 +817,17 @@ pub unsafe extern "C" fn x264_8_sps_init_reconfigurable(
     unsafe {
         (*sps).crop.i_left = (*param).crop_rect.i_left;
         (*sps).crop.i_top = (*param).crop_rect.i_top;
-        (*sps).crop.i_right = (*param).crop_rect.i_right
-            + (*sps).i_mb_width * 16 as ::core::ffi::c_int
-            - (*param).i_width;
-        (*sps).crop.i_bottom = (*param).crop_rect.i_bottom
-            + (*sps).i_mb_height * 16 as ::core::ffi::c_int
-            - (*param).i_height;
+        (*sps).crop.i_right =
+            (*param).crop_rect.i_right + (*sps).i_mb_width * 16i32 - (*param).i_width;
+        (*sps).crop.i_bottom =
+            (*param).crop_rect.i_bottom + (*sps).i_mb_height * 16i32 - (*param).i_height;
         (*sps).b_crop = ((*sps).crop.i_left != 0
             || (*sps).crop.i_top != 0
             || (*sps).crop.i_right != 0
             || (*sps).crop.i_bottom != 0) as ::core::ffi::c_int;
-        (*sps).vui.b_aspect_ratio_info_present = 0 as ::core::ffi::c_int;
-        if (*param).vui.i_sar_width > 0 as ::core::ffi::c_int
-            && (*param).vui.i_sar_height > 0 as ::core::ffi::c_int
-        {
-            (*sps).vui.b_aspect_ratio_info_present = 1 as ::core::ffi::c_int;
+        (*sps).vui.b_aspect_ratio_info_present = 0i32;
+        if (*param).vui.i_sar_width > 0i32 && (*param).vui.i_sar_height > 0i32 {
+            (*sps).vui.b_aspect_ratio_info_present = 1i32;
             (*sps).vui.i_sar_width = (*param).vui.i_sar_width;
             (*sps).vui.i_sar_height = (*param).vui.i_sar_height;
         }
@@ -1326,8 +841,8 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
     unsafe {
         match (*sps).i_cqm_preset {
             crate::x264_h::X264_CQM_FLAT => {
-                let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                while i < 8 as ::core::ffi::c_int {
+                let mut i: ::core::ffi::c_int = 0i32;
+                while i < 8i32 {
                     (*sps).scaling_list[i as usize] =
                         &raw const crate::src::common::tables::x264_cqm_flat16
                             as *const crate::stdlib::uint8_t;
@@ -1335,8 +850,8 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
                 }
             }
             crate::x264_h::X264_CQM_JVT_1 => {
-                let mut i_0: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                while i_0 < 8 as ::core::ffi::c_int {
+                let mut i_0: ::core::ffi::c_int = 0i32;
+                while i_0 < 8i32 {
                     (*sps).scaling_list[i_0 as usize] =
                         crate::src::common::tables::x264_cqm_jvt[i_0 as usize];
                     i_0 += 1;
@@ -1345,35 +860,35 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
             crate::x264_h::X264_CQM_CUSTOM_1 => {
                 transpose(
                     &raw mut (*param).cqm_4iy as *mut crate::stdlib::uint8_t,
-                    4 as ::core::ffi::c_int,
+                    4i32,
                 );
                 transpose(
                     &raw mut (*param).cqm_4py as *mut crate::stdlib::uint8_t,
-                    4 as ::core::ffi::c_int,
+                    4i32,
                 );
                 transpose(
                     &raw mut (*param).cqm_4ic as *mut crate::stdlib::uint8_t,
-                    4 as ::core::ffi::c_int,
+                    4i32,
                 );
                 transpose(
                     &raw mut (*param).cqm_4pc as *mut crate::stdlib::uint8_t,
-                    4 as ::core::ffi::c_int,
+                    4i32,
                 );
                 transpose(
                     &raw mut (*param).cqm_8iy as *mut crate::stdlib::uint8_t,
-                    8 as ::core::ffi::c_int,
+                    8i32,
                 );
                 transpose(
                     &raw mut (*param).cqm_8py as *mut crate::stdlib::uint8_t,
-                    8 as ::core::ffi::c_int,
+                    8i32,
                 );
                 transpose(
                     &raw mut (*param).cqm_8ic as *mut crate::stdlib::uint8_t,
-                    8 as ::core::ffi::c_int,
+                    8i32,
                 );
                 transpose(
                     &raw mut (*param).cqm_8pc as *mut crate::stdlib::uint8_t,
-                    8 as ::core::ffi::c_int,
+                    8i32,
                 );
                 (*sps).scaling_list
                     [crate::src::common::set::CQM_4IY as ::core::ffi::c_int as usize] =
@@ -1387,31 +902,25 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
                 (*sps).scaling_list
                     [crate::src::common::set::CQM_4PC as ::core::ffi::c_int as usize] =
                     &raw mut (*param).cqm_4pc as *mut crate::stdlib::uint8_t;
-                (*sps).scaling_list[(crate::src::common::set::CQM_8IY as ::core::ffi::c_int
-                    + 4 as ::core::ffi::c_int) as usize] =
+                (*sps).scaling_list
+                    [(crate::src::common::set::CQM_8IY as ::core::ffi::c_int + 4i32) as usize] =
                     &raw mut (*param).cqm_8iy as *mut crate::stdlib::uint8_t;
-                (*sps).scaling_list[(crate::src::common::set::CQM_8PY as ::core::ffi::c_int
-                    + 4 as ::core::ffi::c_int) as usize] =
+                (*sps).scaling_list
+                    [(crate::src::common::set::CQM_8PY as ::core::ffi::c_int + 4i32) as usize] =
                     &raw mut (*param).cqm_8py as *mut crate::stdlib::uint8_t;
-                (*sps).scaling_list[(crate::src::common::set::CQM_8IC as ::core::ffi::c_int
-                    + 4 as ::core::ffi::c_int) as usize] =
+                (*sps).scaling_list
+                    [(crate::src::common::set::CQM_8IC as ::core::ffi::c_int + 4i32) as usize] =
                     &raw mut (*param).cqm_8ic as *mut crate::stdlib::uint8_t;
-                (*sps).scaling_list[(crate::src::common::set::CQM_8PC as ::core::ffi::c_int
-                    + 4 as ::core::ffi::c_int) as usize] =
+                (*sps).scaling_list
+                    [(crate::src::common::set::CQM_8PC as ::core::ffi::c_int + 4i32) as usize] =
                     &raw mut (*param).cqm_8pc as *mut crate::stdlib::uint8_t;
-                let mut i_1: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                while i_1 < 8 as ::core::ffi::c_int {
-                    let mut j: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                    while j
-                        < (if i_1 < 4 as ::core::ffi::c_int {
-                            16 as ::core::ffi::c_int
-                        } else {
-                            64 as ::core::ffi::c_int
-                        })
-                    {
+                let mut i_1: ::core::ffi::c_int = 0i32;
+                while i_1 < 8i32 {
+                    let mut j: ::core::ffi::c_int = 0i32;
+                    while j < (if i_1 < 4i32 { 16i32 } else { 64i32 }) {
                         if *(*sps).scaling_list[i_1 as usize].offset(j as isize)
                             as ::core::ffi::c_int
-                            == 0 as ::core::ffi::c_int
+                            == 0i32
                         {
                             (*sps).scaling_list[i_1 as usize] =
                                 crate::src::common::tables::x264_cqm_jvt[i_1 as usize];
@@ -1432,36 +941,28 @@ pub unsafe extern "C" fn x264_8_sps_write(
 ) {
     unsafe {
         bs_realign(s);
-        bs_write(
-            s,
-            8 as ::core::ffi::c_int,
-            (*sps).i_profile_idc as crate::stdlib::uint32_t,
-        );
+        bs_write(s, 8i32, (*sps).i_profile_idc as crate::stdlib::uint32_t);
         bs_write1(s, (*sps).b_constraint_set0 as crate::stdlib::uint32_t);
         bs_write1(s, (*sps).b_constraint_set1 as crate::stdlib::uint32_t);
         bs_write1(s, (*sps).b_constraint_set2 as crate::stdlib::uint32_t);
         bs_write1(s, (*sps).b_constraint_set3 as crate::stdlib::uint32_t);
-        bs_write(s, 4 as ::core::ffi::c_int, 0 as crate::stdlib::uint32_t);
-        bs_write(
-            s,
-            8 as ::core::ffi::c_int,
-            (*sps).i_level_idc as crate::stdlib::uint32_t,
-        );
+        bs_write(s, 4i32, 0u32);
+        bs_write(s, 8i32, (*sps).i_level_idc as crate::stdlib::uint32_t);
         bs_write_ue_big(s, (*sps).i_id as ::core::ffi::c_uint);
         if (*sps).i_profile_idc >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int {
             bs_write_ue_big(s, (*sps).i_chroma_format_idc as ::core::ffi::c_uint);
             if (*sps).i_chroma_format_idc
                 == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             {
-                bs_write1(s, 0 as crate::stdlib::uint32_t);
+                bs_write1(s, 0u32);
             }
             bs_write_ue_big(
                 s,
-                (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int) as ::core::ffi::c_uint,
+                (crate::internal::BIT_DEPTH - 8i32) as ::core::ffi::c_uint,
             );
             bs_write_ue_big(
                 s,
-                (crate::internal::BIT_DEPTH - 8 as ::core::ffi::c_int) as ::core::ffi::c_uint,
+                (crate::internal::BIT_DEPTH - 8i32) as ::core::ffi::c_uint,
             );
             bs_write1(
                 s,
@@ -1484,60 +985,51 @@ pub unsafe extern "C" fn x264_8_sps_write(
                     sps,
                     crate::src::common::set::CQM_4IC as ::core::ffi::c_int,
                 );
-                bs_write1(s, 0 as crate::stdlib::uint32_t);
-                bs_write1(s, 0 as crate::stdlib::uint32_t);
-                bs_write1(s, 0 as crate::stdlib::uint32_t);
+                bs_write1(s, 0u32);
+                bs_write1(s, 0u32);
+                bs_write1(s, 0u32);
                 scaling_list_write(
                     s,
                     sps,
-                    crate::src::common::set::CQM_8IY as ::core::ffi::c_int
-                        + 4 as ::core::ffi::c_int,
+                    crate::src::common::set::CQM_8IY as ::core::ffi::c_int + 4i32,
                 );
-                bs_write1(s, 0 as crate::stdlib::uint32_t);
+                bs_write1(s, 0u32);
                 if (*sps).i_chroma_format_idc
                     == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                 {
                     scaling_list_write(
                         s,
                         sps,
-                        crate::src::common::set::CQM_8IC as ::core::ffi::c_int
-                            + 4 as ::core::ffi::c_int,
+                        crate::src::common::set::CQM_8IC as ::core::ffi::c_int + 4i32,
                     );
-                    bs_write1(s, 0 as crate::stdlib::uint32_t);
+                    bs_write1(s, 0u32);
                     scaling_list_write(
                         s,
                         sps,
-                        crate::src::common::set::CQM_8IC as ::core::ffi::c_int
-                            + 4 as ::core::ffi::c_int,
+                        crate::src::common::set::CQM_8IC as ::core::ffi::c_int + 4i32,
                     );
-                    bs_write1(s, 0 as crate::stdlib::uint32_t);
+                    bs_write1(s, 0u32);
                 }
             }
         }
         bs_write_ue_big(
             s,
-            ((*sps).i_log2_max_frame_num - 4 as ::core::ffi::c_int) as ::core::ffi::c_uint,
+            ((*sps).i_log2_max_frame_num - 4i32) as ::core::ffi::c_uint,
         );
         bs_write_ue_big(s, (*sps).i_poc_type as ::core::ffi::c_uint);
-        if (*sps).i_poc_type == 0 as ::core::ffi::c_int {
-            bs_write_ue_big(
-                s,
-                ((*sps).i_log2_max_poc_lsb - 4 as ::core::ffi::c_int) as ::core::ffi::c_uint,
-            );
+        if (*sps).i_poc_type == 0i32 {
+            bs_write_ue_big(s, ((*sps).i_log2_max_poc_lsb - 4i32) as ::core::ffi::c_uint);
         }
         bs_write_ue_big(s, (*sps).i_num_ref_frames as ::core::ffi::c_uint);
         bs_write1(
             s,
             (*sps).b_gaps_in_frame_num_value_allowed as crate::stdlib::uint32_t,
         );
+        bs_write_ue_big(s, ((*sps).i_mb_width - 1i32) as ::core::ffi::c_uint);
         bs_write_ue_big(
             s,
-            ((*sps).i_mb_width - 1 as ::core::ffi::c_int) as ::core::ffi::c_uint,
-        );
-        bs_write_ue_big(
-            s,
-            (((*sps).i_mb_height >> ((*sps).b_frame_mbs_only == 0) as ::core::ffi::c_int)
-                - 1 as ::core::ffi::c_int) as ::core::ffi::c_uint,
+            (((*sps).i_mb_height >> ((*sps).b_frame_mbs_only == 0) as ::core::ffi::c_int) - 1i32)
+                as ::core::ffi::c_uint,
         );
         bs_write1(s, (*sps).b_frame_mbs_only as crate::stdlib::uint32_t);
         if (*sps).b_frame_mbs_only == 0 {
@@ -1572,93 +1064,93 @@ pub unsafe extern "C" fn x264_8_sps_write(
             if (*sps).vui.b_aspect_ratio_info_present != 0 {
                 static mut sar: [C2Rust_Unnamed_24; 17] = [
                     C2Rust_Unnamed_24 {
-                        w: 1 as crate::stdlib::uint8_t,
-                        h: 1 as crate::stdlib::uint8_t,
-                        sar: 1 as crate::stdlib::uint8_t,
+                        w: 1u8,
+                        h: 1u8,
+                        sar: 1u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 12 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 2 as crate::stdlib::uint8_t,
+                        w: 12u8,
+                        h: 11u8,
+                        sar: 2u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 10 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 3 as crate::stdlib::uint8_t,
+                        w: 10u8,
+                        h: 11u8,
+                        sar: 3u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 16 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 4 as crate::stdlib::uint8_t,
+                        w: 16u8,
+                        h: 11u8,
+                        sar: 4u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 40 as crate::stdlib::uint8_t,
-                        h: 33 as crate::stdlib::uint8_t,
-                        sar: 5 as crate::stdlib::uint8_t,
+                        w: 40u8,
+                        h: 33u8,
+                        sar: 5u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 24 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 6 as crate::stdlib::uint8_t,
+                        w: 24u8,
+                        h: 11u8,
+                        sar: 6u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 20 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 7 as crate::stdlib::uint8_t,
+                        w: 20u8,
+                        h: 11u8,
+                        sar: 7u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 32 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 8 as crate::stdlib::uint8_t,
+                        w: 32u8,
+                        h: 11u8,
+                        sar: 8u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 80 as crate::stdlib::uint8_t,
-                        h: 33 as crate::stdlib::uint8_t,
-                        sar: 9 as crate::stdlib::uint8_t,
+                        w: 80u8,
+                        h: 33u8,
+                        sar: 9u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 18 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 10 as crate::stdlib::uint8_t,
+                        w: 18u8,
+                        h: 11u8,
+                        sar: 10u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 15 as crate::stdlib::uint8_t,
-                        h: 11 as crate::stdlib::uint8_t,
-                        sar: 11 as crate::stdlib::uint8_t,
+                        w: 15u8,
+                        h: 11u8,
+                        sar: 11u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 64 as crate::stdlib::uint8_t,
-                        h: 33 as crate::stdlib::uint8_t,
-                        sar: 12 as crate::stdlib::uint8_t,
+                        w: 64u8,
+                        h: 33u8,
+                        sar: 12u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 160 as crate::stdlib::uint8_t,
-                        h: 99 as crate::stdlib::uint8_t,
-                        sar: 13 as crate::stdlib::uint8_t,
+                        w: 160u8,
+                        h: 99u8,
+                        sar: 13u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 4 as crate::stdlib::uint8_t,
-                        h: 3 as crate::stdlib::uint8_t,
-                        sar: 14 as crate::stdlib::uint8_t,
+                        w: 4u8,
+                        h: 3u8,
+                        sar: 14u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 3 as crate::stdlib::uint8_t,
-                        h: 2 as crate::stdlib::uint8_t,
-                        sar: 15 as crate::stdlib::uint8_t,
+                        w: 3u8,
+                        h: 2u8,
+                        sar: 15u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 2 as crate::stdlib::uint8_t,
-                        h: 1 as crate::stdlib::uint8_t,
-                        sar: 16 as crate::stdlib::uint8_t,
+                        w: 2u8,
+                        h: 1u8,
+                        sar: 16u8,
                     },
                     C2Rust_Unnamed_24 {
-                        w: 0 as crate::stdlib::uint8_t,
-                        h: 0 as crate::stdlib::uint8_t,
-                        sar: 255 as crate::stdlib::uint8_t,
+                        w: 0u8,
+                        h: 0u8,
+                        sar: 255u8,
                     },
                 ];
-                let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
-                while sar[i as usize].sar as ::core::ffi::c_int != 255 as ::core::ffi::c_int {
+                let mut i: ::core::ffi::c_int = 0i32;
+                while sar[i as usize].sar as ::core::ffi::c_int != 255i32 {
                     if sar[i as usize].w as ::core::ffi::c_int == (*sps).vui.i_sar_width
                         && sar[i as usize].h as ::core::ffi::c_int == (*sps).vui.i_sar_height
                     {
@@ -1666,22 +1158,10 @@ pub unsafe extern "C" fn x264_8_sps_write(
                     }
                     i += 1;
                 }
-                bs_write(
-                    s,
-                    8 as ::core::ffi::c_int,
-                    sar[i as usize].sar as crate::stdlib::uint32_t,
-                );
-                if sar[i as usize].sar as ::core::ffi::c_int == 255 as ::core::ffi::c_int {
-                    bs_write(
-                        s,
-                        16 as ::core::ffi::c_int,
-                        (*sps).vui.i_sar_width as crate::stdlib::uint32_t,
-                    );
-                    bs_write(
-                        s,
-                        16 as ::core::ffi::c_int,
-                        (*sps).vui.i_sar_height as crate::stdlib::uint32_t,
-                    );
+                bs_write(s, 8i32, sar[i as usize].sar as crate::stdlib::uint32_t);
+                if sar[i as usize].sar as ::core::ffi::c_int == 255i32 {
+                    bs_write(s, 16i32, (*sps).vui.i_sar_width as crate::stdlib::uint32_t);
+                    bs_write(s, 16i32, (*sps).vui.i_sar_height as crate::stdlib::uint32_t);
                 }
             }
             bs_write1(
@@ -1696,32 +1176,16 @@ pub unsafe extern "C" fn x264_8_sps_write(
                 (*sps).vui.b_signal_type_present as crate::stdlib::uint32_t,
             );
             if (*sps).vui.b_signal_type_present != 0 {
-                bs_write(
-                    s,
-                    3 as ::core::ffi::c_int,
-                    (*sps).vui.i_vidformat as crate::stdlib::uint32_t,
-                );
+                bs_write(s, 3i32, (*sps).vui.i_vidformat as crate::stdlib::uint32_t);
                 bs_write1(s, (*sps).vui.b_fullrange as crate::stdlib::uint32_t);
                 bs_write1(
                     s,
                     (*sps).vui.b_color_description_present as crate::stdlib::uint32_t,
                 );
                 if (*sps).vui.b_color_description_present != 0 {
-                    bs_write(
-                        s,
-                        8 as ::core::ffi::c_int,
-                        (*sps).vui.i_colorprim as crate::stdlib::uint32_t,
-                    );
-                    bs_write(
-                        s,
-                        8 as ::core::ffi::c_int,
-                        (*sps).vui.i_transfer as crate::stdlib::uint32_t,
-                    );
-                    bs_write(
-                        s,
-                        8 as ::core::ffi::c_int,
-                        (*sps).vui.i_colmatrix as crate::stdlib::uint32_t,
-                    );
+                    bs_write(s, 8i32, (*sps).vui.i_colorprim as crate::stdlib::uint32_t);
+                    bs_write(s, 8i32, (*sps).vui.i_transfer as crate::stdlib::uint32_t);
+                    bs_write(s, 8i32, (*sps).vui.i_colmatrix as crate::stdlib::uint32_t);
                 }
             }
             bs_write1(
@@ -1746,52 +1210,45 @@ pub unsafe extern "C" fn x264_8_sps_write(
                 (*sps).vui.b_nal_hrd_parameters_present as crate::stdlib::uint32_t,
             );
             if (*sps).vui.b_nal_hrd_parameters_present != 0 {
-                bs_write_ue_big(
-                    s,
-                    ((*sps).vui.hrd.i_cpb_cnt - 1 as ::core::ffi::c_int) as ::core::ffi::c_uint,
-                );
+                bs_write_ue_big(s, ((*sps).vui.hrd.i_cpb_cnt - 1i32) as ::core::ffi::c_uint);
                 bs_write(
                     s,
-                    4 as ::core::ffi::c_int,
+                    4i32,
                     (*sps).vui.hrd.i_bit_rate_scale as crate::stdlib::uint32_t,
                 );
                 bs_write(
                     s,
-                    4 as ::core::ffi::c_int,
+                    4i32,
                     (*sps).vui.hrd.i_cpb_size_scale as crate::stdlib::uint32_t,
                 );
                 bs_write_ue_big(
                     s,
-                    ((*sps).vui.hrd.i_bit_rate_value - 1 as ::core::ffi::c_int)
-                        as ::core::ffi::c_uint,
+                    ((*sps).vui.hrd.i_bit_rate_value - 1i32) as ::core::ffi::c_uint,
                 );
                 bs_write_ue_big(
                     s,
-                    ((*sps).vui.hrd.i_cpb_size_value - 1 as ::core::ffi::c_int)
-                        as ::core::ffi::c_uint,
+                    ((*sps).vui.hrd.i_cpb_size_value - 1i32) as ::core::ffi::c_uint,
                 );
                 bs_write1(s, (*sps).vui.hrd.b_cbr_hrd as crate::stdlib::uint32_t);
                 bs_write(
                     s,
-                    5 as ::core::ffi::c_int,
-                    ((*sps).vui.hrd.i_initial_cpb_removal_delay_length - 1 as ::core::ffi::c_int)
+                    5i32,
+                    ((*sps).vui.hrd.i_initial_cpb_removal_delay_length - 1i32)
                         as crate::stdlib::uint32_t,
                 );
                 bs_write(
                     s,
-                    5 as ::core::ffi::c_int,
-                    ((*sps).vui.hrd.i_cpb_removal_delay_length - 1 as ::core::ffi::c_int)
-                        as crate::stdlib::uint32_t,
+                    5i32,
+                    ((*sps).vui.hrd.i_cpb_removal_delay_length - 1i32) as crate::stdlib::uint32_t,
                 );
                 bs_write(
                     s,
-                    5 as ::core::ffi::c_int,
-                    ((*sps).vui.hrd.i_dpb_output_delay_length - 1 as ::core::ffi::c_int)
-                        as crate::stdlib::uint32_t,
+                    5i32,
+                    ((*sps).vui.hrd.i_dpb_output_delay_length - 1i32) as crate::stdlib::uint32_t,
                 );
                 bs_write(
                     s,
-                    5 as ::core::ffi::c_int,
+                    5i32,
                     (*sps).vui.hrd.i_time_offset_length as crate::stdlib::uint32_t,
                 );
             }
@@ -1802,7 +1259,7 @@ pub unsafe extern "C" fn x264_8_sps_write(
             if (*sps).vui.b_nal_hrd_parameters_present != 0
                 || (*sps).vui.b_vcl_hrd_parameters_present != 0
             {
-                bs_write1(s, 0 as crate::stdlib::uint32_t);
+                bs_write1(s, 0u32);
             }
             bs_write1(
                 s,
@@ -1854,38 +1311,33 @@ pub unsafe extern "C" fn x264_8_pps_init(
         (*pps).b_cabac = (*param).b_cabac;
         (*pps).b_pic_order =
             ((*param).i_avcintra_class == 0 && (*param).b_interlaced != 0) as ::core::ffi::c_int;
-        (*pps).i_num_slice_groups = 1 as ::core::ffi::c_int;
+        (*pps).i_num_slice_groups = 1i32;
         (*pps).i_num_ref_idx_l0_default_active = (*param).i_frame_reference;
-        (*pps).i_num_ref_idx_l1_default_active = 1 as ::core::ffi::c_int;
-        (*pps).b_weighted_pred =
-            ((*param).analyse.i_weighted_pred > 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
+        (*pps).i_num_ref_idx_l1_default_active = 1i32;
+        (*pps).b_weighted_pred = ((*param).analyse.i_weighted_pred > 0i32) as ::core::ffi::c_int;
         (*pps).b_weighted_bipred = if (*param).analyse.b_weighted_bipred != 0 {
-            2 as ::core::ffi::c_int
+            2i32
         } else {
-            0 as ::core::ffi::c_int
+            0i32
         };
         (*pps).i_pic_init_qp = if (*param).rc.i_rc_method == crate::x264_h::X264_RC_ABR
             || (*param).b_stitchable != 0
         {
-            26 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET
-        } else if (*param).rc.i_qp_constant
-            < 51 as ::core::ffi::c_int
-                + 6 as ::core::ffi::c_int * (8 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
-        {
+            26i32 + crate::src::common::common::QP_BD_OFFSET
+        } else if (*param).rc.i_qp_constant < 51i32 + 6i32 * (8i32 - 8i32) {
             (*param).rc.i_qp_constant
         } else {
-            51 as ::core::ffi::c_int
-                + 6 as ::core::ffi::c_int * (8 as ::core::ffi::c_int - 8 as ::core::ffi::c_int)
+            51i32 + 6i32 * (8i32 - 8i32)
         };
-        (*pps).i_pic_init_qs = 26 as ::core::ffi::c_int + crate::src::common::common::QP_BD_OFFSET;
+        (*pps).i_pic_init_qs = 26i32 + crate::src::common::common::QP_BD_OFFSET;
         (*pps).i_chroma_qp_index_offset = (*param).analyse.i_chroma_qp_offset;
-        (*pps).b_deblocking_filter_control = 1 as ::core::ffi::c_int;
+        (*pps).b_deblocking_filter_control = 1i32;
         (*pps).b_constrained_intra_pred = (*param).b_constrained_intra;
-        (*pps).b_redundant_pic_cnt = 0 as ::core::ffi::c_int;
+        (*pps).b_redundant_pic_cnt = 0i32;
         (*pps).b_transform_8x8_mode = if (*param).analyse.b_transform_8x8 != 0 {
-            1 as ::core::ffi::c_int
+            1i32
         } else {
-            0 as ::core::ffi::c_int
+            0i32
         };
     }
 }
@@ -1901,37 +1353,24 @@ pub unsafe extern "C" fn x264_8_pps_write(
         bs_write_ue_big(s, (*pps).i_sps_id as ::core::ffi::c_uint);
         bs_write1(s, (*pps).b_cabac as crate::stdlib::uint32_t);
         bs_write1(s, (*pps).b_pic_order as crate::stdlib::uint32_t);
+        bs_write_ue_big(s, ((*pps).i_num_slice_groups - 1i32) as ::core::ffi::c_uint);
         bs_write_ue_big(
             s,
-            ((*pps).i_num_slice_groups - 1 as ::core::ffi::c_int) as ::core::ffi::c_uint,
+            ((*pps).i_num_ref_idx_l0_default_active - 1i32) as ::core::ffi::c_uint,
         );
         bs_write_ue_big(
             s,
-            ((*pps).i_num_ref_idx_l0_default_active - 1 as ::core::ffi::c_int)
-                as ::core::ffi::c_uint,
-        );
-        bs_write_ue_big(
-            s,
-            ((*pps).i_num_ref_idx_l1_default_active - 1 as ::core::ffi::c_int)
-                as ::core::ffi::c_uint,
+            ((*pps).i_num_ref_idx_l1_default_active - 1i32) as ::core::ffi::c_uint,
         );
         bs_write1(s, (*pps).b_weighted_pred as crate::stdlib::uint32_t);
-        bs_write(
+        bs_write(s, 2i32, (*pps).b_weighted_bipred as crate::stdlib::uint32_t);
+        bs_write_se(
             s,
-            2 as ::core::ffi::c_int,
-            (*pps).b_weighted_bipred as crate::stdlib::uint32_t,
+            (*pps).i_pic_init_qp - 26i32 - crate::src::common::common::QP_BD_OFFSET,
         );
         bs_write_se(
             s,
-            (*pps).i_pic_init_qp
-                - 26 as ::core::ffi::c_int
-                - crate::src::common::common::QP_BD_OFFSET,
-        );
-        bs_write_se(
-            s,
-            (*pps).i_pic_init_qs
-                - 26 as ::core::ffi::c_int
-                - crate::src::common::common::QP_BD_OFFSET,
+            (*pps).i_pic_init_qs - 26i32 - crate::src::common::common::QP_BD_OFFSET,
         );
         bs_write_se(s, (*pps).i_chroma_qp_index_offset);
         bs_write1(
@@ -1966,11 +1405,11 @@ pub unsafe extern "C" fn x264_8_pps_write(
                         sps,
                         crate::src::common::set::CQM_4IC as ::core::ffi::c_int,
                     );
-                    bs_write1(s, 0 as crate::stdlib::uint32_t);
-                    bs_write1(s, 0 as crate::stdlib::uint32_t);
-                    bs_write1(s, 0 as crate::stdlib::uint32_t);
+                    bs_write1(s, 0u32);
+                    bs_write1(s, 0u32);
+                    bs_write1(s, 0u32);
                 } else {
-                    bs_write1(s, 0 as crate::stdlib::uint32_t);
+                    bs_write1(s, 0u32);
                     scaling_list_write(
                         s,
                         sps,
@@ -1981,23 +1420,21 @@ pub unsafe extern "C" fn x264_8_pps_write(
                         sps,
                         crate::src::common::set::CQM_4PC as ::core::ffi::c_int,
                     );
-                    bs_write1(s, 0 as crate::stdlib::uint32_t);
+                    bs_write1(s, 0u32);
                 }
                 if (*pps).b_transform_8x8_mode != 0 {
                     scaling_list_write(
                         s,
                         sps,
-                        crate::src::common::set::CQM_8IY as ::core::ffi::c_int
-                            + 4 as ::core::ffi::c_int,
+                        crate::src::common::set::CQM_8IY as ::core::ffi::c_int + 4i32,
                     );
                     if (*sps).b_avcintra_4k != 0 {
-                        bs_write1(s, 0 as crate::stdlib::uint32_t);
+                        bs_write1(s, 0u32);
                     } else {
                         scaling_list_write(
                             s,
                             sps,
-                            crate::src::common::set::CQM_8PY as ::core::ffi::c_int
-                                + 4 as ::core::ffi::c_int,
+                            crate::src::common::set::CQM_8PY as ::core::ffi::c_int + 4i32,
                         );
                     }
                     if (*sps).i_chroma_format_idc
@@ -2006,17 +1443,15 @@ pub unsafe extern "C" fn x264_8_pps_write(
                         scaling_list_write(
                             s,
                             sps,
-                            crate::src::common::set::CQM_8IC as ::core::ffi::c_int
-                                + 4 as ::core::ffi::c_int,
+                            crate::src::common::set::CQM_8IC as ::core::ffi::c_int + 4i32,
                         );
                         scaling_list_write(
                             s,
                             sps,
-                            crate::src::common::set::CQM_8PC as ::core::ffi::c_int
-                                + 4 as ::core::ffi::c_int,
+                            crate::src::common::set::CQM_8PC as ::core::ffi::c_int + 4i32,
                         );
-                        bs_write1(s, 0 as crate::stdlib::uint32_t);
-                        bs_write1(s, 0 as crate::stdlib::uint32_t);
+                        bs_write1(s, 0u32);
+                        bs_write1(s, 0u32);
                     }
                 }
             }
@@ -2042,28 +1477,22 @@ pub unsafe extern "C" fn x264_8_sei_recovery_point_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
         bs_write_ue_big(&raw mut q, recovery_frame_cnt as ::core::ffi::c_uint);
-        bs_write1(&raw mut q, 1 as crate::stdlib::uint32_t);
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
-        bs_write(
-            &raw mut q,
-            2 as ::core::ffi::c_int,
-            0 as crate::stdlib::uint32_t,
-        );
+        bs_write1(&raw mut q, 1u32);
+        bs_write1(&raw mut q, 0u32);
+        bs_write(&raw mut q, 2i32, 0u32);
         bs_align_10(&raw mut q);
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_RECOVERY_POINT as ::core::ffi::c_int,
         );
     }
@@ -2075,46 +1504,29 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
 ) -> ::core::ffi::c_int {
     unsafe {
         static mut uuid: [crate::stdlib::uint8_t; 16] = [
-            0xdc as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0x45 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xe9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xbd as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xe6 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xd9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0x48 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xb7 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0x96 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0x2c as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xd8 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0x20 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xd9 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0x23 as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xee as ::core::ffi::c_int as crate::stdlib::uint8_t,
-            0xef as ::core::ffi::c_int as crate::stdlib::uint8_t,
+            0xdcu8, 0x45u8, 0xe9u8, 0xbdu8, 0xe6u8, 0xd9u8, 0x48u8, 0xb7u8, 0x96u8, 0x2cu8, 0xd8u8,
+            0x20u8, 0xd9u8, 0x23u8, 0xeeu8, 0xefu8,
         ];
-        let mut opts: *mut ::core::ffi::c_char = crate::src::common::base::x264_param2string(
-            &raw mut (*h).param as *mut _ as *mut crate::x264_h::x264_param_t,
-            0 as ::core::ffi::c_int,
-        );
+        let mut opts: *mut ::core::ffi::c_char =
+            crate::src::common::base::x264_param2string(&raw mut (*h).param, 0i32);
         let mut length: ::core::ffi::c_int = 0;
         if opts.is_null() {
-            return -(1 as ::core::ffi::c_int);
+            return -(1i32);
         }
         let mut payload: *mut ::core::ffi::c_char = crate::src::common::base::x264_malloc(
-            (200 as crate::__stddef_size_t_h::size_t).wrapping_add(crate::stdlib::strlen(opts))
-                as crate::stdlib::int64_t,
+            (200usize).wrapping_add(crate::stdlib::strlen(opts)) as crate::stdlib::int64_t,
         ) as *mut ::core::ffi::c_char;
         if payload.is_null() {
             crate::src::common::base::x264_free(opts as *mut ::core::ffi::c_void);
-            return -(1 as ::core::ffi::c_int);
+            return -(1i32);
         } else {
             crate::stdlib::memcpy(
                 payload as *mut ::core::ffi::c_void,
-                &raw const uuid as *const crate::stdlib::uint8_t as *const ::core::ffi::c_void,
-                16 as crate::__stddef_size_t_h::size_t,
+                &raw const uuid as *const ::core::ffi::c_void,
+                16usize,
             );
             crate::stdlib::sprintf(
-                payload.offset(16 as ::core::ffi::c_int as isize),
+                payload.offset(16isize),
                 b"x264 - core %d%s - H.264/MPEG-4 AVC codec - Copy%s 2003-2025 - http://www.videolan.org/x264.html - options: %s\0"
                     .as_ptr() as *const ::core::ffi::c_char,
                 crate::x264_h::X264_BUILD,
@@ -2126,9 +1538,7 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
                 },
                 opts,
             );
-            length = crate::stdlib::strlen(payload)
-                .wrapping_add(1 as crate::__stddef_size_t_h::size_t)
-                as ::core::ffi::c_int;
+            length = crate::stdlib::strlen(payload).wrapping_add(1usize) as ::core::ffi::c_int;
             x264_8_sei_write(
                 s,
                 payload as *mut crate::stdlib::uint8_t,
@@ -2137,7 +1547,7 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
             );
             crate::src::common::base::x264_free(opts as *mut ::core::ffi::c_void);
             crate::src::common::base::x264_free(payload as *mut ::core::ffi::c_void);
-            return 0 as ::core::ffi::c_int;
+            return 0i32;
         };
     }
 }
@@ -2158,13 +1568,11 @@ pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
         bs_write_ue_big(&raw mut q, (*sps).i_id as ::core::ffi::c_uint);
@@ -2184,7 +1592,7 @@ pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_BUFFERING_PERIOD as ::core::ffi::c_int,
         );
     }
@@ -2206,13 +1614,11 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
         if (*sps).vui.b_nal_hrd_parameters_present != 0
@@ -2232,12 +1638,12 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
         if (*sps).vui.b_pic_struct_present != 0 {
             bs_write(
                 &raw mut q,
-                4 as ::core::ffi::c_int,
-                ((*(*h).fenc).i_pic_struct - 1 as ::core::ffi::c_int) as crate::stdlib::uint32_t,
+                4i32,
+                ((*(*h).fenc).i_pic_struct - 1i32) as crate::stdlib::uint32_t,
             );
-            let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+            let mut i: ::core::ffi::c_int = 0i32;
             while i < num_clock_ts[(*(*h).fenc).i_pic_struct as usize] as ::core::ffi::c_int {
-                bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
+                bs_write1(&raw mut q, 0u32);
                 i += 1;
             }
         }
@@ -2245,7 +1651,7 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_PIC_TIMING as ::core::ffi::c_int,
         );
     }
@@ -2257,7 +1663,7 @@ pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
 ) {
     unsafe {
         let mut quincunx_sampling_flag: ::core::ffi::c_int =
-            ((*h).param.i_frame_packing == 0 as ::core::ffi::c_int) as ::core::ffi::c_int;
+            ((*h).param.i_frame_packing == 0i32) as ::core::ffi::c_int;
         let mut q: crate::src::common::bitstream::bs_t = crate::src::common::bitstream::bs_s {
             p_start: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
             p: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
@@ -2267,20 +1673,18 @@ pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
-        bs_write_ue_big(&raw mut q, 0 as ::core::ffi::c_uint);
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
+        bs_write_ue_big(&raw mut q, 0u32);
+        bs_write1(&raw mut q, 0u32);
         bs_write(
             &raw mut q,
-            7 as ::core::ffi::c_int,
+            7i32,
             (*h).param.i_frame_packing as crate::stdlib::uint32_t,
         );
         bs_write1(
@@ -2289,61 +1693,36 @@ pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
         );
         bs_write(
             &raw mut q,
-            6 as ::core::ffi::c_int,
-            ((*h).param.i_frame_packing != 6 as ::core::ffi::c_int) as ::core::ffi::c_int
-                as crate::stdlib::uint32_t,
+            6i32,
+            ((*h).param.i_frame_packing != 6i32) as crate::stdlib::uint32_t,
         );
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
+        bs_write1(&raw mut q, 0u32);
+        bs_write1(&raw mut q, 0u32);
+        bs_write1(&raw mut q, 0u32);
         bs_write1(
             &raw mut q,
-            ((*h).param.i_frame_packing == 5 as ::core::ffi::c_int
-                && (*(*h).fenc).i_frame & 1 as ::core::ffi::c_int == 0)
-                as ::core::ffi::c_int as crate::stdlib::uint32_t,
+            ((*h).param.i_frame_packing == 5i32 && (*(*h).fenc).i_frame & 1i32 == 0)
+                as crate::stdlib::uint32_t,
         );
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
-        if quincunx_sampling_flag == 0 as ::core::ffi::c_int
-            && (*h).param.i_frame_packing != 5 as ::core::ffi::c_int
-        {
-            bs_write(
-                &raw mut q,
-                4 as ::core::ffi::c_int,
-                0 as crate::stdlib::uint32_t,
-            );
-            bs_write(
-                &raw mut q,
-                4 as ::core::ffi::c_int,
-                0 as crate::stdlib::uint32_t,
-            );
-            bs_write(
-                &raw mut q,
-                4 as ::core::ffi::c_int,
-                0 as crate::stdlib::uint32_t,
-            );
-            bs_write(
-                &raw mut q,
-                4 as ::core::ffi::c_int,
-                0 as crate::stdlib::uint32_t,
-            );
+        bs_write1(&raw mut q, 0u32);
+        bs_write1(&raw mut q, 0u32);
+        if quincunx_sampling_flag == 0i32 && (*h).param.i_frame_packing != 5i32 {
+            bs_write(&raw mut q, 4i32, 0u32);
+            bs_write(&raw mut q, 4i32, 0u32);
+            bs_write(&raw mut q, 4i32, 0u32);
+            bs_write(&raw mut q, 4i32, 0u32);
         }
-        bs_write(
-            &raw mut q,
-            8 as ::core::ffi::c_int,
-            0 as crate::stdlib::uint32_t,
-        );
+        bs_write(&raw mut q, 8i32, 0u32);
         bs_write_ue_big(
             &raw mut q,
-            ((*h).param.i_frame_packing != 5 as ::core::ffi::c_int) as ::core::ffi::c_int
-                as ::core::ffi::c_uint,
+            ((*h).param.i_frame_packing != 5i32) as ::core::ffi::c_uint,
         );
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
+        bs_write1(&raw mut q, 0u32);
         bs_align_10(&raw mut q);
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_FRAME_PACKING as ::core::ffi::c_int,
         );
     }
@@ -2363,53 +1742,51 @@ pub unsafe extern "C" fn x264_8_sei_mastering_display_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_green_x as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_green_y as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_blue_x as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_blue_y as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_red_x as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_red_y as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_white_x as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.mastering_display.i_white_y as crate::stdlib::uint32_t,
         );
         bs_write32(
@@ -2424,7 +1801,7 @@ pub unsafe extern "C" fn x264_8_sei_mastering_display_write(
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_MASTERING_DISPLAY as ::core::ffi::c_int,
         );
     }
@@ -2444,30 +1821,28 @@ pub unsafe extern "C" fn x264_8_sei_content_light_level_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.content_light_level.i_max_cll as crate::stdlib::uint32_t,
         );
         bs_write(
             &raw mut q,
-            16 as ::core::ffi::c_int,
+            16i32,
             (*h).param.content_light_level.i_max_fall as crate::stdlib::uint32_t,
         );
         bs_align_10(&raw mut q);
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_CONTENT_LIGHT_LEVEL as ::core::ffi::c_int,
         );
     }
@@ -2487,25 +1862,23 @@ pub unsafe extern "C" fn x264_8_sei_alternative_transfer_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
         bs_write(
             &raw mut q,
-            8 as ::core::ffi::c_int,
+            8i32,
             (*h).param.i_alternative_transfer as crate::stdlib::uint32_t,
         );
         bs_align_10(&raw mut q);
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_ALTERNATIVE_TRANSFER as ::core::ffi::c_int,
         );
     }
@@ -2518,9 +1891,9 @@ pub unsafe extern "C" fn x264_8_filler_write(
 ) {
     unsafe {
         bs_realign(s);
-        let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut i: ::core::ffi::c_int = 0i32;
         while i < filler {
-            bs_write(s, 8 as ::core::ffi::c_int, 0xff as crate::stdlib::uint32_t);
+            bs_write(s, 8i32, 0xffu32);
             i += 1;
         }
         bs_rbsp_trailing(s);
@@ -2543,44 +1916,40 @@ pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
             i_bits_encoded: 0,
         };
         let mut tmp_buf: [crate::stdlib::uint8_t; 100] = [0; 100];
-        (*(&raw mut tmp_buf as *mut crate::stdlib::uint8_t
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = 0 as crate::stdlib::uint32_t;
+        (*(&raw mut tmp_buf as *mut crate::src::common::base::x264_union32_t)).i = 0u32;
         bs_init(
             &raw mut q,
-            &raw mut tmp_buf as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            100 as ::core::ffi::c_int,
+            &raw mut tmp_buf as *mut ::core::ffi::c_void,
+            100i32,
         );
         bs_realign(&raw mut q);
-        bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
+        bs_write1(&raw mut q, 0u32);
         bs_write_ue_big(&raw mut q, (*sh).i_frame_num as ::core::ffi::c_uint);
         if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).b_frame_mbs_only == 0
         {
-            bs_write1(&raw mut q, 0 as crate::stdlib::uint32_t);
+            bs_write1(&raw mut q, 0u32);
         }
         bs_write1(
             &raw mut q,
-            ((*sh).i_mmco_command_count > 0 as ::core::ffi::c_int) as ::core::ffi::c_int
-                as crate::stdlib::uint32_t,
+            ((*sh).i_mmco_command_count > 0i32) as crate::stdlib::uint32_t,
         );
-        if (*sh).i_mmco_command_count > 0 as ::core::ffi::c_int {
-            let mut i: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        if (*sh).i_mmco_command_count > 0i32 {
+            let mut i: ::core::ffi::c_int = 0i32;
             while i < (*sh).i_mmco_command_count {
-                bs_write_ue_big(&raw mut q, 1 as ::core::ffi::c_uint);
+                bs_write_ue_big(&raw mut q, 1u32);
                 bs_write_ue_big(
                     &raw mut q,
-                    ((*sh).mmco[i as usize].i_difference_of_pic_nums - 1 as ::core::ffi::c_int)
-                        as ::core::ffi::c_uint,
+                    ((*sh).mmco[i as usize].i_difference_of_pic_nums - 1i32) as ::core::ffi::c_uint,
                 );
                 i += 1;
             }
-            bs_write_ue_big(&raw mut q, 0 as ::core::ffi::c_uint);
+            bs_write_ue_big(&raw mut q, 0u32);
         }
         bs_align_10(&raw mut q);
         x264_8_sei_write(
             s,
             &raw mut tmp_buf as *mut crate::stdlib::uint8_t,
-            bs_pos(&raw mut q) / 8 as ::core::ffi::c_int,
+            bs_pos(&raw mut q) / 8i32,
             crate::src::common::base::SEI_DEC_REF_PIC_MARKING as ::core::ffi::c_int,
         );
     }
@@ -2593,53 +1962,52 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
     unsafe {
         let mut data: [crate::stdlib::uint8_t; 512] = [0; 512];
         let mut msg: *const ::core::ffi::c_char = b"UMID\0".as_ptr() as *const ::core::ffi::c_char;
-        let len: ::core::ffi::c_int = 497 as ::core::ffi::c_int;
+        let len: ::core::ffi::c_int = 497i32;
         crate::stdlib::memset(
-            &raw mut data as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            0xff as ::core::ffi::c_int,
+            &raw mut data as *mut ::core::ffi::c_void,
+            0xffi32,
             len as crate::__stddef_size_t_h::size_t,
         );
         crate::stdlib::memcpy(
-            &raw mut data as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            &raw const avcintra_uuid as *const crate::stdlib::uint8_t as *const ::core::ffi::c_void,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>()
-                as crate::__stddef_size_t_h::size_t,
+            &raw mut data as *mut ::core::ffi::c_void,
+            &raw const avcintra_uuid as *const ::core::ffi::c_void,
+            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>(),
         );
         crate::stdlib::memcpy(
-            (&raw mut data as *mut crate::stdlib::uint8_t).offset(16 as ::core::ffi::c_int as isize)
+            (&raw mut data as *mut crate::stdlib::uint8_t).offset(16isize)
                 as *mut ::core::ffi::c_void,
             msg as *const ::core::ffi::c_void,
             crate::stdlib::strlen(msg),
         );
-        data[20 as ::core::ffi::c_int as usize] = 0x13 as crate::stdlib::uint8_t;
-        data[26 as ::core::ffi::c_int as usize] = 0 as crate::stdlib::uint8_t;
-        data[25 as ::core::ffi::c_int as usize] = data[26 as ::core::ffi::c_int as usize];
-        data[23 as ::core::ffi::c_int as usize] = data[25 as ::core::ffi::c_int as usize];
-        data[22 as ::core::ffi::c_int as usize] = data[23 as ::core::ffi::c_int as usize];
-        data[28 as ::core::ffi::c_int as usize] = 0x14 as crate::stdlib::uint8_t;
-        data[34 as ::core::ffi::c_int as usize] = 0 as crate::stdlib::uint8_t;
-        data[33 as ::core::ffi::c_int as usize] = data[34 as ::core::ffi::c_int as usize];
-        data[31 as ::core::ffi::c_int as usize] = data[33 as ::core::ffi::c_int as usize];
-        data[30 as ::core::ffi::c_int as usize] = data[31 as ::core::ffi::c_int as usize];
-        data[36 as ::core::ffi::c_int as usize] = 0x60 as crate::stdlib::uint8_t;
-        data[41 as ::core::ffi::c_int as usize] = 0x22 as crate::stdlib::uint8_t;
-        data[60 as ::core::ffi::c_int as usize] = 0x62 as crate::stdlib::uint8_t;
-        data[66 as ::core::ffi::c_int as usize] = 0 as crate::stdlib::uint8_t;
-        data[65 as ::core::ffi::c_int as usize] = data[66 as ::core::ffi::c_int as usize];
-        data[63 as ::core::ffi::c_int as usize] = data[65 as ::core::ffi::c_int as usize];
-        data[62 as ::core::ffi::c_int as usize] = data[63 as ::core::ffi::c_int as usize];
-        data[68 as ::core::ffi::c_int as usize] = 0x63 as crate::stdlib::uint8_t;
-        data[74 as ::core::ffi::c_int as usize] = 0 as crate::stdlib::uint8_t;
-        data[73 as ::core::ffi::c_int as usize] = data[74 as ::core::ffi::c_int as usize];
-        data[71 as ::core::ffi::c_int as usize] = data[73 as ::core::ffi::c_int as usize];
-        data[70 as ::core::ffi::c_int as usize] = data[71 as ::core::ffi::c_int as usize];
+        data[20usize] = 0x13u8;
+        data[26usize] = 0u8;
+        data[25usize] = data[26usize];
+        data[23usize] = data[25usize];
+        data[22usize] = data[23usize];
+        data[28usize] = 0x14u8;
+        data[34usize] = 0u8;
+        data[33usize] = data[34usize];
+        data[31usize] = data[33usize];
+        data[30usize] = data[31usize];
+        data[36usize] = 0x60u8;
+        data[41usize] = 0x22u8;
+        data[60usize] = 0x62u8;
+        data[66usize] = 0u8;
+        data[65usize] = data[66usize];
+        data[63usize] = data[65usize];
+        data[62usize] = data[63usize];
+        data[68usize] = 0x63u8;
+        data[74usize] = 0u8;
+        data[73usize] = data[74usize];
+        data[71usize] = data[73usize];
+        data[70usize] = data[71usize];
         x264_8_sei_write(
             &raw mut (*h).out.bs,
             &raw mut data as *mut crate::stdlib::uint8_t,
             len,
             crate::src::common::base::SEI_USER_DATA_UNREGISTERED as ::core::ffi::c_int,
         );
-        return 0 as ::core::ffi::c_int;
+        return 0i32;
     }
 }
 #[no_mangle]
@@ -2651,31 +2019,30 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
     unsafe {
         let mut data: [crate::stdlib::uint8_t; 6000] = [0; 6000];
         let mut msg: *const ::core::ffi::c_char = b"VANC\0".as_ptr() as *const ::core::ffi::c_char;
-        if len < 0 as ::core::ffi::c_int
+        if len < 0i32
             || len as ::core::ffi::c_uint as usize
-                > ::core::mem::size_of::<[crate::stdlib::uint8_t; 6000]>() as usize
+                > ::core::mem::size_of::<[crate::stdlib::uint8_t; 6000]>()
         {
             crate::src::common::common::x264_8_log(
-                h as *mut crate::src::common::common::x264_t,
+                h,
                 crate::x264_h::X264_LOG_ERROR_1,
                 b"AVC-Intra SEI is too large (%d)\n\0".as_ptr() as *const ::core::ffi::c_char,
                 len,
             );
-            return -(1 as ::core::ffi::c_int);
+            return -(1i32);
         }
         crate::stdlib::memset(
-            &raw mut data as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            0xff as ::core::ffi::c_int,
+            &raw mut data as *mut ::core::ffi::c_void,
+            0xffi32,
             len as crate::__stddef_size_t_h::size_t,
         );
         crate::stdlib::memcpy(
-            &raw mut data as *mut crate::stdlib::uint8_t as *mut ::core::ffi::c_void,
-            &raw const avcintra_uuid as *const crate::stdlib::uint8_t as *const ::core::ffi::c_void,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>()
-                as crate::__stddef_size_t_h::size_t,
+            &raw mut data as *mut ::core::ffi::c_void,
+            &raw const avcintra_uuid as *const ::core::ffi::c_void,
+            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>(),
         );
         crate::stdlib::memcpy(
-            (&raw mut data as *mut crate::stdlib::uint8_t).offset(16 as ::core::ffi::c_int as isize)
+            (&raw mut data as *mut crate::stdlib::uint8_t).offset(16isize)
                 as *mut ::core::ffi::c_void,
             msg as *const ::core::ffi::c_void,
             crate::stdlib::strlen(msg),
@@ -2686,7 +2053,7 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
             len,
             crate::src::common::base::SEI_USER_DATA_UNREGISTERED as ::core::ffi::c_int,
         );
-        return 0 as ::core::ffi::c_int;
+        return 0i32;
     }
 }
 #[no_mangle]
@@ -2695,7 +2062,7 @@ pub unsafe extern "C" fn x264_8_validate_levels(
     mut verbose: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut ret: ::core::ffi::c_int = 0 as ::core::ffi::c_int;
+        let mut ret: ::core::ffi::c_int = 0i32;
         let mut mbs: ::core::ffi::c_int =
             (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_width
                 * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_height;
@@ -2708,41 +2075,37 @@ pub unsafe extern "C" fn x264_8_validate_levels(
             .i_profile_idc
             >= crate::src::common::base::PROFILE_HIGH422 as ::core::ffi::c_int
         {
-            16 as ::core::ffi::c_int
+            16i32
         } else if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_profile_idc
             == crate::src::common::base::PROFILE_HIGH10 as ::core::ffi::c_int
         {
-            12 as ::core::ffi::c_int
+            12i32
         } else if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_profile_idc
             == crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
         {
-            5 as ::core::ffi::c_int
+            5i32
         } else {
-            4 as ::core::ffi::c_int
+            4i32
         };
         let mut l: *const crate::x264_h::x264_level_t =
             &raw const crate::src::common::tables::x264_levels
                 as *const crate::x264_h::x264_level_t;
-        while (*l).level_idc as ::core::ffi::c_int != 0 as ::core::ffi::c_int
+        while (*l).level_idc as ::core::ffi::c_int != 0i32
             && (*l).level_idc as ::core::ffi::c_int != (*h).param.i_level_idc
         {
             l = l.offset(1);
         }
-        if (*l).frame_size < mbs as crate::stdlib::int32_t
-            || ((*l).frame_size * 8 as crate::stdlib::int32_t)
+        if (*l).frame_size < mbs
+            || ((*l).frame_size * 8i32)
                 < (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_width
-                    as crate::stdlib::int32_t
                     * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_width
-                        as crate::stdlib::int32_t
-            || ((*l).frame_size * 8 as crate::stdlib::int32_t)
+            || ((*l).frame_size * 8i32)
                 < (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_height
-                    as crate::stdlib::int32_t
                     * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_height
-                        as crate::stdlib::int32_t
         {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"frame MB size (%dx%d) > level limit (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -2751,12 +2114,12 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                     (*l).frame_size,
                 );
             }
-            ret = 1 as ::core::ffi::c_int;
+            ret = 1i32;
         }
-        if dpb as crate::stdlib::int32_t > (*l).dpb {
+        if dpb > (*l).dpb {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"DPB size (%d frames, %d mbs) > level limit (%d frames, %d mbs)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -2764,59 +2127,54 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                         .vui
                         .i_max_dec_frame_buffering,
                     dpb,
-                    (*l).dpb / mbs as crate::stdlib::int32_t,
+                    (*l).dpb / mbs,
                     (*l).dpb,
                 );
             }
-            ret = 1 as ::core::ffi::c_int;
+            ret = 1i32;
         }
-        if (*h).param.rc.i_vbv_max_bitrate as crate::stdlib::int32_t
-            > (*l).bitrate * cbp_factor as crate::stdlib::int32_t / 4 as crate::stdlib::int32_t
-        {
+        if (*h).param.rc.i_vbv_max_bitrate > (*l).bitrate * cbp_factor / 4i32 {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"VBV bitrate (%ld) > level limit (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
                     (*h).param.rc.i_vbv_max_bitrate as crate::stdlib::int64_t,
-                    (*l).bitrate * cbp_factor as crate::stdlib::int32_t
-                        / 4 as crate::stdlib::int32_t,
+                    (*l).bitrate * cbp_factor / 4i32,
                 );
             }
-            ret = 1 as ::core::ffi::c_int;
+            ret = 1i32;
         }
-        if (*h).param.rc.i_vbv_buffer_size as crate::stdlib::int32_t
-            > (*l).cpb * cbp_factor as crate::stdlib::int32_t / 4 as crate::stdlib::int32_t
-        {
+        if (*h).param.rc.i_vbv_buffer_size > (*l).cpb * cbp_factor / 4i32 {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"VBV buffer (%ld) > level limit (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
                     (*h).param.rc.i_vbv_buffer_size as crate::stdlib::int64_t,
-                    (*l).cpb * cbp_factor as crate::stdlib::int32_t / 4 as crate::stdlib::int32_t,
+                    (*l).cpb * cbp_factor / 4i32,
                 );
             }
-            ret = 1 as ::core::ffi::c_int;
+            ret = 1i32;
         }
         if (*h).param.analyse.i_mv_range > (*l).mv_range as ::core::ffi::c_int {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"MV range (%ld) > level limit (%d)\n\0".as_ptr() as *const ::core::ffi::c_char,
                     (*h).param.analyse.i_mv_range as crate::stdlib::int64_t,
                     (*l).mv_range as ::core::ffi::c_int,
                 );
             }
-            ret = 1 as ::core::ffi::c_int;
+            ret = 1i32;
         }
         if (*h).param.b_interlaced > ((*l).frame_only == 0) as ::core::ffi::c_int {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"interlaced (%ld) > level limit (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -2824,12 +2182,12 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                     ((*l).frame_only == 0) as ::core::ffi::c_int,
                 );
             }
-            ret = 1 as ::core::ffi::c_int;
+            ret = 1i32;
         }
         if (*h).param.b_fake_interlaced > ((*l).frame_only == 0) as ::core::ffi::c_int {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
-                    h as *mut crate::src::common::common::x264_t,
+                    h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"fake interlaced (%ld) > level limit (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
@@ -2837,16 +2195,16 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                     ((*l).frame_only == 0) as ::core::ffi::c_int,
                 );
             }
-            ret = 1 as ::core::ffi::c_int;
+            ret = 1i32;
         }
-        if (*h).param.i_fps_den > 0 as crate::stdlib::uint32_t {
+        if (*h).param.i_fps_den > 0u32 {
             if mbs as crate::stdlib::int64_t * (*h).param.i_fps_num as crate::stdlib::int64_t
                 / (*h).param.i_fps_den as crate::stdlib::int64_t
                 > (*l).mbps as crate::stdlib::int64_t
             {
                 if verbose != 0 {
                     crate::src::common::common::x264_8_log(
-                        h as *mut crate::src::common::common::x264_t,
+                        h,
                         crate::x264_h::X264_LOG_WARNING_1,
                         b"MB rate (%ld) > level limit (%d)\n\0".as_ptr()
                             as *const ::core::ffi::c_char,
@@ -2856,7 +2214,7 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                         (*l).mbps,
                     );
                 }
-                ret = 1 as ::core::ffi::c_int;
+                ret = 1i32;
             }
         }
         return ret;
