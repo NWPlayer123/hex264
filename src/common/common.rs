@@ -467,14 +467,14 @@ pub unsafe extern "C" fn x264_8_log(
                     crate::__stddef_null_h::NULL,
                     i_level,
                     psz_fmt,
-                    arg.as_va_list(),
+                    arg,
                 );
             } else {
                 (*h).param.pf_log.expect("non-null function pointer")(
                     (*h).param.p_log_private,
                     i_level,
                     psz_fmt,
-                    arg.as_va_list(),
+                    arg,
                 );
             }
         }

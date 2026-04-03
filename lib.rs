@@ -6,9 +6,7 @@
 #![allow(unused_mut)]
 #![deny(unsafe_op_in_unsafe_fn)]
 #![feature(c_variadic)]
-#![feature(core_intrinsics)]
 #![feature(extern_types)]
-#![feature(raw_ref_op)]
 #![feature(register_tool)]
 #![register_tool(c2rust)]
 pub mod __stdarg___gnuc_va_list_h {

@@ -169,15 +169,14 @@ pub struct x264_deblock_function_t {
     >,
 }
 pub mod osdep_h {
+    use std::sync::atomic::{AtomicI32, Ordering};
     #[inline(always)]
     pub unsafe extern "C" fn x264_pthread_fetch_and_add(
         mut val: *mut ::core::ffi::c_int,
         mut add: ::core::ffi::c_int,
         mut _mutex: *mut crate::stdlib::pthread_mutex_t,
     ) -> ::core::ffi::c_int {
-        unsafe {
-            return ::core::intrinsics::atomic_xadd_seqcst(val, add);
-        }
+        unsafe { (*AtomicI32::from_ptr(val)).fetch_add(add, Ordering::SeqCst) }
     }
 }
 use crate::src::common::frame::osdep_h::x264_pthread_fetch_and_add;

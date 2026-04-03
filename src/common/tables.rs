@@ -667,18 +667,16 @@ pub static mut x264_cqm_flat16: [crate::stdlib::uint8_t; 64] = [
     16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
 ];
 #[no_mangle]
-pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = unsafe {
-    [
-        &raw const x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
-        &raw const x264_cqm_jvt4p as *const crate::stdlib::uint8_t,
-        &raw const x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
-        &raw const x264_cqm_jvt4p as *const crate::stdlib::uint8_t,
-        &raw const x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
-        &raw const x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
-        &raw const x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
-        &raw const x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
-    ]
-};
+pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = [
+    &raw const x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
+    &raw const x264_cqm_jvt4p as *const crate::stdlib::uint8_t,
+    &raw const x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
+    &raw const x264_cqm_jvt4p as *const crate::stdlib::uint8_t,
+    &raw const x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
+    &raw const x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
+    &raw const x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
+    &raw const x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
+];
 #[no_mangle]
 pub static mut x264_cqm_avci50_4ic: [crate::stdlib::uint8_t; 16] = [
     16u8, 22u8, 28u8, 40u8, 22u8, 28u8, 40u8, 44u8, 28u8, 40u8, 44u8, 48u8, 40u8, 44u8, 48u8, 60u8,

@@ -1,252 +1,197 @@
-// =============== BEGIN cpu_h ================
-#[derive(Copy, Clone)]
-#[repr(C)]
-pub struct x264_cpu_name_t {
-    pub name: *const ::core::ffi::c_char,
-    pub flags: crate::stdlib::uint32_t,
-}
-#[no_mangle]
-pub static mut x264_cpu_names: [crate::src::common::cpu::x264_cpu_name_t; 28] = [
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"MMX2\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX | crate::x264_h::X264_CPU_MMX2,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"MMXEXT\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX | crate::x264_h::X264_CPU_MMX2,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE2Slow\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE2_IS_SLOW,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE2\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE2Fast\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE2_IS_FAST,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"LZCNT\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_LZCNT,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE3\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSSE3\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE4.1\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE4\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SSE4.2\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"AVX\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"XOP\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX
-            | crate::x264_h::X264_CPU_XOP,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"FMA4\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX
-            | crate::x264_h::X264_CPU_FMA4,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"FMA3\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX
-            | crate::x264_h::X264_CPU_FMA3,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"BMI1\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX
-            | crate::x264_h::X264_CPU_LZCNT
-            | crate::x264_h::X264_CPU_BMI1,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"BMI2\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX
-            | crate::x264_h::X264_CPU_LZCNT
-            | crate::x264_h::X264_CPU_BMI1
-            | crate::x264_h::X264_CPU_BMI2,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"AVX2\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX
-            | crate::x264_h::X264_CPU_FMA3
-            | crate::x264_h::X264_CPU_LZCNT
-            | crate::x264_h::X264_CPU_BMI1
-            | crate::x264_h::X264_CPU_BMI2
-            | crate::x264_h::X264_CPU_AVX2,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"AVX512\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_MMX
-            | crate::x264_h::X264_CPU_MMX2
-            | crate::x264_h::X264_CPU_SSE
-            | crate::x264_h::X264_CPU_SSE2
-            | crate::x264_h::X264_CPU_SSE3
-            | crate::x264_h::X264_CPU_SSSE3
-            | crate::x264_h::X264_CPU_SSE4
-            | crate::x264_h::X264_CPU_SSE42
-            | crate::x264_h::X264_CPU_AVX
-            | crate::x264_h::X264_CPU_FMA3
-            | crate::x264_h::X264_CPU_LZCNT
-            | crate::x264_h::X264_CPU_BMI1
-            | crate::x264_h::X264_CPU_BMI2
-            | crate::x264_h::X264_CPU_AVX2
-            | crate::x264_h::X264_CPU_AVX512,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"Cache32\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_CACHELINE_32,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"Cache64\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_CACHELINE_64,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SlowAtom\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_SLOW_ATOM,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SlowPshufb\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_SLOW_PSHUFB,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SlowPalignr\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_SLOW_PALIGNR,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"SlowShuffle\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_SLOW_SHUFFLE,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"UnalignedStack\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: crate::x264_h::X264_CPU_STACK_MOD4,
-    },
-    crate::src::common::cpu::x264_cpu_name_t {
-        name: b"\0".as_ptr() as *const ::core::ffi::c_char,
-        flags: 0u32,
-    },
+use crate::x264_h::{
+    X264_CPU_AVX, X264_CPU_AVX2, X264_CPU_AVX512, X264_CPU_BMI1, X264_CPU_BMI2,
+    X264_CPU_CACHELINE_32, X264_CPU_CACHELINE_64, X264_CPU_FMA3, X264_CPU_FMA4, X264_CPU_LZCNT,
+    X264_CPU_MMX, X264_CPU_MMX2, X264_CPU_SLOW_ATOM, X264_CPU_SLOW_PALIGNR, X264_CPU_SLOW_PSHUFB,
+    X264_CPU_SLOW_SHUFFLE, X264_CPU_SSE, X264_CPU_SSE2, X264_CPU_SSE2_IS_FAST,
+    X264_CPU_SSE2_IS_SLOW, X264_CPU_SSE3, X264_CPU_SSE4, X264_CPU_SSE42, X264_CPU_SSSE3,
+    X264_CPU_STACK_MOD4, X264_CPU_XOP,
+};
+pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
+    (c"MMX2", X264_CPU_MMX | X264_CPU_MMX2),
+    (c"MMXEXT", X264_CPU_MMX | X264_CPU_MMX2),
+    (c"SSE", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE),
+    (
+        c"SSE2Slow",
+        X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE2_IS_SLOW,
+    ),
+    (
+        c"SSE2",
+        X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2,
+    ),
+    (
+        c"SSE2Fast",
+        X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE2_IS_FAST,
+    ),
+    (
+        c"LZCNT",
+        X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_LZCNT,
+    ),
+    (
+        c"SSE3",
+        X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE3,
+    ),
+    (
+        c"SSSE3",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3,
+    ),
+    (
+        c"SSE4.1",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4,
+    ),
+    (
+        c"SSE4",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4,
+    ),
+    (
+        c"SSE4.2",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42,
+    ),
+    (
+        c"AVX",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX,
+    ),
+    (
+        c"XOP",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX
+            | X264_CPU_XOP,
+    ),
+    (
+        c"FMA4",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX
+            | X264_CPU_FMA4,
+    ),
+    (
+        c"FMA3",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX
+            | X264_CPU_FMA3,
+    ),
+    (
+        c"BMI1",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX
+            | X264_CPU_LZCNT
+            | X264_CPU_BMI1,
+    ),
+    (
+        c"BMI2",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX
+            | X264_CPU_LZCNT
+            | X264_CPU_BMI1
+            | X264_CPU_BMI2,
+    ),
+    (
+        c"AVX2",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX
+            | X264_CPU_FMA3
+            | X264_CPU_LZCNT
+            | X264_CPU_BMI1
+            | X264_CPU_BMI2
+            | X264_CPU_AVX2,
+    ),
+    (
+        c"AVX512",
+        X264_CPU_MMX
+            | X264_CPU_MMX2
+            | X264_CPU_SSE
+            | X264_CPU_SSE2
+            | X264_CPU_SSE3
+            | X264_CPU_SSSE3
+            | X264_CPU_SSE4
+            | X264_CPU_SSE42
+            | X264_CPU_AVX
+            | X264_CPU_FMA3
+            | X264_CPU_LZCNT
+            | X264_CPU_BMI1
+            | X264_CPU_BMI2
+            | X264_CPU_AVX2
+            | X264_CPU_AVX512,
+    ),
+    (c"Cache32", X264_CPU_CACHELINE_32),
+    (c"Cache64", X264_CPU_CACHELINE_64),
+    (c"SlowAtom", X264_CPU_SLOW_ATOM),
+    (c"SlowPshufb", X264_CPU_SLOW_PSHUFB),
+    (c"SlowPalignr", X264_CPU_SLOW_PALIGNR),
+    (c"SlowShuffle", X264_CPU_SLOW_SHUFFLE),
+    (c"UnalignedStack", X264_CPU_STACK_MOD4),
 ];
 #[no_mangle]
 pub extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {

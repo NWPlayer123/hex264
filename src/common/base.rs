@@ -313,7 +313,7 @@ pub unsafe extern "C" fn x264_log_default(
             b"x264 [%s]: \0".as_ptr() as *const ::core::ffi::c_char,
             psz_prefix,
         );
-        crate::stdlib::vfprintf(crate::stdlib::stderr, psz_fmt, arg.as_va_list());
+        crate::stdlib::vfprintf(crate::stdlib::stderr, psz_fmt, arg);
     }
 }
 #[no_mangle]
@@ -324,12 +324,7 @@ pub unsafe extern "C" fn x264_log_internal(
 ) {
     unsafe {
         let mut arg = c2rust_args.clone();
-        x264_log_default(
-            crate::__stddef_null_h::NULL,
-            i_level,
-            psz_fmt,
-            arg.as_va_list(),
-        );
+        x264_log_default(crate::__stddef_null_h::NULL, i_level, psz_fmt, arg);
     }
 }
 #[no_mangle]
@@ -1593,41 +1588,16 @@ pub unsafe extern "C" fn x264_param_parse(
                     loop {
                         let mut tok = ::core::ptr::null_mut::<::core::ffi::c_char>();
                         let mut saveptr = ::core::ptr::null_mut::<::core::ffi::c_char>();
-                        let mut i = 0i32;
-                        tok = crate::stdlib::strtok_r(
-                            init,
-                            b",\0".as_ptr() as *const ::core::ffi::c_char,
-                            &raw mut saveptr,
-                        );
+                        tok = libc::strtok_r(init, c",".as_ptr(), &raw mut saveptr);
                         if tok.is_null() {
                             break;
                         }
-                        while (*(&raw const crate::src::common::cpu::x264_cpu_names
-                            as *const crate::src::common::cpu::x264_cpu_name_t)
-                            .offset(i as isize))
-                        .flags
-                            != 0
-                            && crate::stdlib::strcasecmp(
-                                tok,
-                                (*(&raw const crate::src::common::cpu::x264_cpu_names
-                                    as *const crate::src::common::cpu::x264_cpu_name_t)
-                                    .offset(i as isize))
-                                .name,
-                            ) != 0
-                        {
-                            i += 1;
-                        }
-                        (*p).cpu |= (*(&raw const crate::src::common::cpu::x264_cpu_names
-                            as *const crate::src::common::cpu::x264_cpu_name_t)
-                            .offset(i as isize))
-                        .flags;
-                        if (*(&raw const crate::src::common::cpu::x264_cpu_names
-                            as *const crate::src::common::cpu::x264_cpu_name_t)
-                            .offset(i as isize))
-                        .flags
-                            == 0
-                        {
-                            b_error = 1i32;
+                        let found = crate::src::common::cpu::X264_CPU_NAMES
+                            .iter()
+                            .find(|(name, _)| libc::strcasecmp(tok, name.as_ptr()) == 0);
+                        match found {
+                            Some((_, flags)) => (*p).cpu |= flags,
+                            None => b_error = 1,
                         }
                         init = ::core::ptr::null_mut::<::core::ffi::c_char>();
                     }

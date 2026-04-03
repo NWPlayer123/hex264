@@ -3089,6 +3089,7 @@ unsafe extern "C" fn refine_subpel(
             }
             bcost >>= 6i32;
         }
+        #[allow(unpredictable_function_pointer_comparisons)]
         if b_refine_qpel == 0
             && ((*h).pixf.mbcmp_unaligned[0usize] != (*h).pixf.fpelcmp[0usize] || b_chroma_me != 0)
         {

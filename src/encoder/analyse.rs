@@ -16075,6 +16075,7 @@ unsafe extern "C" fn mb_analyse_intra(
             as *mut crate::stdlib::uint16_t)
             .offset(8isize);
         if flags & crate::x264_h::X264_ANALYSE_I8x8 != 0 {
+            #[allow(unpredictable_function_pointer_comparisons)]
             let mut sa8d = if (*h).pixf.mbcmp[0usize] == (*h).pixf.satd[0usize] {
                 (*h).pixf.sa8d[crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int as usize]
             } else {
