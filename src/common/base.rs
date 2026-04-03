@@ -706,7 +706,7 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut crate::x264_h::x264_
         (*param).cpu = crate::src::common::cpu::x264_cpu_detect();
         (*param).i_threads = crate::x264_h::X264_THREADS_AUTO;
         (*param).i_lookahead_threads = crate::x264_h::X264_THREADS_AUTO;
-        (*param).b_deterministic = 1i32;
+        (*param).deterministic = true;
         (*param).i_sync_lookahead = crate::x264_h::X264_SYNC_LOOKAHEAD_AUTO;
         (*param).i_csp = if crate::x264_config_h::X264_CHROMA_FORMAT != 0 {
             crate::x264_config_h::X264_CHROMA_FORMAT
@@ -719,7 +719,7 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut crate::x264_h::x264_
         (*param).vui.i_sar_height = 0i32;
         (*param).vui.i_overscan = 0i32;
         (*param).vui.i_vidformat = 5i32;
-        (*param).vui.b_fullrange = -(1i32);
+        (*param).vui.fullrange = None;
         (*param).vui.i_colorprim = 2i32;
         (*param).vui.i_transfer = 2i32;
         (*param).vui.i_colmatrix = -(1i32);
@@ -739,12 +739,12 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut crate::x264_h::x264_
         (*param).i_bframe_adaptive = crate::x264_h::X264_B_ADAPT_FAST;
         (*param).i_bframe_bias = 0i32;
         (*param).i_bframe_pyramid = crate::x264_h::X264_B_PYRAMID_NORMAL;
-        (*param).b_interlaced = 0i32;
-        (*param).b_constrained_intra = 0i32;
-        (*param).b_deblocking_filter = 1i32;
+        (*param).interlaced = false;
+        (*param).constrained_intra = false;
+        (*param).deblocking_filter = true;
         (*param).i_deblocking_filter_alphac0 = 0i32;
         (*param).i_deblocking_filter_beta = 0i32;
-        (*param).b_cabac = 1i32;
+        (*param).cabac = true;
         (*param).i_cabac_init_idc = 0i32;
         (*param).rc.i_rc_method = crate::x264_h::X264_RC_CRF;
         (*param).rc.i_bitrate = 0i32;
@@ -762,15 +762,15 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut crate::x264_h::x264_
         (*param).rc.i_aq_mode = crate::x264_h::X264_AQ_VARIANCE;
         (*param).rc.f_aq_strength = 1.0f32;
         (*param).rc.i_lookahead = 40i32;
-        (*param).rc.b_stat_write = 0i32;
+        (*param).rc.stat_write = false;
         (*param).rc.psz_stat_out = b"x264_2pass.log\0".as_ptr() as *mut ::core::ffi::c_char;
-        (*param).rc.b_stat_read = 0i32;
+        (*param).rc.stat_read = false;
         (*param).rc.psz_stat_in = b"x264_2pass.log\0".as_ptr() as *mut ::core::ffi::c_char;
         (*param).rc.f_qcompress = 0.6f32;
         (*param).rc.f_qblur = 0.5f32;
         (*param).rc.f_complexity_blur = 20f32;
         (*param).rc.i_zones = 0i32;
-        (*param).rc.b_mb_tree = 1i32;
+        (*param).rc.mb_tree = true;
         (*param).pf_log = Some(
             x264_log_default
                 as unsafe extern "C" fn(
@@ -791,25 +791,25 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut crate::x264_h::x264_
         (*param).analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_SPATIAL;
         (*param).analyse.i_me_method = crate::x264_h::X264_ME_HEX;
         (*param).analyse.f_psy_rd = 1.0f32;
-        (*param).analyse.b_psy = 1i32;
+        (*param).analyse.psy = true;
         (*param).analyse.f_psy_trellis = 0f32;
         (*param).analyse.i_me_range = 16i32;
         (*param).analyse.i_subpel_refine = 7i32;
-        (*param).analyse.b_mixed_references = 1i32;
-        (*param).analyse.b_chroma_me = 1i32;
+        (*param).analyse.mixed_references = true;
+        (*param).analyse.chroma_me = true;
         (*param).analyse.i_mv_range_thread = -(1i32);
         (*param).analyse.i_mv_range = -(1i32);
         (*param).analyse.i_chroma_qp_offset = 0i32;
-        (*param).analyse.b_fast_pskip = 1i32;
-        (*param).analyse.b_weighted_bipred = 1i32;
+        (*param).analyse.fast_pskip = true;
+        (*param).analyse.weighted_bipred = true;
         (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SMART;
-        (*param).analyse.b_dct_decimate = 1i32;
-        (*param).analyse.b_transform_8x8 = 1i32;
+        (*param).analyse.dct_decimate = true;
+        (*param).analyse.transform_8x8 = true;
         (*param).analyse.i_trellis = 1i32;
         (*param).analyse.i_luma_deadzone[0usize] = 21i32;
         (*param).analyse.i_luma_deadzone[1usize] = 11i32;
-        (*param).analyse.b_psnr = 0i32;
-        (*param).analyse.b_ssim = 0i32;
+        (*param).analyse.psnr = false;
+        (*param).analyse.ssim = false;
         (*param).i_cqm_preset = crate::x264_h::X264_CQM_FLAT;
         crate::stdlib::memset(
             &raw mut (*param).cqm_4iy as *mut ::core::ffi::c_void,
@@ -851,17 +851,17 @@ pub unsafe extern "C" fn x264_param_default(mut param: *mut crate::x264_h::x264_
             16i32,
             ::core::mem::size_of::<[crate::stdlib::uint8_t; 64]>(),
         );
-        (*param).b_repeat_headers = 1i32;
-        (*param).b_annexb = 1i32;
-        (*param).b_aud = 0i32;
-        (*param).b_vfr_input = 1i32;
+        (*param).repeat_headers = true;
+        (*param).annexb = true;
+        (*param).aud = false;
+        (*param).vfr_input = true;
         (*param).i_nal_hrd = crate::x264_h::X264_NAL_HRD_NONE;
-        (*param).b_tff = 1i32;
-        (*param).b_pic_struct = 0i32;
-        (*param).b_fake_interlaced = 0i32;
+        (*param).tff = true;
+        (*param).pic_struct = false;
+        (*param).fake_interlaced = false;
         (*param).i_frame_packing = -(1i32);
         (*param).i_alternative_transfer = 2i32;
-        (*param).b_opencl = 0i32;
+        (*param).opencl = false;
         (*param).i_opencl_device = 0i32;
         (*param).opencl_device_id = crate::__stddef_null_h::NULL;
         (*param).psz_clbin_file = ::core::ptr::null_mut::<::core::ffi::c_char>();
@@ -892,21 +892,21 @@ unsafe extern "C" fn param_apply_preset(
         {
             (*param).i_frame_reference = 1i32;
             (*param).i_scenecut_threshold = 0i32;
-            (*param).b_deblocking_filter = 0i32;
-            (*param).b_cabac = 0i32;
+            (*param).deblocking_filter = false;
+            (*param).cabac = false;
             (*param).i_bframe = 0i32;
             (*param).analyse.intra = 0u32;
             (*param).analyse.inter = 0u32;
-            (*param).analyse.b_transform_8x8 = 0i32;
+            (*param).analyse.transform_8x8 = false;
             (*param).analyse.i_me_method = crate::x264_h::X264_ME_DIA;
             (*param).analyse.i_subpel_refine = 0i32;
             (*param).rc.i_aq_mode = 0i32;
-            (*param).analyse.b_mixed_references = 0i32;
+            (*param).analyse.mixed_references = false;
             (*param).analyse.i_trellis = 0i32;
             (*param).i_bframe_adaptive = crate::x264_h::X264_B_ADAPT_NONE;
-            (*param).rc.b_mb_tree = 0i32;
+            (*param).rc.mb_tree = false;
             (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_NONE;
-            (*param).analyse.b_weighted_bipred = 0i32;
+            (*param).analyse.weighted_bipred = false;
             (*param).rc.i_lookahead = 0i32;
         } else if crate::stdlib::strcasecmp(
             preset,
@@ -918,9 +918,9 @@ unsafe extern "C" fn param_apply_preset(
             (*param).analyse.i_me_method = crate::x264_h::X264_ME_DIA;
             (*param).analyse.i_subpel_refine = 1i32;
             (*param).i_frame_reference = 1i32;
-            (*param).analyse.b_mixed_references = 0i32;
+            (*param).analyse.mixed_references = false;
             (*param).analyse.i_trellis = 0i32;
-            (*param).rc.b_mb_tree = 0i32;
+            (*param).rc.mb_tree = false;
             (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
             (*param).rc.i_lookahead = 0i32;
         } else if crate::stdlib::strcasecmp(
@@ -930,7 +930,7 @@ unsafe extern "C" fn param_apply_preset(
         {
             (*param).analyse.i_subpel_refine = 2i32;
             (*param).i_frame_reference = 1i32;
-            (*param).analyse.b_mixed_references = 0i32;
+            (*param).analyse.mixed_references = false;
             (*param).analyse.i_trellis = 0i32;
             (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
             (*param).rc.i_lookahead = 10i32;
@@ -939,7 +939,7 @@ unsafe extern "C" fn param_apply_preset(
             b"faster\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
-            (*param).analyse.b_mixed_references = 0i32;
+            (*param).analyse.mixed_references = false;
             (*param).i_frame_reference = 2i32;
             (*param).analyse.i_subpel_refine = 4i32;
             (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
@@ -1006,7 +1006,7 @@ unsafe extern "C" fn param_apply_preset(
                 (*param).i_bframe_adaptive = crate::x264_h::X264_B_ADAPT_TRELLIS;
                 (*param).analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_AUTO;
                 (*param).analyse.inter |= crate::x264_h::X264_ANALYSE_PSUB8x8;
-                (*param).analyse.b_fast_pskip = 0i32;
+                (*param).analyse.fast_pskip = false;
                 (*param).analyse.i_trellis = 2i32;
                 (*param).i_bframe = 16i32;
                 (*param).rc.i_lookahead = 60i32;
@@ -1096,7 +1096,7 @@ unsafe extern "C" fn param_apply_tune(
                     (*param).i_deblocking_filter_alphac0 = -(2i32);
                     (*param).i_deblocking_filter_beta = -(2i32);
                     (*param).analyse.f_psy_trellis = 0.25f32;
-                    (*param).analyse.b_dct_decimate = 0i32;
+                    (*param).analyse.dct_decimate = false;
                     (*param).rc.f_pb_factor = 1.1f32;
                     (*param).rc.f_ip_factor = 1.1f32;
                     (*param).rc.f_aq_strength = 0.5f32;
@@ -1137,7 +1137,7 @@ unsafe extern "C" fn param_apply_tune(
                     c2rust_current_block = 11543922235941715107;
                 } else {
                     (*param).rc.i_aq_mode = crate::x264_h::X264_AQ_NONE;
-                    (*param).analyse.b_psy = 0i32;
+                    (*param).analyse.psy = false;
                     c2rust_current_block = 11174649648027449784;
                 }
             } else if len == 4i32
@@ -1153,7 +1153,7 @@ unsafe extern "C" fn param_apply_tune(
                     c2rust_current_block = 11543922235941715107;
                 } else {
                     (*param).rc.i_aq_mode = crate::x264_h::X264_AQ_AUTOVARIANCE;
-                    (*param).analyse.b_psy = 0i32;
+                    (*param).analyse.psy = false;
                     c2rust_current_block = 11174649648027449784;
                 }
             } else if len == 10i32
@@ -1163,9 +1163,9 @@ unsafe extern "C" fn param_apply_tune(
                     10usize,
                 ) == 0
             {
-                (*param).b_deblocking_filter = 0i32;
-                (*param).b_cabac = 0i32;
-                (*param).analyse.b_weighted_bipred = 0i32;
+                (*param).deblocking_filter = false;
+                (*param).cabac = false;
+                (*param).analyse.weighted_bipred = false;
                 (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_NONE;
                 c2rust_current_block = 11174649648027449784;
             } else if len == 11i32
@@ -1178,9 +1178,9 @@ unsafe extern "C" fn param_apply_tune(
                 (*param).rc.i_lookahead = 0i32;
                 (*param).i_sync_lookahead = 0i32;
                 (*param).i_bframe = 0i32;
-                (*param).b_sliced_threads = 1i32;
-                (*param).b_vfr_input = 0i32;
-                (*param).rc.b_mb_tree = 0i32;
+                (*param).sliced_threads = true;
+                (*param).vfr_input = false;
+                (*param).rc.mb_tree = false;
                 c2rust_current_block = 11174649648027449784;
             } else if len == 6i32
                 && crate::stdlib::strncasecmp(
@@ -1256,9 +1256,9 @@ pub unsafe extern "C" fn x264_param_apply_fastfirstpass(
     mut param: *mut crate::x264_h::x264_param_t,
 ) {
     unsafe {
-        if (*param).rc.b_stat_write != 0 && (*param).rc.b_stat_read == 0 {
+        if (*param).rc.stat_write && !(*param).rc.stat_read {
             (*param).i_frame_reference = 1i32;
-            (*param).analyse.b_transform_8x8 = 0i32;
+            (*param).analyse.transform_8x8 = false;
             (*param).analyse.inter = 0u32;
             (*param).analyse.i_me_method = crate::x264_h::X264_ME_DIA;
             (*param).analyse.i_subpel_refine = if (2i32) < (*param).analyse.i_subpel_refine {
@@ -1267,7 +1267,7 @@ pub unsafe extern "C" fn x264_param_apply_fastfirstpass(
                 (*param).analyse.i_subpel_refine
             };
             (*param).analyse.i_trellis = 0i32;
-            (*param).analyse.b_fast_pskip = 1i32;
+            (*param).analyse.fast_pskip = true;
         }
     }
 }
@@ -1376,13 +1376,13 @@ pub unsafe extern "C" fn x264_param_apply_profile(
             return -(1i32);
         }
         if p == crate::src::common::base::PROFILE_BASELINE as ::core::ffi::c_int {
-            (*param).analyse.b_transform_8x8 = 0i32;
-            (*param).b_cabac = 0i32;
+            (*param).analyse.transform_8x8 = false;
+            (*param).cabac = false;
             (*param).i_cqm_preset = crate::x264_h::X264_CQM_FLAT;
             (*param).psz_cqm_file = ::core::ptr::null_mut::<::core::ffi::c_char>();
             (*param).i_bframe = 0i32;
             (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_NONE;
-            if (*param).b_interlaced != 0 {
+            if (*param).interlaced {
                 x264_log_internal(
                     crate::x264_h::X264_LOG_ERROR,
                     b"baseline profile doesn't support interlacing\n\0".as_ptr()
@@ -1390,7 +1390,7 @@ pub unsafe extern "C" fn x264_param_apply_profile(
                 );
                 return -(1i32);
             }
-            if (*param).b_fake_interlaced != 0 {
+            if (*param).fake_interlaced {
                 x264_log_internal(
                     crate::x264_h::X264_LOG_ERROR,
                     b"baseline profile doesn't support fake interlacing\n\0".as_ptr()
@@ -1399,7 +1399,7 @@ pub unsafe extern "C" fn x264_param_apply_profile(
                 return -(1i32);
             }
         } else if p == crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int {
-            (*param).analyse.b_transform_8x8 = 0i32;
+            (*param).analyse.transform_8x8 = false;
             (*param).i_cqm_preset = crate::x264_h::X264_CQM_FLAT;
             (*param).psz_cqm_file = ::core::ptr::null_mut::<::core::ffi::c_char>();
         }
@@ -1467,23 +1467,23 @@ unsafe extern "C" fn parse_cqm(
 unsafe extern "C" fn atobool_internal(
     mut str: *const ::core::ffi::c_char,
     mut b_error: *mut ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
+) -> bool {
     unsafe {
         if crate::stdlib::strcmp(str, b"1\0".as_ptr() as *const ::core::ffi::c_char) == 0
             || crate::stdlib::strcasecmp(str, b"true\0".as_ptr() as *const ::core::ffi::c_char) == 0
             || crate::stdlib::strcasecmp(str, b"yes\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
-            return 1i32;
+            return true;
         }
         if crate::stdlib::strcmp(str, b"0\0".as_ptr() as *const ::core::ffi::c_char) == 0
             || crate::stdlib::strcasecmp(str, b"false\0".as_ptr() as *const ::core::ffi::c_char)
                 == 0
             || crate::stdlib::strcasecmp(str, b"no\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
-            return 0i32;
+            return false;
         }
         *b_error = 1i32;
-        return 0i32;
+        return false;
     }
 }
 unsafe extern "C" fn atoi_internal(
@@ -1555,7 +1555,7 @@ pub unsafe extern "C" fn x264_param_parse(
                 name = name.offset(1);
             }
             name_was_bool = 1i32;
-            value = if atobool_internal(value, &raw mut b_error) != 0 {
+            value = if atobool_internal(value, &raw mut b_error) {
                 b"false\0".as_ptr() as *const ::core::ffi::c_char
             } else {
                 b"true\0".as_ptr() as *const ::core::ffi::c_char
@@ -1577,7 +1577,7 @@ pub unsafe extern "C" fn x264_param_parse(
             ) == 0
                 || {
                     name_was_bool = 1i32;
-                    atobool_internal(value, &raw mut b_error) != 0
+                    atobool_internal(value, &raw mut b_error)
                 }
             {
                 crate::src::common::cpu::x264_cpu_detect()
@@ -1669,7 +1669,7 @@ pub unsafe extern "C" fn x264_param_parse(
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_sliced_threads = atobool_internal(value, &raw mut b_error);
+            (*p).sliced_threads = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"sync-lookahead\0".as_ptr() as *const ::core::ffi::c_char,
@@ -1692,14 +1692,14 @@ pub unsafe extern "C" fn x264_param_parse(
             ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_deterministic = atobool_internal(value, &raw mut b_error);
+            (*p).deterministic = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"cpu-independent\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_cpu_independent = atobool_internal(value, &raw mut b_error);
+            (*p).cpu_independent = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"level\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
             || crate::stdlib::strcmp(name, b"level-idc\0".as_ptr() as *const ::core::ffi::c_char)
@@ -1719,7 +1719,7 @@ pub unsafe extern "C" fn x264_param_parse(
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_bluray_compat = atobool_internal(value, &raw mut b_error);
+            (*p).bluray_compat = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"avcintra-class\0".as_ptr() as *const ::core::ffi::c_char,
@@ -1773,11 +1773,20 @@ pub unsafe extern "C" fn x264_param_parse(
         } else if crate::stdlib::strcmp(name, b"fullrange\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
-            b_error |= parse_enum(
+            let mut fullrange_tmp: ::core::ffi::c_int = (*p)
+                .vui
+                .fullrange
+                .map(|b| b as ::core::ffi::c_int)
+                .unwrap_or(-1);
+            let err = parse_enum(
                 value,
                 &raw const x264_fullrange_names as *const *const ::core::ffi::c_char,
-                &raw mut (*p).vui.b_fullrange,
+                &raw mut fullrange_tmp,
             );
+            b_error |= err;
+            if err == 0 {
+                (*p).vui.fullrange = Some(fullrange_tmp != 0);
+            }
         } else if crate::stdlib::strcmp(name, b"colorprim\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -1833,9 +1842,9 @@ pub unsafe extern "C" fn x264_param_parse(
                     &raw mut (*p).mastering_display.i_display_max,
                     &raw mut (*p).mastering_display.i_display_min,
                 ) != 10i32) as ::core::ffi::c_int;
-                (*p).mastering_display.b_mastering_display = (b_error == 0) as ::core::ffi::c_int;
+                (*p).mastering_display.mastering_display = b_error == 0;
             } else {
-                (*p).mastering_display.b_mastering_display = 0i32;
+                (*p).mastering_display.mastering_display = false;
             }
         } else if crate::stdlib::strcmp(name, b"cll\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
@@ -1848,9 +1857,9 @@ pub unsafe extern "C" fn x264_param_parse(
                     &raw mut (*p).content_light_level.i_max_cll,
                     &raw mut (*p).content_light_level.i_max_fall,
                 ) != 2i32) as ::core::ffi::c_int;
-                (*p).content_light_level.b_cll = (b_error == 0) as ::core::ffi::c_int;
+                (*p).content_light_level.cll = b_error == 0;
             } else {
-                (*p).content_light_level.b_cll = 0i32;
+                (*p).content_light_level.cll = false;
             }
         } else if crate::stdlib::strcmp(
             name,
@@ -1927,7 +1936,8 @@ pub unsafe extern "C" fn x264_param_parse(
             == 0
         {
             name_was_bool = 1i32;
-            (*p).i_scenecut_threshold = atobool_internal(value, &raw mut b_error);
+            (*p).i_scenecut_threshold =
+                atobool_internal(value, &raw mut b_error) as ::core::ffi::c_int;
             if b_error != 0 || (*p).i_scenecut_threshold != 0 {
                 b_error = 0i32;
                 (*p).i_scenecut_threshold = atoi_internal(value, &raw mut b_error);
@@ -1938,7 +1948,7 @@ pub unsafe extern "C" fn x264_param_parse(
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_intra_refresh = atobool_internal(value, &raw mut b_error);
+            (*p).intra_refresh = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"bframes\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -1947,7 +1957,8 @@ pub unsafe extern "C" fn x264_param_parse(
             == 0
         {
             name_was_bool = 1i32;
-            (*p).i_bframe_adaptive = atobool_internal(value, &raw mut b_error);
+            (*p).i_bframe_adaptive =
+                atobool_internal(value, &raw mut b_error) as ::core::ffi::c_int;
             if b_error != 0 {
                 b_error = 0i32;
                 (*p).i_bframe_adaptive = atoi_internal(value, &raw mut b_error);
@@ -1972,11 +1983,10 @@ pub unsafe extern "C" fn x264_param_parse(
             == 0
         {
             name_was_bool = 1i32;
-            (*p).b_open_gop = atobool_internal(value, &raw mut b_error);
+            (*p).open_gop = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"nf\0".as_ptr() as *const ::core::ffi::c_char) == 0 {
             name_was_bool = 1i32;
-            (*p).b_deblocking_filter =
-                (atobool_internal(value, &raw mut b_error) == 0) as ::core::ffi::c_int;
+            (*p).deblocking_filter = !atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"filter\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
             || crate::stdlib::strcmp(name, b"deblock\0".as_ptr() as *const ::core::ffi::c_char) == 0
@@ -1996,18 +2006,18 @@ pub unsafe extern "C" fn x264_param_parse(
                         &raw mut (*p).i_deblocking_filter_beta,
                     )
             {
-                (*p).b_deblocking_filter = 1i32;
+                (*p).deblocking_filter = true;
             } else if crate::stdlib::sscanf(
                 value,
                 b"%d\0".as_ptr() as *const ::core::ffi::c_char,
                 &raw mut (*p).i_deblocking_filter_alphac0,
             ) != 0
             {
-                (*p).b_deblocking_filter = 1i32;
+                (*p).deblocking_filter = true;
                 (*p).i_deblocking_filter_beta = (*p).i_deblocking_filter_alphac0;
             } else {
                 name_was_bool = 1i32;
-                (*p).b_deblocking_filter = atobool_internal(value, &raw mut b_error);
+                (*p).deblocking_filter = atobool_internal(value, &raw mut b_error);
             }
         } else if crate::stdlib::strcmp(
             name,
@@ -2041,7 +2051,7 @@ pub unsafe extern "C" fn x264_param_parse(
             == 0
         {
             name_was_bool = 1i32;
-            (*p).b_cabac = atobool_internal(value, &raw mut b_error);
+            (*p).cabac = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"cabac-idc\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -2052,24 +2062,24 @@ pub unsafe extern "C" fn x264_param_parse(
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_interlaced = atobool_internal(value, &raw mut b_error);
+            (*p).interlaced = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"tff\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_tff = atobool_internal(value, &raw mut b_error);
-            (*p).b_interlaced = (*p).b_tff;
+            (*p).tff = atobool_internal(value, &raw mut b_error);
+            (*p).interlaced = (*p).tff;
         } else if crate::stdlib::strcmp(name, b"bff\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_interlaced = atobool_internal(value, &raw mut b_error);
-            (*p).b_tff = ((*p).b_interlaced == 0) as ::core::ffi::c_int;
+            (*p).interlaced = atobool_internal(value, &raw mut b_error);
+            (*p).tff = !(*p).interlaced;
         } else if crate::stdlib::strcmp(
             name,
             b"constrained-intra\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_constrained_intra = atobool_internal(value, &raw mut b_error);
+            (*p).constrained_intra = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"cqm\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             if !crate::stdlib::strstr(value, b"flat\0".as_ptr() as *const ::core::ffi::c_char)
@@ -2289,14 +2299,14 @@ pub unsafe extern "C" fn x264_param_parse(
             == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_transform_8x8 = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.transform_8x8 = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"weightb\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
             || crate::stdlib::strcmp(name, b"weight-b\0".as_ptr() as *const ::core::ffi::c_char)
                 == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_weighted_bipred = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.weighted_bipred = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"weightp\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -2392,19 +2402,19 @@ pub unsafe extern "C" fn x264_param_parse(
         } else if crate::stdlib::strcmp(name, b"psy\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_psy = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.psy = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"chroma-me\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_chroma_me = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.chroma_me = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"mixed-refs\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_mixed_references = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.mixed_references = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"trellis\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -2415,14 +2425,14 @@ pub unsafe extern "C" fn x264_param_parse(
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_fast_pskip = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.fast_pskip = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"dct-decimate\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_dct_decimate = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.dct_decimate = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"deadzone-inter\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2535,8 +2545,8 @@ pub unsafe extern "C" fn x264_param_parse(
         } else if crate::stdlib::strcmp(name, b"pass\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             let mut pass = x264_clip3(atoi_internal(value, &raw mut b_error), 0i32, 3i32);
-            (*p).rc.b_stat_write = pass & 1i32;
-            (*p).rc.b_stat_read = pass & 2i32;
+            (*p).rc.stat_write = pass & 1i32 != 0;
+            (*p).rc.stat_read = pass & 2i32 != 0;
         } else if crate::stdlib::strcmp(name, b"stats\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -2558,7 +2568,7 @@ pub unsafe extern "C" fn x264_param_parse(
             == 0
         {
             name_was_bool = 1i32;
-            (*p).rc.b_mb_tree = atobool_internal(value, &raw mut b_error);
+            (*p).rc.mb_tree = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"qblur\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -2592,15 +2602,15 @@ pub unsafe extern "C" fn x264_param_parse(
         } else if crate::stdlib::strcmp(name, b"psnr\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_psnr = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.psnr = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"ssim\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             name_was_bool = 1i32;
-            (*p).analyse.b_ssim = atobool_internal(value, &raw mut b_error);
+            (*p).analyse.ssim = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"aud\0".as_ptr() as *const ::core::ffi::c_char) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_aud = atobool_internal(value, &raw mut b_error);
+            (*p).aud = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"sps-id\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -2611,26 +2621,24 @@ pub unsafe extern "C" fn x264_param_parse(
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_repeat_headers =
-                (atobool_internal(value, &raw mut b_error) == 0) as ::core::ffi::c_int;
+            (*p).repeat_headers = !atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"repeat-headers\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_repeat_headers = atobool_internal(value, &raw mut b_error);
+            (*p).repeat_headers = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"annexb\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
             name_was_bool = 1i32;
-            (*p).b_annexb = atobool_internal(value, &raw mut b_error);
+            (*p).annexb = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"force-cfr\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
             name_was_bool = 1i32;
-            (*p).b_vfr_input =
-                (atobool_internal(value, &raw mut b_error) == 0) as ::core::ffi::c_int;
+            (*p).vfr_input = !atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"nal-hrd\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
@@ -2643,21 +2651,21 @@ pub unsafe extern "C" fn x264_param_parse(
             == 0
         {
             name_was_bool = 1i32;
-            (*p).rc.b_filler = atobool_internal(value, &raw mut b_error);
+            (*p).rc.filler = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"pic-struct\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_pic_struct = atobool_internal(value, &raw mut b_error);
+            (*p).pic_struct = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"fake-interlaced\0".as_ptr() as *const ::core::ffi::c_char,
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_fake_interlaced = atobool_internal(value, &raw mut b_error);
+            (*p).fake_interlaced = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"frame-packing\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2670,12 +2678,12 @@ pub unsafe extern "C" fn x264_param_parse(
         ) == 0
         {
             name_was_bool = 1i32;
-            (*p).b_stitchable = atobool_internal(value, &raw mut b_error);
+            (*p).stitchable = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(name, b"opencl\0".as_ptr() as *const ::core::ffi::c_char)
             == 0
         {
             name_was_bool = 1i32;
-            (*p).b_opencl = atobool_internal(value, &raw mut b_error);
+            (*p).opencl = atobool_internal(value, &raw mut b_error);
         } else if crate::stdlib::strcmp(
             name,
             b"opencl-clbin\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2745,17 +2753,17 @@ pub unsafe extern "C" fn x264_param2string(
                 (*p).i_bitdepth,
             ) as isize);
         }
-        if (*p).b_opencl != 0 {
+        if (*p).opencl {
             s = s.offset(crate::stdlib::sprintf(
                 s,
                 b"opencl=%d \0".as_ptr() as *const ::core::ffi::c_char,
-                (*p).b_opencl,
+                (*p).opencl as ::core::ffi::c_int,
             ) as isize);
         }
         s = s.offset(crate::stdlib::sprintf(
             s,
             b"cabac=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).b_cabac,
+            (*p).cabac as ::core::ffi::c_int,
         ) as isize);
         s = s.offset(crate::stdlib::sprintf(
             s,
@@ -2765,7 +2773,7 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" deblock=%d:%d:%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).b_deblocking_filter,
+            (*p).deblocking_filter as ::core::ffi::c_int,
             (*p).i_deblocking_filter_alphac0,
             (*p).i_deblocking_filter_beta,
         ) as isize);
@@ -2788,9 +2796,9 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" psy=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).analyse.b_psy,
+            (*p).analyse.psy as ::core::ffi::c_int,
         ) as isize);
-        if (*p).analyse.b_psy != 0 {
+        if (*p).analyse.psy {
             s = s.offset(crate::stdlib::sprintf(
                 s,
                 b" psy_rd=%.2f:%.2f\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2801,7 +2809,7 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" mixed_ref=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).analyse.b_mixed_references,
+            (*p).analyse.mixed_references as ::core::ffi::c_int,
         ) as isize);
         s = s.offset(crate::stdlib::sprintf(
             s,
@@ -2811,7 +2819,7 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" chroma_me=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).analyse.b_chroma_me,
+            (*p).analyse.chroma_me as ::core::ffi::c_int,
         ) as isize);
         s = s.offset(crate::stdlib::sprintf(
             s,
@@ -2821,7 +2829,7 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" 8x8dct=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).analyse.b_transform_8x8,
+            (*p).analyse.transform_8x8 as ::core::ffi::c_int,
         ) as isize);
         s = s.offset(crate::stdlib::sprintf(
             s,
@@ -2837,7 +2845,7 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" fast_pskip=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).analyse.b_fast_pskip,
+            (*p).analyse.fast_pskip as ::core::ffi::c_int,
         ) as isize);
         s = s.offset(crate::stdlib::sprintf(
             s,
@@ -2857,7 +2865,7 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" sliced_threads=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).b_sliced_threads,
+            (*p).sliced_threads as ::core::ffi::c_int,
         ) as isize);
         if (*p).i_slice_count != 0 {
             s = s.offset(crate::stdlib::sprintf(
@@ -2902,18 +2910,18 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" decimate=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).analyse.b_dct_decimate,
+            (*p).analyse.dct_decimate as ::core::ffi::c_int,
         ) as isize);
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" interlaced=%s\0".as_ptr() as *const ::core::ffi::c_char,
-            if (*p).b_interlaced != 0 {
-                if (*p).b_tff != 0 {
+            if (*p).interlaced {
+                if (*p).tff {
                     b"tff\0".as_ptr() as *const ::core::ffi::c_char
                 } else {
                     b"bff\0".as_ptr() as *const ::core::ffi::c_char
                 }
-            } else if (*p).b_fake_interlaced != 0 {
+            } else if (*p).fake_interlaced {
                 b"fake\0".as_ptr() as *const ::core::ffi::c_char
             } else {
                 b"0\0".as_ptr() as *const ::core::ffi::c_char
@@ -2922,19 +2930,19 @@ pub unsafe extern "C" fn x264_param2string(
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" bluray_compat=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).b_bluray_compat,
+            (*p).bluray_compat as ::core::ffi::c_int,
         ) as isize);
-        if (*p).b_stitchable != 0 {
+        if (*p).stitchable {
             s = s.offset(crate::stdlib::sprintf(
                 s,
                 b" stitchable=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                (*p).b_stitchable,
+                (*p).stitchable as ::core::ffi::c_int,
             ) as isize);
         }
         s = s.offset(crate::stdlib::sprintf(
             s,
             b" constrained_intra=%d\0".as_ptr() as *const ::core::ffi::c_char,
-            (*p).b_constrained_intra,
+            (*p).constrained_intra as ::core::ffi::c_int,
         ) as isize);
         s = s.offset(crate::stdlib::sprintf(
             s,
@@ -2950,8 +2958,8 @@ pub unsafe extern "C" fn x264_param2string(
                 (*p).i_bframe_adaptive,
                 (*p).i_bframe_bias,
                 (*p).analyse.i_direct_mv_pred,
-                (*p).analyse.b_weighted_bipred,
-                (*p).b_open_gop,
+                (*p).analyse.weighted_bipred as ::core::ffi::c_int,
+                (*p).open_gop as ::core::ffi::c_int,
             ) as isize);
         }
         s = s.offset(crate::stdlib::sprintf(
@@ -2980,9 +2988,9 @@ pub unsafe extern "C" fn x264_param2string(
             b" keyint_min=%d scenecut=%d intra_refresh=%d\0".as_ptr() as *const ::core::ffi::c_char,
             (*p).i_keyint_min,
             (*p).i_scenecut_threshold,
-            (*p).b_intra_refresh,
+            (*p).intra_refresh as ::core::ffi::c_int,
         ) as isize);
-        if (*p).rc.b_mb_tree != 0 || (*p).rc.i_vbv_buffer_size != 0 {
+        if (*p).rc.mb_tree || (*p).rc.i_vbv_buffer_size != 0 {
             s = s.offset(crate::stdlib::sprintf(
                 s,
                 b" rc_lookahead=%d\0".as_ptr() as *const ::core::ffi::c_char,
@@ -2993,7 +3001,7 @@ pub unsafe extern "C" fn x264_param2string(
             s,
             b" rc=%s mbtree=%d\0".as_ptr() as *const ::core::ffi::c_char,
             if (*p).rc.i_rc_method == crate::x264_h::X264_RC_ABR {
-                if (*p).rc.b_stat_read != 0 {
+                if (*p).rc.stat_read {
                     b"2pass\0".as_ptr() as *const ::core::ffi::c_char
                 } else if (*p).rc.i_vbv_max_bitrate == (*p).rc.i_bitrate {
                     b"cbr\0".as_ptr() as *const ::core::ffi::c_char
@@ -3005,7 +3013,7 @@ pub unsafe extern "C" fn x264_param2string(
             } else {
                 b"cqp\0".as_ptr() as *const ::core::ffi::c_char
             },
-            (*p).rc.b_mb_tree,
+            (*p).rc.mb_tree as ::core::ffi::c_int,
         ) as isize);
         if (*p).rc.i_rc_method == crate::x264_h::X264_RC_ABR
             || (*p).rc.i_rc_method == crate::x264_h::X264_RC_CRF
@@ -3032,7 +3040,7 @@ pub unsafe extern "C" fn x264_param2string(
                 (*p).rc.i_qp_max,
                 (*p).rc.i_qp_step,
             ) as isize);
-            if (*p).rc.b_stat_read != 0 {
+            if (*p).rc.stat_read {
                 s = s.offset(crate::stdlib::sprintf(
                     s,
                     b" cplxblur=%.1f qblur=%.1f\0".as_ptr() as *const ::core::ffi::c_char,
@@ -3067,7 +3075,7 @@ pub unsafe extern "C" fn x264_param2string(
                 s,
                 b" nal_hrd=%s filler=%d\0".as_ptr() as *const ::core::ffi::c_char,
                 x264_nal_hrd_names[(*p).i_nal_hrd as usize],
-                (*p).rc.b_filler,
+                (*p).rc.filler as ::core::ffi::c_int,
             ) as isize);
         }
         if (*p).crop_rect.i_left
@@ -3085,7 +3093,7 @@ pub unsafe extern "C" fn x264_param2string(
                 (*p).crop_rect.i_bottom,
             ) as isize);
         }
-        if (*p).mastering_display.b_mastering_display != 0 {
+        if (*p).mastering_display.mastering_display {
             s = s.offset(crate::stdlib::sprintf(
                 s,
                 b" mastering-display=G(%d,%d)B(%d,%d)R(%d,%d)WP(%d,%d)L(%ld,%ld)\0".as_ptr()
@@ -3102,7 +3110,7 @@ pub unsafe extern "C" fn x264_param2string(
                 (*p).mastering_display.i_display_min,
             ) as isize);
         }
-        if (*p).content_light_level.b_cll != 0 {
+        if (*p).content_light_level.cll {
             s = s.offset(crate::stdlib::sprintf(
                 s,
                 b" cll=%d,%d\0".as_ptr() as *const ::core::ffi::c_char,
@@ -3123,7 +3131,7 @@ pub unsafe extern "C" fn x264_param2string(
                 b" ip_ratio=%.2f\0".as_ptr() as *const ::core::ffi::c_char,
                 (*p).rc.f_ip_factor as ::core::ffi::c_double,
             ) as isize);
-            if (*p).i_bframe != 0 && (*p).rc.b_mb_tree == 0 {
+            if (*p).i_bframe != 0 && !(*p).rc.mb_tree {
                 s = s.offset(crate::stdlib::sprintf(
                     s,
                     b" pb_ratio=%.2f\0".as_ptr() as *const ::core::ffi::c_char,

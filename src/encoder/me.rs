@@ -2959,7 +2959,7 @@ unsafe extern "C" fn refine_subpel(
             .p_cost_mv
             .offset(-((*m).mvp[1usize] as ::core::ffi::c_int as isize));
         let i_pixel = (*m).i_pixel;
-        let b_chroma_me = ((*h).mb.b_chroma_me != 0
+        let b_chroma_me = ((*h).mb.chroma_me
             && (i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
                 || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                     == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int))
@@ -2968,11 +2968,12 @@ unsafe extern "C" fn refine_subpel(
         let mut chroma_v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
             as ::core::ffi::c_int;
-        let mut mvy_offset = if chroma_v_shift & (*h).mb.b_interlaced & (*m).i_ref != 0 {
-            ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
-        } else {
-            0i32
-        };
+        let mut mvy_offset =
+            if chroma_v_shift & (*h).mb.interlaced as ::core::ffi::c_int & (*m).i_ref != 0 {
+                ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
+            } else {
+                0i32
+            };
         let mut bmx = (*m).mv[0usize] as ::core::ffi::c_int;
         let mut bmy = (*m).mv[1usize] as ::core::ffi::c_int;
         let mut bcost = (*m).cost;
@@ -3971,12 +3972,12 @@ unsafe extern "C" fn me_refine_bidir(
         };
         let mut ref0 = (*h).mb.cache.ref_0[0usize][s8 as usize] as ::core::ffi::c_int;
         let mut ref1 = (*h).mb.cache.ref_0[1usize][s8 as usize] as ::core::ffi::c_int;
-        let mv0y_offset = if chroma_v_shift & (*h).mb.b_interlaced & ref0 != 0 {
+        let mv0y_offset = if chroma_v_shift & (*h).mb.interlaced as ::core::ffi::c_int & ref0 != 0 {
             ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
         } else {
             0i32
         };
-        let mv1y_offset = if chroma_v_shift & (*h).mb.b_interlaced & ref1 != 0 {
+        let mv1y_offset = if chroma_v_shift & (*h).mb.interlaced as ::core::ffi::c_int & ref1 != 0 {
             ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
         } else {
             0i32
@@ -4546,9 +4547,9 @@ pub unsafe extern "C" fn x264_8_me_refine_bidir_rd(
     mut i_lambda2: ::core::ffi::c_int,
 ) {
     unsafe {
-        (*h).mb.b_skip_mc = 1i32;
+        (*h).mb.skip_mc = true;
         me_refine_bidir(h, m0, m1, i_weight, i8, i_lambda2, 1i32);
-        (*h).mb.b_skip_mc = 0i32;
+        (*h).mb.skip_mc = false;
     }
 }
 #[no_mangle]
@@ -4580,11 +4581,12 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
         let mut chroma_v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
             as ::core::ffi::c_int;
-        let mut mvy_offset = if chroma_v_shift & (*h).mb.b_interlaced & (*m).i_ref != 0 {
-            ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
-        } else {
-            0i32
-        };
+        let mut mvy_offset =
+            if chroma_v_shift & (*h).mb.interlaced as ::core::ffi::c_int & (*m).i_ref != 0 {
+                ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
+            } else {
+                0i32
+            };
         let mut bcost = crate::src::encoder::me::COST_MAX64;
         let mut bmx = (*m).mv[0usize] as ::core::ffi::c_int;
         let mut bmy = (*m).mv[1usize] as ::core::ffi::c_int;
@@ -4629,7 +4631,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             pixu = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
             pixv = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
         }
-        (*h).mb.b_skip_mc = 1i32;
+        (*h).mb.skip_mc = true;
         if (*m).i_pixel != crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int
             && i4 != 0i32
         {
@@ -4883,7 +4885,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             || bmx < (*h).mb.mv_min_spel[0usize] + 3i32
             || bmx > (*h).mb.mv_max_spel[0usize] - 3i32
         {
-            (*h).mb.b_skip_mc = 0i32;
+            (*h).mb.skip_mc = false;
             return;
         }
         dir = -(2i32);
@@ -5328,6 +5330,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             i_list,
             amvd,
         );
-        (*h).mb.b_skip_mc = 0i32;
+        (*h).mb.skip_mc = false;
     }
 }

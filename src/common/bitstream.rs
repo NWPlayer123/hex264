@@ -108,8 +108,8 @@ pub unsafe extern "C" fn x264_8_nal_encode(
         let mut src = (*nal).p_payload;
         let mut end = (*nal).p_payload.offset((*nal).i_payload as isize);
         let mut orig_dst = dst;
-        if (*h).param.b_annexb != 0 {
-            if (*nal).b_long_startcode != 0 {
+        if (*h).param.annexb {
+            if (*nal).long_startcode {
                 let c2rust_fresh7 = dst;
                 dst = dst.offset(1);
                 *c2rust_fresh7 = 0u8;
@@ -146,7 +146,7 @@ pub unsafe extern "C" fn x264_8_nal_encode(
             }
             (*nal).i_padding = if padding > 0i32 { padding } else { 0i32 };
         }
-        if (*h).param.b_annexb == 0 {
+        if !(*h).param.annexb {
             let mut chunk_size = size - 4i32;
             *orig_dst.offset(0isize) = (chunk_size >> 24i32) as crate::stdlib::uint8_t;
             *orig_dst.offset(1isize) = (chunk_size >> 16i32) as crate::stdlib::uint8_t;

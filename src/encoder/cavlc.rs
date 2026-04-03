@@ -339,9 +339,8 @@ pub mod macroblock_h {
         mut h: *mut crate::src::common::common::x264_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                .b_transform_8x8_mode
-                == 0
+            if !(*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
+                .transform_8x8_mode
             {
                 return 0i32;
             }
@@ -491,7 +490,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
                         i_level_prefix += 1;
                     }
                 } else {
-                    (*h).mb.b_overflow = 1i32;
+                    (*h).mb.overflow = true;
                 }
             }
             bs_write(s, i_level_prefix + 1i32, 1u32);
@@ -763,7 +762,7 @@ unsafe extern "C" fn cavlc_macroblock_luma_residual(
 ) {
     unsafe {
         let mut p_0 = 0i32;
-        if (*h).mb.b_transform_8x8 != 0 {
+        if (*h).mb.transform_8x8 {
             let mut p = 0i32;
             while p < plane_count {
                 let mut i8 = 0i32;
@@ -893,11 +892,9 @@ unsafe extern "C" fn cavlc_mb_header_i(
                 1i32
             };
             bs_write_ue(s, i_mb_i_offset + 0i32);
-            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                .b_transform_8x8_mode
-                != 0
+            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).transform_8x8_mode
             {
-                bs_write1(s, (*h).mb.b_transform_8x8 as crate::stdlib::uint32_t);
+                bs_write1(s, (*h).mb.transform_8x8 as crate::stdlib::uint32_t);
             }
             while i < 16i32 {
                 let mut i_pred = x264_mb_predict_intra4x4_mode(h, i);
@@ -1253,7 +1250,7 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
             as ::core::ffi::c_int;
         let i_mb_pos_start = bs_pos(s);
-        if (*h).sh.b_mbaff != 0
+        if (*h).sh.mbaff
             && ((*h).mb.i_mb_y & 1i32 == 0
                 || (*(*h)
                     .mb
@@ -1268,8 +1265,8 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                         as ::core::ffi::c_int
                         == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int))
         {
-            bs_write1(s, (*h).mb.b_interlaced as crate::stdlib::uint32_t);
-            (*h).mb.field_decoding_flag = (*h).mb.b_interlaced;
+            bs_write1(s, (*h).mb.interlaced as crate::stdlib::uint32_t);
+            (*h).mb.field_decoding_flag = (*h).mb.interlaced as ::core::ffi::c_int;
         }
         if i_mb_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int {
             let mut p = 0i32;
@@ -1353,7 +1350,7 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
             );
         }
         if x264_mb_transform_8x8_allowed(h) != 0 && (*h).mb.i_cbp_luma != 0 {
-            bs_write1(s, (*h).mb.b_transform_8x8 as crate::stdlib::uint32_t);
+            bs_write1(s, (*h).mb.transform_8x8 as crate::stdlib::uint32_t);
         }
         if i_mb_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int {
             let mut p_0 = 0i32;

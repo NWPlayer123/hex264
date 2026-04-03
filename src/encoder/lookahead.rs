@@ -115,7 +115,8 @@ unsafe extern "C" fn lookahead_thread(
                 );
                 crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).next.mutex);
                 if (*(*h).lookahead).next.i_size
-                    <= (*(*h).lookahead).i_slicetype_length + (*h).param.b_vfr_input
+                    <= (*(*h).lookahead).i_slicetype_length
+                        + (*h).param.vfr_input as ::core::ffi::c_int
                 {
                     while (*(*h).lookahead).ifbuf.i_size == 0
                         && (*(*h).lookahead).b_exit_thread == 0
@@ -173,9 +174,9 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
                 i += 1;
             }
             (*look).i_last_keyframe = -(*h).param.i_keyint_max;
-            (*look).b_analyse_keyframe = (((*h).param.rc.b_mb_tree != 0
+            (*look).b_analyse_keyframe = (((*h).param.rc.mb_tree
                 || (*h).param.rc.i_vbv_buffer_size != 0 && (*h).param.rc.i_lookahead != 0)
-                && (*h).param.rc.b_stat_read == 0)
+                && !(*h).param.rc.stat_read)
                 as crate::stdlib::uint8_t;
             (*look).i_slicetype_length = i_slicetype_length;
             if !(crate::src::common::frame::x264_8_sync_frame_list_init(

@@ -24,9 +24,9 @@ pub struct x264_frame {
     pub i_coded: ::core::ffi::c_int,
     pub i_field_cnt: crate::stdlib::int64_t,
     pub i_frame_num: ::core::ffi::c_int,
-    pub b_kept_as_ref: ::core::ffi::c_int,
+    pub kept_as_ref: bool,
     pub i_pic_struct: ::core::ffi::c_int,
-    pub b_keyframe: ::core::ffi::c_int,
+    pub keyframe: bool,
     pub b_fdec: crate::stdlib::uint8_t,
     pub b_last_minigop_bframe: crate::stdlib::uint8_t,
     pub i_bframes: crate::stdlib::uint8_t,
@@ -53,7 +53,7 @@ pub struct x264_frame {
     pub buffer_lowres: *mut crate::src::common::common::pixel,
     pub weight: [[crate::src::common::mc::x264_weight_t; 3]; 16],
     pub weighted: [*mut crate::src::common::common::pixel; 16],
-    pub b_duplicate: ::core::ffi::c_int,
+    pub duplicate: bool,
     pub orig: *mut crate::src::common::frame::x264_frame,
     pub mb_type: *mut crate::stdlib::int8_t,
     pub mb_partition: *mut crate::stdlib::uint8_t,
@@ -79,11 +79,11 @@ pub struct x264_frame {
     pub f_row_qscale: *mut ::core::ffi::c_float,
     pub f_qp_offset: *mut ::core::ffi::c_float,
     pub f_qp_offset_aq: *mut ::core::ffi::c_float,
-    pub b_intra_calculated: ::core::ffi::c_int,
+    pub intra_calculated: bool,
     pub i_intra_cost: *mut crate::stdlib::uint16_t,
     pub i_propagate_cost: *mut crate::stdlib::uint16_t,
     pub i_inv_qscale_factor: *mut crate::stdlib::uint16_t,
-    pub b_scenecut: ::core::ffi::c_int,
+    pub scenecut: bool,
     pub f_weighted_cost_delta: [::core::ffi::c_float; 18],
     pub i_pixel_sum: [crate::stdlib::uint32_t; 3],
     pub i_pixel_ssd: [crate::stdlib::uint64_t; 3],
@@ -103,7 +103,7 @@ pub struct x264_frame {
     pub i_pir_start_col: ::core::ffi::c_int,
     pub i_pir_end_col: ::core::ffi::c_int,
     pub i_frames_since_pir: ::core::ffi::c_int,
-    pub b_corrupt: ::core::ffi::c_int,
+    pub corrupt: bool,
     pub extra_sei: crate::x264_h::x264_sei_t,
     pub opaque: *mut ::core::ffi::c_void,
     pub mb_info: *mut crate::stdlib::uint8_t,
@@ -227,7 +227,8 @@ unsafe extern "C" fn frame_new(
     unsafe {
         let mut i_csp = frame_internal_csp((*h).param.i_csp);
         let mut i_mb_count = (*h).mb.i_mb_count;
-        let mut i_padv = crate::src::common::frame::PADV << (*h).param.b_interlaced;
+        let mut i_padv =
+            crate::src::common::frame::PADV << (*h).param.interlaced as ::core::ffi::c_int;
         let mut align = crate::osdep_h::NATIVE_ALIGN / crate::src::common::common::SIZEOF_PIXEL;
         if (*h).param.cpu & crate::x264_h::X264_CPU_CACHELINE_64 != 0
             || (*h).param.cpu & crate::x264_h::X264_CPU_AVX512 != 0
@@ -397,7 +398,7 @@ unsafe extern "C" fn frame_new(
                             as crate::stdlib::int64_t
                             + (64i32 - 1i32) as crate::stdlib::int64_t
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
-                        if (*h).param.b_interlaced != 0 {
+                        if (*h).param.interlaced {
                             (*frame).buffer_fld[1usize] =
                                 prealloc_size as *mut crate::src::common::common::pixel;
                             let c2rust_fresh10 = prealloc_idx;
@@ -436,7 +437,7 @@ unsafe extern "C" fn frame_new(
                                 as crate::stdlib::int64_t
                             + (64i32 - 1i32) as crate::stdlib::int64_t
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
-                        if (*h).param.b_interlaced != 0 {
+                        if (*h).param.interlaced {
                             (*frame).buffer_fld[p as usize] =
                                 prealloc_size as *mut crate::src::common::common::pixel;
                             let c2rust_fresh12 = prealloc_idx;
@@ -453,7 +454,7 @@ unsafe extern "C" fn frame_new(
                         }
                         p += 1;
                     }
-                    (*frame).b_duplicate = 0i32;
+                    (*frame).duplicate = false;
                     if b_fdec != 0 {
                         (*frame).mb_type = prealloc_size as *mut crate::stdlib::int8_t;
                         let c2rust_fresh13 = prealloc_idx;
@@ -581,12 +582,12 @@ unsafe extern "C" fn frame_new(
                                 * ((*frame).i_lines[0usize] + 2i32 * i_padv))
                                 as usize)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>())
-                                << (*h).frames.b_have_sub8x8_esa)
+                                << (*h).frames.have_sub8x8_esa as ::core::ffi::c_int)
                                 as crate::stdlib::int64_t
                                 + (64i32 - 1i32) as crate::stdlib::int64_t
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
-                        if (*h).param.b_interlaced != 0 {
+                        if (*h).param.interlaced {
                             (*frame).field = prealloc_size as *mut crate::stdlib::uint8_t;
                             let c2rust_fresh24 = prealloc_idx;
                             prealloc_idx = prealloc_idx + 1;
@@ -597,7 +598,7 @@ unsafe extern "C" fn frame_new(
                                 + (64i32 - 1i32) as crate::stdlib::int64_t
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
-                        if (*h).param.analyse.b_mb_info != 0 {
+                        if (*h).param.analyse.mb_info {
                             (*frame).effective_qp = prealloc_size as *mut crate::stdlib::uint8_t;
                             let c2rust_fresh25 = prealloc_idx;
                             prealloc_idx = prealloc_idx + 1;
@@ -609,7 +610,7 @@ unsafe extern "C" fn frame_new(
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
                     } else {
-                        if (*h).frames.b_have_lowres != 0 {
+                        if (*h).frames.have_lowres {
                             let mut j_0 = 0i32;
                             let mut j_1 = 0i32;
                             let mut luma_plane_size_0 = align_plane_size(
@@ -730,7 +731,7 @@ unsafe extern "C" fn frame_new(
                                 as crate::stdlib::int64_t
                                 + (64i32 - 1i32) as crate::stdlib::int64_t
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
-                            if (*h).frames.b_have_lowres != 0 {
+                            if (*h).frames.have_lowres {
                                 (*frame).i_inv_qscale_factor =
                                     prealloc_size as *mut crate::stdlib::uint16_t;
                                 let c2rust_fresh33 = prealloc_idx;
@@ -745,7 +746,7 @@ unsafe extern "C" fn frame_new(
                                     & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             }
                         }
-                        if (*h).frames.b_have_lowres != 0 {
+                        if (*h).frames.have_lowres {
                             prealloc_size += crate::osdep_h::NATIVE_ALIGN as crate::stdlib::int64_t;
                         }
                     }
@@ -788,7 +789,7 @@ unsafe extern "C" fn frame_new(
                                                 as ::core::ffi::c_int
                                     }) as isize,
                                 );
-                            if (*h).param.b_interlaced != 0 {
+                            if (*h).param.interlaced {
                                 (*frame).plane_fld[1usize] = (*frame).buffer_fld[1usize]
                                     .offset(((*frame).i_stride[1usize] * chroma_padv_0) as isize)
                                     .offset(
@@ -848,7 +849,7 @@ unsafe extern "C" fn frame_new(
                                                         as ::core::ffi::c_int
                                             }) as isize,
                                         );
-                                    if (*h).param.b_interlaced != 0 {
+                                    if (*h).param.interlaced {
                                         (*frame).filtered_fld[p_0 as usize][i_4 as usize] =
                                             (*frame).buffer_fld[p_0 as usize]
                                                 .offset(
@@ -911,7 +912,7 @@ unsafe extern "C" fn frame_new(
                                     );
                                 (*frame).filtered[p_0 as usize][0usize] =
                                     (*frame).plane[p_0 as usize];
-                                if (*h).param.b_interlaced != 0 {
+                                if (*h).param.interlaced {
                                     (*frame).plane_fld[p_0 as usize] = (*frame).buffer_fld
                                         [p_0 as usize]
                                         .offset(((*frame).i_stride[p_0 as usize] * i_padv) as isize)
@@ -969,7 +970,7 @@ unsafe extern "C" fn frame_new(
                                         }) as isize,
                                     );
                             }
-                        } else if (*h).frames.b_have_lowres != 0 {
+                        } else if (*h).frames.have_lowres {
                             let mut i_5 = 0i32;
                             let mut j_2 = 0i32;
                             let mut luma_plane_size_2 = align_plane_size(
@@ -1072,7 +1073,7 @@ pub unsafe extern "C" fn x264_8_frame_delete(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
 ) {
     unsafe {
-        if (*frame).b_duplicate == 0 {
+        if !(*frame).duplicate {
             crate::src::common::base::x264_free((*frame).base as *mut ::core::ffi::c_void);
             if !(*frame).param.is_null() && (*(*frame).param).param_free.is_some() {
                 crate::src::common::base::x264_param_cleanup((*frame).param);
@@ -1203,12 +1204,12 @@ pub unsafe extern "C" fn x264_8_frame_copy_picture(
         (*dst).i_pic_struct = (*src).i_pic_struct;
         (*dst).extra_sei = (*src).extra_sei;
         (*dst).opaque = (*src).opaque;
-        (*dst).mb_info = if (*h).param.analyse.b_mb_info != 0 {
+        (*dst).mb_info = if (*h).param.analyse.mb_info {
             (*src).prop.mb_info
         } else {
             ::core::ptr::null_mut::<crate::stdlib::uint8_t>()
         };
-        (*dst).mb_info_free = if (*h).param.analyse.b_mb_info != 0 {
+        (*dst).mb_info_free = if (*h).param.analyse.mb_info {
             (*src).prop.mb_info_free
         } else {
             None
@@ -1580,12 +1581,14 @@ pub unsafe extern "C" fn x264_8_frame_expand_border(
     unsafe {
         let mut i = 0i32;
         let mut pad_top = (mb_y == 0i32) as ::core::ffi::c_int;
-        let mut pad_bot =
-            (mb_y == (*h).mb.i_mb_height - ((1i32) << (*h).sh.b_mbaff)) as ::core::ffi::c_int;
+        let mut pad_bot = (mb_y
+            == (*h).mb.i_mb_height - ((1i32) << (*h).sh.mbaff as ::core::ffi::c_int))
+            as ::core::ffi::c_int;
         let mut b_start = (mb_y == (*h).i_threadslice_start) as ::core::ffi::c_int;
-        let mut b_end =
-            (mb_y == (*h).i_threadslice_end - ((1i32) << (*h).sh.b_mbaff)) as ::core::ffi::c_int;
-        if mb_y & (*h).sh.b_mbaff != 0 {
+        let mut b_end = (mb_y
+            == (*h).i_threadslice_end - ((1i32) << (*h).sh.mbaff as ::core::ffi::c_int))
+            as ::core::ffi::c_int;
+        if mb_y & (*h).sh.mbaff as ::core::ffi::c_int != 0 {
             return;
         }
         while i < (*frame).i_plane {
@@ -1603,17 +1606,17 @@ pub unsafe extern "C" fn x264_8_frame_expand_border(
             let mut stride = (*frame).i_stride[i as usize];
             let mut width = 16i32 * (*h).mb.i_mb_width;
             let mut height = (if pad_bot != 0 {
-                16i32 * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.b_mbaff
+                16i32 * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.mbaff as ::core::ffi::c_int
             } else {
                 16i32
             }) >> v_shift;
             let mut padh = crate::src::common::frame::PADH;
             let mut padv = crate::src::common::frame::PADV >> v_shift;
             if b_end != 0 && b_start == 0 {
-                height += 4i32 >> v_shift + (*h).sh.b_mbaff;
+                height += 4i32 >> v_shift + (*h).sh.mbaff as ::core::ffi::c_int;
             }
             let mut starty = 16i32 * mb_y - 4i32 * (b_start == 0) as ::core::ffi::c_int;
-            if (*h).sh.b_mbaff != 0 {
+            if (*h).sh.mbaff {
                 pix = (*frame).plane_fld[i as usize].offset((starty * stride >> v_shift) as isize);
                 plane_expand_border(
                     pix,
@@ -1671,7 +1674,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_filtered(
         let mut b_start = (mb_y == 0) as ::core::ffi::c_int;
         let mut width = 16i32 * (*h).mb.i_mb_width + 8i32;
         let mut height = if b_end != 0 {
-            (16i32 * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.b_mbaff) + 16i32
+            (16i32 * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.mbaff as ::core::ffi::c_int) + 16i32
         } else {
             16i32
         };
@@ -1690,7 +1693,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_filtered(
             while i < 4i32 {
                 let mut pix = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
                 let mut stride = (*frame).i_stride[p as usize];
-                if (*h).sh.b_mbaff != 0 {
+                if (*h).sh.mbaff {
                     pix = (*frame).filtered_fld[p as usize][i as usize]
                         .offset(((16i32 * mb_y - 16i32) * stride) as isize)
                         .offset(-(4isize));
@@ -1724,7 +1727,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_filtered(
                     pix,
                     stride,
                     width,
-                    height << (*h).sh.b_mbaff,
+                    height << (*h).sh.mbaff as ::core::ffi::c_int,
                     padh,
                     padv,
                     b_start,
@@ -1847,7 +1850,9 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_mod16(
                         (*(&raw mut (*frame).plane as *mut *mut crate::src::common::common::pixel)
                             .offset(i as isize))
                         .offset(
-                            ((i_height - (!y_0 & (*h).param.b_interlaced) - 1i32)
+                            ((i_height
+                                - (!y_0 & (*h).param.interlaced as ::core::ffi::c_int)
+                                - 1i32)
                                 * *(&raw mut (*frame).i_stride as *mut ::core::ffi::c_int)
                                     .offset(i as isize)) as isize,
                         ) as *const ::core::ffi::c_void,
@@ -1958,7 +1963,7 @@ pub unsafe extern "C" fn x264_8_frame_new_slice(
     unsafe {
         if (*h).param.i_slice_count_max != 0 {
             let mut slice_count = 0;
-            if (*h).param.b_sliced_threads != 0 {
+            if (*h).param.sliced_threads {
                 slice_count = x264_pthread_fetch_and_add(
                     &raw mut (*frame).i_slice_count,
                     1i32,
@@ -2108,11 +2113,11 @@ pub unsafe extern "C" fn x264_8_frame_pop_unused(
         }
         (*frame).b_last_minigop_bframe = 0u8;
         (*frame).i_reference_count = 1i32;
-        (*frame).b_intra_calculated = 0i32;
-        (*frame).b_scenecut = 1i32;
-        (*frame).b_keyframe = 0i32;
-        (*frame).b_corrupt = 0i32;
-        (*frame).i_slice_count = if (*h).param.b_sliced_threads != 0 {
+        (*frame).intra_calculated = false;
+        (*frame).scenecut = true;
+        (*frame).keyframe = false;
+        (*frame).corrupt = false;
+        (*frame).i_slice_count = if (*h).param.sliced_threads {
             (*h).param.i_threads
         } else {
             1i32
@@ -2171,7 +2176,7 @@ pub unsafe extern "C" fn x264_8_frame_pop_blank_unused(
         if frame.is_null() {
             return ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
         }
-        (*frame).b_duplicate = 1i32;
+        (*frame).duplicate = true;
         (*frame).i_reference_count = 1i32;
         return frame;
     }

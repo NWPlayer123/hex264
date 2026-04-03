@@ -236,7 +236,7 @@ pub mod encoder_macroblock_h {
             } else {
                 crate::src::common::set::CQM_4PY as ::core::ffi::c_int
             };
-            if (*h).mb.b_noise_reduction != 0 {
+            if (*h).mb.noise_reduction {
                 (*h).quantf.denoise_dct.expect("non-null function pointer")(
                     dct,
                     &raw mut *(*h)
@@ -250,7 +250,7 @@ pub mod encoder_macroblock_h {
                     16i32,
                 );
             }
-            if (*h).mb.b_trellis != 0 {
+            if (*h).mb.trellis {
                 return crate::src::encoder::analyse::rdo_c::x264_8_quant_4x4_trellis(
                     h,
                     dct,
@@ -300,7 +300,7 @@ pub mod encoder_macroblock_h {
             } else {
                 crate::src::common::set::CQM_8PY as ::core::ffi::c_int
             };
-            if (*h).mb.b_noise_reduction != 0 {
+            if (*h).mb.noise_reduction {
                 (*h).quantf.denoise_dct.expect("non-null function pointer")(
                     dct,
                     &raw mut *(*h)
@@ -314,7 +314,7 @@ pub mod encoder_macroblock_h {
                     64i32,
                 );
             }
-            if (*h).mb.b_trellis != 0 {
+            if (*h).mb.trellis {
                 return crate::src::encoder::analyse::rdo_c::x264_8_quant_8x8_trellis(
                     h,
                     dct,
@@ -369,13 +369,13 @@ pub mod encoder_macroblock_h {
                     .offset(idx as isize) as isize,
             );
             if b_predict != 0 {
-                if (*h).mb.b_lossless != 0 {
+                if (*h).mb.lossless {
                     x264_8_predict_lossless_4x4(h, p_dst, p, idx, i_mode);
                 } else {
                     (*h).predict_4x4[i_mode as usize].expect("non-null function pointer")(p_dst);
                 }
             }
-            if (*h).mb.b_lossless != 0 {
+            if (*h).mb.lossless {
                 nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                     &raw mut *(&raw mut (*h).dct.luma4x4
                         as *mut [crate::src::common::common::dctcoef; 16])
@@ -466,7 +466,7 @@ pub mod encoder_macroblock_h {
                     );
                     edge = &raw mut edge_buf as *mut crate::src::common::common::pixel;
                 }
-                if (*h).mb.b_lossless != 0 {
+                if (*h).mb.lossless {
                     x264_8_predict_lossless_8x8(h, p_dst, p, idx, i_mode, edge);
                 } else {
                     (*h).predict_8x8[i_mode as usize].expect("non-null function pointer")(
@@ -474,7 +474,7 @@ pub mod encoder_macroblock_h {
                     );
                 }
             }
-            if (*h).mb.b_lossless != 0 {
+            if (*h).mb.lossless {
                 nz = (*h).zigzagf.sub_8x8.expect("non-null function pointer")(
                     &raw mut *(&raw mut (*h).dct.luma8x8
                         as *mut [crate::src::common::common::dctcoef; 64])
@@ -743,25 +743,21 @@ unsafe extern "C" fn mb_encode_i16x16(
         let mut idx_0 = 0i32;
         let mut p_src = (*h).mb.pic.p_fenc[p as usize];
         let mut p_dst = (*h).mb.pic.p_fdec[p as usize];
-        let mut decimate_score = if (*h).mb.b_dct_decimate != 0 {
-            0i32
-        } else {
-            9i32
-        };
+        let mut decimate_score = if (*h).mb.dct_decimate { 0i32 } else { 9i32 };
         let mut i_quant_cat = if p != 0 {
             crate::src::common::set::CQM_4IC as ::core::ffi::c_int
         } else {
             crate::src::common::set::CQM_4IY as ::core::ffi::c_int
         };
         let mut i_mode = (*h).mb.i_intra16x16_pred_mode;
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             x264_8_predict_lossless_16x16(h, p, i_mode);
         } else {
             (*h).predict_16x16[i_mode as usize].expect("non-null function pointer")(
                 (*h).mb.pic.p_fdec[p as usize],
             );
         }
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             let mut i = 0i32;
             while i < 16i32 {
                 let mut oe = block_idx_xy_fenc[i as usize] as ::core::ffi::c_int;
@@ -827,7 +823,7 @@ unsafe extern "C" fn mb_encode_i16x16(
             p_src,
             p_dst,
         );
-        if (*h).mb.b_noise_reduction != 0 {
+        if (*h).mb.noise_reduction {
             let mut idx = 0i32;
             while idx < 16i32 {
                 (*h).quantf.denoise_dct.expect("non-null function pointer")(
@@ -847,7 +843,7 @@ unsafe extern "C" fn mb_encode_i16x16(
             dct4x4[idx_0 as usize][0usize] = 0i16;
             idx_0 += 1;
         }
-        if (*h).mb.b_trellis != 0 {
+        if (*h).mb.trellis {
             let mut idx_1 = 0i32;
             while idx_1 < 16i32 {
                 if crate::src::encoder::analyse::rdo_c::x264_8_quant_4x4_trellis(
@@ -997,7 +993,7 @@ unsafe extern "C" fn mb_encode_i16x16(
         (*h).dctf.dct4x4dc.expect("non-null function pointer")(
             &raw mut dct_dc4x4 as *mut crate::src::common::common::dctcoef,
         );
-        if (*h).mb.b_trellis != 0 {
+        if (*h).mb.trellis {
             nz = crate::src::encoder::analyse::rdo_c::x264_8_quant_luma_dc_trellis(
                 h,
                 &raw mut dct_dc4x4 as *mut crate::src::common::common::dctcoef,
@@ -1101,13 +1097,14 @@ unsafe extern "C" fn mb_encode_chroma_internal(
         let mut nz_dc = 0;
         let mut dct_dc = [0; 8];
         let mut ch_0 = 0i32;
-        let mut b_decimate = (b_inter != 0 && (*h).mb.b_dct_decimate != 0) as ::core::ffi::c_int;
+        let mut b_decimate = b_inter != 0 && (*h).mb.dct_decimate;
         let mut dequant_mf = (*h).dequant4_mf
             [(crate::src::common::set::CQM_4IC as ::core::ffi::c_int + b_inter) as usize];
         (*h).mb.i_cbp_chroma = 0i32;
         let ref mut c2rust_fresh2 = *(*h).nr_count.offset(2isize);
-        *c2rust_fresh2 = (*c2rust_fresh2)
-            .wrapping_add(((*h).mb.b_noise_reduction * 4i32) as crate::stdlib::uint32_t);
+        *c2rust_fresh2 = (*c2rust_fresh2).wrapping_add(
+            ((*h).mb.noise_reduction as ::core::ffi::c_int * 4i32) as crate::stdlib::uint32_t,
+        );
         (*((&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
             *(&raw const x264_scan8 as *const crate::stdlib::uint8_t).offset(16isize) as isize,
         ) as *mut crate::src::common::base::x264_union16_t))
@@ -1142,9 +1139,9 @@ unsafe extern "C" fn mb_encode_chroma_internal(
             ) as *mut crate::src::common::base::x264_union16_t))
                 .i = 0u16;
         }
-        if b_decimate != 0
-            && i_qp >= (if (*h).mb.b_trellis != 0 { 12i32 } else { 18i32 })
-            && (*h).mb.b_noise_reduction == 0
+        if b_decimate
+            && i_qp >= (if (*h).mb.trellis { 12i32 } else { 18i32 })
+            && !(*h).mb.noise_reduction
         {
             let mut ssd = [0; 2];
             let mut thresh = if chroma422 != 0 {
@@ -1187,7 +1184,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                                 p_dst,
                             );
                         }
-                        if (*h).mb.b_trellis != 0 {
+                        if (*h).mb.trellis {
                             nz_dc =
                                 crate::src::encoder::analyse::rdo_c::x264_8_quant_chroma_dc_trellis(
                                     h,
@@ -1290,8 +1287,8 @@ unsafe extern "C" fn mb_encode_chroma_internal(
             let mut nz = 0;
             let mut p_src_0 = (*h).mb.pic.p_fenc[(1i32 + ch_0) as usize];
             let mut p_dst_0 = (*h).mb.pic.p_fdec[(1i32 + ch_0) as usize];
-            let mut i_decimate_score = if b_decimate != 0 { 0i32 } else { 7i32 };
-            if (*h).mb.b_lossless != 0 {
+            let mut i_decimate_score = if b_decimate { 0i32 } else { 7i32 };
+            if (*h).mb.lossless {
                 let mut i_1 = 0i32;
                 static mut chroma422_scan: [crate::stdlib::uint8_t; 8] =
                     [0u8, 2u8, 1u8, 5u8, 3u8, 6u8, 4u8, 7u8];
@@ -1360,7 +1357,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                     );
                     i_2 += 1;
                 }
-                if (*h).mb.b_noise_reduction != 0 {
+                if (*h).mb.noise_reduction {
                     let mut i_3 = 0i32;
                     while i_3 < (if chroma422 != 0 { 8i32 } else { 4i32 }) {
                         (*h).quantf.denoise_dct.expect("non-null function pointer")(
@@ -1389,7 +1386,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                     );
                 }
                 while i8x8 < (if chroma422 != 0 { 2i32 } else { 1i32 }) {
-                    if (*h).mb.b_trellis != 0 {
+                    if (*h).mb.trellis {
                         let mut i4x4 = 0i32;
                         while i4x4 < 4i32 {
                             if crate::src::encoder::analyse::rdo_c::x264_8_quant_4x4_trellis(
@@ -1509,7 +1506,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                     }
                     i8x8 += 1;
                 }
-                if (*h).mb.b_trellis != 0 {
+                if (*h).mb.trellis {
                     nz_dc = crate::src::encoder::analyse::rdo_c::x264_8_quant_chroma_dc_trellis(
                         h,
                         &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
@@ -1890,7 +1887,8 @@ pub unsafe extern "C" fn x264_8_predict_lossless_4x4(
     mut i_mode: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut stride = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+        let mut stride =
+            (*(*h).fenc).i_stride[p as usize] << (*h).mb.interlaced as ::core::ffi::c_int;
         let mut p_src = (*h).mb.pic.p_fenc_plane[p as usize]
             .offset((block_idx_x[idx as usize] as ::core::ffi::c_int * 4i32) as isize)
             .offset((block_idx_y[idx as usize] as ::core::ffi::c_int * 4i32 * stride) as isize);
@@ -1940,7 +1938,8 @@ pub unsafe extern "C" fn x264_8_predict_lossless_8x8(
     mut edge: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        let mut stride = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+        let mut stride =
+            (*(*h).fenc).i_stride[p as usize] << (*h).mb.interlaced as ::core::ffi::c_int;
         let mut p_src = (*h).mb.pic.p_fenc_plane[p as usize]
             .offset(((idx & 1i32) * 8i32) as isize)
             .offset(((idx >> 1i32) * 8i32 * stride) as isize);
@@ -1986,7 +1985,8 @@ pub unsafe extern "C" fn x264_8_predict_lossless_16x16(
     mut i_mode: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut stride = (*(*h).fenc).i_stride[p as usize] << (*h).mb.b_interlaced;
+        let mut stride =
+            (*(*h).fenc).i_stride[p as usize] << (*h).mb.interlaced as ::core::ffi::c_int;
         let mut p_dst = (*h).mb.pic.p_fdec[p as usize];
         if i_mode == crate::src::common::predict::I_PRED_16x16_V as ::core::ffi::c_int {
             (*h).mc.copy[crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
@@ -2035,7 +2035,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         let mut b_force_no_skip = 0i32;
         let mut p = 0i32;
         let mut i_qp = (*h).mb.i_qp;
-        let mut b_decimate = (*h).mb.b_dct_decimate;
+        let mut b_decimate = (*h).mb.dct_decimate;
         (*h).mb.i_cbp_luma = 0i32;
         while p < plane_count {
             (*h).mb.cache.non_zero_count
@@ -2079,7 +2079,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
             return;
         }
-        if (*h).mb.b_allow_skip == 0 {
+        if !(*h).mb.allow_skip {
             b_force_no_skip = 1i32;
             if (*h).mb.i_type == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
                 || (*h).mb.i_type == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int
@@ -2094,7 +2094,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
         }
         if (*h).mb.i_type == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int {
-            if (*h).mb.b_skip_mc == 0 {
+            if !(*h).mb.skip_mc {
                 let mut p_1 = 0i32;
                 let mut mvx = x264_clip3(
                     (*h).mb.cache.mv[0usize][x264_scan8[0usize] as usize][0usize]
@@ -2199,7 +2199,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             return;
         }
         if (*h).mb.i_type == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int {
-            if (*h).mb.b_skip_mc == 0 {
+            if !(*h).mb.skip_mc {
                 crate::src::common::macroblock::x264_8_mb_mc(h);
             }
             macroblock_encode_skip(h);
@@ -2207,7 +2207,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         }
         if (*h).mb.i_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int {
             let mut p_2 = 0i32;
-            (*h).mb.b_transform_8x8 = 0i32;
+            (*h).mb.transform_8x8 = false;
             while p_2 < plane_count {
                 mb_encode_i16x16(h, p_2, i_qp);
                 p_2 += 1;
@@ -2215,7 +2215,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
         } else if (*h).mb.i_type == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int {
             let mut p_3 = 0i32;
-            (*h).mb.b_transform_8x8 = 1i32;
+            (*h).mb.transform_8x8 = true;
             if (*h).mb.i_skip_intra != 0 {
                 (*h).mc.copy[crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                     .expect("non-null function pointer")(
@@ -2280,7 +2280,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
         } else if (*h).mb.i_type == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int {
             let mut p_4 = 0i32;
-            (*h).mb.b_transform_8x8 = 0i32;
+            (*h).mb.transform_8x8 = false;
             if (*h).mb.i_skip_intra != 0 {
                 (*h).mc.copy[crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                     .expect("non-null function pointer")(
@@ -2356,11 +2356,11 @@ unsafe extern "C" fn macroblock_encode_internal(
         } else {
             let mut nz = 0;
             let mut i_decimate_mb = 0i32;
-            if (*h).mb.b_skip_mc == 0 {
+            if !(*h).mb.skip_mc {
                 crate::src::common::macroblock::x264_8_mb_mc(h);
             }
-            if (*h).mb.b_lossless != 0 {
-                if (*h).mb.b_transform_8x8 != 0 {
+            if (*h).mb.lossless {
+                if (*h).mb.transform_8x8 {
                     let mut p_5 = 0i32;
                     while p_5 < plane_count {
                         let mut i8x8 = 0i32;
@@ -2436,10 +2436,9 @@ unsafe extern "C" fn macroblock_encode_internal(
                         p_6 += 1;
                     }
                 }
-            } else if (*h).mb.b_transform_8x8 != 0 {
+            } else if (*h).mb.transform_8x8 {
                 let mut p_7 = 0i32;
-                b_decimate &=
-                    ((*h).mb.b_trellis == 0 || (*h).param.b_cabac == 0) as ::core::ffi::c_int;
+                b_decimate &= !(*h).mb.trellis || !(*h).param.cabac;
                 while p_7 < plane_count {
                     let mut dct8x8 = [[0; 64]; 4];
                     let mut plane_cbp = 0i32;
@@ -2494,7 +2493,8 @@ unsafe extern "C" fn macroblock_encode_internal(
                         .nr_count
                         .offset((1i32 + (p_7 != 0) as ::core::ffi::c_int * 2i32) as isize);
                     *c2rust_fresh0 = (*c2rust_fresh0).wrapping_add(
-                        ((*h).mb.b_noise_reduction * 4i32) as crate::stdlib::uint32_t,
+                        ((*h).mb.noise_reduction as ::core::ffi::c_int * 4i32)
+                            as crate::stdlib::uint32_t,
                     );
                     while idx < 4i32 {
                         nz = x264_quant_8x8(
@@ -2523,7 +2523,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                                     .offset(idx as isize)
                                     as *mut crate::src::common::common::dctcoef,
                             );
-                            if b_decimate != 0 {
+                            if b_decimate {
                                 let mut i_decimate_8x8 = (*h)
                                     .quantf
                                     .decimate_score64
@@ -2543,7 +2543,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                         }
                         idx += 1;
                     }
-                    if i_decimate_mb >= 6i32 || b_decimate == 0 {
+                    if i_decimate_mb >= 6i32 || !b_decimate {
                         let mut idx_0 = 0i32;
                         (*h).mb.i_cbp_luma |= plane_cbp;
                         let mut msk = plane_cbp;
@@ -2656,7 +2656,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                         (*h).mb.pic.p_fenc[p_8 as usize],
                         (*h).mb.pic.p_fdec[p_8 as usize],
                     );
-                    if (*h).mb.b_noise_reduction != 0 {
+                    if (*h).mb.noise_reduction {
                         let mut idx_1 = 0i32;
                         let ref mut c2rust_fresh1 = *(*h)
                             .nr_count
@@ -2682,8 +2682,8 @@ unsafe extern "C" fn macroblock_encode_internal(
                     }
                     while i8x8_0 < 4i32 {
                         let mut nnz8x8 = 0i32;
-                        let mut i_decimate_8x8_0 = if b_decimate != 0 { 0i32 } else { 6i32 };
-                        if (*h).mb.b_trellis != 0 {
+                        let mut i_decimate_8x8_0 = if b_decimate { 0i32 } else { 6i32 };
+                        if (*h).mb.trellis {
                             let mut i4x4_0 = 0i32;
                             while i4x4_0 < 4i32 {
                                 let mut idx_2 = i8x8_0 * 4i32 + i4x4_0;
@@ -2909,7 +2909,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 || (*h).mb.i_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int
             {
                 let mut i_mode_1 = (*h).mb.i_chroma_pred_mode;
-                if (*h).mb.b_lossless != 0 {
+                if (*h).mb.lossless {
                     x264_8_predict_lossless_chroma(h, i_mode_1);
                 } else {
                     (*h).predict_chroma[i_mode_1 as usize].expect("non-null function pointer")(
@@ -2936,7 +2936,7 @@ unsafe extern "C" fn macroblock_encode_internal(
             (*h).mb.i_cbp_chroma = 0i32;
         }
         let mut cbp = (*h).mb.i_cbp_chroma << 4i32 | (*h).mb.i_cbp_luma;
-        if (*h).param.b_cabac != 0 {
+        if (*h).param.cabac {
             cbp |= ((*h).mb.cache.non_zero_count
                 [x264_scan8[crate::src::common::base::LUMA_DC as usize] as usize]
                 as ::core::ffi::c_int)
@@ -3001,7 +3001,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
     mut b_bidir: ::core::ffi::c_int,
     mut plane_count: ::core::ffi::c_int,
     mut chroma: ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
+) -> bool {
     unsafe {
         let mut dct4x4 = [[0; 16]; 8];
         let mut dctscan = [0; 16];
@@ -3059,7 +3059,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     (*h).mb.pic.p_fenc[p as usize].offset(fenc_offset as isize),
                     (*h).mb.pic.p_fdec[p as usize].offset(fdec_offset as isize),
                 );
-                if (*h).mb.b_noise_reduction != 0 {
+                if (*h).mb.noise_reduction {
                     let mut i4x4 = 0i32;
                     while i4x4 < 4i32 {
                         (*h).quantf.denoise_dct.expect("non-null function pointer")(
@@ -3116,7 +3116,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                         &raw mut dctscan as *mut crate::src::common::common::dctcoef,
                     );
                     if i_decimate_mb >= 6i32 {
-                        return 0i32;
+                        return false;
                     }
                     idx += 1;
                 }
@@ -3201,7 +3201,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                 if !(ssd < thresh) {
                     let mut dct_dc = [0; 8];
                     let mut i_0 = 0i32;
-                    if (*h).mb.b_noise_reduction != 0 {
+                    if (*h).mb.noise_reduction {
                         let mut i = 0i32;
                         let mut i4x4_0 = 0i32;
                         while i <= chroma422 {
@@ -3262,13 +3262,13 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                                 << 1i32,
                         ) != 0
                         {
-                            return 0i32;
+                            return false;
                         }
                         i_0 += 1;
                     }
                     if !(ssd < thresh * 4i32) {
                         let mut i8x8_0 = 0i32;
-                        if (*h).mb.b_noise_reduction == 0 {
+                        if !(*h).mb.noise_reduction {
                             let mut i_1 = 0i32;
                             while i_1 <= chroma422 {
                                 (*h).dctf.sub8x8_dct.expect("non-null function pointer")(
@@ -3338,7 +3338,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                                     &raw mut dctscan as *mut crate::src::common::common::dctcoef,
                                 );
                                 if i_decimate_mb_0 >= 7i32 {
-                                    return 0i32;
+                                    return false;
                                 }
                                 idx_0 += 1;
                             }
@@ -3349,15 +3349,15 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                 ch += 1;
             }
         }
-        (*h).mb.b_skip_mc = 1i32;
-        return 1i32;
+        (*h).mb.skip_mc = true;
+        return true;
     }
 }
 #[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_probe_skip(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_bidir: ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
+) -> bool {
     unsafe {
         if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
@@ -3474,7 +3474,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
 ) {
     unsafe {
         let mut nz = 0;
-        let mut b_decimate = (*h).mb.b_dct_decimate;
+        let mut b_decimate = (*h).mb.dct_decimate;
         let mut i_qp = (*h).mb.i_qp;
         let mut x = i8 & 1i32;
         let mut y = i8 >> 1i32;
@@ -3482,10 +3482,10 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
             as ::core::ffi::c_int;
         (*h).mb.i_cbp_chroma = 0i32;
         (*h).mb.i_cbp_luma &= !((1i32) << i8);
-        if (*h).mb.b_skip_mc == 0 {
+        if !(*h).mb.skip_mc {
             crate::src::common::macroblock::x264_8_mb_mc_8x8(h, i8);
         }
-        if (*h).mb.b_lossless != 0 {
+        if (*h).mb.lossless {
             let mut p = 0i32;
             while p < plane_count {
                 let mut nnz8x8 = 0i32;
@@ -3495,7 +3495,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                 let mut p_fdec = (*h).mb.pic.p_fdec[p as usize]
                     .offset((8i32 * x) as isize)
                     .offset((8i32 * y * crate::src::common::common::FDEC_STRIDE) as isize);
-                if (*h).mb.b_transform_8x8 != 0 {
+                if (*h).mb.transform_8x8 {
                     nnz8x8 = (*h).zigzagf.sub_8x8.expect("non-null function pointer")(
                         &raw mut *(&raw mut (*h).dct.luma8x8
                             as *mut [crate::src::common::common::dctcoef; 64])
@@ -3599,7 +3599,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                 (*h).mb.i_cbp_chroma = 0x2i32;
             }
         } else {
-            if (*h).mb.b_transform_8x8 != 0 {
+            if (*h).mb.transform_8x8 {
                 let mut p_0 = 0i32;
                 while p_0 < plane_count {
                     let mut dct8x8 = [0; 64];
@@ -3638,7 +3638,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                                 as *mut crate::src::common::common::dctcoef,
                             &raw mut dct8x8 as *mut crate::src::common::common::dctcoef,
                         );
-                        if b_decimate != 0 && (*h).mb.b_trellis == 0 {
+                        if b_decimate && !(*h).mb.trellis {
                             nnz8x8_0 = (4i32
                                 <= (*h)
                                     .quantf
@@ -3742,7 +3742,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                     let mut p_fdec_2 = (*h).mb.pic.p_fdec[p_1 as usize]
                         .offset((8i32 * x) as isize)
                         .offset((8i32 * y * crate::src::common::common::FDEC_STRIDE) as isize);
-                    let mut i_decimate_8x8 = if b_decimate != 0 { 0i32 } else { 4i32 };
+                    let mut i_decimate_8x8 = if b_decimate { 0i32 } else { 4i32 };
                     (*h).dctf.sub8x8_dct.expect("non-null function pointer")(
                         &raw mut dct4x4 as *mut [crate::src::common::common::dctcoef; 16],
                         p_fenc_2,
@@ -3766,7 +3766,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                         )
                         as *mut crate::src::common::base::x264_union16_t))
                         .i = (0i32 * 0x101i32) as crate::stdlib::uint16_t;
-                    if (*h).mb.b_noise_reduction != 0 {
+                    if (*h).mb.noise_reduction {
                         let mut idx = 0i32;
                         while idx < 4i32 {
                             (*h).quantf.denoise_dct.expect("non-null function pointer")(
@@ -3786,7 +3786,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                             idx += 1;
                         }
                     }
-                    if (*h).mb.b_trellis != 0 {
+                    if (*h).mb.trellis {
                         let mut i4x4_0 = 0i32;
                         while i4x4_0 < 4i32 {
                             if crate::src::encoder::analyse::rdo_c::x264_8_quant_4x4_trellis(
@@ -3974,7 +3974,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                                 (4i32 * i4x4_2 * crate::src::common::common::FDEC_STRIDE) as isize,
                             ),
                         );
-                        if (*h).mb.b_noise_reduction != 0 {
+                        if (*h).mb.noise_reduction {
                             (*h).quantf.denoise_dct.expect("non-null function pointer")(
                                 &raw mut *(&raw mut dct4x4_0
                                     as *mut [crate::src::common::common::dctcoef; 16])
@@ -3988,7 +3988,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                             );
                         }
                         dct4x4_0[i4x4_2 as usize][0usize] = 0i16;
-                        if (*h).mb.b_trellis != 0 {
+                        if (*h).mb.trellis {
                             nz = crate::src::encoder::analyse::rdo_c::x264_8_quant_4x4_trellis(
                                 h,
                                 &raw mut *(&raw mut dct4x4_0
@@ -4148,7 +4148,7 @@ unsafe extern "C" fn macroblock_encode_p4x4_internal(
                 *(&raw const block_idx_xy_fdec as *const crate::stdlib::uint16_t)
                     .offset(i4 as isize) as isize,
             );
-            if (*h).mb.b_lossless != 0 {
+            if (*h).mb.lossless {
                 nz = (*h).zigzagf.sub_4x4.expect("non-null function pointer")(
                     &raw mut *(&raw mut (*h).dct.luma4x4
                         as *mut [crate::src::common::common::dctcoef; 16])

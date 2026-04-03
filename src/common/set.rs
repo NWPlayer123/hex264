@@ -15,28 +15,28 @@ pub struct x264_sps_t {
     pub i_id: ::core::ffi::c_int,
     pub i_profile_idc: ::core::ffi::c_int,
     pub i_level_idc: ::core::ffi::c_int,
-    pub b_constraint_set0: ::core::ffi::c_int,
-    pub b_constraint_set1: ::core::ffi::c_int,
-    pub b_constraint_set2: ::core::ffi::c_int,
-    pub b_constraint_set3: ::core::ffi::c_int,
+    pub constraint_set0: bool,
+    pub constraint_set1: bool,
+    pub constraint_set2: bool,
+    pub constraint_set3: bool,
     pub i_log2_max_frame_num: ::core::ffi::c_int,
     pub i_poc_type: ::core::ffi::c_int,
     pub i_log2_max_poc_lsb: ::core::ffi::c_int,
     pub i_num_ref_frames: ::core::ffi::c_int,
-    pub b_gaps_in_frame_num_value_allowed: ::core::ffi::c_int,
+    pub gaps_in_frame_num_value_allowed: bool,
     pub i_mb_width: ::core::ffi::c_int,
     pub i_mb_height: ::core::ffi::c_int,
-    pub b_frame_mbs_only: ::core::ffi::c_int,
-    pub b_mb_adaptive_frame_field: ::core::ffi::c_int,
-    pub b_direct8x8_inference: ::core::ffi::c_int,
-    pub b_crop: ::core::ffi::c_int,
+    pub frame_mbs_only: bool,
+    pub mb_adaptive_frame_field: bool,
+    pub direct8x8_inference: bool,
+    pub has_crop: bool,
     pub crop: crate::src::common::set::C2Rust_Unnamed_19,
-    pub b_vui: ::core::ffi::c_int,
+    pub has_vui: bool,
     pub vui: crate::src::common::set::C2Rust_Unnamed_20,
-    pub b_qpprime_y_zero_transform_bypass: ::core::ffi::c_int,
+    pub qpprime_y_zero_transform_bypass: bool,
     pub i_chroma_format_idc: ::core::ffi::c_int,
-    pub b_avcintra_hd: ::core::ffi::c_int,
-    pub b_avcintra_4k: ::core::ffi::c_int,
+    pub avcintra_hd: bool,
+    pub avcintra_4k: bool,
     pub i_cqm_preset: ::core::ffi::c_int,
     pub scaling_list: [*const crate::stdlib::uint8_t; 8],
 }
@@ -51,31 +51,31 @@ pub struct C2Rust_Unnamed_19 {
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct C2Rust_Unnamed_20 {
-    pub b_aspect_ratio_info_present: ::core::ffi::c_int,
+    pub aspect_ratio_info_present: bool,
     pub i_sar_width: ::core::ffi::c_int,
     pub i_sar_height: ::core::ffi::c_int,
-    pub b_overscan_info_present: ::core::ffi::c_int,
-    pub b_overscan_info: ::core::ffi::c_int,
-    pub b_signal_type_present: ::core::ffi::c_int,
+    pub overscan_info_present: bool,
+    pub overscan_info: bool,
+    pub signal_type_present: bool,
     pub i_vidformat: ::core::ffi::c_int,
-    pub b_fullrange: ::core::ffi::c_int,
-    pub b_color_description_present: ::core::ffi::c_int,
+    pub fullrange: bool,
+    pub color_description_present: bool,
     pub i_colorprim: ::core::ffi::c_int,
     pub i_transfer: ::core::ffi::c_int,
     pub i_colmatrix: ::core::ffi::c_int,
-    pub b_chroma_loc_info_present: ::core::ffi::c_int,
+    pub chroma_loc_info_present: bool,
     pub i_chroma_loc_top: ::core::ffi::c_int,
     pub i_chroma_loc_bottom: ::core::ffi::c_int,
-    pub b_timing_info_present: ::core::ffi::c_int,
+    pub timing_info_present: bool,
     pub i_num_units_in_tick: crate::stdlib::uint32_t,
     pub i_time_scale: crate::stdlib::uint32_t,
-    pub b_fixed_frame_rate: ::core::ffi::c_int,
-    pub b_nal_hrd_parameters_present: ::core::ffi::c_int,
-    pub b_vcl_hrd_parameters_present: ::core::ffi::c_int,
+    pub fixed_frame_rate: bool,
+    pub nal_hrd_parameters_present: bool,
+    pub vcl_hrd_parameters_present: bool,
     pub hrd: crate::src::common::set::C2Rust_Unnamed_21,
-    pub b_pic_struct_present: ::core::ffi::c_int,
-    pub b_bitstream_restriction: ::core::ffi::c_int,
-    pub b_motion_vectors_over_pic_boundaries: ::core::ffi::c_int,
+    pub pic_struct_present: bool,
+    pub bitstream_restriction: bool,
+    pub motion_vectors_over_pic_boundaries: bool,
     pub i_max_bytes_per_pic_denom: ::core::ffi::c_int,
     pub i_max_bits_per_mb_denom: ::core::ffi::c_int,
     pub i_log2_max_mv_length_horizontal: ::core::ffi::c_int,
@@ -93,7 +93,7 @@ pub struct C2Rust_Unnamed_21 {
     pub i_cpb_size_value: ::core::ffi::c_int,
     pub i_bit_rate_unscaled: ::core::ffi::c_int,
     pub i_cpb_size_unscaled: ::core::ffi::c_int,
-    pub b_cbr_hrd: ::core::ffi::c_int,
+    pub cbr_hrd: bool,
     pub i_initial_cpb_removal_delay_length: ::core::ffi::c_int,
     pub i_cpb_removal_delay_length: ::core::ffi::c_int,
     pub i_dpb_output_delay_length: ::core::ffi::c_int,
@@ -104,20 +104,20 @@ pub struct C2Rust_Unnamed_21 {
 pub struct x264_pps_t {
     pub i_id: ::core::ffi::c_int,
     pub i_sps_id: ::core::ffi::c_int,
-    pub b_cabac: ::core::ffi::c_int,
-    pub b_pic_order: ::core::ffi::c_int,
+    pub cabac: bool,
+    pub pic_order: bool,
     pub i_num_slice_groups: ::core::ffi::c_int,
     pub i_num_ref_idx_l0_default_active: ::core::ffi::c_int,
     pub i_num_ref_idx_l1_default_active: ::core::ffi::c_int,
-    pub b_weighted_pred: ::core::ffi::c_int,
-    pub b_weighted_bipred: ::core::ffi::c_int,
+    pub weighted_pred: bool,
+    pub weighted_bipred: ::core::ffi::c_int,
     pub i_pic_init_qp: ::core::ffi::c_int,
     pub i_pic_init_qs: ::core::ffi::c_int,
     pub i_chroma_qp_index_offset: ::core::ffi::c_int,
-    pub b_deblocking_filter_control: ::core::ffi::c_int,
-    pub b_constrained_intra_pred: ::core::ffi::c_int,
-    pub b_redundant_pic_cnt: ::core::ffi::c_int,
-    pub b_transform_8x8_mode: ::core::ffi::c_int,
+    pub deblocking_filter_control: bool,
+    pub constrained_intra_pred: bool,
+    pub redundant_pic_cnt: bool,
+    pub transform_8x8_mode: bool,
 }
 static mut dequant4_scale: [[crate::stdlib::uint8_t; 3]; 6] = [
     [10u8, 13u8, 16u8],
@@ -175,7 +175,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
             == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
         {
             4i32
-        } else if (*h).param.analyse.b_transform_8x8 != 0 {
+        } else if (*h).param.analyse.transform_8x8 {
             2i32
         } else {
             0i32
@@ -579,7 +579,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 }
                                 i_list_1 += 1;
                             }
-                            if (*h).param.analyse.b_transform_8x8 != 0 {
+                            if (*h).param.analyse.transform_8x8 {
                                 let mut i_list_2 = 0i32;
                                 while i_list_2 < num_8x8_lists {
                                     let mut i_6 = 0i32;
@@ -699,7 +699,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             as ::core::ffi::c_int
                                 {
                                     let mut dct8x8 = cat & 1i32;
-                                    if !((*h).param.analyse.b_transform_8x8 == 0 && dct8x8 != 0) {
+                                    if !(!(*h).param.analyse.transform_8x8 && dct8x8 != 0) {
                                         let mut i_7 = 0i32;
                                         let mut size_1 = if dct8x8 != 0 { 64i32 } else { 16i32 };
                                         let mut nr_offset = &raw mut *(&raw mut *(*h)
@@ -786,7 +786,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 }
                                 q_2 += 1;
                             }
-                            if (*h).mb.b_lossless == 0 {
+                            if !(*h).mb.lossless {
                                 while *(*h).chroma_qp_table.offset(
                                     (if (*h).param.rc.i_qp_min < 51i32 + 6i32 * (8i32 - 8i32) {
                                         (*h).param.rc.i_qp_min
@@ -804,7 +804,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 if max_qp_err >= (*h).param.rc.i_qp_min {
                                     (*h).param.rc.i_qp_min = max_qp_err + 1i32;
                                 }
-                                if (*h).param.b_cabac == 0
+                                if !(*h).param.cabac
                                     && (*(&raw mut (*h).sps
                                         as *mut crate::src::common::set::x264_sps_t))
                                         .i_profile_idc

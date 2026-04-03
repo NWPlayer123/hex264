@@ -285,9 +285,8 @@ pub mod macroblock_h {
         mut h: *mut crate::src::common::common::x264_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                .b_transform_8x8_mode
-                == 0
+            if !(*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
+                .transform_8x8_mode
             {
                 return 0i32;
             }
@@ -632,9 +631,9 @@ unsafe extern "C" fn cabac_field_decoding_flag(
         crate::src::common::cabac::x264_8_cabac_encode_decision_c(
             cb,
             70i32 + ctx,
-            (*h).mb.b_interlaced,
+            (*h).mb.interlaced as ::core::ffi::c_int,
         );
-        (*h).mb.field_decoding_flag = (*h).mb.b_interlaced;
+        (*h).mb.field_decoding_flag = (*h).mb.interlaced as ::core::ffi::c_int;
     }
 }
 unsafe extern "C" fn cabac_intra4x4_pred_mode(
@@ -884,7 +883,11 @@ unsafe extern "C" fn cabac_transform_size(
 ) {
     unsafe {
         let mut ctx = 399i32 + (*h).mb.cache.i_neighbour_transform_size;
-        crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, ctx, (*h).mb.b_transform_8x8);
+        crate::src::common::cabac::x264_8_cabac_encode_decision_c(
+            cb,
+            ctx,
+            (*h).mb.transform_8x8 as ::core::ffi::c_int,
+        );
     }
 }
 #[inline(always)]
@@ -1243,17 +1246,11 @@ unsafe extern "C" fn cabac_mb_header_i(
         }
         if i_mb_type != crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int {
             let mut i = 0i32;
-            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                .b_transform_8x8_mode
-                != 0
+            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).transform_8x8_mode
             {
                 cabac_transform_size(h, cb);
             }
-            let mut di = if (*h).mb.b_transform_8x8 != 0 {
-                4i32
-            } else {
-                1i32
-            };
+            let mut di = if (*h).mb.transform_8x8 { 4i32 } else { 1i32 };
             while i < 16i32 {
                 let i_pred = x264_mb_predict_intra4x4_mode(h, i);
                 let i_mode = x264_mb_pred_mode4x4_fix[((*h).mb.cache.intra4x4_pred_mode
@@ -1739,10 +1736,10 @@ unsafe extern "C" fn cabac_block_residual_internal(
     unsafe {
         let mut coeffs = [0; 64];
         let mut ctx_sig = crate::src::common::tables::x264_significant_coeff_flag_offset
-            [(*h).mb.b_interlaced as usize][ctx_block_cat as usize]
+            [(*h).mb.interlaced as usize][ctx_block_cat as usize]
             as ::core::ffi::c_int;
         let mut ctx_last = crate::src::common::tables::x264_last_coeff_flag_offset
-            [(*h).mb.b_interlaced as usize][ctx_block_cat as usize]
+            [(*h).mb.interlaced as usize][ctx_block_cat as usize]
             as ::core::ffi::c_int;
         let mut ctx_level = crate::src::common::tables::x264_coeff_abs_level_m1_offset
             [ctx_block_cat as usize] as ::core::ffi::c_int;
@@ -1812,7 +1809,7 @@ unsafe extern "C" fn cabac_block_residual_internal(
                 let mut sig_offset =
                     &raw const *(&raw const crate::src::common::tables::x264_significant_coeff_flag_offset_8x8
                         as *const [crate::stdlib::uint8_t; 64])
-                        .offset((*h).mb.b_interlaced as isize)
+                        .offset((*h).mb.interlaced as isize)
                         as *const crate::stdlib::uint8_t;
                 loop {
                     let mut i_0 = 0i32;
@@ -1987,7 +1984,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
     unsafe {
         let i_mb_type = (*h).mb.i_type;
         let i_mb_pos_start = x264_cabac_pos(cb);
-        if (*h).sh.b_mbaff != 0
+        if (*h).sh.mbaff
             && ((*h).mb.i_mb_y & 1i32 == 0
                 || (*(*h)
                     .mb
@@ -2178,7 +2175,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                     }
                     p_0 += 1;
                 }
-            } else if (*h).mb.b_transform_8x8 != 0 {
+            } else if (*h).mb.transform_8x8 {
                 if plane_count == 3i32 {
                     let mut nnzbak = [[0; 8]; 3];
                     let mut p_1 = 0i32;

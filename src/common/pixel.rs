@@ -3264,7 +3264,7 @@ pub unsafe extern "C" fn x264_8_field_vsad(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
     mut mb_y: ::core::ffi::c_int,
-) -> ::core::ffi::c_int {
+) -> bool {
     unsafe {
         let mut stride = (*(*h).fenc).i_stride[0usize];
         let mut mb_stride = (*h).mb.i_mb_stride;
@@ -3299,7 +3299,7 @@ pub unsafe extern "C" fn x264_8_field_vsad(
                 - *(*h).mb.field.offset((mb_xy - mb_stride) as isize) as ::core::ffi::c_int
                     * 1024i32;
         }
-        return (score_field < score_frame) as ::core::ffi::c_int;
+        return score_field < score_frame;
     }
 }
 unsafe extern "C" fn pixel_asd8(

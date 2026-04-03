@@ -9604,14 +9604,14 @@ pub unsafe extern "C" fn x264_8_frame_filter(
 ) {
     unsafe {
         let mut p = 0i32;
-        let b_interlaced = (*h).param.b_interlaced;
+        let b_interlaced = (*h).param.interlaced;
         let mut start = mb_y * 16i32 - 8i32;
         let mut height = (if b_end != 0 {
-            (*frame).i_lines[0usize] + 16i32 * (*h).param.b_interlaced
+            (*frame).i_lines[0usize] + 16i32 * (*h).param.interlaced as ::core::ffi::c_int
         } else {
-            (mb_y + b_interlaced) * 16i32
+            (mb_y + b_interlaced as ::core::ffi::c_int) * 16i32
         }) + 8i32;
-        if mb_y & b_interlaced != 0 {
+        if mb_y & b_interlaced as ::core::ffi::c_int != 0 {
             return;
         }
         while p
@@ -9626,7 +9626,7 @@ pub unsafe extern "C" fn x264_8_frame_filter(
             let mut stride = (*frame).i_stride[p as usize];
             let width = (*frame).i_width[p as usize];
             let mut offs = start * stride - 8i32;
-            if b_interlaced == 0 || (*h).mb.b_adaptive_mbaff != 0 {
+            if !b_interlaced || (*h).mb.adaptive_mbaff {
                 (*h).mc.hpel_filter.expect("non-null function pointer")(
                     (*frame).filtered[p as usize][1usize].offset(offs as isize),
                     (*frame).filtered[p as usize][2usize].offset(offs as isize),
@@ -9638,7 +9638,7 @@ pub unsafe extern "C" fn x264_8_frame_filter(
                     (*h).scratch_buffer as *mut crate::stdlib::int16_t,
                 );
             }
-            if b_interlaced != 0 {
+            if b_interlaced {
                 let mut i = 0i32;
                 stride = (*frame).i_stride[p as usize] << 1i32;
                 start = (mb_y * 16i32 >> 1i32) - 8i32;
@@ -9728,7 +9728,7 @@ pub unsafe extern "C" fn x264_8_frame_filter(
                                     as ::core::ffi::c_int
                         }) as isize),
                     );
-                if (*h).frames.b_have_sub8x8_esa != 0 {
+                if (*h).frames.have_sub8x8_esa {
                     let mut sum4 = ::core::ptr::null_mut::<crate::stdlib::uint16_t>();
                     (*h).mc.integral_init4h.expect("non-null function pointer")(
                         sum8,

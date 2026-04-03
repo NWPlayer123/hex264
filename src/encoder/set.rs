@@ -276,6 +276,7 @@ use crate::src::encoder::set::bitstream_h::bs_write_se;
 use crate::src::encoder::set::bitstream_h::bs_write_ue_big;
 use crate::src::encoder::set::macroblock_h::x264_zigzag_scan4;
 use crate::src::encoder::set::macroblock_h::x264_zigzag_scan8;
+use crate::x264_h::X264_CSP_BGR;
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct C2Rust_Unnamed_24 {
@@ -438,9 +439,8 @@ pub unsafe extern "C" fn x264_8_sps_init(
         (*sps).i_id = i_id;
         (*sps).i_mb_width = ((*param).i_width + 15i32) / 16i32;
         (*sps).i_mb_height = ((*param).i_height + 15i32) / 16i32;
-        (*sps).b_frame_mbs_only =
-            !((*param).b_interlaced != 0 || (*param).b_fake_interlaced != 0) as ::core::ffi::c_int;
-        if (*sps).b_frame_mbs_only == 0 {
+        (*sps).frame_mbs_only = !((*param).interlaced || (*param).fake_interlaced);
+        if !(*sps).frame_mbs_only {
             (*sps).i_mb_height = (*sps).i_mb_height + 1i32 & !(1i32);
         }
         (*sps).i_chroma_format_idc = if csp >= crate::x264_h::X264_CSP_I444 {
@@ -452,10 +452,10 @@ pub unsafe extern "C" fn x264_8_sps_init(
         } else {
             crate::src::common::base::CHROMA_400 as ::core::ffi::c_int
         };
-        (*sps).b_qpprime_y_zero_transform_bypass =
-            ((*param).rc.i_rc_method == crate::x264_h::X264_RC_CQP
-                && (*param).rc.i_qp_constant == 0i32) as ::core::ffi::c_int;
-        if (*sps).b_qpprime_y_zero_transform_bypass != 0
+        (*sps).qpprime_y_zero_transform_bypass = (*param).rc.i_rc_method
+            == crate::x264_h::X264_RC_CQP
+            && (*param).rc.i_qp_constant == 0i32;
+        if (*sps).qpprime_y_zero_transform_bypass
             || (*sps).i_chroma_format_idc
                 == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
         {
@@ -467,30 +467,28 @@ pub unsafe extern "C" fn x264_8_sps_init(
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH422 as ::core::ffi::c_int;
         } else if crate::internal::BIT_DEPTH > 8i32 {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH10 as ::core::ffi::c_int;
-        } else if (*param).analyse.b_transform_8x8 != 0
+        } else if (*param).analyse.transform_8x8
             || (*param).i_cqm_preset != crate::x264_h::X264_CQM_FLAT
             || (*sps).i_chroma_format_idc
                 == crate::src::common::base::CHROMA_400 as ::core::ffi::c_int
         {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int;
-        } else if (*param).b_cabac != 0
+        } else if (*param).cabac
             || (*param).i_bframe > 0i32
-            || (*param).b_interlaced != 0
-            || (*param).b_fake_interlaced != 0
+            || (*param).interlaced
+            || (*param).fake_interlaced
             || (*param).analyse.i_weighted_pred > 0i32
         {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int;
         } else {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_BASELINE as ::core::ffi::c_int;
         }
-        (*sps).b_constraint_set0 = ((*sps).i_profile_idc
-            == crate::src::common::base::PROFILE_BASELINE as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
-        (*sps).b_constraint_set1 = ((*sps).i_profile_idc
-            <= crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
-        (*sps).b_constraint_set2 = 0i32;
-        (*sps).b_constraint_set3 = 0i32;
+        (*sps).constraint_set0 = (*sps).i_profile_idc
+            == crate::src::common::base::PROFILE_BASELINE as ::core::ffi::c_int;
+        (*sps).constraint_set1 =
+            (*sps).i_profile_idc <= crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int;
+        (*sps).constraint_set2 = false;
+        (*sps).constraint_set3 = false;
         (*sps).i_level_idc = (*param).i_level_idc;
         if (*param).i_level_idc == 9i32
             && ((*sps).i_profile_idc
@@ -498,13 +496,13 @@ pub unsafe extern "C" fn x264_8_sps_init(
                 || (*sps).i_profile_idc
                     == crate::src::common::base::PROFILE_MAIN as ::core::ffi::c_int)
         {
-            (*sps).b_constraint_set3 = 1i32;
+            (*sps).constraint_set3 = true;
             (*sps).i_level_idc = 11i32;
         }
         if (*param).i_keyint_max == 1i32
             && (*sps).i_profile_idc >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
         {
-            (*sps).b_constraint_set3 = 1i32;
+            (*sps).constraint_set3 = true;
         }
         (*sps).vui.i_num_reorder_frames = if (*param).i_bframe_pyramid != 0 {
             2i32
@@ -664,7 +662,7 @@ pub unsafe extern "C" fn x264_8_sps_init(
         let mut max_frame_num = (*sps).vui.i_max_dec_frame_buffering
             * (((*param).i_bframe_pyramid != 0) as ::core::ffi::c_int + 1i32)
             + 1i32;
-        if (*param).b_intra_refresh != 0 {
+        if (*param).intra_refresh {
             let mut time_to_recovery = (if ((*sps).i_mb_width - 1i32) < (*param).i_keyint_max {
                 (*sps).i_mb_width - 1i32
             } else {
@@ -681,14 +679,12 @@ pub unsafe extern "C" fn x264_8_sps_init(
         while (1i32) << (*sps).i_log2_max_frame_num <= max_frame_num {
             (*sps).i_log2_max_frame_num += 1;
         }
-        (*sps).i_poc_type = if (*param).i_bframe != 0
-            || (*param).b_interlaced != 0
-            || (*param).i_avcintra_class != 0
-        {
-            0i32
-        } else {
-            2i32
-        };
+        (*sps).i_poc_type =
+            if (*param).i_bframe != 0 || (*param).interlaced || (*param).i_avcintra_class != 0 {
+                0i32
+            } else {
+                2i32
+            };
         if (*sps).i_poc_type == 0i32 {
             let mut max_delta_poc = ((*param).i_bframe + 2i32)
                 * (((*param).i_bframe_pyramid != 0) as ::core::ffi::c_int + 1i32)
@@ -698,37 +694,32 @@ pub unsafe extern "C" fn x264_8_sps_init(
                 (*sps).i_log2_max_poc_lsb += 1;
             }
         }
-        (*sps).b_vui = 1i32;
-        (*sps).b_gaps_in_frame_num_value_allowed = 0i32;
-        (*sps).b_mb_adaptive_frame_field = (*param).b_interlaced;
-        (*sps).b_direct8x8_inference = 1i32;
+        (*sps).has_vui = true;
+        (*sps).gaps_in_frame_num_value_allowed = false;
+        (*sps).mb_adaptive_frame_field = (*param).interlaced;
+        (*sps).direct8x8_inference = true;
         x264_8_sps_init_reconfigurable(sps, param);
-        (*sps).vui.b_overscan_info_present = ((*param).vui.i_overscan > 0i32
-            && (*param).vui.i_overscan <= 2i32)
-            as ::core::ffi::c_int;
-        if (*sps).vui.b_overscan_info_present != 0 {
-            (*sps).vui.b_overscan_info = if (*param).vui.i_overscan == 2i32 {
-                1i32
+        (*sps).vui.overscan_info_present =
+            (*param).vui.i_overscan > 0i32 && (*param).vui.i_overscan <= 2i32;
+        if (*sps).vui.overscan_info_present {
+            (*sps).vui.overscan_info = if (*param).vui.i_overscan == 2i32 {
+                true
             } else {
-                0i32
+                false
             };
         }
-        (*sps).vui.b_signal_type_present = 0i32;
+        (*sps).vui.signal_type_present = false;
         (*sps).vui.i_vidformat =
             if (*param).vui.i_vidformat >= 0i32 && (*param).vui.i_vidformat <= 5i32 {
                 (*param).vui.i_vidformat
             } else {
                 5i32
             };
-        (*sps).vui.b_fullrange =
-            if (*param).vui.b_fullrange >= 0i32 && (*param).vui.b_fullrange <= 1i32 {
-                (*param).vui.b_fullrange
-            } else if csp >= crate::x264_h::X264_CSP_BGR {
-                1i32
-            } else {
-                0i32
-            };
-        (*sps).vui.b_color_description_present = 0i32;
+        (*sps).vui.fullrange = (*param)
+            .vui
+            .fullrange
+            .unwrap_or_else(|| csp >= X264_CSP_BGR);
+        (*sps).vui.color_description_present = false;
         (*sps).vui.i_colorprim =
             if (*param).vui.i_colorprim >= 0i32 && (*param).vui.i_colorprim <= 12i32 {
                 (*param).vui.i_colorprim
@@ -753,39 +744,37 @@ pub unsafe extern "C" fn x264_8_sps_init(
             || (*sps).vui.i_transfer != 2i32
             || (*sps).vui.i_colmatrix != 2i32
         {
-            (*sps).vui.b_color_description_present = 1i32;
+            (*sps).vui.color_description_present = true;
         }
         if (*sps).vui.i_vidformat != 5i32
-            || (*sps).vui.b_fullrange != 0
-            || (*sps).vui.b_color_description_present != 0
+            || (*sps).vui.fullrange
+            || (*sps).vui.color_description_present
         {
-            (*sps).vui.b_signal_type_present = 1i32;
+            (*sps).vui.signal_type_present = true;
         }
-        (*sps).vui.b_chroma_loc_info_present = ((*param).vui.i_chroma_loc > 0i32
+        (*sps).vui.chroma_loc_info_present = (*param).vui.i_chroma_loc > 0i32
             && (*param).vui.i_chroma_loc <= 5i32
             && (*sps).i_chroma_format_idc
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
-        if (*sps).vui.b_chroma_loc_info_present != 0 {
+                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int;
+        if (*sps).vui.chroma_loc_info_present {
             (*sps).vui.i_chroma_loc_top = (*param).vui.i_chroma_loc;
             (*sps).vui.i_chroma_loc_bottom = (*param).vui.i_chroma_loc;
         }
-        (*sps).vui.b_timing_info_present = ((*param).i_timebase_num > 0u32
-            && (*param).i_timebase_den > 0u32)
-            as ::core::ffi::c_int;
-        if (*sps).vui.b_timing_info_present != 0 {
+        (*sps).vui.timing_info_present =
+            (*param).i_timebase_num > 0u32 && (*param).i_timebase_den > 0u32;
+        if (*sps).vui.timing_info_present {
             (*sps).vui.i_num_units_in_tick = (*param).i_timebase_num;
             (*sps).vui.i_time_scale = (*param).i_timebase_den.wrapping_mul(2u32);
-            (*sps).vui.b_fixed_frame_rate = ((*param).b_vfr_input == 0) as ::core::ffi::c_int;
+            (*sps).vui.fixed_frame_rate = !(*param).vfr_input;
         }
-        (*sps).vui.b_vcl_hrd_parameters_present = 0i32;
-        (*sps).vui.b_nal_hrd_parameters_present = ((*param).i_nal_hrd != 0) as ::core::ffi::c_int;
-        (*sps).vui.b_pic_struct_present = (*param).b_pic_struct;
-        (*sps).vui.b_bitstream_restriction = !((*sps).b_constraint_set3 != 0
-            && (*sps).i_profile_idc >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
-        if (*sps).vui.b_bitstream_restriction != 0 {
-            (*sps).vui.b_motion_vectors_over_pic_boundaries = 1i32;
+        (*sps).vui.vcl_hrd_parameters_present = false;
+        (*sps).vui.nal_hrd_parameters_present = (*param).i_nal_hrd != 0;
+        (*sps).vui.pic_struct_present = (*param).pic_struct;
+        (*sps).vui.bitstream_restriction = !((*sps).constraint_set3
+            && (*sps).i_profile_idc
+                >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int);
+        if (*sps).vui.bitstream_restriction {
+            (*sps).vui.motion_vectors_over_pic_boundaries = true;
             (*sps).vui.i_max_bytes_per_pic_denom = 0i32;
             (*sps).vui.i_max_bits_per_mb_denom = 0i32;
             (*sps).vui.i_log2_max_mv_length_vertical = crate::stdlib::log2f(
@@ -798,10 +787,8 @@ pub unsafe extern "C" fn x264_8_sps_init(
                 + 1i32;
             (*sps).vui.i_log2_max_mv_length_horizontal = (*sps).vui.i_log2_max_mv_length_vertical;
         }
-        (*sps).b_avcintra_hd = ((*param).i_avcintra_class != 0
-            && (*param).i_avcintra_class <= 200i32)
-            as ::core::ffi::c_int;
-        (*sps).b_avcintra_4k = ((*param).i_avcintra_class > 200i32) as ::core::ffi::c_int;
+        (*sps).avcintra_hd = (*param).i_avcintra_class != 0 && (*param).i_avcintra_class <= 200i32;
+        (*sps).avcintra_4k = (*param).i_avcintra_class > 200i32;
         (*sps).i_cqm_preset = (*param).i_cqm_preset;
     }
 }
@@ -817,13 +804,13 @@ pub unsafe extern "C" fn x264_8_sps_init_reconfigurable(
             (*param).crop_rect.i_right + (*sps).i_mb_width * 16i32 - (*param).i_width;
         (*sps).crop.i_bottom =
             (*param).crop_rect.i_bottom + (*sps).i_mb_height * 16i32 - (*param).i_height;
-        (*sps).b_crop = ((*sps).crop.i_left != 0
+        (*sps).has_crop = (*sps).crop.i_left != 0
             || (*sps).crop.i_top != 0
             || (*sps).crop.i_right != 0
-            || (*sps).crop.i_bottom != 0) as ::core::ffi::c_int;
-        (*sps).vui.b_aspect_ratio_info_present = 0i32;
+            || (*sps).crop.i_bottom != 0;
+        (*sps).vui.aspect_ratio_info_present = false;
         if (*param).vui.i_sar_width > 0i32 && (*param).vui.i_sar_height > 0i32 {
-            (*sps).vui.b_aspect_ratio_info_present = 1i32;
+            (*sps).vui.aspect_ratio_info_present = true;
             (*sps).vui.i_sar_width = (*param).vui.i_sar_width;
             (*sps).vui.i_sar_height = (*param).vui.i_sar_height;
         }
@@ -938,10 +925,10 @@ pub unsafe extern "C" fn x264_8_sps_write(
     unsafe {
         bs_realign(s);
         bs_write(s, 8i32, (*sps).i_profile_idc as crate::stdlib::uint32_t);
-        bs_write1(s, (*sps).b_constraint_set0 as crate::stdlib::uint32_t);
-        bs_write1(s, (*sps).b_constraint_set1 as crate::stdlib::uint32_t);
-        bs_write1(s, (*sps).b_constraint_set2 as crate::stdlib::uint32_t);
-        bs_write1(s, (*sps).b_constraint_set3 as crate::stdlib::uint32_t);
+        bs_write1(s, (*sps).constraint_set0 as crate::stdlib::uint32_t);
+        bs_write1(s, (*sps).constraint_set1 as crate::stdlib::uint32_t);
+        bs_write1(s, (*sps).constraint_set2 as crate::stdlib::uint32_t);
+        bs_write1(s, (*sps).constraint_set3 as crate::stdlib::uint32_t);
         bs_write(s, 4i32, 0u32);
         bs_write(s, 8i32, (*sps).i_level_idc as crate::stdlib::uint32_t);
         bs_write_ue_big(s, (*sps).i_id as ::core::ffi::c_uint);
@@ -962,10 +949,10 @@ pub unsafe extern "C" fn x264_8_sps_write(
             );
             bs_write1(
                 s,
-                (*sps).b_qpprime_y_zero_transform_bypass as crate::stdlib::uint32_t,
+                (*sps).qpprime_y_zero_transform_bypass as crate::stdlib::uint32_t,
             );
-            bs_write1(s, (*sps).b_avcintra_hd as crate::stdlib::uint32_t);
-            if (*sps).b_avcintra_hd != 0 {
+            bs_write1(s, (*sps).avcintra_hd as crate::stdlib::uint32_t);
+            if (*sps).avcintra_hd {
                 scaling_list_write(
                     s,
                     sps,
@@ -1019,24 +1006,21 @@ pub unsafe extern "C" fn x264_8_sps_write(
         bs_write_ue_big(s, (*sps).i_num_ref_frames as ::core::ffi::c_uint);
         bs_write1(
             s,
-            (*sps).b_gaps_in_frame_num_value_allowed as crate::stdlib::uint32_t,
+            (*sps).gaps_in_frame_num_value_allowed as crate::stdlib::uint32_t,
         );
         bs_write_ue_big(s, ((*sps).i_mb_width - 1i32) as ::core::ffi::c_uint);
         bs_write_ue_big(
             s,
-            (((*sps).i_mb_height >> ((*sps).b_frame_mbs_only == 0) as ::core::ffi::c_int) - 1i32)
+            (((*sps).i_mb_height >> (!(*sps).frame_mbs_only) as ::core::ffi::c_int) - 1i32)
                 as ::core::ffi::c_uint,
         );
-        bs_write1(s, (*sps).b_frame_mbs_only as crate::stdlib::uint32_t);
-        if (*sps).b_frame_mbs_only == 0 {
-            bs_write1(
-                s,
-                (*sps).b_mb_adaptive_frame_field as crate::stdlib::uint32_t,
-            );
+        bs_write1(s, (*sps).frame_mbs_only as crate::stdlib::uint32_t);
+        if !(*sps).frame_mbs_only {
+            bs_write1(s, (*sps).mb_adaptive_frame_field as crate::stdlib::uint32_t);
         }
-        bs_write1(s, (*sps).b_direct8x8_inference as crate::stdlib::uint32_t);
-        bs_write1(s, (*sps).b_crop as crate::stdlib::uint32_t);
-        if (*sps).b_crop != 0 {
+        bs_write1(s, (*sps).direct8x8_inference as crate::stdlib::uint32_t);
+        bs_write1(s, (*sps).has_crop as crate::stdlib::uint32_t);
+        if (*sps).has_crop {
             let mut h_shift = ((*sps).i_chroma_format_idc
                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                 || (*sps).i_chroma_format_idc
@@ -1045,19 +1029,19 @@ pub unsafe extern "C" fn x264_8_sps_write(
             let mut v_shift = ((*sps).i_chroma_format_idc
                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                 as ::core::ffi::c_int
-                + ((*sps).b_frame_mbs_only == 0) as ::core::ffi::c_int;
+                + (!(*sps).frame_mbs_only) as ::core::ffi::c_int;
             bs_write_ue_big(s, ((*sps).crop.i_left >> h_shift) as ::core::ffi::c_uint);
             bs_write_ue_big(s, ((*sps).crop.i_right >> h_shift) as ::core::ffi::c_uint);
             bs_write_ue_big(s, ((*sps).crop.i_top >> v_shift) as ::core::ffi::c_uint);
             bs_write_ue_big(s, ((*sps).crop.i_bottom >> v_shift) as ::core::ffi::c_uint);
         }
-        bs_write1(s, (*sps).b_vui as crate::stdlib::uint32_t);
-        if (*sps).b_vui != 0 {
+        bs_write1(s, (*sps).has_vui as crate::stdlib::uint32_t);
+        if (*sps).has_vui {
             bs_write1(
                 s,
-                (*sps).vui.b_aspect_ratio_info_present as crate::stdlib::uint32_t,
+                (*sps).vui.aspect_ratio_info_present as crate::stdlib::uint32_t,
             );
-            if (*sps).vui.b_aspect_ratio_info_present != 0 {
+            if (*sps).vui.aspect_ratio_info_present {
                 let mut i = 0i32;
                 static mut sar: [C2Rust_Unnamed_24; 17] = [
                     C2Rust_Unnamed_24 {
@@ -1162,23 +1146,20 @@ pub unsafe extern "C" fn x264_8_sps_write(
             }
             bs_write1(
                 s,
-                (*sps).vui.b_overscan_info_present as crate::stdlib::uint32_t,
+                (*sps).vui.overscan_info_present as crate::stdlib::uint32_t,
             );
-            if (*sps).vui.b_overscan_info_present != 0 {
-                bs_write1(s, (*sps).vui.b_overscan_info as crate::stdlib::uint32_t);
+            if (*sps).vui.overscan_info_present {
+                bs_write1(s, (*sps).vui.overscan_info as crate::stdlib::uint32_t);
             }
-            bs_write1(
-                s,
-                (*sps).vui.b_signal_type_present as crate::stdlib::uint32_t,
-            );
-            if (*sps).vui.b_signal_type_present != 0 {
+            bs_write1(s, (*sps).vui.signal_type_present as crate::stdlib::uint32_t);
+            if (*sps).vui.signal_type_present {
                 bs_write(s, 3i32, (*sps).vui.i_vidformat as crate::stdlib::uint32_t);
-                bs_write1(s, (*sps).vui.b_fullrange as crate::stdlib::uint32_t);
+                bs_write1(s, (*sps).vui.fullrange as u32);
                 bs_write1(
                     s,
-                    (*sps).vui.b_color_description_present as crate::stdlib::uint32_t,
+                    (*sps).vui.color_description_present as crate::stdlib::uint32_t,
                 );
-                if (*sps).vui.b_color_description_present != 0 {
+                if (*sps).vui.color_description_present {
                     bs_write(s, 8i32, (*sps).vui.i_colorprim as crate::stdlib::uint32_t);
                     bs_write(s, 8i32, (*sps).vui.i_transfer as crate::stdlib::uint32_t);
                     bs_write(s, 8i32, (*sps).vui.i_colmatrix as crate::stdlib::uint32_t);
@@ -1186,26 +1167,23 @@ pub unsafe extern "C" fn x264_8_sps_write(
             }
             bs_write1(
                 s,
-                (*sps).vui.b_chroma_loc_info_present as crate::stdlib::uint32_t,
+                (*sps).vui.chroma_loc_info_present as crate::stdlib::uint32_t,
             );
-            if (*sps).vui.b_chroma_loc_info_present != 0 {
+            if (*sps).vui.chroma_loc_info_present {
                 bs_write_ue_big(s, (*sps).vui.i_chroma_loc_top as ::core::ffi::c_uint);
                 bs_write_ue_big(s, (*sps).vui.i_chroma_loc_bottom as ::core::ffi::c_uint);
             }
-            bs_write1(
-                s,
-                (*sps).vui.b_timing_info_present as crate::stdlib::uint32_t,
-            );
-            if (*sps).vui.b_timing_info_present != 0 {
+            bs_write1(s, (*sps).vui.timing_info_present as crate::stdlib::uint32_t);
+            if (*sps).vui.timing_info_present {
                 bs_write32(s, (*sps).vui.i_num_units_in_tick);
                 bs_write32(s, (*sps).vui.i_time_scale);
-                bs_write1(s, (*sps).vui.b_fixed_frame_rate as crate::stdlib::uint32_t);
+                bs_write1(s, (*sps).vui.fixed_frame_rate as crate::stdlib::uint32_t);
             }
             bs_write1(
                 s,
-                (*sps).vui.b_nal_hrd_parameters_present as crate::stdlib::uint32_t,
+                (*sps).vui.nal_hrd_parameters_present as crate::stdlib::uint32_t,
             );
-            if (*sps).vui.b_nal_hrd_parameters_present != 0 {
+            if (*sps).vui.nal_hrd_parameters_present {
                 bs_write_ue_big(s, ((*sps).vui.hrd.i_cpb_cnt - 1i32) as ::core::ffi::c_uint);
                 bs_write(
                     s,
@@ -1225,7 +1203,7 @@ pub unsafe extern "C" fn x264_8_sps_write(
                     s,
                     ((*sps).vui.hrd.i_cpb_size_value - 1i32) as ::core::ffi::c_uint,
                 );
-                bs_write1(s, (*sps).vui.hrd.b_cbr_hrd as crate::stdlib::uint32_t);
+                bs_write1(s, (*sps).vui.hrd.cbr_hrd as crate::stdlib::uint32_t);
                 bs_write(
                     s,
                     5i32,
@@ -1250,25 +1228,20 @@ pub unsafe extern "C" fn x264_8_sps_write(
             }
             bs_write1(
                 s,
-                (*sps).vui.b_vcl_hrd_parameters_present as crate::stdlib::uint32_t,
+                (*sps).vui.vcl_hrd_parameters_present as crate::stdlib::uint32_t,
             );
-            if (*sps).vui.b_nal_hrd_parameters_present != 0
-                || (*sps).vui.b_vcl_hrd_parameters_present != 0
-            {
+            if (*sps).vui.nal_hrd_parameters_present || (*sps).vui.vcl_hrd_parameters_present {
                 bs_write1(s, 0u32);
             }
+            bs_write1(s, (*sps).vui.pic_struct_present as crate::stdlib::uint32_t);
             bs_write1(
                 s,
-                (*sps).vui.b_pic_struct_present as crate::stdlib::uint32_t,
+                (*sps).vui.bitstream_restriction as crate::stdlib::uint32_t,
             );
-            bs_write1(
-                s,
-                (*sps).vui.b_bitstream_restriction as crate::stdlib::uint32_t,
-            );
-            if (*sps).vui.b_bitstream_restriction != 0 {
+            if (*sps).vui.bitstream_restriction {
                 bs_write1(
                     s,
-                    (*sps).vui.b_motion_vectors_over_pic_boundaries as crate::stdlib::uint32_t,
+                    (*sps).vui.motion_vectors_over_pic_boundaries as crate::stdlib::uint32_t,
                 );
                 bs_write_ue_big(
                     s,
@@ -1304,37 +1277,31 @@ pub unsafe extern "C" fn x264_8_pps_init(
     unsafe {
         (*pps).i_id = i_id;
         (*pps).i_sps_id = (*sps).i_id;
-        (*pps).b_cabac = (*param).b_cabac;
-        (*pps).b_pic_order =
-            ((*param).i_avcintra_class == 0 && (*param).b_interlaced != 0) as ::core::ffi::c_int;
+        (*pps).cabac = (*param).cabac;
+        (*pps).pic_order = (*param).i_avcintra_class == 0 && (*param).interlaced;
         (*pps).i_num_slice_groups = 1i32;
         (*pps).i_num_ref_idx_l0_default_active = (*param).i_frame_reference;
         (*pps).i_num_ref_idx_l1_default_active = 1i32;
-        (*pps).b_weighted_pred = ((*param).analyse.i_weighted_pred > 0i32) as ::core::ffi::c_int;
-        (*pps).b_weighted_bipred = if (*param).analyse.b_weighted_bipred != 0 {
+        (*pps).weighted_pred = (*param).analyse.i_weighted_pred > 0i32;
+        (*pps).weighted_bipred = if (*param).analyse.weighted_bipred {
             2i32
         } else {
             0i32
         };
-        (*pps).i_pic_init_qp = if (*param).rc.i_rc_method == crate::x264_h::X264_RC_ABR
-            || (*param).b_stitchable != 0
-        {
-            26i32 + crate::src::common::common::QP_BD_OFFSET
-        } else if (*param).rc.i_qp_constant < 51i32 + 6i32 * (8i32 - 8i32) {
-            (*param).rc.i_qp_constant
-        } else {
-            51i32 + 6i32 * (8i32 - 8i32)
-        };
+        (*pps).i_pic_init_qp =
+            if (*param).rc.i_rc_method == crate::x264_h::X264_RC_ABR || (*param).stitchable {
+                26i32 + crate::src::common::common::QP_BD_OFFSET
+            } else if (*param).rc.i_qp_constant < 51i32 + 6i32 * (8i32 - 8i32) {
+                (*param).rc.i_qp_constant
+            } else {
+                51i32 + 6i32 * (8i32 - 8i32)
+            };
         (*pps).i_pic_init_qs = 26i32 + crate::src::common::common::QP_BD_OFFSET;
         (*pps).i_chroma_qp_index_offset = (*param).analyse.i_chroma_qp_offset;
-        (*pps).b_deblocking_filter_control = 1i32;
-        (*pps).b_constrained_intra_pred = (*param).b_constrained_intra;
-        (*pps).b_redundant_pic_cnt = 0i32;
-        (*pps).b_transform_8x8_mode = if (*param).analyse.b_transform_8x8 != 0 {
-            1i32
-        } else {
-            0i32
-        };
+        (*pps).deblocking_filter_control = true;
+        (*pps).constrained_intra_pred = (*param).constrained_intra;
+        (*pps).redundant_pic_cnt = false;
+        (*pps).transform_8x8_mode = (*param).analyse.transform_8x8;
     }
 }
 #[no_mangle]
@@ -1347,8 +1314,8 @@ pub unsafe extern "C" fn x264_8_pps_write(
         bs_realign(s);
         bs_write_ue_big(s, (*pps).i_id as ::core::ffi::c_uint);
         bs_write_ue_big(s, (*pps).i_sps_id as ::core::ffi::c_uint);
-        bs_write1(s, (*pps).b_cabac as crate::stdlib::uint32_t);
-        bs_write1(s, (*pps).b_pic_order as crate::stdlib::uint32_t);
+        bs_write1(s, (*pps).cabac as crate::stdlib::uint32_t);
+        bs_write1(s, (*pps).pic_order as crate::stdlib::uint32_t);
         bs_write_ue_big(s, ((*pps).i_num_slice_groups - 1i32) as ::core::ffi::c_uint);
         bs_write_ue_big(
             s,
@@ -1358,8 +1325,8 @@ pub unsafe extern "C" fn x264_8_pps_write(
             s,
             ((*pps).i_num_ref_idx_l1_default_active - 1i32) as ::core::ffi::c_uint,
         );
-        bs_write1(s, (*pps).b_weighted_pred as crate::stdlib::uint32_t);
-        bs_write(s, 2i32, (*pps).b_weighted_bipred as crate::stdlib::uint32_t);
+        bs_write1(s, (*pps).weighted_pred as crate::stdlib::uint32_t);
+        bs_write(s, 2i32, (*pps).weighted_bipred as crate::stdlib::uint32_t);
         bs_write_se(
             s,
             (*pps).i_pic_init_qp - 26i32 - crate::src::common::common::QP_BD_OFFSET,
@@ -1371,20 +1338,16 @@ pub unsafe extern "C" fn x264_8_pps_write(
         bs_write_se(s, (*pps).i_chroma_qp_index_offset);
         bs_write1(
             s,
-            (*pps).b_deblocking_filter_control as crate::stdlib::uint32_t,
+            (*pps).deblocking_filter_control as crate::stdlib::uint32_t,
         );
-        bs_write1(
-            s,
-            (*pps).b_constrained_intra_pred as crate::stdlib::uint32_t,
-        );
-        bs_write1(s, (*pps).b_redundant_pic_cnt as crate::stdlib::uint32_t);
-        let mut b_scaling_list = ((*sps).b_avcintra_hd == 0
-            && (*sps).i_cqm_preset != crate::x264_h::X264_CQM_FLAT)
-            as ::core::ffi::c_int;
-        if (*pps).b_transform_8x8_mode != 0 || b_scaling_list != 0 {
-            bs_write1(s, (*pps).b_transform_8x8_mode as crate::stdlib::uint32_t);
+        bs_write1(s, (*pps).constrained_intra_pred as crate::stdlib::uint32_t);
+        bs_write1(s, (*pps).redundant_pic_cnt as crate::stdlib::uint32_t);
+        let mut b_scaling_list =
+            !(*sps).avcintra_hd && (*sps).i_cqm_preset != crate::x264_h::X264_CQM_FLAT;
+        if (*pps).transform_8x8_mode || b_scaling_list {
+            bs_write1(s, (*pps).transform_8x8_mode as crate::stdlib::uint32_t);
             bs_write1(s, b_scaling_list as crate::stdlib::uint32_t);
-            if b_scaling_list != 0 {
+            if b_scaling_list {
                 scaling_list_write(
                     s,
                     sps,
@@ -1395,7 +1358,7 @@ pub unsafe extern "C" fn x264_8_pps_write(
                     sps,
                     crate::src::common::set::CQM_4IC as ::core::ffi::c_int,
                 );
-                if (*sps).b_avcintra_4k != 0 {
+                if (*sps).avcintra_4k {
                     scaling_list_write(
                         s,
                         sps,
@@ -1418,13 +1381,13 @@ pub unsafe extern "C" fn x264_8_pps_write(
                     );
                     bs_write1(s, 0u32);
                 }
-                if (*pps).b_transform_8x8_mode != 0 {
+                if (*pps).transform_8x8_mode {
                     scaling_list_write(
                         s,
                         sps,
                         crate::src::common::set::CQM_8IY as ::core::ffi::c_int + 4i32,
                     );
-                    if (*sps).b_avcintra_4k != 0 {
+                    if (*sps).avcintra_4k {
                         bs_write1(s, 0u32);
                     } else {
                         scaling_list_write(
@@ -1570,7 +1533,7 @@ pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
         );
         bs_realign(&raw mut q);
         bs_write_ue_big(&raw mut q, (*sps).i_id as ::core::ffi::c_uint);
-        if (*sps).vui.b_nal_hrd_parameters_present != 0 {
+        if (*sps).vui.nal_hrd_parameters_present {
             bs_write(
                 &raw mut q,
                 (*sps).vui.hrd.i_initial_cpb_removal_delay_length,
@@ -1614,9 +1577,7 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
             100i32,
         );
         bs_realign(&raw mut q);
-        if (*sps).vui.b_nal_hrd_parameters_present != 0
-            || (*sps).vui.b_vcl_hrd_parameters_present != 0
-        {
+        if (*sps).vui.nal_hrd_parameters_present || (*sps).vui.vcl_hrd_parameters_present {
             bs_write(
                 &raw mut q,
                 (*sps).vui.hrd.i_cpb_removal_delay_length,
@@ -1628,7 +1589,7 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
                 (*(*h).fenc).i_dpb_output_delay as crate::stdlib::uint32_t,
             );
         }
-        if (*sps).vui.b_pic_struct_present != 0 {
+        if (*sps).vui.pic_struct_present {
             let mut i = 0i32;
             bs_write(
                 &raw mut q,
@@ -1917,8 +1878,7 @@ pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
         bs_realign(&raw mut q);
         bs_write1(&raw mut q, 0u32);
         bs_write_ue_big(&raw mut q, (*sh).i_frame_num as ::core::ffi::c_uint);
-        if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).b_frame_mbs_only == 0
-        {
+        if !(*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).frame_mbs_only {
             bs_write1(&raw mut q, 0u32);
         }
         bs_write1(
@@ -2160,27 +2120,27 @@ pub unsafe extern "C" fn x264_8_validate_levels(
             }
             ret = 1i32;
         }
-        if (*h).param.b_interlaced > ((*l).frame_only == 0) as ::core::ffi::c_int {
+        if (*h).param.interlaced > ((*l).frame_only == 0) {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
                     h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"interlaced (%ld) > level limit (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
-                    (*h).param.b_interlaced as crate::stdlib::int64_t,
+                    (*h).param.interlaced as crate::stdlib::int64_t,
                     ((*l).frame_only == 0) as ::core::ffi::c_int,
                 );
             }
             ret = 1i32;
         }
-        if (*h).param.b_fake_interlaced > ((*l).frame_only == 0) as ::core::ffi::c_int {
+        if (*h).param.fake_interlaced > ((*l).frame_only == 0) {
             if verbose != 0 {
                 crate::src::common::common::x264_8_log(
                     h,
                     crate::x264_h::X264_LOG_WARNING_1,
                     b"fake interlaced (%ld) > level limit (%d)\n\0".as_ptr()
                         as *const ::core::ffi::c_char,
-                    (*h).param.b_fake_interlaced as crate::stdlib::int64_t,
+                    (*h).param.fake_interlaced as crate::stdlib::int64_t,
                     ((*l).frame_only == 0) as ::core::ffi::c_int,
                 );
             }
