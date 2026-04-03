@@ -240,7 +240,6 @@ pub struct x264_csp_tab_t {
     pub width_fix8: [::core::ffi::c_int; 3],
     pub height_fix8: [::core::ffi::c_int; 3],
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_reduce_fraction(
     mut n: *mut crate::stdlib::uint32_t,
     mut d: *mut crate::stdlib::uint32_t,
@@ -261,7 +260,6 @@ pub unsafe extern "C" fn x264_reduce_fraction(
         *d = (*d).wrapping_div(b);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_reduce_fraction64(
     mut n: *mut crate::stdlib::uint64_t,
     mut d: *mut crate::stdlib::uint64_t,
@@ -282,7 +280,6 @@ pub unsafe extern "C" fn x264_reduce_fraction64(
         *d = (*d).wrapping_div(b);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_log_default(
     mut _p_unused: *mut ::core::ffi::c_void,
     mut i_level: ::core::ffi::c_int,
@@ -316,7 +313,6 @@ pub unsafe extern "C" fn x264_log_default(
         crate::stdlib::vfprintf(crate::stdlib::stderr, psz_fmt, arg);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_log_internal(
     mut i_level: ::core::ffi::c_int,
     mut psz_fmt: *const ::core::ffi::c_char,
@@ -327,7 +323,6 @@ pub unsafe extern "C" fn x264_log_internal(
         x264_log_default(crate::__stddef_null_h::NULL, i_level, psz_fmt, arg);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_malloc(
     mut i_size: crate::stdlib::int64_t,
 ) -> *mut ::core::ffi::c_void {
@@ -377,7 +372,6 @@ pub unsafe extern "C" fn x264_malloc(
     }
 }
 pub const HUGE_PAGE_SIZE: ::core::ffi::c_int = 2i32 * 1024i32 * 1024i32;
-#[no_mangle]
 pub unsafe extern "C" fn x264_free(mut p: *mut ::core::ffi::c_void) {
     unsafe {
         if !p.is_null() {
@@ -385,7 +379,6 @@ pub unsafe extern "C" fn x264_free(mut p: *mut ::core::ffi::c_void) {
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_slurp_file(
     mut filename: *const ::core::ffi::c_char,
 ) -> *mut ::core::ffi::c_char {
@@ -435,7 +428,6 @@ pub unsafe extern "C" fn x264_slurp_file(
     }
 }
 pub const BUFFER_DEFAULT_SIZE: ::core::ffi::c_int = 16i32;
-#[no_mangle]
 pub unsafe extern "C" fn x264_param_strdup(
     mut param: *mut crate::x264_h::x264_param_t,
     mut src: *const ::core::ffi::c_char,
@@ -508,7 +500,6 @@ pub unsafe extern "C" fn x264_param_strdup(
         return ::core::ptr::null_mut::<::core::ffi::c_char>();
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_param_cleanup(mut param: *mut crate::x264_h::x264_param_t) {
     unsafe {
         let mut buf = (*param).opaque as *mut strdup_buffer;
@@ -525,7 +516,6 @@ pub unsafe extern "C" fn x264_param_cleanup(mut param: *mut crate::x264_h::x264_
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_picture_init(mut pic: *mut crate::x264_h::x264_picture_t) {
     unsafe {
         crate::stdlib::memset(
@@ -538,7 +528,6 @@ pub unsafe extern "C" fn x264_picture_init(mut pic: *mut crate::x264_h::x264_pic
         (*pic).i_pic_struct = crate::x264_h::PIC_STRUCT_AUTO as ::core::ffi::c_int;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_picture_alloc(
     mut pic: *mut crate::x264_h::x264_picture_t,
     mut i_csp: ::core::ffi::c_int,
@@ -679,7 +668,6 @@ pub unsafe extern "C" fn x264_picture_alloc(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_picture_clean(mut pic: *mut crate::x264_h::x264_picture_t) {
     unsafe {
         x264_free((*pic).img.plane[0usize] as *mut ::core::ffi::c_void);
@@ -690,7 +678,6 @@ pub unsafe extern "C" fn x264_picture_clean(mut pic: *mut crate::x264_h::x264_pi
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_param_default(mut param: *mut crate::x264_h::x264_param_t) {
     unsafe {
         crate::stdlib::memset(
@@ -1229,7 +1216,6 @@ unsafe extern "C" fn param_apply_tune(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_param_default_preset(
     mut param: *mut crate::x264_h::x264_param_t,
     mut preset: *const ::core::ffi::c_char,
@@ -1246,7 +1232,6 @@ pub unsafe extern "C" fn x264_param_default_preset(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_param_apply_fastfirstpass(
     mut param: *mut crate::x264_h::x264_param_t,
 ) {
@@ -1294,7 +1279,6 @@ unsafe extern "C" fn profile_string_to_int(
         return -(1i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_param_apply_profile(
     mut param: *mut crate::x264_h::x264_param_t,
     mut profile: *const ::core::ffi::c_char,
@@ -1507,7 +1491,6 @@ unsafe extern "C" fn atof_internal(
         return v;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_param_parse(
     mut p: *mut crate::x264_h::x264_param_t,
     mut name: *const ::core::ffi::c_char,
@@ -2681,7 +2664,6 @@ pub unsafe extern "C" fn x264_param_parse(
         return if b_error != 0 { errortype } else { 0i32 };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_param2string(
     mut p: *mut crate::x264_h::x264_param_t,
     mut b_res: ::core::ffi::c_int,

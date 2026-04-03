@@ -744,7 +744,6 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_deblock_row(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_y: ::core::ffi::c_int,
@@ -2242,7 +2241,6 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut a = (*h).sh.i_alpha_c0_offset - crate::src::common::common::QP_BD_OFFSET;
@@ -2695,7 +2693,6 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_deblock_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::frame::x264_deblock_function_t,

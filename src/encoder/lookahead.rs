@@ -152,7 +152,6 @@ unsafe extern "C" fn lookahead_thread(
         return crate::__stddef_null_h::NULL;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_lookahead_init(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_slicetype_length: ::core::ffi::c_int,
@@ -244,7 +243,6 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
         return -(1i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_lookahead_delete(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         if (*h).param.i_sync_lookahead != 0 {
@@ -279,7 +277,6 @@ pub unsafe extern "C" fn x264_8_lookahead_delete(mut h: *mut crate::src::common:
         crate::src::common::base::x264_free((*h).lookahead as *mut ::core::ffi::c_void);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_lookahead_put_frame(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -298,7 +295,6 @@ pub unsafe extern "C" fn x264_8_lookahead_put_frame(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_lookahead_is_empty(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -334,7 +330,6 @@ unsafe extern "C" fn lookahead_encoder_shift(mut h: *mut crate::src::common::com
         crate::stdlib::pthread_cond_broadcast(&raw mut (*(*h).lookahead).ofbuf.cv_empty);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_lookahead_get_frames(
     mut h: *mut crate::src::common::common::x264_t,
 ) {

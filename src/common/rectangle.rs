@@ -177,7 +177,6 @@ pub mod rectangle_h {
     }
 }
 use crate::src::common::rectangle::rectangle_h::x264_macroblock_cache_rect;
-#[no_mangle]
 pub static mut x264_8_cache_mv_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
 >; 10] = [
@@ -277,7 +276,6 @@ unsafe extern "C" fn macroblock_cache_mvd_2_4(
         x264_macroblock_cache_rect(target, 2i32 * 2i32, 4i32, 2i32, val);
     }
 }
-#[no_mangle]
 pub static mut x264_8_cache_mvd_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
 >; 10] = [
@@ -361,7 +359,6 @@ unsafe extern "C" fn macroblock_cache_mvd_4_4(
         x264_macroblock_cache_rect(target, 4i32 * 2i32, 4i32, 2i32, val);
     }
 }
-#[no_mangle]
 pub static mut x264_8_cache_ref_func_table: [Option<
     unsafe extern "C" fn(*mut ::core::ffi::c_void, crate::stdlib::uint32_t) -> (),
 >; 10] = [

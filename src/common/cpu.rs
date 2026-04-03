@@ -193,11 +193,9 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
     (c"SlowShuffle", X264_CPU_SLOW_SHUFFLE),
     (c"UnalignedStack", X264_CPU_STACK_MOD4),
 ];
-#[no_mangle]
 pub extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {
     return 0u32;
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_cpu_num_processors() -> ::core::ffi::c_int {
     unsafe {
         let mut p_aff = crate::stdlib::cpu_set_t { __bits: [0; 16] };

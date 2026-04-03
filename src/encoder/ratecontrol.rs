@@ -468,7 +468,6 @@ unsafe extern "C" fn ac_energy_mb(
         return var;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -897,7 +896,6 @@ unsafe extern "C" fn macroblock_tree_rescale(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_tree_read(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1010,7 +1008,6 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_reference_build_list_optimal(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -1099,7 +1096,6 @@ unsafe extern "C" fn strcat_filename(
         return output;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_init: ::core::ffi::c_int,
@@ -1397,7 +1393,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
 pub const BR_SHIFT: ::core::ffi::c_int = 6i32;
 pub const CPB_SHIFT: ::core::ffi::c_int = 4i32;
 pub const MAX_DURATION: ::core::ffi::c_double = 0.5;
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_new(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -2805,7 +2800,6 @@ unsafe extern "C" fn get_zone(
         return ::core::ptr::null_mut::<crate::x264_h::x264_zone_t>();
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_summary(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -2840,7 +2834,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_summary(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_delete(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut b_regular_file = 0;
@@ -2944,7 +2937,6 @@ unsafe extern "C" fn accum_p_qp_update(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_zone_init(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -2959,7 +2951,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_zone_init(
         (*rc).prev_zone = zone;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_start(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_force_qp: ::core::ffi::c_int,
@@ -3203,7 +3194,6 @@ unsafe extern "C" fn predict_row_size_to_end(
         return bits;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_mb(
     mut h: *mut crate::src::common::common::x264_t,
     mut bits: ::core::ffi::c_int,
@@ -3485,7 +3475,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_qp(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -3497,7 +3486,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_qp(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_mb_qp(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -3523,7 +3511,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb_qp(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame_num: ::core::ffi::c_int,
@@ -3616,7 +3603,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_set_weights(
     mut h: *mut crate::src::common::common::x264_t,
     mut frm: *mut crate::src::common::frame::x264_frame_t,
@@ -3671,7 +3657,6 @@ pub unsafe extern "C" fn x264_8_ratecontrol_set_weights(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_ratecontrol_end(
     mut h: *mut crate::src::common::common::x264_t,
     mut bits: ::core::ffi::c_int,
@@ -4381,7 +4366,6 @@ unsafe extern "C" fn update_vbv(
         return filler;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut rct = (*(*h).thread[0usize]).rc;
@@ -5105,7 +5089,6 @@ unsafe extern "C" fn threads_normalize_predictors(mut h: *mut crate::src::common
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threads_distribute_ratecontrol(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -5190,7 +5173,6 @@ pub unsafe extern "C" fn x264_8_threads_distribute_ratecontrol(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -5229,7 +5211,6 @@ pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_thread_sync_ratecontrol(
     mut cur: *mut crate::src::common::common::x264_t,
     mut prev: *mut crate::src::common::common::x264_t,

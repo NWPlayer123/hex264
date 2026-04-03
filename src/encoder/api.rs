@@ -51,9 +51,7 @@ pub struct x264_api_t {
         ) -> ::core::ffi::c_int,
     >,
 }
-#[no_mangle]
 pub static mut x264_chroma_format: ::core::ffi::c_int = crate::x264_config_h::X264_CHROMA_FORMAT;
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_open_165(
     mut param: *mut crate::x264_h::x264_param_t,
 ) -> *mut crate::src::common::common::x264_t {
@@ -150,7 +148,6 @@ pub unsafe extern "C" fn x264_encoder_open_165(
         return api as *mut crate::src::common::common::x264_t;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_close(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut api = h as *mut x264_api_t;
@@ -158,7 +155,6 @@ pub unsafe extern "C" fn x264_encoder_close(mut h: *mut crate::src::common::comm
         crate::stdlib::free(api as *mut ::core::ffi::c_void);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_nal_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut dst: *mut crate::stdlib::uint8_t,
@@ -169,7 +165,6 @@ pub unsafe extern "C" fn x264_nal_encode(
         (*api).nal_encode.expect("non-null function pointer")((*api).x264, dst, nal);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_reconfig(
     mut h: *mut crate::src::common::common::x264_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -179,7 +174,6 @@ pub unsafe extern "C" fn x264_encoder_reconfig(
         return (*api).encoder_reconfig.expect("non-null function pointer")((*api).x264, param);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_parameters(
     mut h: *mut crate::src::common::common::x264_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -191,7 +185,6 @@ pub unsafe extern "C" fn x264_encoder_parameters(
             .expect("non-null function pointer")((*api).x264, param);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_headers(
     mut h: *mut crate::src::common::common::x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
@@ -206,7 +199,6 @@ pub unsafe extern "C" fn x264_encoder_headers(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
@@ -225,7 +217,6 @@ pub unsafe extern "C" fn x264_encoder_encode(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_delayed_frames(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -236,7 +227,6 @@ pub unsafe extern "C" fn x264_encoder_delayed_frames(
             .expect("non-null function pointer")((*api).x264);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_maximum_delayed_frames(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -247,7 +237,6 @@ pub unsafe extern "C" fn x264_encoder_maximum_delayed_frames(
             .expect("non-null function pointer")((*api).x264);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_intra_refresh(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -258,7 +247,6 @@ pub unsafe extern "C" fn x264_encoder_intra_refresh(
             .expect("non-null function pointer")((*api).x264);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_encoder_invalidate_reference(
     mut h: *mut crate::src::common::common::x264_t,
     mut pts: crate::stdlib::int64_t,

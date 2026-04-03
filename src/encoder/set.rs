@@ -270,10 +270,10 @@ use crate::src::encoder::set::bitstream_h::bs_rbsp_trailing;
 use crate::src::encoder::set::bitstream_h::bs_realign;
 use crate::src::encoder::set::bitstream_h::bs_size_se;
 use crate::src::encoder::set::bitstream_h::bs_write;
-use crate::src::encoder::set::bitstream_h::bs_write1;
-use crate::src::encoder::set::bitstream_h::bs_write32;
 use crate::src::encoder::set::bitstream_h::bs_write_se;
 use crate::src::encoder::set::bitstream_h::bs_write_ue_big;
+use crate::src::encoder::set::bitstream_h::bs_write1;
+use crate::src::encoder::set::bitstream_h::bs_write32;
 use crate::src::encoder::set::macroblock_h::x264_zigzag_scan4;
 use crate::src::encoder::set::macroblock_h::x264_zigzag_scan8;
 use crate::x264_h::X264_CSP_BGR;
@@ -394,7 +394,6 @@ unsafe extern "C" fn scaling_list_write(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut payload: *mut crate::stdlib::uint8_t,
@@ -428,7 +427,6 @@ pub unsafe extern "C" fn x264_8_sei_write(
         bs_flush(s);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sps_init(
     mut sps: *mut crate::src::common::set::x264_sps_t,
     mut i_id: ::core::ffi::c_int,
@@ -792,7 +790,6 @@ pub unsafe extern "C" fn x264_8_sps_init(
         (*sps).i_cqm_preset = (*param).i_cqm_preset;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sps_init_reconfigurable(
     mut sps: *mut crate::src::common::set::x264_sps_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -816,7 +813,6 @@ pub unsafe extern "C" fn x264_8_sps_init_reconfigurable(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
     mut sps: *mut crate::src::common::set::x264_sps_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -917,7 +913,6 @@ pub unsafe extern "C" fn x264_8_sps_init_scaling_list(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sps_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut sps: *mut crate::src::common::set::x264_sps_t,
@@ -1267,7 +1262,6 @@ pub unsafe extern "C" fn x264_8_sps_write(
         bs_flush(s);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_pps_init(
     mut pps: *mut crate::src::common::set::x264_pps_t,
     mut i_id: ::core::ffi::c_int,
@@ -1304,7 +1298,6 @@ pub unsafe extern "C" fn x264_8_pps_init(
         (*pps).transform_8x8_mode = (*param).analyse.transform_8x8;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_pps_write(
     mut s: *mut crate::src::common::bitstream::bs_t,
     mut sps: *mut crate::src::common::set::x264_sps_t,
@@ -1420,7 +1413,6 @@ pub unsafe extern "C" fn x264_8_pps_write(
         bs_flush(s);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_recovery_point_write(
     mut _h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1456,7 +1448,6 @@ pub unsafe extern "C" fn x264_8_sei_recovery_point_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_version_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1509,7 +1500,6 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1554,7 +1544,6 @@ pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1610,7 +1599,6 @@ pub unsafe extern "C" fn x264_8_sei_pic_timing_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1680,7 +1668,6 @@ pub unsafe extern "C" fn x264_8_sei_frame_packing_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_mastering_display_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1759,7 +1746,6 @@ pub unsafe extern "C" fn x264_8_sei_mastering_display_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_content_light_level_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1800,7 +1786,6 @@ pub unsafe extern "C" fn x264_8_sei_content_light_level_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_alternative_transfer_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1836,7 +1821,6 @@ pub unsafe extern "C" fn x264_8_sei_alternative_transfer_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_filler_write(
     mut _h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1853,7 +1837,6 @@ pub unsafe extern "C" fn x264_8_filler_write(
         bs_flush(s);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut s: *mut crate::src::common::bitstream::bs_t,
@@ -1906,7 +1889,6 @@ pub unsafe extern "C" fn x264_8_sei_dec_ref_pic_marking_write(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut _s: *mut crate::src::common::bitstream::bs_t,
@@ -1962,7 +1944,6 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
     mut h: *mut crate::src::common::common::x264_t,
     mut _s: *mut crate::src::common::bitstream::bs_t,
@@ -2008,7 +1989,6 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_validate_levels(
     mut h: *mut crate::src::common::common::x264_t,
     mut verbose: ::core::ffi::c_int,

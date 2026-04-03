@@ -565,8 +565,8 @@ use crate::src::encoder::cabac::macroblock_h::x264_mb_transform_8x8_allowed;
 use crate::src::encoder::cabac::macroblock_h::x264_mb_type_list_table;
 use crate::src::encoder::cabac::osdep_h::x264_ctz_4bit;
 use crate::src::encoder::cabac::predict_h::x264_mb_chroma_pred_mode_fix;
-use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode4x4_fix;
+use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::cabac::rectangle_h::x264_macroblock_cache_mvd;
 #[inline]
 unsafe extern "C" fn cabac_mb_type_intra(
@@ -812,7 +812,6 @@ unsafe extern "C" fn cabac_qp_delta(
         crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 60i32 + ctx, 0i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_mb_skip(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_skip: ::core::ffi::c_int,
@@ -1936,7 +1935,6 @@ unsafe extern "C" fn cabac_block_residual_internal(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_block_residual_c(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -2836,7 +2834,6 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
         (*h).stat.frame.i_tex_bits += x264_cabac_pos(cb) - i_mb_pos_tex;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_write_cabac(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,

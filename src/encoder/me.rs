@@ -502,8 +502,8 @@ use crate::src::encoder::me::common_h::x264_predictor_roundclip;
 use crate::src::encoder::me::macroblock_h::block_idx_x;
 use crate::src::encoder::me::macroblock_h::block_idx_xy_fdec;
 use crate::src::encoder::me::macroblock_h::block_idx_y;
-use crate::src::encoder::me::macroblock_h::pack16to32_mask;
 use crate::src::encoder::me::macroblock_h::pack8to16;
+use crate::src::encoder::me::macroblock_h::pack16to32_mask;
 use crate::src::encoder::me::pixel_h::x264_pixel_size;
 use crate::src::encoder::me::rectangle_h::x264_macroblock_cache_mv;
 use crate::src::encoder::me::rectangle_h::x264_macroblock_cache_mvd;
@@ -543,7 +543,6 @@ static mut square1: [[crate::stdlib::int8_t; 2]; 9] = [
     [1i8, -1i8],
     [1i8, 1i8],
 ];
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_me_search_ref(
     mut h: *mut crate::src::common::common::x264_t,
     mut m: *mut crate::src::encoder::me::x264_me_t,
@@ -2892,7 +2891,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_me_refine_qpel(
     mut h: *mut crate::src::common::common::x264_t,
     mut m: *mut crate::src::encoder::me::x264_me_t,
@@ -2915,7 +2913,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_me_refine_qpel_refdupe(
     mut h: *mut crate::src::common::common::x264_t,
     mut m: *mut crate::src::encoder::me::x264_me_t,
@@ -3910,7 +3907,6 @@ unsafe extern "C" fn refine_subpel(
             + *p_cost_mvy.offset(bmy as isize) as ::core::ffi::c_int;
     }
 }
-#[no_mangle]
 pub static mut x264_8_iter_kludge: ::core::ffi::c_int = 0i32;
 #[inline(always)]
 unsafe extern "C" fn me_refine_bidir(
@@ -4527,7 +4523,6 @@ unsafe extern "C" fn me_refine_bidir(
         (*m1).mv[1usize] = bm1y as crate::stdlib::int16_t;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_me_refine_bidir_satd(
     mut h: *mut crate::src::common::common::x264_t,
     mut m0: *mut crate::src::encoder::me::x264_me_t,
@@ -4538,7 +4533,6 @@ pub unsafe extern "C" fn x264_8_me_refine_bidir_satd(
         me_refine_bidir(h, m0, m1, i_weight, 0i32, 0i32, 0i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_me_refine_bidir_rd(
     mut h: *mut crate::src::common::common::x264_t,
     mut m0: *mut crate::src::encoder::me::x264_me_t,
@@ -4553,7 +4547,6 @@ pub unsafe extern "C" fn x264_8_me_refine_bidir_rd(
         (*h).mb.skip_mc = false;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
     mut h: *mut crate::src::common::common::x264_t,
     mut m: *mut crate::src::encoder::me::x264_me_t,

@@ -154,7 +154,6 @@ static mut quant8_scale: [[crate::stdlib::uint16_t; 6]; 6] = [
     [8192u16, 7346u16, 13159u16, 7740u16, 10486u16, 9777u16],
     [7282u16, 6428u16, 11570u16, 6830u16, 9118u16, 8640u16],
 ];
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cqm_init(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -849,7 +848,6 @@ pub unsafe extern "C" fn x264_8_cqm_init(
         return -(1i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i = 0i32;
@@ -1012,7 +1010,6 @@ unsafe extern "C" fn cqm_parse_jmlist(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cqm_parse_file(
     mut h: *mut crate::src::common::common::x264_t,
     mut filename: *const ::core::ffi::c_char,

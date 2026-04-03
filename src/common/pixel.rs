@@ -715,7 +715,6 @@ unsafe extern "C" fn x264_pixel_ssd_4x4(
         return i_sum;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_pixel_ssd_wxh(
     mut pf: *mut crate::src::common::pixel::x264_pixel_function_t,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -848,7 +847,6 @@ unsafe extern "C" fn pixel_ssd_nv12_core(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_pixel_ssd_nv12(
     mut pf: *mut crate::src::common::pixel::x264_pixel_function_t,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -3171,7 +3169,6 @@ unsafe extern "C" fn ssim_end4(
         return ssim;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_pixel_ssim_wxh(
     mut pf: *mut crate::src::common::pixel::x264_pixel_function_t,
     mut pix1: *mut crate::src::common::common::pixel,
@@ -3259,7 +3256,6 @@ unsafe extern "C" fn pixel_vsad(
         return score;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_field_vsad(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -3416,7 +3412,6 @@ unsafe extern "C" fn x264_pixel_ads1(
         return nmv;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_pixel_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pixf: *mut crate::src::common::pixel::x264_pixel_function_t,

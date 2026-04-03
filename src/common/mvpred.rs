@@ -353,7 +353,6 @@ use crate::src::common::mvpred::base_h::x264_scan8;
 use crate::src::common::mvpred::macroblock_h::pack16to32_mask;
 use crate::src::common::mvpred::rectangle_h::x264_macroblock_cache_mv;
 use crate::src::common::mvpred::rectangle_h::x264_macroblock_cache_ref;
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_predict_mv(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_list: ::core::ffi::c_int,
@@ -490,7 +489,6 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_predict_mv_16x16(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_list: ::core::ffi::c_int,
@@ -569,7 +567,6 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_16x16(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_predict_mv_pskip(
     mut h: *mut crate::src::common::common::x264_t,
     mut mv: *mut crate::stdlib::int16_t,
@@ -1228,7 +1225,6 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial_progressive(
         return mb_predict_mv_direct16x16_spatial(h, 0i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_predict_mv_direct16x16(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_changed: *mut ::core::ffi::c_int,
@@ -1500,7 +1496,6 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_direct16x16(
         return available;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_list: ::core::ffi::c_int,

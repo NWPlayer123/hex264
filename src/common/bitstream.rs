@@ -98,7 +98,6 @@ unsafe extern "C" fn nal_escape_c(
         return dst;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_nal_encode(
     mut h: *mut crate::src::common::common::x264_t,
     mut dst: *mut crate::stdlib::uint8_t,
@@ -157,7 +156,6 @@ pub unsafe extern "C" fn x264_8_nal_encode(
         (*nal).p_payload = orig_dst;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_bitstream_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::bitstream::x264_bitstream_function_t,

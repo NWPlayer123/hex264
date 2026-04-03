@@ -413,8 +413,8 @@ pub mod rectangle_h {
 }
 use crate::src::common::macroblock::base_h::x264_clip3;
 use crate::src::common::macroblock::base_h::x264_scan8;
-use crate::src::common::macroblock::macroblock_h::pack16to32;
 use crate::src::common::macroblock::macroblock_h::pack8to32;
+use crate::src::common::macroblock::macroblock_h::pack16to32;
 use crate::src::common::macroblock::macroblock_h::x264_mb_type_fix;
 use crate::src::common::macroblock::pixel_h::x264_size2pixel;
 use crate::src::common::macroblock::predict_h::x264_mb_chroma_pred_mode_fix;
@@ -979,7 +979,6 @@ unsafe extern "C" fn mb_mc_01xywh(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_mc_8x8(
     mut h: *mut crate::src::common::common::x264_t,
     mut i8: ::core::ffi::c_int,
@@ -1022,7 +1021,6 @@ pub unsafe extern "C" fn x264_8_mb_mc_8x8(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_mc(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         if (*h).mb.i_partition == crate::src::common::macroblock::D_8x8 as ::core::ffi::c_int {
@@ -1097,7 +1095,6 @@ pub unsafe extern "C" fn x264_8_mb_mc(mut h: *mut crate::src::common::common::x2
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -1372,7 +1369,6 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_cache_free(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -1380,7 +1376,6 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_free(
         crate::src::common::base::x264_free((*h).mb.base as *mut ::core::ffi::c_void);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_thread_allocate(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_lookahead: ::core::ffi::c_int,
@@ -1570,7 +1565,6 @@ pub unsafe extern "C" fn x264_8_macroblock_thread_allocate(
         return -(1i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_thread_free(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_lookahead: ::core::ffi::c_int,
@@ -1611,7 +1605,6 @@ pub unsafe extern "C" fn x264_8_macroblock_thread_free(
         crate::src::common::base::x264_free((*h).scratch_buffer2);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_slice_init(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -1717,7 +1710,6 @@ pub unsafe extern "C" fn x264_8_macroblock_slice_init(
         (*h).mb.i_neighbour4[3usize] = (*h).mb.i_neighbour4[7usize];
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_thread_init(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -1773,7 +1765,6 @@ pub unsafe extern "C" fn x264_8_macroblock_thread_init(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_prefetch_fenc(
     mut h: *mut crate::src::common::common::x264_t,
     mut fenc: *mut crate::src::common::frame::x264_frame_t,
@@ -1802,7 +1793,6 @@ pub unsafe extern "C" fn x264_8_prefetch_fenc(
         );
     }
 }
-#[no_mangle]
 #[inline(never)]
 pub unsafe extern "C" fn x264_8_copy_column8(
     mut dst: *mut crate::src::common::common::pixel,
@@ -4603,7 +4593,6 @@ unsafe extern "C" fn macroblock_cache_load(
         (*h).mb.i_neighbour4[5usize] = (*h).mb.i_neighbour8[1usize];
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_cache_load_progressive(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -4613,7 +4602,6 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_load_progressive(
         macroblock_cache_load(h, mb_x, mb_y, 0i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_cache_load_interlaced(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -4802,7 +4790,6 @@ unsafe extern "C" fn macroblock_deblock_strength_mbaff(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_deblock_strength(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -5552,7 +5539,6 @@ unsafe extern "C" fn macroblock_backup_intra(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_cache_save(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -6124,7 +6110,6 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_save(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_bipred_init(
     mut h: *mut crate::src::common::common::x264_t,
 ) {

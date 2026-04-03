@@ -933,7 +933,6 @@ pub mod rdo_c {
             return (i_ssd << 8i32).wrapping_add(i_bits);
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_rd_cost_part(
         mut h: *mut crate::src::common::common::x264_t,
         mut i_lambda2: ::core::ffi::c_int,
@@ -1287,7 +1286,6 @@ pub mod rdo_c {
             return (i_ssd << 8i32).wrapping_add(i_bits);
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_rdo_init() {
         unsafe {
             let mut i_prefix = 0i32;
@@ -3272,7 +3270,6 @@ pub mod rdo_c {
             return 0i32;
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_quant_luma_dc_trellis(
         mut h: *mut crate::src::common::common::x264_t,
         mut dct: *mut crate::src::common::common::dctcoef,
@@ -3340,7 +3337,6 @@ pub mod rdo_c {
     pub static mut zigzag_scan2x2: [crate::stdlib::uint8_t; 4] = [0u8, 1u8, 2u8, 3u8];
     pub static mut zigzag_scan2x4: [crate::stdlib::uint8_t; 8] =
         [0u8, 2u8, 1u8, 4u8, 6u8, 3u8, 5u8, 7u8];
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_quant_chroma_dc_trellis(
         mut h: *mut crate::src::common::common::x264_t,
         mut dct: *mut crate::src::common::common::dctcoef,
@@ -3411,7 +3407,6 @@ pub mod rdo_c {
             );
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_quant_4x4_trellis(
         mut h: *mut crate::src::common::common::x264_t,
         mut dct: *mut crate::src::common::common::dctcoef,
@@ -3481,7 +3476,6 @@ pub mod rdo_c {
             );
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_quant_8x8_trellis(
         mut h: *mut crate::src::common::common::x264_t,
         mut dct: *mut crate::src::common::common::dctcoef,
@@ -3580,8 +3574,8 @@ pub mod rdo_c {
     use crate::src::encoder::analyse::cabac_c::partition_i8x8_size_cabac;
     use crate::src::encoder::analyse::cabac_c::partition_size_cabac;
     use crate::src::encoder::analyse::cabac_c::subpartition_size_cabac;
-    use crate::src::encoder::analyse::cabac_h::x264_cabac_size_decision2;
     use crate::src::encoder::analyse::cabac_h::x264_cabac_size_decision_noup2;
+    use crate::src::encoder::analyse::cabac_h::x264_cabac_size_decision2;
     use crate::src::encoder::analyse::cavlc_c::cavlc_block_residual_internal;
     use crate::src::encoder::analyse::cavlc_c::chroma_size_cavlc;
     use crate::src::encoder::analyse::cavlc_c::ct_index;
@@ -4111,7 +4105,6 @@ pub mod slicetype_c {
             return cost;
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_weights_analyse(
         mut h: *mut crate::src::common::common::x264_t,
         mut fenc: *mut crate::src::common::frame::x264_frame_t,
@@ -7003,7 +6996,6 @@ pub mod slicetype_c {
             return scenecut_internal(h, a, frames, p0, p1, real_scenecut);
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_slicetype_analyse(
         mut h: *mut crate::src::common::common::x264_t,
         mut intra_minigop: ::core::ffi::c_int,
@@ -8044,7 +8036,6 @@ pub mod slicetype_c {
             }
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_slicetype_decide(
         mut h: *mut crate::src::common::common::x264_t,
     ) {
@@ -8793,7 +8784,6 @@ pub mod slicetype_c {
             }
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_rc_analyse_slice(
         mut h: *mut crate::src::common::common::x264_t,
     ) -> ::core::ffi::c_int {
@@ -10942,7 +10932,6 @@ pub mod cabac_c {
             }
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_cabac_block_residual_8x8_rd_c(
         mut h: *mut crate::src::common::common::x264_t,
         mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -10953,7 +10942,6 @@ pub mod cabac_c {
             cabac_block_residual_internal(h, cb, ctx_block_cat, l, 1i32, 0i32);
         }
     }
-    #[no_mangle]
     pub unsafe extern "C" fn x264_8_cabac_block_residual_rd_c(
         mut h: *mut crate::src::common::common::x264_t,
         mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -12541,8 +12529,8 @@ pub mod cabac_c {
     use crate::src::encoder::analyse::osdep_h::x264_ctz_4bit;
     use crate::src::encoder::analyse::pixel_h::x264_pixel_size;
     use crate::src::encoder::analyse::predict_h::x264_mb_chroma_pred_mode_fix;
-    use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode16x16_fix;
     use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode4x4_fix;
+    use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode16x16_fix;
     use crate::src::encoder::analyse::rdo_c::cabac_size_5ones;
     use crate::src::encoder::analyse::rdo_c::cabac_transition_5ones;
     use crate::src::encoder::analyse::rectangle_h::x264_macroblock_cache_mvd;
@@ -14428,8 +14416,8 @@ pub mod cavlc_c {
     use crate::src::encoder::analyse::osdep_h::x264_ctz_4bit;
     use crate::src::encoder::analyse::pixel_h::x264_pixel_size;
     use crate::src::encoder::analyse::predict_h::x264_mb_chroma_pred_mode_fix;
-    use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode16x16_fix;
     use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode4x4_fix;
+    use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode16x16_fix;
 }
 use crate::src::encoder::analyse::base_h::x264_clip3;
 use crate::src::encoder::analyse::base_h::x264_scan8;
@@ -14446,8 +14434,8 @@ use crate::src::encoder::analyse::macroblock_h::x264_mb_predict_intra4x4_mode;
 use crate::src::encoder::analyse::macroblock_h::x264_mb_transform_8x8_allowed;
 use crate::src::encoder::analyse::macroblock_h::x264_transform_allowed;
 use crate::src::encoder::analyse::predict_h::x264_mb_chroma_pred_mode_fix;
-use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode4x4_fix;
+use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::analyse::rdo_c::rd_cost_chroma;
 use crate::src::encoder::analyse::rdo_c::rd_cost_i4x4;
 use crate::src::encoder::analyse::rdo_c::rd_cost_i8x8;
@@ -14648,7 +14636,6 @@ unsafe extern "C" fn init_costs(
         return -(1i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_analyse_init_costs(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
@@ -14700,7 +14687,6 @@ pub unsafe extern "C" fn x264_8_analyse_init_costs(
         return -(1i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_analyse_free_costs(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i = 0i32;
@@ -14728,7 +14714,6 @@ pub unsafe extern "C" fn x264_8_analyse_free_costs(mut h: *mut crate::src::commo
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_analyse_weight_frame(
     mut h: *mut crate::src::common::common::x264_t,
     mut end: ::core::ffi::c_int,
@@ -25060,7 +25045,6 @@ unsafe extern "C" fn mb_analyse_qp_rd(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut c2rust_current_block: u64;

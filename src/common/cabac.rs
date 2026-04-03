@@ -31,7 +31,6 @@ pub mod base_h {
 }
 use crate::src::common::cabac::base_h::x264_clip3;
 static mut cabac_contexts: [[[crate::stdlib::uint8_t; 1024]; 52]; 4] = [[[0; 1024]; 52]; 4];
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i = 0i32;
@@ -76,7 +75,6 @@ pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::comm
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_context_init(
     mut _h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
@@ -108,7 +106,6 @@ pub unsafe extern "C" fn x264_8_cabac_context_init(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_encode_init_core(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
 ) {
@@ -119,7 +116,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_init_core(
         (*cb).i_bytes_outstanding = 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_encode_init(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut p_data: *mut crate::stdlib::uint8_t,
@@ -172,7 +168,6 @@ unsafe extern "C" fn cabac_encode_renorm(mut cb: *mut crate::src::common::cabac:
         cabac_putbyte(cb);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_encode_decision_c(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut i_ctx: ::core::ffi::c_int,
@@ -193,7 +188,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_decision_c(
         cabac_encode_renorm(cb);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_encode_bypass_c(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut b: ::core::ffi::c_int,
@@ -223,7 +217,6 @@ static mut bypass_lut: [::core::ffi::c_int; 16] = [
     0x1fff4000i32,
     0x7ffe8000i32,
 ];
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut exp_bits: ::core::ffi::c_int,
@@ -251,7 +244,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_encode_terminal_c(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
 ) {
@@ -260,7 +252,6 @@ pub unsafe extern "C" fn x264_8_cabac_encode_terminal_c(
         cabac_encode_renorm(cb);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cabac_encode_flush(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,

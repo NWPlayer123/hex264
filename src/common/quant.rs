@@ -1046,7 +1046,6 @@ unsafe extern "C" fn coeff_level_run16(
         return i_total;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_quant_init(
     mut _h: *mut crate::src::common::common::x264_t,
     mut _cpu: crate::stdlib::uint32_t,

@@ -5,7 +5,6 @@ pub struct vlc_t {
     pub i_bits: crate::stdlib::uint8_t,
     pub i_size: crate::stdlib::uint8_t,
 }
-#[no_mangle]
 pub static mut x264_levels: [crate::x264_h::x264_level_t; 21] = [
     crate::x264_h::x264_level_t {
         level_idc: 10u8,
@@ -323,7 +322,6 @@ pub static mut x264_levels: [crate::x264_h::x264_level_t; 21] = [
         frame_only: 0,
     },
 ];
-#[no_mangle]
 pub static mut x264_exp2_lut: [crate::stdlib::uint8_t; 64] = [
     0u8, 3u8, 6u8, 8u8, 11u8, 14u8, 17u8, 20u8, 23u8, 26u8, 29u8, 32u8, 36u8, 39u8, 42u8, 45u8,
     48u8, 52u8, 55u8, 58u8, 62u8, 65u8, 69u8, 72u8, 76u8, 80u8, 83u8, 87u8, 91u8, 94u8, 98u8,
@@ -331,7 +329,6 @@ pub static mut x264_exp2_lut: [crate::stdlib::uint8_t; 64] = [
     156u8, 161u8, 165u8, 170u8, 175u8, 179u8, 184u8, 189u8, 194u8, 198u8, 203u8, 208u8, 214u8,
     219u8, 224u8, 229u8, 234u8, 240u8, 245u8, 250u8,
 ];
-#[no_mangle]
 pub static mut x264_log2_lut: [::core::ffi::c_float; 128] = [
     0f32, 0.01123f32, 0.02237f32, 0.03342f32, 0.04439f32, 0.05528f32, 0.06609f32, 0.07682f32,
     0.08746f32, 0.09803f32, 0.10852f32, 0.11894f32, 0.12928f32, 0.13955f32, 0.14975f32, 0.15987f32,
@@ -350,13 +347,11 @@ pub static mut x264_log2_lut: [::core::ffi::c_float; 128] = [
     0.90689f32, 0.91289f32, 0.91886f32, 0.92481f32, 0.93074f32, 0.93664f32, 0.94251f32, 0.94837f32,
     0.9542f32, 0.96f32, 0.96578f32, 0.97154f32, 0.97728f32, 0.98299f32, 0.98868f32, 0.99435f32,
 ];
-#[no_mangle]
 pub static mut x264_log2_lz_lut: [::core::ffi::c_float; 32] = [
     31f32, 30f32, 29f32, 28f32, 27f32, 26f32, 25f32, 24f32, 23f32, 22f32, 21f32, 20f32, 19f32,
     18f32, 17f32, 16f32, 15f32, 14f32, 13f32, 12f32, 11f32, 10f32, 9f32, 8f32, 7f32, 6f32, 5f32,
     4f32, 3f32, 2f32, 1f32, 0f32,
 ];
-#[no_mangle]
 pub static mut x264_lambda_tab: [crate::stdlib::uint16_t; 82] = [
     1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16,
     2u16, 2u16, 2u16, 2u16, 3u16, 3u16, 3u16, 4u16, 4u16, 4u16, 5u16, 6u16, 6u16, 7u16, 8u16, 9u16,
@@ -366,7 +361,6 @@ pub static mut x264_lambda_tab: [crate::stdlib::uint16_t; 82] = [
     724u16, 813u16, 912u16, 1024u16, 1149u16, 1290u16, 1448u16, 1625u16, 1825u16, 2048u16, 2299u16,
     2580u16, 2896u16,
 ];
-#[no_mangle]
 pub static mut x264_lambda2_tab: [::core::ffi::c_int; 82] = [
     14i32,
     18i32,
@@ -451,7 +445,6 @@ pub static mut x264_lambda2_tab: [::core::ffi::c_int; 82] = [
     134217727i32,
     134217727i32,
 ];
-#[no_mangle]
 pub static mut x264_trellis_lambda2_tab: [[::core::ffi::c_int; 82]; 2] = [
     [
         46i32,
@@ -622,51 +615,42 @@ pub static mut x264_trellis_lambda2_tab: [[::core::ffi::c_int; 82]; 2] = [
         134217727i32,
     ],
 ];
-#[no_mangle]
 pub static mut x264_chroma_lambda2_offset_tab: [crate::stdlib::uint16_t; 37] = [
     16u16, 20u16, 25u16, 32u16, 40u16, 50u16, 64u16, 80u16, 101u16, 128u16, 161u16, 203u16, 256u16,
     322u16, 406u16, 512u16, 645u16, 812u16, 1024u16, 1290u16, 1625u16, 2048u16, 2580u16, 3250u16,
     4096u16, 5160u16, 6501u16, 8192u16, 10321u16, 13003u16, 16384u16, 20642u16, 26007u16, 32768u16,
     41285u16, 52015u16, 65535u16,
 ];
-#[no_mangle]
 pub static mut x264_hpel_ref0: [crate::stdlib::uint8_t; 16] = [
     0u8, 1u8, 1u8, 1u8, 0u8, 1u8, 1u8, 1u8, 2u8, 3u8, 3u8, 3u8, 0u8, 1u8, 1u8, 1u8,
 ];
-#[no_mangle]
 pub static mut x264_hpel_ref1: [crate::stdlib::uint8_t; 16] = [
     0u8, 0u8, 1u8, 0u8, 2u8, 2u8, 3u8, 2u8, 2u8, 2u8, 3u8, 2u8, 2u8, 2u8, 3u8, 2u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_jvt4i: [crate::stdlib::uint8_t; 16] = [
     6u8, 13u8, 20u8, 28u8, 13u8, 20u8, 28u8, 32u8, 20u8, 28u8, 32u8, 37u8, 28u8, 32u8, 37u8, 42u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_jvt4p: [crate::stdlib::uint8_t; 16] = [
     10u8, 14u8, 20u8, 24u8, 14u8, 20u8, 24u8, 27u8, 20u8, 24u8, 27u8, 30u8, 24u8, 27u8, 30u8, 34u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_jvt8i: [crate::stdlib::uint8_t; 64] = [
     6u8, 10u8, 13u8, 16u8, 18u8, 23u8, 25u8, 27u8, 10u8, 11u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8,
     13u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8,
     18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8,
     25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8, 40u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8, 40u8, 42u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_jvt8p: [crate::stdlib::uint8_t; 64] = [
     9u8, 13u8, 15u8, 17u8, 19u8, 21u8, 22u8, 24u8, 13u8, 13u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8,
     15u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8,
     19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8,
     22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8, 33u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8, 33u8, 35u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_flat16: [crate::stdlib::uint8_t; 64] = [
     16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
     16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
     16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
     16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = [
     &raw const x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
     &raw const x264_cqm_jvt4p as *const crate::stdlib::uint8_t,
@@ -677,89 +661,71 @@ pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = [
     &raw const x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
     &raw const x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci50_4ic: [crate::stdlib::uint8_t; 16] = [
     16u8, 22u8, 28u8, 40u8, 22u8, 28u8, 40u8, 44u8, 28u8, 40u8, 44u8, 48u8, 40u8, 44u8, 48u8, 60u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci50_p_8iy: [crate::stdlib::uint8_t; 64] = [
     16u8, 18u8, 19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 18u8, 19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8,
     19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8,
     24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8,
     30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8, 93u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8, 93u8, 96u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci50_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
     16u8, 18u8, 19u8, 21u8, 27u8, 33u8, 81u8, 87u8, 18u8, 19u8, 21u8, 24u8, 30u8, 33u8, 81u8, 87u8,
     19u8, 21u8, 24u8, 27u8, 30u8, 78u8, 84u8, 90u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 84u8, 90u8,
     24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 90u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 93u8,
     27u8, 30u8, 33u8, 78u8, 78u8, 81u8, 87u8, 93u8, 30u8, 33u8, 33u8, 78u8, 81u8, 84u8, 87u8, 96u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci100_720p_4ic: [crate::stdlib::uint8_t; 16] = [
     16u8, 21u8, 27u8, 34u8, 21u8, 27u8, 34u8, 41u8, 27u8, 34u8, 41u8, 46u8, 34u8, 41u8, 46u8, 54u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci100_720p_8iy: [crate::stdlib::uint8_t; 64] = [
     16u8, 18u8, 19u8, 21u8, 22u8, 24u8, 26u8, 32u8, 18u8, 19u8, 19u8, 21u8, 22u8, 24u8, 26u8, 32u8,
     19u8, 19u8, 21u8, 22u8, 22u8, 24u8, 26u8, 32u8, 21u8, 21u8, 22u8, 22u8, 23u8, 24u8, 26u8, 34u8,
     22u8, 22u8, 22u8, 23u8, 24u8, 25u8, 26u8, 34u8, 24u8, 24u8, 24u8, 24u8, 25u8, 26u8, 34u8, 36u8,
     26u8, 26u8, 26u8, 26u8, 26u8, 34u8, 36u8, 38u8, 32u8, 32u8, 32u8, 34u8, 34u8, 36u8, 38u8, 42u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci100_1080_4ic: [crate::stdlib::uint8_t; 16] = [
     16u8, 20u8, 26u8, 32u8, 20u8, 26u8, 32u8, 38u8, 26u8, 32u8, 38u8, 44u8, 32u8, 38u8, 44u8, 50u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci100_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
     16u8, 19u8, 20u8, 23u8, 24u8, 26u8, 32u8, 42u8, 18u8, 19u8, 22u8, 24u8, 26u8, 32u8, 36u8, 42u8,
     18u8, 20u8, 23u8, 24u8, 26u8, 32u8, 36u8, 63u8, 19u8, 20u8, 23u8, 26u8, 32u8, 36u8, 42u8, 63u8,
     20u8, 22u8, 24u8, 26u8, 32u8, 36u8, 59u8, 63u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 59u8, 68u8,
     22u8, 23u8, 24u8, 26u8, 32u8, 42u8, 59u8, 68u8, 22u8, 23u8, 24u8, 26u8, 36u8, 42u8, 59u8, 72u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci100_1080p_8iy: [crate::stdlib::uint8_t; 64] = [
     16u8, 18u8, 19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 18u8, 19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8,
     19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8,
     22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8,
     24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8, 68u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8, 68u8, 72u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci300_2160p_4iy: [crate::stdlib::uint8_t; 16] = [
     12u8, 16u8, 19u8, 20u8, 16u8, 19u8, 20u8, 24u8, 19u8, 20u8, 24u8, 33u8, 20u8, 24u8, 33u8, 39u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci300_2160p_4ic: [crate::stdlib::uint8_t; 16] = [
     28u8, 39u8, 56u8, 67u8, 39u8, 56u8, 67u8, 77u8, 56u8, 67u8, 77u8, 104u8, 67u8, 77u8, 104u8,
     133u8,
 ];
-#[no_mangle]
 pub static mut x264_cqm_avci300_2160p_8iy: [crate::stdlib::uint8_t; 64] = [
     12u8, 14u8, 16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 14u8, 16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8,
     16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8,
     19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8,
     20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8, 80u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8, 80u8, 84u8,
 ];
-#[no_mangle]
 pub static mut x264_decimate_table4: [crate::stdlib::uint8_t; 16] = [
     3u8, 2u8, 2u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
 ];
-#[no_mangle]
 pub static mut x264_decimate_table8: [crate::stdlib::uint8_t; 64] = [
     3u8, 3u8, 3u8, 3u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8,
     1u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
 ];
-#[no_mangle]
 pub static mut x264_dct8_weight_tab: [crate::stdlib::uint32_t; 64] = [0; 64];
-#[no_mangle]
 pub static mut x264_dct4_weight_tab: [crate::stdlib::uint32_t; 16] = [0; 16];
-#[no_mangle]
 pub static mut x264_dct4_weight2_tab: [crate::stdlib::uint32_t; 16] = [0; 16];
-#[no_mangle]
 pub static mut x264_dct8_weight2_tab: [crate::stdlib::uint32_t; 64] = [0; 64];
-#[no_mangle]
 pub static mut x264_cabac_context_init_I: [[crate::stdlib::int8_t; 2]; 1024] = [
     [20i8, -15i8],
     [2i8, 54i8],
@@ -1786,7 +1752,6 @@ pub static mut x264_cabac_context_init_I: [[crate::stdlib::int8_t; 2]; 1024] = [
     [-10i8, 90i8],
     [-30i8, 127i8],
 ];
-#[no_mangle]
 pub static mut x264_cabac_context_init_PB: [[[crate::stdlib::int8_t; 2]; 1024]; 3] = [
     [
         [20i8, -15i8],
@@ -4867,7 +4832,6 @@ pub static mut x264_cabac_context_init_PB: [[[crate::stdlib::int8_t; 2]; 1024]; 
         [-30i8, 127i8],
     ],
 ];
-#[no_mangle]
 pub static mut x264_cabac_range_lps: [[crate::stdlib::uint8_t; 4]; 64] = [
     [2u8, 2u8, 2u8, 2u8],
     [6u8, 7u8, 8u8, 9u8],
@@ -4934,7 +4898,6 @@ pub static mut x264_cabac_range_lps: [[crate::stdlib::uint8_t; 4]; 64] = [
     [128u8, 167u8, 197u8, 227u8],
     [128u8, 176u8, 208u8, 240u8],
 ];
-#[no_mangle]
 pub static mut x264_cabac_transition: [[crate::stdlib::uint8_t; 2]; 128] = [
     [0u8, 0u8],
     [1u8, 1u8],
@@ -5065,14 +5028,12 @@ pub static mut x264_cabac_transition: [[crate::stdlib::uint8_t; 2]; 128] = [
     [124u8, 127u8],
     [126u8, 125u8],
 ];
-#[no_mangle]
 pub static mut x264_cabac_renorm_shift: [crate::stdlib::uint8_t; 64] = [
     6u8, 5u8, 4u8, 4u8, 3u8, 3u8, 3u8, 3u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 1u8, 1u8, 1u8,
     1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
 ];
-#[no_mangle]
 pub static mut x264_cabac_entropy: [crate::stdlib::uint16_t; 128] = [
     (0.0273 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5) as crate::stdlib::uint16_t,
     (5.7370 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5) as crate::stdlib::uint16_t,
@@ -5203,7 +5164,6 @@ pub static mut x264_cabac_entropy: [crate::stdlib::uint16_t; 128] = [
     (1.0000 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5) as crate::stdlib::uint16_t,
     (1.0000 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5) as crate::stdlib::uint16_t,
 ];
-#[no_mangle]
 pub static mut x264_significant_coeff_flag_offset_8x8: [[crate::stdlib::uint8_t; 64]; 2] = [
     [
         0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 5u8, 4u8, 4u8, 3u8, 3u8, 4u8, 4u8, 4u8, 5u8, 5u8, 4u8, 4u8,
@@ -5218,17 +5178,14 @@ pub static mut x264_significant_coeff_flag_offset_8x8: [[crate::stdlib::uint8_t;
         10u8, 8u8, 13u8, 13u8, 9u8, 9u8, 10u8, 10u8, 14u8, 14u8, 14u8, 14u8, 14u8, 0,
     ],
 ];
-#[no_mangle]
 pub static mut x264_last_coeff_flag_offset_8x8: [crate::stdlib::uint8_t; 63] = [
     0u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 2u8, 2u8, 2u8,
     2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8,
     3u8, 3u8, 4u8, 4u8, 4u8, 4u8, 4u8, 4u8, 4u8, 4u8, 5u8, 5u8, 5u8, 5u8, 6u8, 6u8, 6u8, 6u8, 7u8,
     7u8, 7u8, 7u8, 8u8, 8u8, 8u8,
 ];
-#[no_mangle]
 pub static mut x264_coeff_flag_offset_chroma_422_dc: [crate::stdlib::uint8_t; 7] =
     [0u8, 0u8, 1u8, 1u8, 2u8, 2u8, 2u8];
-#[no_mangle]
 pub static mut x264_significant_coeff_flag_offset: [[crate::stdlib::uint16_t; 16]; 2] = [
     [
         (105i32 + 0i32) as crate::stdlib::uint16_t,
@@ -5267,7 +5224,6 @@ pub static mut x264_significant_coeff_flag_offset: [[crate::stdlib::uint16_t; 16
         0u16,
     ],
 ];
-#[no_mangle]
 pub static mut x264_last_coeff_flag_offset: [[crate::stdlib::uint16_t; 16]; 2] = [
     [
         (166i32 + 0i32) as crate::stdlib::uint16_t,
@@ -5306,7 +5262,6 @@ pub static mut x264_last_coeff_flag_offset: [[crate::stdlib::uint16_t; 16]; 2] =
         0u16,
     ],
 ];
-#[no_mangle]
 pub static mut x264_coeff_abs_level_m1_offset: [crate::stdlib::uint16_t; 16] = [
     (227i32 + 0i32) as crate::stdlib::uint16_t,
     (227i32 + 10i32) as crate::stdlib::uint16_t,
@@ -5325,11 +5280,9 @@ pub static mut x264_coeff_abs_level_m1_offset: [crate::stdlib::uint16_t; 16] = [
     0,
     0,
 ];
-#[no_mangle]
 pub static mut x264_count_cat_m1: [crate::stdlib::uint8_t; 14] = [
     15u8, 14u8, 15u8, 3u8, 14u8, 63u8, 15u8, 14u8, 15u8, 63u8, 15u8, 14u8, 15u8, 63u8,
 ];
-#[no_mangle]
 pub static mut x264_coeff0_token: [crate::src::common::tables::vlc_t; 6] = [
     crate::src::common::tables::vlc_t {
         i_bits: 0x1u8,
@@ -5356,7 +5309,6 @@ pub static mut x264_coeff0_token: [crate::src::common::tables::vlc_t; 6] = [
         i_size: 1u8,
     },
 ];
-#[no_mangle]
 pub static mut x264_coeff_token: [[[crate::src::common::tables::vlc_t; 4]; 16]; 6] = [
     [
         [
@@ -6819,7 +6771,6 @@ pub static mut x264_coeff_token: [[[crate::src::common::tables::vlc_t; 4]; 16]; 
         }; 4],
     ],
 ];
-#[no_mangle]
 pub static mut x264_total_zeros: [[crate::src::common::tables::vlc_t; 16]; 15] = [
     [
         crate::src::common::tables::vlc_t {
@@ -7812,7 +7763,6 @@ pub static mut x264_total_zeros: [[crate::src::common::tables::vlc_t; 16]; 15] =
         },
     ],
 ];
-#[no_mangle]
 pub static mut x264_total_zeros_2x2_dc: [[crate::src::common::tables::vlc_t; 4]; 3] = [
     [
         crate::src::common::tables::vlc_t {
@@ -7869,7 +7819,6 @@ pub static mut x264_total_zeros_2x2_dc: [[crate::src::common::tables::vlc_t; 4];
         },
     ],
 ];
-#[no_mangle]
 pub static mut x264_total_zeros_2x4_dc: [[crate::src::common::tables::vlc_t; 8]; 7] = [
     [
         crate::src::common::tables::vlc_t {
@@ -8110,7 +8059,6 @@ pub static mut x264_total_zeros_2x4_dc: [[crate::src::common::tables::vlc_t; 8];
         },
     ],
 ];
-#[no_mangle]
 pub static mut x264_run_before_init: [[crate::src::common::tables::vlc_t; 16]; 7] = [
     [
         crate::src::common::tables::vlc_t {
@@ -8575,7 +8523,6 @@ pub static mut x264_run_before_init: [[crate::src::common::tables::vlc_t; 16]; 7
         },
     ],
 ];
-#[no_mangle]
 pub static mut x264_zero: [crate::stdlib::uint8_t; 1024] = [
     0u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -11216,7 +11163,7 @@ unsafe extern "C" fn c2rust_run_static_initializers() {
     }
 }
 #[used]
-#[cfg_attr(target_os = "linux", link_section = ".init_array")]
-#[cfg_attr(target_os = "windows", link_section = ".CRT$XIB")]
-#[cfg_attr(target_os = "macos", link_section = "__DATA,__mod_init_func")]
+#[cfg_attr(target_os = "linux", unsafe(link_section = ".init_array"))]
+#[cfg_attr(target_os = "windows", unsafe(link_section = ".CRT$XIB"))]
+#[cfg_attr(target_os = "macos", unsafe(link_section = "__DATA,__mod_init_func"))]
 static INIT_ARRAY: [unsafe extern "C" fn(); 1] = [c2rust_run_static_initializers];

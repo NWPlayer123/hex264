@@ -1691,7 +1691,6 @@ unsafe extern "C" fn mb_encode_chroma_internal(
             | (*h).mb.i_cbp_chroma;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mb_encode_chroma(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_inter: ::core::ffi::c_int,
@@ -1774,7 +1773,6 @@ unsafe extern "C" fn macroblock_encode_skip(mut h: *mut crate::src::common::comm
         *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) = 0i16;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_lossless_chroma(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_mode: ::core::ffi::c_int,
@@ -1878,7 +1876,6 @@ pub unsafe extern "C" fn x264_8_predict_lossless_chroma(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_lossless_4x4(
     mut h: *mut crate::src::common::common::x264_t,
     mut p_dst: *mut crate::src::common::common::pixel,
@@ -1928,7 +1925,6 @@ pub unsafe extern "C" fn x264_8_predict_lossless_4x4(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_lossless_8x8(
     mut h: *mut crate::src::common::common::x264_t,
     mut p_dst: *mut crate::src::common::common::pixel,
@@ -1978,7 +1974,6 @@ pub unsafe extern "C" fn x264_8_predict_lossless_8x8(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_predict_lossless_16x16(
     mut h: *mut crate::src::common::common::x264_t,
     mut p: ::core::ffi::c_int,
@@ -2981,7 +2976,6 @@ unsafe extern "C" fn macroblock_encode_internal(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_encode(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -3353,7 +3347,6 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
         return true;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_probe_skip(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_bidir: ::core::ffi::c_int,
@@ -3396,7 +3389,6 @@ pub unsafe extern "C" fn x264_8_macroblock_probe_skip(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_noise_reduction_update(
     mut h: *mut crate::src::common::common::x264_t,
 ) {
@@ -4075,7 +4067,6 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_encode_p8x8(
     mut h: *mut crate::src::common::common::x264_t,
     mut i8: ::core::ffi::c_int,
@@ -4202,7 +4193,6 @@ unsafe extern "C" fn macroblock_encode_p4x4_internal(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_encode_p4x4(
     mut h: *mut crate::src::common::common::x264_t,
     mut i8: ::core::ffi::c_int,

@@ -1,13 +1,10 @@
-#[no_mangle]
 pub static mut x264_8_level_token: [[crate::src::common::bitstream::vlc_large_t; 128]; 7] =
     [[crate::src::common::bitstream::vlc_large_t {
         i_bits: 0,
         i_size: 0,
         i_next: 0,
     }; 128]; 7];
-#[no_mangle]
 pub static mut x264_8_run_before: [crate::stdlib::uint32_t; 65536] = [0; 65536];
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i_suffix = 0i32;

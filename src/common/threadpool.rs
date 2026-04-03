@@ -46,7 +46,6 @@ unsafe extern "C" fn threadpool_thread(
         return crate::__stddef_null_h::NULL;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threadpool_init(
     mut p_pool: *mut *mut x264_threadpool_t,
     mut threads: ::core::ffi::c_int,
@@ -168,7 +167,6 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
         return -(1i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threadpool_run(
     mut pool: *mut x264_threadpool_t,
     mut func: Option<unsafe extern "C" fn(*mut ::core::ffi::c_void) -> *mut ::core::ffi::c_void>,
@@ -185,7 +183,6 @@ pub unsafe extern "C" fn x264_8_threadpool_run(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threadpool_wait(
     mut pool: *mut x264_threadpool_t,
     mut arg: *mut ::core::ffi::c_void,
@@ -235,7 +232,6 @@ unsafe extern "C" fn threadpool_list_delete(
         crate::src::common::frame::x264_8_sync_frame_list_delete(slist);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threadpool_delete(mut pool: *mut x264_threadpool_t) {
     unsafe {
         let mut i = 0i32;

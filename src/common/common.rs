@@ -452,7 +452,6 @@ pub struct mvsad_t {
     pub sad: ::core::ffi::c_int,
     pub mv: [crate::stdlib::int16_t; 2],
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_log(
     mut h: *mut crate::src::common::common::x264_t,
     mut i_level: ::core::ffi::c_int,

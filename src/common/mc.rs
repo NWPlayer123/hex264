@@ -8296,7 +8296,6 @@ unsafe extern "C" fn mc_copy_w4(
         mc_copy(src, i_src, dst, i_dst, 4i32, i_height);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_plane_copy_c(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8322,7 +8321,6 @@ pub unsafe extern "C" fn x264_8_plane_copy_c(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_plane_copy_swap_c(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8346,7 +8344,6 @@ pub unsafe extern "C" fn x264_8_plane_copy_swap_c(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_plane_copy_interleave_c(
     mut dst: *mut crate::src::common::common::pixel,
     mut i_dst: crate::stdlib::intptr_t,
@@ -8373,7 +8370,6 @@ pub unsafe extern "C" fn x264_8_plane_copy_interleave_c(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_plane_copy_deinterleave_c(
     mut dsta: *mut crate::src::common::common::pixel,
     mut i_dsta: crate::stdlib::intptr_t,
@@ -8654,7 +8650,6 @@ unsafe extern "C" fn integral_init8v(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_init_lowres(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -9051,7 +9046,6 @@ unsafe extern "C" fn mbtree_fix8_unpack(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_mc_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf: *mut crate::src::common::mc::x264_mc_functions_t_6,
@@ -9595,7 +9589,6 @@ pub unsafe extern "C" fn x264_8_mc_init(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_filter(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,

@@ -44,10 +44,8 @@ pub mod slicetype_c {
     pub const MBTREE_PRECISION: ::core::ffi::c_float = 0.5;
 }
 pub mod rdo_c {
-    #[no_mangle]
     pub static mut x264_8_cabac_transition_unary: [[crate::stdlib::uint8_t; 128]; 15] =
         [[0; 128]; 15];
-    #[no_mangle]
     pub static mut x264_8_cabac_size_unary: [[crate::stdlib::uint16_t; 128]; 15] = [[0; 128]; 15];
     pub const TRELLIS_SCORE_MAX: ::core::ffi::c_ulonglong = !(0u64);
     pub const TRELLIS_SCORE_BIAS: ::core::ffi::c_ulonglong = (1u64) << 60i32;
@@ -544,7 +542,7 @@ pub mod internal {
     pub const __INT_MAX__: ::core::ffi::c_int = 2147483647i32;
 }
 pub mod stdlib {
-    extern "C" {
+    unsafe extern "C" {
         pub fn __assert_fail(
             __assertion: *const ::core::ffi::c_char,
             __file: *const ::core::ffi::c_char,
@@ -573,7 +571,7 @@ pub mod stdlib {
         pub fn log2f(__x: ::core::ffi::c_float) -> ::core::ffi::c_float;
         pub fn log2(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
         pub fn pow(__x: ::core::ffi::c_double, __y: ::core::ffi::c_double)
-            -> ::core::ffi::c_double;
+        -> ::core::ffi::c_double;
         pub fn powf(__x: ::core::ffi::c_float, __y: ::core::ffi::c_float) -> ::core::ffi::c_float;
         pub fn sqrtf(__x: ::core::ffi::c_float) -> ::core::ffi::c_float;
         pub fn sqrt(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;

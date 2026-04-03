@@ -1067,7 +1067,6 @@ unsafe extern "C" fn frame_new(
         return ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_delete(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
 ) {
@@ -1144,7 +1143,6 @@ unsafe extern "C" fn get_plane_ptr(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_copy_picture(
     mut h: *mut crate::src::common::common::x264_t,
     mut dst: *mut crate::src::common::frame::x264_frame_t,
@@ -1571,7 +1569,6 @@ unsafe extern "C" fn plane_expand_border(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_expand_border(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1661,7 +1658,6 @@ pub unsafe extern "C" fn x264_8_frame_expand_border(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_expand_border_filtered(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1739,7 +1735,6 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_filtered(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_expand_border_lowres(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
 ) {
@@ -1761,7 +1756,6 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_lowres(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_expand_border_chroma(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1788,7 +1782,6 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_chroma(
         );
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_expand_border_mod16(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1865,7 +1858,6 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_mod16(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_expand_border_mbpair(
     mut h: *mut crate::src::common::common::x264_t,
     mut mb_x: ::core::ffi::c_int,
@@ -1896,7 +1888,6 @@ pub unsafe extern "C" fn x264_8_expand_border_mbpair(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_cond_broadcast(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
     mut i_lines_completed: ::core::ffi::c_int,
@@ -1908,7 +1899,6 @@ pub unsafe extern "C" fn x264_8_frame_cond_broadcast(
         crate::stdlib::pthread_mutex_unlock(&raw mut (*frame).mutex);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_cond_wait(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
     mut i_lines_completed: ::core::ffi::c_int,
@@ -1927,7 +1917,6 @@ pub unsafe extern "C" fn x264_8_frame_cond_wait(
         return completed;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threadslice_cond_broadcast(
     mut h: *mut crate::src::common::common::x264_t,
     mut pass: ::core::ffi::c_int,
@@ -1941,7 +1930,6 @@ pub unsafe extern "C" fn x264_8_threadslice_cond_broadcast(
         crate::stdlib::pthread_mutex_unlock(&raw mut (*h).mutex);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_threadslice_cond_wait(
     mut h: *mut crate::src::common::common::x264_t,
     mut pass: ::core::ffi::c_int,
@@ -1954,7 +1942,6 @@ pub unsafe extern "C" fn x264_8_threadslice_cond_wait(
         crate::stdlib::pthread_mutex_unlock(&raw mut (*h).mutex);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_new_slice(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1980,7 +1967,6 @@ pub unsafe extern "C" fn x264_8_frame_new_slice(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_push(
     mut list: *mut *mut crate::src::common::frame::x264_frame_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -1994,7 +1980,6 @@ pub unsafe extern "C" fn x264_8_frame_push(
         *c2rust_fresh2 = frame;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_pop(
     mut list: *mut *mut crate::src::common::frame::x264_frame_t,
 ) -> *mut crate::src::common::frame::x264_frame_t {
@@ -2021,7 +2006,6 @@ pub unsafe extern "C" fn x264_8_frame_pop(
         return frame;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_unshift(
     mut list: *mut *mut crate::src::common::frame::x264_frame_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -2044,7 +2028,6 @@ pub unsafe extern "C" fn x264_8_frame_unshift(
         *c2rust_fresh6 = frame;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_shift(
     mut list: *mut *mut crate::src::common::frame::x264_frame_t,
 ) -> *mut crate::src::common::frame::x264_frame_t {
@@ -2071,7 +2054,6 @@ pub unsafe extern "C" fn x264_8_frame_shift(
         return frame;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_push_unused(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -2095,7 +2077,6 @@ pub unsafe extern "C" fn x264_8_frame_push_unused(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_pop_unused(
     mut h: *mut crate::src::common::common::x264_t,
     mut b_fdec: ::core::ffi::c_int,
@@ -2134,7 +2115,6 @@ pub unsafe extern "C" fn x264_8_frame_pop_unused(
         return frame;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_push_blank_unused(
     mut h: *mut crate::src::common::common::x264_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -2158,7 +2138,6 @@ pub unsafe extern "C" fn x264_8_frame_push_blank_unused(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_pop_blank_unused(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> *mut crate::src::common::frame::x264_frame_t {
@@ -2180,7 +2159,6 @@ pub unsafe extern "C" fn x264_8_frame_pop_blank_unused(
         return frame;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_weight_scale_plane(
     mut _h: *mut crate::src::common::common::x264_t,
     mut dst: *mut crate::src::common::common::pixel,
@@ -2223,7 +2201,6 @@ pub unsafe extern "C" fn x264_8_weight_scale_plane(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_frame_delete_list(
     mut list: *mut *mut crate::src::common::frame::x264_frame_t,
 ) {
@@ -2240,7 +2217,6 @@ pub unsafe extern "C" fn x264_8_frame_delete_list(
         crate::src::common::base::x264_free(list as *mut ::core::ffi::c_void);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sync_frame_list_init(
     mut slist: *mut crate::src::common::frame::x264_sync_frame_list_t,
     mut max_size: ::core::ffi::c_int,
@@ -2285,7 +2261,6 @@ pub unsafe extern "C" fn x264_8_sync_frame_list_init(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sync_frame_list_delete(
     mut slist: *mut crate::src::common::frame::x264_sync_frame_list_t,
 ) {
@@ -2296,7 +2271,6 @@ pub unsafe extern "C" fn x264_8_sync_frame_list_delete(
         x264_8_frame_delete_list((*slist).list);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sync_frame_list_push(
     mut slist: *mut crate::src::common::frame::x264_sync_frame_list_t,
     mut frame: *mut crate::src::common::frame::x264_frame_t,
@@ -2314,7 +2288,6 @@ pub unsafe extern "C" fn x264_8_sync_frame_list_push(
         crate::stdlib::pthread_cond_broadcast(&raw mut (*slist).cv_fill);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_sync_frame_list_pop(
     mut slist: *mut crate::src::common::frame::x264_sync_frame_list_t,
 ) -> *mut crate::src::common::frame::x264_frame_t {

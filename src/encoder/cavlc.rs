@@ -395,10 +395,10 @@ use crate::src::encoder::cavlc::bitstream_h::bs_align_0;
 use crate::src::encoder::cavlc::bitstream_h::bs_init;
 use crate::src::encoder::cavlc::bitstream_h::bs_pos;
 use crate::src::encoder::cavlc::bitstream_h::bs_write;
-use crate::src::encoder::cavlc::bitstream_h::bs_write1;
 use crate::src::encoder::cavlc::bitstream_h::bs_write_se;
 use crate::src::encoder::cavlc::bitstream_h::bs_write_te;
 use crate::src::encoder::cavlc::bitstream_h::bs_write_ue;
+use crate::src::encoder::cavlc::bitstream_h::bs_write1;
 use crate::src::encoder::cavlc::macroblock_h::x264_mb_partition_listX_table;
 use crate::src::encoder::cavlc::macroblock_h::x264_mb_predict_intra4x4_mode;
 use crate::src::encoder::cavlc::macroblock_h::x264_mb_predict_non_zero_code;
@@ -406,8 +406,8 @@ use crate::src::encoder::cavlc::macroblock_h::x264_mb_transform_8x8_allowed;
 use crate::src::encoder::cavlc::macroblock_h::x264_mb_type_list_table;
 use crate::src::encoder::cavlc::osdep_h::x264_ctz_4bit;
 use crate::src::encoder::cavlc::predict_h::x264_mb_chroma_pred_mode_fix;
-use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode4x4_fix;
+use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode16x16_fix;
 static mut cbp_to_golomb: [[[crate::stdlib::uint8_t; 48]; 2]; 2] = [
     [
         [
@@ -1229,7 +1229,6 @@ unsafe extern "C" fn cavlc_mb_header_b(
         };
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
     mut h: *mut crate::src::common::common::x264_t,
 ) {

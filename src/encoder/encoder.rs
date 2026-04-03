@@ -582,9 +582,9 @@ use crate::src::encoder::encoder::bitstream_h::bs_rbsp_trailing;
 use crate::src::encoder::encoder::bitstream_h::bs_realign;
 use crate::src::encoder::encoder::bitstream_h::bs_size_ue_big;
 use crate::src::encoder::encoder::bitstream_h::bs_write;
-use crate::src::encoder::encoder::bitstream_h::bs_write1;
 use crate::src::encoder::encoder::bitstream_h::bs_write_se;
 use crate::src::encoder::encoder::bitstream_h::bs_write_ue_big;
+use crate::src::encoder::encoder::bitstream_h::bs_write1;
 use crate::src::encoder::encoder::cabac_h::x264_cabac_pos;
 use crate::src::encoder::encoder::macroblock_h::i_chroma_qp_table;
 use crate::src::encoder::encoder::macroblock_h::x264_mb_partition_pixel_table;
@@ -592,8 +592,8 @@ use crate::src::encoder::encoder::macroblock_h::x264_mb_type_list_table;
 use crate::src::encoder::encoder::osdep_h::x264_is_regular_file;
 use crate::src::encoder::encoder::pixel_h::x264_luma2chroma_pixel;
 use crate::src::encoder::encoder::predict_h::x264_mb_chroma_pred_mode_fix;
-use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode4x4_fix;
+use crate::src::encoder::encoder::predict_h::x264_mb_pred_mode16x16_fix;
 use crate::x264_h::X264_CPU_BMI1;
 use crate::x264_h::X264_CPU_BMI2;
 use crate::x264_h::X264_CPU_CACHELINE_64;
@@ -2655,11 +2655,7 @@ unsafe extern "C" fn validate_parameters(
                 ((if qp_p > (if qp_i > qp_b { qp_i } else { qp_b }) {
                     qp_p
                 } else {
-                    if qp_i > qp_b {
-                        qp_i
-                    } else {
-                        qp_b
-                    }
+                    if qp_i > qp_b { qp_i } else { qp_b }
                 }) as ::core::ffi::c_double
                     + 0.999) as ::core::ffi::c_int,
                 0i32,
@@ -3604,7 +3600,6 @@ unsafe extern "C" fn set_aspect_ratio(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_open(
     mut param: *mut crate::x264_h::x264_param_t,
     mut api: *mut ::core::ffi::c_void,
@@ -4470,7 +4465,6 @@ unsafe extern "C" fn encoder_try_reconfig(
         return validate_parameters(h, 0i32);
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_reconfig_apply(
     mut h: *mut x264_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -4491,7 +4485,6 @@ pub unsafe extern "C" fn x264_8_encoder_reconfig_apply(
         return ret;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_reconfig(
     mut h: *mut x264_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -4510,7 +4503,6 @@ pub unsafe extern "C" fn x264_8_encoder_reconfig(
         return ret;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_parameters(
     mut h: *mut x264_t,
     mut param: *mut crate::x264_h::x264_param_t,
@@ -4698,7 +4690,6 @@ unsafe extern "C" fn encoder_encapsulate_nals(
             as ::core::ffi::c_int;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_headers(
     mut h: *mut x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
@@ -6628,14 +6619,12 @@ unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> ::core::ffi::c
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_intra_refresh(mut h: *mut x264_t) {
     unsafe {
         h = (*h).thread[(*h).i_thread_phase as usize];
         (*h).queued_intra_refresh = true;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_invalidate_reference(
     mut h: *mut x264_t,
     mut pts: crate::stdlib::int64_t,
@@ -6675,7 +6664,6 @@ pub unsafe extern "C" fn x264_8_encoder_invalidate_reference(
         return 0i32;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_encode(
     mut h: *mut x264_t,
     mut pp_nal: *mut *mut crate::x264_h::x264_nal_t,
@@ -7908,7 +7896,6 @@ unsafe extern "C" fn print_intra(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
     unsafe {
         let mut i_mb_count_size = [[0i64, 0, 0, 0, 0, 0, 0], [0; 7]];
@@ -8860,7 +8847,6 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_delayed_frames(mut h: *mut x264_t) -> ::core::ffi::c_int {
     unsafe {
         let mut delayed_frames = 0i32;
@@ -8889,7 +8875,6 @@ pub unsafe extern "C" fn x264_8_encoder_delayed_frames(mut h: *mut x264_t) -> ::
         return delayed_frames;
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_encoder_maximum_delayed_frames(
     mut h: *mut x264_t,
 ) -> ::core::ffi::c_int {

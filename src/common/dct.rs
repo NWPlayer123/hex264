@@ -994,7 +994,6 @@ unsafe extern "C" fn add16x16_idct_dc(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_dct_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut dctf: *mut crate::src::common::dct::x264_dct_function_t,
@@ -2779,7 +2778,6 @@ unsafe extern "C" fn zigzag_interleave_8x8_cavlc(
         }
     }
 }
-#[no_mangle]
 pub unsafe extern "C" fn x264_8_zigzag_init(
     mut _cpu: crate::stdlib::uint32_t,
     mut pf_progressive: *mut crate::src::common::dct::x264_zigzag_function_t,
