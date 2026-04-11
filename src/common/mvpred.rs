@@ -347,7 +347,6 @@ pub mod rectangle_h {
         }
     }
 }
-use crate::src::common::mvpred::base_h::x264_clip3;
 use crate::src::common::mvpred::base_h::x264_median_mv;
 use crate::src::common::mvpred::base_h::x264_scan8;
 use crate::src::common::mvpred::macroblock_h::pack16to32_mask;
@@ -1652,42 +1651,34 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
             let mut scale = (curpoc - refpoc)
                 * (*l0).inv_ref_poc[((*h).mb.interlaced as ::core::ffi::c_int & field) as usize]
                     as ::core::ffi::c_int;
-            (*mvc.offset(i as isize))[0usize] = x264_clip3(
-                (*(*l0).mv16x16.offset(mb_index as isize))[0usize] as ::core::ffi::c_int * scale
+            (*mvc.offset(i as isize))[0usize] =
+                ((*(*l0).mv16x16.offset(mb_index as isize))[0usize] as ::core::ffi::c_int * scale
                     + 128i32
-                    >> 8i32,
-                crate::stdlib::INT16_MIN,
-                crate::stdlib::INT16_MAX,
-            ) as crate::stdlib::int16_t;
-            (*mvc.offset(i as isize))[1usize] = x264_clip3(
-                (*(*l0).mv16x16.offset(mb_index as isize))[1usize] as ::core::ffi::c_int * scale
+                    >> 8i32)
+                    .saturating_truncate();
+            (*mvc.offset(i as isize))[1usize] =
+                ((*(*l0).mv16x16.offset(mb_index as isize))[1usize] as ::core::ffi::c_int * scale
                     + 128i32
-                    >> 8i32,
-                crate::stdlib::INT16_MIN,
-                crate::stdlib::INT16_MAX,
-            ) as crate::stdlib::int16_t;
+                    >> 8i32)
+                    .saturating_truncate();
             i += 1;
             if (*h).mb.i_mb_x < (*h).mb.i_mb_width - 1i32 {
                 let mut mb_index_0 = (*h).mb.i_mb_xy + 1i32 + 0i32 * (*h).mb.i_mb_stride;
                 let mut scale_0 = (curpoc - refpoc)
                     * (*l0).inv_ref_poc[((*h).mb.interlaced as ::core::ffi::c_int & field) as usize]
                         as ::core::ffi::c_int;
-                (*mvc.offset(i as isize))[0usize] = x264_clip3(
-                    (*(*l0).mv16x16.offset(mb_index_0 as isize))[0usize] as ::core::ffi::c_int
+                (*mvc.offset(i as isize))[0usize] =
+                    ((*(*l0).mv16x16.offset(mb_index_0 as isize))[0usize] as ::core::ffi::c_int
                         * scale_0
                         + 128i32
-                        >> 8i32,
-                    crate::stdlib::INT16_MIN,
-                    crate::stdlib::INT16_MAX,
-                ) as crate::stdlib::int16_t;
-                (*mvc.offset(i as isize))[1usize] = x264_clip3(
-                    (*(*l0).mv16x16.offset(mb_index_0 as isize))[1usize] as ::core::ffi::c_int
+                        >> 8i32)
+                        .saturating_truncate();
+                (*mvc.offset(i as isize))[1usize] =
+                    ((*(*l0).mv16x16.offset(mb_index_0 as isize))[1usize] as ::core::ffi::c_int
                         * scale_0
                         + 128i32
-                        >> 8i32,
-                    crate::stdlib::INT16_MIN,
-                    crate::stdlib::INT16_MAX,
-                ) as crate::stdlib::int16_t;
+                        >> 8i32)
+                        .saturating_truncate();
                 i += 1;
             }
             if (*h).mb.i_mb_y < (*h).mb.i_mb_height - 1i32 {
@@ -1695,22 +1686,18 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                 let mut scale_1 = (curpoc - refpoc)
                     * (*l0).inv_ref_poc[((*h).mb.interlaced as ::core::ffi::c_int & field) as usize]
                         as ::core::ffi::c_int;
-                (*mvc.offset(i as isize))[0usize] = x264_clip3(
-                    (*(*l0).mv16x16.offset(mb_index_1 as isize))[0usize] as ::core::ffi::c_int
+                (*mvc.offset(i as isize))[0usize] =
+                    ((*(*l0).mv16x16.offset(mb_index_1 as isize))[0usize] as ::core::ffi::c_int
                         * scale_1
                         + 128i32
-                        >> 8i32,
-                    crate::stdlib::INT16_MIN,
-                    crate::stdlib::INT16_MAX,
-                ) as crate::stdlib::int16_t;
-                (*mvc.offset(i as isize))[1usize] = x264_clip3(
-                    (*(*l0).mv16x16.offset(mb_index_1 as isize))[1usize] as ::core::ffi::c_int
+                        >> 8i32)
+                        .saturating_truncate();
+                (*mvc.offset(i as isize))[1usize] =
+                    ((*(*l0).mv16x16.offset(mb_index_1 as isize))[1usize] as ::core::ffi::c_int
                         * scale_1
                         + 128i32
-                        >> 8i32,
-                    crate::stdlib::INT16_MIN,
-                    crate::stdlib::INT16_MAX,
-                ) as crate::stdlib::int16_t;
+                        >> 8i32)
+                        .saturating_truncate();
                 i += 1;
             }
         }

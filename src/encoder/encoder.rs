@@ -279,11 +279,7 @@ pub mod predict_h {
     ];
 }
 pub mod base_h {
-    pub static mut slice_type_to_char: [::core::ffi::c_char; 3] = [
-        'P' as ::core::ffi::c_char,
-        'B' as ::core::ffi::c_char,
-        'I' as ::core::ffi::c_char,
-    ];
+    pub const slice_type_to_char: [char; 3] = ['P', 'B', 'I'];
     pub static mut x264_scan8: [crate::stdlib::uint8_t; 51] = [
         (4i32 + 1i32 * 8i32) as crate::stdlib::uint8_t,
         (5i32 + 1i32 * 8i32) as crate::stdlib::uint8_t,
@@ -1191,12 +1187,10 @@ unsafe extern "C" fn validate_parameters(
             || (*h).param.i_width > MAX_RESOLUTION
             || (*h).param.i_height > MAX_RESOLUTION
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"invalid width x height (%dx%d)\n\0".as_ptr() as *const ::core::ffi::c_char,
+            log::error!(
+                "invalid width x height ({}x{})",
                 (*h).param.i_width,
-                (*h).param.i_height,
+                (*h).param.i_height
             );
             return -(1i32);
         }
@@ -1205,52 +1199,33 @@ unsafe extern "C" fn validate_parameters(
             != crate::src::common::base::CHROMA_400 as ::core::ffi::c_int
             && i_csp == crate::x264_h::X264_CSP_I400
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"not compiled with 4:0:0 support\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("not compiled with 4:0:0 support");
             return -(1i32);
         } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             != crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
             && i_csp >= crate::x264_h::X264_CSP_I420
             && i_csp < crate::x264_h::X264_CSP_I422
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"not compiled with 4:2:0 support\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("not compiled with 4:2:0 support");
             return -(1i32);
         } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             != crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
             && i_csp >= crate::x264_h::X264_CSP_I422
             && i_csp < crate::x264_h::X264_CSP_I444
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"not compiled with 4:2:2 support\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("not compiled with 4:2:2 support");
             return -(1i32);
         } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             != crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
             && i_csp >= crate::x264_h::X264_CSP_I444
             && i_csp <= crate::x264_h::X264_CSP_RGB
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"not compiled with 4:4:4 support\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("not compiled with 4:4:4 support");
             return -(1i32);
         }
         if i_csp <= crate::x264_h::X264_CSP_NONE || i_csp >= crate::x264_h::X264_CSP_MAX {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"invalid CSP (only I400/I420/YV12/NV12/NV21/I422/YV16/NV16/YUYV/UYVY/I444/YV24/BGR/BGRA/RGB supported)\n\0"
-                    .as_ptr() as *const ::core::ffi::c_char,
+            log::error!(
+                "invalid CSP (only I400/I420/YV12/NV12/NV21/I422/YV16/NV16/YUYV/UYVY/I444/YV24/BGR/BGRA/RGB supported)"
             );
             return -(1i32);
         }
@@ -1267,24 +1242,18 @@ unsafe extern "C" fn validate_parameters(
             }
         }
         if (*h).param.i_width % w_mod != 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"width not divisible by %d (%dx%d)\n\0".as_ptr() as *const ::core::ffi::c_char,
-                w_mod,
+            log::error!(
+                "width not divisible by {w_mod} ({}x{})",
                 (*h).param.i_width,
-                (*h).param.i_height,
+                (*h).param.i_height
             );
             return -(1i32);
         }
         if (*h).param.i_height % h_mod != 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"height not divisible by %d (%dx%d)\n\0".as_ptr() as *const ::core::ffi::c_char,
-                h_mod,
+            log::error!(
+                "height not divisible by {h_mod} ({}x{})",
                 (*h).param.i_width,
-                (*h).param.i_height,
+                (*h).param.i_height
             );
             return -(1i32);
         }
@@ -1299,14 +1268,12 @@ unsafe extern "C" fn validate_parameters(
             || (*h).param.crop_rect.i_left + (*h).param.crop_rect.i_right >= (*h).param.i_width
             || (*h).param.crop_rect.i_top + (*h).param.crop_rect.i_bottom >= (*h).param.i_height
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"invalid crop-rect %d,%d,%d,%d\n\0".as_ptr() as *const ::core::ffi::c_char,
+            log::error!(
+                "invalid crop-rect {},{},{},{}",
                 (*h).param.crop_rect.i_left,
                 (*h).param.crop_rect.i_top,
                 (*h).param.crop_rect.i_right,
-                (*h).param.crop_rect.i_bottom,
+                (*h).param.crop_rect.i_bottom
             );
             return -(1i32);
         }
@@ -1315,17 +1282,12 @@ unsafe extern "C" fn validate_parameters(
             || (*h).param.crop_rect.i_top % h_mod != 0
             || (*h).param.crop_rect.i_bottom % h_mod != 0
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"crop-rect %d,%d,%d,%d not divisible by %dx%d\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
+            log::error!(
+                "crop-rect {},{},{},{} not divisible by {w_mod}x{h_mod}",
                 (*h).param.crop_rect.i_left,
                 (*h).param.crop_rect.i_top,
                 (*h).param.crop_rect.i_right,
-                (*h).param.crop_rect.i_bottom,
-                w_mod,
-                h_mod,
+                (*h).param.crop_rect.i_bottom
             );
             return -(1i32);
         }
@@ -1384,20 +1346,10 @@ unsafe extern "C" fn validate_parameters(
             (*h).param.nalu_process = None;
         }
         if (*h).param.opencl {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"OpenCL: not compiled with OpenCL support, disabling\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("OpenCL: not compiled with OpenCL support, disabling");
             (*h).param.opencl = false;
             if !(*h).param.opencl_device_id.is_null() && (*h).param.i_opencl_device != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"OpenCL: device id and device skip count configured; dropping skip\n\0"
-                        .as_ptr() as *const ::core::ffi::c_char,
-                );
+                log::warn!("OpenCL: device id and device skip count configured; dropping skip");
                 (*h).param.i_opencl_device = 0i32;
             }
         }
@@ -1413,11 +1365,7 @@ unsafe extern "C" fn validate_parameters(
             (*h).param.i_dpb_size = 1i32;
         }
         if (*h).param.i_frame_packing < -(1i32) || (*h).param.i_frame_packing > 7i32 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"ignoring unknown frame packing value\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::warn!("ignoring unknown frame packing value");
             (*h).param.i_frame_packing = -(1i32);
         }
         if (*h).param.i_frame_packing == 7i32
@@ -1430,85 +1378,20 @@ unsafe extern "C" fn validate_parameters(
                     % 3i32
                     != 0)
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"cropped resolution %dx%d not compatible with tile format frame packing\n\0"
-                    .as_ptr() as *const ::core::ffi::c_char,
+            log::error!(
+                "cropped resolution {}x{} not compatible with tile format frame packing",
                 (*h).param.i_width - (*h).param.crop_rect.i_left - (*h).param.crop_rect.i_right,
-                (*h).param.i_height - (*h).param.crop_rect.i_top - (*h).param.crop_rect.i_bottom,
+                (*h).param.i_height - (*h).param.crop_rect.i_top - (*h).param.crop_rect.i_bottom
             );
             return -(1i32);
         }
         if (*h).param.mastering_display.mastering_display {
-            if (*h).param.mastering_display.i_green_x > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_green_x < 0i32
-                || (*h).param.mastering_display.i_green_y > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_green_y < 0i32
-                || (*h).param.mastering_display.i_blue_x > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_blue_x < 0i32
-                || (*h).param.mastering_display.i_blue_y > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_blue_y < 0i32
-                || (*h).param.mastering_display.i_red_x > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_red_x < 0i32
-                || (*h).param.mastering_display.i_red_y > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_red_y < 0i32
-                || (*h).param.mastering_display.i_white_x > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_white_x < 0i32
-                || (*h).param.mastering_display.i_white_y > crate::stdlib::UINT16_MAX
-                || (*h).param.mastering_display.i_white_y < 0i32
+            if (*h).param.mastering_display.i_display_min == 50000
+                && (*h).param.mastering_display.i_display_max == 50000
             {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"mastering display xy coordinates out of range [0,%u]\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    crate::stdlib::UINT16_MAX,
-                );
+                log::error!("mastering display min and max brightness cannot both be 50000");
                 return -(1i32);
             }
-            if (*h).param.mastering_display.i_display_max
-                > crate::stdlib::UINT32_MAX as crate::stdlib::int64_t
-                || (*h).param.mastering_display.i_display_max < 0i64
-                || (*h).param.mastering_display.i_display_min
-                    > crate::stdlib::UINT32_MAX as crate::stdlib::int64_t
-                || (*h).param.mastering_display.i_display_min < 0i64
-            {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"mastering display brightness out of range [0,%u]\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    crate::stdlib::UINT32_MAX,
-                );
-                return -(1i32);
-            }
-            if (*h).param.mastering_display.i_display_min == 50000i64
-                && (*h).param.mastering_display.i_display_max == 50000i64
-            {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"mastering display min and max brightness cannot both be 50000\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-                return -(1i32);
-            }
-        }
-        if (*h).param.content_light_level.cll
-            && ((*h).param.content_light_level.i_max_cll > crate::stdlib::UINT16_MAX
-                || (*h).param.content_light_level.i_max_cll < 0i32
-                || (*h).param.content_light_level.i_max_fall > crate::stdlib::UINT16_MAX
-                || (*h).param.content_light_level.i_max_fall < 0i32)
-        {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"content light levels out of range [0,%u]\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-                crate::stdlib::UINT16_MAX,
-            );
-            return -(1i32);
         }
         if b_open != 0 {
             let mut score = 0i32;
@@ -1529,45 +1412,16 @@ unsafe extern "C" fn validate_parameters(
                 && (*h).param.analyse.i_subpel_refine == 8i32)
                 as ::core::ffi::c_int;
             if score >= 5i32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"broken ffmpeg default settings detected\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"use an encoding preset (e.g. -vpre medium)\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"preset usage: -vpre <speed> -vpre <profile>\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"speed presets are listed in x264 --help\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"profile is optional; x264 defaults to high\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::error!("broken ffmpeg default settings detected");
+                log::error!("use an encoding preset (e.g. -vpre medium)");
+                log::error!("preset usage: -vpre <speed> -vpre <profile>");
+                log::error!("speed presets are listed in x264 --help");
+                log::error!("profile is optional; x264 defaults to high");
                 return -(1i32);
             }
         }
         if (*h).param.rc.i_rc_method < 0i32 || (*h).param.rc.i_rc_method > 2i32 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"no ratecontrol method specified\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("no ratecontrol method specified");
             return -(1i32);
         }
         if (*h).param.interlaced {
@@ -1576,19 +1430,11 @@ unsafe extern "C" fn validate_parameters(
         if (*h).param.i_avcintra_class != 0 {
             let mut i = 0i32;
             if crate::internal::BIT_DEPTH != 10i32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"%2d-bit AVC-Intra is not widely compatible\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    crate::internal::BIT_DEPTH,
+                log::error!(
+                    "{:2}-bit AVC-Intra is not widely compatible",
+                    crate::internal::BIT_DEPTH
                 );
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"10-bit x264 is required to encode AVC-Intra\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::error!("10-bit x264 is required to encode AVC-Intra");
                 return -(1i32);
             }
             let mut type_0 = if (*h).param.i_avcintra_class == 480i32 {
@@ -1605,21 +1451,14 @@ unsafe extern "C" fn validate_parameters(
                 -(1i32)
             };
             if type_0 < 0i32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"Invalid AVC-Intra class\n\0".as_ptr() as *const ::core::ffi::c_char,
-                );
+                log::error!("Invalid AVC-Intra class");
                 return -(1i32);
             } else if type_0 > 2i32
                 && (*h).param.i_avcintra_flavor != crate::x264_h::X264_AVCINTRA_FLAVOR_SONY
             {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"AVC-Intra %d only supported by Sony XAVC flavor\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    (*h).param.i_avcintra_class,
+                log::error!(
+                    "AVC-Intra {} only supported by Sony XAVC flavor",
+                    (*h).param.i_avcintra_class
                 );
                 return -(1i32);
             }
@@ -2404,43 +2243,27 @@ unsafe extern "C" fn validate_parameters(
                     res = 0i32;
                 }
             } else {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"Invalid colorspace for AVC-Intra %d\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    (*h).param.i_avcintra_class,
+                log::error!(
+                    "Invalid colorspace for AVC-Intra {}",
+                    (*h).param.i_avcintra_class
                 );
                 return -(1i32);
             }
             if res < 0i32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"Resolution %dx%d invalid for AVC-Intra %d\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::error!(
+                    "Resolution {}x{} invalid for AVC-Intra {}",
                     (*h).param.i_width,
                     (*h).param.i_height,
-                    (*h).param.i_avcintra_class,
+                    (*h).param.i_avcintra_class
                 );
                 return -(1i32);
             }
             if (*h).param.nalu_process.is_some() {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"nalu_process is not supported in AVC-Intra mode\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::error!("nalu_process is not supported in AVC-Intra mode");
                 return -(1i32);
             }
             if !(*h).param.repeat_headers {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"Separate headers not supported in AVC-Intra mode\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::error!("Separate headers not supported in AVC-Intra mode");
                 return -(1i32);
             }
             let mut fps_num = (*h).param.i_fps_num;
@@ -2462,19 +2285,12 @@ unsafe extern "C" fn validate_parameters(
                 i += 1;
             }
             if i == 7i32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"FPS %d/%d%c not compatible with AVC-Intra %d\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::error!(
+                    "FPS {}/{}{} not compatible with AVC-Intra {}",
                     (*h).param.i_fps_num,
                     (*h).param.i_fps_den,
-                    if (*h).param.interlaced {
-                        'i' as i32
-                    } else {
-                        'p' as i32
-                    },
-                    (*h).param.i_avcintra_class,
+                    if (*h).param.interlaced { 'i' } else { 'p' },
+                    (*h).param.i_avcintra_class
                 );
                 return -(1i32);
             }
@@ -2633,11 +2449,7 @@ unsafe extern "C" fn validate_parameters(
             let mut qp_i = qp_p - 6f32 * crate::stdlib::log2f((*h).param.rc.f_ip_factor);
             let mut qp_b = qp_p + 6f32 * crate::stdlib::log2f((*h).param.rc.f_pb_factor);
             if qp_p < 0f32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"qp not specified\n\0".as_ptr() as *const ::core::ffi::c_char,
-                );
+                log::error!("qp not specified");
                 return -(1i32);
             }
             (*h).param.rc.i_qp_min = x264_clip3(
@@ -2678,11 +2490,7 @@ unsafe extern "C" fn validate_parameters(
         );
         (*h).param.rc.i_bitrate = x264_clip3((*h).param.rc.i_bitrate, 0i32, 2000000i32);
         if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR && (*h).param.rc.i_bitrate == 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"bitrate not specified\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("bitrate not specified");
             return -(1i32);
         }
         (*h).param.rc.i_vbv_buffer_size =
@@ -2696,50 +2504,25 @@ unsafe extern "C" fn validate_parameters(
         ) as ::core::ffi::c_float;
         if (*h).param.rc.i_vbv_buffer_size != 0 {
             if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_CQP {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"VBV is incompatible with constant QP, ignored.\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::warn!("VBV is incompatible with constant QP, ignored.");
                 (*h).param.rc.i_vbv_max_bitrate = 0i32;
                 (*h).param.rc.i_vbv_buffer_size = 0i32;
             } else if (*h).param.rc.i_vbv_max_bitrate == 0i32 {
                 if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_WARNING_1,
-                        b"VBV maxrate unspecified, assuming CBR\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
+                    log::warn!("VBV maxrate unspecified, assuming CBR");
                     (*h).param.rc.i_vbv_max_bitrate = (*h).param.rc.i_bitrate;
                 } else {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_WARNING_1,
-                        b"VBV bufsize set but maxrate unspecified, ignored\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
+                    log::warn!("VBV bufsize set but maxrate unspecified, ignored");
                     (*h).param.rc.i_vbv_buffer_size = 0i32;
                 }
             } else if (*h).param.rc.i_vbv_max_bitrate < (*h).param.rc.i_bitrate
                 && (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR
             {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"max bitrate less than average bitrate, assuming CBR\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::warn!("max bitrate less than average bitrate, assuming CBR");
                 (*h).param.rc.i_bitrate = (*h).param.rc.i_vbv_max_bitrate;
             }
         } else if (*h).param.rc.i_vbv_max_bitrate != 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"VBV maxrate specified, but no bufsize, ignored\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("VBV maxrate specified, but no bufsize, ignored");
             (*h).param.rc.i_vbv_max_bitrate = 0i32;
         }
         (*h).param.i_slice_max_size = if (*h).param.i_slice_max_size > 0i32 {
@@ -2768,23 +2551,12 @@ unsafe extern "C" fn validate_parameters(
             (*h).param.i_slice_min_mbs = 0i32;
         }
         if (*h).param.interlaced && (*h).param.i_slice_min_mbs != 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"interlace + slice-min-mbs is not implemented\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("interlace + slice-min-mbs is not implemented");
             (*h).param.i_slice_min_mbs = 0i32;
         }
         let mut mb_width = ((*h).param.i_width + 15i32) / 16i32;
         if (*h).param.i_slice_min_mbs > mb_width {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"slice-min-mbs > row mb size (%d) not implemented\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-                mb_width,
-            );
+            log::warn!("slice-min-mbs > row mb size ({mb_width}) not implemented");
             (*h).param.i_slice_min_mbs = mb_width;
         }
         let mut max_slices = ((*h).param.i_height
@@ -2867,12 +2639,7 @@ unsafe extern "C" fn validate_parameters(
         if (*h).param.analyse.i_subpel_refine == 0
             && (*h).param.analyse.i_direct_mv_pred > crate::x264_h::X264_DIRECT_PRED_SPATIAL
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"subme=0 + direct=temporal is not supported\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("subme=0 + direct=temporal is not supported");
             (*h).param.analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_SPATIAL;
         }
         (*h).param.i_bframe = x264_clip3(
@@ -2907,33 +2674,18 @@ unsafe extern "C" fn validate_parameters(
         if (*h).param.intra_refresh
             && (*h).param.i_bframe_pyramid == crate::x264_h::X264_B_PYRAMID_NORMAL
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"b-pyramid normal + intra-refresh is not supported\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("b-pyramid normal + intra-refresh is not supported");
             (*h).param.i_bframe_pyramid = crate::x264_h::X264_B_PYRAMID_STRICT;
         }
         if (*h).param.intra_refresh
             && ((*h).param.i_frame_reference > 1i32 || (*h).param.i_dpb_size > 1i32)
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"ref > 1 + intra-refresh is not supported\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("ref > 1 + intra-refresh is not supported");
             (*h).param.i_frame_reference = 1i32;
             (*h).param.i_dpb_size = 1i32;
         }
         if (*h).param.intra_refresh && (*h).param.open_gop {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"intra-refresh is not compatible with open-gop\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("intra-refresh is not compatible with open-gop");
             (*h).param.open_gop = false;
         }
         if (*h).param.i_fps_num == 0 || (*h).param.i_fps_den == 0 {
@@ -3001,12 +2753,7 @@ unsafe extern "C" fn validate_parameters(
             && (*h).param.rc.i_lookahead == 0
             && (*h).param.rc.mb_tree
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"lookaheadless mb-tree requires intra refresh or infinite keyint\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("lookaheadless mb-tree requires intra refresh or infinite keyint");
             (*h).param.rc.mb_tree = false;
         }
         if b_open != 0 && (*h).param.rc.stat_read {
@@ -3091,38 +2838,23 @@ unsafe extern "C" fn validate_parameters(
                 } else {
                     b"ssim\0".as_ptr() as *const ::core::ffi::c_char
                 }) as *mut ::core::ffi::c_char;
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"--%s used with psy on: results will be invalid!\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    s,
+                log::warn!(
+                    "--{} used with psy on: results will be invalid!",
+                    std::ffi::CStr::from_ptr(s).to_string_lossy()
                 );
             } else if (*h).param.rc.i_aq_mode == 0 && (*h).param.analyse.ssim {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"--ssim used with AQ off: results will be invalid!\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::warn!("--ssim used with AQ off: results will be invalid!");
                 s = b"ssim\0".as_ptr() as *mut ::core::ffi::c_char;
             } else if (*h).param.rc.i_aq_mode != 0 && (*h).param.analyse.psnr {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"--psnr used with AQ on: results will be invalid!\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::warn!("--psnr used with AQ on: results will be invalid!");
                 s = b"psnr\0".as_ptr() as *mut ::core::ffi::c_char;
             }
             if !s.is_null() {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"--tune %s should be used if attempting to benchmark %s!\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    s,
-                    s,
+                let s_str = std::ffi::CStr::from_ptr(s).to_string_lossy();
+                log::warn!(
+                    "--tune {} should be used if attempting to benchmark {}!",
+                    s_str,
+                    s_str
                 );
             }
         }
@@ -3228,12 +2960,7 @@ unsafe extern "C" fn validate_parameters(
                     l = l.offset(1);
                 }
                 if (*l).level_idc as ::core::ffi::c_int == 0i32 {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_ERROR_1,
-                        b"invalid level_idc: %d\n\0".as_ptr() as *const ::core::ffi::c_char,
-                        (*h).param.i_level_idc,
-                    );
+                    log::error!("invalid level_idc: {}", (*h).param.i_level_idc);
                     return -(1i32);
                 }
             }
@@ -3309,21 +3036,11 @@ unsafe extern "C" fn validate_parameters(
         );
         if (*h).param.interlaced {
             if (*h).param.analyse.i_me_method >= crate::x264_h::X264_ME_ESA {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"interlace + me=esa is not implemented\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::warn!("interlace + me=esa is not implemented");
                 (*h).param.analyse.i_me_method = crate::x264_h::X264_ME_UMH;
             }
             if (*h).param.analyse.i_weighted_pred > 0i32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"interlace + weightp is not implemented\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::warn!("interlace + weightp is not implemented");
                 (*h).param.analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_NONE;
             }
         }
@@ -3356,12 +3073,7 @@ unsafe extern "C" fn validate_parameters(
             if r2 < r {
                 r2 += 16i32;
             }
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_DEBUG_1,
-                b"using mv_range_thread = %d\n\0".as_ptr() as *const ::core::ffi::c_char,
-                r2,
-            );
+            log::debug!("using mv_range_thread = {r2}");
             (*h).param.analyse.i_mv_range_thread = r2;
         }
         if (*h).param.rc.f_rate_tolerance < 0f32 {
@@ -3380,23 +3092,14 @@ unsafe extern "C" fn validate_parameters(
             crate::x264_h::X264_NAL_HRD_CBR,
         );
         if (*h).param.i_nal_hrd != 0 && (*h).param.rc.i_vbv_buffer_size == 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"NAL HRD parameters require VBV parameters\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::warn!("NAL HRD parameters require VBV parameters");
             (*h).param.i_nal_hrd = crate::x264_h::X264_NAL_HRD_NONE;
         }
         if (*h).param.i_nal_hrd == crate::x264_h::X264_NAL_HRD_CBR
             && ((*h).param.rc.i_bitrate != (*h).param.rc.i_vbv_max_bitrate
                 || (*h).param.rc.i_vbv_max_bitrate == 0)
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"CBR HRD requires constant bitrate\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::warn!("CBR HRD requires constant bitrate");
             (*h).param.i_nal_hrd = crate::x264_h::X264_NAL_HRD_VBR;
         }
         if (*h).param.i_nal_hrd == crate::x264_h::X264_NAL_HRD_CBR {
@@ -3575,24 +3278,13 @@ unsafe extern "C" fn set_aspect_ratio(
                 (*h).param.vui.i_sar_width = 0i32;
                 (*h).param.vui.i_sar_height = 0i32;
                 if i_w == 0u32 || i_h == 0u32 {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_WARNING_1,
-                        b"cannot create valid sample aspect ratio\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
+                    log::warn!("cannot create valid sample aspect ratio");
                 } else {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        if initial != 0 {
-                            crate::x264_h::X264_LOG_INFO
-                        } else {
-                            crate::x264_h::X264_LOG_DEBUG_1
-                        },
-                        b"using SAR=%d/%d\n\0".as_ptr() as *const ::core::ffi::c_char,
-                        i_w,
-                        i_h,
-                    );
+                    if initial != 0 {
+                        log::info!("using SAR={i_w}/{i_h}");
+                    } else {
+                        log::debug!("using SAR={i_w}/{i_h}");
+                    }
                     (*h).param.vui.i_sar_width = i_w as ::core::ffi::c_int;
                     (*h).param.vui.i_sar_height = i_h as ::core::ffi::c_int;
                 }
@@ -3605,12 +3297,7 @@ pub unsafe extern "C" fn x264_8_encoder_open(
     mut api: *mut ::core::ffi::c_void,
 ) -> *mut x264_t {
     unsafe {
-        static mut subsampling: [*const ::core::ffi::c_char; 4] = [
-            b"4:0:0\0".as_ptr() as *const ::core::ffi::c_char,
-            b"4:2:0\0".as_ptr() as *const ::core::ffi::c_char,
-            b"4:2:2\0".as_ptr() as *const ::core::ffi::c_char,
-            b"4:4:4\0".as_ptr() as *const ::core::ffi::c_char,
-        ];
+        const subsampling: [&'static str; 4] = ["4:0:0", "4:2:0", "4:2:2", "4:4:4"];
         let mut h = crate::src::common::base::x264_malloc(
             ::core::mem::size_of::<x264_t>() as crate::stdlib::int64_t
         ) as *mut x264_t;
@@ -3714,15 +3401,10 @@ pub unsafe extern "C" fn x264_8_encoder_open(
         } else {
             (*h).i_idr_pic_id = 0i32;
         }
-        if ((*h).param.i_timebase_den as crate::stdlib::uint64_t).wrapping_mul(2u64)
-            > crate::stdlib::UINT32_MAX as crate::stdlib::uint64_t
-        {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"Effective timebase denominator %u exceeds H.264 maximum\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-                (*h).param.i_timebase_den,
+        if u64::from((*h).param.i_timebase_den) * 2 > u32::MAX.into() {
+            log::error!(
+                "Effective timebase denominator {} exceeds H.264 maximum",
+                (*h).param.i_timebase_den
             );
             x264_free(h as *mut ::core::ffi::c_void);
             return ::core::ptr::null_mut::<x264_t>();
@@ -4048,11 +3730,10 @@ pub unsafe extern "C" fn x264_8_encoder_open(
                 b" none!\0".as_ptr() as *const ::core::ffi::c_char,
             ) as isize);
         }
-        crate::src::common::common::x264_8_log(
-            h,
-            crate::x264_h::X264_LOG_INFO,
-            b"%s\n\0".as_ptr() as *const ::core::ffi::c_char,
-            &raw mut buf as *mut ::core::ffi::c_char,
+        log::info!(
+            "{}",
+            std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                .to_string_lossy()
         );
         if crate::src::encoder::analyse::x264_8_analyse_init_costs(h) != 0 {
             x264_free(h as *mut ::core::ffi::c_void);
@@ -4061,23 +3742,9 @@ pub unsafe extern "C" fn x264_8_encoder_open(
         let mut temp = 0;
         temp = 392i32;
         if (temp as ::core::ffi::c_uint).leading_zeros() as i32 != 23i32 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"CLZ test failed: x264 has been miscompiled!\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"Are you attempting to run an SSE4a/LZCNT-targeted build on a CPU that\n\0"
-                    .as_ptr() as *const ::core::ffi::c_char,
-            );
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"doesn't support it?\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("CLZ test failed: x264 has been miscompiled!");
+            log::error!("Are you attempting to run an SSE4a/LZCNT-targeted build on a CPU that");
+            log::error!("doesn't support it?");
             x264_free(h as *mut ::core::ffi::c_void);
             return ::core::ptr::null_mut::<x264_t>();
         }
@@ -4254,23 +3921,19 @@ pub unsafe extern "C" fn x264_8_encoder_open(
             return ::core::ptr::null_mut::<x264_t>();
         }
         if (*h).param.i_nal_hrd != 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_DEBUG_1,
-                b"HRD bitrate: %i bits/sec\n\0".as_ptr() as *const ::core::ffi::c_char,
+            log::debug!(
+                "HRD bitrate: {} bits/sec",
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
-                    .i_bit_rate_unscaled,
+                    .i_bit_rate_unscaled
             );
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_DEBUG_1,
-                b"CPB size: %i bits\n\0".as_ptr() as *const ::core::ffi::c_char,
+            log::debug!(
+                "CPB size: {} bits",
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
-                    .i_cpb_size_unscaled,
+                    .i_cpb_size_unscaled
             );
         }
         if !(*h).param.psz_dump_yuv.is_null() {
@@ -4279,21 +3942,16 @@ pub unsafe extern "C" fn x264_8_encoder_open(
                 b"w\0".as_ptr() as *const ::core::ffi::c_char,
             );
             if f.is_null() {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"dump_yuv: can't write to %s\n\0".as_ptr() as *const ::core::ffi::c_char,
-                    (*h).param.psz_dump_yuv,
+                log::error!(
+                    "dump_yuv: can't write to {}",
+                    std::ffi::CStr::from_ptr((*h).param.psz_dump_yuv).to_string_lossy()
                 );
                 x264_free(h as *mut ::core::ffi::c_void);
                 return ::core::ptr::null_mut::<x264_t>();
             } else if x264_is_regular_file(f) == 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"dump_yuv: incompatible with non-regular file %s\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    (*h).param.psz_dump_yuv,
+                log::error!(
+                    "dump_yuv: incompatible with non-regular file {}",
+                    std::ffi::CStr::from_ptr((*h).param.psz_dump_yuv).to_string_lossy()
                 );
                 crate::stdlib::fclose(f);
                 x264_free(h as *mut ::core::ffi::c_void);
@@ -4367,12 +4025,11 @@ pub unsafe extern "C" fn x264_8_encoder_open(
                     % 10i32,
             );
         }
-        crate::src::common::common::x264_8_log(
-            h,
-            crate::x264_h::X264_LOG_INFO,
-            b"profile %s, level %s, %s, %d-bit\n\0".as_ptr() as *const ::core::ffi::c_char,
-            profile,
-            &raw mut level as *mut ::core::ffi::c_char,
+        log::info!(
+            "profile {}, level {}, {}, {}-bit",
+            std::ffi::CStr::from_ptr(profile).to_string_lossy(),
+            std::ffi::CStr::from_ptr(&raw const level as *const ::core::ffi::c_char)
+                .to_string_lossy(),
             subsampling[crate::src::common::base::CHROMA_444 as ::core::ffi::c_int as usize],
             crate::internal::BIT_DEPTH,
         );
@@ -6074,13 +5731,9 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> crate::stdlib::intptr_t 
                             if thread_last_mb - (*h).param.i_slice_min_mbs
                                 < (*h).sh.i_first_mb + (*h).param.i_slice_min_mbs
                             {
-                                crate::src::common::common::x264_8_log(
-                                    h,
-                                    crate::x264_h::X264_LOG_WARNING_1,
-                                    b"slice-max-size violated (frame %d, cause: slice-min-mbs)\n\0"
-                                        .as_ptr()
-                                        as *const ::core::ffi::c_char,
-                                    (*h).i_frame,
+                                log::warn!(
+                                    "slice-max-size violated (frame {}, cause: slice-min-mbs)",
+                                    (*h).i_frame
                                 );
                                 slice_max_size = 0i32;
                             } else {
@@ -6631,20 +6284,12 @@ pub unsafe extern "C" fn x264_8_encoder_invalidate_reference(
 ) -> ::core::ffi::c_int {
     unsafe {
         if (*h).param.i_bframe != 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"x264_encoder_invalidate_reference is not supported with B-frames enabled\n\0"
-                    .as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("x264_encoder_invalidate_reference is not supported with B-frames enabled");
             return -(1i32);
         }
         if (*h).param.intra_refresh {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"x264_encoder_invalidate_reference is not supported with intra refresh enabled\n\0"
-                    .as_ptr() as *const ::core::ffi::c_char,
+            log::error!(
+                "x264_encoder_invalidate_reference is not supported with intra refresh enabled"
             );
             return -(1i32);
         }
@@ -6701,12 +6346,7 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
         *pp_nal = ::core::ptr::null_mut::<crate::x264_h::x264_nal_t>();
         if !pic_in.is_null() {
             if (*(*h).lookahead).b_exit_thread != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"lookahead thread is already stopped\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
+                log::error!("lookahead thread is already stopped");
                 return -(1i32);
             }
             let mut fenc = crate::src::common::frame::x264_8_frame_pop_unused(h, 0i32);
@@ -6736,11 +6376,7 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
                 (*h).frames.i_bframe_delay_time = (*fenc).i_pts - (*h).frames.i_first_pts;
             }
             if (*h).param.vfr_input && (*fenc).i_pts <= (*h).frames.i_largest_pts {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"non-strictly-monotonic PTS\n\0".as_ptr() as *const ::core::ffi::c_char,
-                );
+                log::warn!("non-strictly-monotonic PTS");
             }
             (*h).frames.i_second_largest_pts = (*h).frames.i_largest_pts;
             (*h).frames.i_largest_pts = (*fenc).i_pts;
@@ -7557,11 +7193,7 @@ unsafe extern "C" fn encoder_frame_end(
         (*pic_out).i_pts = (*(*h).fdec).i_pts;
         (*pic_out).i_dts = (*(*h).fdec).i_dts;
         if (*pic_out).i_pts < (*pic_out).i_dts {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"invalid DTS: PTS is less than DTS\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::warn!("invalid DTS: PTS is less than DTS");
         }
         (*pic_out).opaque = (*(*h).fenc).opaque;
         (*pic_out).img.i_csp = (*(*h).fdec).i_csp;
@@ -7815,27 +7447,26 @@ unsafe extern "C" fn encoder_frame_end(
             );
         }
         psz_message[79usize] = '\0' as ::core::ffi::c_char;
-        crate::src::common::common::x264_8_log(
-            h,
-            crate::x264_h::X264_LOG_DEBUG_1,
-            b"frame=%4d QP=%.2f NAL=%d Slice:%c Poc:%-3d I:%-4d P:%-4d SKIP:%-4d size=%d bytes%s\n\0"
-                .as_ptr() as *const ::core::ffi::c_char,
+        log::debug!(
+            "frame={:4} QP={:.2} NAL={} Slice:{} Poc:{:<3} I:{:<4} P:{:<4} SKIP:{:<4} size={} bytes{}",
             (*h).i_frame,
             (*(*h).fdec).f_qp_avg_aq as ::core::ffi::c_double,
             (*h).i_nal_ref_idc,
             if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int {
-                'I' as i32
-            } else if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int {
-                'P' as i32
+                'I'
+            } else if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int
+            {
+                'P'
             } else {
-                'B' as i32
+                'B'
             },
             (*(*h).fdec).i_poc,
             (*h).stat.frame.i_mb_count_i,
             (*h).stat.frame.i_mb_count_p,
             (*h).stat.frame.i_mb_count_skip,
             frame_size,
-            &raw mut psz_message as *mut ::core::ffi::c_char,
+            std::ffi::CStr::from_ptr(&raw const psz_message as *const ::core::ffi::c_char)
+                .to_string_lossy(),
         );
         thread_sync_stat((*h).thread[0usize], h);
         thread_sync_stat(thread_current, h);
@@ -7982,15 +7613,10 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 let mut i_count = (*h).stat.i_frame_count[i_slice as usize];
                 let mut dur = (*h).stat.f_frame_duration[i_slice as usize];
                 if (*h).param.analyse.psnr {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_INFO,
-                        b"frame %c:%-5d Avg QP:%5.2f  size:%6.0f  PSNR Mean Y:%5.2f U:%5.2f V:%5.2f Avg:%5.2f Global:%5.2f\n\0"
-                            .as_ptr() as *const ::core::ffi::c_char,
-                        slice_type_to_char[i_slice as usize] as ::core::ffi::c_int,
-                        i_count,
-                        (*h).stat.f_frame_qp[i_slice as usize]
-                            / i_count as ::core::ffi::c_double,
+                    log::info!(
+                        "frame {}:{i_count:<5} Avg QP:{:5.2}  size:{:6.0}  PSNR Mean Y:{:5.2} U:{:5.2} V:{:5.2} Avg:{:5.2} Global:{:5.2}",
+                        slice_type_to_char[i_slice as usize],
+                        (*h).stat.f_frame_qp[i_slice as usize] / i_count as ::core::ffi::c_double,
                         (*h).stat.i_frame_size[i_slice as usize] as ::core::ffi::c_double
                             / i_count as ::core::ffi::c_double,
                         (*h).stat.f_psnr_mean_y[i_slice as usize] / dur,
@@ -7999,17 +7625,13 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                         (*h).stat.f_psnr_average[i_slice as usize] / dur,
                         calc_psnr(
                             (*h).stat.f_ssd_global[i_slice as usize],
-                            dur * i_yuv_size as ::core::ffi::c_double,
+                            dur * i_yuv_size as ::core::ffi::c_double
                         ),
                     );
                 } else {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_INFO,
-                        b"frame %c:%-5d Avg QP:%5.2f  size:%6.0f\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                        slice_type_to_char[i_slice as usize] as ::core::ffi::c_int,
-                        i_count,
+                    log::info!(
+                        "frame {}:{i_count:<5} Avg QP:{:5.2}  size:{:6.0}",
+                        slice_type_to_char[i_slice as usize],
                         (*h).stat.f_frame_qp[i_slice as usize] / i_count as ::core::ffi::c_double,
                         (*h).stat.i_frame_size[i_slice as usize] as ::core::ffi::c_double
                             / i_count as ::core::ffi::c_double,
@@ -8042,11 +7664,10 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 ) as isize);
                 i_2 += 1;
             }
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_INFO,
-                b"consecutive B-frames:%s\n\0".as_ptr() as *const ::core::ffi::c_char,
-                &raw mut buf as *mut ::core::ffi::c_char,
+            log::info!(
+                "consecutive B-frames:{}",
+                std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                    .to_string_lossy()
             );
         }
         while i_type < 2i32 {
@@ -8080,11 +7701,10 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 b_print_pcm,
                 &raw mut buf as *mut ::core::ffi::c_char,
             );
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_INFO,
-                b"mb I  %s\n\0".as_ptr() as *const ::core::ffi::c_char,
-                &raw mut buf as *mut ::core::ffi::c_char,
+            log::info!(
+                "mb I  {}",
+                std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                    .to_string_lossy()
             );
         }
         if (*h).stat.i_frame_count
@@ -8110,12 +7730,10 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 b_print_pcm,
                 &raw mut buf as *mut ::core::ffi::c_char,
             );
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_INFO,
-                b"mb P  %s  P16..4: %4.1f%% %4.1f%% %4.1f%% %4.1f%% %4.1f%%    skip:%4.1f%%\n\0"
-                    .as_ptr() as *const ::core::ffi::c_char,
-                &raw mut buf as *mut ::core::ffi::c_char,
+            log::info!(
+                "mb P  {}  P16..4: {:4.1}% {:4.1}% {:4.1}% {:4.1}% {:4.1}%    skip:{:4.1}%",
+                std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                    .to_string_lossy(),
                 *i_mb_size
                     .offset(crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as isize)
                     as ::core::ffi::c_double
@@ -8123,7 +7741,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 (*i_mb_size
                     .offset(crate::src::common::pixel::PIXEL_16x8 as ::core::ffi::c_int as isize)
                     + *i_mb_size.offset(
-                        crate::src::common::pixel::PIXEL_8x16 as ::core::ffi::c_int as isize,
+                        crate::src::common::pixel::PIXEL_8x16 as ::core::ffi::c_int as isize
                     )) as ::core::ffi::c_double
                     / (i_count_1 * 4f64),
                 *i_mb_size
@@ -8133,7 +7751,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 (*i_mb_size
                     .offset(crate::src::common::pixel::PIXEL_8x4 as ::core::ffi::c_int as isize)
                     + *i_mb_size.offset(
-                        crate::src::common::pixel::PIXEL_4x8 as ::core::ffi::c_int as isize,
+                        crate::src::common::pixel::PIXEL_4x8 as ::core::ffi::c_int as isize
                     )) as ::core::ffi::c_double
                     / (i_count_1 * 4f64),
                 *i_mb_size
@@ -8248,11 +7866,10 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                     list_count[2usize] as ::core::ffi::c_double / i_mb_list_count,
                 );
             }
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_INFO,
-                b"mb B  %s\n\0".as_ptr() as *const ::core::ffi::c_char,
-                &raw mut buf as *mut ::core::ffi::c_char,
+            log::info!(
+                "mb B  {}",
+                std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                    .to_string_lossy()
             );
         }
         crate::src::encoder::ratecontrol::x264_8_ratecontrol_summary(h);
@@ -8264,10 +7881,9 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
             > 0i32
         {
-            let mut fixed_pred_modes = [[0i64, 0, 0, 0, 0, 0, 0, 0, 0], [0; 9], [0; 9], [0; 9]];
-            let mut sum_pred_modes = [0i64, 0, 0, 0];
+            let mut fixed_pred_modes = [[0i64; 9]; 4];
+            let mut sum_pred_modes = [0i64; 4];
             let mut i_5 = 0i32;
-            let mut i_6 = 1i32;
             let mut i_7 = 0i32;
             let mut i_list = 0i32;
             let mut i_i8x8 = (*h).stat.i_mb_count
@@ -8369,13 +7985,12 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                             / i_skip as ::core::ffi::c_double,
                     ) as isize);
                 }
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"field mbs: intra: %.1f%%%s\n\0".as_ptr() as *const ::core::ffi::c_char,
+                log::info!(
+                    "field mbs: intra: {:.1}%{}",
                     (*h).stat.i_mb_field[0usize] as ::core::ffi::c_double * 100.0f64
                         / i_all_intra as ::core::ffi::c_double,
-                    &raw mut buf as *mut ::core::ffi::c_char,
+                    std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                        .to_string_lossy()
                 );
             }
             if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).transform_8x8_mode
@@ -8389,13 +8004,12 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                             / (*h).stat.i_mb_count_8x8dct[0usize] as ::core::ffi::c_double,
                     );
                 }
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"8x8 transform intra:%.1f%%%s\n\0".as_ptr() as *const ::core::ffi::c_char,
+                log::info!(
+                    "8x8 transform intra:{:.1}%{}",
                     100.0f64 * i_i8x8 as ::core::ffi::c_double
                         / (if i_intra > 1i64 { i_intra } else { 1i64 }) as ::core::ffi::c_double,
-                    &raw mut buf as *mut ::core::ffi::c_char,
+                    std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                        .to_string_lossy()
                 );
             }
             if ((*h).param.analyse.i_direct_mv_pred == crate::x264_h::X264_DIRECT_PRED_AUTO
@@ -8404,11 +8018,8 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                     [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
                     != 0
             {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"direct mvs  spatial:%.1f%% temporal:%.1f%%\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::info!(
+                    "direct mvs  spatial:{:.1}% temporal:{:.1}%",
                     (*h).stat.i_direct_frames[1usize] as ::core::ffi::c_double * 100.0f64
                         / (*h).stat.i_frame_count
                             [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
@@ -8442,24 +8053,21 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                                 as ::core::ffi::c_double,
                     );
                 }
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"coded y,%s,%s intra: %.1f%% %.1f%% %.1f%%%s\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::info!(
+                    "coded y,{},{} intra: {:.1}% {:.1}% {:.1}%{}",
                     if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                     {
-                        b"u\0".as_ptr() as *const ::core::ffi::c_char
+                        "u"
                     } else {
-                        b"uvDC\0".as_ptr() as *const ::core::ffi::c_char
+                        "uvDC"
                     },
                     if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                     {
-                        b"v\0".as_ptr() as *const ::core::ffi::c_char
+                        "v"
                     } else {
-                        b"uvAC\0".as_ptr() as *const ::core::ffi::c_char
+                        "uvAC"
                     },
                     (*h).stat.i_mb_cbp[0usize] as ::core::ffi::c_double * 100.0f64
                         / (i_all_intra * 4i64) as ::core::ffi::c_double,
@@ -8467,7 +8075,8 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                         / (i_all_intra * csize as crate::stdlib::int64_t) as ::core::ffi::c_double,
                     (*h).stat.i_mb_cbp[4usize] as ::core::ffi::c_double * 100.0f64
                         / (i_all_intra * csize as crate::stdlib::int64_t) as ::core::ffi::c_double,
-                    &raw mut buf as *mut ::core::ffi::c_char,
+                    std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                        .to_string_lossy()
                 );
             } else {
                 if i_mb_count_2 != i_all_intra {
@@ -8478,13 +8087,12 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                             / ((i_mb_count_2 - i_all_intra) * 4i64) as ::core::ffi::c_double,
                     );
                 }
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"coded y intra: %.1f%%%s\n\0".as_ptr() as *const ::core::ffi::c_char,
+                log::info!(
+                    "coded y intra: {:.1}%{}",
                     (*h).stat.i_mb_cbp[0usize] as ::core::ffi::c_double * 100.0f64
                         / (i_all_intra * 4i64) as ::core::ffi::c_double,
-                    &raw mut buf as *mut ::core::ffi::c_char,
+                    std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                        .to_string_lossy()
                 );
             }
             while i_5 <= crate::src::common::predict::I_PRED_16x16_DC_128 as ::core::ffi::c_int {
@@ -8494,11 +8102,8 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 i_5 += 1;
             }
             if sum_pred_modes[0usize] != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"i16 v,h,dc,p: %2.0f%% %2.0f%% %2.0f%% %2.0f%%\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::info!(
+                    "i16 v,h,dc,p: {:2.0}% {:2.0}% {:2.0}% {:2.0}%",
                     fixed_pred_modes[0usize][0usize] as ::core::ffi::c_double * 100.0f64
                         / sum_pred_modes[0usize] as ::core::ffi::c_double,
                     fixed_pred_modes[0usize][1usize] as ::core::ffi::c_double * 100.0f64
@@ -8509,53 +8114,30 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                         / sum_pred_modes[0usize] as ::core::ffi::c_double,
                 );
             }
-            while i_6 <= 2i32 {
+            for i in 1..=2 {
                 let mut j_0 = 0i32;
                 while j_0 <= crate::src::common::predict::I_PRED_8x8_DC_128 as ::core::ffi::c_int {
-                    fixed_pred_modes[i_6 as usize]
+                    fixed_pred_modes[i]
                         [x264_mb_pred_mode4x4_fix[(j_0 + 1i32) as usize] as usize] +=
-                        (*h).stat.i_mb_pred_mode[i_6 as usize][j_0 as usize];
-                    sum_pred_modes[i_6 as usize] +=
-                        (*h).stat.i_mb_pred_mode[i_6 as usize][j_0 as usize];
+                        (*h).stat.i_mb_pred_mode[i][j_0 as usize];
+                    sum_pred_modes[i] += (*h).stat.i_mb_pred_mode[i][j_0 as usize];
                     j_0 += 1;
                 }
-                if sum_pred_modes[i_6 as usize] != 0 {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_INFO,
-                        b"i%d v,h,dc,ddl,ddr,vr,hd,vl,hu: %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%% %2.0f%%\n\0"
-                            .as_ptr() as *const ::core::ffi::c_char,
-                        (3i32 - i_6) * 4i32,
-                        fixed_pred_modes[i_6 as usize][0usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][1usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][2usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][3usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][4usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][5usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][6usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][7usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
-                        fixed_pred_modes[i_6 as usize][8usize]
-                            as ::core::ffi::c_double * 100.0f64
-                            / sum_pred_modes[i_6 as usize] as ::core::ffi::c_double,
+                if sum_pred_modes[i as usize] != 0 {
+                    log::info!(
+                        "i{} v,h,dc,ddl,ddr,vr,hd,vl,hu: {:2.0}% {:2.0}% {:2.0}% {:2.0}% {:2.0}% {:2.0}% {:2.0}% {:2.0}% {:2.0}%",
+                        (3 - i) * 4,
+                        fixed_pred_modes[i][0] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][1] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][2] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][3] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][4] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][5] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][6] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][7] as f64 * 100.0 / sum_pred_modes[i] as f64,
+                        fixed_pred_modes[i][8] as f64 * 100.0 / sum_pred_modes[i] as f64,
                     );
                 }
-                i_6 += 1;
             }
             while i_7 <= crate::src::common::predict::I_PRED_CHROMA_DC_128 as ::core::ffi::c_int {
                 fixed_pred_modes[3usize][x264_mb_chroma_pred_mode_fix[i_7 as usize] as usize] +=
@@ -8567,11 +8149,8 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 && !(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                     == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
             {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"i8c dc,h,v,p: %2.0f%% %2.0f%% %2.0f%% %2.0f%%\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::info!(
+                    "i8c dc,h,v,p: {:2.0}% {:2.0}% {:2.0}% {:2.0}%",
                     fixed_pred_modes[3usize][0usize] as ::core::ffi::c_double * 100.0f64
                         / sum_pred_modes[3usize] as ::core::ffi::c_double,
                     fixed_pred_modes[3usize][1usize] as ::core::ffi::c_double * 100.0f64
@@ -8598,15 +8177,14 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                                 as usize] as ::core::ffi::c_double,
                     );
                 }
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"Weighted P-Frames: Y:%.1f%%%s\n\0".as_ptr() as *const ::core::ffi::c_char,
+                log::info!(
+                    "Weighted P-Frames: Y:{:.1}%{}",
                     (*h).stat.i_wpred[0usize] as ::core::ffi::c_double * 100.0f64
                         / (*h).stat.i_frame_count
                             [crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int as usize]
                             as ::core::ffi::c_double,
-                    &raw mut buf as *mut ::core::ffi::c_char,
+                    std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                        .to_string_lossy()
                 );
             }
             while i_list < 2i32 {
@@ -8641,15 +8219,13 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                             ) as isize);
                             i_9 += 1;
                         }
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_INFO,
-                            b"ref %c L%d:%s\n\0".as_ptr() as *const ::core::ffi::c_char,
+                        log::info!(
+                            "ref {} L{}:{}",
                             ::core::mem::transmute::<[u8; 3], [::core::ffi::c_char; 3]>(*b"PB\0")
-                                [i_slice_0 as usize]
-                                as ::core::ffi::c_int,
+                                [i_slice_0 as usize] as u8 as char,
                             i_list,
-                            &raw mut buf as *mut ::core::ffi::c_char,
+                            std::ffi::CStr::from_ptr(&raw const buf as *const ::core::ffi::c_char)
+                                .to_string_lossy()
                         );
                     }
                     i_slice_0 += 1;
@@ -8664,20 +8240,15 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                     + (*h).stat.f_ssim_mean_y
                         [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize])
                     / duration) as ::core::ffi::c_float;
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"SSIM Mean Y:%.7f (%6.3fdb)\n\0".as_ptr() as *const ::core::ffi::c_char,
+                log::info!(
+                    "SSIM Mean Y:{:.7} ({:6.3}db)",
                     ssim as ::core::ffi::c_double,
                     calc_ssim_db(ssim as ::core::ffi::c_double),
                 );
             }
             if (*h).param.analyse.psnr {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"PSNR Mean Y:%6.3f U:%6.3f V:%6.3f Avg:%6.3f Global:%6.3f kb/s:%.2f\n\0"
-                        .as_ptr() as *const ::core::ffi::c_char,
+                log::info!(
+                    "PSNR Mean Y:{:6.3} U:{:6.3} V:{:6.3} Avg:{:6.3} Global:{:6.3} kb/s:{:.2}",
                     ((*h).stat.f_psnr_mean_y
                         [crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int as usize]
                         + (*h).stat.f_psnr_mean_y[crate::src::common::base::SLICE_TYPE_P
@@ -8728,12 +8299,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                     f_bitrate as ::core::ffi::c_double,
                 );
             } else {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_INFO,
-                    b"kb/s:%.2f\n\0".as_ptr() as *const ::core::ffi::c_char,
-                    f_bitrate as ::core::ffi::c_double,
-                );
+                log::info!("kb/s:{f_bitrate:.2}");
             }
         }
         crate::src::encoder::ratecontrol::x264_8_ratecontrol_delete(h);

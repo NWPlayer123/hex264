@@ -452,30 +452,3 @@ pub struct mvsad_t {
     pub sad: ::core::ffi::c_int,
     pub mv: [crate::stdlib::int16_t; 2],
 }
-pub unsafe extern "C" fn x264_8_log(
-    mut h: *mut crate::src::common::common::x264_t,
-    mut i_level: ::core::ffi::c_int,
-    mut psz_fmt: *const ::core::ffi::c_char,
-    mut c2rust_args: ...
-) {
-    unsafe {
-        if h.is_null() || i_level <= (*h).param.i_log_level {
-            let mut arg = c2rust_args.clone();
-            if h.is_null() {
-                crate::src::common::base::x264_log_default(
-                    crate::__stddef_null_h::NULL,
-                    i_level,
-                    psz_fmt,
-                    arg,
-                );
-            } else {
-                (*h).param.pf_log.expect("non-null function pointer")(
-                    (*h).param.p_log_private,
-                    i_level,
-                    psz_fmt,
-                    arg,
-                );
-            }
-        }
-    }
-}

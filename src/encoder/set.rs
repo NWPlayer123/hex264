@@ -1956,12 +1956,7 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
             || len as ::core::ffi::c_uint as usize
                 > ::core::mem::size_of::<[crate::stdlib::uint8_t; 6000]>()
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"AVC-Intra SEI is too large (%d)\n\0".as_ptr() as *const ::core::ffi::c_char,
-                len,
-            );
+            log::error!("AVC-Intra SEI is too large ({})", len);
             return -(1i32);
         }
         crate::stdlib::memset(
@@ -2033,95 +2028,75 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                     * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_height
         {
             if verbose != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"frame MB size (%dx%d) > level limit (%d)\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::warn!(
+                    "frame MB size ({}x{}) > level limit ({})",
                     (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_width,
                     (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_mb_height,
-                    (*l).frame_size,
+                    (*l).frame_size
                 );
             }
             ret = 1i32;
         }
         if dpb > (*l).dpb {
             if verbose != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"DPB size (%d frames, %d mbs) > level limit (%d frames, %d mbs)\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::warn!(
+                    "DPB size ({} frames, {} mbs) > level limit ({} frames, {} mbs)",
                     (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .i_max_dec_frame_buffering,
                     dpb,
                     (*l).dpb / mbs,
-                    (*l).dpb,
+                    (*l).dpb
                 );
             }
             ret = 1i32;
         }
         if (*h).param.rc.i_vbv_max_bitrate > (*l).bitrate * cbp_factor / 4i32 {
             if verbose != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"VBV bitrate (%ld) > level limit (%d)\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::warn!(
+                    "VBV bitrate ({}) > level limit ({})",
                     (*h).param.rc.i_vbv_max_bitrate as crate::stdlib::int64_t,
-                    (*l).bitrate * cbp_factor / 4i32,
+                    (*l).bitrate * cbp_factor / 4i32
                 );
             }
             ret = 1i32;
         }
         if (*h).param.rc.i_vbv_buffer_size > (*l).cpb * cbp_factor / 4i32 {
             if verbose != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"VBV buffer (%ld) > level limit (%d)\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::warn!(
+                    "VBV buffer ({}) > level limit ({})",
                     (*h).param.rc.i_vbv_buffer_size as crate::stdlib::int64_t,
-                    (*l).cpb * cbp_factor / 4i32,
+                    (*l).cpb * cbp_factor / 4i32
                 );
             }
             ret = 1i32;
         }
         if (*h).param.analyse.i_mv_range > (*l).mv_range as ::core::ffi::c_int {
             if verbose != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"MV range (%ld) > level limit (%d)\n\0".as_ptr() as *const ::core::ffi::c_char,
+                log::warn!(
+                    "MV range ({}) > level limit ({})",
                     (*h).param.analyse.i_mv_range as crate::stdlib::int64_t,
-                    (*l).mv_range as ::core::ffi::c_int,
+                    (*l).mv_range as ::core::ffi::c_int
                 );
             }
             ret = 1i32;
         }
         if (*h).param.interlaced > ((*l).frame_only == 0) {
             if verbose != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"interlaced (%ld) > level limit (%d)\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::warn!(
+                    "interlaced ({}) > level limit ({})",
                     (*h).param.interlaced as crate::stdlib::int64_t,
-                    ((*l).frame_only == 0) as ::core::ffi::c_int,
+                    ((*l).frame_only == 0) as ::core::ffi::c_int
                 );
             }
             ret = 1i32;
         }
         if (*h).param.fake_interlaced > ((*l).frame_only == 0) {
             if verbose != 0 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_WARNING_1,
-                    b"fake interlaced (%ld) > level limit (%d)\n\0".as_ptr()
-                        as *const ::core::ffi::c_char,
+                log::warn!(
+                    "fake interlaced ({}) > level limit ({})",
                     (*h).param.fake_interlaced as crate::stdlib::int64_t,
-                    ((*l).frame_only == 0) as ::core::ffi::c_int,
+                    ((*l).frame_only == 0) as ::core::ffi::c_int
                 );
             }
             ret = 1i32;
@@ -2132,15 +2107,12 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                 > (*l).mbps as crate::stdlib::int64_t
             {
                 if verbose != 0 {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_WARNING_1,
-                        b"MB rate (%ld) > level limit (%d)\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
+                    log::warn!(
+                        "MB rate ({}) > level limit ({})",
                         mbs as crate::stdlib::int64_t
                             * (*h).param.i_fps_num as crate::stdlib::int64_t
                             / (*h).param.i_fps_den as crate::stdlib::int64_t,
-                        (*l).mbps,
+                        (*l).mbps
                     );
                 }
                 ret = 1i32;

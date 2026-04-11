@@ -1,10 +1,5 @@
 pub mod x264_h {
-    pub static mut x264_b_pyramid_names: [*const ::core::ffi::c_char; 4] = [
-        b"none\0".as_ptr() as *const ::core::ffi::c_char,
-        b"strict\0".as_ptr() as *const ::core::ffi::c_char,
-        b"normal\0".as_ptr() as *const ::core::ffi::c_char,
-        ::core::ptr::null::<::core::ffi::c_char>(),
-    ];
+    pub const x264_b_pyramid_names: [&'static str; 3] = ["none", "strict", "normal"];
 }
 pub mod bitstream_h {
     pub static mut x264_ue_size_tab: [crate::stdlib::uint8_t; 256] = [
@@ -6926,21 +6921,10 @@ pub mod slicetype_c {
                 } else {
                     (*h).mb.i_mb_width * (*h).mb.i_mb_height
                 }) - imb;
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_DEBUG_1,
-                    b"scene cut at %d Icost:%d Pcost:%d ratio:%.4f bias:%.4f gop:%d (imb:%d pmb:%d)\n\0"
-                        .as_ptr() as *const ::core::ffi::c_char,
+                log::debug!(
+                    "scene cut at {} Icost:{icost} Pcost:{pcost} ratio:{:.4} bias:{f_bias:.4} gop:{i_gop_size} (imb:{imb} pmb:{pmb})",
                     (*frame).i_frame,
-                    icost,
-                    pcost,
-                    1.0f64
-                        - pcost as ::core::ffi::c_double
-                            / icost as ::core::ffi::c_double,
-                    f_bias as ::core::ffi::c_double,
-                    i_gop_size,
-                    imb,
-                    pmb,
+                    1.0 - pcost as f64 / icost as f64,
                 );
             }
             return res;
@@ -8125,14 +8109,11 @@ pub mod slicetype_c {
                             || (*frm).i_type == crate::x264_h::X264_TYPE_IDR
                             || (*frm).i_type == crate::x264_h::X264_TYPE_KEYFRAME))
                 {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_WARNING_1,
-                        b"forced frame type (%d) at %d was changed to frame type (%d)\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
+                    log::warn!(
+                        "forced frame type ({}) at {} was changed to frame type ({})",
                         (*frm).i_forced_type,
                         (*frm).i_frame,
-                        (*frm).i_type,
+                        (*frm).i_type
                     );
                 }
                 if (*frm).i_type == crate::x264_h::X264_TYPE_BREF
@@ -8140,13 +8121,10 @@ pub mod slicetype_c {
                     && brefs == (*h).param.i_bframe_pyramid
                 {
                     (*frm).i_type = crate::x264_h::X264_TYPE_B;
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_WARNING_1,
-                        b"B-ref at frame %d incompatible with B-pyramid %s \n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
+                    log::warn!(
+                        "B-ref at frame {} incompatible with B-pyramid {}",
                         (*frm).i_frame,
-                        x264_b_pyramid_names[(*h).param.i_bframe_pyramid as usize],
+                        x264_b_pyramid_names[(*h).param.i_bframe_pyramid as usize]
                     );
                 } else if (*frm).i_type == crate::x264_h::X264_TYPE_BREF
                     && (*h).param.i_bframe_pyramid == crate::x264_h::X264_B_PYRAMID_NORMAL
@@ -8154,14 +8132,11 @@ pub mod slicetype_c {
                     && (*h).param.i_frame_reference <= brefs + 3i32
                 {
                     (*frm).i_type = crate::x264_h::X264_TYPE_B;
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_WARNING_1,
-                        b"B-ref at frame %d incompatible with B-pyramid %s and %d reference frames\n\0"
-                            .as_ptr() as *const ::core::ffi::c_char,
+                    log::warn!(
+                        "B-ref at frame {} incompatible with B-pyramid {} and {} reference frames",
                         (*frm).i_frame,
                         x264_b_pyramid_names[(*h).param.i_bframe_pyramid as usize],
-                        (*h).param.i_frame_reference,
+                        (*h).param.i_frame_reference
                     );
                 }
                 if (*frm).i_type == crate::x264_h::X264_TYPE_KEYFRAME {
@@ -8190,13 +8165,10 @@ pub mod slicetype_c {
                         warn &= ((*frm).i_type != crate::x264_h::X264_TYPE_I) as ::core::ffi::c_int;
                     }
                     if warn != 0 {
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_WARNING_1,
-                            b"specified frame type (%d) at %d is not compatible with keyframe interval\n\0"
-                                .as_ptr() as *const ::core::ffi::c_char,
+                        log::warn!(
+                            "specified frame type ({}) at {} is not compatible with keyframe interval",
                             (*frm).i_type,
-                            (*frm).i_frame,
+                            (*frm).i_frame
                         );
                         (*frm).i_type =
                             if (*h).param.open_gop && (*(*h).lookahead).i_last_keyframe >= 0i32 {
@@ -8238,12 +8210,7 @@ pub mod slicetype_c {
                     if (*frm).i_type == crate::x264_h::X264_TYPE_B
                         || (*frm).i_type == crate::x264_h::X264_TYPE_BREF
                     {
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_WARNING_1,
-                            b"specified frame type is not compatible with max B-frames\n\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
+                        log::warn!("specified frame type is not compatible with max B-frames");
                     }
                     if (*frm).i_type == crate::x264_h::X264_TYPE_AUTO
                         || ((*frm).i_type == crate::x264_h::X264_TYPE_B
@@ -22336,11 +22303,7 @@ unsafe extern "C" fn mb_cache_mv_p8x8(
                 );
             }
             _ => {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"internal error\n\0".as_ptr() as *const ::core::ffi::c_char,
-                );
+                log::error!("internal error");
             }
         };
     }
@@ -25826,13 +25789,7 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                                             .cost;
                                                 }
                                                 _ => {
-                                                    crate::src::common::common::x264_8_log(
-                                                        h,
-                                                        crate::x264_h::X264_LOG_ERROR_1,
-                                                        b"internal error (!8x8 && !4x4)\n\0"
-                                                            .as_ptr()
-                                                            as *const ::core::ffi::c_char,
-                                                    );
+                                                    log::error!("internal error (!8x8 && !4x4)");
                                                 }
                                             }
                                             i8x8 += 1;
@@ -27416,13 +27373,7 @@ unsafe extern "C" fn analyse_update_cache(
                     );
                 }
                 _ => {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_ERROR_1,
-                        b"internal error P_L0 and partition=%d\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                        (*h).mb.i_partition,
-                    );
+                    log::error!("internal error P_L0 and partition={}", (*h).mb.i_partition);
                 }
             },
             5 => {
@@ -27602,12 +27553,7 @@ unsafe extern "C" fn analyse_update_cache(
                     mb_cache_mv_b8x16(h, a, 1i32, 1i32);
                 }
                 _ => {
-                    crate::src::common::common::x264_8_log(
-                        h,
-                        crate::x264_h::X264_LOG_ERROR_1,
-                        b"internal error (invalid MB type)\n\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
+                    log::error!("internal error (invalid MB type)");
                 }
             },
         }
@@ -27638,54 +27584,19 @@ unsafe extern "C" fn analyse_update_cache(
                         + (*h).mb.i_mb_y * 16i32
                         > completed
                     {
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_WARNING_1,
-                            b"internal error (MV out of thread range)\n\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_DEBUG_1,
-                            b"mb type: %d \n\0".as_ptr() as *const ::core::ffi::c_char,
-                            (*h).mb.i_type,
-                        );
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_DEBUG_1,
-                            b"mv: l%dr%d (%d,%d) \n\0".as_ptr() as *const ::core::ffi::c_char,
-                            l,
-                            ref_0,
+                        log::warn!("internal error (MV out of thread range)");
+                        log::debug!("mb type: {}", (*h).mb.i_type);
+                        log::debug!(
+                            "mv: l{l}r{ref_0} ({},{})",
                             (*h).mb.cache.mv[l as usize][x264_scan8[15usize] as usize][0usize]
                                 as ::core::ffi::c_int,
                             (*h).mb.cache.mv[l as usize][x264_scan8[15usize] as usize][1usize]
                                 as ::core::ffi::c_int,
                         );
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_DEBUG_1,
-                            b"limit: %d \n\0".as_ptr() as *const ::core::ffi::c_char,
-                            (*h).mb.mv_max_spel[1usize],
-                        );
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_DEBUG_1,
-                            b"mb_xy: %d,%d \n\0".as_ptr() as *const ::core::ffi::c_char,
-                            (*h).mb.i_mb_x,
-                            (*h).mb.i_mb_y,
-                        );
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_DEBUG_1,
-                            b"completed: %d \n\0".as_ptr() as *const ::core::ffi::c_char,
-                            completed,
-                        );
-                        crate::src::common::common::x264_8_log(
-                            h,
-                            crate::x264_h::X264_LOG_WARNING_1,
-                            b"recovering by using intra mode\n\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
+                        log::debug!("limit: {}", (*h).mb.mv_max_spel[1usize]);
+                        log::debug!("mb_xy: {},{}", (*h).mb.i_mb_x, (*h).mb.i_mb_y);
+                        log::debug!("completed: {completed}");
+                        log::warn!("recovering by using intra mode");
                         mb_analyse_intra(h, a, crate::src::encoder::me::COST_MAX);
                         (*h).mb.i_type =
                             crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int;

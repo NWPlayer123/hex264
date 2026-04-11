@@ -1130,13 +1130,9 @@ unsafe extern "C" fn get_plane_ptr(
             *stride = -*stride;
         }
         if width > crate::stdlib::abs(*stride) {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"Input picture width (%d) is greater than stride (%d)\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-                width,
-                *stride,
+            log::error!(
+                "Input picture width ({width}) is greater than stride ({})",
+                *stride
             );
             return -(1i32);
         }
@@ -1153,41 +1149,26 @@ pub unsafe extern "C" fn x264_8_frame_copy_picture(
         let mut stride = [0; 3];
         let mut i_csp = (*src).img.i_csp & crate::x264_h::X264_CSP_MASK;
         if (*dst).i_csp != frame_internal_csp(i_csp) {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"Invalid input colorspace\n\0".as_ptr() as *const ::core::ffi::c_char,
-            );
+            log::error!("Invalid input colorspace");
             return -(1i32);
         }
         if (*src).img.i_csp & crate::x264_h::X264_CSP_HIGH_DEPTH != 0 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"This build of x264 requires 8-bit input. Rebuild to support high depth input.\n\0"
-                    .as_ptr() as *const ::core::ffi::c_char,
+            log::error!(
+                "This build of x264 requires 8-bit input. Rebuild to support high depth input."
             );
             return -(1i32);
         }
         if crate::internal::BIT_DEPTH != 10i32 && i_csp == crate::x264_h::X264_CSP_V210 {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"v210 input is only compatible with bit-depth of 10 bits\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
-            );
+            log::error!("v210 input is only compatible with bit-depth of 10 bits");
             return -(1i32);
         }
         if (*src).i_type < crate::x264_h::X264_TYPE_AUTO
             || (*src).i_type > crate::x264_h::X264_TYPE_KEYFRAME
         {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_WARNING_1,
-                b"forced frame type (%d) at %d is unknown\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
+            log::warn!(
+                "forced frame type ({}) at {} is unknown",
                 (*src).i_type,
-                (*h).frames.i_input,
+                (*h).frames.i_input
             );
             (*dst).i_forced_type = crate::x264_h::X264_TYPE_AUTO;
         } else {

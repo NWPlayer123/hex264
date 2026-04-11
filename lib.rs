@@ -8,6 +8,7 @@
 #![feature(c_variadic)]
 #![feature(extern_types)]
 #![feature(register_tool)]
+#![feature(integer_extend_truncate)]
 #![register_tool(c2rust)]
 pub mod __stdarg___gnuc_va_list_h {
     pub type __gnuc_va_list = crate::internal::__builtin_va_list;
@@ -421,23 +422,23 @@ pub mod x264_h {
     #[repr(C)]
     pub struct C2Rust_Unnamed_4 {
         pub mastering_display: bool,
-        pub i_green_x: ::core::ffi::c_int,
-        pub i_green_y: ::core::ffi::c_int,
-        pub i_blue_x: ::core::ffi::c_int,
-        pub i_blue_y: ::core::ffi::c_int,
-        pub i_red_x: ::core::ffi::c_int,
-        pub i_red_y: ::core::ffi::c_int,
-        pub i_white_x: ::core::ffi::c_int,
-        pub i_white_y: ::core::ffi::c_int,
-        pub i_display_max: crate::stdlib::int64_t,
-        pub i_display_min: crate::stdlib::int64_t,
+        pub i_green_x: u16,
+        pub i_green_y: u16,
+        pub i_blue_x: u16,
+        pub i_blue_y: u16,
+        pub i_red_x: u16,
+        pub i_red_y: u16,
+        pub i_white_x: u16,
+        pub i_white_y: u16,
+        pub i_display_max: u32,
+        pub i_display_min: u32,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct C2Rust_Unnamed_5 {
         pub cll: bool,
-        pub i_max_cll: ::core::ffi::c_int,
-        pub i_max_fall: ::core::ffi::c_int,
+        pub i_max_cll: u16,
+        pub i_max_fall: u16,
     }
     #[derive(Copy, Clone)]
     #[repr(C)]

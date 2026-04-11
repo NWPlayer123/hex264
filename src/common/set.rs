@@ -825,14 +825,10 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                     }
                                 }
                                 if (*h).param.rc.i_qp_min > (*h).param.rc.i_qp_max {
-                                    crate::src::common::common::x264_8_log(
-                                        h,
-                                        crate::x264_h::X264_LOG_ERROR_1,
-                                        b"Impossible QP constraints for CQM (min=%d, max=%d)\n\0"
-                                            .as_ptr()
-                                            as *const ::core::ffi::c_char,
+                                    log::error!(
+                                        "Impossible QP constraints for CQM (min={}, max={})",
                                         (*h).param.rc.i_qp_min,
-                                        (*h).param.rc.i_qp_max,
+                                        (*h).param.rc.i_qp_max
                                     );
                                     return -(1i32);
                                 }
@@ -936,7 +932,7 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
     }
 }
 unsafe extern "C" fn cqm_parse_jmlist(
-    mut h: *mut crate::src::common::common::x264_t,
+    _h: *mut crate::src::common::common::x264_t,
     mut buf: *const ::core::ffi::c_char,
     mut name: *const ::core::ffi::c_char,
     mut cqm: *mut crate::stdlib::uint8_t,
@@ -987,11 +983,9 @@ unsafe extern "C" fn cqm_parse_jmlist(
                 return 0i32;
             }
             if coef < 1i32 || coef > 255i32 {
-                crate::src::common::common::x264_8_log(
-                    h,
-                    crate::x264_h::X264_LOG_ERROR_1,
-                    b"bad coefficient in list '%s'\n\0".as_ptr() as *const ::core::ffi::c_char,
-                    name,
+                log::error!(
+                    "bad coefficient in list '{}'",
+                    std::ffi::CStr::from_ptr(name).to_string_lossy()
                 );
                 return -(1i32);
             }
@@ -999,11 +993,9 @@ unsafe extern "C" fn cqm_parse_jmlist(
             i += 1;
         }
         if !nextvar.is_null() && p > nextvar || i != length {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"not enough coefficients in list '%s'\n\0".as_ptr() as *const ::core::ffi::c_char,
-                name,
+            log::error!(
+                "not enough coefficients in list '{}'",
+                std::ffi::CStr::from_ptr(name).to_string_lossy()
             );
             return -(1i32);
         }
@@ -1019,11 +1011,9 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
         (*h).param.i_cqm_preset = crate::x264_h::X264_CQM_CUSTOM;
         let mut buf = crate::src::common::base::x264_slurp_file(filename);
         if buf.is_null() {
-            crate::src::common::common::x264_8_log(
-                h,
-                crate::x264_h::X264_LOG_ERROR_1,
-                b"can't open file '%s'\n\0".as_ptr() as *const ::core::ffi::c_char,
-                filename,
+            log::error!(
+                "can't open file '{}'",
+                std::ffi::CStr::from_ptr(filename).to_string_lossy()
             );
             return -(1i32);
         }

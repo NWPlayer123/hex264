@@ -330,7 +330,7 @@ pub unsafe extern "C" fn x264_malloc(
         let mut align_buf = ::core::ptr::null_mut::<crate::stdlib::uint8_t>();
         if i_size < 0i64
             || i_size as crate::stdlib::uint64_t
-                > (crate::stdlib::SIZE_MAX).wrapping_sub(HUGE_PAGE_SIZE as crate::stdlib::uint64_t)
+                > (u64::MAX).wrapping_sub(HUGE_PAGE_SIZE as crate::stdlib::uint64_t)
         {
             x264_log_internal(
                 crate::x264_h::X264_LOG_ERROR,
@@ -394,7 +394,7 @@ pub unsafe extern "C" fn x264_slurp_file(
         b_error |= (i_size <= 0i64) as ::core::ffi::c_int;
         if crate::osdep_h::WORD_SIZE == 4i32 {
             b_error |=
-                (i_size > crate::stdlib::INT32_MAX as crate::stdlib::int64_t) as ::core::ffi::c_int;
+                (i_size > i32::MAX as crate::stdlib::int64_t) as ::core::ffi::c_int;
         }
         b_error |=
             (crate::stdlib::fseeko(fh, 0i64, crate::stdlib::SEEK_SET) < 0i32) as ::core::ffi::c_int;
@@ -1838,9 +1838,9 @@ pub unsafe extern "C" fn x264_param_parse(
                 (*p).i_fps_num = i_fps_num as crate::stdlib::uint32_t;
                 (*p).i_fps_den = i_fps_den as crate::stdlib::uint32_t;
                 b_error |= (i_fps_num < 1i64
-                    || i_fps_num > crate::stdlib::UINT32_MAX as crate::stdlib::int64_t
+                    || i_fps_num > u32::MAX as crate::stdlib::int64_t
                     || i_fps_den < 1i64
-                    || i_fps_den > crate::stdlib::UINT32_MAX as crate::stdlib::int64_t)
+                    || i_fps_den > u32::MAX as crate::stdlib::int64_t)
                     as ::core::ffi::c_int;
             } else {
                 let mut fps = atof_internal(value, &raw mut b_error);
@@ -3050,14 +3050,14 @@ pub unsafe extern "C" fn x264_param2string(
                 s,
                 b" mastering-display=G(%d,%d)B(%d,%d)R(%d,%d)WP(%d,%d)L(%ld,%ld)\0".as_ptr()
                     as *const ::core::ffi::c_char,
-                (*p).mastering_display.i_green_x,
-                (*p).mastering_display.i_green_y,
-                (*p).mastering_display.i_blue_x,
-                (*p).mastering_display.i_blue_y,
-                (*p).mastering_display.i_red_x,
-                (*p).mastering_display.i_red_y,
-                (*p).mastering_display.i_white_x,
-                (*p).mastering_display.i_white_y,
+                (*p).mastering_display.i_green_x as ::core::ffi::c_uint,
+                (*p).mastering_display.i_green_y as ::core::ffi::c_uint,
+                (*p).mastering_display.i_blue_x as ::core::ffi::c_uint,
+                (*p).mastering_display.i_blue_y as ::core::ffi::c_uint,
+                (*p).mastering_display.i_red_x as ::core::ffi::c_uint,
+                (*p).mastering_display.i_red_y as ::core::ffi::c_uint,
+                (*p).mastering_display.i_white_x as ::core::ffi::c_uint,
+                (*p).mastering_display.i_white_y as ::core::ffi::c_uint,
                 (*p).mastering_display.i_display_max,
                 (*p).mastering_display.i_display_min,
             ) as isize);
@@ -3066,8 +3066,8 @@ pub unsafe extern "C" fn x264_param2string(
             s = s.offset(crate::stdlib::sprintf(
                 s,
                 b" cll=%d,%d\0".as_ptr() as *const ::core::ffi::c_char,
-                (*p).content_light_level.i_max_cll,
-                (*p).content_light_level.i_max_fall,
+                (*p).content_light_level.i_max_cll as ::core::ffi::c_uint,
+                (*p).content_light_level.i_max_fall as ::core::ffi::c_uint,
             ) as isize);
         }
         if (*p).i_frame_packing >= 0i32 {
