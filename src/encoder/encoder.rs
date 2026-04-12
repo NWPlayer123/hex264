@@ -1170,7 +1170,6 @@ unsafe extern "C" fn validate_parameters(
             );
             return -(1i32);
         }
-        (*h).param.interlaced = (*h).param.interlaced;
         if (*h).param.i_width <= 0i32
             || (*h).param.i_height <= 0i32
             || (*h).param.i_width > MAX_RESOLUTION
@@ -4837,8 +4836,6 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: ::core:
                     {
                         (*(*h).fenc).weight[0usize][0usize].i_scale = 1i32;
                         (*(*h).fenc).weight[0usize][0usize].i_denom = 0i32;
-                        (*(*h).fenc).weight[0usize][0usize].i_offset =
-                            (*(*h).fenc).weight[0usize][0usize].i_offset;
                         (*h).mc.weight_cache.expect("non-null function pointer")(
                             h,
                             (&raw mut *(&raw mut (*(*h).fenc).weight
@@ -5100,7 +5097,7 @@ unsafe extern "C" fn reference_update(mut h: *mut x264_t) -> ::core::ffi::c_int 
                 if (*(*h).frames.reference[j as usize]).i_poc == (*h).sh.mmco[i as usize].i_poc {
                     crate::src::common::frame::x264_8_frame_push_unused(
                         h,
-                        crate::src::common::frame::x264_8_frame_shift(
+                        crate::src::common::frame::x264_frame_shift(
                             (&raw mut (*h).frames.reference
                                 as *mut *mut crate::src::common::frame::x264_frame_t)
                                 .offset(j as isize),
@@ -5118,7 +5115,7 @@ unsafe extern "C" fn reference_update(mut h: *mut x264_t) -> ::core::ffi::c_int 
         if !(*h).frames.reference[(*h).sps.i_num_ref_frames as usize].is_null() {
             crate::src::common::frame::x264_8_frame_push_unused(
                 h,
-                crate::src::common::frame::x264_8_frame_shift(
+                crate::src::common::frame::x264_frame_shift(
                     &raw mut (*h).frames.reference
                         as *mut *mut crate::src::common::frame::x264_frame,
                 ),
@@ -5184,7 +5181,7 @@ unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
                     (*(*h).frames.reference[ref_0 as usize]).i_poc;
                 crate::src::common::frame::x264_8_frame_push_unused(
                     h,
-                    crate::src::common::frame::x264_8_frame_shift(
+                    crate::src::common::frame::x264_frame_shift(
                         (&raw mut (*h).frames.reference
                             as *mut *mut crate::src::common::frame::x264_frame_t)
                             .offset(ref_0 as isize),
@@ -6379,7 +6376,7 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
         {
             return encoder_frame_end(thread_oldest, thread_current, pp_nal, pi_nal, pic_out);
         }
-        (*h).fenc = crate::src::common::frame::x264_8_frame_shift((*h).frames.current);
+        (*h).fenc = crate::src::common::frame::x264_frame_shift((*h).frames.current);
         if (*h).param.sliced_threads {
             if threadpool_wait_all(h) < 0i32 {
                 return -(1i32);

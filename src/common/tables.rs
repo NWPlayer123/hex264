@@ -329,6 +329,7 @@ pub static mut x264_exp2_lut: [crate::stdlib::uint8_t; 64] = [
     156u8, 161u8, 165u8, 170u8, 175u8, 179u8, 184u8, 189u8, 194u8, 198u8, 203u8, 208u8, 214u8,
     219u8, 224u8, 229u8, 234u8, 240u8, 245u8, 250u8,
 ];
+#[allow(clippy::approx_constant)]
 pub static mut x264_log2_lut: [::core::ffi::c_float; 128] = [
     0f32, 0.01123f32, 0.02237f32, 0.03342f32, 0.04439f32, 0.05528f32, 0.06609f32, 0.07682f32,
     0.08746f32, 0.09803f32, 0.10852f32, 0.11894f32, 0.12928f32, 0.13955f32, 0.14975f32, 0.15987f32,
@@ -8558,6 +8559,7 @@ pub static mut x264_zero: [crate::stdlib::uint8_t; 1024] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0,
 ];
+#[allow(clippy::approx_constant)]
 unsafe extern "C" fn c2rust_run_static_initializers() {
     unsafe {
         x264_dct4_weight_tab = [

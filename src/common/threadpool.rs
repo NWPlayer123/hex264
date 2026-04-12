@@ -29,7 +29,7 @@ unsafe extern "C" fn threadpool_thread(
                 );
             }
             if (*pool).run.i_size != 0 {
-                job = crate::src::common::frame::x264_8_frame_shift((*pool).run.list)
+                job = crate::src::common::frame::x264_frame_shift((*pool).run.list)
                     as *mut x264_threadpool_job_t;
                 (*pool).run.i_size -= 1;
             }
@@ -195,7 +195,7 @@ pub unsafe extern "C" fn x264_8_threadpool_wait(
                 if (*(*(*pool).done.list.offset(i as isize) as *mut x264_threadpool_job_t)).arg
                     == arg
                 {
-                    let mut job = crate::src::common::frame::x264_8_frame_shift(
+                    let mut job = crate::src::common::frame::x264_frame_shift(
                         (*pool).done.list.offset(i as isize),
                     ) as *mut x264_threadpool_job_t;
                     (*pool).done.i_size -= 1;

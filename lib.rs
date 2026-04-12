@@ -10,6 +10,14 @@
 #![feature(register_tool)]
 #![feature(integer_extend_truncate)]
 #![register_tool(c2rust)]
+
+#![allow(clippy::erasing_op)]
+#![allow(clippy::eq_op)]
+#![allow(clippy::identity_op)]
+#![allow(clippy::overly_complex_bool_expr)]
+#![allow(clippy::ifs_same_cond)]
+#![allow(clippy::missing_safety_doc)]
+
 pub mod __stdarg___gnuc_va_list_h {
     pub type __gnuc_va_list = crate::internal::__builtin_va_list;
 }

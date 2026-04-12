@@ -1989,7 +1989,7 @@ pub unsafe extern "C" fn x264_8_frame_unshift(
         *c2rust_fresh6 = frame;
     }
 }
-pub unsafe extern "C" fn x264_8_frame_shift(
+pub unsafe extern "C" fn x264_frame_shift(
     mut list: *mut *mut crate::src::common::frame::x264_frame_t,
 ) -> *mut crate::src::common::frame::x264_frame_t {
     unsafe {
@@ -2000,18 +2000,7 @@ pub unsafe extern "C" fn x264_8_frame_shift(
             *c2rust_fresh7 = *list.offset((i + 1i32) as isize);
             i += 1;
         }
-        '_c2rust_label: {
-            if !frame.is_null() {
-            } else {
-                crate::stdlib::__assert_fail(
-                    b"frame\0".as_ptr() as *const ::core::ffi::c_char,
-                    b"common/frame.c\0".as_ptr() as *const ::core::ffi::c_char,
-                    768u32,
-                    b"x264_frame_t *x264_8_frame_shift(x264_frame_t **)\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-            }
-        };
+        assert!(!frame.is_null());
         frame
     }
 }
