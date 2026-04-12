@@ -661,10 +661,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 let mut cat = 0i32;
                                 while cat
                                     < 3i32
-                                        + (crate::src::common::base::CHROMA_444
-                                            as ::core::ffi::c_int
-                                            == crate::src::common::base::CHROMA_444
-                                                as ::core::ffi::c_int)
+                                        + (*h).sps.i_chroma_format_idc.is_444()
                                             as ::core::ffi::c_int
                                 {
                                     let mut dct8x8 = cat & 1i32;
@@ -853,9 +850,7 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
             i += 1;
         }
         while i_0
-            < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            < (if (*h).sps.i_chroma_format_idc.is_444() {
                 4i32
             } else {
                 2i32
@@ -1046,9 +1041,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
             &raw const crate::src::common::tables::x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
             64i32,
         );
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_444() {
             b_error |= cqm_parse_jmlist(
                 h,
                 buf,

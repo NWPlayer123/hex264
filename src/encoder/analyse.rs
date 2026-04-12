@@ -767,7 +767,7 @@ pub mod rdo_c {
                 0i32,
                 0i32,
             );
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 let mut chroma_size = (*h).luma2chroma_pixel
                     [crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                     as ::core::ffi::c_int;
@@ -817,9 +817,7 @@ pub mod rdo_c {
                     &raw mut cabac_tmp.f8_bits_encoded as *mut ::core::ffi::c_void,
                     &raw mut (*h).cabac.f8_bits_encoded as *const ::core::ffi::c_void,
                     (::core::mem::size_of::<::core::ffi::c_int>()).wrapping_add(
-                        (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        (if (*h).sps.i_chroma_format_idc.is_444() {
                             1024i32 + 12i32
                         } else {
                             460i32
@@ -869,9 +867,7 @@ pub mod rdo_c {
                 block_idx_x[i4 as usize] as ::core::ffi::c_int * 4i32,
                 block_idx_y[i4 as usize] as ::core::ffi::c_int * 4i32,
             ) as crate::stdlib::uint64_t;
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 let mut chromassd = ssd_plane(
                     h,
                     i_pixel,
@@ -908,9 +904,7 @@ pub mod rdo_c {
                     &raw mut cabac_tmp.f8_bits_encoded as *mut ::core::ffi::c_void,
                     &raw mut (*h).cabac.f8_bits_encoded as *const ::core::ffi::c_void,
                     (::core::mem::size_of::<::core::ffi::c_int>()).wrapping_add(
-                        (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        (if (*h).sps.i_chroma_format_idc.is_444() {
                             1024i32 + 12i32
                         } else {
                             460i32
@@ -955,7 +949,7 @@ pub mod rdo_c {
             let mut ssd_x = 8i32 * (i8 & 1i32);
             let mut ssd_y = 8i32 * (i8 >> 1i32);
             let mut i_ssd = ssd_plane(h, i_pixel, 0i32, ssd_x, ssd_y) as crate::stdlib::uint64_t;
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 let mut chroma_size =
                     (*h).luma2chroma_pixel[i_pixel as usize] as ::core::ffi::c_int;
                 let mut chroma_ssd = ssd_plane(
@@ -963,29 +957,19 @@ pub mod rdo_c {
                     chroma_size,
                     1i32,
                     ssd_x
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int,
-                    ssd_y
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int,
+                    ssd_y >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int,
                 ) + ssd_plane(
                     h,
                     chroma_size,
                     2i32,
                     ssd_x
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int,
-                    ssd_y
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int,
+                    ssd_y >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int,
                 );
                 i_ssd = i_ssd.wrapping_add(
                     (chroma_ssd as crate::stdlib::uint64_t)
@@ -1011,9 +995,7 @@ pub mod rdo_c {
                     &raw mut cabac_tmp.f8_bits_encoded as *mut ::core::ffi::c_void,
                     &raw mut (*h).cabac.f8_bits_encoded as *const ::core::ffi::c_void,
                     (::core::mem::size_of::<::core::ffi::c_int>()).wrapping_add(
-                        (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        (if (*h).sps.i_chroma_format_idc.is_444() {
                             1024i32 + 12i32
                         } else {
                             460i32
@@ -1042,9 +1024,7 @@ pub mod rdo_c {
         unsafe {
             let mut i_bits = 0;
             let mut p = 0i32;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -1072,9 +1052,7 @@ pub mod rdo_c {
                 (i8 & 1i32) * 8i32,
                 (i8 >> 1i32) * 8i32,
             ) as crate::stdlib::uint64_t;
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 let mut chromassd = ssd_plane(
                     h,
                     crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int,
@@ -1111,9 +1089,7 @@ pub mod rdo_c {
                     &raw mut cabac_tmp.f8_bits_encoded as *mut ::core::ffi::c_void,
                     &raw mut (*h).cabac.f8_bits_encoded as *const ::core::ffi::c_void,
                     (::core::mem::size_of::<::core::ffi::c_int>()).wrapping_add(
-                        (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        (if (*h).sps.i_chroma_format_idc.is_444() {
                             1024i32 + 12i32
                         } else {
                             460i32
@@ -1141,9 +1117,7 @@ pub mod rdo_c {
         unsafe {
             let mut i_bits = 0;
             let mut p = 0i32;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -1161,9 +1135,7 @@ pub mod rdo_c {
                 block_idx_x[i4 as usize] as ::core::ffi::c_int * 4i32,
                 block_idx_y[i4 as usize] as ::core::ffi::c_int * 4i32,
             ) as crate::stdlib::uint64_t;
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 let mut chromassd = ssd_plane(
                     h,
                     crate::src::common::pixel::PIXEL_4x4 as ::core::ffi::c_int,
@@ -1200,9 +1172,7 @@ pub mod rdo_c {
                     &raw mut cabac_tmp.f8_bits_encoded as *mut ::core::ffi::c_void,
                     &raw mut (*h).cabac.f8_bits_encoded as *const ::core::ffi::c_void,
                     (::core::mem::size_of::<::core::ffi::c_int>()).wrapping_add(
-                        (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        (if (*h).sps.i_chroma_format_idc.is_444() {
                             1024i32 + 12i32
                         } else {
                             460i32
@@ -1260,9 +1230,7 @@ pub mod rdo_c {
                     &raw mut cabac_tmp.f8_bits_encoded as *mut ::core::ffi::c_void,
                     &raw mut (*h).cabac.f8_bits_encoded as *const ::core::ffi::c_void,
                     (::core::mem::size_of::<::core::ffi::c_int>()).wrapping_add(
-                        (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        (if (*h).sps.i_chroma_format_idc.is_444() {
                             1024i32 + 12i32
                         } else {
                             460i32
@@ -3345,9 +3313,7 @@ pub mod rdo_c {
             let mut num_coefs = 0;
             let mut quant_cat =
                 crate::src::common::set::CQM_4IC as ::core::ffi::c_int + 1i32 - b_intra;
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_422() {
                 zigzag = &raw const zigzag_scan2x4 as *const crate::stdlib::uint8_t;
                 num_coefs = 8i32;
             } else {
@@ -3699,9 +3665,7 @@ pub mod slicetype_c {
             let mut i_stride = (*fenc).i_stride[1usize];
             let mut i_lines = (*fenc).i_lines[1usize];
             let mut i_width = (*fenc).i_width[1usize];
-            let mut v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                as ::core::ffi::c_int;
+            let mut v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
             let mut cw = 8i32 * (*h).mb.i_mb_width;
             let mut ch = (16i32 * (*h).mb.i_mb_height) >> v_shift;
             let mut height = 16i32 >> v_shift;
@@ -3974,10 +3938,7 @@ pub mod slicetype_c {
             let mut i_lines = (*fenc).i_lines[1usize];
             let mut i_width = (*fenc).i_width[1usize];
             let mut src = ref_0.offset(i_width as isize);
-            let mut height = 16i32
-                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int;
+            let mut height = 16i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
             if !w.is_null() {
                 let mut y = 0i32;
                 while y < i_lines {
@@ -4137,7 +4098,7 @@ pub mod slicetype_c {
             let ref mut c2rust_fresh10 = (*weights.offset(2isize)).weightfn;
             *c2rust_fresh10 = ::core::ptr::null_mut::<crate::src::common::mc::weight_fn_t>();
             while plane <= 2i32 * (b_lookahead == 0) as ::core::ffi::c_int {
-                if plane == 0 || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                if plane == 0 || !(*h).sps.i_chroma_format_idc.is_400() {
                     let mut zero_bias =
                         ((*ref_0).i_pixel_ssd[plane as usize] == 0) as ::core::ffi::c_int;
                     let mut fenc_var = (*fenc).i_pixel_ssd[plane as usize]
@@ -4178,7 +4139,7 @@ pub mod slicetype_c {
                 }
             }
             while plane_0
-                < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                < (if !(*h).sps.i_chroma_format_idc.is_400() {
                     3i32
                 } else {
                     1i32
@@ -4730,9 +4691,7 @@ pub mod slicetype_c {
                             ::core::ptr::null_mut::<crate::src::common::mc::x264_weight_t>(),
                         );
                         origscore = minscore;
-                    } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    } else if (*h).sps.i_chroma_format_idc.is_444() {
                         mcbuf = weight_cost_init_chroma444(
                             h,
                             fenc,
@@ -4832,10 +4791,7 @@ pub mod slicetype_c {
                                     weights.offset(plane_0 as isize),
                                 );
                                 if plane_0 != 0 {
-                                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                        == crate::src::common::base::CHROMA_444
-                                            as ::core::ffi::c_int
-                                    {
+                                    if (*h).sps.i_chroma_format_idc.is_444() {
                                         s = weight_cost_chroma444(
                                             h,
                                             fenc,
@@ -11542,9 +11498,7 @@ pub mod cabac_c {
                     }
                 }
                 if chroma != 0 && (*h).mb.i_cbp_chroma != 0 {
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_422() {
                         let mut ctxidxinc_3 = cabac_cbf_ctxidxinc(
                             h,
                             crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int,
@@ -11645,10 +11599,8 @@ pub mod cabac_c {
                     }
                     if (*h).mb.i_cbp_chroma == 2i32 {
                         let mut i_3 = 16i32;
-                        let mut step = (8i32)
-                            << (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int;
+                        let mut step =
+                            (8i32) << ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                         while i_3 < 3i32 * 16i32 {
                             let mut j = i_3;
                             while j < i_3 + 4i32 {
@@ -11700,11 +11652,9 @@ pub mod cabac_c {
         mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     ) {
         unsafe {
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 macroblock_write_cabac_internal(h, cb, 3i32, 0i32);
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 macroblock_write_cabac_internal(h, cb, 1i32, 1i32);
             } else {
                 macroblock_write_cabac_internal(h, cb, 1i32, 0i32);
@@ -11722,9 +11672,7 @@ pub mod cabac_c {
             let mut b_8x16 = ((*h).mb.i_partition
                 == crate::src::common::macroblock::D_8x16 as ::core::ffi::c_int)
                 as ::core::ffi::c_int;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -11816,9 +11764,7 @@ pub mod cabac_c {
             while j >= 0i32 {
                 if (*h).mb.i_cbp_luma & (1i32) << i8 != 0 {
                     if (*h).mb.transform_8x8 {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             let mut p = 0i32;
                             while p < 3i32 {
                                 let mut ctxidxinc = cabac_cbf_ctxidxinc(
@@ -11922,9 +11868,7 @@ pub mod cabac_c {
                     }
                 }
                 if (*h).mb.i_cbp_chroma != 0 {
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_422() {
                         let mut offset = (5i32 * i8) & 0x9i32;
                         let mut ctxidxinc_1 = cabac_cbf_ctxidxinc(
                             h,
@@ -12092,9 +12036,7 @@ pub mod cabac_c {
             let mut p = 0i32;
             let mut b_8x4 = (i_pixel == crate::src::common::pixel::PIXEL_8x4 as ::core::ffi::c_int)
                 as ::core::ffi::c_int;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -12195,9 +12137,7 @@ pub mod cabac_c {
             cabac_intra4x4_pred_mode(cb, i_pred, i_mode);
             cabac_cbp_luma(h, cb);
             if (*h).mb.i_cbp_luma & (1i32) << i8 != 0 {
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     let mut p = 0i32;
                     while p < 3i32 {
                         let mut ctxidxinc = cabac_cbf_ctxidxinc(
@@ -12255,9 +12195,7 @@ pub mod cabac_c {
         unsafe {
             let mut p = 0i32;
             let i_pred = x264_mb_predict_intra4x4_mode(h, i4);
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -12302,9 +12240,7 @@ pub mod cabac_c {
             cabac_intra_chroma_pred_mode(h, cb);
             cabac_cbp_chroma(h, cb);
             if (*h).mb.i_cbp_chroma != 0 {
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_422() {
                     let mut ctxidxinc = cabac_cbf_ctxidxinc(
                         h,
                         crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int,
@@ -12401,10 +12337,8 @@ pub mod cabac_c {
                 }
                 if (*h).mb.i_cbp_chroma == 2i32 {
                     let mut i = 16i32;
-                    let mut step = (8i32)
-                        << (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int;
+                    let mut step =
+                        (8i32) << ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                     while i < 3i32 * 16i32 {
                         let mut j = i;
                         while j < i + 4i32 {
@@ -12657,16 +12591,8 @@ pub mod cavlc_c {
             }
             if ctx_block_cat == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
             {
-                if i_total
-                    < 8i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
-                {
-                    let mut total_zeros = if crate::src::common::base::CHROMA_444
-                        as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                    {
+                if i_total < 8i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int {
+                    let mut total_zeros = if (*h).sps.i_chroma_format_idc.is_420() {
                         crate::src::common::tables::x264_total_zeros_2x2_dc
                             [(i_total - 1i32) as usize][i_total_zero as usize]
                     } else {
@@ -12833,9 +12759,7 @@ pub mod cavlc_c {
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
-                            5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                            5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
@@ -12920,9 +12844,7 @@ pub mod cavlc_c {
                         as ::core::ffi::c_int
                         == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                     {
-                        5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
+                        5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                     } else {
                         ct_index[x264_mb_predict_non_zero_code(
                             h,
@@ -13331,17 +13253,13 @@ pub mod cavlc_c {
         unsafe {
             let mut s = &raw mut (*h).out.bs;
             let i_mb_type = (*h).mb.i_type;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
             };
-            let mut chroma = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+            let mut chroma = ((*h).sps.i_chroma_format_idc.is_420()
+                || (*h).sps.i_chroma_format_idc.is_422())
                 as ::core::ffi::c_int;
             (*s).i_bits_encoded = 0i32;
             if (*h).sh.mbaff
@@ -13394,9 +13312,7 @@ pub mod cavlc_c {
                         as ::core::ffi::c_int
                         == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                     {
-                        5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
+                        5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                     } else {
                         ct_index[x264_mb_predict_non_zero_code(
                             h,
@@ -13438,9 +13354,7 @@ pub mod cavlc_c {
                                 == crate::src::common::macroblock::DCT_CHROMA_DC
                                     as ::core::ffi::c_int
                             {
-                                5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int
+                                5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                             } else {
                                 ct_index[x264_mb_predict_non_zero_code(
                                     h,
@@ -13495,9 +13409,7 @@ pub mod cavlc_c {
                     as ::core::ffi::c_int
                     == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                 {
-                    5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
+                    5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                 } else {
                     ct_index[x264_mb_predict_non_zero_code(
                         h,
@@ -13534,9 +13446,7 @@ pub mod cavlc_c {
                     as ::core::ffi::c_int
                     == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                 {
-                    5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
+                    5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                 } else {
                     ct_index[x264_mb_predict_non_zero_code(
                         h,
@@ -13571,10 +13481,8 @@ pub mod cavlc_c {
                 }
                 if (*h).mb.i_cbp_chroma == 2i32 {
                     let mut i_0 = 16i32;
-                    let mut step = (8i32)
-                        << (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int;
+                    let mut step =
+                        (8i32) << ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                     while i_0 < 3i32 * 16i32 {
                         let mut j = i_0;
                         while j < i_0 + 4i32 {
@@ -13583,9 +13491,7 @@ pub mod cavlc_c {
                                 == crate::src::common::macroblock::DCT_CHROMA_DC
                                     as ::core::ffi::c_int
                             {
-                                5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int
+                                5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                             } else {
                                 ct_index[x264_mb_predict_non_zero_code(
                                     h,
@@ -13645,9 +13551,7 @@ pub mod cavlc_c {
             let mut b_8x16 = ((*h).mb.i_partition
                 == crate::src::common::macroblock::D_8x16 as ::core::ffi::c_int)
                 as ::core::ffi::c_int;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -13699,17 +13603,13 @@ pub mod cavlc_c {
                     p += 1;
                 }
                 if (*h).mb.i_cbp_chroma != 0 {
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_422() {
                         let mut offset = (5i32 * i8) & 0x9i32;
                         let mut nC = if crate::src::common::macroblock::DCT_CHROMA_AC
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
-                            5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                            5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
@@ -13751,9 +13651,7 @@ pub mod cavlc_c {
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
-                            5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                            5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
@@ -13795,9 +13693,7 @@ pub mod cavlc_c {
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
-                            5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                            5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
@@ -13839,9 +13735,7 @@ pub mod cavlc_c {
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
-                            5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                            5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
@@ -13884,9 +13778,7 @@ pub mod cavlc_c {
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
-                            5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                            5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
@@ -13928,9 +13820,7 @@ pub mod cavlc_c {
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
-                            5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                            5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
@@ -13983,9 +13873,7 @@ pub mod cavlc_c {
     ) -> ::core::ffi::c_int {
         unsafe {
             let mut p = 0i32;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -13998,9 +13886,7 @@ pub mod cavlc_c {
                 let mut nC = if crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int
                     == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                 {
-                    5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
+                    5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                 } else {
                     ct_index[x264_mb_predict_non_zero_code(
                         h,
@@ -14038,9 +13924,7 @@ pub mod cavlc_c {
                         as ::core::ffi::c_int
                         == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                     {
-                        5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
+                        5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                     } else {
                         ct_index[x264_mb_predict_non_zero_code(
                             h,
@@ -14104,19 +13988,16 @@ pub mod cavlc_c {
     ) -> ::core::ffi::c_int {
         unsafe {
             let mut p = 0i32;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
             };
             (*h).out.bs.i_bits_encoded = cavlc_intra4x4_pred_size(h, 4i32 * i8, i_mode);
             (*h).out.bs.i_bits_encoded += bs_size_ue(
-                cbp_to_golomb[!(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int as usize][1usize]
-                    [((*h).mb.i_cbp_chroma << 4i32 | (*h).mb.i_cbp_luma) as usize]
+                cbp_to_golomb
+                    [!((*h).sps.i_chroma_format_idc.is_444()) as ::core::ffi::c_int as usize]
+                    [1usize][((*h).mb.i_cbp_chroma << 4i32 | (*h).mb.i_cbp_luma) as usize]
                     as ::core::ffi::c_uint,
             );
             while p < plane_count {
@@ -14133,9 +14014,7 @@ pub mod cavlc_c {
     ) -> ::core::ffi::c_int {
         unsafe {
             let mut p = 0i32;
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -14145,9 +14024,7 @@ pub mod cavlc_c {
                 let mut nC = if crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int
                     == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                 {
-                    5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
+                    5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                 } else {
                     ct_index[x264_mb_predict_non_zero_code(
                         h,
@@ -14197,9 +14074,7 @@ pub mod cavlc_c {
                 let mut nC = if crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                     == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                 {
-                    5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
+                    5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                 } else {
                     ct_index[x264_mb_predict_non_zero_code(
                         h,
@@ -14236,9 +14111,7 @@ pub mod cavlc_c {
                     as ::core::ffi::c_int
                     == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                 {
-                    5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int
+                    5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                 } else {
                     ct_index[x264_mb_predict_non_zero_code(
                         h,
@@ -14273,10 +14146,8 @@ pub mod cavlc_c {
                 }
                 if (*h).mb.i_cbp_chroma == 2i32 {
                     let mut i = 16i32;
-                    let mut step = (8i32)
-                        << (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int;
+                    let mut step =
+                        (8i32) << ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                     while i < 3i32 * 16i32 {
                         let mut j = i;
                         while j < i + 4i32 {
@@ -14285,9 +14156,7 @@ pub mod cavlc_c {
                                 == crate::src::common::macroblock::DCT_CHROMA_DC
                                     as ::core::ffi::c_int
                             {
-                                5i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int
+                                5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                             } else {
                                 ct_index[x264_mb_predict_non_zero_code(
                                     h,
@@ -14352,6 +14221,7 @@ pub mod cavlc_c {
     use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode4x4_fix;
     use crate::src::encoder::analyse::predict_h::x264_mb_pred_mode16x16_fix;
 }
+use crate::src::common::base::ChromaFormat;
 use crate::src::encoder::analyse::base_h::x264_clip3;
 use crate::src::encoder::analyse::base_h::x264_scan8;
 use crate::src::encoder::analyse::bitstream_h::bs_size_te;
@@ -14871,23 +14741,19 @@ unsafe extern "C" fn mb_analyse_init(
         (*a).i_satd_i4x4 = crate::src::encoder::me::COST_MAX;
         (*a).i_satd_i8x8 = (*a).i_satd_i4x4;
         (*a).i_satd_i16x16 = (*a).i_satd_i8x8;
-        (*a).i_satd_chroma = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+        (*a).i_satd_chroma = if !(*h).sps.i_chroma_format_idc.is_400() {
             crate::src::encoder::me::COST_MAX
         } else {
             0i32
         };
         let mut pcm_cost = ((256i32 * 8i32
             + 2i32
-                * (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                * (if !(*h).sps.i_chroma_format_idc.is_400() {
                     (256i32 * 8i32)
-                        >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> (((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int
-                            + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            + ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                 } else {
                     0i32
                 })
@@ -15670,9 +15536,7 @@ unsafe extern "C" fn mb_analyse_intra_chroma(
         if (*a).i_satd_chroma < crate::src::encoder::me::COST_MAX {
             return;
         }
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_444() {
             if !(*h).mb.chroma_me {
                 (*a).i_satd_chroma = 0i32;
                 return;
@@ -16564,9 +16428,7 @@ unsafe extern "C" fn intra_rd_refine(
     unsafe {
         let mut i_satd = 0;
         let mut i_best = 0;
-        let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
             3i32
         } else {
             1i32
@@ -16596,11 +16458,7 @@ unsafe extern "C" fn intra_rd_refine(
                 predict_mode = predict_mode.offset(1);
             }
         }
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_420() || (*h).sps.i_chroma_format_idc.is_422() {
             let mut predict_mode_0 =
                 predict_chroma_mode_available((*h).mb.i_neighbour_intra as ::core::ffi::c_int);
             if *predict_mode_0.offset(1isize) as ::core::ffi::c_int >= 0i32 {
@@ -16672,13 +16530,13 @@ unsafe extern "C" fn intra_rd_refine(
                 let mut dst = [
                     (*h).mb.pic.p_fdec[0usize]
                         .offset(block_idx_xy_fdec[idx as usize] as ::core::ffi::c_int as isize),
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    if !(*h).sps.i_chroma_format_idc.is_400() {
                         (*h).mb.pic.p_fdec[1usize]
                             .offset(block_idx_xy_fdec[idx as usize] as ::core::ffi::c_int as isize)
                     } else {
                         ::core::ptr::null_mut::<crate::src::common::common::pixel>()
                     },
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    if !(*h).sps.i_chroma_format_idc.is_400() {
                         (*h).mb.pic.p_fdec[2usize]
                             .offset(block_idx_xy_fdec[idx as usize] as ::core::ffi::c_int as isize)
                     } else {
@@ -16778,14 +16636,14 @@ unsafe extern "C" fn intra_rd_refine(
                     (*h).mb.pic.p_fdec[0usize]
                         .offset((8i32 * x) as isize)
                         .offset((8i32 * y * crate::src::common::common::FDEC_STRIDE) as isize),
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    if !(*h).sps.i_chroma_format_idc.is_400() {
                         (*h).mb.pic.p_fdec[1usize]
                             .offset((8i32 * x) as isize)
                             .offset((8i32 * y * crate::src::common::common::FDEC_STRIDE) as isize)
                     } else {
                         ::core::ptr::null_mut::<crate::src::common::common::pixel>()
                     },
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    if !(*h).sps.i_chroma_format_idc.is_400() {
                         (*h).mb.pic.p_fdec[2usize]
                             .offset((8i32 * x) as isize)
                             .offset((8i32 * y * crate::src::common::common::FDEC_STRIDE) as isize)
@@ -16956,21 +16814,16 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
             as *mut *mut crate::src::common::common::pixel)
             .offset(0isize))
         .offset((0i32 + 0i32 * crate::src::common::common::FENC_STRIDE) as isize);
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+        if !(*h).sps.i_chroma_format_idc.is_400() {
             m.p_fenc[1usize] = (*(&raw mut (*h).mb.pic.p_fenc
                 as *mut *mut crate::src::common::common::pixel)
                 .offset(1isize))
             .offset(
                 ((0i32
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                    >> ((*h).sps.i_chroma_format_idc.is_420()
+                        || (*h).sps.i_chroma_format_idc.is_422())
                         as ::core::ffi::c_int)
-                    + (0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int)
+                    + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                         * crate::src::common::common::FENC_STRIDE) as isize,
             );
             m.p_fenc[2usize] = (*(&raw mut (*h).mb.pic.p_fenc
@@ -16978,15 +16831,10 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
                 .offset(2isize))
             .offset(
                 ((0i32
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                    >> ((*h).sps.i_chroma_format_idc.is_420()
+                        || (*h).sps.i_chroma_format_idc.is_422())
                         as ::core::ffi::c_int)
-                    + (0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int)
+                    + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                         * crate::src::common::common::FENC_STRIDE) as isize,
             );
         }
@@ -17041,9 +16889,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
                         as isize,
                 );
             }
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                     as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                     .offset(0isize)
@@ -17146,7 +16992,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
                             as isize,
                     );
                 }
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                     as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                     .offset(0isize)
@@ -17156,10 +17002,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
                     .offset(4isize))
                 .offset(
                     (0i32
-                        + (0i32
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                        + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * *(&raw mut m.i_stride as *mut ::core::ffi::c_int).offset(1isize))
                         as isize,
                 );
@@ -17443,31 +17286,23 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
             m.i_stride[2usize] = (*h).mb.pic.i_stride[2usize];
             m.p_fenc[0usize] = (*p_fenc.offset(0isize))
                 .offset((8i32 * x8 + 8i32 * y8 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 m.p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
                     (((8i32 * x8)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * y8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
                     (((8i32 * x8)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * y8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -17534,9 +17369,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
                             as isize,
                     );
                 }
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                         as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                         .offset(0isize)
@@ -17651,7 +17484,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
                                         .offset(2isize)) as isize,
                         );
                     }
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                } else if !(*h).sps.i_chroma_format_idc.is_400() {
                     m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                         as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                         .offset(0isize)
@@ -17662,9 +17495,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
                     .offset(
                         (8i32 * x8
                             + ((8i32 * y8)
-                                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int)
+                                >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                                 * *(&raw mut m.i_stride as *mut ::core::ffi::c_int).offset(1isize))
                             as isize,
                     );
@@ -17846,31 +17677,23 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(
             (*m).i_stride[2usize] = (*h).mb.pic.i_stride[2usize];
             (*m).p_fenc[0usize] = (*p_fenc.offset(0isize))
                 .offset((8i32 * x8 + 8i32 * y8 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
                     (((8i32 * x8)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * y8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
                     (((8i32 * x8)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * y8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -17933,9 +17756,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(
                         as isize,
                 );
             }
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*m).p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                     as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                     .offset(0isize)
@@ -18050,7 +17871,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(
                                     .offset(2isize)) as isize,
                     );
                 }
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                     as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                     .offset(0isize)
@@ -18061,9 +17882,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(
                 .offset(
                     (8i32 * x8
                         + ((8i32 * y8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * *(&raw mut (*m).i_stride as *mut ::core::ffi::c_int).offset(1isize))
                         as isize,
                 );
@@ -18206,31 +18025,23 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
             m.i_stride[2usize] = (*h).mb.pic.i_stride[2usize];
             m.p_fenc[0usize] = (*p_fenc.offset(0isize))
                 .offset((0i32 + 8i32 * i * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 m.p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
                     ((0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * i)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
                     ((0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * i)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -18326,9 +18137,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                             as isize,
                     );
                 }
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                         as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                         .offset(0isize)
@@ -18443,7 +18252,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                                         .offset(2isize)) as isize,
                         );
                     }
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                } else if !(*h).sps.i_chroma_format_idc.is_400() {
                     m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                         as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                         .offset(0isize)
@@ -18454,9 +18263,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                     .offset(
                         (0i32
                             + ((8i32 * i)
-                                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int)
+                                >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                                 * *(&raw mut m.i_stride as *mut ::core::ffi::c_int).offset(1isize))
                             as isize,
                     );
@@ -18618,31 +18425,21 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
             m.i_stride[2usize] = (*h).mb.pic.i_stride[2usize];
             m.p_fenc[0usize] = (*p_fenc.offset(0isize))
                 .offset((8i32 * i + 0i32 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 m.p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
                     (((8i32 * i)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
-                        + (0i32
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                        + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
                     (((8i32 * i)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
-                        + (0i32
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                        + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -18733,9 +18530,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
                             as isize,
                     );
                 }
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                         as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                         .offset(0isize)
@@ -18842,7 +18637,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
                                         .offset(2isize)) as isize,
                         );
                     }
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                } else if !(*h).sps.i_chroma_format_idc.is_400() {
                     m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                         as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                         .offset(0isize)
@@ -18853,9 +18648,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
                     .offset(
                         (8i32 * i
                             + (0i32
-                                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int)
+                                >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                                 * *(&raw mut m.i_stride as *mut ::core::ffi::c_int).offset(1isize))
                             as isize,
                     );
@@ -18967,18 +18760,14 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
     mut p_fref: *mut *mut crate::src::common::common::pixel,
     mut i8x8: ::core::ffi::c_int,
     mut size: ::core::ffi::c_int,
-    mut chroma: ::core::ffi::c_int,
+    mut chroma: ChromaFormat,
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut pix1 = [0; 256];
         let mut pix2 = (&raw mut pix1 as *mut crate::src::common::common::pixel).offset(8isize);
         let mut i_stride = (*h).mb.pic.i_stride[1usize];
-        let mut chroma_h_shift = (chroma
-            <= crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
-        let mut chroma_v_shift = (chroma
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        let mut chroma_h_shift = (chroma.is_422() || chroma.is_444()) as ::core::ffi::c_int;
+        let mut chroma_v_shift = chroma.is_420() as ::core::ffi::c_int;
         let mut or = 8i32 * (i8x8 & 1i32) + (4i32 >> chroma_v_shift) * (i8x8 & 2i32) * i_stride;
         let mut i_ref = (*a).l0.me8x8[i8x8 as usize].i_ref;
         let mut mvy_offset =
@@ -18995,7 +18784,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                 as *mut [crate::src::encoder::me::x264_me_t; 4])
                 .offset(i8x8 as isize)
                 as *mut crate::src::encoder::me::x264_me_t;
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx =
                     (*m.offset(0isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 0i32;
                 let mut mvy =
@@ -19090,7 +18879,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                     );
                 }
             }
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx_0 =
                     (*m.offset(1isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 2i32;
                 let mut mvy_0 =
@@ -19185,7 +18974,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                     );
                 }
             }
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx_1 =
                     (*m.offset(2isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 0i32;
                 let mut mvy_1 =
@@ -19280,7 +19069,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                     );
                 }
             }
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx_2 =
                     (*m.offset(3isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 2i32;
                 let mut mvy_2 =
@@ -19380,7 +19169,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                 as *mut [crate::src::encoder::me::x264_me_t; 2])
                 .offset(i8x8 as isize)
                 as *mut crate::src::encoder::me::x264_me_t;
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx_3 =
                     (*m_0.offset(0isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 0i32;
                 let mut mvy_3 =
@@ -19475,7 +19264,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                     );
                 }
             }
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx_4 =
                     (*m_0.offset(1isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 0i32;
                 let mut mvy_4 =
@@ -19575,7 +19364,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                 as *mut [crate::src::encoder::me::x264_me_t; 2])
                 .offset(i8x8 as isize)
                 as *mut crate::src::encoder::me::x264_me_t;
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx_5 =
                     (*m_1.offset(0isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 0i32;
                 let mut mvy_5 =
@@ -19670,7 +19459,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
                     );
                 }
             }
-            if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+            if chroma.is_444() {
                 let mut mvx_6 =
                     (*m_1.offset(1isize)).mv[0usize] as ::core::ffi::c_int + 4i32 * 2i32 * 2i32;
                 let mut mvy_6 =
@@ -19768,10 +19557,9 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
         }
         let mut oe = (8i32 >> chroma_h_shift) * (i8x8 & 1i32)
             + (4i32 >> chroma_v_shift) * (i8x8 & 2i32) * crate::src::common::common::FENC_STRIDE;
-        let mut chromapix = if chroma == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        let mut chromapix = if chroma.is_444() {
             crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
-        } else if chroma == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int {
+        } else if chroma.is_422() {
             crate::src::common::pixel::PIXEL_4x8 as ::core::ffi::c_int
         } else {
             crate::src::common::pixel::PIXEL_4x4 as ::core::ffi::c_int
@@ -19801,27 +19589,23 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma(
     mut size: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_444() {
             return mb_analyse_inter_p4x4_chroma_internal(
                 h,
                 a,
                 p_fref,
                 i8x8,
                 size,
-                crate::src::common::base::CHROMA_444 as ::core::ffi::c_int,
+                ChromaFormat::Chroma444,
             );
-        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-        {
+        } else if (*h).sps.i_chroma_format_idc.is_422() {
             return mb_analyse_inter_p4x4_chroma_internal(
                 h,
                 a,
                 p_fref,
                 i8x8,
                 size,
-                crate::src::common::base::CHROMA_422 as ::core::ffi::c_int,
+                ChromaFormat::Chroma422,
             );
         } else {
             return mb_analyse_inter_p4x4_chroma_internal(
@@ -19830,7 +19614,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma(
                 p_fref,
                 i8x8,
                 size,
-                crate::src::common::base::CHROMA_420 as ::core::ffi::c_int,
+                ChromaFormat::Chroma420,
             );
         };
     }
@@ -19871,31 +19655,23 @@ unsafe extern "C" fn mb_analyse_inter_p4x4(
             (*m).i_stride[2usize] = (*h).mb.pic.i_stride[2usize];
             (*m).p_fenc[0usize] = (*p_fenc.offset(0isize))
                 .offset((4i32 * x4 + 4i32 * y4 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
                     (((4i32 * x4)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
                     (((4i32 * x4)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -19930,9 +19706,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4(
                         as isize,
                 );
             }
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
                         + 4i32
@@ -19991,13 +19765,11 @@ unsafe extern "C" fn mb_analyse_inter_p4x4(
                                     .offset(2isize)) as isize,
                     );
                 }
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * *(&raw mut (*m).i_stride as *mut ::core::ffi::c_int).offset(1isize))
                         as isize,
                 );
@@ -20069,10 +19841,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4(
                 * i_sub_mb_p_cost_table
                     [crate::src::common::macroblock::D_L0_4x4 as ::core::ffi::c_int as usize]
                     as ::core::ffi::c_int;
-        if (*h).mb.chroma_me
-            && !(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
-        {
+        if (*h).mb.chroma_me && !((*h).sps.i_chroma_format_idc.is_444()) {
             (*a).l0.i_cost4x4[i8x8 as usize] += mb_analyse_inter_p4x4_chroma(
                 h,
                 a,
@@ -20119,31 +19888,23 @@ unsafe extern "C" fn mb_analyse_inter_p8x4(
             (*m).i_stride[2usize] = (*h).mb.pic.i_stride[2usize];
             (*m).p_fenc[0usize] = (*p_fenc.offset(0isize))
                 .offset((4i32 * x4 + 4i32 * y4 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
                     (((4i32 * x4)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
                     (((4i32 * x4)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -20178,9 +19939,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x4(
                         as isize,
                 );
             }
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
                         + 4i32
@@ -20239,13 +19998,11 @@ unsafe extern "C" fn mb_analyse_inter_p8x4(
                                     .offset(2isize)) as isize,
                     );
                 }
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * *(&raw mut (*m).i_stride as *mut ::core::ffi::c_int).offset(1isize))
                         as isize,
                 );
@@ -20318,10 +20075,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x4(
                 * i_sub_mb_p_cost_table
                     [crate::src::common::macroblock::D_L0_8x4 as ::core::ffi::c_int as usize]
                     as ::core::ffi::c_int;
-        if (*h).mb.chroma_me
-            && !(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
-        {
+        if (*h).mb.chroma_me && !((*h).sps.i_chroma_format_idc.is_444()) {
             (*a).l0.i_cost8x4[i8x8 as usize] += mb_analyse_inter_p4x4_chroma(
                 h,
                 a,
@@ -20368,31 +20122,23 @@ unsafe extern "C" fn mb_analyse_inter_p4x8(
             (*m).i_stride[2usize] = (*h).mb.pic.i_stride[2usize];
             (*m).p_fenc[0usize] = (*p_fenc.offset(0isize))
                 .offset((4i32 * x4 + 4i32 * y4 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
                     (((4i32 * x4)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
                     (((4i32 * x4)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -20427,9 +20173,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x8(
                         as isize,
                 );
             }
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
                         + 4i32
@@ -20488,13 +20232,11 @@ unsafe extern "C" fn mb_analyse_inter_p4x8(
                                     .offset(2isize)) as isize,
                     );
                 }
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
                         + ((4i32 * y4)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * *(&raw mut (*m).i_stride as *mut ::core::ffi::c_int).offset(1isize))
                         as isize,
                 );
@@ -20567,10 +20309,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x8(
                 * i_sub_mb_p_cost_table
                     [crate::src::common::macroblock::D_L0_4x8 as ::core::ffi::c_int as usize]
                     as ::core::ffi::c_int;
-        if (*h).mb.chroma_me
-            && !(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
-        {
+        if (*h).mb.chroma_me && !((*h).sps.i_chroma_format_idc.is_444()) {
             (*a).l0.i_cost4x8[i8x8 as usize] += mb_analyse_inter_p4x4_chroma(
                 h,
                 a,
@@ -20594,9 +20333,7 @@ unsafe extern "C" fn analyse_bi_chroma(
         let mut i_chroma_cost = 0i32;
         let mut chromapix = (*h).luma2chroma_pixel[i_pixel as usize] as ::core::ffi::c_int;
         if i_pixel == crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int {
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*h).mc.mc_luma.expect("non-null function pointer")(
                     &raw mut *(&raw mut pix as *mut [crate::src::common::common::pixel; 256])
                         .offset(0isize)
@@ -20662,9 +20399,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                         as *const crate::src::common::mc::x264_weight_t,
                 );
             } else {
-                let mut v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int;
+                let mut v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                 let mut l0_mvy_offset =
                     if v_shift & (*h).mb.interlaced as ::core::ffi::c_int & (*a).l0.bi16x16.i_ref
                         != 0
@@ -20755,9 +20490,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                 16isize,
             );
         } else if i_pixel == crate::src::common::pixel::PIXEL_16x8 as ::core::ffi::c_int {
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*h).mc.mc_luma.expect("non-null function pointer")(
                     &raw mut *(&raw mut pix as *mut [crate::src::common::common::pixel; 256])
                         .offset(0isize)
@@ -20831,9 +20564,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                         as *const crate::src::common::mc::x264_weight_t,
                 );
             } else {
-                let mut v_shift_0 = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int;
+                let mut v_shift_0 = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                 let mut l0_mvy_offset_0 = if v_shift_0
                     & (*h).mb.interlaced as ::core::ffi::c_int
                     & (*a).l0.me16x8[idx as usize].i_ref
@@ -20938,9 +20669,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                 16isize,
             );
         } else if i_pixel == crate::src::common::pixel::PIXEL_8x16 as ::core::ffi::c_int {
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*h).mc.mc_luma.expect("non-null function pointer")(
                     &raw mut *(&raw mut pix as *mut [crate::src::common::common::pixel; 256])
                         .offset(0isize)
@@ -21014,9 +20743,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                         as *const crate::src::common::mc::x264_weight_t,
                 );
             } else {
-                let mut v_shift_1 = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int;
+                let mut v_shift_1 = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                 let mut l0_mvy_offset_1 = if v_shift_1
                     & (*h).mb.interlaced as ::core::ffi::c_int
                     & (*a).l0.me8x16[idx as usize].i_ref
@@ -21121,9 +20848,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                 16isize,
             );
         } else {
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 (*h).mc.mc_luma.expect("non-null function pointer")(
                     &raw mut *(&raw mut pix as *mut [crate::src::common::common::pixel; 256])
                         .offset(0isize)
@@ -21193,9 +20918,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                         as *const crate::src::common::mc::x264_weight_t,
                 );
             } else {
-                let mut v_shift_2 = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int;
+                let mut v_shift_2 = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                 let mut l0_mvy_offset_2 = if v_shift_2
                     & (*h).mb.interlaced as ::core::ffi::c_int
                     & (*a).l0.me8x8[idx as usize].i_ref
@@ -21332,24 +21055,16 @@ unsafe extern "C" fn mb_analyse_inter_direct(
                 );
                 if (*h).mb.chroma_me {
                     let mut fenc_offset = (x
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
-                        + (y >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int)
+                        + (y >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE;
                     let mut fdec_offset = (x
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
-                        + (y >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int)
+                        + (y >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FDEC_STRIDE;
                     (*a).i_cost8x8direct[i as usize] +=
                         (*h).pixf.mbcmp[chromapix as usize].expect("non-null function pointer")(
@@ -21460,21 +21175,16 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(
             as *mut *mut crate::src::common::common::pixel)
             .offset(0isize))
         .offset((0i32 + 0i32 * crate::src::common::common::FENC_STRIDE) as isize);
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+        if !(*h).sps.i_chroma_format_idc.is_400() {
             m.p_fenc[1usize] = (*(&raw mut (*h).mb.pic.p_fenc
                 as *mut *mut crate::src::common::common::pixel)
                 .offset(1isize))
             .offset(
                 ((0i32
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                    >> ((*h).sps.i_chroma_format_idc.is_420()
+                        || (*h).sps.i_chroma_format_idc.is_422())
                         as ::core::ffi::c_int)
-                    + (0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int)
+                    + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                         * crate::src::common::common::FENC_STRIDE) as isize,
             );
             m.p_fenc[2usize] = (*(&raw mut (*h).mb.pic.p_fenc
@@ -21482,15 +21192,10 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(
                 .offset(2isize))
             .offset(
                 ((0i32
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                    >> ((*h).sps.i_chroma_format_idc.is_420()
+                        || (*h).sps.i_chroma_format_idc.is_422())
                         as ::core::ffi::c_int)
-                    + (0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int)
+                    + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                         * crate::src::common::common::FENC_STRIDE) as isize,
             );
         }
@@ -21573,9 +21278,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(
                                         .offset(0isize)) as isize,
                         );
                     }
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_444() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l as isize)
@@ -21694,7 +21397,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(
                                         as isize,
                                 );
                         }
-                    } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    } else if !(*h).sps.i_chroma_format_idc.is_400() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l as isize)
@@ -21705,10 +21408,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(
                         .offset(
                             (0i32
                                 + (0i32
-                                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                        == crate::src::common::base::CHROMA_420
-                                            as ::core::ffi::c_int)
-                                        as ::core::ffi::c_int)
+                                    >> (*h).sps.i_chroma_format_idc.is_420() as ::core::ffi::c_int)
                                     * *(&raw mut m.i_stride as *mut ::core::ffi::c_int)
                                         .offset(1isize)) as isize,
                         );
@@ -21930,9 +21630,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(
                 + l1_mv_cost;
             if (*h).mb.chroma_me && cost00 < (*a).i_cost16x16bi {
                 let mut bi = [0; 256];
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     (*h).mc.avg
                         [crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                         .expect("non-null function pointer")(
@@ -21980,9 +21678,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x16(
                     let mut chromapix = (*h).luma2chroma_pixel
                         [crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                         as ::core::ffi::c_int;
-                    let mut v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int;
+                    let mut v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                     if v_shift & (*h).mb.interlaced as ::core::ffi::c_int & (*a).l0.bi16x16.i_ref
                         != 0
                     {
@@ -22658,21 +22354,17 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                 as *mut *mut crate::src::common::common::pixel)
                 .offset(0isize))
             .offset((8i32 * x8 + 8i32 * y8 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 m.p_fenc[1usize] = (*(&raw mut (*h).mb.pic.p_fenc
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(1isize))
                 .offset(
                     (((8i32 * x8)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * y8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*(&raw mut (*h).mb.pic.p_fenc
@@ -22680,15 +22372,11 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                     .offset(2isize))
                 .offset(
                     (((8i32 * x8)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * y8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -22762,9 +22450,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                                         .offset(0isize)) as isize,
                         );
                     }
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_444() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l_0 as isize)
@@ -22891,7 +22577,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                                         as isize,
                                 );
                         }
-                    } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    } else if !(*h).sps.i_chroma_format_idc.is_400() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l_0 as isize)
@@ -22902,10 +22588,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                         .offset(
                             (8i32 * x8
                                 + ((8i32 * y8)
-                                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                        == crate::src::common::base::CHROMA_420
-                                            as ::core::ffi::c_int)
-                                        as ::core::ffi::c_int)
+                                    >> (*h).sps.i_chroma_format_idc.is_420() as ::core::ffi::c_int)
                                     * *(&raw mut m.i_stride as *mut ::core::ffi::c_int)
                                         .offset(1isize)) as isize,
                         );
@@ -23132,21 +22815,17 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(0isize))
                 .offset((8i32 * x8 + 8i32 * y8 * crate::src::common::common::FENC_STRIDE) as isize);
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                if !(*h).sps.i_chroma_format_idc.is_400() {
                     (*m).p_fenc[1usize] = (*(&raw mut (*h).mb.pic.p_fenc
                         as *mut *mut crate::src::common::common::pixel)
                         .offset(1isize))
                     .offset(
                         (((8i32 * x8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                                || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()
+                                || (*h).sps.i_chroma_format_idc.is_422())
                                 as ::core::ffi::c_int)
                             + ((8i32 * y8)
-                                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int)
+                                >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                                 * crate::src::common::common::FENC_STRIDE)
                             as isize,
                     );
@@ -23155,15 +22834,11 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                         .offset(2isize))
                     .offset(
                         (((8i32 * x8)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                                || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()
+                                || (*h).sps.i_chroma_format_idc.is_422())
                                 as ::core::ffi::c_int)
                             + ((8i32 * y8)
-                                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int)
+                                >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                                 * crate::src::common::common::FENC_STRIDE)
                             as isize,
                     );
@@ -23218,9 +22893,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                                     .offset(0isize)) as isize,
                     );
                 }
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     (*m).p_fref[4usize] = (*(*(&raw mut p_fref
                         as *mut *mut *mut crate::src::common::common::pixel)
                         .offset(l as isize))
@@ -23311,7 +22984,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                                         .offset(2isize)) as isize,
                         );
                     }
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                } else if !(*h).sps.i_chroma_format_idc.is_400() {
                     (*m).p_fref[4usize] = (*(*(&raw mut p_fref
                         as *mut *mut *mut crate::src::common::common::pixel)
                         .offset(l as isize))
@@ -23319,9 +22992,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                     .offset(
                         (8i32 * x8
                             + ((8i32 * y8)
-                                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                    as ::core::ffi::c_int)
+                                >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                                 * *(&raw mut (*m).i_stride as *mut ::core::ffi::c_int)
                                     .offset(1isize)) as isize,
                     );
@@ -23512,21 +23183,17 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                 as *mut *mut crate::src::common::common::pixel)
                 .offset(0isize))
             .offset((0i32 + 8i32 * i * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 m.p_fenc[1usize] = (*(&raw mut (*h).mb.pic.p_fenc
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(1isize))
                 .offset(
                     ((0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * i)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*(&raw mut (*h).mb.pic.p_fenc
@@ -23534,15 +23201,11 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                     .offset(2isize))
                 .offset(
                     ((0i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
                         + ((8i32 * i)
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -23627,9 +23290,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                                         .offset(0isize)) as isize,
                         );
                     }
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_444() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l as isize)
@@ -23756,7 +23417,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                                         as isize,
                                 );
                         }
-                    } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    } else if !(*h).sps.i_chroma_format_idc.is_400() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l as isize)
@@ -23767,10 +23428,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                         .offset(
                             (0i32
                                 + ((8i32 * i)
-                                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                        == crate::src::common::base::CHROMA_420
-                                            as ::core::ffi::c_int)
-                                        as ::core::ffi::c_int)
+                                    >> (*h).sps.i_chroma_format_idc.is_420() as ::core::ffi::c_int)
                                     * *(&raw mut m.i_stride as *mut ::core::ffi::c_int)
                                         .offset(1isize)) as isize,
                         );
@@ -24000,21 +23658,16 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                 as *mut *mut crate::src::common::common::pixel)
                 .offset(0isize))
             .offset((8i32 * i + 0i32 * crate::src::common::common::FENC_STRIDE) as isize);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
                 m.p_fenc[1usize] = (*(&raw mut (*h).mb.pic.p_fenc
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(1isize))
                 .offset(
                     (((8i32 * i)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
-                        + (0i32
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                        + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*(&raw mut (*h).mb.pic.p_fenc
@@ -24022,15 +23675,10 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                     .offset(2isize))
                 .offset(
                     (((8i32 * i)
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> ((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int)
-                        + (0i32
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                        + (0i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
             }
@@ -24111,9 +23759,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                                         .offset(0isize)) as isize,
                         );
                     }
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_444() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l as isize)
@@ -24232,7 +23878,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                                         as isize,
                                 );
                         }
-                    } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                    } else if !(*h).sps.i_chroma_format_idc.is_400() {
                         m.p_fref[4usize] = (*(&raw mut *(&raw mut *(&raw mut (*h).mb.pic.p_fref
                             as *mut [[*mut crate::src::common::common::pixel; 12]; 32])
                             .offset(l as isize)
@@ -24243,10 +23889,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                         .offset(
                             (8i32 * i
                                 + (0i32
-                                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                        == crate::src::common::base::CHROMA_420
-                                            as ::core::ffi::c_int)
-                                        as ::core::ffi::c_int)
+                                    >> (*h).sps.i_chroma_format_idc.is_420() as ::core::ffi::c_int)
                                     * *(&raw mut m.i_stride as *mut ::core::ffi::c_int)
                                         .offset(1isize)) as isize,
                         );
@@ -24765,10 +24408,7 @@ unsafe extern "C" fn mb_analyse_transform(mut h: *mut crate::src::common::common
             let mut i_cost8 = 0i32;
             let mut i_cost4 = 0i32;
             crate::src::common::macroblock::x264_8_mb_mc(h);
-            let mut plane_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                && (*h).mb.chroma_me
-            {
+            let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() && (*h).mb.chroma_me {
                 3i32
             } else {
                 1i32
@@ -25769,10 +25409,7 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                     }
                                 }
                                 if (*h).mb.chroma_me {
-                                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                        == crate::src::common::base::CHROMA_444
-                                            as ::core::ffi::c_int
-                                    {
+                                    if (*h).sps.i_chroma_format_idc.is_444() {
                                         mb_analyse_intra(h, &raw mut analysis, i_cost);
                                         mb_analyse_intra_chroma(h, &raw mut analysis);
                                     } else {
@@ -25889,11 +25526,7 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                     analyse_update_cache(h, &raw mut analysis);
                                     crate::src::encoder::macroblock::x264_8_macroblock_encode(h);
                                     while p
-                                        < (if crate::src::common::base::CHROMA_444
-                                            as ::core::ffi::c_int
-                                            == crate::src::common::base::CHROMA_444
-                                                as ::core::ffi::c_int
-                                        {
+                                        < (if (*h).sps.i_chroma_format_idc.is_444() {
                                             3i32
                                         } else {
                                             1i32
@@ -25913,15 +25546,9 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                         );
                                         p += 1;
                                     }
-                                    if !(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                        == crate::src::common::base::CHROMA_444
-                                            as ::core::ffi::c_int)
-                                    {
+                                    if !(*h).sps.i_chroma_format_idc.is_444() {
                                         let mut height = 16i32
-                                            >> (crate::src::common::base::CHROMA_444
-                                                as ::core::ffi::c_int
-                                                == crate::src::common::base::CHROMA_420
-                                                    as ::core::ffi::c_int)
+                                            >> (*h).sps.i_chroma_format_idc.is_420()
                                                 as ::core::ffi::c_int;
                                         (*h).mc.copy[crate::src::common::pixel::PIXEL_8x8
                                             as ::core::ffi::c_int
@@ -26802,9 +26429,7 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                         (*h).mb.i_partition = i_partition_0;
                     }
                     if (*h).mb.chroma_me {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             mb_analyse_intra(h, &raw mut analysis, i_satd_inter_0);
                             mb_analyse_intra_chroma(h, &raw mut analysis);
                         } else {

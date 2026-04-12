@@ -2047,10 +2047,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                 while ch < 3i32 {
                     let mut i_0 = 0i32;
                     while i_0
-                        < 16i32
-                            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                        < 16i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                     {
                         let mut j = 0i32;
                         while j < 8i32 {
@@ -2654,9 +2651,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                 }
             }
             if chroma != 0 && (*h).mb.i_cbp_chroma != 0 {
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_422() {
                     let mut ctxidxinc_3 = cabac_cbf_ctxidxinc(
                         h,
                         crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int,
@@ -2785,10 +2780,8 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
                 }
                 if (*h).mb.i_cbp_chroma == 2i32 {
                     let mut i_5 = 16i32;
-                    let mut step = (8i32)
-                        << (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int;
+                    let mut step =
+                        (8i32) << ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                     while i_5 < 3i32 * 16i32 {
                         let mut j_0 = i_5;
                         while j_0 < i_5 + 4i32 {
@@ -2839,11 +2832,9 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cabac(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
 ) {
     unsafe {
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_444() {
             macroblock_write_cabac_internal(h, cb, 3i32, 0i32);
-        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+        } else if !(*h).sps.i_chroma_format_idc.is_400() {
             macroblock_write_cabac_internal(h, cb, 1i32, 1i32);
         } else {
             macroblock_write_cabac_internal(h, cb, 1i32, 0i32);

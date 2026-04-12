@@ -67,11 +67,6 @@ impl ChromaFormat {
     }
 }
 
-pub type chroma_format_e = ::core::ffi::c_uint;
-pub const CHROMA_400: crate::src::common::base::chroma_format_e = 0;
-pub const CHROMA_420: crate::src::common::base::chroma_format_e = 1;
-pub const CHROMA_422: crate::src::common::base::chroma_format_e = 2;
-pub const CHROMA_444: crate::src::common::base::chroma_format_e = 3;
 pub type slice_type_e = ::core::ffi::c_uint;
 pub const SLICE_TYPE_P: crate::src::common::base::slice_type_e = 0;
 pub const SLICE_TYPE_B: crate::src::common::base::slice_type_e = 1;

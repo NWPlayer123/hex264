@@ -9609,9 +9609,7 @@ pub unsafe extern "C" fn x264_8_frame_filter(
             return;
         }
         while p
-            < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            < (if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32

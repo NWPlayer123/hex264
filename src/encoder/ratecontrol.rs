@@ -305,10 +305,7 @@ unsafe extern "C" fn ac_energy_plane(
 ) -> crate::stdlib::uint32_t {
     unsafe {
         let mut height = if b_chroma != 0 {
-            16i32
-                >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int
+            16i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
         } else {
             16i32
         };
@@ -324,10 +321,7 @@ unsafe extern "C" fn ac_energy_plane(
             let mut chromapix = (*h).luma2chroma_pixel
                 [crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                 as ::core::ffi::c_int;
-            let mut shift = 7i32
-                - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int;
+            let mut shift = 7i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
             (*h).mc
                 .load_deinterleave_chroma_fenc
                 .expect("non-null function pointer")(
@@ -386,9 +380,7 @@ unsafe extern "C" fn ac_energy_mb(
         if (*h).mb.adaptive_mbaff {
             let mut var_interlaced = ac_energy_plane(h, mb_x, mb_y, frame, 0i32, 0i32, 1i32, 1i32);
             let mut var_progressive = ac_energy_plane(h, mb_x, mb_y, frame, 0i32, 0i32, 0i32, 0i32);
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 var_interlaced = var_interlaced.wrapping_add(ac_energy_plane(
                     h, mb_x, mb_y, frame, 1i32, 0i32, 1i32, 1i32,
                 ));
@@ -401,7 +393,7 @@ unsafe extern "C" fn ac_energy_mb(
                 var_progressive = var_progressive.wrapping_add(ac_energy_plane(
                     h, mb_x, mb_y, frame, 2i32, 0i32, 0i32, 0i32,
                 ));
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 var_interlaced = var_interlaced.wrapping_add(ac_energy_plane(
                     h, mb_x, mb_y, frame, 1i32, 1i32, 1i32, 1i32,
                 ));
@@ -425,9 +417,7 @@ unsafe extern "C" fn ac_energy_mb(
                 (*h).param.interlaced as ::core::ffi::c_int,
                 1i32,
             );
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 var = var.wrapping_add(ac_energy_plane(
                     h,
                     mb_x,
@@ -448,7 +438,7 @@ unsafe extern "C" fn ac_energy_mb(
                     (*h).param.interlaced as ::core::ffi::c_int,
                     1i32,
                 ));
-            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                 var = var.wrapping_add(ac_energy_plane(
                     h,
                     mb_x,
@@ -611,16 +601,11 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
             let mut sum = (*frame).i_pixel_sum[i_0 as usize] as crate::stdlib::uint64_t;
             let mut width = (16i32 * (*h).mb.i_mb_width)
                 >> (i_0 != 0
-                    && (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int))
+                    && ((*h).sps.i_chroma_format_idc.is_420()
+                        || (*h).sps.i_chroma_format_idc.is_422()))
                     as ::core::ffi::c_int;
             let mut height = (16i32 * (*h).mb.i_mb_height)
-                >> (i_0 != 0
-                    && crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int;
+                >> (i_0 != 0 && (*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
             (*frame).i_pixel_ssd[i_0 as usize] = ssd.wrapping_sub(
                 sum.wrapping_mul(sum)
                     .wrapping_add((width * height / 2i32) as crate::stdlib::uint64_t)

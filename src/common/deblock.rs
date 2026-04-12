@@ -766,14 +766,9 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             });
         let mut stridey = (*(*h).fdec).i_stride[0usize];
         let mut strideuv = (*(*h).fdec).i_stride[1usize];
-        let mut chroma_format = crate::src::common::base::CHROMA_444 as ::core::ffi::c_int;
-        let mut chroma444 = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
-        let mut chroma_height = 16i32
-            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                as ::core::ffi::c_int;
+        let mut chroma_format = (*h).sps.i_chroma_format_idc;
+        let mut chroma444 = chroma_format.is_444() as ::core::ffi::c_int;
+        let mut chroma_height = 16i32 >> chroma_format.is_420() as ::core::ffi::c_int;
         let mut uvdiff = if chroma444 != 0 {
             (*(*h).fdec).plane[2usize].offset_from((*(*h).fdec).plane[1usize])
         } else {
@@ -807,7 +802,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             let mut pixy = (*(*h).fdec).plane[0usize]
                 .offset((16i32 * mb_y * stridey) as isize)
                 .offset((16i32 * mb_x) as isize);
-            let mut pixuv = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+            let mut pixuv = if !(*h).sps.i_chroma_format_idc.is_400() {
                 (*(*h).fdec).plane[1usize]
                     .offset((chroma_height * mb_y * strideuv) as isize)
                     .offset((16i32 * mb_x) as isize)
@@ -816,7 +811,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             };
             if mb_y & (*h).mb.interlaced as ::core::ffi::c_int != 0 {
                 pixy = pixy.offset(-((15i32 * stridey) as isize));
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                if !(*h).sps.i_chroma_format_idc.is_400() {
                     pixuv = pixuv.offset(-(((chroma_height - 1i32) * strideuv) as isize));
                 }
             }
@@ -880,7 +875,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             luma_intra_deblock,
                         );
-                        if chroma_format != 0 {
+                        if !chroma_format.is_400() {
                             deblock_edge_intra(
                                 h,
                                 pixuv,
@@ -927,7 +922,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             luma_deblock,
                         );
-                        if chroma_format != 0 {
+                        if !chroma_format.is_400() {
                             deblock_edge(
                                 h,
                                 pixuv,
@@ -962,9 +957,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     }
                     let mut offy = if (*h).mb.interlaced { 4i32 } else { 0i32 };
                     let mut offuv = if (*h).mb.interlaced {
-                        4i32 - (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
+                        4i32 - (*h).sps.i_chroma_format_idc.is_420() as ::core::ffi::c_int
                     } else {
                         0i32
                     };
@@ -1004,7 +997,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             luma_intra_deblock,
                         );
-                        if chroma_format != 0 {
+                        if !chroma_format.is_400() {
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset((strideuv << offuv) as isize),
@@ -1051,7 +1044,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             luma_deblock,
                         );
-                        if chroma_format != 0 {
+                        if !chroma_format.is_400() {
                             deblock_edge(
                                 h,
                                 pixuv.offset((strideuv << offuv) as isize),
@@ -1156,9 +1149,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 0i32,
                                 (*h).loopf.deblock_luma_intra[0usize],
                             );
-                            if chroma_format
-                                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            {
+                            if chroma_format.is_444() {
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
@@ -1193,10 +1184,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                     0i32,
                                     (*h).loopf.deblock_luma_intra[0usize],
                                 );
-                            } else if chroma_format
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                                && 0i32 & 1i32 == 0
-                            {
+                            } else if chroma_format.is_420() && 0i32 & 1i32 == 0 {
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
@@ -1216,10 +1204,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 );
                             }
                         }
-                        if chroma_format
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                            && (0i32 != 0 || 0i32 & 1i32 == 0)
-                        {
+                        if chroma_format.is_422() && (0i32 != 0 || 0i32 & 1i32 == 0) {
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
@@ -1257,9 +1242,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 0i32,
                                 (*h).loopf.deblock_luma[0usize],
                             );
-                            if chroma_format
-                                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            {
+                            if chroma_format.is_444() {
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
@@ -1294,10 +1277,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                     0i32,
                                     (*h).loopf.deblock_luma[0usize],
                                 );
-                            } else if chroma_format
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                                && 0i32 & 1i32 == 0
-                            {
+                            } else if chroma_format.is_420() && 0i32 & 1i32 == 0 {
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
@@ -1317,10 +1297,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 );
                             }
                         }
-                        if chroma_format
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                            && (0i32 != 0 || 0i32 & 1i32 == 0)
-                        {
+                        if chroma_format.is_422() && (0i32 != 0 || 0i32 & 1i32 == 0) {
                             deblock_edge(
                                 h,
                                 pixuv.offset(
@@ -1358,7 +1335,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         0i32,
                         (*h).loopf.deblock_luma[0usize],
                     );
-                    if chroma_format == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+                    if chroma_format.is_444() {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -1391,10 +1368,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             (*h).loopf.deblock_luma[0usize],
                         );
-                    } else if chroma_format
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && 1i32 & 1i32 == 0
-                    {
+                    } else if chroma_format.is_420() && 1i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -1413,9 +1387,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                     }
                 }
-                if chroma_format == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    && (0i32 != 0 || 1i32 & 1i32 == 0)
-                {
+                if chroma_format.is_422() && (0i32 != 0 || 1i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
                         pixuv.offset(
@@ -1446,7 +1418,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         0i32,
                         (*h).loopf.deblock_luma[0usize],
                     );
-                    if chroma_format == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+                    if chroma_format.is_444() {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -1479,10 +1451,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             (*h).loopf.deblock_luma[0usize],
                         );
-                    } else if chroma_format
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && 2i32 & 1i32 == 0
-                    {
+                    } else if chroma_format.is_420() && 2i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -1501,9 +1470,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                     }
                 }
-                if chroma_format == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    && (0i32 != 0 || 2i32 & 1i32 == 0)
-                {
+                if chroma_format.is_422() && (0i32 != 0 || 2i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
                         pixuv.offset(
@@ -1534,7 +1501,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         0i32,
                         (*h).loopf.deblock_luma[0usize],
                     );
-                    if chroma_format == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+                    if chroma_format.is_444() {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -1567,10 +1534,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             (*h).loopf.deblock_luma[0usize],
                         );
-                    } else if chroma_format
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && 3i32 & 1i32 == 0
-                    {
+                    } else if chroma_format.is_420() && 3i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -1589,9 +1553,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                     }
                 }
-                if chroma_format == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    && (0i32 != 0 || 3i32 & 1i32 == 0)
-                {
+                if chroma_format.is_422() && (0i32 != 0 || 3i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
                         pixuv.offset(
@@ -1684,7 +1646,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 0i32,
                                 (*h).loopf.deblock_luma[1usize],
                             );
-                        } else if chroma_format != 0 {
+                        } else if !chroma_format.is_400() {
                             deblock_edge(
                                 h,
                                 pixuv.offset((j * strideuv) as isize),
@@ -1777,9 +1739,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 0i32,
                                 (*h).loopf.deblock_luma_intra[1usize],
                             );
-                            if chroma_format
-                                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            {
+                            if chroma_format.is_444() {
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
@@ -1814,10 +1774,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                     0i32,
                                     (*h).loopf.deblock_luma_intra[1usize],
                                 );
-                            } else if chroma_format
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                                && 0i32 & 1i32 == 0
-                            {
+                            } else if chroma_format.is_420() && 0i32 & 1i32 == 0 {
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
@@ -1837,10 +1794,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 );
                             }
                         }
-                        if chroma_format
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                            && (1i32 != 0 || 0i32 & 1i32 == 0)
-                        {
+                        if chroma_format.is_422() && (1i32 != 0 || 0i32 & 1i32 == 0) {
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
@@ -1885,9 +1839,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 0i32,
                                 (*h).loopf.deblock_luma[1usize],
                             );
-                            if chroma_format
-                                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            {
+                            if chroma_format.is_444() {
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
@@ -1922,10 +1874,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                     0i32,
                                     (*h).loopf.deblock_luma[1usize],
                                 );
-                            } else if chroma_format
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                                && 0i32 & 1i32 == 0
-                            {
+                            } else if chroma_format.is_420() && 0i32 & 1i32 == 0 {
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
@@ -1945,10 +1894,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 );
                             }
                         }
-                        if chroma_format
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                            && (1i32 != 0 || 0i32 & 1i32 == 0)
-                        {
+                        if chroma_format.is_422() && (1i32 != 0 || 0i32 & 1i32 == 0) {
                             deblock_edge(
                                 h,
                                 pixuv.offset(
@@ -1986,7 +1932,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         0i32,
                         (*h).loopf.deblock_luma[1usize],
                     );
-                    if chroma_format == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+                    if chroma_format.is_444() {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -2019,10 +1965,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             (*h).loopf.deblock_luma[1usize],
                         );
-                    } else if chroma_format
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && 1i32 & 1i32 == 0
-                    {
+                    } else if chroma_format.is_420() && 1i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -2041,9 +1984,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                     }
                 }
-                if chroma_format == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    && (1i32 != 0 || 1i32 & 1i32 == 0)
-                {
+                if chroma_format.is_422() && (1i32 != 0 || 1i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
                         pixuv.offset(
@@ -2074,7 +2015,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         0i32,
                         (*h).loopf.deblock_luma[1usize],
                     );
-                    if chroma_format == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+                    if chroma_format.is_444() {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -2107,10 +2048,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             (*h).loopf.deblock_luma[1usize],
                         );
-                    } else if chroma_format
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && 2i32 & 1i32 == 0
-                    {
+                    } else if chroma_format.is_420() && 2i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -2129,9 +2067,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                     }
                 }
-                if chroma_format == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    && (1i32 != 0 || 2i32 & 1i32 == 0)
-                {
+                if chroma_format.is_422() && (1i32 != 0 || 2i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
                         pixuv.offset(
@@ -2162,7 +2098,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         0i32,
                         (*h).loopf.deblock_luma[1usize],
                     );
-                    if chroma_format == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
+                    if chroma_format.is_444() {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -2195,10 +2131,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             0i32,
                             (*h).loopf.deblock_luma[1usize],
                         );
-                    } else if chroma_format
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && 3i32 & 1i32 == 0
-                    {
+                    } else if chroma_format.is_420() && 3i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
                             pixuv.offset(
@@ -2217,9 +2150,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                     }
                 }
-                if chroma_format == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-                    && (1i32 != 0 || 3i32 & 1i32 == 0)
-                {
+                if chroma_format.is_422() && (1i32 != 0 || 3i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
                         pixuv.offset(
@@ -2320,9 +2251,7 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                 0i32,
                 (*h).loopf.deblock_luma[0usize],
             );
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 deblock_edge(
                     h,
                     (*h).mb.pic.p_fdec[1usize].offset(
@@ -2385,9 +2314,7 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             0i32,
             (*h).loopf.deblock_luma[0usize],
         );
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_444() {
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[1usize].offset(
@@ -2450,9 +2377,7 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                 0i32,
                 (*h).loopf.deblock_luma[0usize],
             );
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 deblock_edge(
                     h,
                     (*h).mb.pic.p_fdec[1usize].offset(
@@ -2516,9 +2441,7 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                 0i32,
                 (*h).loopf.deblock_luma[1usize],
             );
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 deblock_edge(
                     h,
                     (*h).mb.pic.p_fdec[1usize].offset(
@@ -2581,9 +2504,7 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             0i32,
             (*h).loopf.deblock_luma[1usize],
         );
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_444() {
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[1usize].offset(
@@ -2646,9 +2567,7 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                 0i32,
                 (*h).loopf.deblock_luma[1usize],
             );
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 deblock_edge(
                     h,
                     (*h).mb.pic.p_fdec[1usize].offset(

@@ -2960,13 +2960,10 @@ unsafe extern "C" fn refine_subpel(
         let i_pixel = (*m).i_pixel;
         let b_chroma_me = ((*h).mb.chroma_me
             && (i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
-                || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int))
+                || (*h).sps.i_chroma_format_idc.is_444()))
             as ::core::ffi::c_int;
         let mut chromapix = (*h).luma2chroma_pixel[i_pixel as usize] as ::core::ffi::c_int;
-        let mut chroma_v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        let mut chroma_v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
         let mut mvy_offset =
             if chroma_v_shift & (*h).mb.interlaced as ::core::ffi::c_int & (*m).i_ref != 0 {
                 ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
@@ -3116,9 +3113,7 @@ unsafe extern "C" fn refine_subpel(
                 ) + *p_cost_mvx.offset(bmx as isize) as ::core::ffi::c_int
                     + *p_cost_mvy.offset(bmy as isize) as ::core::ffi::c_int;
                 if b_chroma_me != 0 && cost_0 < bcost {
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_444() {
                         stride_1 = 16isize;
                         src_0 = (*h).mc.get_ref.expect("non-null function pointer")(
                             &raw mut pix as *mut crate::src::common::common::pixel,
@@ -3276,9 +3271,7 @@ unsafe extern "C" fn refine_subpel(
                     ) + *p_cost_mvx.offset(omx_0 as isize) as ::core::ffi::c_int
                         + *p_cost_mvy.offset((omy_0 - 1i32) as isize) as ::core::ffi::c_int;
                     if b_chroma_me != 0 && cost_1 < bcost {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             stride_2 = 16isize;
                             src_1 = (*h).mc.get_ref.expect("non-null function pointer")(
                                 &raw mut pix as *mut crate::src::common::common::pixel,
@@ -3415,9 +3408,7 @@ unsafe extern "C" fn refine_subpel(
                     ) + *p_cost_mvx.offset(omx_0 as isize) as ::core::ffi::c_int
                         + *p_cost_mvy.offset((omy_0 + 1i32) as isize) as ::core::ffi::c_int;
                     if b_chroma_me != 0 && cost_2 < bcost {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             stride_3 = 16isize;
                             src_2 = (*h).mc.get_ref.expect("non-null function pointer")(
                                 &raw mut pix as *mut crate::src::common::common::pixel,
@@ -3555,9 +3546,7 @@ unsafe extern "C" fn refine_subpel(
                         as ::core::ffi::c_int
                         + *p_cost_mvy.offset(omy_0 as isize) as ::core::ffi::c_int;
                     if b_chroma_me != 0 && cost_3 < bcost {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             stride_4 = 16isize;
                             src_3 = (*h).mc.get_ref.expect("non-null function pointer")(
                                 &raw mut pix as *mut crate::src::common::common::pixel,
@@ -3695,9 +3684,7 @@ unsafe extern "C" fn refine_subpel(
                         as ::core::ffi::c_int
                         + *p_cost_mvy.offset(omy_0 as isize) as ::core::ffi::c_int;
                     if b_chroma_me != 0 && cost_4 < bcost {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             stride_5 = 16isize;
                             src_4 = (*h).mc.get_ref.expect("non-null function pointer")(
                                 &raw mut pix as *mut crate::src::common::common::pixel,
@@ -3940,14 +3927,9 @@ unsafe extern "C" fn me_refine_bidir(
         let bw = x264_pixel_size[i_pixel as usize].w as ::core::ffi::c_int;
         let bh = x264_pixel_size[i_pixel as usize].h as ::core::ffi::c_int;
         let mut chromapix = (*h).luma2chroma_pixel[i_pixel as usize] as ::core::ffi::c_int;
-        let mut chroma_v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        let mut chroma_v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
         let mut chroma_x = (8i32
-            >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+            >> ((*h).sps.i_chroma_format_idc.is_420() || (*h).sps.i_chroma_format_idc.is_422())
                 as ::core::ffi::c_int)
             * x;
         let mut chroma_y = (8i32 >> chroma_v_shift) * y;
@@ -3955,14 +3937,14 @@ unsafe extern "C" fn me_refine_bidir(
             as *mut *mut crate::src::common::common::pixel)
             .offset(0isize))
         .offset((8i32 * x + 8i32 * y * crate::src::common::common::FDEC_STRIDE) as isize);
-        let mut pixu = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+        let mut pixu = if !(*h).sps.i_chroma_format_idc.is_400() {
             (*(&raw mut (*h).mb.pic.p_fdec as *mut *mut crate::src::common::common::pixel)
                 .offset(1isize))
             .offset((chroma_x + chroma_y * crate::src::common::common::FDEC_STRIDE) as isize)
         } else {
             ::core::ptr::null_mut::<crate::src::common::common::pixel>()
         };
-        let mut pixv = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+        let mut pixv = if !(*h).sps.i_chroma_format_idc.is_400() {
             (*(&raw mut (*h).mb.pic.p_fdec as *mut *mut crate::src::common::common::pixel)
                 .offset(2isize))
             .offset((chroma_x + chroma_y * crate::src::common::common::FDEC_STRIDE) as isize)
@@ -4114,9 +4096,7 @@ unsafe extern "C" fn me_refine_bidir(
                                 as *const crate::src::common::mc::x264_weight_t,
                         );
                     if rd != 0 {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             stride[1usize][0usize][i as usize] = bw as crate::stdlib::intptr_t;
                             src[1usize][0usize][i as usize] =
                                 (*h).mc.get_ref.expect("non-null function pointer")(
@@ -4171,7 +4151,7 @@ unsafe extern "C" fn me_refine_bidir(
                                     &raw mut crate::src::common::tables::x264_zero
                                         as *const crate::src::common::mc::x264_weight_t,
                                 );
-                        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                        } else if !(*h).sps.i_chroma_format_idc.is_400() {
                             (*h).mc.mc_chroma.expect("non-null function pointer")(
                                 &raw mut *(&raw mut *(&raw mut pixu_buf
                                     as *mut [[crate::src::common::common::pixel; 256]; 9])
@@ -4234,9 +4214,7 @@ unsafe extern "C" fn me_refine_bidir(
                                 as *const crate::src::common::mc::x264_weight_t,
                         );
                     if rd != 0 {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             stride[1usize][1usize][i_0 as usize] = bw as crate::stdlib::intptr_t;
                             src[1usize][1usize][i_0 as usize] =
                                 (*h).mc.get_ref.expect("non-null function pointer")(
@@ -4291,7 +4269,7 @@ unsafe extern "C" fn me_refine_bidir(
                                     &raw mut crate::src::common::tables::x264_zero
                                         as *const crate::src::common::mc::x264_weight_t,
                                 );
-                        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                        } else if !(*h).sps.i_chroma_format_idc.is_400() {
                             (*h).mc.mc_chroma.expect("non-null function pointer")(
                                 &raw mut *(&raw mut *(&raw mut pixu_buf
                                     as *mut [[crate::src::common::common::pixel; 256]; 9])
@@ -4367,9 +4345,7 @@ unsafe extern "C" fn me_refine_bidir(
                                 pack16to32_mask(m0x, m0y);
                             (*(cache1_mv as *mut crate::src::common::base::x264_union32_t)).i =
                                 pack16to32_mask(m1x, m1y);
-                            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            {
+                            if (*h).sps.i_chroma_format_idc.is_444() {
                                 (*h).mc.avg[i_pixel as usize].expect("non-null function pointer")(
                                     pixu,
                                     crate::src::common::common::FDEC_STRIDE
@@ -4390,9 +4366,7 @@ unsafe extern "C" fn me_refine_bidir(
                                     stride[2usize][1usize][i1 as usize],
                                     i_weight,
                                 );
-                            } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                != 0
-                            {
+                            } else if !(*h).sps.i_chroma_format_idc.is_400() {
                                 (*h).mc.avg[chromapix as usize].expect("non-null function pointer")(
                                     pixu,
                                     crate::src::common::common::FDEC_STRIDE
@@ -4574,9 +4548,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
         let bw = x264_pixel_size[(*m).i_pixel as usize].w as ::core::ffi::c_int;
         let bh = x264_pixel_size[(*m).i_pixel as usize].h as ::core::ffi::c_int;
         let i_pixel = (*m).i_pixel;
-        let mut chroma_v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        let mut chroma_v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
         let mut mvy_offset =
             if chroma_v_shift & (*h).mb.interlaced as ::core::ffi::c_int & (*m).i_ref != 0 {
                 ((*h).mb.i_mb_y & 1i32) * 4i32 - 2i32
@@ -4595,9 +4567,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             *(&raw const block_idx_xy_fdec as *const crate::stdlib::uint16_t).offset(i4 as isize)
                 as isize,
         );
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*h).sps.i_chroma_format_idc.is_444() {
             pixu = (*(&raw mut (*h).mb.pic.p_fdec as *mut *mut crate::src::common::common::pixel)
                 .offset(1isize))
             .offset(
@@ -4610,7 +4580,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                 *(&raw const block_idx_xy_fdec as *const crate::stdlib::uint16_t)
                     .offset(i4 as isize) as isize,
             );
-        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+        } else if !(*h).sps.i_chroma_format_idc.is_400() {
             pixu = (*(&raw mut (*h).mb.pic.p_fdec as *mut *mut crate::src::common::common::pixel)
                 .offset(1isize))
             .offset(
@@ -4674,9 +4644,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             if 0i32 <= bsatd + (bsatd >> 4i32) {
                 (*(cache_mv as *mut crate::src::common::base::x264_union32_t)).i =
                     pack16to32_mask(bmx, bmy);
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     (*h).mc.mc_luma.expect("non-null function pointer")(
                         pixu,
                         crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
@@ -4701,7 +4669,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         bh,
                         (*m).weight.offset(2isize),
                     );
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0
+                } else if !(*h).sps.i_chroma_format_idc.is_400()
                     && (*m).i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
                 {
                     (*h).mc.mc_chroma.expect("non-null function pointer")(
@@ -4792,9 +4760,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             if satd <= bsatd + (bsatd >> 4i32) {
                 (*(cache_mv as *mut crate::src::common::base::x264_union32_t)).i =
                     pack16to32_mask(pmx, pmy);
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     (*h).mc.mc_luma.expect("non-null function pointer")(
                         pixu,
                         crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
@@ -4819,7 +4785,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         bh,
                         (*m).weight.offset(2isize),
                     );
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0
+                } else if !(*h).sps.i_chroma_format_idc.is_400()
                     && (*m).i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
                 {
                     (*h).mc.mc_chroma.expect("non-null function pointer")(
@@ -4927,9 +4893,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                     omx + hex2[(j + 1i32) as usize][0usize] as ::core::ffi::c_int,
                     omy + hex2[(j + 1i32) as usize][1usize] as ::core::ffi::c_int,
                 );
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     (*h).mc.mc_luma.expect("non-null function pointer")(
                         pixu,
                         crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
@@ -4954,7 +4918,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         bh,
                         (*m).weight.offset(2isize),
                     );
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0
+                } else if !(*h).sps.i_chroma_format_idc.is_400()
                     && (*m).i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
                 {
                     (*h).mc.mc_chroma.expect("non-null function pointer")(
@@ -5070,9 +5034,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                                 omx + hex2[(odir + j_0) as usize][0usize] as ::core::ffi::c_int,
                                 omy + hex2[(odir + j_0) as usize][1usize] as ::core::ffi::c_int,
                             );
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             (*h).mc.mc_luma.expect("non-null function pointer")(
                                 pixu,
                                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
@@ -5099,7 +5061,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                                 bh,
                                 (*m).weight.offset(2isize),
                             );
-                        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0
+                        } else if !(*h).sps.i_chroma_format_idc.is_400()
                             && (*m).i_pixel
                                 <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
                         {
@@ -5212,9 +5174,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                     omx + square1[(i_0 + 1i32) as usize][0usize] as ::core::ffi::c_int,
                     omy + square1[(i_0 + 1i32) as usize][1usize] as ::core::ffi::c_int,
                 );
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                if (*h).sps.i_chroma_format_idc.is_444() {
                     (*h).mc.mc_luma.expect("non-null function pointer")(
                         pixu,
                         crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
@@ -5239,7 +5199,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         bh,
                         (*m).weight.offset(2isize),
                     );
-                } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0
+                } else if !(*h).sps.i_chroma_format_idc.is_400()
                     && (*m).i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int
                 {
                     (*h).mc.mc_chroma.expect("non-null function pointer")(

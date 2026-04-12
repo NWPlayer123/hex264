@@ -31,12 +31,10 @@ pub mod base_h {
 }
 use crate::src::common::cabac::base_h::x264_clip3;
 static mut cabac_contexts: [[[crate::stdlib::uint8_t; 1024]; 52]; 4] = [[[0; 1024]; 52]; 4];
-pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::common::x264_t) {
+pub unsafe extern "C" fn x264_8_cabac_init(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i = 0i32;
-        let mut ctx_count = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        let mut ctx_count = if (*h).sps.i_chroma_format_idc.is_444() {
             1024i32
         } else {
             460i32
@@ -76,7 +74,7 @@ pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::comm
     }
 }
 pub unsafe extern "C" fn x264_8_cabac_context_init(
-    mut _h: *mut crate::src::common::common::x264_t,
+    mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     mut i_slice_type: ::core::ffi::c_int,
     mut i_qp: ::core::ffi::c_int,
@@ -96,9 +94,7 @@ pub unsafe extern "C" fn x264_8_cabac_context_init(
                     }) as isize,
                 ) as *mut [crate::stdlib::uint8_t; 1024])
                 .offset(i_qp as isize) as *const ::core::ffi::c_void,
-            (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            (if (*h).sps.i_chroma_format_idc.is_444() {
                 1024i32
             } else {
                 460i32

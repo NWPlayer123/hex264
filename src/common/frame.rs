@@ -1254,9 +1254,7 @@ pub unsafe extern "C" fn x264_8_frame_copy_picture(
                 (*h).param.i_height,
             );
         } else {
-            let mut v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                as ::core::ffi::c_int;
+            let mut v_shift = (*h).sps.i_chroma_format_idc.is_420() as ::core::ffi::c_int;
             if get_plane_ptr(
                 h,
                 src,
@@ -1571,15 +1569,10 @@ pub unsafe extern "C" fn x264_8_frame_expand_border(
         while i < (*frame).i_plane {
             let mut pix = ::core::ptr::null_mut::<crate::src::common::common::pixel>();
             let mut h_shift = (i != 0
-                && (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                    || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int))
+                && ((*h).sps.i_chroma_format_idc.is_420() || (*h).sps.i_chroma_format_idc.is_422()))
                 as ::core::ffi::c_int;
-            let mut v_shift = (i != 0
-                && crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                as ::core::ffi::c_int;
+            let mut v_shift =
+                (i != 0 && (*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
             let mut stride = (*frame).i_stride[i as usize];
             let mut width = 16i32 * (*h).mb.i_mb_width;
             let mut height = (if pad_bot != 0 {
@@ -1658,9 +1651,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_filtered(
         let mut padh = crate::src::common::frame::PADH - 4i32;
         let mut padv = crate::src::common::frame::PADV - 8i32;
         while p
-            < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            {
+            < (if (*h).sps.i_chroma_format_idc.is_444() {
                 3i32
             } else {
                 1i32
@@ -1744,9 +1735,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_chroma(
     mut plane: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        let mut v_shift = (*h).sps.i_chroma_format_idc.is_420() as ::core::ffi::c_int;
         plane_expand_border(
             (*frame).plane[plane as usize],
             (*frame).i_stride[plane as usize],
@@ -1756,10 +1745,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_chroma(
             crate::src::common::frame::PADV >> v_shift,
             1i32,
             1i32,
-            (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+            ((*h).sps.i_chroma_format_idc.is_420() || (*h).sps.i_chroma_format_idc.is_422())
                 as ::core::ffi::c_int,
         );
     }
@@ -1773,15 +1759,10 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_mod16(
         while i < (*frame).i_plane {
             let mut i_width = (*h).param.i_width;
             let mut h_shift = (i != 0
-                && (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                    || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int))
+                && ((*h).sps.i_chroma_format_idc.is_420() || (*h).sps.i_chroma_format_idc.is_422()))
                 as ::core::ffi::c_int;
-            let mut v_shift = (i != 0
-                && crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                as ::core::ffi::c_int;
+            let mut v_shift =
+                (i != 0 && (*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
             let mut i_height = (*h).param.i_height >> v_shift;
             let mut i_padx = (*h).mb.i_mb_width * 16i32 - (*h).param.i_width;
             let mut i_pady = ((*h).mb.i_mb_height * 16i32 - (*h).param.i_height) >> v_shift;
@@ -1848,10 +1829,8 @@ pub unsafe extern "C" fn x264_8_expand_border_mbpair(
     unsafe {
         let mut i = 0i32;
         while i < (*(*h).fenc).i_plane {
-            let mut v_shift = (i != 0
-                && crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                as ::core::ffi::c_int;
+            let mut v_shift =
+                (i != 0 && (*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
             let mut stride = (*(*h).fenc).i_stride[i as usize];
             let mut height = (*h).param.i_height >> v_shift;
             let mut pady = ((*h).mb.i_mb_height * 16i32 - (*h).param.i_height) >> v_shift;

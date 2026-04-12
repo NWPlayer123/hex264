@@ -562,6 +562,7 @@ pub mod osdep_h {
         };
     }
 }
+use crate::src::common::base::ChromaFormat;
 use crate::src::common::base::x264_free;
 use crate::src::common::base::x264_param_strdup;
 use crate::src::common::common::x264_t;
@@ -682,19 +683,15 @@ unsafe extern "C" fn frame_dump(mut h: *mut x264_t) {
             * (*h).param.i_width
             * ::core::mem::size_of::<crate::src::common::common::pixel>() as ::core::ffi::c_int
             + 2i32
-                * (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                * (if !(*h).sps.i_chroma_format_idc.is_400() {
                     ((*h).param.i_height
                         * (*h).param.i_width
                         * ::core::mem::size_of::<crate::src::common::common::pixel>()
                             as ::core::ffi::c_int)
-                        >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> (((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int
-                            + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            + ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                 } else {
                     0i32
                 });
@@ -707,9 +704,7 @@ unsafe extern "C" fn frame_dump(mut h: *mut x264_t) {
         {
             let mut p = 0i32;
             while p
-                < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+                < (if (*h).sps.i_chroma_format_idc.is_444() {
                     3i32
                 } else {
                     1i32
@@ -734,16 +729,10 @@ unsafe extern "C" fn frame_dump(mut h: *mut x264_t) {
                 }
                 p += 1;
             }
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-            {
+            if (*h).sps.i_chroma_format_idc.is_420() || (*h).sps.i_chroma_format_idc.is_422() {
                 let mut cw = (*h).param.i_width >> 1i32;
                 let mut ch = (*h).param.i_height
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int;
+                    >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                 let mut planeu = crate::src::common::base::x264_malloc(
                     (2i32 * (cw * ch * crate::src::common::common::SIZEOF_PIXEL + 32i32))
                         as crate::stdlib::int64_t,
@@ -904,9 +893,7 @@ unsafe extern "C" fn slice_header_write(
             };
             bs_write_ue_big(
                 s,
-                ((2i32 * first_x
-                    + (*sh).sps.i_mb_width * (first_y & !(1i32))
-                    + (first_y & 1i32))
+                ((2i32 * first_x + (*sh).sps.i_mb_width * (first_y & !(1i32)) + (first_y & 1i32))
                     >> 1i32) as ::core::ffi::c_uint,
             );
         } else {
@@ -1197,28 +1184,22 @@ unsafe extern "C" fn validate_parameters(
             return -(1i32);
         }
         let mut i_csp = (*h).param.i_csp & crate::x264_h::X264_CSP_MASK;
-        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            != crate::src::common::base::CHROMA_400 as ::core::ffi::c_int
-            && i_csp == crate::x264_h::X264_CSP_I400
-        {
+        if !(*h).sps.i_chroma_format_idc.is_400() && i_csp == crate::x264_h::X264_CSP_I400 {
             log::error!("not compiled with 4:0:0 support");
             return -(1i32);
-        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            != crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
+        } else if !(*h).sps.i_chroma_format_idc.is_420()
             && i_csp >= crate::x264_h::X264_CSP_I420
             && i_csp < crate::x264_h::X264_CSP_I422
         {
             log::error!("not compiled with 4:2:0 support");
             return -(1i32);
-        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            != crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
+        } else if !(*h).sps.i_chroma_format_idc.is_422()
             && i_csp >= crate::x264_h::X264_CSP_I422
             && i_csp < crate::x264_h::X264_CSP_I444
         {
             log::error!("not compiled with 4:2:2 support");
             return -(1i32);
-        } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            != crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+        } else if !(*h).sps.i_chroma_format_idc.is_444()
             && i_csp >= crate::x264_h::X264_CSP_I444
             && i_csp <= crate::x264_h::X264_CSP_RGB
         {
@@ -3208,15 +3189,15 @@ unsafe extern "C" fn chroma_dsp_init(mut h: *mut x264_t) {
         crate::stdlib::memcpy(
             &raw mut (*h).luma2chroma_pixel as *mut ::core::ffi::c_void,
             &raw const *(&raw const x264_luma2chroma_pixel as *const [crate::stdlib::uint8_t; 7])
-                .offset(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int as isize)
+                .offset((*h).sps.i_chroma_format_idc as isize)
                 as *const ::core::ffi::c_void,
             ::core::mem::size_of::<[crate::stdlib::uint8_t; 7]>(),
         );
-        match crate::src::common::base::CHROMA_444 as ::core::ffi::c_int {
-            0 => {
+        match (*h).sps.i_chroma_format_idc {
+            ChromaFormat::Chroma400 => {
                 (*h).mc.prefetch_fenc = (*h).mc.prefetch_fenc_400;
             }
-            1 => {
+            ChromaFormat::Chroma420 => {
                 crate::stdlib::memcpy(
                     &raw mut (*h).predict_chroma as *mut ::core::ffi::c_void,
                     &raw mut (*h).predict_8x8c as *const ::core::ffi::c_void,
@@ -3233,7 +3214,7 @@ unsafe extern "C" fn chroma_dsp_init(mut h: *mut x264_t) {
                 (*h).quantf.coeff_level_run[crate::src::common::macroblock::DCT_CHROMA_DC
                     as ::core::ffi::c_int as usize] = (*h).quantf.coeff_level_run4;
             }
-            2 => {
+            ChromaFormat::Chroma422 => {
                 crate::stdlib::memcpy(
                     &raw mut (*h).predict_chroma as *mut ::core::ffi::c_void,
                     &raw mut (*h).predict_8x16c as *const ::core::ffi::c_void,
@@ -3250,12 +3231,11 @@ unsafe extern "C" fn chroma_dsp_init(mut h: *mut x264_t) {
                 (*h).quantf.coeff_level_run[crate::src::common::macroblock::DCT_CHROMA_DC
                     as ::core::ffi::c_int as usize] = (*h).quantf.coeff_level_run8;
             }
-            3 => {
+            ChromaFormat::Chroma444 => {
                 (*h).mc.prefetch_fenc = (*h).mc.prefetch_fenc_422;
                 (*h).loopf.deblock_chroma_mbaff = (*h).loopf.deblock_luma_mbaff;
                 (*h).loopf.deblock_chroma_intra_mbaff = (*h).loopf.deblock_luma_intra_mbaff;
             }
-            _ => {}
         };
     }
 }
@@ -3439,14 +3419,10 @@ pub unsafe extern "C" fn x264_8_encoder_open<'a>(
         (*h).mb.i_mb_width = (*h).sps.i_mb_width;
         (*h).mb.i_mb_height = (*h).sps.i_mb_height;
         (*h).mb.i_mb_count = (*h).mb.i_mb_width * (*h).mb.i_mb_height;
-        (*h).mb.chroma_h_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+        (*h).mb.chroma_h_shift = ((*h).sps.i_chroma_format_idc.is_420()
+            || (*h).sps.i_chroma_format_idc.is_422())
             as ::core::ffi::c_int;
-        (*h).mb.chroma_v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-            as ::core::ffi::c_int;
+        (*h).mb.chroma_v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
         (*h).mb.adaptive_mbaff = (*h).param.interlaced && (*h).param.analyse.i_subpel_refine != 0;
         if (*h).param.i_bframe_adaptive == crate::x264_h::X264_B_ADAPT_TRELLIS
             && !(*h).param.rc.stat_read
@@ -3995,7 +3971,7 @@ pub unsafe extern "C" fn x264_8_encoder_open<'a>(
             std::ffi::CStr::from_ptr(profile).to_string_lossy(),
             std::ffi::CStr::from_ptr(&raw const level as *const ::core::ffi::c_char)
                 .to_string_lossy(),
-            subsampling[crate::src::common::base::CHROMA_444 as ::core::ffi::c_int as usize],
+            subsampling[(*h).sps.i_chroma_format_idc as usize],
             crate::internal::BIT_DEPTH,
         );
         return h;
@@ -4963,13 +4939,9 @@ unsafe extern "C" fn fdec_filter_row(
             let mut p = 0i32;
             while p < (*(*h).fdec).i_plane {
                 let mut i = minpix_y
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && p != 0) as ::core::ffi::c_int;
+                    >> ((*h).sps.i_chroma_format_idc.is_420() && p != 0) as ::core::ffi::c_int;
                 while i < maxpix_y
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        && p != 0) as ::core::ffi::c_int
+                    >> ((*h).sps.i_chroma_format_idc.is_420() && p != 0) as ::core::ffi::c_int
                 {
                     crate::stdlib::memcpy(
                         (*(*h).fdec).plane_fld[p as usize]
@@ -5036,9 +5008,7 @@ unsafe extern "C" fn fdec_filter_row(
             if (*h).param.analyse.psnr {
                 let mut p_0 = 0i32;
                 while p_0
-                    < (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    < (if (*h).sps.i_chroma_format_idc.is_444() {
                         3i32
                     } else {
                         1i32
@@ -5060,14 +5030,10 @@ unsafe extern "C" fn fdec_filter_row(
                         as crate::stdlib::int64_t;
                     p_0 += 1;
                 }
-                if !(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
-                {
+                if !((*h).sps.i_chroma_format_idc.is_444()) {
                     let mut ssd_u = 0;
                     let mut ssd_v = 0;
-                    let mut v_shift = (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                        as ::core::ffi::c_int;
+                    let mut v_shift = ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                     crate::src::common::pixel::x264_8_pixel_ssd_nv12(
                         &raw mut (*h).pixf,
                         (*(*h).fdec).plane[1usize].offset(
@@ -5816,9 +5782,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> crate::stdlib::intptr_t 
                 }
                 if (*h).param.i_log_level >= crate::x264_h::X264_LOG_INFO {
                     if (*h).mb.i_cbp_luma | (*h).mb.i_cbp_chroma != 0 {
-                        if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        {
+                        if (*h).sps.i_chroma_format_idc.is_444() {
                             let mut i_1 = 0i32;
                             while i_1 < 4i32 {
                                 if (*h).mb.i_cbp_luma & (1i32) << i_1 != 0 {
@@ -7327,17 +7291,12 @@ unsafe extern "C" fn encoder_frame_end<'a>(
                 (*h).stat.frame.i_ssd[2usize],
             ];
             let mut luma_size = (*h).param.i_width * (*h).param.i_height;
-            let mut chroma_size = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0
-            {
+            let mut chroma_size = if !(*h).sps.i_chroma_format_idc.is_400() {
                 luma_size
-                    >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                        || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                    >> (((*h).sps.i_chroma_format_idc.is_420()
+                        || (*h).sps.i_chroma_format_idc.is_422())
                         as ::core::ffi::c_int
-                        + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int)
+                        + ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
             } else {
                 0i32
             };
@@ -7479,16 +7438,12 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
         let mut i_10 = 0i32;
         let mut i_yuv_size = ((*h).param.i_width * (*h).param.i_height
             + 2i32
-                * (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                * (if !(*h).sps.i_chroma_format_idc.is_400() {
                     ((*h).param.i_width * (*h).param.i_height)
-                        >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                            == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                            || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+                        >> (((*h).sps.i_chroma_format_idc.is_420()
+                            || (*h).sps.i_chroma_format_idc.is_422())
                             as ::core::ffi::c_int
-                            + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int)
+                            + ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int)
                 } else {
                     0i32
                 })) as crate::stdlib::int64_t;
@@ -7974,10 +7929,8 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 );
             }
             buf[0usize] = 0i8;
-            if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
-                let mut csize = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                {
+            if !(*h).sps.i_chroma_format_idc.is_400() {
+                let mut csize = if (*h).sps.i_chroma_format_idc.is_444() {
                     4i32
                 } else {
                     1i32
@@ -7998,16 +7951,12 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 }
                 log::info!(
                     "coded y,{},{} intra: {:.1}% {:.1}% {:.1}%{}",
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_444() {
                         "u"
                     } else {
                         "uvDC"
                     },
-                    if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    {
+                    if (*h).sps.i_chroma_format_idc.is_444() {
                         "v"
                     } else {
                         "uvAC"
@@ -8088,10 +8037,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 sum_pred_modes[3usize] += (*h).stat.i_mb_pred_mode[3usize][i_7 as usize];
                 i_7 += 1;
             }
-            if sum_pred_modes[3usize] != 0
-                && !(crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int)
-            {
+            if sum_pred_modes[3usize] != 0 && !((*h).sps.i_chroma_format_idc.is_444()) {
                 log::info!(
                     "i8c dc,h,v,p: {:2.0}% {:2.0}% {:2.0}% {:2.0}%",
                     fixed_pred_modes[3usize][0usize] as ::core::ffi::c_double * 100.0f64
@@ -8110,7 +8056,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                     > 0i32
             {
                 buf[0usize] = 0i8;
-                if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
+                if !(*h).sps.i_chroma_format_idc.is_400() {
                     crate::stdlib::sprintf(
                         &raw mut buf as *mut ::core::ffi::c_char,
                         b" UV:%.1f%%\0".as_ptr() as *const ::core::ffi::c_char,
