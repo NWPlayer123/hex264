@@ -1401,10 +1401,7 @@ pub unsafe extern "C" fn x264_8_macroblock_thread_allocate(
                 {
                     (*h).intra_border_backup[i as usize][j as usize] =
                         crate::src::common::base::x264_malloc(
-                            (((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .i_mb_width
-                                * 16i32
-                                + 32i32)
+                            (((*h).sps.i_mb_width * 16i32 + 32i32)
                                 * ::core::mem::size_of::<crate::src::common::common::pixel>()
                                     as ::core::ffi::c_int)
                                 as crate::stdlib::int64_t,

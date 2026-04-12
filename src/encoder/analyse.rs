@@ -6539,11 +6539,8 @@ pub mod slicetype_c {
         unsafe {
             (*cur_frame).i_cpb_delay = *i_cpb_delay;
             (*cur_frame).i_dpb_output_delay = (*cur_frame).i_field_cnt - *i_coded_fields;
-            (*cur_frame).i_dpb_output_delay += ((*(&raw mut (*h).sps
-                as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .i_num_reorder_frames
-                * 2i32) as crate::stdlib::int64_t;
+            (*cur_frame).i_dpb_output_delay +=
+                ((*h).sps.vui.i_num_reorder_frames * 2i32) as crate::stdlib::int64_t;
             if (*cur_frame).i_dpb_output_delay < 0i64 {
                 (*cur_frame).i_cpb_delay += (*cur_frame).i_dpb_output_delay;
                 (*cur_frame).i_dpb_output_delay = 0i64;
@@ -6618,26 +6615,14 @@ pub mod slicetype_c {
                         (**frames.offset(next_nonb as isize)).f_planned_cpb_duration
                             [prev_frame_idx as usize] = (*prev_frame).i_cpb_duration
                             as ::core::ffi::c_double
-                            * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_num_units_in_tick
-                                as ::core::ffi::c_double
-                            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_time_scale
-                                as ::core::ffi::c_double;
+                            * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                            / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
                     }
                     (**frames.offset(next_nonb as isize)).f_planned_cpb_duration[idx as usize] =
                         (**frames.offset(cur_nonb as isize)).i_cpb_duration
                             as ::core::ffi::c_double
-                            * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_num_units_in_tick
-                                as ::core::ffi::c_double
-                            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_time_scale
-                                as ::core::ffi::c_double;
+                            * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                            / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
                     prev_frame = *frames.offset(cur_nonb as isize);
                     prev_frame_idx = idx;
                     idx += 1;
@@ -6663,25 +6648,13 @@ pub mod slicetype_c {
                         (**frames.offset(next_nonb as isize)).f_planned_cpb_duration
                             [prev_frame_idx as usize] = (*prev_frame).i_cpb_duration
                             as ::core::ffi::c_double
-                            * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_num_units_in_tick
-                                as ::core::ffi::c_double
-                            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_time_scale
-                                as ::core::ffi::c_double;
+                            * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                            / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
                     }
                     (**frames.offset(next_nonb as isize)).f_planned_cpb_duration[idx as usize] =
                         (**frames.offset(i as isize)).i_cpb_duration as ::core::ffi::c_double
-                            * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_num_units_in_tick
-                                as ::core::ffi::c_double
-                            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_time_scale
-                                as ::core::ffi::c_double;
+                            * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                            / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
                     prev_frame = *frames.offset(i as isize);
                     prev_frame_idx = idx;
                     i += 1;
@@ -8061,12 +8034,8 @@ pub mod slicetype_c {
                 (**(*(*h).lookahead).next.list.offset(i as isize)).f_duration =
                     ((**(*(*h).lookahead).next.list.offset(i as isize)).i_duration
                         as ::core::ffi::c_double
-                        * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_num_units_in_tick as ::core::ffi::c_double
-                        / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_time_scale as ::core::ffi::c_double)
+                        * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                        / (*h).sps.vui.i_time_scale as ::core::ffi::c_double)
                         as ::core::ffi::c_float;
                 if (**(*(*h).lookahead).next.list.offset(i as isize)).i_frame
                     > (*h).i_disp_fields_last_frame
@@ -8734,14 +8703,8 @@ pub mod slicetype_c {
                         [(i_2 - 1i32) as usize] =
                         (**(*(*h).lookahead).next.list.offset(i_2 as isize)).i_cpb_duration
                             as ::core::ffi::c_double
-                            * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_num_units_in_tick
-                                as ::core::ffi::c_double
-                            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .vui
-                                .i_time_scale
-                                as ::core::ffi::c_double;
+                            * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                            / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
                 } else {
                     calculate_durations(
                         h,
@@ -12576,8 +12539,7 @@ pub mod cavlc_c {
                     i_level_code -= 15i32;
                 }
                 if i_level_code >= (1i32) << 12i32 {
-                    if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .i_profile_idc
+                    if (*h).sps.i_profile_idc
                         >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
                     {
                         while i_level_code >= (1i32) << (i_level_prefix - 3i32) {

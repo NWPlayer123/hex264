@@ -483,7 +483,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
                 i_level_code -= 15i32;
             }
             if i_level_code >= (1i32) << 12i32 {
-                if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_profile_idc
+                if (*h).sps.i_profile_idc
                     >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
                 {
                     while i_level_code >= (1i32) << (i_level_prefix - 3i32) {

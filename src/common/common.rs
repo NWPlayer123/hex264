@@ -15,8 +15,8 @@ pub const SIZEOF_PIXEL: ::core::ffi::c_int =
     ::core::mem::size_of::<crate::src::common::common::pixel>() as ::core::ffi::c_int;
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct x264_slice_header_t {
-    pub sps: *mut crate::src::common::set::x264_sps_t,
+pub struct x264_slice_header_t<'a> {
+    pub sps: &'a crate::src::common::set::x264_sps_t,
     pub pps: *mut crate::src::common::set::x264_pps_t,
     pub i_type: ::core::ffi::c_int,
     pub i_first_mb: ::core::ffi::c_int,
@@ -109,11 +109,11 @@ pub struct x264_frame_stat_t {
 }
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct x264_t {
+pub struct x264_t<'a> {
     pub param: crate::x264_h::x264_param_t,
     pub api: *mut ::core::ffi::c_void,
-    pub thread: [*mut crate::src::common::common::x264_t; 129],
-    pub lookahead_thread: [*mut crate::src::common::common::x264_t; 16],
+    pub thread: [*mut crate::src::common::common::x264_t<'a>; 129],
+    pub lookahead_thread: [*mut crate::src::common::common::x264_t<'a>; 16],
     pub thread_active: bool,
     pub i_thread_phase: ::core::ffi::c_int,
     pub i_thread_idx: ::core::ffi::c_int,
@@ -127,7 +127,7 @@ pub struct x264_t {
     pub out: crate::src::common::common::C2Rust_Unnamed_10,
     pub nal_buffer: *mut crate::stdlib::uint8_t,
     pub nal_buffer_size: ::core::ffi::c_int,
-    pub reconfig_h: *mut crate::src::common::common::x264_t,
+    pub reconfig_h: *mut crate::src::common::common::x264_t<'a>,
     pub reconfig: ::core::ffi::c_int,
     pub i_frame: ::core::ffi::c_int,
     pub i_frame_num: ::core::ffi::c_int,
@@ -161,11 +161,11 @@ pub struct x264_t {
     pub cost_mv_fpel: [[*mut crate::stdlib::uint16_t; 4]; 70],
     pub cost_table: *mut crate::src::common::common::C2Rust_Unnamed_11,
     pub chroma_qp_table: *const crate::stdlib::uint8_t,
-    pub sh: crate::src::common::common::x264_slice_header_t,
-    pub sps: [crate::src::common::set::x264_sps_t; 1],
+    pub sh: crate::src::common::common::x264_slice_header_t<'a>,
+    pub sps: crate::src::common::set::x264_sps_t,
     pub pps: [crate::src::common::set::x264_pps_t; 1],
     pub has_sh_backup: bool,
-    pub sh_backup: crate::src::common::common::x264_slice_header_t,
+    pub sh_backup: crate::src::common::common::x264_slice_header_t<'a>,
     pub cabac: crate::src::common::cabac::x264_cabac_t,
     pub frames: crate::src::common::common::C2Rust_Unnamed_12,
     pub fenc: *mut crate::src::common::frame::x264_frame_t,

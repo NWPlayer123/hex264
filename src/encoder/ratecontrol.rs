@@ -1134,169 +1134,75 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
             let mut vbv_buffer_size = (*h).param.rc.i_vbv_buffer_size * kilobit_size;
             let mut vbv_max_bitrate = (*h).param.rc.i_vbv_max_bitrate * kilobit_size;
             if (*h).param.i_nal_hrd != 0 && b_init != 0 {
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_cpb_cnt = 1i32;
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .cbr_hrd = (*h).param.i_nal_hrd == crate::x264_h::X264_NAL_HRD_CBR;
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_time_offset_length = 0i32;
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_bit_rate_scale = x264_clip3(
+                (*h).sps.vui.hrd.i_cpb_cnt = 1i32;
+                (*h).sps.vui.hrd.cbr_hrd = (*h).param.i_nal_hrd == crate::x264_h::X264_NAL_HRD_CBR;
+                (*h).sps.vui.hrd.i_time_offset_length = 0i32;
+                (*h).sps.vui.hrd.i_bit_rate_scale = x264_clip3(
                     (vbv_max_bitrate as ::core::ffi::c_uint).trailing_zeros() as i32 - BR_SHIFT,
                     0i32,
                     15i32,
                 );
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_bit_rate_value = vbv_max_bitrate
-                    >> ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .hrd
-                        .i_bit_rate_scale
-                        + BR_SHIFT);
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_bit_rate_unscaled = (*(&raw mut (*h).sps
-                    as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_bit_rate_value
-                    << ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .hrd
-                        .i_bit_rate_scale
-                        + BR_SHIFT);
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_cpb_size_scale = x264_clip3(
+                (*h).sps.vui.hrd.i_bit_rate_value =
+                    vbv_max_bitrate >> ((*h).sps.vui.hrd.i_bit_rate_scale + BR_SHIFT);
+                (*h).sps.vui.hrd.i_bit_rate_unscaled = (*h).sps.vui.hrd.i_bit_rate_value
+                    << ((*h).sps.vui.hrd.i_bit_rate_scale + BR_SHIFT);
+                (*h).sps.vui.hrd.i_cpb_size_scale = x264_clip3(
                     (vbv_buffer_size as ::core::ffi::c_uint).trailing_zeros() as i32 - CPB_SHIFT,
                     0i32,
                     15i32,
                 );
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_cpb_size_value = vbv_buffer_size
-                    >> ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .hrd
-                        .i_cpb_size_scale
-                        + CPB_SHIFT);
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_cpb_size_unscaled = (*(&raw mut (*h).sps
-                    as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_cpb_size_value
-                    << ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .hrd
-                        .i_cpb_size_scale
-                        + CPB_SHIFT);
+                (*h).sps.vui.hrd.i_cpb_size_value =
+                    vbv_buffer_size >> ((*h).sps.vui.hrd.i_cpb_size_scale + CPB_SHIFT);
+                (*h).sps.vui.hrd.i_cpb_size_unscaled = (*h).sps.vui.hrd.i_cpb_size_value
+                    << ((*h).sps.vui.hrd.i_cpb_size_scale + CPB_SHIFT);
                 let mut max_cpb_output_delay = (if ((*h).param.i_keyint_max
                     as ::core::ffi::c_double
                     * 0.5
-                    * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_time_scale as ::core::ffi::c_double
-                    / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_num_units_in_tick as ::core::ffi::c_double)
+                    * (*h).sps.vui.i_time_scale as ::core::ffi::c_double
+                    / (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double)
                     < 2147483647f64
                 {
                     (*h).param.i_keyint_max as ::core::ffi::c_double
                         * 0.5
-                        * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_time_scale as ::core::ffi::c_double
-                        / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_num_units_in_tick as ::core::ffi::c_double
+                        * (*h).sps.vui.i_time_scale as ::core::ffi::c_double
+                        / (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
                 } else {
                     2147483647f64
                 }) as ::core::ffi::c_int;
-                let mut max_dpb_output_delay =
-                    ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_max_dec_frame_buffering as ::core::ffi::c_double
-                        * MAX_DURATION
-                        * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_time_scale as ::core::ffi::c_double
-                        / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_num_units_in_tick as ::core::ffi::c_double)
-                        as ::core::ffi::c_int;
+                let mut max_dpb_output_delay = ((*h).sps.vui.i_max_dec_frame_buffering
+                    as ::core::ffi::c_double
+                    * MAX_DURATION
+                    * (*h).sps.vui.i_time_scale as ::core::ffi::c_double
+                    / (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double)
+                    as ::core::ffi::c_int;
                 let mut max_delay = (90000.0
-                    * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .hrd
-                        .i_cpb_size_unscaled as ::core::ffi::c_double
-                    / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .hrd
-                        .i_bit_rate_unscaled as ::core::ffi::c_double
+                    * (*h).sps.vui.hrd.i_cpb_size_unscaled as ::core::ffi::c_double
+                    / (*h).sps.vui.hrd.i_bit_rate_unscaled as ::core::ffi::c_double
                     + 0.5) as ::core::ffi::c_int;
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_initial_cpb_removal_delay_length = 2i32
+                (*h).sps.vui.hrd.i_initial_cpb_removal_delay_length = 2i32
                     + x264_clip3(
                         32i32 - (max_delay as ::core::ffi::c_uint).leading_zeros() as i32,
                         4i32,
                         22i32,
                     );
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_cpb_removal_delay_length = x264_clip3(
+                (*h).sps.vui.hrd.i_cpb_removal_delay_length = x264_clip3(
                     32i32 - (max_cpb_output_delay as ::core::ffi::c_uint).leading_zeros() as i32,
                     4i32,
                     31i32,
                 );
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_dpb_output_delay_length = x264_clip3(
+                (*h).sps.vui.hrd.i_dpb_output_delay_length = x264_clip3(
                     32i32 - (max_dpb_output_delay as ::core::ffi::c_uint).leading_zeros() as i32,
                     4i32,
                     31i32,
                 );
-                vbv_buffer_size = (*(&raw mut (*h).sps
-                    as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_cpb_size_unscaled;
-                vbv_max_bitrate = (*(&raw mut (*h).sps
-                    as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_bit_rate_unscaled;
+                vbv_buffer_size = (*h).sps.vui.hrd.i_cpb_size_unscaled;
+                vbv_max_bitrate = (*h).sps.vui.hrd.i_bit_rate_unscaled;
             } else if (*h).param.i_nal_hrd != 0 && b_init == 0 {
                 log::warn!("VBV parameters cannot be changed when NAL HRD is in use");
                 return;
             }
-            (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .hrd
-                .i_bit_rate_unscaled = vbv_max_bitrate;
-            (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .hrd
-                .i_cpb_size_unscaled = vbv_buffer_size;
+            (*h).sps.vui.hrd.i_bit_rate_unscaled = vbv_max_bitrate;
+            (*h).sps.vui.hrd.i_cpb_size_unscaled = vbv_buffer_size;
             if (*rc).vbv_min_rate {
                 (*rc).bitrate = (*h).param.rc.i_bitrate as ::core::ffi::c_double
                     * kilobit_size as ::core::ffi::c_double;
@@ -1349,9 +1255,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                 ) as ::core::ffi::c_float;
                 (*rc).buffer_fill_final_min = ((*rc).buffer_size
                     * (*h).param.rc.f_vbv_buffer_init as ::core::ffi::c_double
-                    * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_time_scale as ::core::ffi::c_double)
+                    * (*h).sps.vui.i_time_scale as ::core::ffi::c_double)
                     as crate::stdlib::int64_t;
                 (*rc).buffer_fill_final = (*rc).buffer_fill_final_min;
                 (*rc).vbv = true;
@@ -1419,29 +1323,14 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
             x264_8_ratecontrol_init_reconfigurable(h, 1i32);
             if (*h).param.i_nal_hrd != 0 {
                 let mut num = 90000u64;
-                let mut denom = ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .i_bit_rate_unscaled
-                    as crate::stdlib::uint64_t)
-                    .wrapping_mul(
-                        (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_time_scale as crate::stdlib::uint64_t,
-                    );
+                let mut denom = ((*h).sps.vui.hrd.i_bit_rate_unscaled as crate::stdlib::uint64_t)
+                    .wrapping_mul((*h).sps.vui.i_time_scale as crate::stdlib::uint64_t);
                 crate::src::common::base::x264_reduce_fraction64(&raw mut num, &raw mut denom);
                 (*rc).hrd_multiply_denom = (90000u64).wrapping_div(num);
                 let mut bits_required = crate::stdlib::log2(num as ::core::ffi::c_double)
+                    + crate::stdlib::log2((*h).sps.vui.i_time_scale as ::core::ffi::c_double)
                     + crate::stdlib::log2(
-                        (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_time_scale as ::core::ffi::c_double,
-                    )
-                    + crate::stdlib::log2(
-                        (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .hrd
-                            .i_cpb_size_unscaled as ::core::ffi::c_double,
+                        (*h).sps.vui.hrd.i_cpb_size_unscaled as ::core::ffi::c_double,
                     );
                 if bits_required >= 63f64 {
                     log::error!("HRD with very large timescale and bufsize not supported");
@@ -2838,12 +2727,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
                 .offset((*h).sh.i_type as isize) as *mut predictor_t;
             (*rc).buffer_rate = (*(*h).fenc).i_cpb_duration as ::core::ffi::c_double
                 * (*rc).vbv_max_rate
-                * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_num_units_in_tick as ::core::ffi::c_double
-                / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as ::core::ffi::c_double;
+                * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
             update_vbv_plan(h, overhead);
             let mut l = &raw const crate::src::common::tables::x264_levels
                 as *const crate::x264_h::x264_level_t;
@@ -2856,8 +2741,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
             if (*h).param.bluray_compat {
                 mincr = 4i32;
             }
-            if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_profile_idc
-                > crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
+            if (*h).sps.i_profile_idc > crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
             {
                 (*rc).frame_size_maximum = 1e9f64;
             } else if (*h).i_frame == 0i32 {
@@ -2882,13 +2766,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
                 (*rc).frame_size_maximum = (384i32 * crate::internal::BIT_DEPTH)
                     as ::core::ffi::c_double
                     * ((*(*h).fenc).i_cpb_duration as ::core::ffi::c_double
-                        * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_num_units_in_tick
-                            as ::core::ffi::c_double
-                        / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_time_scale as ::core::ffi::c_double)
+                        * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                        / (*h).sps.vui.i_time_scale as ::core::ffi::c_double)
                     * (*l).mbps as ::core::ffi::c_double
                     / mincr as ::core::ffi::c_double;
             }
@@ -3789,10 +3668,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
         }
         *filler = update_vbv(h, bits);
         (*rc).filler_bits_sum += (*filler * 8i32) as crate::stdlib::int64_t;
-        if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-            .vui
-            .nal_hrd_parameters_present
-        {
+        if (*h).sps.vui.nal_hrd_parameters_present {
             if (*(*h).fenc).i_frame == 0i32 {
                 (*(*h).fenc).hrd_timing.cpb_initial_arrival_time = 0f64;
                 (*rc).initial_cpb_removal_delay = (*h).initial_cpb_removal_delay;
@@ -3804,12 +3680,8 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 (*(*h).fenc).hrd_timing.cpb_removal_time = (*rc).nrt_first_access_unit
                     + ((*(*h).fenc).i_cpb_delay - (*h).i_cpb_delay_pir_offset)
                         as ::core::ffi::c_double
-                        * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_num_units_in_tick as ::core::ffi::c_double
-                        / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .i_time_scale as ::core::ffi::c_double;
+                        * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                        / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
                 if (*(*h).fenc).keyframe {
                     (*rc).nrt_first_access_unit = (*(*h).fenc).hrd_timing.cpb_removal_time;
                     (*rc).initial_cpb_removal_delay = (*h).initial_cpb_removal_delay;
@@ -3821,11 +3693,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                     cpb_earliest_arrival_time -=
                         (*rc).initial_cpb_removal_delay_offset as ::core::ffi::c_double / 90000f64;
                 }
-                if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .hrd
-                    .cbr_hrd
-                {
+                if (*h).sps.vui.hrd.cbr_hrd {
                     (*(*h).fenc).hrd_timing.cpb_initial_arrival_time =
                         (*rc).previous_cpb_final_arrival_time;
                 } else {
@@ -3849,19 +3717,12 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
             (*rc).previous_cpb_final_arrival_time =
                 (*(*h).fenc).hrd_timing.cpb_initial_arrival_time
                     + (bits + filler_bits) as ::core::ffi::c_double
-                        / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .vui
-                            .hrd
-                            .i_bit_rate_unscaled as ::core::ffi::c_double;
+                        / (*h).sps.vui.hrd.i_bit_rate_unscaled as ::core::ffi::c_double;
             (*(*h).fenc).hrd_timing.cpb_final_arrival_time = (*rc).previous_cpb_final_arrival_time;
             (*(*h).fenc).hrd_timing.dpb_output_time = (*(*h).fenc).i_dpb_output_delay
                 as ::core::ffi::c_double
-                * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_num_units_in_tick as ::core::ffi::c_double
-                / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as ::core::ffi::c_double
+                * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                / (*h).sps.vui.i_time_scale as ::core::ffi::c_double
                 + (*(*h).fenc).hrd_timing.cpb_removal_time;
         }
         return 0i32;
@@ -3878,12 +3739,8 @@ unsafe extern "C" fn get_qscale(
         let mut rcc = (*h).rc;
         let mut zone = get_zone(h, frame_num);
         if (*h).param.rc.mb_tree {
-            let mut timescale = (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .i_num_units_in_tick as ::core::ffi::c_double
-                / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as ::core::ffi::c_double;
+            let mut timescale = (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
             q = crate::stdlib::pow(
                 (0.04f32
                     / (((*h).param.i_frame_packing == 5i32) as ::core::ffi::c_int + 1i32)
@@ -4056,19 +3913,11 @@ unsafe extern "C" fn update_vbv(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut filler = 0i32;
-        let mut bitrate = (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-            .vui
-            .hrd
-            .i_bit_rate_unscaled;
+        let mut bitrate = (*h).sps.vui.hrd.i_bit_rate_unscaled;
         let mut rcc = (*h).rc;
         let mut rct = (*(*h).thread[0usize]).rc;
-        let mut buffer_size = (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-            .vui
-            .hrd
-            .i_cpb_size_unscaled as crate::stdlib::int64_t
-            * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .i_time_scale as crate::stdlib::int64_t;
+        let mut buffer_size = (*h).sps.vui.hrd.i_cpb_size_unscaled as crate::stdlib::int64_t
+            * (*h).sps.vui.i_time_scale as crate::stdlib::int64_t;
         if (*rcc).last_satd >= (*h).mb.i_mb_count {
             update_predictor(
                 (*rct).pred.offset((*h).sh.i_type as isize),
@@ -4080,11 +3929,8 @@ unsafe extern "C" fn update_vbv(
         if !(*rcc).vbv {
             return filler;
         }
-        let mut buffer_diff = (bits as crate::stdlib::uint64_t).wrapping_mul(
-            (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .i_time_scale as crate::stdlib::uint64_t,
-        );
+        let mut buffer_diff = (bits as crate::stdlib::uint64_t)
+            .wrapping_mul((*h).sps.vui.i_time_scale as crate::stdlib::uint64_t);
         (*rct).buffer_fill_final = ((*rct).buffer_fill_final as crate::stdlib::uint64_t)
             .wrapping_sub(buffer_diff) as crate::stdlib::int64_t;
         (*rct).buffer_fill_final_min = ((*rct).buffer_fill_final_min as crate::stdlib::uint64_t)
@@ -4092,9 +3938,7 @@ unsafe extern "C" fn update_vbv(
             as crate::stdlib::int64_t;
         if (*rct).buffer_fill_final_min < 0i64 {
             let mut underflow = (*rct).buffer_fill_final_min as ::core::ffi::c_double
-                / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as ::core::ffi::c_double;
+                / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
             if (*rcc).rate_factor_max_increment != 0.
                 && (*rcc).qpm >= (*rcc).qp_novbv + (*rcc).rate_factor_max_increment
             {
@@ -4117,11 +3961,7 @@ unsafe extern "C" fn update_vbv(
             buffer_diff = buffer_size as crate::stdlib::uint64_t;
         } else {
             buffer_diff = (bitrate as crate::stdlib::uint64_t)
-                .wrapping_mul(
-                    (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_num_units_in_tick as crate::stdlib::uint64_t,
-                )
+                .wrapping_mul((*h).sps.vui.i_num_units_in_tick as crate::stdlib::uint64_t)
                 .wrapping_mul((*(*h).fenc).i_cpb_duration as crate::stdlib::uint64_t);
         }
         (*rct).buffer_fill_final = ((*rct).buffer_fill_final as crate::stdlib::uint64_t)
@@ -4131,10 +3971,7 @@ unsafe extern "C" fn update_vbv(
             as crate::stdlib::int64_t;
         if (*rct).buffer_fill_final > buffer_size {
             if (*h).param.rc.filler {
-                let mut scale = (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as crate::stdlib::int64_t
-                    * 8i64;
+                let mut scale = (*h).sps.vui.i_time_scale as crate::stdlib::int64_t * 8i64;
                 filler = (((*rct).buffer_fill_final - buffer_size + scale - 1i64) / scale)
                     as ::core::ffi::c_int;
                 bits = if (*h).param.i_avcintra_class != 0 {
@@ -4146,11 +3983,8 @@ unsafe extern "C" fn update_vbv(
                         filler
                     }) * 8i32
                 };
-                buffer_diff = (bits as crate::stdlib::uint64_t).wrapping_mul(
-                    (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_time_scale as crate::stdlib::uint64_t,
-                );
+                buffer_diff = (bits as crate::stdlib::uint64_t)
+                    .wrapping_mul((*h).sps.vui.i_time_scale as crate::stdlib::uint64_t);
                 (*rct).buffer_fill_final = ((*rct).buffer_fill_final as crate::stdlib::uint64_t)
                     .wrapping_sub(buffer_diff)
                     as crate::stdlib::int64_t;
@@ -4176,26 +4010,12 @@ unsafe extern "C" fn update_vbv(
 pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut rct = (*(*h).thread[0usize]).rc;
-        let mut denom = ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-            .vui
-            .hrd
-            .i_bit_rate_unscaled as crate::stdlib::uint64_t)
-            .wrapping_mul(
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as crate::stdlib::uint64_t,
-            )
+        let mut denom = ((*h).sps.vui.hrd.i_bit_rate_unscaled as crate::stdlib::uint64_t)
+            .wrapping_mul((*h).sps.vui.i_time_scale as crate::stdlib::uint64_t)
             .wrapping_div((*rct).hrd_multiply_denom);
         let mut cpb_state = (*rct).buffer_fill_final as crate::stdlib::uint64_t;
-        let mut cpb_size = ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-            .vui
-            .hrd
-            .i_cpb_size_unscaled as crate::stdlib::uint64_t)
-            .wrapping_mul(
-                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as crate::stdlib::uint64_t,
-            );
+        let mut cpb_size = ((*h).sps.vui.hrd.i_cpb_size_unscaled as crate::stdlib::uint64_t)
+            .wrapping_mul((*h).sps.vui.i_time_scale as crate::stdlib::uint64_t);
         let mut multiply_factor = (90000u64).wrapping_div((*rct).hrd_multiply_denom);
         if (*rct).buffer_fill_final < 0i64
             || (*rct).buffer_fill_final > cpb_size as crate::stdlib::int64_t
@@ -4208,13 +4028,9 @@ pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::com
                     "overflow"
                 },
                 (*rct).buffer_fill_final as ::core::ffi::c_double
-                    / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_time_scale as ::core::ffi::c_double,
+                    / (*h).sps.vui.i_time_scale as ::core::ffi::c_double,
                 cpb_size as ::core::ffi::c_double
-                    / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                        .vui
-                        .i_time_scale as ::core::ffi::c_double,
+                    / (*h).sps.vui.i_time_scale as ::core::ffi::c_double,
             );
         }
         (*h).initial_cpb_removal_delay =
@@ -4242,9 +4058,7 @@ unsafe extern "C" fn update_vbv_plan(
     unsafe {
         let mut rcc = (*h).rc;
         (*rcc).buffer_fill = ((*(*(*h).thread[0usize]).rc).buffer_fill_final_min
-            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .i_time_scale as crate::stdlib::int64_t)
+            / (*h).sps.vui.i_time_scale as crate::stdlib::int64_t)
             as ::core::ffi::c_double;
         if (*h).i_thread_frames > 1i32 {
             let mut i = 1i32;
@@ -4326,12 +4140,8 @@ unsafe extern "C" fn vbv_pass1(
         if (*rcc).vbv && (*rcc).last_satd > 0i32 {
             let mut q0 = q;
             let mut fenc_cpb_duration = (*(*h).fenc).i_cpb_duration as ::core::ffi::c_double
-                * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_num_units_in_tick as ::core::ffi::c_double
-                / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as ::core::ffi::c_double;
+                * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
             if (*h).param.rc.i_lookahead != 0 {
                 let mut terminate = 0i32;
                 let mut iterations = 0i32;
@@ -5013,10 +4823,10 @@ pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
         }
     }
 }
-pub unsafe extern "C" fn x264_8_thread_sync_ratecontrol(
-    mut cur: *mut crate::src::common::common::x264_t,
-    mut prev: *mut crate::src::common::common::x264_t,
-    mut next: *mut crate::src::common::common::x264_t,
+pub unsafe extern "C" fn x264_8_thread_sync_ratecontrol<'a>(
+    mut cur: *mut crate::src::common::common::x264_t<'a>,
+    mut prev: *mut crate::src::common::common::x264_t<'a>,
+    mut next: *mut crate::src::common::common::x264_t<'a>,
 ) {
     unsafe {
         if cur != prev {
@@ -5151,12 +4961,8 @@ unsafe extern "C" fn find_underflow(
             fill += ((**(*rcc).entry_out.offset(i as isize)).i_cpb_duration
                 as ::core::ffi::c_double
                 * (*rcc).vbv_max_rate
-                * (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_num_units_in_tick as ::core::ffi::c_double
-                / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                    .vui
-                    .i_time_scale as ::core::ffi::c_double
+                * (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+                / (*h).sps.vui.i_time_scale as ::core::ffi::c_double
                 - qscale2bits(
                     *(*rcc).entry_out.offset(i as isize),
                     (**(*rcc).entry_out.offset(i as isize)).new_qscale,
@@ -5320,12 +5126,8 @@ unsafe extern "C" fn init_pass2(
         let mut i_0 = 0i32;
         let mut i_1 = 0i32;
         let mut rcc = (*h).rc;
-        let mut timescale = (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-            .vui
-            .i_num_units_in_tick as ::core::ffi::c_double
-            / (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                .vui
-                .i_time_scale as ::core::ffi::c_double;
+        let mut timescale = (*h).sps.vui.i_num_units_in_tick as ::core::ffi::c_double
+            / (*h).sps.vui.i_time_scale as ::core::ffi::c_double;
         while i < (*rcc).num_entries {
             duration += (*(*rcc).entry.offset(i as isize)).i_duration as ::core::ffi::c_double;
             i += 1;

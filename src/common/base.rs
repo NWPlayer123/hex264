@@ -53,10 +53,18 @@ pub(crate) enum ChromaFormat {
 }
 
 impl ChromaFormat {
-    pub fn is_444(self) -> bool { self == ChromaFormat::Chroma444 }
-    pub fn is_422(self) -> bool { self == ChromaFormat::Chroma422 }
-    pub fn is_420(self) -> bool { self == ChromaFormat::Chroma420 }
-    pub fn is_400(self) -> bool { self == ChromaFormat::Chroma400 }
+    pub fn is_444(self) -> bool {
+        self == ChromaFormat::Chroma444
+    }
+    pub fn is_422(self) -> bool {
+        self == ChromaFormat::Chroma422
+    }
+    pub fn is_420(self) -> bool {
+        self == ChromaFormat::Chroma420
+    }
+    pub fn is_400(self) -> bool {
+        self == ChromaFormat::Chroma400
+    }
 }
 
 pub type chroma_format_e = ::core::ffi::c_uint;

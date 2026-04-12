@@ -168,11 +168,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
         let mut max_qp_err = -(1i32);
         let mut max_chroma_qp_err = -(1i32);
         let mut min_qp_err = crate::src::common::common::QP_MAX + 1i32;
-        let mut num_8x8_lists = if (*(&raw mut (*h).sps
-            as *mut crate::src::common::set::x264_sps_t))
-            .i_chroma_format_idc
-            .is_444()
-        {
+        let mut num_8x8_lists = if (*h).sps.i_chroma_format_idc.is_444() {
             4i32
         } else if (*h).param.analyse.transform_8x8 {
             2i32
@@ -190,10 +186,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
             let mut start = if 4i32 == 8i32 { 4i32 } else { 0i32 };
             while j < i {
                 if crate::stdlib::memcmp(
-                    (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).scaling_list
-                        [(i + start) as usize] as *const ::core::ffi::c_void,
-                    (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).scaling_list
-                        [(j + start) as usize] as *const ::core::ffi::c_void,
+                    (*h).sps.scaling_list[(i + start) as usize] as *const ::core::ffi::c_void,
+                    (*h).sps.scaling_list[(j + start) as usize] as *const ::core::ffi::c_void,
                     (size as crate::__stddef_size_t_h::size_t)
                         .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>()),
                 ) == 0
@@ -240,12 +234,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
             while j < i {
                 if deadzone[j as usize] == deadzone[i as usize]
                     && crate::stdlib::memcmp(
-                        (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .scaling_list[(i + start) as usize]
-                            as *const ::core::ffi::c_void,
-                        (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                            .scaling_list[(j + start) as usize]
-                            as *const ::core::ffi::c_void,
+                        (*h).sps.scaling_list[(i + start) as usize] as *const ::core::ffi::c_void,
+                        (*h).sps.scaling_list[(j + start) as usize] as *const ::core::ffi::c_void,
                         (size as crate::__stddef_size_t_h::size_t)
                             .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>()),
                     ) == 0
@@ -294,11 +284,9 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     let mut start_0 = if 8i32 == 8i32 { 4i32 } else { 0i32 };
                     while j_0 < i_0 {
                         if crate::stdlib::memcmp(
-                            (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .scaling_list[(i_0 + start_0) as usize]
+                            (*h).sps.scaling_list[(i_0 + start_0) as usize]
                                 as *const ::core::ffi::c_void,
-                            (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                .scaling_list[(j_0 + start_0) as usize]
+                            (*h).sps.scaling_list[(j_0 + start_0) as usize]
                                 as *const ::core::ffi::c_void,
                             (size_0 as crate::__stddef_size_t_h::size_t)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>()),
@@ -349,11 +337,9 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     while j_0 < i_0 {
                         if deadzone[j_0 as usize] == deadzone[i_0 as usize]
                             && crate::stdlib::memcmp(
-                                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                    .scaling_list[(i_0 + start_0) as usize]
+                                (*h).sps.scaling_list[(i_0 + start_0) as usize]
                                     as *const ::core::ffi::c_void,
-                                (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
-                                    .scaling_list[(j_0 + start_0) as usize]
+                                (*h).sps.scaling_list[(j_0 + start_0) as usize]
                                     as *const ::core::ffi::c_void,
                                 (size_0 as crate::__stddef_size_t_h::size_t)
                                     .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>()),
@@ -435,25 +421,16 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 while i_3 < 16i32 {
                                     (*(*h).dequant4_mf[i_list as usize].offset(q_0 as isize))
                                         [i_3 as usize] = def_dequant4[q_0 as usize][i_3 as usize]
-                                        * *(*(&raw mut (*h).sps
-                                            as *mut crate::src::common::set::x264_sps_t))
-                                            .scaling_list
-                                            [i_list as usize]
+                                        * *(*h).sps.scaling_list[i_list as usize]
                                             .offset(i_3 as isize)
                                             as ::core::ffi::c_int;
                                     quant4_mf[i_list as usize][q_0 as usize][i_3 as usize] =
                                         (def_quant4[q_0 as usize][i_3 as usize] * 16i32
-                                            + (*(*(&raw mut (*h).sps
-                                                as *mut crate::src::common::set::x264_sps_t))
-                                                .scaling_list
-                                                [i_list as usize]
+                                            + (*(*h).sps.scaling_list[i_list as usize]
                                                 .offset(i_3 as isize)
                                                 as ::core::ffi::c_int
                                                 >> 1i32))
-                                            / *(*(&raw mut (*h).sps
-                                                as *mut crate::src::common::set::x264_sps_t))
-                                                .scaling_list
-                                                [i_list as usize]
+                                            / *(*h).sps.scaling_list[i_list as usize]
                                                 .offset(i_3 as isize)
                                                 as ::core::ffi::c_int;
                                     i_3 += 1;
@@ -465,25 +442,16 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 while i_4 < 64i32 {
                                     (*(*h).dequant8_mf[i_list_0 as usize].offset(q_0 as isize))
                                         [i_4 as usize] = def_dequant8[q_0 as usize][i_4 as usize]
-                                        * *(*(&raw mut (*h).sps
-                                            as *mut crate::src::common::set::x264_sps_t))
-                                            .scaling_list
-                                            [(4i32 + i_list_0) as usize]
+                                        * *(*h).sps.scaling_list[(4i32 + i_list_0) as usize]
                                             .offset(i_4 as isize)
                                             as ::core::ffi::c_int;
                                     quant8_mf[i_list_0 as usize][q_0 as usize][i_4 as usize] =
                                         (def_quant8[q_0 as usize][i_4 as usize] * 16i32
-                                            + (*(*(&raw mut (*h).sps
-                                                as *mut crate::src::common::set::x264_sps_t))
-                                                .scaling_list
-                                                [(4i32 + i_list_0) as usize]
+                                            + (*(*h).sps.scaling_list[(4i32 + i_list_0) as usize]
                                                 .offset(i_4 as isize)
                                                 as ::core::ffi::c_int
                                                 >> 1i32))
-                                            / *(*(&raw mut (*h).sps
-                                                as *mut crate::src::common::set::x264_sps_t))
-                                                .scaling_list
-                                                [(4i32 + i_list_0) as usize]
+                                            / *(*h).sps.scaling_list[(4i32 + i_list_0) as usize]
                                                 .offset(i_4 as isize)
                                                 as ::core::ffi::c_int;
                                     i_4 += 1;
@@ -806,9 +774,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                     (*h).param.rc.i_qp_min = max_qp_err + 1i32;
                                 }
                                 if !(*h).param.cabac
-                                    && (*(&raw mut (*h).sps
-                                        as *mut crate::src::common::set::x264_sps_t))
-                                        .i_profile_idc
+                                    && (*h).sps.i_profile_idc
                                         < crate::src::common::base::PROFILE_HIGH
                                             as ::core::ffi::c_int
                                 {

@@ -29,8 +29,8 @@ pub mod slicetype_c {
     pub const NUM_ROWS: ::core::ffi::c_int = 3i32;
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct x264_slicetype_slice_t {
-        pub h: *mut crate::src::common::common::x264_t,
+    pub struct x264_slicetype_slice_t<'a> {
+        pub h: *mut crate::src::common::common::x264_t<'a>,
         pub a: *mut crate::src::encoder::analyse::x264_mb_analysis_t,
         pub frames: *mut *mut crate::src::common::frame::x264_frame_t,
         pub p0: ::core::ffi::c_int,

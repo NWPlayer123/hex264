@@ -1,7 +1,7 @@
 #[derive(Copy, Clone)]
 #[repr(C)]
-pub struct x264_api_t {
-    pub x264: *mut crate::src::common::common::x264_t,
+pub struct x264_api_t<'a> {
+    pub x264: *mut crate::src::common::common::x264_t<'a>,
     pub nal_encode: Option<
         unsafe extern "C" fn(
             *mut crate::src::common::common::x264_t,
@@ -52,9 +52,9 @@ pub struct x264_api_t {
     >,
 }
 pub static mut x264_chroma_format: ::core::ffi::c_int = crate::x264_config_h::X264_CHROMA_FORMAT;
-pub unsafe extern "C" fn x264_encoder_open_165(
+pub unsafe extern "C" fn x264_encoder_open_165<'a>(
     mut param: *mut crate::x264_h::x264_param_t,
-) -> *mut crate::src::common::common::x264_t {
+) -> *mut crate::src::common::common::x264_t<'a> {
     unsafe {
         let mut api =
             crate::stdlib::calloc(1usize, ::core::mem::size_of::<x264_api_t>()) as *mut x264_api_t;
