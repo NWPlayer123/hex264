@@ -36,7 +36,7 @@ pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::commo
                     (*vlc).i_size =
                         ((i_level_code >> i_suffix) + 1i32 + i_suffix) as crate::stdlib::uint8_t;
                     (*vlc).i_bits = (((1i32) << i_suffix)
-                        + (i_level_code & ((1i32) << i_suffix) - 1i32))
+                        + (i_level_code & (((1i32) << i_suffix) - 1i32)))
                         as crate::stdlib::uint16_t;
                 } else if i_suffix == 0i32 && i_level_code < 30i32 {
                     (*vlc).i_size = 19u8;
@@ -45,7 +45,7 @@ pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::commo
                 } else if i_suffix > 0i32 && i_level_code >> i_suffix == 14i32 {
                     (*vlc).i_size = (15i32 + i_suffix) as crate::stdlib::uint8_t;
                     (*vlc).i_bits = (((1i32) << i_suffix)
-                        + (i_level_code & ((1i32) << i_suffix) - 1i32))
+                        + (i_level_code & (((1i32) << i_suffix) - 1i32)))
                         as crate::stdlib::uint16_t;
                 } else {
                     i_level_code -= (15i32) << i_suffix;
@@ -58,7 +58,7 @@ pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::commo
                 if i_next == 0i32 {
                     i_next += 1;
                 }
-                if abs_level > (3i32) << i_next - 1i32 && i_next < 6i32 {
+                if abs_level > (3i32) << (i_next - 1i32) && i_next < 6i32 {
                     i_next += 1;
                 }
                 (*vlc).i_next = i_next as crate::stdlib::uint8_t;
@@ -91,7 +91,7 @@ pub unsafe extern "C" fn x264_8_cavlc_init(mut h: *mut crate::src::common::commo
                 &raw mut runlevel,
             );
             let mut zeros = runlevel.last + 1i32 - total;
-            let mut mask_0 = i << i.leading_zeros() as i32 + 1i32;
+            let mut mask_0 = i << (i.leading_zeros() as i32 + 1i32);
             while j_0 < total - 1i32 && zeros > 0i32 {
                 let mut idx = (if zeros < 7i32 { zeros } else { 7i32 }) - 1i32;
                 let mut run = mask_0.leading_zeros() as i32;

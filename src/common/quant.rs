@@ -449,11 +449,11 @@ unsafe extern "C" fn dequant_4x4(
             }
         } else {
             let mut i_0 = 0i32;
-            let f = (1i32) << -i_qbits - 1i32;
+            let f = (1i32) << (-i_qbits - 1i32);
             while i_0 < 16i32 {
-                *dct.offset(i_0 as isize) = (*dct.offset(i_0 as isize) as ::core::ffi::c_int
+                *dct.offset(i_0 as isize) = ((*dct.offset(i_0 as isize) as ::core::ffi::c_int
                     * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
-                    + f
+                    + f)
                     >> -i_qbits)
                     as crate::src::common::common::dctcoef;
                 i_0 += 1;
@@ -480,11 +480,11 @@ unsafe extern "C" fn dequant_8x8(
             }
         } else {
             let mut i_0 = 0i32;
-            let f = (1i32) << -i_qbits - 1i32;
+            let f = (1i32) << (-i_qbits - 1i32);
             while i_0 < 64i32 {
-                *dct.offset(i_0 as isize) = (*dct.offset(i_0 as isize) as ::core::ffi::c_int
+                *dct.offset(i_0 as isize) = ((*dct.offset(i_0 as isize) as ::core::ffi::c_int
                     * (*dequant_mf.offset(i_mf as isize))[i_0 as usize]
-                    + f
+                    + f)
                     >> -i_qbits)
                     as crate::src::common::common::dctcoef;
                 i_0 += 1;
@@ -511,10 +511,10 @@ unsafe extern "C" fn dequant_4x4_dc(
         } else {
             let mut i_0 = 0i32;
             let i_dmf_0 = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize];
-            let f = (1i32) << -i_qbits - 1i32;
+            let f = (1i32) << (-i_qbits - 1i32);
             while i_0 < 16i32 {
                 *dct.offset(i_0 as isize) =
-                    (*dct.offset(i_0 as isize) as ::core::ffi::c_int * i_dmf_0 + f >> -i_qbits)
+                    ((*dct.offset(i_0 as isize) as ::core::ffi::c_int * i_dmf_0 + f) >> -i_qbits)
                         as crate::src::common::common::dctcoef;
                 i_0 += 1;
             }
@@ -552,23 +552,23 @@ unsafe extern "C" fn idct_dequant_2x4_dc(
         let mut b5 = a2 - a3;
         let mut b6 = a4 - a5;
         let mut b7 = a6 - a7;
-        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qp / 6i32;
+        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << (i_qp / 6i32);
         (*dct4x4.offset(0isize))[0usize] =
-            ((b0 + b1) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b0 + b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(1isize))[0usize] =
-            ((b2 + b3) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b2 + b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(2isize))[0usize] =
-            ((b0 - b1) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b0 - b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(3isize))[0usize] =
-            ((b2 - b3) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b2 - b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(4isize))[0usize] =
-            ((b4 - b5) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b4 - b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(5isize))[0usize] =
-            ((b6 - b7) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b6 - b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(6isize))[0usize] =
-            ((b4 + b5) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b4 + b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(7isize))[0usize] =
-            ((b6 + b7) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b6 + b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
     }
 }
 unsafe extern "C" fn idct_dequant_2x4_dconly(
@@ -601,23 +601,23 @@ unsafe extern "C" fn idct_dequant_2x4_dconly(
         let mut b5 = a2 - a3;
         let mut b6 = a4 - a5;
         let mut b7 = a6 - a7;
-        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qp / 6i32;
+        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << (i_qp / 6i32);
         *dct.offset(0isize) =
-            ((b0 + b1) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b0 + b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         *dct.offset(1isize) =
-            ((b2 + b3) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b2 + b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         *dct.offset(2isize) =
-            ((b0 - b1) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b0 - b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         *dct.offset(3isize) =
-            ((b2 - b3) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b2 - b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         *dct.offset(4isize) =
-            ((b4 - b5) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b4 - b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         *dct.offset(5isize) =
-            ((b6 - b7) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b6 - b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         *dct.offset(6isize) =
-            ((b4 + b5) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b4 + b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         *dct.offset(7isize) =
-            ((b6 + b7) * dmf + 32i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b6 + b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline(always)]
@@ -652,21 +652,21 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x4(
         let mut b6 = a4 - a5;
         let mut b7 = a6 - a7;
         *out.offset(0isize) =
-            ((b0 + b1) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b0 + b1) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
         *out.offset(1isize) =
-            ((b2 + b3) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b2 + b3) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
         *out.offset(2isize) =
-            ((b0 - b1) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b0 - b1) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
         *out.offset(3isize) =
-            ((b2 - b3) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b2 - b3) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
         *out.offset(4isize) =
-            ((b4 - b5) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b4 - b5) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
         *out.offset(5isize) =
-            ((b6 - b7) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b6 - b7) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
         *out.offset(6isize) =
-            ((b4 + b5) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b4 + b5) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
         *out.offset(7isize) =
-            ((b6 + b7) * dmf + 2080i32 >> 6i32) as crate::src::common::common::dctcoef;
+            (((b6 + b7) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline(always)]
@@ -685,13 +685,13 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x2(
         let mut d3 =
             *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
         *out.offset(0isize) =
-            (((d0 + d1) * dmf >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+            ((((d0 + d1) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
         *out.offset(1isize) =
-            (((d0 - d1) * dmf >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+            ((((d0 - d1) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
         *out.offset(2isize) =
-            (((d2 + d3) * dmf >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+            ((((d2 + d3) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
         *out.offset(3isize) =
-            (((d2 - d3) * dmf >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+            ((((d2 - d3) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline(always)]
@@ -808,7 +808,7 @@ unsafe extern "C" fn denoise_dct(
         while i < size {
             let mut level = *dct.offset(i as isize) as ::core::ffi::c_int;
             let mut sign = level >> 31i32;
-            level = level + sign ^ sign;
+            level = (level + sign) ^ sign;
             let ref mut c2rust_fresh5 = *sum.offset(i as isize);
             *c2rust_fresh5 = (*c2rust_fresh5).wrapping_add(level as crate::stdlib::uint32_t);
             level -= *offset.offset(i as isize) as ::core::ffi::c_int;

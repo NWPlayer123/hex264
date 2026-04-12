@@ -636,15 +636,15 @@ unsafe extern "C" fn idct_dequant_2x2_dc(
             *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
         let mut d3 =
             *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qp / 6i32;
+        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << (i_qp / 6i32);
         (*dct4x4.offset(0isize))[0usize] =
-            ((d0 + d1) * dmf >> 5i32) as crate::src::common::common::dctcoef;
+            (((d0 + d1) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(1isize))[0usize] =
-            ((d0 - d1) * dmf >> 5i32) as crate::src::common::common::dctcoef;
+            (((d0 - d1) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(2isize))[0usize] =
-            ((d2 + d3) * dmf >> 5i32) as crate::src::common::common::dctcoef;
+            (((d2 + d3) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
         (*dct4x4.offset(3isize))[0usize] =
-            ((d2 - d3) * dmf >> 5i32) as crate::src::common::common::dctcoef;
+            (((d2 - d3) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline]
@@ -662,11 +662,11 @@ unsafe extern "C" fn idct_dequant_2x2_dconly(
             *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
         let mut d3 =
             *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qp / 6i32;
-        *dct.offset(0isize) = ((d0 + d1) * dmf >> 5i32) as crate::src::common::common::dctcoef;
-        *dct.offset(1isize) = ((d0 - d1) * dmf >> 5i32) as crate::src::common::common::dctcoef;
-        *dct.offset(2isize) = ((d2 + d3) * dmf >> 5i32) as crate::src::common::common::dctcoef;
-        *dct.offset(3isize) = ((d2 - d3) * dmf >> 5i32) as crate::src::common::common::dctcoef;
+        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << (i_qp / 6i32);
+        *dct.offset(0isize) = (((d0 + d1) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
+        *dct.offset(1isize) = (((d0 - d1) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
+        *dct.offset(2isize) = (((d2 + d3) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
+        *dct.offset(3isize) = (((d2 - d3) * dmf) >> 5i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline]
@@ -1069,7 +1069,7 @@ unsafe extern "C" fn mb_optimize_chroma_dc(
     mut chroma422: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qp / 6i32;
+        let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << (i_qp / 6i32);
         if dmf > 32i32 * 64i32 {
             return 1i32;
         }
@@ -1145,9 +1145,9 @@ unsafe extern "C" fn mb_encode_chroma_internal(
         {
             let mut ssd = [0; 2];
             let mut thresh = if chroma422 != 0 {
-                crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 16i32 >> 5i32
+                (crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 16i32) >> 5i32
             } else {
-                crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 32i32 >> 6i32
+                (crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 32i32) >> 6i32
             };
             let mut chromapix = if chroma422 != 0 {
                 crate::src::common::pixel::PIXEL_8x16 as ::core::ffi::c_int
@@ -2140,7 +2140,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                             (*h).mb.pic.p_fref[0usize][0usize][4usize],
                             (*h).mb.pic.i_stride[1usize] as crate::stdlib::intptr_t,
                             mvx,
-                            2i32 * mvy >> v_shift,
+                            (2i32 * mvy) >> v_shift,
                             8i32,
                             height_0,
                         );
@@ -3128,9 +3128,9 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                 as ::core::ffi::c_int;
             let mut thresh = if chroma422 != 0 {
-                crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 16i32 >> 5i32
+                (crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 16i32) >> 5i32
             } else {
-                crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 32i32 >> 6i32
+                (crate::src::common::tables::x264_lambda2_tab[i_qp as usize] + 32i32) >> 6i32
             };
             if b_bidir == 0 {
                 if (*(&raw mut mvp as *mut crate::src::common::base::x264_union32_t)).i != 0 {
@@ -4019,7 +4019,7 @@ unsafe extern "C" fn macroblock_encode_p8x8_internal(
                             );
                         }
                         let mut offset_0 = if chroma422 != 0 {
-                            (5i32 * i8 & 0x9i32) + 2i32 * i4x4_2
+                            ((5i32 * i8) & 0x9i32) + 2i32 * i4x4_2
                         } else {
                             i8
                         };

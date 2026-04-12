@@ -32,8 +32,10 @@ pub mod common_h {
             let mut cnt = 0i32;
             let mut i = 0i32;
             while i < i_mvc {
-                let mut mx = (*mvc.offset(i as isize))[0usize] as ::core::ffi::c_int + 2i32 >> 2i32;
-                let mut my = (*mvc.offset(i as isize))[1usize] as ::core::ffi::c_int + 2i32 >> 2i32;
+                let mut mx =
+                    ((*mvc.offset(i as isize))[0usize] as ::core::ffi::c_int + 2i32) >> 2i32;
+                let mut my =
+                    ((*mvc.offset(i as isize))[1usize] as ::core::ffi::c_int + 2i32) >> 2i32;
                 let mut mv = pack16to32_mask(mx, my);
                 if !(mv == 0 || mv == pmv) {
                     (*dst.offset(cnt as isize))[0usize] = x264_clip3(
@@ -598,8 +600,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                 mv_y_max * 4i32,
             );
             pmv = pack16to32_mask(bpred_mx, bpred_my);
-            pmx = bpred_mx + 2i32 >> 2i32;
-            pmy = bpred_my + 2i32 >> 2i32;
+            pmx = (bpred_mx + 2i32) >> 2i32;
+            pmy = (bpred_my + 2i32) >> 2i32;
             let mut src = (*h).mc.get_ref.expect("non-null function pointer")(
                 &raw mut pix as *mut crate::src::common::common::pixel,
                 &raw mut stride2,
@@ -671,8 +673,8 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     bpred_cost >>= 4i32;
                 }
             }
-            bmx = bpred_mx + 2i32 >> 2i32;
-            bmy = bpred_my + 2i32 >> 2i32;
+            bmx = (bpred_mx + 2i32) >> 2i32;
+            bmy = (bpred_my + 2i32) >> 2i32;
             bpred_mv = pack16to32_mask(bpred_mx, bpred_my);
             if bpred_mv & 0x30003u32 != 0 {
                 let mut cost_0 =
@@ -714,13 +716,13 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
             }
         } else {
             pmx = x264_clip3(
-                (*m).mvp[0usize] as ::core::ffi::c_int + 2i32 >> 2i32,
+                ((*m).mvp[0usize] as ::core::ffi::c_int + 2i32) >> 2i32,
                 mv_x_min,
                 mv_x_max,
             );
             bmx = pmx;
             pmy = x264_clip3(
-                (*m).mvp[1usize] as ::core::ffi::c_int + 2i32 >> 2i32,
+                ((*m).mvp[1usize] as ::core::ffi::c_int + 2i32) >> 2i32,
                 mv_y_min,
                 mv_y_max,
             );
@@ -971,7 +973,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     let mut ucost2 = 0;
                     let mut cross_start = 1i32;
                     ucost2 = bcost;
-                    if bmx | bmy != 0 && bmx - pmx | bmy - pmy != 0 {
+                    if bmx | bmy != 0 && (bmx - pmx) | (bmy - pmy) != 0 {
                         omx = bmx;
                         omy = bmy;
                         let mut pix_base_7 = p_fref_w
@@ -1563,9 +1565,9 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                                 } else {
                                     3i32
                                 };
-                                i_me_range = i_me_range
+                                i_me_range = (i_me_range
                                     * range_mul[mvd_ctx as usize][sad_ctx as usize]
-                                        as ::core::ffi::c_int
+                                        as ::core::ffi::c_int)
                                     >> 2i32;
                             }
                             let mut i_4 = cross_start;
@@ -2221,7 +2223,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                 } else {
                     mv_y_max
                 };
-                let width = max_x - min_x + 3i32 & !(3i32);
+                let width = (max_x - min_x + 3i32) & !(3i32);
                 let mut sums_base = (*m).integral;
                 let mut sad_size =
                     if i_pixel <= crate::src::common::pixel::PIXEL_8x8 as ::core::ffi::c_int {
@@ -2269,7 +2271,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     let mut nmvsad = 0i32;
                     let mut i_9 = 0i32;
                     let mut mvsads = xs
-                        .offset((width + 31i32 & !(31i32)) as isize)
+                        .offset(((width + 31i32) & !(31i32)) as isize)
                         .offset(4isize)
                         as *mut crate::src::common::common::mvsad_t;
                     let mut sad_thresh = if i_me_range <= 16i32 {
@@ -2306,7 +2308,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                                 cost_fpel_mvx.offset(min_x as isize),
                                 xs,
                                 width,
-                                bsad * 17i32 >> 4i32,
+                                (bsad * 17i32) >> 4i32,
                             );
                             i_6 = 0i32;
                             while i_6 < xn - 2i32 {
@@ -2335,7 +2337,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                                         + *cost_fpel_mvx
                                             .offset(*xs.offset((i_6 + j_0) as isize) as isize)
                                             as ::core::ffi::c_int;
-                                    if sad < bsad * sad_thresh >> 3i32 {
+                                    if sad < (bsad * sad_thresh) >> 3i32 {
                                         if sad < bsad {
                                             bsad = sad;
                                         }
@@ -2367,7 +2369,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                                 ) + *cost_fpel_mvx
                                     .offset(*xs.offset(i_6 as isize) as isize)
                                     as ::core::ffi::c_int;
-                                if sad_0 < bsad * sad_thresh >> 3i32 {
+                                if sad_0 < (bsad * sad_thresh) >> 3i32 {
                                     if sad_0 < bsad {
                                         bsad = sad_0;
                                     }
@@ -2385,10 +2387,10 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                         my_2 += 1;
                     }
                     let mut limit = i_me_range >> 1i32;
-                    sad_thresh = bsad * sad_thresh >> 3i32;
+                    sad_thresh = (bsad * sad_thresh) >> 3i32;
                     while nmvsad > limit * 2i32 && sad_thresh > bsad {
                         let mut i_7 = 0i32;
-                        sad_thresh = sad_thresh + bsad >> 1i32;
+                        sad_thresh = (sad_thresh + bsad) >> 1i32;
                         while i_7 < nmvsad && (*mvsads.offset(i_7 as isize)).sad <= sad_thresh {
                             i_7 += 1;
                         }
@@ -2987,7 +2989,7 @@ unsafe extern "C" fn refine_subpel(
                     (*h).mb.mv_min_spel[1usize] + 2i32,
                     (*h).mb.mv_max_spel[1usize] - 2i32,
                 );
-                if mx - bmx | my - bmy != 0 {
+                if (mx - bmx) | (my - bmy) != 0 {
                     let mut stride = 16isize;
                     let mut src = (*h).mc.get_ref.expect("non-null function pointer")(
                         &raw mut pix as *mut crate::src::common::common::pixel,
@@ -3168,7 +3170,7 @@ unsafe extern "C" fn refine_subpel(
                             (*m).p_fref[4usize],
                             (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                             bmx,
-                            2i32 * (bmy + mvy_offset) >> chroma_v_shift,
+                            (2i32 * (bmy + mvy_offset)) >> chroma_v_shift,
                             bw >> 1i32,
                             bh >> chroma_v_shift,
                         );
@@ -3228,7 +3230,7 @@ unsafe extern "C" fn refine_subpel(
             }
         }
         if !p_halfpel_thresh.is_null() {
-            if bcost * 7i32 >> 3i32 > *p_halfpel_thresh {
+            if (bcost * 7i32) >> 3i32 > *p_halfpel_thresh {
                 (*m).cost = bcost;
                 (*m).mv[0usize] = bmx as crate::stdlib::int16_t;
                 (*m).mv[1usize] = bmy as crate::stdlib::int16_t;
@@ -3331,7 +3333,7 @@ unsafe extern "C" fn refine_subpel(
                                 (*m).p_fref[4usize],
                                 (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                                 omx_0,
-                                2i32 * (omy_0 - 1i32 + mvy_offset) >> chroma_v_shift,
+                                (2i32 * (omy_0 - 1i32 + mvy_offset)) >> chroma_v_shift,
                                 bw >> 1i32,
                                 bh >> chroma_v_shift,
                             );
@@ -3470,7 +3472,7 @@ unsafe extern "C" fn refine_subpel(
                                 (*m).p_fref[4usize],
                                 (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                                 omx_0,
-                                2i32 * (omy_0 + 1i32 + mvy_offset) >> chroma_v_shift,
+                                (2i32 * (omy_0 + 1i32 + mvy_offset)) >> chroma_v_shift,
                                 bw >> 1i32,
                                 bh >> chroma_v_shift,
                             );
@@ -3610,7 +3612,7 @@ unsafe extern "C" fn refine_subpel(
                                 (*m).p_fref[4usize],
                                 (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                                 omx_0 - 1i32,
-                                2i32 * (omy_0 + mvy_offset) >> chroma_v_shift,
+                                (2i32 * (omy_0 + mvy_offset)) >> chroma_v_shift,
                                 bw >> 1i32,
                                 bh >> chroma_v_shift,
                             );
@@ -3750,7 +3752,7 @@ unsafe extern "C" fn refine_subpel(
                                 (*m).p_fref[4usize],
                                 (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                                 omx_0 + 1i32,
-                                2i32 * (omy_0 + mvy_offset) >> chroma_v_shift,
+                                (2i32 * (omy_0 + mvy_offset)) >> chroma_v_shift,
                                 bw >> 1i32,
                                 bh >> chroma_v_shift,
                             );
@@ -4187,7 +4189,7 @@ unsafe extern "C" fn me_refine_bidir(
                                 (*m).p_fref[4usize],
                                 (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                                 mvx,
-                                2i32 * (mvy + mv0y_offset) >> chroma_v_shift,
+                                (2i32 * (mvy + mv0y_offset)) >> chroma_v_shift,
                                 bw >> 1i32,
                                 bh >> chroma_v_shift,
                             );
@@ -4307,7 +4309,7 @@ unsafe extern "C" fn me_refine_bidir(
                                 (*m_0).p_fref[4usize],
                                 (*m_0).i_stride[1usize] as crate::stdlib::intptr_t,
                                 mvx_0,
-                                2i32 * (mvy_0 + mv1y_offset) >> chroma_v_shift,
+                                (2i32 * (mvy_0 + mv1y_offset)) >> chroma_v_shift,
                                 bw >> 1i32,
                                 bh >> chroma_v_shift,
                             );
@@ -4612,13 +4614,15 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
             pixu = (*(&raw mut (*h).mb.pic.p_fdec as *mut *mut crate::src::common::common::pixel)
                 .offset(1isize))
             .offset(
-                ((i8 >> 1i32) * (8i32 * crate::src::common::common::FDEC_STRIDE >> chroma_v_shift)
+                ((i8 >> 1i32)
+                    * ((8i32 * crate::src::common::common::FDEC_STRIDE) >> chroma_v_shift)
                     + (i8 & 1i32) * 4i32) as isize,
             );
             pixv = (*(&raw mut (*h).mb.pic.p_fdec as *mut *mut crate::src::common::common::pixel)
                 .offset(2isize))
             .offset(
-                ((i8 >> 1i32) * (8i32 * crate::src::common::common::FDEC_STRIDE >> chroma_v_shift)
+                ((i8 >> 1i32)
+                    * ((8i32 * crate::src::common::common::FDEC_STRIDE) >> chroma_v_shift)
                     + (i8 & 1i32) * 4i32) as isize,
             );
         } else {
@@ -4707,7 +4711,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         (*m).p_fref[4usize],
                         (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                         bmx,
-                        2i32 * (bmy + mvy_offset) >> chroma_v_shift,
+                        (2i32 * (bmy + mvy_offset)) >> chroma_v_shift,
                         bw >> 1i32,
                         bh >> chroma_v_shift,
                     );
@@ -4825,7 +4829,7 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         (*m).p_fref[4usize],
                         (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                         pmx,
-                        2i32 * (pmy + mvy_offset) >> chroma_v_shift,
+                        (2i32 * (pmy + mvy_offset)) >> chroma_v_shift,
                         bw >> 1i32,
                         bh >> chroma_v_shift,
                     );
@@ -4960,9 +4964,10 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         (*m).p_fref[4usize],
                         (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                         omx + hex2[(j + 1i32) as usize][0usize] as ::core::ffi::c_int,
-                        2i32 * (omy
-                            + hex2[(j + 1i32) as usize][1usize] as ::core::ffi::c_int
-                            + mvy_offset)
+                        (2i32
+                            * (omy
+                                + hex2[(j + 1i32) as usize][1usize] as ::core::ffi::c_int
+                                + mvy_offset))
                             >> chroma_v_shift,
                         bw >> 1i32,
                         bh >> chroma_v_shift,
@@ -5105,9 +5110,11 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                                 (*m).p_fref[4usize],
                                 (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                                 omx + hex2[(odir + j_0) as usize][0usize] as ::core::ffi::c_int,
-                                2i32 * (omy
-                                    + hex2[(odir + j_0) as usize][1usize] as ::core::ffi::c_int
-                                    + mvy_offset)
+                                (2i32
+                                    * (omy
+                                        + hex2[(odir + j_0) as usize][1usize]
+                                            as ::core::ffi::c_int
+                                        + mvy_offset))
                                     >> chroma_v_shift,
                                 bw >> 1i32,
                                 bh >> chroma_v_shift,
@@ -5242,9 +5249,10 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                         (*m).p_fref[4usize],
                         (*m).i_stride[1usize] as crate::stdlib::intptr_t,
                         omx + square1[(i_0 + 1i32) as usize][0usize] as ::core::ffi::c_int,
-                        2i32 * (omy
-                            + square1[(i_0 + 1i32) as usize][1usize] as ::core::ffi::c_int
-                            + mvy_offset)
+                        (2i32
+                            * (omy
+                                + square1[(i_0 + 1i32) as usize][1usize] as ::core::ffi::c_int
+                                + mvy_offset))
                             >> chroma_v_shift,
                         bw >> 1i32,
                         bh >> chroma_v_shift,

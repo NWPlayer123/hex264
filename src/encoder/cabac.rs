@@ -1679,19 +1679,19 @@ unsafe extern "C" fn cabac_cbf_ctxidxinc(
             i_idx -= crate::src::common::base::LUMA_DC;
             if i_cat == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int {
                 let mut i_nza = if (*h).mb.cache.i_cbp_left != -(1i32) {
-                    (*h).mb.cache.i_cbp_left >> 8i32 + i_idx & 1i32
+                    (*h).mb.cache.i_cbp_left >> (8i32 + i_idx) & 1i32
                 } else {
                     b_intra
                 };
                 let mut i_nzb = if (*h).mb.cache.i_cbp_top != -(1i32) {
-                    (*h).mb.cache.i_cbp_top >> 8i32 + i_idx & 1i32
+                    (*h).mb.cache.i_cbp_top >> (8i32 + i_idx) & 1i32
                 } else {
                     b_intra
                 };
                 return base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb + i_nza;
             } else {
-                let mut i_nza_0 = (*h).mb.cache.i_cbp_left >> 8i32 + i_idx & 1i32;
-                let mut i_nzb_0 = (*h).mb.cache.i_cbp_top >> 8i32 + i_idx & 1i32;
+                let mut i_nza_0 = (*h).mb.cache.i_cbp_left >> (8i32 + i_idx) & 1i32;
+                let mut i_nzb_0 = (*h).mb.cache.i_cbp_top >> (8i32 + i_idx) & 1i32;
                 return base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb_0 + i_nza_0;
             }
         } else {
@@ -1703,7 +1703,7 @@ unsafe extern "C" fn cabac_cbf_ctxidxinc(
                 as ::core::ffi::c_int;
             if 0 != 0 && b_intra == 0 {
                 return base_ctx[i_cat as usize] as ::core::ffi::c_int
-                    + (2i32 * i_nzb_1 + i_nza_1 & 0x7fi32);
+                    + ((2i32 * i_nzb_1 + i_nza_1) & 0x7fi32);
             } else {
                 i_nza_1 &= 0x7fi32 + (b_intra << 7i32);
                 i_nzb_1 &= 0x7fi32 + (b_intra << 7i32);

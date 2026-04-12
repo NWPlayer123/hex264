@@ -72,11 +72,11 @@ pub mod base_h {
         mut b: ::core::ffi::c_int,
         mut c: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        let mut t = a - b & a - b >> 31i32;
+        let mut t = (a - b) & ((a - b) >> 31i32);
         a -= t;
         b += t;
-        b -= b - c & b - c >> 31i32;
-        b += a - b & a - b >> 31i32;
+        b -= (b - c) & ((b - c) >> 31i32);
+        b += (a - b) & ((a - b) >> 31i32);
         return b;
     }
     #[inline(always)]
@@ -719,12 +719,12 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
             as ::core::ffi::c_int
             + 1i32;
         let mut width = 4i32
-            >> (crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-                - (*h).mb.i_partition
+            >> ((crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+                - (*h).mb.i_partition)
                 & 1i32);
         let mut height = 4i32
-            >> (crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-                - (*h).mb.i_partition
+            >> ((crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+                - (*h).mb.i_partition)
                 >> 1i32);
         while i8 < max_i8 {
             let mut x8 = i8 & 1i32;
@@ -779,10 +779,10 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
                     let mut mv_y = (*mv_col.offset(1isize) as ::core::ffi::c_int
                         * ((1i32) << yshift)
                         / 2i32) as crate::stdlib::int16_t;
-                    let mut l0x = dist_scale_factor * *mv_col.offset(0isize) as ::core::ffi::c_int
-                        + 128i32
-                        >> 8i32;
-                    let mut l0y = dist_scale_factor * mv_y as ::core::ffi::c_int + 128i32 >> 8i32;
+                    let mut l0x =
+                        (dist_scale_factor * *mv_col.offset(0isize) as ::core::ffi::c_int + 128i32)
+                            >> 8i32;
+                    let mut l0y = (dist_scale_factor * mv_y as ::core::ffi::c_int + 128i32) >> 8i32;
                     if (*h).param.i_threads > 1i32
                         && (l0y > (*h).mb.mv_max_spel[1usize]
                             || l0y - mv_y as ::core::ffi::c_int > (*h).mb.mv_max_spel[1usize])
@@ -1121,12 +1121,12 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
             as ::core::ffi::c_int
             + 1i32;
         let mut width = 4i32
-            >> (crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-                - (*h).mb.i_partition
+            >> ((crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+                - (*h).mb.i_partition)
                 & 1i32);
         let mut height = 4i32
-            >> (crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-                - (*h).mb.i_partition
+            >> ((crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+                - (*h).mb.i_partition)
                 >> 1i32);
         while i8 < max_i8 {
             let x8 = i8 & 1i32;
@@ -1559,7 +1559,7 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                 ) as *mut crate::stdlib::int16_t;
                 (*mvc.offset(i as isize))[0usize] = *mvp.offset(0isize);
                 (*mvc.offset(i as isize))[1usize] =
-                    (*mvp.offset(1isize) as ::core::ffi::c_int * 2i32 >> shift)
+                    ((*mvp.offset(1isize) as ::core::ffi::c_int * 2i32) >> shift)
                         as crate::stdlib::int16_t;
                 i += 1;
             }
@@ -1575,7 +1575,7 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                     as *mut crate::stdlib::int16_t;
                 (*mvc.offset(i as isize))[0usize] = *mvp_0.offset(0isize);
                 (*mvc.offset(i as isize))[1usize] =
-                    (*mvp_0.offset(1isize) as ::core::ffi::c_int * 2i32 >> shift_0)
+                    ((*mvp_0.offset(1isize) as ::core::ffi::c_int * 2i32) >> shift_0)
                         as crate::stdlib::int16_t;
                 i += 1;
             }
@@ -1591,7 +1591,7 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                     as *mut crate::stdlib::int16_t;
                 (*mvc.offset(i as isize))[0usize] = *mvp_1.offset(0isize);
                 (*mvc.offset(i as isize))[1usize] =
-                    (*mvp_1.offset(1isize) as ::core::ffi::c_int * 2i32 >> shift_1)
+                    ((*mvp_1.offset(1isize) as ::core::ffi::c_int * 2i32) >> shift_1)
                         as crate::stdlib::int16_t;
                 i += 1;
             }
@@ -1608,7 +1608,7 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                     as *mut crate::stdlib::int16_t;
                 (*mvc.offset(i as isize))[0usize] = *mvp_2.offset(0isize);
                 (*mvc.offset(i as isize))[1usize] =
-                    (*mvp_2.offset(1isize) as ::core::ffi::c_int * 2i32 >> shift_2)
+                    ((*mvp_2.offset(1isize) as ::core::ffi::c_int * 2i32) >> shift_2)
                         as crate::stdlib::int16_t;
                 i += 1;
             }
@@ -1652,13 +1652,15 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                 * (*l0).inv_ref_poc[((*h).mb.interlaced as ::core::ffi::c_int & field) as usize]
                     as ::core::ffi::c_int;
             (*mvc.offset(i as isize))[0usize] =
-                ((*(*l0).mv16x16.offset(mb_index as isize))[0usize] as ::core::ffi::c_int * scale
-                    + 128i32
+                (((*(*l0).mv16x16.offset(mb_index as isize))[0usize] as ::core::ffi::c_int
+                    * scale
+                    + 128i32)
                     >> 8i32)
                     .saturating_truncate();
             (*mvc.offset(i as isize))[1usize] =
-                ((*(*l0).mv16x16.offset(mb_index as isize))[1usize] as ::core::ffi::c_int * scale
-                    + 128i32
+                (((*(*l0).mv16x16.offset(mb_index as isize))[1usize] as ::core::ffi::c_int
+                    * scale
+                    + 128i32)
                     >> 8i32)
                     .saturating_truncate();
             i += 1;
@@ -1668,15 +1670,15 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                     * (*l0).inv_ref_poc[((*h).mb.interlaced as ::core::ffi::c_int & field) as usize]
                         as ::core::ffi::c_int;
                 (*mvc.offset(i as isize))[0usize] =
-                    ((*(*l0).mv16x16.offset(mb_index_0 as isize))[0usize] as ::core::ffi::c_int
+                    (((*(*l0).mv16x16.offset(mb_index_0 as isize))[0usize] as ::core::ffi::c_int
                         * scale_0
-                        + 128i32
+                        + 128i32)
                         >> 8i32)
                         .saturating_truncate();
                 (*mvc.offset(i as isize))[1usize] =
-                    ((*(*l0).mv16x16.offset(mb_index_0 as isize))[1usize] as ::core::ffi::c_int
+                    (((*(*l0).mv16x16.offset(mb_index_0 as isize))[1usize] as ::core::ffi::c_int
                         * scale_0
-                        + 128i32
+                        + 128i32)
                         >> 8i32)
                         .saturating_truncate();
                 i += 1;
@@ -1687,15 +1689,15 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(
                     * (*l0).inv_ref_poc[((*h).mb.interlaced as ::core::ffi::c_int & field) as usize]
                         as ::core::ffi::c_int;
                 (*mvc.offset(i as isize))[0usize] =
-                    ((*(*l0).mv16x16.offset(mb_index_1 as isize))[0usize] as ::core::ffi::c_int
+                    (((*(*l0).mv16x16.offset(mb_index_1 as isize))[0usize] as ::core::ffi::c_int
                         * scale_1
-                        + 128i32
+                        + 128i32)
                         >> 8i32)
                         .saturating_truncate();
                 (*mvc.offset(i as isize))[1usize] =
-                    ((*(*l0).mv16x16.offset(mb_index_1 as isize))[1usize] as ::core::ffi::c_int
+                    (((*(*l0).mv16x16.offset(mb_index_1 as isize))[1usize] as ::core::ffi::c_int
                         * scale_1
-                        + 128i32
+                        + 128i32)
                         >> 8i32)
                         .saturating_truncate();
                 i += 1;

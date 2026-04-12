@@ -325,7 +325,7 @@ pub mod macroblock_h {
                 as ::core::ffi::c_int;
             let mut i_ret = za + zb;
             if i_ret < 0x80i32 {
-                i_ret = i_ret + 1i32 >> 1i32;
+                i_ret = (i_ret + 1i32) >> 1i32;
             }
             return i_ret & 0x7fi32;
         }
@@ -472,7 +472,8 @@ unsafe extern "C" fn cavlc_block_residual_escape(
             bs_write(
                 s,
                 (i_level_code >> i_suffix_length) + 1i32 + i_suffix_length,
-                (((1i32) << i_suffix_length) + (i_level_code & ((1i32) << i_suffix_length) - 1i32))
+                (((1i32) << i_suffix_length)
+                    + (i_level_code & (((1i32) << i_suffix_length) - 1i32)))
                     as crate::stdlib::uint32_t,
             );
         } else {
@@ -485,8 +486,8 @@ unsafe extern "C" fn cavlc_block_residual_escape(
                 if (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t)).i_profile_idc
                     >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
                 {
-                    while i_level_code >= (1i32) << i_level_prefix - 3i32 {
-                        i_level_code -= (1i32) << i_level_prefix - 3i32;
+                    while i_level_code >= (1i32) << (i_level_prefix - 3i32) {
+                        i_level_code -= (1i32) << (i_level_prefix - 3i32);
                         i_level_prefix += 1;
                     }
                 } else {
@@ -497,7 +498,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
             bs_write(
                 s,
                 i_level_prefix - 3i32,
-                (i_level_code & ((1i32) << i_level_prefix - 3i32) - 1i32)
+                (i_level_code & (((1i32) << (i_level_prefix - 3i32)) - 1i32))
                     as crate::stdlib::uint32_t,
             );
         }
@@ -533,16 +534,16 @@ unsafe extern "C" fn cavlc_block_residual_internal(
         let mut i_total_zero = runlevel.last + 1i32 - i_total;
         runlevel.level[(i_total + 0i32) as usize] = 2i16;
         runlevel.level[(i_total + 1i32) as usize] = 2i16;
-        let mut i_trailing = (runlevel.level[0usize] as ::core::ffi::c_int + 1i32
-            | 1i32 - runlevel.level[0usize] as ::core::ffi::c_int)
+        let mut i_trailing = ((runlevel.level[0usize] as ::core::ffi::c_int + 1i32)
+            | (1i32 - runlevel.level[0usize] as ::core::ffi::c_int))
             >> 31i32
             & 1i32
-            | (runlevel.level[1usize] as ::core::ffi::c_int + 1i32
-                | 1i32 - runlevel.level[1usize] as ::core::ffi::c_int)
+            | ((runlevel.level[1usize] as ::core::ffi::c_int + 1i32)
+                | (1i32 - runlevel.level[1usize] as ::core::ffi::c_int))
                 >> 31i32
                 & 2i32
-            | (runlevel.level[2usize] as ::core::ffi::c_int + 1i32
-                | 1i32 - runlevel.level[2usize] as ::core::ffi::c_int)
+            | ((runlevel.level[2usize] as ::core::ffi::c_int + 1i32)
+                | (1i32 - runlevel.level[2usize] as ::core::ffi::c_int))
                 >> 31i32
                 & 4i32;
         i_trailing = ctz_index[i_trailing as usize] as ::core::ffi::c_int;

@@ -345,8 +345,8 @@ pub unsafe extern "C" fn x264_malloc(
                 i_size as crate::__stddef_size_t_h::size_t,
             ) as *mut crate::stdlib::uint8_t;
             if !align_buf.is_null() {
-                let mut madv_size = (i_size + HUGE_PAGE_SIZE as crate::stdlib::int64_t
-                    - (HUGE_PAGE_SIZE * 7i32 / 8i32) as crate::stdlib::int64_t
+                let mut madv_size = ((i_size + HUGE_PAGE_SIZE as crate::stdlib::int64_t
+                    - (HUGE_PAGE_SIZE * 7i32 / 8i32) as crate::stdlib::int64_t)
                     & !(HUGE_PAGE_SIZE - 1i32) as crate::stdlib::int64_t)
                     as crate::__stddef_size_t_h::size_t;
                 crate::stdlib::madvise(
@@ -393,8 +393,7 @@ pub unsafe extern "C" fn x264_slurp_file(
         let mut i_size = crate::stdlib::ftello(fh);
         b_error |= (i_size <= 0i64) as ::core::ffi::c_int;
         if crate::osdep_h::WORD_SIZE == 4i32 {
-            b_error |=
-                (i_size > i32::MAX as crate::stdlib::int64_t) as ::core::ffi::c_int;
+            b_error |= (i_size > i32::MAX as crate::stdlib::int64_t) as ::core::ffi::c_int;
         }
         b_error |=
             (crate::stdlib::fseeko(fh, 0i64, crate::stdlib::SEEK_SET) < 0i32) as ::core::ffi::c_int;
@@ -642,13 +641,13 @@ pub unsafe extern "C" fn x264_picture_alloc(
             1i32
         };
         while i < (*pic).img.i_plane {
-            let mut stride = ((i_width as crate::stdlib::int64_t
-                * csp_tab[csp as usize].width_fix8[i as usize] as crate::stdlib::int64_t
+            let mut stride = (((i_width as crate::stdlib::int64_t
+                * csp_tab[csp as usize].width_fix8[i as usize] as crate::stdlib::int64_t)
                 >> 8i32)
                 * depth_factor as crate::stdlib::int64_t)
                 as ::core::ffi::c_int;
-            let mut plane_size = (i_height as crate::stdlib::int64_t
-                * csp_tab[csp as usize].height_fix8[i as usize] as crate::stdlib::int64_t
+            let mut plane_size = ((i_height as crate::stdlib::int64_t
+                * csp_tab[csp as usize].height_fix8[i as usize] as crate::stdlib::int64_t)
                 >> 8i32)
                 * stride as crate::stdlib::int64_t;
             (*pic).img.i_stride[i as usize] = stride;

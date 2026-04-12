@@ -544,7 +544,7 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
                 let mut avg_adj_pow2 = 0.0;
                 let mut mb_y_0 = 0i32;
                 let mut bit_depth_correction = 1.0
-                    / ((1i32) << 2i32 * (crate::internal::BIT_DEPTH - 8i32))
+                    / ((1i32) << (2i32 * (crate::internal::BIT_DEPTH - 8i32)))
                         as ::core::ffi::c_float;
                 while mb_y_0 < (*h).mb.i_mb_height {
                     let mut mb_x_0 = 0i32;
@@ -609,14 +609,14 @@ pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
         while i_0 < 3i32 {
             let mut ssd = (*frame).i_pixel_ssd[i_0 as usize];
             let mut sum = (*frame).i_pixel_sum[i_0 as usize] as crate::stdlib::uint64_t;
-            let mut width = 16i32 * (*h).mb.i_mb_width
+            let mut width = (16i32 * (*h).mb.i_mb_width)
                 >> (i_0 != 0
                     && (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                         || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int))
                     as ::core::ffi::c_int;
-            let mut height = 16i32 * (*h).mb.i_mb_height
+            let mut height = (16i32 * (*h).mb.i_mb_height)
                 >> (i_0 != 0
                     && crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
@@ -652,8 +652,8 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
             crate::stdlib::ceil(dstdim[1usize] as ::core::ffi::c_double) as ::core::ffi::c_int,
         ];
         if (*h).param.interlaced || (*h).param.fake_interlaced {
-            srcdimi[1usize] = srcdimi[1usize] + 1i32 & !(1i32);
-            dstdimi[1usize] = dstdimi[1usize] + 1i32 & !(1i32);
+            srcdimi[1usize] = (srcdimi[1usize] + 1i32) & !(1i32);
+            dstdimi[1usize] = (dstdimi[1usize] + 1i32) & !(1i32);
         }
         (*rc).mbtree.src_mb_count = srcdimi[0usize] * srcdimi[1usize];
         (*rc).mbtree.qp_buffer[0usize] = crate::src::common::base::x264_malloc(
@@ -1158,11 +1158,11 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     .vui
                     .hrd
                     .i_bit_rate_value = vbv_max_bitrate
-                    >> (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
+                    >> ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .hrd
                         .i_bit_rate_scale
-                        + BR_SHIFT;
+                        + BR_SHIFT);
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
@@ -1171,11 +1171,11 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     .vui
                     .hrd
                     .i_bit_rate_value
-                    << (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
+                    << ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .hrd
                         .i_bit_rate_scale
-                        + BR_SHIFT;
+                        + BR_SHIFT);
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
@@ -1188,11 +1188,11 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     .vui
                     .hrd
                     .i_cpb_size_value = vbv_buffer_size
-                    >> (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
+                    >> ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .hrd
                         .i_cpb_size_scale
-                        + CPB_SHIFT;
+                        + CPB_SHIFT);
                 (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                     .vui
                     .hrd
@@ -1201,11 +1201,11 @@ pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
                     .vui
                     .hrd
                     .i_cpb_size_value
-                    << (*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
+                    << ((*(&raw mut (*h).sps as *mut crate::src::common::set::x264_sps_t))
                         .vui
                         .hrd
                         .i_cpb_size_scale
-                        + CPB_SHIFT;
+                        + CPB_SHIFT);
                 let mut max_cpb_output_delay = (if ((*h).param.i_keyint_max
                     as ::core::ffi::c_double
                     * 0.5

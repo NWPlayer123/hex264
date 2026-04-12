@@ -287,11 +287,11 @@ pub mod base_h {
         mut b: ::core::ffi::c_int,
         mut c: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        let mut t = a - b & a - b >> 31i32;
+        let mut t = (a - b) & ((a - b) >> 31i32);
         a -= t;
         b += t;
-        b -= b - c & b - c >> 31i32;
-        b += a - b & a - b >> 31i32;
+        b -= (b - c) & ((b - c) >> 31i32);
+        b += (a - b) & ((a - b) >> 31i32);
         return b;
     }
     #[inline(always)]
@@ -564,7 +564,7 @@ pub mod macroblock_h {
                 as ::core::ffi::c_int;
             let mut i_ret = za + zb;
             if i_ret < 0x80i32 {
-                i_ret = i_ret + 1i32 >> 1i32;
+                i_ret = (i_ret + 1i32) >> 1i32;
             }
             return i_ret & 0x7fi32;
         }
@@ -736,10 +736,10 @@ pub mod rdo_c {
                             - cached_satd(h, size, x, y),
                     );
                 }
-                let mut tmp = satd as crate::stdlib::int64_t
+                let mut tmp = (satd as crate::stdlib::int64_t
                     * (*h).mb.i_psy_rd as crate::stdlib::int64_t
                     * (*h).mb.i_psy_rd_lambda as crate::stdlib::int64_t
-                    + 128i64
+                    + 128i64)
                     >> 8i32;
                 satd = (if tmp < ((1i32) << 28i32) as crate::stdlib::int64_t {
                     tmp
@@ -799,7 +799,7 @@ pub mod rdo_c {
             if (*h).mb.i_type == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
                 || (*h).mb.i_type == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int
             {
-                i_bits = 1i32 * i_lambda2 + 128i32 >> 8i32;
+                i_bits = (1i32 * i_lambda2 + 128i32) >> 8i32;
             } else if (*h).param.cabac {
                 let mut cabac_tmp = crate::src::common::cabac::x264_cabac_t {
                     i_low: 0,
@@ -1338,9 +1338,9 @@ pub mod rdo_c {
             let mut q = crate::stdlib::abs(quant_coef);
             let mut abs_level = q - 1i32;
             while abs_level <= q {
-                let mut unquant_abs_level = unquant_mf * abs_level + 128i32 >> 8i32;
+                let mut unquant_abs_level = (unquant_mf * abs_level + 128i32) >> 8i32;
                 let mut d = sign_coef
-                    - ((unquant_abs_level ^ sign_coef >> 31i32) - (sign_coef >> 31i32) + 8i32
+                    - (((unquant_abs_level ^ sign_coef >> 31i32) - (sign_coef >> 31i32) + 8i32)
                         & !(15i32));
                 let mut score = (d as crate::stdlib::int64_t
                     * d as crate::stdlib::int64_t
@@ -1372,7 +1372,7 @@ pub mod rdo_c {
                     score = score.wrapping_add(
                         (f8_bits as crate::stdlib::uint64_t)
                             .wrapping_mul(lambda2 as crate::stdlib::uint64_t)
-                            >> crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS,
+                            >> (crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS),
                     );
                 }
                 if score < bscore {
@@ -1438,7 +1438,7 @@ pub mod rdo_c {
             score = score.wrapping_add(
                 (f8_bits as crate::stdlib::uint64_t)
                     .wrapping_mul(lambda2 as crate::stdlib::uint64_t)
-                    >> crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS,
+                    >> (crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS),
             );
             if score < (*nodes_cur.offset(node_ctx as isize)).score {
                 (*nodes_cur.offset(node_ctx as isize)).score = score;
@@ -2426,7 +2426,7 @@ pub mod rdo_c {
                             0i64,
                         ) as crate::stdlib::uint64_t)
                             .wrapping_mul(lambda2 as crate::stdlib::uint64_t)
-                            >> crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS;
+                            >> (crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS);
                         let ref mut c2rust_fresh0 = (*nodes_cur.offset(0isize)).score;
                         *c2rust_fresh0 = (*c2rust_fresh0).wrapping_sub(cost_sig0);
                     }
@@ -2514,12 +2514,12 @@ pub mod rdo_c {
                     }
                     while k < 2i32 {
                         let mut abs_level = q - 1i32 + k;
-                        let mut unquant_abs_level = (if dc != 0 {
+                        let mut unquant_abs_level = ((if dc != 0 {
                             *unquant_mf.offset(0isize) << 1i32
                         } else {
                             *unquant_mf.offset(*zigzag.offset(i_0 as isize) as isize)
                         }) * abs_level
-                            + 128i32
+                            + 128i32)
                             >> 8i32;
                         let mut d = abs_coef - unquant_abs_level;
                         if (*h).mb.i_psy_trellis != 0 && i_0 != 0 && dc == 0 && b_chroma == 0 {
@@ -2562,8 +2562,9 @@ pub mod rdo_c {
                         ssd0[k as usize] = ssd1[k as usize];
                         if i_0 == 0 && dc == 0 && 0i32 == 0 {
                             d = sign_coef
-                                - ((unquant_abs_level ^ sign_coef >> 31i32) - (sign_coef >> 31i32)
-                                    + 8i32
+                                - (((unquant_abs_level ^ sign_coef >> 31i32)
+                                    - (sign_coef >> 31i32)
+                                    + 8i32)
                                     & !(15i32));
                             ssd0[k as usize] = (d as crate::stdlib::int64_t
                                 * d as crate::stdlib::int64_t
@@ -2578,7 +2579,7 @@ pub mod rdo_c {
                             ssd1[0usize] = ssd1[0usize].wrapping_add(
                                 (cost_siglast[0usize] as crate::stdlib::uint64_t)
                                     .wrapping_mul(lambda2 as crate::stdlib::uint64_t)
-                                    >> crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS,
+                                    >> (crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS),
                             );
                             levels_used = trellis_coef0_0(
                                 ssd0[0usize].wrapping_sub(ssd1[0usize]),
@@ -2688,7 +2689,7 @@ pub mod rdo_c {
                                 )
                                     as crate::stdlib::uint64_t)
                                     .wrapping_mul(lambda2 as crate::stdlib::uint64_t)
-                                    >> crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS;
+                                    >> (crate::rdo_c::CABAC_SIZE_BITS - crate::rdo_c::LAMBDA_BITS);
                                 let ref mut c2rust_fresh1 = (*nodes_cur.offset(0isize)).score;
                                 *c2rust_fresh1 = (*c2rust_fresh1).wrapping_sub(cost_sig0_0);
                             }
@@ -2781,12 +2782,12 @@ pub mod rdo_c {
                             }
                             while k_0 < 2i32 {
                                 let mut abs_level_0 = q_0 - 1i32 + k_0;
-                                let mut unquant_abs_level_0 = (if dc != 0 {
+                                let mut unquant_abs_level_0 = ((if dc != 0 {
                                     *unquant_mf.offset(0isize) << 1i32
                                 } else {
                                     *unquant_mf.offset(*zigzag.offset(i_0 as isize) as isize)
                                 }) * abs_level_0
-                                    + 128i32
+                                    + 128i32)
                                     >> 8i32;
                                 let mut d_0 = abs_coef_0 - unquant_abs_level_0;
                                 if (*h).mb.i_psy_trellis != 0
@@ -2836,9 +2837,9 @@ pub mod rdo_c {
                                 ssd0_0[k_0 as usize] = ssd1_0[k_0 as usize];
                                 if i_0 == 0 && dc == 0 && 1i32 == 0 {
                                     d_0 = sign_coef_0
-                                        - ((unquant_abs_level_0 ^ sign_coef_0 >> 31i32)
+                                        - (((unquant_abs_level_0 ^ sign_coef_0 >> 31i32)
                                             - (sign_coef_0 >> 31i32)
-                                            + 8i32
+                                            + 8i32)
                                             & !(15i32));
                                     ssd0_0[k_0 as usize] = (d_0 as crate::stdlib::int64_t
                                         * d_0 as crate::stdlib::int64_t
@@ -2854,8 +2855,8 @@ pub mod rdo_c {
                                     ssd1_0[0usize] = ssd1_0[0usize].wrapping_add(
                                         (cost_siglast_0[0usize] as crate::stdlib::uint64_t)
                                             .wrapping_mul(lambda2 as crate::stdlib::uint64_t)
-                                            >> crate::rdo_c::CABAC_SIZE_BITS
-                                                - crate::rdo_c::LAMBDA_BITS,
+                                            >> (crate::rdo_c::CABAC_SIZE_BITS
+                                                - crate::rdo_c::LAMBDA_BITS),
                                     );
                                     levels_used = trellis_coef0_1(
                                         ssd0_0[0usize].wrapping_sub(ssd1_0[0usize]),
@@ -3079,41 +3080,41 @@ pub mod rdo_c {
                         *dct.offset(*zigzag.offset(j as isize) as isize) as ::core::ffi::c_int;
                     let mut abs_coef = crate::stdlib::abs(coef);
                     let mut sign = if coef < 0i32 { -(1i32) } else { 1i32 };
-                    let mut nearest_quant = f + abs_coef
+                    let mut nearest_quant = (f + abs_coef
                         * (if dc != 0 {
                             *quant_mf.offset(0isize) as ::core::ffi::c_int >> 1i32
                         } else {
                             *quant_mf.offset(*zigzag.offset(j as isize) as isize)
                                 as ::core::ffi::c_int
-                        })
+                        }))
                         >> 16i32;
                     quant_coefs[0usize][i as usize] =
                         (sign * nearest_quant) as crate::src::common::common::dctcoef;
                     quant_coefs[1usize][i as usize] = quant_coefs[0usize][i as usize];
                     coefs[i as usize] = quant_coefs[1usize][i as usize];
                     if nearest_quant != 0 {
-                        let mut deadzone_quant = f / 2i32
+                        let mut deadzone_quant = (f / 2i32
                             + abs_coef
                                 * (if dc != 0 {
                                     *quant_mf.offset(0isize) as ::core::ffi::c_int >> 1i32
                                 } else {
                                     *quant_mf.offset(*zigzag.offset(j as isize) as isize)
                                         as ::core::ffi::c_int
-                                })
+                                }))
                             >> 16i32;
-                        let mut unquant1 = (if dc != 0 {
+                        let mut unquant1 = ((if dc != 0 {
                             *unquant_mf.offset(0isize) << 1i32
                         } else {
                             *unquant_mf.offset(*zigzag.offset(j as isize) as isize)
                         }) * (nearest_quant - 0i32)
-                            + 128i32
+                            + 128i32)
                             >> 8i32;
-                        let mut unquant0 = (if dc != 0 {
+                        let mut unquant0 = ((if dc != 0 {
                             *unquant_mf.offset(0isize) << 1i32
                         } else {
                             *unquant_mf.offset(*zigzag.offset(j as isize) as isize)
                         }) * (nearest_quant - 1i32)
-                            + 128i32
+                            + 128i32)
                             >> 8i32;
                         let mut d1 = abs_coef - unquant1;
                         let mut d0 = abs_coef - unquant0;
@@ -3702,7 +3703,7 @@ pub mod slicetype_c {
                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                 as ::core::ffi::c_int;
             let mut cw = 8i32 * (*h).mb.i_mb_width;
-            let mut ch = 16i32 * (*h).mb.i_mb_height >> v_shift;
+            let mut ch = (16i32 * (*h).mb.i_mb_height) >> v_shift;
             let mut height = 16i32 >> v_shift;
             if (*(*fenc).lowres_mvs[0usize][ref0_distance as usize].offset(0isize))[0usize]
                 as ::core::ffi::c_int
@@ -3738,7 +3739,7 @@ pub mod slicetype_c {
                             src1,
                             i_stride as crate::stdlib::intptr_t,
                             mvx,
-                            2i32 * mvy >> v_shift,
+                            (2i32 * mvy) >> v_shift,
                             8i32,
                             height,
                         );
@@ -4152,14 +4153,14 @@ pub mod slicetype_c {
                         / ((*fenc).i_lines[(plane != 0) as ::core::ffi::c_int as usize]
                             * (*fenc).i_width[(plane != 0) as ::core::ffi::c_int as usize])
                             as ::core::ffi::c_float
-                        / ((1i32) << crate::internal::BIT_DEPTH - 8i32) as ::core::ffi::c_float;
+                        / ((1i32) << (crate::internal::BIT_DEPTH - 8i32)) as ::core::ffi::c_float;
                     ref_mean[plane as usize] = (*ref_0).i_pixel_sum[plane as usize]
                         .wrapping_add(zero_bias as crate::stdlib::uint32_t)
                         as ::core::ffi::c_float
                         / ((*fenc).i_lines[(plane != 0) as ::core::ffi::c_int as usize]
                             * (*fenc).i_width[(plane != 0) as ::core::ffi::c_int as usize])
                             as ::core::ffi::c_float
-                        / ((1i32) << crate::internal::BIT_DEPTH - 8i32) as ::core::ffi::c_float;
+                        / ((1i32) << (crate::internal::BIT_DEPTH - 8i32)) as ::core::ffi::c_float;
                 } else {
                     guess_scale[plane as usize] = 1f32;
                     fenc_mean[plane as usize] = 0f32;
@@ -5213,10 +5214,12 @@ pub mod slicetype_c {
                         .offset(i_mb_xy as isize)
                             as *mut crate::stdlib::int16_t;
                         dmv[0usize][0usize] =
-                            (*mvr.offset(0isize) as ::core::ffi::c_int * dist_scale_factor + 128i32
+                            ((*mvr.offset(0isize) as ::core::ffi::c_int * dist_scale_factor
+                                + 128i32)
                                 >> 8i32) as crate::stdlib::int16_t;
                         dmv[0usize][1usize] =
-                            (*mvr.offset(1isize) as ::core::ffi::c_int * dist_scale_factor + 128i32
+                            ((*mvr.offset(1isize) as ::core::ffi::c_int * dist_scale_factor
+                                + 128i32)
                                 >> 8i32) as crate::stdlib::int16_t;
                         dmv[1usize][0usize] = (dmv[0usize][0usize] as ::core::ffi::c_int
                             - *mvr.offset(0isize) as ::core::ffi::c_int)
@@ -5710,15 +5713,15 @@ pub mod slicetype_c {
                         i_0 += 1;
                     }
                 }
-                i_icost =
-                    (i_icost + intra_penalty >> crate::internal::BIT_DEPTH - 8i32) + lowres_penalty;
+                i_icost = ((i_icost + intra_penalty) >> (crate::internal::BIT_DEPTH - 8i32))
+                    + lowres_penalty;
                 *(*fenc).i_intra_cost.offset(i_mb_xy as isize) = i_icost as crate::stdlib::uint16_t;
                 let mut i_icost_aq = i_icost;
                 if (*h).param.rc.i_aq_mode != 0 {
-                    i_icost_aq = i_icost_aq
+                    i_icost_aq = (i_icost_aq
                         * *(*fenc).i_inv_qscale_factor.offset(i_mb_xy as isize)
                             as ::core::ffi::c_int
-                        + 128i32
+                        + 128i32)
                         >> 8i32;
                 }
                 *output_intra.offset(
@@ -5730,7 +5733,7 @@ pub mod slicetype_c {
                     *output_intra.offset(crate::slicetype_c::COST_EST_AQ as isize) += i_icost_aq;
                 }
             }
-            i_bcost = (i_bcost >> crate::internal::BIT_DEPTH - 8i32) + lowres_penalty;
+            i_bcost = (i_bcost >> (crate::internal::BIT_DEPTH - 8i32)) + lowres_penalty;
             if b_bidir == 0 {
                 let mut i_icost_0 =
                     *(*fenc).i_intra_cost.offset(i_mb_xy as isize) as ::core::ffi::c_int;
@@ -5746,10 +5749,10 @@ pub mod slicetype_c {
             if p0 != p1 {
                 let mut i_bcost_aq = i_bcost;
                 if (*h).param.rc.i_aq_mode != 0 {
-                    i_bcost_aq = i_bcost_aq
+                    i_bcost_aq = (i_bcost_aq
                         * *(*fenc).i_inv_qscale_factor.offset(i_mb_xy as isize)
                             as ::core::ffi::c_int
-                        + 128i32
+                        + 128i32)
                         >> 8i32;
                 }
                 *output_inter.offset(
@@ -5865,7 +5868,7 @@ pub mod slicetype_c {
                         [0usize] = 0i16;
                 }
                 if p1 != p0 {
-                    dist_scale_factor = ((b - p0 << 8i32) + (p1 - p0 >> 1i32)) / (p1 - p0);
+                    dist_scale_factor = (((b - p0) << 8i32) + ((p1 - p0) >> 1i32)) / (p1 - p0);
                 }
                 let mut output_buf_size = (*h).mb.i_mb_height
                     + (crate::slicetype_c::NUM_INTS + crate::slicetype_c::PAD_SIZE)
@@ -6112,7 +6115,7 @@ pub mod slicetype_c {
                         as ::core::ffi::c_int
                         & crate::src::common::frame::LOWRES_COST_MASK;
                     let mut qp_adj = *qp_offset.offset(i_mb_xy as isize);
-                    i_mb_cost = i_mb_cost * x264_exp2fix8(qp_adj) + 128i32 >> 8i32;
+                    i_mb_cost = (i_mb_cost * x264_exp2fix8(qp_adj) + 128i32) >> 8i32;
                     *row_satd.offset((*h).mb.i_mb_y as isize) += i_mb_cost;
                     if (*h).mb.i_mb_y > 0i32
                         && (*h).mb.i_mb_y < (*h).mb.i_mb_height - 1i32
@@ -6169,16 +6172,17 @@ pub mod slicetype_c {
             }
             let mut strength = 5.0 * (1.0 - (*h).param.rc.f_qcompress);
             while mb_index < (*h).mb.i_mb_count {
-                let mut intra_cost = *(*frame).i_intra_cost.offset(mb_index as isize)
+                let mut intra_cost = (*(*frame).i_intra_cost.offset(mb_index as isize)
                     as ::core::ffi::c_int
-                    * *(*frame).i_inv_qscale_factor.offset(mb_index as isize) as ::core::ffi::c_int
-                    + 128i32
+                    * *(*frame).i_inv_qscale_factor.offset(mb_index as isize)
+                        as ::core::ffi::c_int
+                    + 128i32)
                     >> 8i32;
                 if intra_cost != 0 {
-                    let mut propagate_cost = *(*frame).i_propagate_cost.offset(mb_index as isize)
+                    let mut propagate_cost = (*(*frame).i_propagate_cost.offset(mb_index as isize)
                         as ::core::ffi::c_int
                         * fps_factor
-                        + 128i32
+                        + 128i32)
                         >> 8i32;
                     let mut log2_ratio =
                         x264_log2((intra_cost + propagate_cost) as crate::stdlib::uint32_t)
@@ -6205,7 +6209,7 @@ pub mod slicetype_c {
                 (**frames.offset(p0 as isize)).i_propagate_cost,
                 (**frames.offset(p1 as isize)).i_propagate_cost,
             ];
-            let mut dist_scale_factor = ((b - p0 << 8i32) + (p1 - p0 >> 1i32)) / (p1 - p0);
+            let mut dist_scale_factor = (((b - p0) << 8i32) + ((p1 - p0) >> 1i32)) / (p1 - p0);
             let mut i_bipred_weight = if (*h).param.analyse.weighted_bipred {
                 64i32 - (dist_scale_factor >> 2i32)
             } else {
@@ -8828,10 +8832,10 @@ pub mod slicetype_c {
                     let mut mb_xy = y * (*h).mb.i_mb_stride + (*(*h).fdec).i_pir_start_col;
                     let mut x = (*(*h).fdec).i_pir_start_col;
                     while x <= (*(*h).fdec).i_pir_end_col {
-                        let mut intra_cost = *(*(*h).fenc).i_intra_cost.offset(mb_xy as isize)
+                        let mut intra_cost = (*(*(*h).fenc).i_intra_cost.offset(mb_xy as isize)
                             as ::core::ffi::c_int
                             * ip_factor
-                            + 128i32
+                            + 128i32)
                             >> 8i32;
                         let mut inter_cost = *(*(*h).fenc).lowres_costs[(b - p0) as usize]
                             [(p1 - b) as usize]
@@ -8840,12 +8844,12 @@ pub mod slicetype_c {
                             & crate::src::common::frame::LOWRES_COST_MASK;
                         let mut diff = intra_cost - inter_cost;
                         if (*h).param.rc.i_aq_mode != 0 {
-                            *(*(*h).fdec).i_row_satd.offset(y as isize) += diff
+                            *(*(*h).fdec).i_row_satd.offset(y as isize) += (diff
                                 * *(**frames.offset(b as isize))
                                     .i_inv_qscale_factor
                                     .offset(mb_xy as isize)
                                     as ::core::ffi::c_int
-                                + 128i32
+                                + 128i32)
                                 >> 8i32;
                         } else {
                             *(*(*h).fdec).i_row_satd.offset(y as isize) += diff;
@@ -10655,19 +10659,19 @@ pub mod cabac_c {
                 i_idx -= crate::src::common::base::LUMA_DC;
                 if i_cat == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int {
                     let mut i_nza = if (*h).mb.cache.i_cbp_left != -(1i32) {
-                        (*h).mb.cache.i_cbp_left >> 8i32 + i_idx & 1i32
+                        (*h).mb.cache.i_cbp_left >> (8i32 + i_idx) & 1i32
                     } else {
                         b_intra
                     };
                     let mut i_nzb = if (*h).mb.cache.i_cbp_top != -(1i32) {
-                        (*h).mb.cache.i_cbp_top >> 8i32 + i_idx & 1i32
+                        (*h).mb.cache.i_cbp_top >> (8i32 + i_idx) & 1i32
                     } else {
                         b_intra
                     };
                     return base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb + i_nza;
                 } else {
-                    let mut i_nza_0 = (*h).mb.cache.i_cbp_left >> 8i32 + i_idx & 1i32;
-                    let mut i_nzb_0 = (*h).mb.cache.i_cbp_top >> 8i32 + i_idx & 1i32;
+                    let mut i_nza_0 = (*h).mb.cache.i_cbp_left >> (8i32 + i_idx) & 1i32;
+                    let mut i_nzb_0 = (*h).mb.cache.i_cbp_top >> (8i32 + i_idx) & 1i32;
                     return base_ctx[i_cat as usize] as ::core::ffi::c_int
                         + 2i32 * i_nzb_0
                         + i_nza_0;
@@ -10681,7 +10685,7 @@ pub mod cabac_c {
                     as ::core::ffi::c_int;
                 if 0 != 0 && b_intra == 0 {
                     return base_ctx[i_cat as usize] as ::core::ffi::c_int
-                        + (2i32 * i_nzb_1 + i_nza_1 & 0x7fi32);
+                        + ((2i32 * i_nzb_1 + i_nza_1) & 0x7fi32);
                 } else {
                     i_nza_1 &= 0x7fi32 + (b_intra << 7i32);
                     i_nzb_1 &= 0x7fi32 + (b_intra << 7i32);
@@ -11958,7 +11962,7 @@ pub mod cabac_c {
                     if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
                     {
-                        let mut offset = 5i32 * i8 & 0x9i32;
+                        let mut offset = (5i32 * i8) & 0x9i32;
                         let mut ctxidxinc_1 = cabac_cbf_ctxidxinc(
                             h,
                             crate::src::common::macroblock::DCT_CHROMA_AC as ::core::ffi::c_int,
@@ -12576,8 +12580,8 @@ pub mod cavlc_c {
                         .i_profile_idc
                         >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
                     {
-                        while i_level_code >= (1i32) << i_level_prefix - 3i32 {
-                            i_level_code -= (1i32) << i_level_prefix - 3i32;
+                        while i_level_code >= (1i32) << (i_level_prefix - 3i32) {
+                            i_level_code -= (1i32) << (i_level_prefix - 3i32);
                             i_level_prefix += 1;
                         }
                     } else {
@@ -12620,16 +12624,16 @@ pub mod cavlc_c {
             let mut i_total_zero = runlevel.last + 1i32 - i_total;
             runlevel.level[(i_total + 0i32) as usize] = 2i16;
             runlevel.level[(i_total + 1i32) as usize] = 2i16;
-            let mut i_trailing = (runlevel.level[0usize] as ::core::ffi::c_int + 1i32
-                | 1i32 - runlevel.level[0usize] as ::core::ffi::c_int)
+            let mut i_trailing = ((runlevel.level[0usize] as ::core::ffi::c_int + 1i32)
+                | (1i32 - runlevel.level[0usize] as ::core::ffi::c_int))
                 >> 31i32
                 & 1i32
-                | (runlevel.level[1usize] as ::core::ffi::c_int + 1i32
-                    | 1i32 - runlevel.level[1usize] as ::core::ffi::c_int)
+                | ((runlevel.level[1usize] as ::core::ffi::c_int + 1i32)
+                    | (1i32 - runlevel.level[1usize] as ::core::ffi::c_int))
                     >> 31i32
                     & 2i32
-                | (runlevel.level[2usize] as ::core::ffi::c_int + 1i32
-                    | 1i32 - runlevel.level[2usize] as ::core::ffi::c_int)
+                | ((runlevel.level[2usize] as ::core::ffi::c_int + 1i32)
+                    | (1i32 - runlevel.level[2usize] as ::core::ffi::c_int))
                     >> 31i32
                     & 4i32;
             i_trailing = ctz_index[i_trailing as usize] as ::core::ffi::c_int;
@@ -13736,7 +13740,7 @@ pub mod cavlc_c {
                     if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
                     {
-                        let mut offset = 5i32 * i8 & 0x9i32;
+                        let mut offset = (5i32 * i8) & 0x9i32;
                         let mut nC = if crate::src::common::macroblock::DCT_CHROMA_AC
                             as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
@@ -14913,15 +14917,15 @@ unsafe extern "C" fn mb_analyse_init(
         let mut pcm_cost = ((256i32 * 8i32
             + 2i32
                 * (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
-                    256i32 * 8i32
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                    (256i32 * 8i32)
+                        >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int
                             + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                                as ::core::ffi::c_int)
                 } else {
                     0i32
                 })
@@ -15924,8 +15928,8 @@ unsafe extern "C" fn mb_analyse_intra(
             static mut i16x16_thresh_lut: [crate::stdlib::uint8_t; 11] =
                 [2u8, 2u8, 2u8, 3u8, 3u8, 4u8, 4u8, 4u8, 4u8, 4u8, 4u8];
             let mut i16x16_thresh = if (*a).fast_intra {
-                i16x16_thresh_lut[(*h).mb.i_subpel_refine as usize] as ::core::ffi::c_int
-                    * i_satd_inter
+                (i16x16_thresh_lut[(*h).mb.i_subpel_refine as usize] as ::core::ffi::c_int
+                    * i_satd_inter)
                     >> 1i32
             } else {
                 crate::src::encoder::me::COST_MAX
@@ -16277,7 +16281,7 @@ unsafe extern "C" fn mb_analyse_intra(
             } else {
                 static mut cost_div_fix8: [crate::stdlib::uint16_t; 3] = [1024u16, 512u16, 341u16];
                 (*a).i_satd_i8x8 = crate::src::encoder::me::COST_MAX;
-                i_cost = i_cost * cost_div_fix8[idx as usize] as ::core::ffi::c_int >> 8i32;
+                i_cost = (i_cost * cost_div_fix8[idx as usize] as ::core::ffi::c_int) >> 8i32;
             }
             static mut i8x8_thresh: [crate::stdlib::uint8_t; 11] =
                 [4u8, 4u8, 4u8, 5u8, 5u8, 5u8, 6u8, 6u8, 6u8, 6u8, 6u8];
@@ -16286,8 +16290,8 @@ unsafe extern "C" fn mb_analyse_intra(
                     i_cost
                 } else {
                     (*a).i_satd_i16x16
-                }) > i_satd_inter
-                    * i8x8_thresh[(*h).mb.i_subpel_refine as usize] as ::core::ffi::c_int
+                }) > (i_satd_inter
+                    * i8x8_thresh[(*h).mb.i_subpel_refine as usize] as ::core::ffi::c_int)
                     >> 2i32
             {
                 return;
@@ -17479,26 +17483,26 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
                 .offset((8i32 * x8 + 8i32 * y8 * crate::src::common::common::FENC_STRIDE) as isize);
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 m.p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
-                    ((8i32 * x8
+                    (((8i32 * x8)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * y8
+                        + ((8i32 * y8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
-                    ((8i32 * x8
+                    (((8i32 * x8)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * y8
+                        + ((8i32 * y8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -17695,7 +17699,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8_mixed_ref(
                         .offset(4isize))
                     .offset(
                         (8i32 * x8
-                            + (8i32 * y8
+                            + ((8i32 * y8)
                                 >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                     == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                     as ::core::ffi::c_int)
@@ -17882,26 +17886,26 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(
                 .offset((8i32 * x8 + 8i32 * y8 * crate::src::common::common::FENC_STRIDE) as isize);
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
-                    ((8i32 * x8
+                    (((8i32 * x8)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * y8
+                        + ((8i32 * y8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
-                    ((8i32 * x8
+                    (((8i32 * x8)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * y8
+                        + ((8i32 * y8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -18094,7 +18098,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x8(
                     .offset(4isize))
                 .offset(
                     (8i32 * x8
-                        + (8i32 * y8
+                        + ((8i32 * y8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -18248,7 +18252,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * i
+                        + ((8i32 * i)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -18261,7 +18265,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * i
+                        + ((8i32 * i)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -18487,7 +18491,7 @@ unsafe extern "C" fn mb_analyse_inter_p16x8(
                         .offset(4isize))
                     .offset(
                         (0i32
-                            + (8i32 * i
+                            + ((8i32 * i)
                                 >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                     == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                     as ::core::ffi::c_int)
@@ -18654,7 +18658,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
                 .offset((8i32 * i + 0i32 * crate::src::common::common::FENC_STRIDE) as isize);
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 m.p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
-                    ((8i32 * i
+                    (((8i32 * i)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -18667,7 +18671,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x16(
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 m.p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
-                    ((8i32 * i
+                    (((8i32 * i)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -19907,26 +19911,26 @@ unsafe extern "C" fn mb_analyse_inter_p4x4(
                 .offset((4i32 * x4 + 4i32 * y4 * crate::src::common::common::FENC_STRIDE) as isize);
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
-                    ((4i32 * x4
+                    (((4i32 * x4)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
-                    ((4i32 * x4
+                    (((4i32 * x4)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -20028,7 +20032,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4(
             } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -20155,26 +20159,26 @@ unsafe extern "C" fn mb_analyse_inter_p8x4(
                 .offset((4i32 * x4 + 4i32 * y4 * crate::src::common::common::FENC_STRIDE) as isize);
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
-                    ((4i32 * x4
+                    (((4i32 * x4)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
-                    ((4i32 * x4
+                    (((4i32 * x4)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -20276,7 +20280,7 @@ unsafe extern "C" fn mb_analyse_inter_p8x4(
             } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -20404,26 +20408,26 @@ unsafe extern "C" fn mb_analyse_inter_p4x8(
                 .offset((4i32 * x4 + 4i32 * y4 * crate::src::common::common::FENC_STRIDE) as isize);
             if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 (*m).p_fenc[1usize] = (*p_fenc.offset(1isize)).offset(
-                    ((4i32 * x4
+                    (((4i32 * x4)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
                             * crate::src::common::common::FENC_STRIDE) as isize,
                 );
                 (*m).p_fenc[2usize] = (*p_fenc.offset(2isize)).offset(
-                    ((4i32 * x4
+                    (((4i32 * x4)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -20525,7 +20529,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x8(
             } else if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
                 (*m).p_fref[4usize] = (*p_fref.offset(4isize)).offset(
                     (4i32 * x4
-                        + (4i32 * y4
+                        + ((4i32 * y4)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -20726,7 +20730,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l0.bi16x16.p_fref[4usize],
                     (*a).l0.bi16x16.i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l0.bi16x16.mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l0.bi16x16.mv[1usize] as ::core::ffi::c_int + l0_mvy_offset)
+                    (2i32 * ((*a).l0.bi16x16.mv[1usize] as ::core::ffi::c_int + l0_mvy_offset))
                         >> v_shift,
                     16i32 >> 1i32,
                     16i32 >> v_shift,
@@ -20742,7 +20746,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l1.bi16x16.p_fref[4usize],
                     (*a).l1.bi16x16.i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l1.bi16x16.mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l1.bi16x16.mv[1usize] as ::core::ffi::c_int + l1_mvy_offset)
+                    (2i32 * ((*a).l1.bi16x16.mv[1usize] as ::core::ffi::c_int + l1_mvy_offset))
                         >> v_shift,
                     16i32 >> 1i32,
                     16i32 >> v_shift,
@@ -20897,8 +20901,9 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l0.me16x8[idx as usize].p_fref[4usize],
                     (*a).l0.me16x8[idx as usize].i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l0.me16x8[idx as usize].mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l0.me16x8[idx as usize].mv[1usize] as ::core::ffi::c_int
-                        + l0_mvy_offset_0)
+                    (2i32
+                        * ((*a).l0.me16x8[idx as usize].mv[1usize] as ::core::ffi::c_int
+                            + l0_mvy_offset_0))
                         >> v_shift_0,
                     16i32 >> 1i32,
                     8i32 >> v_shift_0,
@@ -20914,8 +20919,9 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l1.me16x8[idx as usize].p_fref[4usize],
                     (*a).l1.me16x8[idx as usize].i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l1.me16x8[idx as usize].mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l1.me16x8[idx as usize].mv[1usize] as ::core::ffi::c_int
-                        + l1_mvy_offset_0)
+                    (2i32
+                        * ((*a).l1.me16x8[idx as usize].mv[1usize] as ::core::ffi::c_int
+                            + l1_mvy_offset_0))
                         >> v_shift_0,
                     16i32 >> 1i32,
                     8i32 >> v_shift_0,
@@ -21078,8 +21084,9 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l0.me8x16[idx as usize].p_fref[4usize],
                     (*a).l0.me8x16[idx as usize].i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l0.me8x16[idx as usize].mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l0.me8x16[idx as usize].mv[1usize] as ::core::ffi::c_int
-                        + l0_mvy_offset_1)
+                    (2i32
+                        * ((*a).l0.me8x16[idx as usize].mv[1usize] as ::core::ffi::c_int
+                            + l0_mvy_offset_1))
                         >> v_shift_1,
                     8i32 >> 1i32,
                     16i32 >> v_shift_1,
@@ -21095,8 +21102,9 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l1.me8x16[idx as usize].p_fref[4usize],
                     (*a).l1.me8x16[idx as usize].i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l1.me8x16[idx as usize].mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l1.me8x16[idx as usize].mv[1usize] as ::core::ffi::c_int
-                        + l1_mvy_offset_1)
+                    (2i32
+                        * ((*a).l1.me8x16[idx as usize].mv[1usize] as ::core::ffi::c_int
+                            + l1_mvy_offset_1))
                         >> v_shift_1,
                     8i32 >> 1i32,
                     16i32 >> v_shift_1,
@@ -21255,8 +21263,9 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l0.me8x8[idx as usize].p_fref[4usize],
                     (*a).l0.me8x8[idx as usize].i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l0.me8x8[idx as usize].mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l0.me8x8[idx as usize].mv[1usize] as ::core::ffi::c_int
-                        + l0_mvy_offset_2)
+                    (2i32
+                        * ((*a).l0.me8x8[idx as usize].mv[1usize] as ::core::ffi::c_int
+                            + l0_mvy_offset_2))
                         >> v_shift_2,
                     8i32 >> 1i32,
                     8i32 >> v_shift_2,
@@ -21272,8 +21281,9 @@ unsafe extern "C" fn analyse_bi_chroma(
                     (*a).l1.me8x8[idx as usize].p_fref[4usize],
                     (*a).l1.me8x8[idx as usize].i_stride[1usize] as crate::stdlib::intptr_t,
                     (*a).l1.me8x8[idx as usize].mv[0usize] as ::core::ffi::c_int,
-                    2i32 * ((*a).l1.me8x8[idx as usize].mv[1usize] as ::core::ffi::c_int
-                        + l1_mvy_offset_2)
+                    (2i32
+                        * ((*a).l1.me8x8[idx as usize].mv[1usize] as ::core::ffi::c_int
+                            + l1_mvy_offset_2))
                         >> v_shift_2,
                     8i32 >> 1i32,
                     8i32 >> v_shift_2,
@@ -22691,13 +22701,13 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(1isize))
                 .offset(
-                    ((8i32 * x8
+                    (((8i32 * x8)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * y8
+                        + ((8i32 * y8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -22707,13 +22717,13 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(2isize))
                 .offset(
-                    ((8i32 * x8
+                    (((8i32 * x8)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * y8
+                        + ((8i32 * y8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -22929,7 +22939,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8_mixed_ref(
                             .offset(4isize))
                         .offset(
                             (8i32 * x8
-                                + (8i32 * y8
+                                + ((8i32 * y8)
                                     >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                         == crate::src::common::base::CHROMA_420
                                             as ::core::ffi::c_int)
@@ -23165,13 +23175,13 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                         as *mut *mut crate::src::common::common::pixel)
                         .offset(1isize))
                     .offset(
-                        ((8i32 * x8
+                        (((8i32 * x8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                                 || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                     == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
-                            + (8i32 * y8
+                            + ((8i32 * y8)
                                 >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                     == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                     as ::core::ffi::c_int)
@@ -23182,13 +23192,13 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                         as *mut *mut crate::src::common::common::pixel)
                         .offset(2isize))
                     .offset(
-                        ((8i32 * x8
+                        (((8i32 * x8)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                                 || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                     == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
-                            + (8i32 * y8
+                            + ((8i32 * y8)
                                 >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                     == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                     as ::core::ffi::c_int)
@@ -23346,7 +23356,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x8(
                     .offset(4isize))
                     .offset(
                         (8i32 * x8
-                            + (8i32 * y8
+                            + ((8i32 * y8)
                                 >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                     == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                     as ::core::ffi::c_int)
@@ -23551,7 +23561,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * i
+                        + ((8i32 * i)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -23567,7 +23577,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int)
-                        + (8i32 * i
+                        + ((8i32 * i)
                             >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
                                 as ::core::ffi::c_int)
@@ -23794,7 +23804,7 @@ unsafe extern "C" fn mb_analyse_inter_b16x8(
                             .offset(4isize))
                         .offset(
                             (0i32
-                                + (8i32 * i
+                                + ((8i32 * i)
                                     >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                         == crate::src::common::base::CHROMA_420
                                             as ::core::ffi::c_int)
@@ -24033,7 +24043,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(1isize))
                 .offset(
-                    ((8i32 * i
+                    (((8i32 * i)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -24049,7 +24059,7 @@ unsafe extern "C" fn mb_analyse_inter_b8x16(
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(2isize))
                 .offset(
-                    ((8i32 * i
+                    (((8i32 * i)
                         >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
@@ -25580,11 +25590,11 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                         || analysis.l0.i_cost8x8
                                             < analysis.l0.me16x16.cost + i_thresh16x8)
                                 {
-                                    let mut i_avg_mv_ref_cost = analysis.l0.me8x8[2usize].cost_mv
+                                    let mut i_avg_mv_ref_cost = (analysis.l0.me8x8[2usize].cost_mv
                                         + analysis.l0.me8x8[2usize].i_ref_cost
                                         + analysis.l0.me8x8[3usize].cost_mv
                                         + analysis.l0.me8x8[3usize].i_ref_cost
-                                        + 1i32
+                                        + 1i32)
                                         >> 1i32;
                                     analysis.i_cost_est16x8[1usize] = analysis.i_satd8x8[0usize]
                                         [2usize]
@@ -25598,11 +25608,11 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                         i_partition = crate::src::common::macroblock::D_16x8
                                             as ::core::ffi::c_int;
                                     }
-                                    i_avg_mv_ref_cost = analysis.l0.me8x8[1usize].cost_mv
+                                    i_avg_mv_ref_cost = (analysis.l0.me8x8[1usize].cost_mv
                                         + analysis.l0.me8x8[1usize].i_ref_cost
                                         + analysis.l0.me8x8[3usize].cost_mv
                                         + analysis.l0.me8x8[3usize].i_ref_cost
-                                        + 1i32
+                                        + 1i32)
                                         >> 1i32;
                                     analysis.i_cost_est8x16[1usize] = analysis.i_satd8x8[0usize]
                                         [1usize]
@@ -26360,7 +26370,7 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                     } else if analysis.i_mbrd != 0 {
                         i_bskip_cost = ssd_mb(h);
                         (*h).mb.skip_mc =
-                            i_bskip_cost <= 6i32 * analysis.i_lambda2 + 128i32 >> 8i32;
+                            i_bskip_cost <= (6i32 * analysis.i_lambda2 + 128i32) >> 8i32;
                         skip = (*h).mb.skip_mc;
                     } else if !(*h).mb.direct_auto_write {
                         analysis.try_skip =
@@ -26490,19 +26500,19 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                 + analysis.i_satd8x8[1usize][(i_7 * 2i32 + 1i32) as usize];
                             let mut i_bi_satd = analysis.i_satd8x8[2usize][(i_7 * 2i32) as usize]
                                 + analysis.i_satd8x8[2usize][(i_7 * 2i32 + 1i32) as usize];
-                            let mut avg_l0_mv_ref_cost = analysis.l0.me8x8[(i_7 * 2i32) as usize]
+                            let mut avg_l0_mv_ref_cost = (analysis.l0.me8x8[(i_7 * 2i32) as usize]
                                 .cost_mv
                                 + analysis.l0.me8x8[(i_7 * 2i32) as usize].i_ref_cost
                                 + analysis.l0.me8x8[(i_7 * 2i32 + 1i32) as usize].cost_mv
                                 + analysis.l0.me8x8[(i_7 * 2i32 + 1i32) as usize].i_ref_cost
-                                + 1i32
+                                + 1i32)
                                 >> 1i32;
-                            let mut avg_l1_mv_ref_cost = analysis.l1.me8x8[(i_7 * 2i32) as usize]
+                            let mut avg_l1_mv_ref_cost = (analysis.l1.me8x8[(i_7 * 2i32) as usize]
                                 .cost_mv
                                 + analysis.l1.me8x8[(i_7 * 2i32) as usize].i_ref_cost
                                 + analysis.l1.me8x8[(i_7 * 2i32 + 1i32) as usize].cost_mv
                                 + analysis.l1.me8x8[(i_7 * 2i32 + 1i32) as usize].i_ref_cost
-                                + 1i32
+                                + 1i32)
                                 >> 1i32;
                             if i_l0_satd + avg_l0_mv_ref_cost < i_best_cost {
                                 i_best_cost = i_l0_satd + avg_l0_mv_ref_cost;
@@ -26527,17 +26537,17 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                                 + analysis.i_satd8x8[1usize][(i_7 + 2i32) as usize];
                             i_bi_satd = analysis.i_satd8x8[2usize][i_7 as usize]
                                 + analysis.i_satd8x8[2usize][(i_7 + 2i32) as usize];
-                            avg_l0_mv_ref_cost = analysis.l0.me8x8[i_7 as usize].cost_mv
+                            avg_l0_mv_ref_cost = (analysis.l0.me8x8[i_7 as usize].cost_mv
                                 + analysis.l0.me8x8[i_7 as usize].i_ref_cost
                                 + analysis.l0.me8x8[(i_7 + 2i32) as usize].cost_mv
                                 + analysis.l0.me8x8[(i_7 + 2i32) as usize].i_ref_cost
-                                + 1i32
+                                + 1i32)
                                 >> 1i32;
-                            avg_l1_mv_ref_cost = analysis.l1.me8x8[i_7 as usize].cost_mv
+                            avg_l1_mv_ref_cost = (analysis.l1.me8x8[i_7 as usize].cost_mv
                                 + analysis.l1.me8x8[i_7 as usize].i_ref_cost
                                 + analysis.l1.me8x8[(i_7 + 2i32) as usize].cost_mv
                                 + analysis.l1.me8x8[(i_7 + 2i32) as usize].i_ref_cost
-                                + 1i32
+                                + 1i32)
                                 >> 1i32;
                             if i_l0_satd + avg_l0_mv_ref_cost < i_best_cost {
                                 i_best_cost = i_l0_satd + avg_l0_mv_ref_cost;
@@ -27580,7 +27590,7 @@ unsafe extern "C" fn analyse_update_cache(
                     );
                     if ((*h).mb.cache.mv[l as usize][x264_scan8[15usize] as usize][1usize]
                         as ::core::ffi::c_int
-                        >> 2i32 - (*h).mb.interlaced as ::core::ffi::c_int)
+                        >> (2i32 - (*h).mb.interlaced as ::core::ffi::c_int))
                         + (*h).mb.i_mb_y * 16i32
                         > completed
                     {

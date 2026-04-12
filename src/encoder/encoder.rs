@@ -683,18 +683,18 @@ unsafe extern "C" fn frame_dump(mut h: *mut x264_t) {
             * ::core::mem::size_of::<crate::src::common::common::pixel>() as ::core::ffi::c_int
             + 2i32
                 * (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
-                    (*h).param.i_height
+                    ((*h).param.i_height
                         * (*h).param.i_width
                         * ::core::mem::size_of::<crate::src::common::common::pixel>()
-                            as ::core::ffi::c_int
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                            as ::core::ffi::c_int)
+                        >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int
                             + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                                as ::core::ffi::c_int)
                 } else {
                     0i32
                 });
@@ -847,8 +847,8 @@ unsafe extern "C" fn slice_header_init(
                     (*sh).ref_pic_list_order[list as usize][i as usize].idc =
                         (diff > 0i32) as ::core::ffi::c_int;
                     (*sh).ref_pic_list_order[list as usize][i as usize].arg =
-                        crate::stdlib::abs(diff) - 1i32
-                            & ((1i32) << (*sps).i_log2_max_frame_num) - 1i32;
+                        (crate::stdlib::abs(diff) - 1i32)
+                            & (((1i32) << (*sps).i_log2_max_frame_num) - 1i32);
                     pred_frame_num = (*(*h).fref[list as usize][i as usize]).i_frame_num;
                     i += 1;
                 }
@@ -904,7 +904,9 @@ unsafe extern "C" fn slice_header_write(
             };
             bs_write_ue_big(
                 s,
-                (2i32 * first_x + (*(*sh).sps).i_mb_width * (first_y & !(1i32)) + (first_y & 1i32)
+                ((2i32 * first_x
+                    + (*(*sh).sps).i_mb_width * (first_y & !(1i32))
+                    + (first_y & 1i32))
                     >> 1i32) as ::core::ffi::c_uint,
             );
         } else {
@@ -915,7 +917,7 @@ unsafe extern "C" fn slice_header_write(
         bs_write(
             s,
             (*(*sh).sps).i_log2_max_frame_num,
-            ((*sh).i_frame_num & ((1i32) << (*(*sh).sps).i_log2_max_frame_num) - 1i32)
+            ((*sh).i_frame_num & (((1i32) << (*(*sh).sps).i_log2_max_frame_num) - 1i32))
                 as crate::stdlib::uint32_t,
         );
         if !(*(*sh).sps).frame_mbs_only {
@@ -931,7 +933,7 @@ unsafe extern "C" fn slice_header_write(
             bs_write(
                 s,
                 (*(*sh).sps).i_log2_max_poc_lsb,
-                ((*sh).i_poc & ((1i32) << (*(*sh).sps).i_log2_max_poc_lsb) - 1i32)
+                ((*sh).i_poc & (((1i32) << (*(*sh).sps).i_log2_max_poc_lsb) - 1i32))
                     as crate::stdlib::uint32_t,
             );
             if (*(*sh).pps).pic_order && !(*sh).field_pic {
@@ -5117,7 +5119,7 @@ unsafe extern "C" fn fdec_filter_row(
                         ),
                         (*(*h).fenc).i_stride[1usize] as crate::stdlib::intptr_t,
                         (*h).param.i_width >> 1i32,
-                        maxpix_y - minpix_y >> v_shift,
+                        (maxpix_y - minpix_y) >> v_shift,
                         &raw mut ssd_u,
                         &raw mut ssd_v,
                     );
@@ -6193,9 +6195,9 @@ unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> ::core::ffi::c
                 );
             }
             let mut height = (*h).mb.i_mb_height >> (*h).param.interlaced as ::core::ffi::c_int;
-            (*t).i_threadslice_start = (height * i + round_bias) / (*h).param.i_threads
+            (*t).i_threadslice_start = ((height * i + round_bias) / (*h).param.i_threads)
                 << (*h).param.interlaced as ::core::ffi::c_int;
-            (*t).i_threadslice_end = (height * (i + 1i32) + round_bias) / (*h).param.i_threads
+            (*t).i_threadslice_end = ((height * (i + 1i32) + round_bias) / (*h).param.i_threads)
                 << (*h).param.interlaced as ::core::ffi::c_int;
             (*t).sh.i_first_mb = (*t).i_threadslice_start * (*h).mb.i_mb_width;
             (*t).sh.i_last_mb = (*t).i_threadslice_end * (*h).mb.i_mb_width - 1i32;
@@ -7387,14 +7389,14 @@ unsafe extern "C" fn encoder_frame_end(
             let mut chroma_size = if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0
             {
                 luma_size
-                    >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                    >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                         == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                         || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                         as ::core::ffi::c_int
                         + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int
+                            as ::core::ffi::c_int)
             } else {
                 0i32
             };
@@ -7537,15 +7539,15 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
         let mut i_yuv_size = ((*h).param.i_width * (*h).param.i_height
             + 2i32
                 * (if crate::src::common::base::CHROMA_444 as ::core::ffi::c_int != 0 {
-                    (*h).param.i_width * (*h).param.i_height
-                        >> (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                    ((*h).param.i_width * (*h).param.i_height)
+                        >> ((crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                             == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
                             || crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
                             as ::core::ffi::c_int
                             + (crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
                                 == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
-                                as ::core::ffi::c_int
+                                as ::core::ffi::c_int)
                 } else {
                     0i32
                 })) as crate::stdlib::int64_t;

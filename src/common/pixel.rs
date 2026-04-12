@@ -998,9 +998,9 @@ unsafe extern "C" fn pixel_var2_8x16(
         *ssd.offset(0isize) = sqr_u;
         *ssd.offset(1isize) = sqr_v;
         return (sqr_u as crate::stdlib::int64_t
-            - (sum_u as crate::stdlib::int64_t * sum_u as crate::stdlib::int64_t >> 7i32)
+            - ((sum_u as crate::stdlib::int64_t * sum_u as crate::stdlib::int64_t) >> 7i32)
             + sqr_v as crate::stdlib::int64_t
-            - (sum_v as crate::stdlib::int64_t * sum_v as crate::stdlib::int64_t >> 7i32))
+            - ((sum_v as crate::stdlib::int64_t * sum_v as crate::stdlib::int64_t) >> 7i32))
             as ::core::ffi::c_int;
     }
 }
@@ -1038,9 +1038,9 @@ unsafe extern "C" fn pixel_var2_8x8(
         *ssd.offset(0isize) = sqr_u;
         *ssd.offset(1isize) = sqr_v;
         return (sqr_u as crate::stdlib::int64_t
-            - (sum_u as crate::stdlib::int64_t * sum_u as crate::stdlib::int64_t >> 6i32)
+            - ((sum_u as crate::stdlib::int64_t * sum_u as crate::stdlib::int64_t) >> 6i32)
             + sqr_v as crate::stdlib::int64_t
-            - (sum_v as crate::stdlib::int64_t * sum_v as crate::stdlib::int64_t >> 6i32))
+            - ((sum_v as crate::stdlib::int64_t * sum_v as crate::stdlib::int64_t) >> 6i32))
             as ::core::ffi::c_int;
     }
 }
@@ -1604,7 +1604,7 @@ unsafe extern "C" fn x264_pixel_sa8d_8x8(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut sum = sa8d_8x8(pix1, i_pix1, pix2, i_pix2);
-        return sum + 2i32 >> 2i32;
+        return (sum + 2i32) >> 2i32;
     }
 }
 unsafe extern "C" fn x264_pixel_sa8d_16x16(
@@ -1628,7 +1628,7 @@ unsafe extern "C" fn x264_pixel_sa8d_16x16(
                 pix2.offset(8isize).offset(8isize * i_pix2),
                 i_pix2,
             );
-        return sum + 2i32 >> 2i32;
+        return (sum + 2i32) >> 2i32;
     }
 }
 #[inline(never)]

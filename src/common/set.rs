@@ -499,7 +499,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 let mut i_5 = 0i32;
                                 while i_5 < 16i32 {
                                     (*(*h).unquant4_mf[i_list_1 as usize].offset(q_1 as isize))
-                                        [i_5 as usize] = ((1u64) << q_1 / 6i32 + 15i32 + 8i32)
+                                        [i_5 as usize] = ((1u64) << (q_1 / 6i32 + 15i32 + 8i32))
                                         .wrapping_div(
                                             quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize]
                                                 [i_5 as usize]
@@ -511,10 +511,10 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             [i_5 as usize]
                                             << -(q_1 / 6i32 - 1i32)
                                     } else {
-                                        quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize]
+                                        (quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize]
                                             [i_5 as usize]
-                                            + ((1i32) << q_1 / 6i32 - 1i32 - 1i32)
-                                            >> q_1 / 6i32 - 1i32
+                                            + ((1i32) << (q_1 / 6i32 - 1i32 - 1i32)))
+                                            >> (q_1 / 6i32 - 1i32)
                                     };
                                     (*(*h).quant4_mf[i_list_1 as usize].offset(q_1 as isize))
                                         [i_5 as usize] =
@@ -542,10 +542,10 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             [i_5 as usize] = (((1i32) << 15i32) / j_3)
                                             as crate::src::common::common::udctcoef;
                                         if j_3
-                                            > (if (0xffffi32) < ((1i32) << 25i32 - 8i32) - 1i32 {
+                                            > (if (0xffffi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
                                                 0xffffi32
                                             } else {
-                                                ((1i32) << 25i32 - 8i32) - 1i32
+                                                ((1i32) << (25i32 - 8i32)) - 1i32
                                             })
                                             && q_1 > max_qp_err
                                             && (i_list_1
@@ -558,10 +558,10 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             max_qp_err = q_1;
                                         }
                                         if j_3
-                                            > (if (0xffffi32) < ((1i32) << 25i32 - 8i32) - 1i32 {
+                                            > (if (0xffffi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
                                                 0xffffi32
                                             } else {
-                                                ((1i32) << 25i32 - 8i32) - 1i32
+                                                ((1i32) << (25i32 - 8i32)) - 1i32
                                             })
                                             && q_1 > max_chroma_qp_err
                                             && (i_list_1
@@ -585,7 +585,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                     while i_6 < 64i32 {
                                         (*(*h).unquant8_mf[i_list_2 as usize]
                                             .offset(q_1 as isize))
-                                            [i_6 as usize] = ((1u64) << q_1 / 6i32 + 16i32 + 8i32)
+                                            [i_6 as usize] = ((1u64) << (q_1 / 6i32 + 16i32 + 8i32))
                                             .wrapping_div(
                                                 quant8_mf[i_list_2 as usize][(q_1 % 6i32) as usize]
                                                     [i_6 as usize]
@@ -597,10 +597,10 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                 [i_6 as usize]
                                                 << -(q_1 / 6i32)
                                         } else {
-                                            quant8_mf[i_list_2 as usize][(q_1 % 6i32) as usize]
+                                            (quant8_mf[i_list_2 as usize][(q_1 % 6i32) as usize]
                                                 [i_6 as usize]
-                                                + ((1i32) << q_1 / 6i32 - 1i32)
-                                                >> q_1 / 6i32
+                                                + ((1i32) << (q_1 / 6i32 - 1i32)))
+                                                >> (q_1 / 6i32)
                                         };
                                         (*(*h).quant8_mf[i_list_2 as usize].offset(q_1 as isize))
                                             [i_6 as usize] =
@@ -629,11 +629,12 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                 [i_6 as usize] = (((1i32) << 15i32) / j_3)
                                                 as crate::src::common::common::udctcoef;
                                             if j_3
-                                                > (if (0xffffi32) < ((1i32) << 25i32 - 8i32) - 1i32
+                                                > (if (0xffffi32)
+                                                    < ((1i32) << (25i32 - 8i32)) - 1i32
                                                 {
                                                     0xffffi32
                                                 } else {
-                                                    ((1i32) << 25i32 - 8i32) - 1i32
+                                                    ((1i32) << (25i32 - 8i32)) - 1i32
                                                 })
                                                 && q_1 > max_qp_err
                                                 && (i_list_2
@@ -646,11 +647,12 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                 max_qp_err = q_1;
                                             }
                                             if j_3
-                                                > (if (0xffffi32) < ((1i32) << 25i32 - 8i32) - 1i32
+                                                > (if (0xffffi32)
+                                                    < ((1i32) << (25i32 - 8i32)) - 1i32
                                                 {
                                                     0xffffi32
                                                 } else {
-                                                    ((1i32) << 25i32 - 8i32) - 1i32
+                                                    ((1i32) << (25i32 - 8i32)) - 1i32
                                                 })
                                                 && q_1 > max_chroma_qp_err
                                                 && (i_list_2
@@ -717,7 +719,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             / 3i32;
                                         while i_7 < size_1 {
                                             let mut max = ((1i32)
-                                                << 7i32 + crate::internal::BIT_DEPTH)
+                                                << (7i32 + crate::internal::BIT_DEPTH))
                                                 - 1i32;
                                             if q_2
                                                 == crate::src::common::common::QP_MAX

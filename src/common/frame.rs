@@ -185,8 +185,8 @@ unsafe extern "C" fn align_stride(
     mut align: ::core::ffi::c_int,
     mut disalign: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
-    x = x + (align - 1i32) & !(align - 1i32);
-    if x & disalign - 1i32 == 0 {
+    x = (x + (align - 1i32)) & !(align - 1i32);
+    if x & (disalign - 1i32) == 0 {
         x += align;
     }
     return x;
@@ -195,7 +195,7 @@ unsafe extern "C" fn align_plane_size(
     mut x: ::core::ffi::c_int,
     mut disalign: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
-    if x & disalign - 1i32 == 0 {
+    if x & (disalign - 1i32) == 0 {
         x += (if 128i32 > 64i32 { 128i32 } else { 64i32 })
             / crate::src::common::common::SIZEOF_PIXEL;
     }
@@ -351,10 +351,10 @@ unsafe extern "C" fn frame_new(
                                 as *mut *mut ::core::ffi::c_int)
                                 .offset(j as isize)
                                 as *mut *mut crate::stdlib::uint8_t;
-                            prealloc_size += ((i_lines / 16i32) as usize)
+                            prealloc_size += (((i_lines / 16i32) as usize)
                                 .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             j += 1;
                         }
@@ -391,11 +391,11 @@ unsafe extern "C" fn frame_new(
                         preallocs[c2rust_fresh9 as usize] = (&raw mut (*frame).buffer
                             as *mut *mut crate::src::common::common::pixel)
                             .offset(1isize);
-                        prealloc_size += (chroma_plane_size
+                        prealloc_size += ((chroma_plane_size
                             * ::core::mem::size_of::<crate::src::common::common::pixel>()
                                 as ::core::ffi::c_int)
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         if (*h).param.interlaced {
                             (*frame).buffer_fld[1usize] =
@@ -405,11 +405,11 @@ unsafe extern "C" fn frame_new(
                             preallocs[c2rust_fresh10 as usize] = (&raw mut (*frame).buffer_fld
                                 as *mut *mut crate::src::common::common::pixel)
                                 .offset(1isize);
-                            prealloc_size += (chroma_plane_size
+                            prealloc_size += ((chroma_plane_size
                                 * ::core::mem::size_of::<crate::src::common::common::pixel>()
                                     as ::core::ffi::c_int)
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
                     }
@@ -430,11 +430,11 @@ unsafe extern "C" fn frame_new(
                         preallocs[c2rust_fresh11 as usize] = (&raw mut (*frame).buffer
                             as *mut *mut crate::src::common::common::pixel)
                             .offset(p as isize);
-                        prealloc_size += luma_plane_size
+                        prealloc_size += (luma_plane_size
                             * ::core::mem::size_of::<crate::src::common::common::pixel>()
                                 as ::core::ffi::c_int
                                 as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         if (*h).param.interlaced {
                             (*frame).buffer_fld[p as usize] =
@@ -444,11 +444,11 @@ unsafe extern "C" fn frame_new(
                             preallocs[c2rust_fresh12 as usize] = (&raw mut (*frame).buffer_fld
                                 as *mut *mut crate::src::common::common::pixel)
                                 .offset(p as isize);
-                            prealloc_size += luma_plane_size
+                            prealloc_size += (luma_plane_size
                                 * ::core::mem::size_of::<crate::src::common::common::pixel>()
                                     as ::core::ffi::c_int
                                     as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
                         p += 1;
@@ -460,19 +460,19 @@ unsafe extern "C" fn frame_new(
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[c2rust_fresh13 as usize] =
                             &raw mut (*frame).mb_type as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += (i_mb_count as usize)
+                        prealloc_size += ((i_mb_count as usize)
                             .wrapping_mul(::core::mem::size_of::<crate::stdlib::int8_t>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         (*frame).mb_partition = prealloc_size as *mut crate::stdlib::uint8_t;
                         let c2rust_fresh14 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[c2rust_fresh14 as usize] = &raw mut (*frame).mb_partition;
-                        prealloc_size += (i_mb_count as usize)
+                        prealloc_size += ((i_mb_count as usize)
                             .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         (*frame).mv[0usize] = prealloc_size as *mut [crate::stdlib::int16_t; 2];
                         let c2rust_fresh15 = prealloc_idx;
@@ -481,20 +481,20 @@ unsafe extern "C" fn frame_new(
                             as *mut *mut [crate::stdlib::int16_t; 2])
                             .offset(0isize)
                             as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += ((2i32 * 16i32 * i_mb_count) as usize)
+                        prealloc_size += (((2i32 * 16i32 * i_mb_count) as usize)
                             .wrapping_mul(::core::mem::size_of::<crate::stdlib::int16_t>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         (*frame).mv16x16 = prealloc_size as *mut [crate::stdlib::int16_t; 2];
                         let c2rust_fresh16 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[c2rust_fresh16 as usize] =
                             &raw mut (*frame).mv16x16 as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += ((2i32 * (i_mb_count + 1i32)) as usize)
+                        prealloc_size += (((2i32 * (i_mb_count + 1i32)) as usize)
                             .wrapping_mul(::core::mem::size_of::<crate::stdlib::int16_t>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         (*frame).ref_0[0usize] = prealloc_size as *mut crate::stdlib::int8_t;
                         let c2rust_fresh17 = prealloc_idx;
@@ -503,10 +503,10 @@ unsafe extern "C" fn frame_new(
                             as *mut *mut crate::stdlib::int8_t)
                             .offset(0isize)
                             as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += ((4i32 * i_mb_count) as usize)
+                        prealloc_size += (((4i32 * i_mb_count) as usize)
                             .wrapping_mul(::core::mem::size_of::<crate::stdlib::int8_t>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         if (*h).param.i_bframe != 0 {
                             (*frame).mv[1usize] = prealloc_size as *mut [crate::stdlib::int16_t; 2];
@@ -516,10 +516,10 @@ unsafe extern "C" fn frame_new(
                                 as *mut *mut [crate::stdlib::int16_t; 2])
                                 .offset(1isize)
                                 as *mut *mut crate::stdlib::uint8_t;
-                            prealloc_size += ((2i32 * 16i32 * i_mb_count) as usize)
+                            prealloc_size += (((2i32 * 16i32 * i_mb_count) as usize)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::int16_t>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             (*frame).ref_0[1usize] = prealloc_size as *mut crate::stdlib::int8_t;
                             let c2rust_fresh19 = prealloc_idx;
@@ -528,10 +528,10 @@ unsafe extern "C" fn frame_new(
                                 as *mut *mut crate::stdlib::int8_t)
                                 .offset(1isize)
                                 as *mut *mut crate::stdlib::uint8_t;
-                            prealloc_size += ((4i32 * i_mb_count) as usize)
+                            prealloc_size += (((4i32 * i_mb_count) as usize)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::int8_t>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         } else {
                             (*frame).mv[1usize] =
@@ -544,30 +544,30 @@ unsafe extern "C" fn frame_new(
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[c2rust_fresh20 as usize] =
                             &raw mut (*frame).i_row_bits as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += ((i_lines / 16i32) as usize)
+                        prealloc_size += (((i_lines / 16i32) as usize)
                             .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         (*frame).f_row_qp = prealloc_size as *mut ::core::ffi::c_float;
                         let c2rust_fresh21 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[c2rust_fresh21 as usize] =
                             &raw mut (*frame).f_row_qp as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += ((i_lines / 16i32) as usize)
+                        prealloc_size += (((i_lines / 16i32) as usize)
                             .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         (*frame).f_row_qscale = prealloc_size as *mut ::core::ffi::c_float;
                         let c2rust_fresh22 = prealloc_idx;
                         prealloc_idx = prealloc_idx + 1;
                         preallocs[c2rust_fresh22 as usize] =
                             &raw mut (*frame).f_row_qscale as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += ((i_lines / 16i32) as usize)
+                        prealloc_size += (((i_lines / 16i32) as usize)
                             .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>())
                             as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         if (*h).param.analyse.i_me_method >= crate::x264_h::X264_ME_ESA {
                             (*frame).buffer[3usize] =
@@ -577,13 +577,13 @@ unsafe extern "C" fn frame_new(
                             preallocs[c2rust_fresh23 as usize] = (&raw mut (*frame).buffer
                                 as *mut *mut crate::src::common::common::pixel)
                                 .offset(3isize);
-                            prealloc_size += ((((*frame).i_stride[0usize]
+                            prealloc_size += (((((*frame).i_stride[0usize]
                                 * ((*frame).i_lines[0usize] + 2i32 * i_padv))
                                 as usize)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>())
                                 << (*h).frames.have_sub8x8_esa as ::core::ffi::c_int)
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
                         if (*h).param.interlaced {
@@ -591,10 +591,10 @@ unsafe extern "C" fn frame_new(
                             let c2rust_fresh24 = prealloc_idx;
                             prealloc_idx = prealloc_idx + 1;
                             preallocs[c2rust_fresh24 as usize] = &raw mut (*frame).field;
-                            prealloc_size += (i_mb_count as usize)
+                            prealloc_size += ((i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
                         if (*h).param.analyse.mb_info {
@@ -602,10 +602,10 @@ unsafe extern "C" fn frame_new(
                             let c2rust_fresh25 = prealloc_idx;
                             prealloc_idx = prealloc_idx + 1;
                             preallocs[c2rust_fresh25 as usize] = &raw mut (*frame).effective_qp;
-                            prealloc_size += (i_mb_count as usize)
+                            prealloc_size += ((i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                         }
                     } else {
@@ -624,12 +624,12 @@ unsafe extern "C" fn frame_new(
                             let c2rust_fresh26 = prealloc_idx;
                             prealloc_idx = prealloc_idx + 1;
                             preallocs[c2rust_fresh26 as usize] = &raw mut (*frame).buffer_lowres;
-                            prealloc_size += 4i64
+                            prealloc_size += (4i64
                                 * luma_plane_size_0
                                 * ::core::mem::size_of::<crate::src::common::common::pixel>()
                                     as ::core::ffi::c_int
                                     as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             while j_0 <= ((*h).param.i_bframe != 0) as ::core::ffi::c_int {
                                 let mut i_2 = 0i32;
@@ -645,11 +645,11 @@ unsafe extern "C" fn frame_new(
                                             as *mut *mut [crate::stdlib::int16_t; 2])
                                             .offset(i_2 as isize)
                                             as *mut *mut crate::stdlib::uint8_t;
-                                    prealloc_size += ((2i32 * i_mb_count) as usize).wrapping_mul(
+                                    prealloc_size += (((2i32 * i_mb_count) as usize).wrapping_mul(
                                         ::core::mem::size_of::<crate::stdlib::int16_t>(),
                                     )
                                         as crate::stdlib::int64_t
-                                        + (64i32 - 1i32) as crate::stdlib::int64_t
+                                        + (64i32 - 1i32) as crate::stdlib::int64_t)
                                         & !(64i32 - 1i32) as crate::stdlib::int64_t;
                                     (*frame).lowres_mv_costs[j_0 as usize][i_2 as usize] =
                                         prealloc_size as *mut ::core::ffi::c_int;
@@ -662,10 +662,10 @@ unsafe extern "C" fn frame_new(
                                             as *mut *mut ::core::ffi::c_int)
                                             .offset(i_2 as isize)
                                             as *mut *mut crate::stdlib::uint8_t;
-                                    prealloc_size += (i_mb_count as usize)
+                                    prealloc_size += ((i_mb_count as usize)
                                         .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>())
                                         as crate::stdlib::int64_t
-                                        + (64i32 - 1i32) as crate::stdlib::int64_t
+                                        + (64i32 - 1i32) as crate::stdlib::int64_t)
                                         & !(64i32 - 1i32) as crate::stdlib::int64_t;
                                     i_2 += 1;
                                 }
@@ -677,10 +677,10 @@ unsafe extern "C" fn frame_new(
                             prealloc_idx = prealloc_idx + 1;
                             preallocs[c2rust_fresh29 as usize] = &raw mut (*frame).i_propagate_cost
                                 as *mut *mut crate::stdlib::uint8_t;
-                            prealloc_size += (i_mb_count as usize)
+                            prealloc_size += ((i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             while j_1 <= (*h).param.i_bframe + 1i32 {
                                 let mut i_3 = 0i32;
@@ -697,12 +697,12 @@ unsafe extern "C" fn frame_new(
                                             .offset(i_3 as isize)
                                             as *mut *mut crate::stdlib::uint8_t;
                                     prealloc_size +=
-                                        (i_mb_count as usize).wrapping_mul(::core::mem::size_of::<
+                                        ((i_mb_count as usize).wrapping_mul(::core::mem::size_of::<
                                             crate::stdlib::uint16_t,
                                         >(
                                         ))
                                             as crate::stdlib::int64_t
-                                            + (64i32 - 1i32) as crate::stdlib::int64_t
+                                            + (64i32 - 1i32) as crate::stdlib::int64_t)
                                             & !(64i32 - 1i32) as crate::stdlib::int64_t;
                                     i_3 += 1;
                                 }
@@ -715,20 +715,20 @@ unsafe extern "C" fn frame_new(
                             prealloc_idx = prealloc_idx + 1;
                             preallocs[c2rust_fresh31 as usize] =
                                 &raw mut (*frame).f_qp_offset as *mut *mut crate::stdlib::uint8_t;
-                            prealloc_size += (i_mb_count as usize)
+                            prealloc_size += ((i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             (*frame).f_qp_offset_aq = prealloc_size as *mut ::core::ffi::c_float;
                             let c2rust_fresh32 = prealloc_idx;
                             prealloc_idx = prealloc_idx + 1;
                             preallocs[c2rust_fresh32 as usize] = &raw mut (*frame).f_qp_offset_aq
                                 as *mut *mut crate::stdlib::uint8_t;
-                            prealloc_size += (i_mb_count as usize)
+                            prealloc_size += ((i_mb_count as usize)
                                 .wrapping_mul(::core::mem::size_of::<::core::ffi::c_float>())
                                 as crate::stdlib::int64_t
-                                + (64i32 - 1i32) as crate::stdlib::int64_t
+                                + (64i32 - 1i32) as crate::stdlib::int64_t)
                                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             if (*h).frames.have_lowres {
                                 (*frame).i_inv_qscale_factor =
@@ -738,10 +738,10 @@ unsafe extern "C" fn frame_new(
                                 preallocs[c2rust_fresh33 as usize] = &raw mut (*frame)
                                     .i_inv_qscale_factor
                                     as *mut *mut crate::stdlib::uint8_t;
-                                prealloc_size += (i_mb_count as usize)
+                                prealloc_size += ((i_mb_count as usize)
                                     .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint16_t>())
                                     as crate::stdlib::int64_t
-                                    + (64i32 - 1i32) as crate::stdlib::int64_t
+                                    + (64i32 - 1i32) as crate::stdlib::int64_t)
                                     & !(64i32 - 1i32) as crate::stdlib::int64_t;
                             }
                         }
@@ -1583,18 +1583,19 @@ pub unsafe extern "C" fn x264_8_frame_expand_border(
             let mut stride = (*frame).i_stride[i as usize];
             let mut width = 16i32 * (*h).mb.i_mb_width;
             let mut height = (if pad_bot != 0 {
-                16i32 * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.mbaff as ::core::ffi::c_int
+                (16i32 * ((*h).mb.i_mb_height - mb_y)) >> (*h).sh.mbaff as ::core::ffi::c_int
             } else {
                 16i32
             }) >> v_shift;
             let mut padh = crate::src::common::frame::PADH;
             let mut padv = crate::src::common::frame::PADV >> v_shift;
             if b_end != 0 && b_start == 0 {
-                height += 4i32 >> v_shift + (*h).sh.mbaff as ::core::ffi::c_int;
+                height += 4i32 >> (v_shift + (*h).sh.mbaff as ::core::ffi::c_int);
             }
             let mut starty = 16i32 * mb_y - 4i32 * (b_start == 0) as ::core::ffi::c_int;
             if (*h).sh.mbaff {
-                pix = (*frame).plane_fld[i as usize].offset((starty * stride >> v_shift) as isize);
+                pix =
+                    (*frame).plane_fld[i as usize].offset(((starty * stride) >> v_shift) as isize);
                 plane_expand_border(
                     pix,
                     stride * 2i32,
@@ -1625,12 +1626,12 @@ pub unsafe extern "C" fn x264_8_frame_expand_border(
                 if b_end != 0 && b_start == 0 {
                     height += 4i32 >> v_shift;
                 }
-                pix = (*frame).plane[i as usize].offset((starty * stride >> v_shift) as isize);
+                pix = (*frame).plane[i as usize].offset(((starty * stride) >> v_shift) as isize);
                 plane_expand_border(
                     pix, stride, width, height, padh, padv, pad_top, pad_bot, h_shift,
                 );
             } else {
-                pix = (*frame).plane[i as usize].offset((starty * stride >> v_shift) as isize);
+                pix = (*frame).plane[i as usize].offset(((starty * stride) >> v_shift) as isize);
                 plane_expand_border(
                     pix, stride, width, height, padh, padv, pad_top, pad_bot, h_shift,
                 );
@@ -1650,7 +1651,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_filtered(
         let mut b_start = (mb_y == 0) as ::core::ffi::c_int;
         let mut width = 16i32 * (*h).mb.i_mb_width + 8i32;
         let mut height = if b_end != 0 {
-            (16i32 * ((*h).mb.i_mb_height - mb_y) >> (*h).sh.mbaff as ::core::ffi::c_int) + 16i32
+            ((16i32 * ((*h).mb.i_mb_height - mb_y)) >> (*h).sh.mbaff as ::core::ffi::c_int) + 16i32
         } else {
             16i32
         };
@@ -1750,7 +1751,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_chroma(
             (*frame).plane[plane as usize],
             (*frame).i_stride[plane as usize],
             16i32 * (*h).mb.i_mb_width,
-            16i32 * (*h).mb.i_mb_height >> v_shift,
+            (16i32 * (*h).mb.i_mb_height) >> v_shift,
             crate::src::common::frame::PADH,
             crate::src::common::frame::PADV >> v_shift,
             1i32,
@@ -1783,7 +1784,7 @@ pub unsafe extern "C" fn x264_8_frame_expand_border_mod16(
                 as ::core::ffi::c_int;
             let mut i_height = (*h).param.i_height >> v_shift;
             let mut i_padx = (*h).mb.i_mb_width * 16i32 - (*h).param.i_width;
-            let mut i_pady = (*h).mb.i_mb_height * 16i32 - (*h).param.i_height >> v_shift;
+            let mut i_pady = ((*h).mb.i_mb_height * 16i32 - (*h).param.i_height) >> v_shift;
             if i_padx != 0 {
                 let mut y = 0i32;
                 while y < i_height {
@@ -1853,7 +1854,7 @@ pub unsafe extern "C" fn x264_8_expand_border_mbpair(
                 as ::core::ffi::c_int;
             let mut stride = (*(*h).fenc).i_stride[i as usize];
             let mut height = (*h).param.i_height >> v_shift;
-            let mut pady = (*h).mb.i_mb_height * 16i32 - (*h).param.i_height >> v_shift;
+            let mut pady = ((*h).mb.i_mb_height * 16i32 - (*h).param.i_height) >> v_shift;
             let mut fenc = (*(*h).fenc).plane[i as usize].offset((16i32 * mb_x) as isize);
             let mut y = height;
             while y < height + pady {

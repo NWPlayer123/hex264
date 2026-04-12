@@ -54,7 +54,7 @@ pub unsafe extern "C" fn x264_8_cabac_init(mut _h: *mut crate::src::common::comm
                 let mut j = 0i32;
                 while j < ctx_count {
                     let mut state = x264_clip3(
-                        ((*cabac_context_init)[j as usize][0usize] as ::core::ffi::c_int * qp
+                        (((*cabac_context_init)[j as usize][0usize] as ::core::ffi::c_int * qp)
                             >> 4i32)
                             + (*cabac_context_init)[j as usize][1usize] as ::core::ffi::c_int,
                         1i32,
@@ -132,7 +132,7 @@ pub unsafe extern "C" fn x264_8_cabac_encode_init(
 unsafe extern "C" fn cabac_putbyte(mut cb: *mut crate::src::common::cabac::x264_cabac_t) {
     unsafe {
         if (*cb).i_queue >= 0i32 {
-            let mut out = (*cb).i_low >> (*cb).i_queue + 10i32;
+            let mut out = (*cb).i_low >> ((*cb).i_queue + 10i32);
             (*cb).i_low &= ((0x400i32) << (*cb).i_queue) - 1i32;
             (*cb).i_queue -= 8i32;
             if out & 0xffi32 == 0xffi32 {
@@ -228,7 +228,7 @@ pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
         let mut x = ((bypass_lut[(k - exp_bits) as usize] as crate::stdlib::uint32_t) << exp_bits)
             .wrapping_add(v);
         k = 2i32 * k + 1i32 - exp_bits;
-        let mut i = (k - 1i32 & 7i32) + 1i32;
+        let mut i = ((k - 1i32) & 7i32) + 1i32;
         loop {
             k -= i;
             (*cb).i_low <<= i;

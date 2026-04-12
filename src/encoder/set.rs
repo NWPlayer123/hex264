@@ -121,7 +121,7 @@ pub mod bitstream_h {
                 bs_write(
                     s,
                     (*s).i_left & 7i32,
-                    ((1i32) << ((*s).i_left & 7i32) - 1i32) as crate::stdlib::uint32_t,
+                    ((1i32) << (((*s).i_left & 7i32) - 1i32)) as crate::stdlib::uint32_t,
                 );
             }
             bs_flush(s);
@@ -439,7 +439,7 @@ pub unsafe extern "C" fn x264_8_sps_init(
         (*sps).i_mb_height = ((*param).i_height + 15i32) / 16i32;
         (*sps).frame_mbs_only = !((*param).interlaced || (*param).fake_interlaced);
         if !(*sps).frame_mbs_only {
-            (*sps).i_mb_height = (*sps).i_mb_height + 1i32 & !(1i32);
+            (*sps).i_mb_height = ((*sps).i_mb_height + 1i32) & !(1i32);
         }
         (*sps).i_chroma_format_idc = if csp >= crate::x264_h::X264_CSP_I444 {
             crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
