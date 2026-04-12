@@ -256,7 +256,7 @@ unsafe extern "C" fn quant_8x8(
             nz |= *dct.offset(i as isize) as ::core::ffi::c_int;
             i += 1;
         }
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn quant_4x4(
@@ -286,7 +286,7 @@ unsafe extern "C" fn quant_4x4(
             nz |= *dct.offset(i as isize) as ::core::ffi::c_int;
             i += 1;
         }
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn quant_4x4x4(
@@ -327,7 +327,7 @@ unsafe extern "C" fn quant_4x4x4(
             nza |= ((nz != 0) as ::core::ffi::c_int) << j;
             j += 1;
         }
-        return nza;
+        nza
     }
 }
 unsafe extern "C" fn quant_4x4_dc(
@@ -357,7 +357,7 @@ unsafe extern "C" fn quant_4x4_dc(
             nz |= *dct.offset(i as isize) as ::core::ffi::c_int;
             i += 1;
         }
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn quant_2x2_dc(
@@ -427,7 +427,7 @@ unsafe extern "C" fn quant_2x2_dc(
                 as crate::src::common::common::dctcoef;
         }
         nz |= *dct.offset(3isize) as ::core::ffi::c_int;
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn dequant_4x4(
@@ -722,7 +722,7 @@ unsafe extern "C" fn optimize_chroma_round(
             sum |= *ref_0.offset(i as isize) as ::core::ffi::c_int ^ out[i as usize];
             i += 1;
         }
-        return sum >> 6i32;
+        sum >> 6i32
     }
 }
 #[inline(always)]
@@ -778,7 +778,7 @@ unsafe extern "C" fn optimize_chroma_dc_internal(
             }
             coeff -= 1;
         }
-        return nz;
+        nz
     }
 }
 unsafe extern "C" fn optimize_chroma_2x2_dc(
@@ -786,7 +786,7 @@ unsafe extern "C" fn optimize_chroma_2x2_dc(
     mut dequant_mf: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        return optimize_chroma_dc_internal(dct, dequant_mf, 0i32);
+        optimize_chroma_dc_internal(dct, dequant_mf, 0i32)
     }
 }
 unsafe extern "C" fn optimize_chroma_2x4_dc(
@@ -794,7 +794,7 @@ unsafe extern "C" fn optimize_chroma_2x4_dc(
     mut dequant_mf: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        return optimize_chroma_dc_internal(dct, dequant_mf, 1i32);
+        optimize_chroma_dc_internal(dct, dequant_mf, 1i32)
     }
 }
 unsafe extern "C" fn denoise_dct(
@@ -855,28 +855,28 @@ unsafe extern "C" fn decimate_score_internal(
             }
             i_score += *ds_table.offset(i_run as isize) as ::core::ffi::c_int;
         }
-        return i_score;
+        i_score
     }
 }
 unsafe extern "C" fn decimate_score15(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
     unsafe {
-        return decimate_score_internal(dct.offset(1isize), 15i32);
+        decimate_score_internal(dct.offset(1isize), 15i32)
     }
 }
 unsafe extern "C" fn decimate_score16(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
     unsafe {
-        return decimate_score_internal(dct, 16i32);
+        decimate_score_internal(dct, 16i32)
     }
 }
 unsafe extern "C" fn decimate_score64(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
     unsafe {
-        return decimate_score_internal(dct, 64i32);
+        decimate_score_internal(dct, 64i32)
     }
 }
 unsafe extern "C" fn coeff_last4(
@@ -887,7 +887,7 @@ unsafe extern "C" fn coeff_last4(
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
             i_last -= 1;
         }
-        return i_last;
+        i_last
     }
 }
 unsafe extern "C" fn coeff_last8(
@@ -898,7 +898,7 @@ unsafe extern "C" fn coeff_last8(
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
             i_last -= 1;
         }
-        return i_last;
+        i_last
     }
 }
 unsafe extern "C" fn coeff_last15(
@@ -909,7 +909,7 @@ unsafe extern "C" fn coeff_last15(
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
             i_last -= 1;
         }
-        return i_last;
+        i_last
     }
 }
 unsafe extern "C" fn coeff_last16(
@@ -920,7 +920,7 @@ unsafe extern "C" fn coeff_last16(
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
             i_last -= 1;
         }
-        return i_last;
+        i_last
     }
 }
 unsafe extern "C" fn coeff_last64(
@@ -931,7 +931,7 @@ unsafe extern "C" fn coeff_last64(
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
             i_last -= 1;
         }
-        return i_last;
+        i_last
     }
 }
 unsafe extern "C" fn coeff_level_run4(
@@ -959,7 +959,7 @@ unsafe extern "C" fn coeff_level_run4(
             }
         }
         (*runlevel).mask = mask;
-        return i_total;
+        i_total
     }
 }
 unsafe extern "C" fn coeff_level_run8(
@@ -987,7 +987,7 @@ unsafe extern "C" fn coeff_level_run8(
             }
         }
         (*runlevel).mask = mask;
-        return i_total;
+        i_total
     }
 }
 unsafe extern "C" fn coeff_level_run15(
@@ -1015,7 +1015,7 @@ unsafe extern "C" fn coeff_level_run15(
             }
         }
         (*runlevel).mask = mask;
-        return i_total;
+        i_total
     }
 }
 unsafe extern "C" fn coeff_level_run16(
@@ -1043,7 +1043,7 @@ unsafe extern "C" fn coeff_level_run16(
             }
         }
         (*runlevel).mask = mask;
-        return i_total;
+        i_total
     }
 }
 pub unsafe extern "C" fn x264_8_quant_init(

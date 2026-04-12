@@ -58,13 +58,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_median(
@@ -77,7 +77,7 @@ pub mod base_h {
         b += t;
         b -= (b - c) & ((b - c) >> 31i32);
         b += (a - b) & ((a - b) >> 31i32);
-        return b;
+        b
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_median_mv(
@@ -106,8 +106,8 @@ pub mod macroblock_h {
         mut a: ::core::ffi::c_int,
         mut b: ::core::ffi::c_int,
     ) -> crate::stdlib::uint32_t {
-        return ((a & 0xffffi32) as crate::stdlib::uint32_t)
-            .wrapping_add((b as crate::stdlib::uint32_t) << 16i32);
+        ((a & 0xffffi32) as crate::stdlib::uint32_t)
+            .wrapping_add((b as crate::stdlib::uint32_t) << 16i32)
     }
 }
 pub mod rectangle_h {
@@ -825,7 +825,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
             }
             i8 += step;
         }
-        return true;
+        true
     }
 }
 #[inline(always)]
@@ -1207,21 +1207,21 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
             }
             i8 += step;
         }
-        return true;
+        true
     }
 }
 unsafe extern "C" fn mb_predict_mv_direct16x16_spatial_interlaced(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> bool {
     unsafe {
-        return mb_predict_mv_direct16x16_spatial(h, 1i32);
+        mb_predict_mv_direct16x16_spatial(h, 1i32)
     }
 }
 unsafe extern "C" fn mb_predict_mv_direct16x16_spatial_progressive(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> bool {
     unsafe {
-        return mb_predict_mv_direct16x16_spatial(h, 0i32);
+        mb_predict_mv_direct16x16_spatial(h, 0i32)
     }
 }
 pub unsafe extern "C" fn x264_8_mb_predict_mv_direct16x16(
@@ -1492,7 +1492,7 @@ pub unsafe extern "C" fn x264_8_mb_predict_mv_direct16x16(
                 l += 1;
             }
         }
-        return available;
+        available
     }
 }
 pub unsafe extern "C" fn x264_8_mb_predict_mv_ref16x16(

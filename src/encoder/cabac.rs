@@ -72,10 +72,10 @@ pub mod cabac_h {
         mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            return (((*cb).p.offset_from((*cb).p_start) as ::core::ffi::c_long
+            (((*cb).p.offset_from((*cb).p_start) as ::core::ffi::c_long
                 + (*cb).i_bytes_outstanding as ::core::ffi::c_long)
                 * 8i64
-                + (*cb).i_queue as ::core::ffi::c_long) as ::core::ffi::c_int;
+                + (*cb).i_queue as ::core::ffi::c_long) as ::core::ffi::c_int
         }
     }
 }
@@ -180,7 +180,7 @@ pub mod base_h {
                 + *mvdtop.offset(1isize) as ::core::ffi::c_int;
             amvd0 = (amvd0 > 2i32) as ::core::ffi::c_int + (amvd0 > 32i32) as ::core::ffi::c_int;
             amvd1 = (amvd1 > 2i32) as ::core::ffi::c_int + (amvd1 > 32i32) as ::core::ffi::c_int;
-            return (amvd0 + (amvd1 << 8i32)) as crate::stdlib::uint16_t;
+            (amvd0 + (amvd1 << 8i32)) as crate::stdlib::uint16_t
         }
     }
 }
@@ -249,7 +249,7 @@ pub mod macroblock_h {
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a.wrapping_add(b << 8i32);
+        a.wrapping_add(b << 8i32)
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_mb_predict_intra4x4_mode(
@@ -273,7 +273,7 @@ pub mod macroblock_h {
             if m < 0i32 {
                 return crate::src::common::predict::I_PRED_4x4_DC as ::core::ffi::c_int;
             }
-            return m;
+            m
         }
     }
     pub static mut x264_transform_allowed: [crate::stdlib::uint8_t; 19] = [
@@ -293,11 +293,11 @@ pub mod macroblock_h {
             if (*h).mb.i_type != crate::src::common::macroblock::P_8x8 as ::core::ffi::c_int {
                 return x264_transform_allowed[(*h).mb.i_type as usize] as ::core::ffi::c_int;
             }
-            return ((*(&raw mut (*h).mb.i_sub_partition
+            ((*(&raw mut (*h).mb.i_sub_partition
                 as *mut crate::src::common::base::x264_union32_t))
                 .i
                 == (crate::src::common::macroblock::D_L0_8x8 as ::core::ffi::c_int * 0x1010101i32)
-                    as crate::stdlib::uint32_t) as ::core::ffi::c_int;
+                    as crate::stdlib::uint32_t) as ::core::ffi::c_int
         }
     }
     use crate::src::encoder::cabac::base_h::x264_scan8;
@@ -306,25 +306,25 @@ pub mod macroblock_h {
 pub mod osdep_h {
     #[inline(always)]
     pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
-        return (x << 24i32)
+        (x << 24i32)
             .wrapping_add(x << 8i32 & 0xff0000u32)
             .wrapping_add(x >> 8i32 & 0xff00u32)
-            .wrapping_add(x >> 24i32);
+            .wrapping_add(x >> 24i32)
     }
     #[inline(always)]
     pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
-        return (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
+        (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
             .wrapping_add(
                 (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t) << 32i32,
-            );
+            )
     }
     #[inline(always)]
     pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
-        return if crate::osdep_h::WORD_SIZE == 8i32 {
+        if crate::osdep_h::WORD_SIZE == 8i32 {
             endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
         } else {
             endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
-        };
+        }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_ctz_4bit(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_int {
@@ -332,7 +332,7 @@ pub mod osdep_h {
             pub static mut lut: [crate::stdlib::uint8_t; 16] = [
                 4u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8, 3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8,
             ];
-            return lut[x as usize] as ::core::ffi::c_int;
+            lut[x as usize] as ::core::ffi::c_int
         }
     }
 }
@@ -987,7 +987,7 @@ unsafe extern "C" fn cabac_mvd_cpn(
             crate::src::common::cabac::x264_8_cabac_encode_ue_bypass(cb, 3i32, i_abs - 9i32);
         }
         crate::src::common::cabac::x264_8_cabac_encode_bypass_c(cb, mvd >> 31i32);
-        return if i_abs < 66i32 { i_abs } else { 66i32 };
+        if i_abs < 66i32 { i_abs } else { 66i32 }
     }
 }
 #[inline(never)]
@@ -1049,10 +1049,10 @@ unsafe extern "C" fn cabac_mvd(
             mdy,
             amvd as ::core::ffi::c_int >> 8i32,
         );
-        return pack8to16(
+        pack8to16(
             mdx as crate::stdlib::uint32_t,
             mdy as crate::stdlib::uint32_t,
-        ) as crate::stdlib::uint16_t;
+        ) as crate::stdlib::uint16_t
     }
 }
 #[inline]
@@ -1688,11 +1688,11 @@ unsafe extern "C" fn cabac_cbf_ctxidxinc(
                 } else {
                     b_intra
                 };
-                return base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb + i_nza;
+                base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb + i_nza
             } else {
                 let mut i_nza_0 = (*h).mb.cache.i_cbp_left >> (8i32 + i_idx) & 1i32;
                 let mut i_nzb_0 = (*h).mb.cache.i_cbp_top >> (8i32 + i_idx) & 1i32;
-                return base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb_0 + i_nza_0;
+                base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb_0 + i_nza_0
             }
         } else {
             let mut i_nza_1 = (*h).mb.cache.non_zero_count
@@ -1702,16 +1702,16 @@ unsafe extern "C" fn cabac_cbf_ctxidxinc(
                 [(x264_scan8[i_idx as usize] as ::core::ffi::c_int - 8i32) as usize]
                 as ::core::ffi::c_int;
             if 0 != 0 && b_intra == 0 {
-                return base_ctx[i_cat as usize] as ::core::ffi::c_int
-                    + ((2i32 * i_nzb_1 + i_nza_1) & 0x7fi32);
+                base_ctx[i_cat as usize] as ::core::ffi::c_int
+                    + ((2i32 * i_nzb_1 + i_nza_1) & 0x7fi32)
             } else {
                 i_nza_1 &= 0x7fi32 + (b_intra << 7i32);
                 i_nzb_1 &= 0x7fi32 + (b_intra << 7i32);
-                return base_ctx[i_cat as usize] as ::core::ffi::c_int
+                base_ctx[i_cat as usize] as ::core::ffi::c_int
                     + 2i32 * (i_nzb_1 != 0) as ::core::ffi::c_int
-                    + (i_nza_1 != 0) as ::core::ffi::c_int;
+                    + (i_nza_1 != 0) as ::core::ffi::c_int
             }
-        };
+        }
     }
 }
 static mut coeff_abs_level1_ctx: [crate::stdlib::uint8_t; 8] =

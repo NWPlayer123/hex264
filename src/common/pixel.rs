@@ -345,7 +345,7 @@ unsafe extern "C" fn x264_pixel_sad_16x16(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_sad_16x8(
@@ -370,7 +370,7 @@ unsafe extern "C" fn x264_pixel_sad_16x8(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_sad_8x16(
@@ -395,7 +395,7 @@ unsafe extern "C" fn x264_pixel_sad_8x16(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_sad_8x8(
@@ -420,7 +420,7 @@ unsafe extern "C" fn x264_pixel_sad_8x8(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_sad_8x4(
@@ -445,7 +445,7 @@ unsafe extern "C" fn x264_pixel_sad_8x4(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_sad_4x16(
@@ -470,7 +470,7 @@ unsafe extern "C" fn x264_pixel_sad_4x16(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_sad_4x8(
@@ -495,7 +495,7 @@ unsafe extern "C" fn x264_pixel_sad_4x8(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_sad_4x4(
@@ -520,7 +520,7 @@ unsafe extern "C" fn x264_pixel_sad_4x4(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_16x16(
@@ -544,7 +544,7 @@ unsafe extern "C" fn x264_pixel_ssd_16x16(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_16x8(
@@ -568,7 +568,7 @@ unsafe extern "C" fn x264_pixel_ssd_16x8(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_8x16(
@@ -592,7 +592,7 @@ unsafe extern "C" fn x264_pixel_ssd_8x16(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_8x8(
@@ -616,7 +616,7 @@ unsafe extern "C" fn x264_pixel_ssd_8x8(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_8x4(
@@ -640,7 +640,7 @@ unsafe extern "C" fn x264_pixel_ssd_8x4(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_4x16(
@@ -664,7 +664,7 @@ unsafe extern "C" fn x264_pixel_ssd_4x16(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_4x8(
@@ -688,7 +688,7 @@ unsafe extern "C" fn x264_pixel_ssd_4x8(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 unsafe extern "C" fn x264_pixel_ssd_4x4(
@@ -712,7 +712,7 @@ unsafe extern "C" fn x264_pixel_ssd_4x4(
             pix2 = pix2.offset(i_stride_pix2);
             y += 1;
         }
-        return i_sum;
+        i_sum
     }
 }
 pub unsafe extern "C" fn x264_8_pixel_ssd_wxh(
@@ -813,7 +813,7 @@ pub unsafe extern "C" fn x264_8_pixel_ssd_wxh(
                 y += 1;
             }
         }
-        return i_ssd;
+        i_ssd
     }
 }
 unsafe extern "C" fn pixel_ssd_nv12_core(
@@ -908,8 +908,8 @@ unsafe extern "C" fn pixel_var_16x16(
             pix = pix.offset(i_stride);
             y += 1;
         }
-        return (sum as crate::stdlib::uint64_t)
-            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32);
+        (sum as crate::stdlib::uint64_t)
+            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
     }
 }
 unsafe extern "C" fn pixel_var_8x16(
@@ -934,8 +934,8 @@ unsafe extern "C" fn pixel_var_8x16(
             pix = pix.offset(i_stride);
             y += 1;
         }
-        return (sum as crate::stdlib::uint64_t)
-            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32);
+        (sum as crate::stdlib::uint64_t)
+            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
     }
 }
 unsafe extern "C" fn pixel_var_8x8(
@@ -960,8 +960,8 @@ unsafe extern "C" fn pixel_var_8x8(
             pix = pix.offset(i_stride);
             y += 1;
         }
-        return (sum as crate::stdlib::uint64_t)
-            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32);
+        (sum as crate::stdlib::uint64_t)
+            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
     }
 }
 unsafe extern "C" fn pixel_var2_8x16(
@@ -997,11 +997,11 @@ unsafe extern "C" fn pixel_var2_8x16(
         }
         *ssd.offset(0isize) = sqr_u;
         *ssd.offset(1isize) = sqr_v;
-        return (sqr_u as crate::stdlib::int64_t
+        (sqr_u as crate::stdlib::int64_t
             - ((sum_u as crate::stdlib::int64_t * sum_u as crate::stdlib::int64_t) >> 7i32)
             + sqr_v as crate::stdlib::int64_t
             - ((sum_v as crate::stdlib::int64_t * sum_v as crate::stdlib::int64_t) >> 7i32))
-            as ::core::ffi::c_int;
+            as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn pixel_var2_8x8(
@@ -1037,11 +1037,11 @@ unsafe extern "C" fn pixel_var2_8x8(
         }
         *ssd.offset(0isize) = sqr_u;
         *ssd.offset(1isize) = sqr_v;
-        return (sqr_u as crate::stdlib::int64_t
+        (sqr_u as crate::stdlib::int64_t
             - ((sum_u as crate::stdlib::int64_t * sum_u as crate::stdlib::int64_t) >> 6i32)
             + sqr_v as crate::stdlib::int64_t
             - ((sum_v as crate::stdlib::int64_t * sum_v as crate::stdlib::int64_t) >> 6i32))
-            as ::core::ffi::c_int;
+            as ::core::ffi::c_int
     }
 }
 pub const BITS_PER_SUM: usize = (8usize).wrapping_mul(::core::mem::size_of::<sum_t>());
@@ -1050,7 +1050,7 @@ extern "C" fn abs2(mut a: sum2_t) -> sum2_t {
     let mut s = (a >> BITS_PER_SUM.wrapping_sub(1usize)
         & ((1u32) << BITS_PER_SUM).wrapping_add(1u32))
     .wrapping_mul(-(1i32) as sum_t as sum2_t);
-    return a.wrapping_add(s) ^ s;
+    a.wrapping_add(s) ^ s
 }
 #[inline(never)]
 unsafe extern "C" fn x264_pixel_satd_4x4(
@@ -1107,7 +1107,7 @@ unsafe extern "C" fn x264_pixel_satd_4x4(
             sum = sum.wrapping_add((a0 as sum_t as sum2_t).wrapping_add(a0 >> BITS_PER_SUM));
             i_0 += 1;
         }
-        return (sum >> 1i32) as ::core::ffi::c_int;
+        (sum >> 1i32) as ::core::ffi::c_int
     }
 }
 #[inline(never)]
@@ -1188,8 +1188,8 @@ unsafe extern "C" fn x264_pixel_satd_8x4(
             );
             i_0 += 1;
         }
-        return ((sum as sum_t as sum2_t).wrapping_add(sum >> BITS_PER_SUM) >> 1i32)
-            as ::core::ffi::c_int;
+        ((sum as sum_t as sum2_t).wrapping_add(sum >> BITS_PER_SUM) >> 1i32)
+            as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn x264_pixel_satd_16x16(
@@ -1241,7 +1241,7 @@ unsafe extern "C" fn x264_pixel_satd_16x16(
                 i_pix2,
             );
         }
-        return sum;
+        sum
     }
 }
 unsafe extern "C" fn x264_pixel_satd_16x8(
@@ -1293,7 +1293,7 @@ unsafe extern "C" fn x264_pixel_satd_16x8(
                 i_pix2,
             );
         }
-        return sum;
+        sum
     }
 }
 unsafe extern "C" fn x264_pixel_satd_8x16(
@@ -1345,7 +1345,7 @@ unsafe extern "C" fn x264_pixel_satd_8x16(
                 i_pix2,
             );
         }
-        return sum;
+        sum
     }
 }
 unsafe extern "C" fn x264_pixel_satd_8x8(
@@ -1397,7 +1397,7 @@ unsafe extern "C" fn x264_pixel_satd_8x8(
                 i_pix2,
             );
         }
-        return sum;
+        sum
     }
 }
 unsafe extern "C" fn x264_pixel_satd_4x16(
@@ -1449,7 +1449,7 @@ unsafe extern "C" fn x264_pixel_satd_4x16(
                 i_pix2,
             );
         }
-        return sum;
+        sum
     }
 }
 unsafe extern "C" fn x264_pixel_satd_4x8(
@@ -1501,7 +1501,7 @@ unsafe extern "C" fn x264_pixel_satd_4x8(
                 i_pix2,
             );
         }
-        return sum;
+        sum
     }
 }
 #[inline(never)]
@@ -1593,7 +1593,7 @@ unsafe extern "C" fn sa8d_8x8(
             sum = sum.wrapping_add((b0 as sum_t as sum2_t).wrapping_add(b0 >> BITS_PER_SUM));
             i_0 += 1;
         }
-        return sum as ::core::ffi::c_int;
+        sum as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn x264_pixel_sa8d_8x8(
@@ -1604,7 +1604,7 @@ unsafe extern "C" fn x264_pixel_sa8d_8x8(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut sum = sa8d_8x8(pix1, i_pix1, pix2, i_pix2);
-        return (sum + 2i32) >> 2i32;
+        (sum + 2i32) >> 2i32
     }
 }
 unsafe extern "C" fn x264_pixel_sa8d_16x16(
@@ -1628,7 +1628,7 @@ unsafe extern "C" fn x264_pixel_sa8d_16x16(
                 pix2.offset(8isize).offset(8isize * i_pix2),
                 i_pix2,
             );
-        return (sum + 2i32) >> 2i32;
+        (sum + 2i32) >> 2i32
     }
 }
 #[inline(never)]
@@ -1750,8 +1750,8 @@ unsafe extern "C" fn pixel_hadamard_ac(
         sum8 = (sum8 as sum_t as sum2_t)
             .wrapping_add(sum8 >> BITS_PER_SUM)
             .wrapping_sub(dc);
-        return ((sum8 as crate::stdlib::uint64_t) << 32i32)
-            .wrapping_add(sum4 as crate::stdlib::uint64_t);
+        ((sum8 as crate::stdlib::uint64_t) << 32i32)
+            .wrapping_add(sum4 as crate::stdlib::uint64_t)
     }
 }
 unsafe extern "C" fn x264_pixel_hadamard_ac_16x16(
@@ -1772,8 +1772,8 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_16x16(
                 stride,
             ));
         }
-        return ((sum >> 34i32) << 32i32)
-            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t);
+        ((sum >> 34i32) << 32i32)
+            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t)
     }
 }
 unsafe extern "C" fn x264_pixel_hadamard_ac_16x8(
@@ -1794,8 +1794,8 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_16x8(
                 stride,
             ));
         }
-        return ((sum >> 34i32) << 32i32)
-            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t);
+        ((sum >> 34i32) << 32i32)
+            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t)
     }
 }
 unsafe extern "C" fn x264_pixel_hadamard_ac_8x16(
@@ -1816,8 +1816,8 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_8x16(
                 stride,
             ));
         }
-        return ((sum >> 34i32) << 32i32)
-            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t);
+        ((sum >> 34i32) << 32i32)
+            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t)
     }
 }
 unsafe extern "C" fn x264_pixel_hadamard_ac_8x8(
@@ -1838,8 +1838,8 @@ unsafe extern "C" fn x264_pixel_hadamard_ac_8x8(
                 stride,
             ));
         }
-        return ((sum >> 34i32) << 32i32)
-            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t);
+        ((sum >> 34i32) << 32i32)
+            .wrapping_add((sum as crate::stdlib::uint32_t >> 1i32) as crate::stdlib::uint64_t)
     }
 }
 unsafe extern "C" fn x264_pixel_sad_x3_16x16(
@@ -3131,10 +3131,10 @@ unsafe extern "C" fn ssim_end1(
         let mut fs12 = s12;
         let mut vars = fss * 64i32 - fs1 * fs1 - fs2 * fs2;
         let mut covar = fs12 * 64i32 - fs1 * fs2;
-        return (2i32 * fs1 * fs2 + ssim_c1) as ::core::ffi::c_float
+        (2i32 * fs1 * fs2 + ssim_c1) as ::core::ffi::c_float
             * (2i32 * covar + ssim_c2) as ::core::ffi::c_float
             / ((fs1 * fs1 + fs2 * fs2 + ssim_c1) as ::core::ffi::c_float
-                * (vars + ssim_c2) as ::core::ffi::c_float);
+                * (vars + ssim_c2) as ::core::ffi::c_float)
     }
 }
 unsafe extern "C" fn ssim_end4(
@@ -3166,7 +3166,7 @@ unsafe extern "C" fn ssim_end4(
             );
             i += 1;
         }
-        return ssim;
+        ssim
     }
 }
 pub unsafe extern "C" fn x264_8_pixel_ssim_wxh(
@@ -3230,7 +3230,7 @@ pub unsafe extern "C" fn x264_8_pixel_ssim_wxh(
             y += 1;
         }
         *cnt = (height - 1i32) * (width - 1i32);
-        return ssim;
+        ssim
     }
 }
 unsafe extern "C" fn pixel_vsad(
@@ -3253,7 +3253,7 @@ unsafe extern "C" fn pixel_vsad(
             i += 1;
             src = src.offset(stride);
         }
-        return score;
+        score
     }
 }
 pub unsafe extern "C" fn x264_8_field_vsad(
@@ -3295,7 +3295,7 @@ pub unsafe extern "C" fn x264_8_field_vsad(
                 - *(*h).mb.field.offset((mb_xy - mb_stride) as isize) as ::core::ffi::c_int
                     * 1024i32;
         }
-        return score_field < score_frame;
+        score_field < score_frame
     }
 }
 unsafe extern "C" fn pixel_asd8(
@@ -3319,7 +3319,7 @@ unsafe extern "C" fn pixel_asd8(
             pix1 = pix1.offset(stride1);
             pix2 = pix2.offset(stride2);
         }
-        return crate::stdlib::abs(sum);
+        crate::stdlib::abs(sum)
     }
 }
 unsafe extern "C" fn x264_pixel_ads4(
@@ -3353,7 +3353,7 @@ unsafe extern "C" fn x264_pixel_ads4(
             i += 1;
             sums = sums.offset(1);
         }
-        return nmv;
+        nmv
     }
 }
 unsafe extern "C" fn x264_pixel_ads2(
@@ -3382,7 +3382,7 @@ unsafe extern "C" fn x264_pixel_ads2(
             i += 1;
             sums = sums.offset(1);
         }
-        return nmv;
+        nmv
     }
 }
 unsafe extern "C" fn x264_pixel_ads1(
@@ -3409,7 +3409,7 @@ unsafe extern "C" fn x264_pixel_ads1(
             i += 1;
             sums = sums.offset(1);
         }
-        return nmv;
+        nmv
     }
 }
 pub unsafe extern "C" fn x264_8_pixel_init(

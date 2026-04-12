@@ -26,9 +26,9 @@ pub mod bitstream_h {
         mut s: *mut crate::src::common::bitstream::bs_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            return (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
+            (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
                 + (crate::osdep_h::WORD_SIZE * 8i32) as ::core::ffi::c_long
-                - (*s).i_left as ::core::ffi::c_long) as ::core::ffi::c_int;
+                - (*s).i_left as ::core::ffi::c_long) as ::core::ffi::c_int
         }
     }
     #[inline]
@@ -308,7 +308,7 @@ pub mod macroblock_h {
             if m < 0i32 {
                 return crate::src::common::predict::I_PRED_4x4_DC as ::core::ffi::c_int;
             }
-            return m;
+            m
         }
     }
     #[inline(always)]
@@ -327,7 +327,7 @@ pub mod macroblock_h {
             if i_ret < 0x80i32 {
                 i_ret = (i_ret + 1i32) >> 1i32;
             }
-            return i_ret & 0x7fi32;
+            i_ret & 0x7fi32
         }
     }
     pub static mut x264_transform_allowed: [crate::stdlib::uint8_t; 19] = [
@@ -347,11 +347,11 @@ pub mod macroblock_h {
             if (*h).mb.i_type != crate::src::common::macroblock::P_8x8 as ::core::ffi::c_int {
                 return x264_transform_allowed[(*h).mb.i_type as usize] as ::core::ffi::c_int;
             }
-            return ((*(&raw mut (*h).mb.i_sub_partition
+            ((*(&raw mut (*h).mb.i_sub_partition
                 as *mut crate::src::common::base::x264_union32_t))
                 .i
                 == (crate::src::common::macroblock::D_L0_8x8 as ::core::ffi::c_int * 0x1010101i32)
-                    as crate::stdlib::uint32_t) as ::core::ffi::c_int;
+                    as crate::stdlib::uint32_t) as ::core::ffi::c_int
         }
     }
     use crate::src::encoder::cavlc::base_h::x264_scan8;
@@ -360,25 +360,25 @@ pub mod macroblock_h {
 pub mod osdep_h {
     #[inline(always)]
     pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
-        return (x << 24i32)
+        (x << 24i32)
             .wrapping_add(x << 8i32 & 0xff0000u32)
             .wrapping_add(x >> 8i32 & 0xff00u32)
-            .wrapping_add(x >> 24i32);
+            .wrapping_add(x >> 24i32)
     }
     #[inline(always)]
     pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
-        return (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
+        (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
             .wrapping_add(
                 (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t) << 32i32,
-            );
+            )
     }
     #[inline(always)]
     pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
-        return if crate::osdep_h::WORD_SIZE == 8i32 {
+        if crate::osdep_h::WORD_SIZE == 8i32 {
             endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
         } else {
             endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
-        };
+        }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_ctz_4bit(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_int {
@@ -386,7 +386,7 @@ pub mod osdep_h {
             pub static mut lut: [crate::stdlib::uint8_t; 16] = [
                 4u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8, 3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8,
             ];
-            return lut[x as usize] as ::core::ffi::c_int;
+            lut[x as usize] as ::core::ffi::c_int
         }
     }
 }
@@ -508,7 +508,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
         if abs_level > next_suffix[i_suffix_length as usize] as ::core::ffi::c_int {
             i_suffix_length += 1;
         }
-        return i_suffix_length;
+        i_suffix_length
     }
 }
 unsafe extern "C" fn cavlc_block_residual_internal(
@@ -655,7 +655,7 @@ unsafe extern "C" fn cavlc_block_residual_internal(
             zero_run_code & 0x1fi32,
             (zero_run_code >> 5i32) as crate::stdlib::uint32_t,
         );
-        return i_total;
+        i_total
     }
 }
 static mut ct_index: [crate::stdlib::uint8_t; 17] = [

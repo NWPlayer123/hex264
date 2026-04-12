@@ -7240,11 +7240,11 @@ pub mod common_h {
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+        (if x & !crate::src::common::common::PIXEL_MAX != 0 {
             -x >> 31i32 & crate::src::common::common::PIXEL_MAX
         } else {
             x
-        }) as crate::src::common::common::pixel;
+        }) as crate::src::common::common::pixel
     }
 }
 pub mod osdep_h {
@@ -7252,8 +7252,8 @@ pub mod osdep_h {
     pub unsafe extern "C" fn endian_fix16(
         mut x: crate::stdlib::uint16_t,
     ) -> crate::stdlib::uint16_t {
-        return ((x as ::core::ffi::c_int) << 8i32 | x as ::core::ffi::c_int >> 8i32)
-            as crate::stdlib::uint16_t;
+        ((x as ::core::ffi::c_int) << 8i32 | x as ::core::ffi::c_int >> 8i32)
+            as crate::stdlib::uint16_t
     }
 }
 use crate::src::common::mc::common_h::x264_clip_pixel;
@@ -8195,7 +8195,7 @@ unsafe extern "C" fn get_ref(
                     i_height,
                 );
             }
-            return dst;
+            dst
         } else if !(*weight).weightfn.is_null() {
             mc_weight(
                 dst,
@@ -8206,11 +8206,11 @@ unsafe extern "C" fn get_ref(
                 i_width,
                 i_height,
             );
-            return dst;
+            dst
         } else {
             *i_dst_stride = i_src_stride;
-            return src1;
-        };
+            src1
+        }
     }
 }
 unsafe extern "C" fn mc_chroma(

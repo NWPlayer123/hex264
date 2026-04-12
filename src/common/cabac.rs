@@ -20,13 +20,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
 }
 use crate::src::common::cabac::base_h::x264_clip3;

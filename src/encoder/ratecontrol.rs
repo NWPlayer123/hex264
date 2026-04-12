@@ -6,13 +6,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
     #[inline(always)]
     pub extern "C" fn x264_clip3f(
@@ -20,13 +20,13 @@ pub mod base_h {
         mut f_min: ::core::ffi::c_double,
         mut f_max: ::core::ffi::c_double,
     ) -> ::core::ffi::c_double {
-        return if v < f_min {
+        if v < f_min {
             f_min
         } else if v > f_max {
             f_max
         } else {
             v
-        };
+        }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_exp2fix8(mut x: ::core::ffi::c_float) -> ::core::ffi::c_int {
@@ -38,20 +38,20 @@ pub mod base_h {
             if i > 1023i32 {
                 return 0xffffi32;
             }
-            return (crate::src::common::tables::x264_exp2_lut[(i & 63i32) as usize]
+            (crate::src::common::tables::x264_exp2_lut[(i & 63i32) as usize]
                 as ::core::ffi::c_int
                 + 256i32)
                 << (i >> 6i32)
-                >> 8i32;
+                >> 8i32
         }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_log2(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_float {
         unsafe {
             let mut lz = x.leading_zeros() as i32;
-            return crate::src::common::tables::x264_log2_lut
+            crate::src::common::tables::x264_log2_lut
                 [(x << lz >> 24i32 & 0x7fu32) as usize]
-                + crate::src::common::tables::x264_log2_lz_lut[lz as usize];
+                + crate::src::common::tables::x264_log2_lz_lut[lz as usize]
         }
     }
 }
@@ -90,8 +90,8 @@ pub mod osdep_h {
             if crate::stdlib::fstat(crate::stdlib::fileno(filehandle), &raw mut file_stat) != 0 {
                 return 1i32;
             }
-            return (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t
-                == 0o100000u32) as ::core::ffi::c_int;
+            (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t
+                == 0o100000u32) as ::core::ffi::c_int
         }
     }
 }
@@ -232,20 +232,20 @@ pub struct ratecontrol_entry_t {
 #[inline]
 unsafe extern "C" fn qp2qscale(mut qp: ::core::ffi::c_float) -> ::core::ffi::c_float {
     unsafe {
-        return 0.85f32
+        0.85f32
             * crate::stdlib::powf(
                 2.0f32,
                 (qp - (12.0f32 + crate::src::common::common::QP_BD_OFFSET as ::core::ffi::c_float))
                     / 6.0f32,
-            );
+            )
     }
 }
 #[inline]
 unsafe extern "C" fn qscale2qp(mut qscale: ::core::ffi::c_float) -> ::core::ffi::c_float {
     unsafe {
-        return 12.0f32
+        12.0f32
             + crate::src::common::common::QP_BD_OFFSET as ::core::ffi::c_float
-            + 6.0f32 * crate::stdlib::log2f(qscale / 0.85f32);
+            + 6.0f32 * crate::stdlib::log2f(qscale / 0.85f32)
     }
 }
 #[inline]
@@ -257,7 +257,7 @@ unsafe extern "C" fn qscale2bits(
         if qscale < 0.1 {
             qscale = 0.1f64;
         }
-        return ((*rce).tex_bits as ::core::ffi::c_double + 0.1f64)
+        ((*rce).tex_bits as ::core::ffi::c_double + 0.1f64)
             * crate::stdlib::pow((*rce).qscale / qscale, 1.1f64)
             + (*rce).mv_bits as ::core::ffi::c_double
                 * crate::stdlib::pow(
@@ -268,7 +268,7 @@ unsafe extern "C" fn qscale2bits(
                     }) / (if qscale > 1f64 { qscale } else { 1f64 }),
                     0.5f64,
                 )
-            + (*rce).misc_bits as ::core::ffi::c_double;
+            + (*rce).misc_bits as ::core::ffi::c_double
     }
 }
 #[inline(always)]
@@ -287,9 +287,9 @@ unsafe extern "C" fn ac_energy_var(
             (*frame).i_pixel_ssd[i as usize] =
                 (*frame).i_pixel_ssd[i as usize].wrapping_add(ssd as crate::stdlib::uint64_t);
         }
-        return (ssd as crate::stdlib::uint64_t).wrapping_sub(
+        (ssd as crate::stdlib::uint64_t).wrapping_sub(
             (sum as crate::stdlib::uint64_t).wrapping_mul(sum as crate::stdlib::uint64_t) >> shift,
-        ) as crate::stdlib::uint32_t;
+        ) as crate::stdlib::uint32_t
     }
 }
 #[inline(always)]
@@ -330,7 +330,7 @@ unsafe extern "C" fn ac_energy_plane(
                 stride as crate::stdlib::intptr_t,
                 height,
             );
-            return ac_energy_var(
+            ac_energy_var(
                 (*h).pixf.var[chromapix as usize].expect("non-null function pointer")(
                     &raw mut pix as *mut crate::src::common::common::pixel,
                     crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
@@ -350,9 +350,9 @@ unsafe extern "C" fn ac_energy_plane(
                 frame,
                 2i32,
                 b_store,
-            ));
+            ))
         } else {
-            return ac_energy_var(
+            ac_energy_var(
                 (*h).pixf.var
                     [crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
                     .expect("non-null function pointer")(
@@ -363,8 +363,8 @@ unsafe extern "C" fn ac_energy_plane(
                 frame,
                 i,
                 b_store,
-            );
-        };
+            )
+        }
     }
 }
 #[inline(never)]
@@ -451,7 +451,7 @@ unsafe extern "C" fn ac_energy_mb(
                 ));
             }
         }
-        return var;
+        var
     }
 }
 pub unsafe extern "C" fn x264_8_adaptive_quant_frame(
@@ -775,7 +775,7 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
                 }
             }
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 unsafe extern "C" fn macroblock_tree_rescale_destroy(mut rc: *mut x264_ratecontrol_t) {
@@ -816,7 +816,7 @@ unsafe extern "C" fn tapfilter(
             i += 1;
             pos += 1;
         }
-        return sum;
+        sum
     }
 }
 unsafe extern "C" fn macroblock_tree_rescale(
@@ -975,7 +975,7 @@ pub unsafe extern "C" fn x264_8_macroblock_tree_read(
         } else {
             x264_8_adaptive_quant_frame(h, frame, quant_offsets);
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_reference_build_list_optimal(
@@ -1045,7 +1045,7 @@ pub unsafe extern "C" fn x264_8_reference_build_list_optimal(
             );
             ref_0 += 1;
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn strcat_filename(
@@ -1063,7 +1063,7 @@ unsafe extern "C" fn strcat_filename(
         }
         crate::stdlib::strcpy(output, input);
         crate::stdlib::strcat(output, suffix);
-        return output;
+        output
     }
 }
 pub unsafe extern "C" fn x264_8_ratecontrol_init_reconfigurable(
@@ -2256,7 +2256,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                 }
             }
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 unsafe extern "C" fn parse_zone(
@@ -2315,7 +2315,7 @@ unsafe extern "C" fn parse_zone(
             crate::x264_h::x264_param_t,
         >() as crate::stdlib::int64_t) as *mut crate::x264_h::x264_param_t;
         if (*z).param.is_null() {
-            return -(1i32);
+            -(1i32)
         } else {
             crate::stdlib::memcpy(
                 (*z).param as *mut ::core::ffi::c_void,
@@ -2353,8 +2353,8 @@ unsafe extern "C" fn parse_zone(
                 }
                 p = ::core::ptr::null_mut::<::core::ffi::c_char>();
             }
-            return 0i32;
-        };
+            0i32
+        }
     }
 }
 unsafe extern "C" fn parse_zones(
@@ -2489,7 +2489,7 @@ unsafe extern "C" fn parse_zones(
             }
             _ => {}
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 unsafe extern "C" fn get_zone(
@@ -2506,7 +2506,7 @@ unsafe extern "C" fn get_zone(
             }
             i -= 1;
         }
-        return ::core::ptr::null_mut::<crate::x264_h::x264_zone_t>();
+        ::core::ptr::null_mut::<crate::x264_h::x264_zone_t>()
     }
 }
 pub unsafe extern "C" fn x264_8_ratecontrol_summary(
@@ -2844,7 +2844,7 @@ unsafe extern "C" fn predict_row_size(
                     / qscale;
                 return (pred_s + pred_t) * 0.5f32;
             }
-            return pred_s;
+            pred_s
         } else {
             let mut pred_intra = predict_size(
                 (*rc).row_pred.offset(1isize),
@@ -2852,8 +2852,8 @@ unsafe extern "C" fn predict_row_size(
                 *(*(*h).fdec).i_row_satds[0usize][0usize].offset(y as isize)
                     as ::core::ffi::c_float,
             );
-            return pred_intra + pred_s;
-        };
+            pred_intra + pred_s
+        }
     }
 }
 unsafe extern "C" fn row_bits_so_far(
@@ -2867,7 +2867,7 @@ unsafe extern "C" fn row_bits_so_far(
             bits += *(*(*h).fdec).i_row_bits.offset(i as isize);
             i += 1;
         }
-        return bits;
+        bits
     }
 }
 unsafe extern "C" fn predict_row_size_to_end(
@@ -2883,7 +2883,7 @@ unsafe extern "C" fn predict_row_size_to_end(
             bits += predict_row_size(h, i, qscale);
             i += 1;
         }
-        return bits;
+        bits
     }
 }
 pub unsafe extern "C" fn x264_8_ratecontrol_mb(
@@ -3164,18 +3164,18 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb(
         }
         (*rc).qpa_rc_prev = (*rc).qpa_rc;
         (*rc).qpa_aq_prev = (*rc).qpa_aq;
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_ratecontrol_qp(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> ::core::ffi::c_int {
     unsafe {
-        return x264_clip3(
+        x264_clip3(
             ((*(*h).rc).qpm + 0.5f32) as ::core::ffi::c_int,
             (*h).param.rc.i_qp_min,
             (*h).param.rc.i_qp_max,
-        );
+        )
     }
 }
 pub unsafe extern "C" fn x264_8_ratecontrol_mb_qp(
@@ -3196,11 +3196,11 @@ pub unsafe extern "C" fn x264_8_ratecontrol_mb_qp(
             }
             qp += qp_offset;
         }
-        return x264_clip3(
+        x264_clip3(
             (qp + 0.5f32) as ::core::ffi::c_int,
             (*h).param.rc.i_qp_min,
             (*h).param.rc.i_qp_max,
-        );
+        )
     }
 }
 pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
@@ -3279,10 +3279,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_slice_type(
                 }
                 return crate::x264_h::X264_TYPE_AUTO;
             }
-            return (*(*rc).entry.offset(frame_num as isize)).frame_type;
+            (*(*rc).entry.offset(frame_num as isize)).frame_type
         } else {
-            return crate::x264_h::X264_TYPE_AUTO;
-        };
+            crate::x264_h::X264_TYPE_AUTO
+        }
     }
 }
 pub unsafe extern "C" fn x264_8_ratecontrol_set_weights(
@@ -3710,7 +3710,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 / (*h).sps.vui.i_time_scale as ::core::ffi::c_double
                 + (*(*h).fenc).hrd_timing.cpb_removal_time;
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn get_qscale(
@@ -3763,7 +3763,7 @@ unsafe extern "C" fn get_qscale(
                 q /= (*zone).f_bitrate_factor as ::core::ffi::c_double;
             }
         }
-        return q;
+        q
     }
 }
 unsafe extern "C" fn get_diff_limited_q(
@@ -3843,7 +3843,7 @@ unsafe extern "C" fn get_diff_limited_q(
                 q /= (*zone).f_bitrate_factor as ::core::ffi::c_double;
             }
         }
-        return q;
+        q
     }
 }
 unsafe extern "C" fn predict_size(
@@ -3852,7 +3852,7 @@ unsafe extern "C" fn predict_size(
     mut var: ::core::ffi::c_float,
 ) -> ::core::ffi::c_float {
     unsafe {
-        return ((*p).coeff * var + (*p).offset) / (q * (*p).count);
+        ((*p).coeff * var + (*p).offset) / (q * (*p).count)
     }
 }
 unsafe extern "C" fn update_predictor(
@@ -3989,7 +3989,7 @@ unsafe extern "C" fn update_vbv(
                 };
             }
         }
-        return filler;
+        filler
     }
 }
 pub unsafe extern "C" fn x264_8_hrd_fullness(mut h: *mut crate::src::common::common::x264_t) {
@@ -4102,17 +4102,17 @@ unsafe extern "C" fn clip_qscale(
             };
         }
         if lmin == lmax {
-            return lmin;
+            lmin
         } else if (*rcc).is_2pass {
             let mut min2 = crate::stdlib::log(lmin);
             let mut max2 = crate::stdlib::log(lmax);
             q = (crate::stdlib::log(q) - min2) / (max2 - min2) - 0.5f64;
             q = 1.0f64 / (1.0f64 + crate::stdlib::exp(-4f64 * q));
             q = q * (max2 - min2) + min2;
-            return crate::stdlib::exp(q);
+            crate::stdlib::exp(q)
         } else {
-            return x264_clip3f(q, lmin, lmax);
-        };
+            x264_clip3f(q, lmin, lmax)
+        }
     }
 }
 unsafe extern "C" fn vbv_pass1(
@@ -4295,7 +4295,7 @@ unsafe extern "C" fn vbv_pass1(
                 q = if q0 > q { q0 } else { q };
             }
         }
-        return clip_qscale(h, pict_type, q);
+        clip_qscale(h, pict_type, q)
     }
 }
 unsafe extern "C" fn rate_estimate_qscale(
@@ -4427,7 +4427,7 @@ unsafe extern "C" fn rate_estimate_qscale(
                 (*rcc).last_satd =
                     crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(h);
             }
-            return q;
+            q
         } else {
             let mut abr_buffer = 2f64 * (*rcc).rate_tolerance * (*rcc).bitrate;
             let mut predicted_bits = total_bits as ::core::ffi::c_double;
@@ -4666,8 +4666,8 @@ unsafe extern "C" fn rate_estimate_qscale(
                 &mut (*rcc).frame_size_estimated as *mut ::core::ffi::c_float,
                 (*rcc).frame_size_planned as ::core::ffi::c_float,
             );
-            return q;
-        };
+            q
+        }
     }
 }
 unsafe extern "C" fn threads_normalize_predictors(mut h: *mut crate::src::common::common::x264_t) {
@@ -4967,7 +4967,7 @@ unsafe extern "C" fn find_underflow(
         }
         *t0 = start;
         *t1 = end;
-        return (start >= 0i32 && end >= 0i32) as ::core::ffi::c_int;
+        (start >= 0i32 && end >= 0i32) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn fix_underflow(
@@ -4996,7 +4996,7 @@ unsafe extern "C" fn fix_underflow(
             adjusted = (adjusted != 0 || qscale_new != qscale_orig) as ::core::ffi::c_int;
             i += 1;
         }
-        return adjusted;
+        adjusted
     }
 }
 unsafe extern "C" fn count_expected_bits(
@@ -5012,7 +5012,7 @@ unsafe extern "C" fn count_expected_bits(
             expected_bits += qscale2bits(rce, (*rce).new_qscale);
             i += 1;
         }
-        return expected_bits;
+        expected_bits
     }
 }
 unsafe extern "C" fn vbv_pass2(
@@ -5031,7 +5031,7 @@ unsafe extern "C" fn vbv_pass2(
                 as crate::stdlib::int64_t,
         ) as *mut ::core::ffi::c_double;
         if fills.is_null() {
-            return -(1i32);
+            -(1i32)
         } else {
             let mut adj_max = 0;
             let mut i = 0i32;
@@ -5097,8 +5097,8 @@ unsafe extern "C" fn vbv_pass2(
                 i += 1;
             }
             crate::src::common::base::x264_free(fills.offset(-(1isize)) as *mut ::core::ffi::c_void);
-            return 0i32;
-        };
+            0i32
+        }
     }
 }
 unsafe extern "C" fn init_pass2(
@@ -5449,6 +5449,6 @@ unsafe extern "C" fn init_pass2(
                 }
             }
         }
-        return -(1i32);
+        -(1i32)
     }
 }

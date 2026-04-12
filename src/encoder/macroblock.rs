@@ -58,13 +58,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
 }
 pub mod macroblock_h {
@@ -209,7 +209,7 @@ pub mod osdep_h {
             pub static mut lut: [crate::stdlib::uint8_t; 16] = [
                 4u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8, 3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8,
             ];
-            return lut[x as usize] as ::core::ffi::c_int;
+            lut[x as usize] as ::core::ffi::c_int
         }
     }
 }
@@ -251,7 +251,7 @@ pub mod encoder_macroblock_h {
                 );
             }
             if (*h).mb.trellis {
-                return crate::src::encoder::analyse::rdo_c::x264_8_quant_4x4_trellis(
+                crate::src::encoder::analyse::rdo_c::x264_8_quant_4x4_trellis(
                     h,
                     dct,
                     i_quant_cat,
@@ -260,9 +260,9 @@ pub mod encoder_macroblock_h {
                     b_intra,
                     (p != 0) as ::core::ffi::c_int,
                     idx + p * 16i32,
-                );
+                )
             } else {
-                return (*h).quantf.quant_4x4.expect("non-null function pointer")(
+                (*h).quantf.quant_4x4.expect("non-null function pointer")(
                     dct,
                     &raw mut *(*(&raw mut (*h).quant4_mf
                         as *mut *mut [crate::src::common::common::udctcoef; 16])
@@ -274,8 +274,8 @@ pub mod encoder_macroblock_h {
                         .offset(i_quant_cat as isize))
                     .offset(i_qp as isize)
                         as *mut crate::src::common::common::udctcoef,
-                );
-            };
+                )
+            }
         }
     }
     #[inline(always)]
@@ -315,7 +315,7 @@ pub mod encoder_macroblock_h {
                 );
             }
             if (*h).mb.trellis {
-                return crate::src::encoder::analyse::rdo_c::x264_8_quant_8x8_trellis(
+                crate::src::encoder::analyse::rdo_c::x264_8_quant_8x8_trellis(
                     h,
                     dct,
                     i_quant_cat,
@@ -324,9 +324,9 @@ pub mod encoder_macroblock_h {
                     b_intra,
                     (p != 0) as ::core::ffi::c_int,
                     idx + p * 4i32,
-                );
+                )
             } else {
-                return (*h).quantf.quant_8x8.expect("non-null function pointer")(
+                (*h).quantf.quant_8x8.expect("non-null function pointer")(
                     dct,
                     &raw mut *(*(&raw mut (*h).quant8_mf
                         as *mut *mut [crate::src::common::common::udctcoef; 64])
@@ -338,8 +338,8 @@ pub mod encoder_macroblock_h {
                         .offset(i_quant_cat as isize))
                     .offset(i_qp as isize)
                         as *mut crate::src::common::common::udctcoef,
-                );
-            };
+                )
+            }
         }
     }
     #[inline(always)]
@@ -728,7 +728,7 @@ unsafe extern "C" fn array_non_zero(
                 ) as ::core::ffi::c_int;
             }
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn mb_encode_i16x16(
@@ -1075,16 +1075,16 @@ unsafe extern "C" fn mb_optimize_chroma_dc(
             return 1i32;
         }
         if chroma422 != 0 {
-            return (*h)
+            (*h)
                 .quantf
                 .optimize_chroma_2x4_dc
-                .expect("non-null function pointer")(dct_dc, dmf);
+                .expect("non-null function pointer")(dct_dc, dmf)
         } else {
-            return (*h)
+            (*h)
                 .quantf
                 .optimize_chroma_2x2_dc
-                .expect("non-null function pointer")(dct_dc, dmf);
-        };
+                .expect("non-null function pointer")(dct_dc, dmf)
+        }
     }
 }
 #[inline(always)]
@@ -3326,7 +3326,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
             }
         }
         (*h).mb.skip_mc = true;
-        return true;
+        true
     }
 }
 pub unsafe extern "C" fn x264_8_macroblock_probe_skip(
@@ -3335,14 +3335,14 @@ pub unsafe extern "C" fn x264_8_macroblock_probe_skip(
 ) -> bool {
     unsafe {
         if (*h).sps.i_chroma_format_idc.is_420() {
-            return macroblock_probe_skip_internal(h, b_bidir, 1i32, ChromaFormat::Chroma420);
+            macroblock_probe_skip_internal(h, b_bidir, 1i32, ChromaFormat::Chroma420)
         } else if (*h).sps.i_chroma_format_idc.is_422() {
-            return macroblock_probe_skip_internal(h, b_bidir, 1i32, ChromaFormat::Chroma422);
+            macroblock_probe_skip_internal(h, b_bidir, 1i32, ChromaFormat::Chroma422)
         } else if (*h).sps.i_chroma_format_idc.is_444() {
-            return macroblock_probe_skip_internal(h, b_bidir, 3i32, ChromaFormat::Chroma444);
+            macroblock_probe_skip_internal(h, b_bidir, 3i32, ChromaFormat::Chroma444)
         } else {
-            return macroblock_probe_skip_internal(h, b_bidir, 1i32, ChromaFormat::Chroma400);
-        };
+            macroblock_probe_skip_internal(h, b_bidir, 1i32, ChromaFormat::Chroma400)
+        }
     }
 }
 pub unsafe extern "C" fn x264_8_noise_reduction_update(

@@ -159,13 +159,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
 }
 pub mod macroblock_h {
@@ -195,7 +195,7 @@ pub mod macroblock_h {
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a.wrapping_add(b << 16i32);
+        a.wrapping_add(b << 16i32)
     }
     #[inline(always)]
     pub unsafe extern "C" fn pack8to32(
@@ -204,10 +204,10 @@ pub mod macroblock_h {
         mut c: crate::stdlib::uint32_t,
         mut d: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a
+        a
             .wrapping_add(b << 8i32)
             .wrapping_add(c << 16i32)
-            .wrapping_add(d << 24i32);
+            .wrapping_add(d << 24i32)
     }
 }
 pub mod rectangle_h {
@@ -1292,7 +1292,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
         (*h).mb.base =
             crate::src::common::base::x264_malloc(prealloc_size) as *mut crate::stdlib::uint8_t;
         if (*h).mb.base.is_null() {
-            return -(1i32);
+            -(1i32)
         } else {
             let mut i_1 = 0i32;
             loop {
@@ -1350,8 +1350,8 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
                 }
                 i_1 += 1;
             }
-            return 0i32;
-        };
+            0i32
+        }
     }
 }
 pub unsafe extern "C" fn x264_8_macroblock_cache_free(
@@ -1542,7 +1542,7 @@ pub unsafe extern "C" fn x264_8_macroblock_thread_allocate(
             }
             _ => {}
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 pub unsafe extern "C" fn x264_8_macroblock_thread_free(

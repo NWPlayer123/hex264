@@ -3,11 +3,11 @@ pub mod common_h {
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+        (if x & !crate::src::common::common::PIXEL_MAX != 0 {
             -x >> 31i32 & crate::src::common::common::PIXEL_MAX
         } else {
             x
-        }) as crate::src::common::common::pixel;
+        }) as crate::src::common::common::pixel 
     }
 }
 pub mod base_h {
@@ -17,13 +17,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
 }
 use crate::src::common::deblock::base_h::x264_clip3;

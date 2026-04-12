@@ -95,7 +95,7 @@ unsafe extern "C" fn nal_escape_c(
             dst = dst.offset(1);
             *c2rust_fresh6 = *c2rust_fresh5;
         }
-        return dst;
+        dst
     }
 }
 pub unsafe extern "C" fn x264_8_nal_encode(

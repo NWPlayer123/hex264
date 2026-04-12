@@ -54,7 +54,7 @@ pub mod common_h {
                 }
                 i += 1;
             }
-            return cnt;
+            cnt
         }
     }
     #[inline(always)]
@@ -91,7 +91,7 @@ pub mod common_h {
                 }
                 i += 1;
             }
-            return cnt;
+            cnt
         }
     }
     use crate::src::encoder::me::base_h::x264_clip3;
@@ -173,13 +173,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_predictor_difference(
@@ -199,7 +199,7 @@ pub mod base_h {
                 );
                 i += 1;
             }
-            return sum;
+            sum
         }
     }
 }
@@ -249,15 +249,15 @@ pub mod macroblock_h {
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a.wrapping_add(b << 8i32);
+        a.wrapping_add(b << 8i32)
     }
     #[inline(always)]
     pub extern "C" fn pack16to32_mask(
         mut a: ::core::ffi::c_int,
         mut b: ::core::ffi::c_int,
     ) -> crate::stdlib::uint32_t {
-        return ((a & 0xffffi32) as crate::stdlib::uint32_t)
-            .wrapping_add((b as crate::stdlib::uint32_t) << 16i32);
+        ((a & 0xffffi32) as crate::stdlib::uint32_t)
+            .wrapping_add((b as crate::stdlib::uint32_t) << 16i32)
     }
 }
 pub mod rectangle_h {

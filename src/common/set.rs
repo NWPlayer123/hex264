@@ -806,7 +806,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
             _ => {}
         }
         x264_8_cqm_delete(h);
-        return -(1i32);
+        -(1i32)
     }
 }
 pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::common::x264_t) {
@@ -962,7 +962,7 @@ unsafe extern "C" fn cqm_parse_jmlist(
             );
             return -(1i32);
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_cqm_parse_file(
@@ -1062,6 +1062,6 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
             );
         }
         crate::src::common::base::x264_free(buf as *mut ::core::ffi::c_void);
-        return b_error;
+        b_error
     }
 }

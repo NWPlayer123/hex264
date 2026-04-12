@@ -189,7 +189,7 @@ unsafe extern "C" fn align_stride(
     if x & (disalign - 1i32) == 0 {
         x += align;
     }
-    return x;
+    x
 }
 unsafe extern "C" fn align_plane_size(
     mut x: ::core::ffi::c_int,
@@ -199,7 +199,7 @@ unsafe extern "C" fn align_plane_size(
         x += (if 128i32 > 64i32 { 128i32 } else { 64i32 })
             / crate::src::common::common::SIZEOF_PIXEL;
     }
-    return x;
+    x
 }
 unsafe extern "C" fn frame_internal_csp(
     mut external_csp: ::core::ffi::c_int,
@@ -217,7 +217,7 @@ unsafe extern "C" fn frame_internal_csp(
     if csp >= crate::x264_h::X264_CSP_I444 && csp <= crate::x264_h::X264_CSP_RGB {
         return crate::x264_h::X264_CSP_I444;
     }
-    return crate::x264_h::X264_CSP_NONE;
+    crate::x264_h::X264_CSP_NONE
 }
 unsafe extern "C" fn frame_new(
     mut h: *mut crate::src::common::common::x264_t,
@@ -1064,7 +1064,7 @@ unsafe extern "C" fn frame_new(
             }
         }
         crate::src::common::base::x264_free(frame as *mut ::core::ffi::c_void);
-        return ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
+        ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>()
     }
 }
 pub unsafe extern "C" fn x264_8_frame_delete(
@@ -1136,7 +1136,7 @@ unsafe extern "C" fn get_plane_ptr(
             );
             return -(1i32);
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_frame_copy_picture(
@@ -1412,7 +1412,7 @@ pub unsafe extern "C" fn x264_8_frame_copy_picture(
                 );
             }
         }
-        return 0i32;
+        0i32
     }
 }
 #[inline(always)]
@@ -1875,7 +1875,7 @@ pub unsafe extern "C" fn x264_8_frame_cond_wait(
             crate::stdlib::pthread_cond_wait(&raw mut (*frame).cv, &raw mut (*frame).mutex);
         }
         crate::stdlib::pthread_mutex_unlock(&raw mut (*frame).mutex);
-        return completed;
+        completed
     }
 }
 pub unsafe extern "C" fn x264_8_threadslice_cond_broadcast(
@@ -1925,7 +1925,7 @@ pub unsafe extern "C" fn x264_8_frame_new_slice(
                 return -(1i32);
             }
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_frame_push(
@@ -1964,7 +1964,7 @@ pub unsafe extern "C" fn x264_8_frame_pop(
         let mut frame = *list.offset(i as isize);
         let ref mut c2rust_fresh3 = *list.offset(i as isize);
         *c2rust_fresh3 = ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
-        return frame;
+        frame
     }
 }
 pub unsafe extern "C" fn x264_8_frame_unshift(
@@ -2012,7 +2012,7 @@ pub unsafe extern "C" fn x264_8_frame_shift(
                 );
             }
         };
-        return frame;
+        frame
     }
 }
 pub unsafe extern "C" fn x264_8_frame_push_unused(
@@ -2073,7 +2073,7 @@ pub unsafe extern "C" fn x264_8_frame_pop_unused(
             0i32,
             ::core::mem::size_of::<[::core::ffi::c_float; 18]>(),
         );
-        return frame;
+        frame
     }
 }
 pub unsafe extern "C" fn x264_8_frame_push_blank_unused(
@@ -2117,7 +2117,7 @@ pub unsafe extern "C" fn x264_8_frame_pop_blank_unused(
         }
         (*frame).duplicate = true;
         (*frame).i_reference_count = 1i32;
-        return frame;
+        frame
     }
 }
 pub unsafe extern "C" fn x264_8_weight_scale_plane(
@@ -2194,7 +2194,7 @@ pub unsafe extern "C" fn x264_8_sync_frame_list_init(
             >()) as crate::stdlib::int64_t,
         ) as *mut *mut crate::src::common::frame::x264_frame_t;
         if (*slist).list.is_null() {
-            return -(1i32);
+            -(1i32)
         } else {
             crate::stdlib::memset(
                 (*slist).list as *mut ::core::ffi::c_void,
@@ -2218,8 +2218,8 @@ pub unsafe extern "C" fn x264_8_sync_frame_list_init(
             {
                 return -(1i32);
             }
-            return 0i32;
-        };
+            0i32
+        }
     }
 }
 pub unsafe extern "C" fn x264_8_sync_frame_list_delete(
@@ -2263,6 +2263,6 @@ pub unsafe extern "C" fn x264_8_sync_frame_list_pop(
         *c2rust_fresh38 = ::core::ptr::null_mut::<crate::src::common::frame::x264_frame_t>();
         crate::stdlib::pthread_cond_broadcast(&raw mut (*slist).cv_empty);
         crate::stdlib::pthread_mutex_unlock(&raw mut (*slist).mutex);
-        return frame;
+        frame
     }
 }

@@ -24,19 +24,19 @@ pub mod bitstream_h {
     #[inline(always)]
     pub unsafe extern "C" fn bs_size_ue(mut val: ::core::ffi::c_uint) -> ::core::ffi::c_int {
         unsafe {
-            return x264_ue_size_tab[val.wrapping_add(1u32) as usize] as ::core::ffi::c_int;
+            x264_ue_size_tab[val.wrapping_add(1u32) as usize] as ::core::ffi::c_int
         }
     }
     #[inline(always)]
     pub unsafe extern "C" fn bs_size_ue_big(mut val: ::core::ffi::c_uint) -> ::core::ffi::c_int {
         unsafe {
             if val < 255u32 {
-                return x264_ue_size_tab[val.wrapping_add(1u32) as usize] as ::core::ffi::c_int;
+                x264_ue_size_tab[val.wrapping_add(1u32) as usize] as ::core::ffi::c_int
             } else {
-                return x264_ue_size_tab[(val.wrapping_add(1u32) >> 8i32) as usize]
+                x264_ue_size_tab[(val.wrapping_add(1u32) >> 8i32) as usize]
                     as ::core::ffi::c_int
-                    + 16i32;
-            };
+                    + 16i32
+            }
         }
     }
     #[inline(always)]
@@ -47,10 +47,10 @@ pub mod bitstream_h {
                 tmp = val * 2i32;
             }
             if tmp < 256i32 {
-                return x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int;
+                x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int
             } else {
-                return x264_ue_size_tab[(tmp >> 8i32) as usize] as ::core::ffi::c_int + 16i32;
-            };
+                x264_ue_size_tab[(tmp >> 8i32) as usize] as ::core::ffi::c_int + 16i32
+            }
         }
     }
     #[inline(always)]
@@ -60,10 +60,10 @@ pub mod bitstream_h {
     ) -> ::core::ffi::c_int {
         unsafe {
             if x == 1i32 {
-                return 1i32;
+                1i32
             } else {
-                return x264_ue_size_tab[(val + 1i32) as usize] as ::core::ffi::c_int;
-            };
+                x264_ue_size_tab[(val + 1i32) as usize] as ::core::ffi::c_int
+            }
         }
     }
 }
@@ -92,9 +92,9 @@ pub mod cabac_h {
             let mut i_state = *state as ::core::ffi::c_int;
             *state =
                 crate::src::common::tables::x264_cabac_transition[i_state as usize][b as usize];
-            return crate::src::common::tables::x264_cabac_entropy
+            crate::src::common::tables::x264_cabac_entropy
                 [(i_state as ::core::ffi::c_long ^ b) as usize]
-                as ::core::ffi::c_int;
+                as ::core::ffi::c_int
         }
     }
     #[inline(always)]
@@ -116,9 +116,9 @@ pub mod cabac_h {
         mut b: ::core::ffi::c_long,
     ) -> ::core::ffi::c_int {
         unsafe {
-            return crate::src::common::tables::x264_cabac_entropy
+            crate::src::common::tables::x264_cabac_entropy
                 [(*state as ::core::ffi::c_long ^ b) as usize]
-                as ::core::ffi::c_int;
+                as ::core::ffi::c_int
         }
     }
 }
@@ -233,13 +233,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_clip3f(
@@ -247,13 +247,13 @@ pub mod base_h {
         mut f_min: ::core::ffi::c_double,
         mut f_max: ::core::ffi::c_double,
     ) -> ::core::ffi::c_double {
-        return if v < f_min {
+        if v < f_min {
             f_min
         } else if v > f_max {
             f_max
         } else {
             v
-        };
+        }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_exp2fix8(mut x: ::core::ffi::c_float) -> ::core::ffi::c_int {
@@ -265,20 +265,20 @@ pub mod base_h {
             if i > 1023i32 {
                 return 0xffffi32;
             }
-            return (crate::src::common::tables::x264_exp2_lut[(i & 63i32) as usize]
+            (crate::src::common::tables::x264_exp2_lut[(i & 63i32) as usize]
                 as ::core::ffi::c_int
                 + 256i32)
                 << (i >> 6i32)
-                >> 8i32;
+                >> 8i32
         }
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_log2(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_float {
         unsafe {
             let mut lz = x.leading_zeros() as i32;
-            return crate::src::common::tables::x264_log2_lut
+            crate::src::common::tables::x264_log2_lut
                 [(x << lz >> 24i32 & 0x7fu32) as usize]
-                + crate::src::common::tables::x264_log2_lz_lut[lz as usize];
+                + crate::src::common::tables::x264_log2_lz_lut[lz as usize]
         }
     }
     #[inline(always)]
@@ -292,7 +292,7 @@ pub mod base_h {
         b += t;
         b -= (b - c) & ((b - c) >> 31i32);
         b += (a - b) & ((a - b) >> 31i32);
-        return b;
+        b
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_median_mv(
@@ -326,7 +326,7 @@ pub mod base_h {
                 + *mvdtop.offset(1isize) as ::core::ffi::c_int;
             amvd0 = (amvd0 > 2i32) as ::core::ffi::c_int + (amvd0 > 32i32) as ::core::ffi::c_int;
             amvd1 = (amvd1 > 2i32) as ::core::ffi::c_int + (amvd1 > 32i32) as ::core::ffi::c_int;
-            return (amvd0 + (amvd1 << 8i32)) as crate::stdlib::uint16_t;
+            (amvd0 + (amvd1 << 8i32)) as crate::stdlib::uint16_t
         }
     }
 }
@@ -516,14 +516,14 @@ pub mod macroblock_h {
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a.wrapping_add(b << 16i32);
+        a.wrapping_add(b << 16i32)
     }
     #[inline(always)]
     pub extern "C" fn pack8to16(
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a.wrapping_add(b << 8i32);
+        a.wrapping_add(b << 8i32)
     }
     #[inline(always)]
     pub unsafe extern "C" fn x264_mb_predict_intra4x4_mode(
@@ -547,7 +547,7 @@ pub mod macroblock_h {
             if m < 0i32 {
                 return crate::src::common::predict::I_PRED_4x4_DC as ::core::ffi::c_int;
             }
-            return m;
+            m
         }
     }
     #[inline(always)]
@@ -566,7 +566,7 @@ pub mod macroblock_h {
             if i_ret < 0x80i32 {
                 i_ret = (i_ret + 1i32) >> 1i32;
             }
-            return i_ret & 0x7fi32;
+            i_ret & 0x7fi32
         }
     }
     pub static mut x264_transform_allowed: [crate::stdlib::uint8_t; 19] = [
@@ -586,11 +586,11 @@ pub mod macroblock_h {
             if (*h).mb.i_type != crate::src::common::macroblock::P_8x8 as ::core::ffi::c_int {
                 return x264_transform_allowed[(*h).mb.i_type as usize] as ::core::ffi::c_int;
             }
-            return ((*(&raw mut (*h).mb.i_sub_partition
+            ((*(&raw mut (*h).mb.i_sub_partition
                 as *mut crate::src::common::base::x264_union32_t))
                 .i
                 == (crate::src::common::macroblock::D_L0_8x8 as ::core::ffi::c_int * 0x1010101i32)
-                    as crate::stdlib::uint32_t) as ::core::ffi::c_int;
+                    as crate::stdlib::uint32_t) as ::core::ffi::c_int
         }
     }
     use crate::src::encoder::analyse::base_h::x264_scan8;
@@ -620,7 +620,7 @@ pub mod rdo_c {
                 + hadamard_offset[size as usize] as ::core::ffi::c_int;
             let mut res = (*h).mb.pic.fenc_hadamard_cache[cache_index as usize];
             if res != 0 {
-                return res.wrapping_sub(1u64);
+                res.wrapping_sub(1u64)
             } else {
                 let mut fenc = (*h).mb.pic.p_fenc[0usize]
                     .offset(x as isize)
@@ -630,8 +630,8 @@ pub mod rdo_c {
                     crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
                 );
                 (*h).mb.pic.fenc_hadamard_cache[cache_index as usize] = res.wrapping_add(1u64);
-                return res;
-            };
+                res
+            }
         }
     }
     #[inline(always)]
@@ -661,7 +661,7 @@ pub mod rdo_c {
                     as ::core::ffi::c_int;
             let mut res = (*h).mb.pic.fenc_satd_cache[cache_index as usize] as ::core::ffi::c_int;
             if res != 0 {
-                return res - 1i32;
+                res - 1i32
             } else {
                 let mut fenc = (*h).mb.pic.p_fenc[0usize]
                     .offset(x as isize)
@@ -682,8 +682,8 @@ pub mod rdo_c {
                 ) - dc;
                 (*h).mb.pic.fenc_satd_cache[cache_index as usize] =
                     (res + 1i32) as crate::stdlib::uint32_t;
-                return res;
-            };
+                res
+            }
         }
     }
     #[inline]
@@ -747,12 +747,12 @@ pub mod rdo_c {
                     ((1i32) << 28i32) as crate::stdlib::int64_t
                 }) as ::core::ffi::c_int;
             }
-            return (*h).pixf.ssd[size as usize].expect("non-null function pointer")(
+            (*h).pixf.ssd[size as usize].expect("non-null function pointer")(
                 fenc,
                 crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
                 fdec,
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-            ) + satd;
+            ) + satd
         }
     }
     #[inline]
@@ -780,7 +780,7 @@ pub mod rdo_c {
                         >> 8i32,
                 ) as ::core::ffi::c_int;
             }
-            return i_ssd;
+            i_ssd
         }
     }
     pub unsafe extern "C" fn rd_cost_mb(
@@ -838,11 +838,11 @@ pub mod rdo_c {
             }
             (*h).mb.transform_8x8 = b_transform_bak;
             (*h).mb.i_type = type_bak;
-            return if i_ssd + i_bits < (1i32) << 28i32 {
+            if i_ssd + i_bits < (1i32) << 28i32 {
                 i_ssd + i_bits
             } else {
                 (1i32) << 28i32
-            };
+            }
         }
     }
     pub unsafe extern "C" fn rd_cost_subpart(
@@ -919,7 +919,7 @@ pub mod rdo_c {
             } else {
                 i_bits = subpartition_size_cavlc(h, i4, i_pixel) as crate::stdlib::uint64_t;
             }
-            return (i_ssd << 8i32).wrapping_add(i_bits);
+            (i_ssd << 8i32).wrapping_add(i_bits)
         }
     }
     pub unsafe extern "C" fn x264_8_rd_cost_part(
@@ -1011,7 +1011,7 @@ pub mod rdo_c {
                 i_bits = (partition_size_cavlc(h, i8, i_pixel) as crate::stdlib::uint64_t)
                     .wrapping_mul(i_lambda2 as crate::stdlib::uint64_t);
             }
-            return (i_ssd << 8i32).wrapping_add(i_bits);
+            (i_ssd << 8i32).wrapping_add(i_bits)
         }
     }
     pub unsafe extern "C" fn rd_cost_i8x8(
@@ -1105,7 +1105,7 @@ pub mod rdo_c {
                 i_bits = (partition_i8x8_size_cavlc(h, i8, i_mode) as crate::stdlib::uint64_t)
                     .wrapping_mul(i_lambda2 as crate::stdlib::uint64_t);
             }
-            return (i_ssd << 8i32).wrapping_add(i_bits);
+            (i_ssd << 8i32).wrapping_add(i_bits)
         }
     }
     pub unsafe extern "C" fn rd_cost_i4x4(
@@ -1188,7 +1188,7 @@ pub mod rdo_c {
                 i_bits = (partition_i4x4_size_cavlc(h, i4, i_mode) as crate::stdlib::uint64_t)
                     .wrapping_mul(i_lambda2 as crate::stdlib::uint64_t);
             }
-            return (i_ssd << 8i32).wrapping_add(i_bits);
+            (i_ssd << 8i32).wrapping_add(i_bits)
         }
     }
     pub unsafe extern "C" fn rd_cost_chroma(
@@ -1246,7 +1246,7 @@ pub mod rdo_c {
                 i_bits = (chroma_size_cavlc(h) as crate::stdlib::uint64_t)
                     .wrapping_mul(i_lambda2 as crate::stdlib::uint64_t);
             }
-            return (i_ssd << 8i32).wrapping_add(i_bits);
+            (i_ssd << 8i32).wrapping_add(i_bits)
         }
     }
     pub unsafe extern "C" fn x264_8_rdo_init() {
@@ -1349,7 +1349,7 @@ pub mod rdo_c {
                 }
                 abs_level += 1;
             }
-            return (ret ^ sign_coef >> 31i32) - (sign_coef >> 31i32);
+            (ret ^ sign_coef >> 31i32) - (sign_coef >> 31i32)
         }
     }
     #[inline(always)]
@@ -1455,7 +1455,7 @@ pub mod rdo_c {
                 (*nodes_cur.offset(node_ctx as isize)).level_idx = levels_used;
                 levels_used += 1;
             }
-            return levels_used;
+            levels_used
         }
     }
     #[inline(never)]
@@ -1501,7 +1501,7 @@ pub mod rdo_c {
                 levels_used += 1;
                 j += 1;
             }
-            return levels_used;
+            levels_used
         }
     }
     #[inline(never)]
@@ -1545,7 +1545,7 @@ pub mod rdo_c {
                 }
                 j += 1;
             }
-            return levels_used;
+            levels_used
         }
     }
     #[inline(never)]
@@ -1652,7 +1652,7 @@ pub mod rdo_c {
             } else if 0i32 == 0 {
                 return levels_used;
             }
-            return levels_used;
+            levels_used
         }
     }
     #[inline(never)]
@@ -1825,7 +1825,7 @@ pub mod rdo_c {
             } else if 1i32 == 0 {
                 return levels_used;
             }
-            return levels_used;
+            levels_used
         }
     }
     #[inline(never)]
@@ -1942,7 +1942,7 @@ pub mod rdo_c {
             } else if 0i32 == 0 {
                 return levels_used;
             }
-            return levels_used;
+            levels_used
         }
     }
     #[inline(never)]
@@ -2125,7 +2125,7 @@ pub mod rdo_c {
             } else if 1i32 == 0 {
                 return levels_used;
             }
-            return levels_used;
+            levels_used
         }
     }
     #[inline(always)]
@@ -2947,7 +2947,7 @@ pub mod rdo_c {
                 level = level_tree[level as usize].next as ::core::ffi::c_int;
                 i_0 += 1;
             }
-            return 1i32;
+            1i32
         }
     }
     #[inline(always)]
@@ -3231,7 +3231,7 @@ pub mod rdo_c {
                     );
                 }
             }
-            return 0i32;
+            0i32
         }
     }
     pub unsafe extern "C" fn x264_8_quant_luma_dc_trellis(
@@ -3274,7 +3274,7 @@ pub mod rdo_c {
                     idx,
                 );
             }
-            return quant_trellis_cavlc(
+            quant_trellis_cavlc(
                 h,
                 dct,
                 &raw mut *(*(&raw mut (*h).quant4_mf
@@ -3295,7 +3295,7 @@ pub mod rdo_c {
                 16i32,
                 idx,
                 0i32,
-            );
+            )
         }
     }
     pub static mut zigzag_scan2x2: [crate::stdlib::uint8_t; 4] = [0u8, 1u8, 2u8, 3u8];
@@ -3347,7 +3347,7 @@ pub mod rdo_c {
                     idx,
                 );
             }
-            return quant_trellis_cavlc(
+            quant_trellis_cavlc(
                 h,
                 dct,
                 &raw mut *(*(&raw mut (*h).quant4_mf
@@ -3366,7 +3366,7 @@ pub mod rdo_c {
                 num_coefs,
                 idx,
                 0i32,
-            );
+            )
         }
     }
     pub unsafe extern "C" fn x264_8_quant_4x4_trellis(
@@ -3414,7 +3414,7 @@ pub mod rdo_c {
                     idx,
                 );
             }
-            return quant_trellis_cavlc(
+            quant_trellis_cavlc(
                 h,
                 dct,
                 &raw mut *(*(&raw mut (*h).quant4_mf
@@ -3435,7 +3435,7 @@ pub mod rdo_c {
                 16i32,
                 idx,
                 0i32,
-            );
+            )
         }
     }
     pub unsafe extern "C" fn x264_8_quant_8x8_trellis(
@@ -3525,7 +3525,7 @@ pub mod rdo_c {
                     + 8i32) as isize,
             ) as *mut crate::src::common::base::x264_union16_t))
                 .i = (0i32 * 0x101i32) as crate::stdlib::uint16_t;
-            return nzaccum;
+            nzaccum
         }
     }
     use crate::src::encoder::analyse::base_h::x264_scan8;
@@ -3649,7 +3649,7 @@ pub mod slicetype_c {
                 }
                 return dest;
             }
-            return (*ref_0).lowres[0usize];
+            (*ref_0).lowres[0usize]
         }
     }
     #[inline(never)]
@@ -3799,7 +3799,7 @@ pub mod slicetype_c {
                 }
                 return dst;
             }
-            return (*ref_0).plane[p as usize];
+            (*ref_0).plane[p as usize]
         }
     }
     pub unsafe extern "C" fn weight_slice_header_cost(
@@ -3826,13 +3826,13 @@ pub mod slicetype_c {
             }
             let mut denom_cost =
                 bs_size_ue((*w.offset(0isize)).i_denom as ::core::ffi::c_uint) * (2i32 - b_chroma);
-            return lambda
+            lambda
                 * numslices
                 * (10i32
                     + denom_cost
                     + 2i32
                         * (bs_size_se((*w.offset(0isize)).i_scale)
-                            + bs_size_se((*w.offset(0isize)).i_offset)));
+                            + bs_size_se((*w.offset(0isize)).i_offset)))
         }
     }
     #[inline(never)]
@@ -3921,7 +3921,7 @@ pub mod slicetype_c {
                     pixoff = y_0 * i_stride;
                 }
             }
-            return cost;
+            cost
         }
     }
     #[inline(never)]
@@ -3990,7 +3990,7 @@ pub mod slicetype_c {
                     pixoff = y_0 * i_stride;
                 }
             }
-            return cost;
+            cost
         }
     }
     #[inline(never)]
@@ -4059,7 +4059,7 @@ pub mod slicetype_c {
                     pixoff = y_0 * i_stride;
                 }
             }
-            return cost;
+            cost
         }
     }
     pub unsafe extern "C" fn x264_8_weights_analyse(
@@ -6037,7 +6037,7 @@ pub mod slicetype_c {
                 }
                 (*fenc).i_cost_est[(b - p0) as usize][(p1 - b) as usize] = i_score;
             }
-            return i_score;
+            i_score
         }
     }
     pub unsafe extern "C" fn slicetype_frame_cost_recalculate(
@@ -6086,7 +6086,7 @@ pub mod slicetype_c {
                 }
                 (*h).mb.i_mb_y -= 1;
             }
-            return i_score;
+            i_score
         }
     }
     pub unsafe extern "C" fn macroblock_tree_finish(
@@ -6482,7 +6482,7 @@ pub mod slicetype_c {
                         [(p1 - b) as usize];
                 }
             }
-            return cost;
+            cost
         }
     }
     pub unsafe extern "C" fn calculate_durations(
@@ -6693,7 +6693,7 @@ pub mod slicetype_c {
                 loc = next_nonb + 1i32;
                 cur_nonb = next_nonb;
             }
-            return cost;
+            cost
         }
     }
     pub unsafe extern "C" fn slicetype_path(
@@ -6860,7 +6860,7 @@ pub mod slicetype_c {
                     1.0 - pcost as f64 / icost as f64,
                 );
             }
-            return res;
+            res
         }
     }
     pub unsafe extern "C" fn scenecut(
@@ -6910,7 +6910,7 @@ pub mod slicetype_c {
             if !(**frames.offset(p1 as isize)).scenecut {
                 return 0i32;
             }
-            return scenecut_internal(h, a, frames, p0, p1, real_scenecut);
+            scenecut_internal(h, a, frames, p0, p1, real_scenecut)
         }
     }
     pub unsafe extern "C" fn x264_8_slicetype_analyse(
@@ -8780,7 +8780,7 @@ pub mod slicetype_c {
                     y += 1;
                 }
             }
-            return cost;
+            cost
         }
     }
     use crate::src::encoder::analyse::base_h::x264_clip3;
@@ -8802,7 +8802,7 @@ pub mod osdep_h {
             pub static mut lut: [crate::stdlib::uint8_t; 16] = [
                 4u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8, 3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8,
             ];
-            return lut[x as usize] as ::core::ffi::c_int;
+            lut[x as usize] as ::core::ffi::c_int
         }
     }
 }
@@ -9156,7 +9156,7 @@ pub mod encoder_macroblock_h {
                 );
             }
             if (*h).mb.trellis {
-                return x264_8_quant_4x4_trellis(
+                x264_8_quant_4x4_trellis(
                     h,
                     dct,
                     i_quant_cat,
@@ -9165,9 +9165,9 @@ pub mod encoder_macroblock_h {
                     b_intra,
                     (p != 0) as ::core::ffi::c_int,
                     idx + p * 16i32,
-                );
+                )
             } else {
-                return (*h).quantf.quant_4x4.expect("non-null function pointer")(
+                (*h).quantf.quant_4x4.expect("non-null function pointer")(
                     dct,
                     &raw mut *(*(&raw mut (*h).quant4_mf
                         as *mut *mut [crate::src::common::common::udctcoef; 16])
@@ -9179,8 +9179,8 @@ pub mod encoder_macroblock_h {
                         .offset(i_quant_cat as isize))
                     .offset(i_qp as isize)
                         as *mut crate::src::common::common::udctcoef,
-                );
-            };
+                )
+            }
         }
     }
     #[inline(always)]
@@ -9220,7 +9220,7 @@ pub mod encoder_macroblock_h {
                 );
             }
             if (*h).mb.trellis {
-                return x264_8_quant_8x8_trellis(
+                x264_8_quant_8x8_trellis(
                     h,
                     dct,
                     i_quant_cat,
@@ -9229,9 +9229,9 @@ pub mod encoder_macroblock_h {
                     b_intra,
                     (p != 0) as ::core::ffi::c_int,
                     idx + p * 4i32,
-                );
+                )
             } else {
-                return (*h).quantf.quant_8x8.expect("non-null function pointer")(
+                (*h).quantf.quant_8x8.expect("non-null function pointer")(
                     dct,
                     &raw mut *(*(&raw mut (*h).quant8_mf
                         as *mut *mut [crate::src::common::common::udctcoef; 64])
@@ -9243,8 +9243,8 @@ pub mod encoder_macroblock_h {
                         .offset(i_quant_cat as isize))
                     .offset(i_qp as isize)
                         as *mut crate::src::common::common::udctcoef,
-                );
-            };
+                )
+            }
         }
     }
     #[inline(always)]
@@ -9880,7 +9880,7 @@ pub mod cabac_c {
                         << 8i32;
                 }
             }
-            return if i_abs < 66i32 { i_abs } else { 66i32 };
+            if i_abs < 66i32 { i_abs } else { 66i32 }
         }
     }
     #[inline(never)]
@@ -9944,10 +9944,10 @@ pub mod cabac_c {
                 mdy,
                 amvd as ::core::ffi::c_int >> 8i32,
             );
-            return pack8to16(
+            pack8to16(
                 mdx as crate::stdlib::uint32_t,
                 mdy as crate::stdlib::uint32_t,
-            ) as crate::stdlib::uint16_t;
+            ) as crate::stdlib::uint16_t
         }
     }
     #[inline]
@@ -10587,13 +10587,13 @@ pub mod cabac_c {
                     } else {
                         b_intra
                     };
-                    return base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb + i_nza;
+                    base_ctx[i_cat as usize] as ::core::ffi::c_int + 2i32 * i_nzb + i_nza
                 } else {
                     let mut i_nza_0 = (*h).mb.cache.i_cbp_left >> (8i32 + i_idx) & 1i32;
                     let mut i_nzb_0 = (*h).mb.cache.i_cbp_top >> (8i32 + i_idx) & 1i32;
-                    return base_ctx[i_cat as usize] as ::core::ffi::c_int
+                    base_ctx[i_cat as usize] as ::core::ffi::c_int
                         + 2i32 * i_nzb_0
-                        + i_nza_0;
+                        + i_nza_0
                 }
             } else {
                 let mut i_nza_1 = (*h).mb.cache.non_zero_count
@@ -10603,16 +10603,16 @@ pub mod cabac_c {
                     [(x264_scan8[i_idx as usize] as ::core::ffi::c_int - 8i32) as usize]
                     as ::core::ffi::c_int;
                 if 0 != 0 && b_intra == 0 {
-                    return base_ctx[i_cat as usize] as ::core::ffi::c_int
-                        + ((2i32 * i_nzb_1 + i_nza_1) & 0x7fi32);
+                    base_ctx[i_cat as usize] as ::core::ffi::c_int
+                        + ((2i32 * i_nzb_1 + i_nza_1) & 0x7fi32)
                 } else {
                     i_nza_1 &= 0x7fi32 + (b_intra << 7i32);
                     i_nzb_1 &= 0x7fi32 + (b_intra << 7i32);
-                    return base_ctx[i_cat as usize] as ::core::ffi::c_int
+                    base_ctx[i_cat as usize] as ::core::ffi::c_int
                         + 2i32 * (i_nzb_1 != 0) as ::core::ffi::c_int
-                        + (i_nza_1 != 0) as ::core::ffi::c_int;
+                        + (i_nza_1 != 0) as ::core::ffi::c_int
                 }
-            };
+            }
         }
     }
     pub static mut coeff_abs_level1_ctx: [crate::stdlib::uint8_t; 8] =
@@ -12493,7 +12493,7 @@ pub mod cavlc_c {
             if abs_level > next_suffix[i_suffix_length as usize] as ::core::ffi::c_int {
                 i_suffix_length += 1;
             }
-            return i_suffix_length;
+            i_suffix_length
         }
     }
     pub unsafe extern "C" fn cavlc_block_residual_internal(
@@ -12611,7 +12611,7 @@ pub mod cavlc_c {
             let mut zero_run_code = crate::src::common::vlc::x264_8_run_before
                 [runlevel.mask as usize] as ::core::ffi::c_int;
             (*s).i_bits_encoded += zero_run_code & 0x1fi32;
-            return i_total;
+            i_total
         }
     }
     pub static mut ct_index: [crate::stdlib::uint8_t; 17] = [
@@ -13863,7 +13863,7 @@ pub mod cavlc_c {
                 i8 += x264_pixel_size[i_pixel as usize].h as ::core::ffi::c_int >> 3i32;
                 j -= 1;
             }
-            return (*h).out.bs.i_bits_encoded;
+            (*h).out.bs.i_bits_encoded
         }
     }
     pub unsafe extern "C" fn subpartition_size_cavlc(
@@ -13963,7 +13963,7 @@ pub mod cavlc_c {
                 }
                 p += 1;
             }
-            return (*h).out.bs.i_bits_encoded;
+            (*h).out.bs.i_bits_encoded
         }
     }
     pub unsafe extern "C" fn cavlc_intra4x4_pred_size(
@@ -13975,10 +13975,10 @@ pub mod cavlc_c {
             if x264_mb_predict_intra4x4_mode(h, i4)
                 == x264_mb_pred_mode4x4_fix[(i_mode + 1i32) as usize] as ::core::ffi::c_int
             {
-                return 1i32;
+                1i32
             } else {
-                return 4i32;
-            };
+                4i32
+            }
         }
     }
     pub unsafe extern "C" fn partition_i8x8_size_cavlc(
@@ -14004,7 +14004,7 @@ pub mod cavlc_c {
                 cavlc_partition_luma_residual(h, i8, p);
                 p += 1;
             }
-            return (*h).out.bs.i_bits_encoded;
+            (*h).out.bs.i_bits_encoded
         }
     }
     pub unsafe extern "C" fn partition_i4x4_size_cavlc(
@@ -14059,7 +14059,7 @@ pub mod cavlc_c {
                 }
                 p += 1;
             }
-            return (*h).out.bs.i_bits_encoded;
+            (*h).out.bs.i_bits_encoded
         }
     }
     pub unsafe extern "C" fn chroma_size_cavlc(
@@ -14203,7 +14203,7 @@ pub mod cavlc_c {
                     }
                 }
             }
-            return (*h).out.bs.i_bits_encoded;
+            (*h).out.bs.i_bits_encoded
         }
     }
     use crate::src::encoder::analyse::base_h::x264_scan8;
@@ -14436,7 +14436,7 @@ unsafe extern "C" fn init_costs(
                 }
             }
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 pub unsafe extern "C" fn x264_8_analyse_init_costs(
@@ -14487,7 +14487,7 @@ pub unsafe extern "C" fn x264_8_analyse_init_costs(
             _ => {}
         }
         crate::src::common::base::x264_free(logs as *mut ::core::ffi::c_void);
-        return -(1i32);
+        -(1i32)
     }
 }
 pub unsafe extern "C" fn x264_8_analyse_free_costs(mut h: *mut crate::src::common::common::x264_t) {
@@ -15382,8 +15382,8 @@ unsafe extern "C" fn predict_16x16_mode_available(
             idx & (crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int
                 | crate::src::common::macroblock::MB_LEFT as ::core::ffi::c_int)
         };
-        return &raw const *(&raw const i16x16_mode_available as *const [crate::stdlib::int8_t; 5])
-            .offset(idx as isize) as *const crate::stdlib::int8_t;
+        &raw const *(&raw const i16x16_mode_available as *const [crate::stdlib::int8_t; 5])
+            .offset(idx as isize) as *const crate::stdlib::int8_t
     }
 }
 #[inline(always)]
@@ -15405,8 +15405,8 @@ unsafe extern "C" fn predict_chroma_mode_available(
             idx & (crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int
                 | crate::src::common::macroblock::MB_LEFT as ::core::ffi::c_int)
         };
-        return &raw const *(&raw const chroma_mode_available as *const [crate::stdlib::int8_t; 5])
-            .offset(idx as isize) as *const crate::stdlib::int8_t;
+        &raw const *(&raw const chroma_mode_available as *const [crate::stdlib::int8_t; 5])
+            .offset(idx as isize) as *const crate::stdlib::int8_t
     }
 }
 #[inline(always)]
@@ -15431,11 +15431,11 @@ unsafe extern "C" fn predict_8x8_mode_available(
             idx & (crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int
                 | crate::src::common::macroblock::MB_LEFT as ::core::ffi::c_int)
         };
-        return &raw const *(&raw const *(&raw const i8x8_mode_available
+        &raw const *(&raw const *(&raw const i8x8_mode_available
             as *const [[crate::stdlib::int8_t; 10]; 5])
             .offset(avoid_topright as isize)
             as *const [crate::stdlib::int8_t; 10])
-            .offset(idx as isize) as *const crate::stdlib::int8_t;
+            .offset(idx as isize) as *const crate::stdlib::int8_t
     }
 }
 #[inline(always)]
@@ -15460,11 +15460,11 @@ unsafe extern "C" fn predict_4x4_mode_available(
             idx & (crate::src::common::macroblock::MB_TOP as ::core::ffi::c_int
                 | crate::src::common::macroblock::MB_LEFT as ::core::ffi::c_int)
         };
-        return &raw const *(&raw const *(&raw const i4x4_mode_available
+        &raw const *(&raw const *(&raw const i4x4_mode_available
             as *const [[crate::stdlib::int8_t; 10]; 5])
             .offset(avoid_topright as isize)
             as *const [crate::stdlib::int8_t; 10])
-            .offset(idx as isize) as *const crate::stdlib::int8_t;
+            .offset(idx as isize) as *const crate::stdlib::int8_t
     }
 }
 #[inline]
@@ -19564,7 +19564,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
         } else {
             crate::src::common::pixel::PIXEL_4x4 as ::core::ffi::c_int
         };
-        return (*h).pixf.mbcmp[chromapix as usize].expect("non-null function pointer")(
+        (*h).pixf.mbcmp[chromapix as usize].expect("non-null function pointer")(
             (*(&raw mut (*h).mb.pic.p_fenc as *mut *mut crate::src::common::common::pixel)
                 .offset(1isize))
             .offset(oe as isize),
@@ -19578,7 +19578,7 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma_internal(
             crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
             pix2,
             16isize,
-        );
+        )
     }
 }
 unsafe extern "C" fn mb_analyse_inter_p4x4_chroma(
@@ -19590,33 +19590,33 @@ unsafe extern "C" fn mb_analyse_inter_p4x4_chroma(
 ) -> ::core::ffi::c_int {
     unsafe {
         if (*h).sps.i_chroma_format_idc.is_444() {
-            return mb_analyse_inter_p4x4_chroma_internal(
+            mb_analyse_inter_p4x4_chroma_internal(
                 h,
                 a,
                 p_fref,
                 i8x8,
                 size,
                 ChromaFormat::Chroma444,
-            );
+            )
         } else if (*h).sps.i_chroma_format_idc.is_422() {
-            return mb_analyse_inter_p4x4_chroma_internal(
+            mb_analyse_inter_p4x4_chroma_internal(
                 h,
                 a,
                 p_fref,
                 i8x8,
                 size,
                 ChromaFormat::Chroma422,
-            );
+            )
         } else {
-            return mb_analyse_inter_p4x4_chroma_internal(
+            mb_analyse_inter_p4x4_chroma_internal(
                 h,
                 a,
                 p_fref,
                 i8x8,
                 size,
                 ChromaFormat::Chroma420,
-            );
-        };
+            )
+        }
     }
 }
 unsafe extern "C" fn mb_analyse_inter_p4x4(
@@ -21023,7 +21023,7 @@ unsafe extern "C" fn analyse_bi_chroma(
                 16isize,
             );
         }
-        return i_chroma_cost;
+        i_chroma_cost
     }
 }
 unsafe extern "C" fn mb_analyse_inter_direct(

@@ -152,11 +152,11 @@ pub mod common_h {
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+        (if x & !crate::src::common::common::PIXEL_MAX != 0 {
             -x >> 31i32 & crate::src::common::common::PIXEL_MAX
         } else {
             x
-        }) as crate::src::common::common::pixel;
+        }) as crate::src::common::common::pixel
     }
 }
 use crate::src::common::dct::common_h::x264_clip_pixel;
@@ -435,7 +435,7 @@ unsafe extern "C" fn sub4x4_dct_dc(
             pix1 = pix1.offset(crate::src::common::common::FENC_STRIDE as isize);
             pix2 = pix2.offset(crate::src::common::common::FDEC_STRIDE as isize);
         }
-        return sum;
+        sum
     }
 }
 unsafe extern "C" fn sub8x8_dct_dc(
@@ -1426,7 +1426,7 @@ unsafe extern "C" fn zigzag_sub_4x4_frame(
             .i = (*(p_src.offset((3i32 * 16i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn zigzag_sub_4x4_field(
@@ -1552,7 +1552,7 @@ unsafe extern "C" fn zigzag_sub_4x4_field(
             .i = (*(p_src.offset((3i32 * 16i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn zigzag_sub_4x4ac_frame(
@@ -1679,7 +1679,7 @@ unsafe extern "C" fn zigzag_sub_4x4ac_frame(
             .i = (*(p_src.offset((3i32 * 16i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn zigzag_sub_4x4ac_field(
@@ -1806,7 +1806,7 @@ unsafe extern "C" fn zigzag_sub_4x4ac_field(
             .i = (*(p_src.offset((3i32 * 16i32) as isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn zigzag_sub_8x8_frame(
@@ -2280,7 +2280,7 @@ unsafe extern "C" fn zigzag_sub_8x8_frame(
             .i = (*(p_src.offset((7i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn zigzag_sub_8x8_field(
@@ -2754,7 +2754,7 @@ unsafe extern "C" fn zigzag_sub_8x8_field(
             .i = (*(p_src.offset((7i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        return (nz != 0) as ::core::ffi::c_int;
+        (nz != 0) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn zigzag_interleave_8x8_cavlc(

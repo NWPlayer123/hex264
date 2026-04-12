@@ -62,11 +62,11 @@ pub mod common_h {
     pub unsafe extern "C" fn x264_clip_pixel(
         mut x: ::core::ffi::c_int,
     ) -> crate::src::common::common::pixel {
-        return (if x & !crate::src::common::common::PIXEL_MAX != 0 {
+        (if x & !crate::src::common::common::PIXEL_MAX != 0 {
             -x >> 31i32 & crate::src::common::common::PIXEL_MAX
         } else {
             x
-        }) as crate::src::common::common::pixel;
+        }) as crate::src::common::common::pixel
     }
 }
 pub mod macroblock_h {
@@ -75,14 +75,14 @@ pub mod macroblock_h {
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a.wrapping_add(b << 16i32);
+        a.wrapping_add(b << 16i32)
     }
     #[inline(always)]
     pub extern "C" fn pack8to16(
         mut a: crate::stdlib::uint32_t,
         mut b: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        return a.wrapping_add(b << 8i32);
+        a.wrapping_add(b << 8i32)
     }
 }
 use crate::src::common::predict::common_h::x264_clip_pixel;

@@ -194,7 +194,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
     (c"UnalignedStack", X264_CPU_STACK_MOD4),
 ];
 pub extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {
-    return 0u32;
+    0u32
 }
 pub unsafe extern "C" fn x264_cpu_num_processors() -> ::core::ffi::c_int {
     unsafe {
@@ -212,9 +212,9 @@ pub unsafe extern "C" fn x264_cpu_num_processors() -> ::core::ffi::c_int {
         {
             return 1i32;
         }
-        return crate::stdlib::__sched_cpucount(
+        crate::stdlib::__sched_cpucount(
             ::core::mem::size_of::<crate::stdlib::cpu_set_t>(),
             &raw mut p_aff,
-        );
+        )
     }
 }

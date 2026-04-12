@@ -26,9 +26,9 @@ pub mod bitstream_h {
         mut s: *mut crate::src::common::bitstream::bs_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            return (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
+            (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
                 + (crate::osdep_h::WORD_SIZE * 8i32) as ::core::ffi::c_long
-                - (*s).i_left as ::core::ffi::c_long) as ::core::ffi::c_int;
+                - (*s).i_left as ::core::ffi::c_long) as ::core::ffi::c_int
         }
     }
     #[inline]
@@ -187,12 +187,12 @@ pub mod bitstream_h {
     pub unsafe extern "C" fn bs_size_ue_big(mut val: ::core::ffi::c_uint) -> ::core::ffi::c_int {
         unsafe {
             if val < 255u32 {
-                return x264_ue_size_tab[val.wrapping_add(1u32) as usize] as ::core::ffi::c_int;
+                x264_ue_size_tab[val.wrapping_add(1u32) as usize] as ::core::ffi::c_int
             } else {
-                return x264_ue_size_tab[(val.wrapping_add(1u32) >> 8i32) as usize]
+                x264_ue_size_tab[(val.wrapping_add(1u32) >> 8i32) as usize]
                     as ::core::ffi::c_int
-                    + 16i32;
-            };
+                    + 16i32
+            }
         }
     }
     use crate::src::encoder::encoder::osdep_h::endian_fix;
@@ -204,10 +204,10 @@ pub mod cabac_h {
         mut cb: *mut crate::src::common::cabac::x264_cabac_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            return (((*cb).p.offset_from((*cb).p_start) as ::core::ffi::c_long
+            (((*cb).p.offset_from((*cb).p_start) as ::core::ffi::c_long
                 + (*cb).i_bytes_outstanding as ::core::ffi::c_long)
                 * 8i64
-                + (*cb).i_queue as ::core::ffi::c_long) as ::core::ffi::c_int;
+                + (*cb).i_queue as ::core::ffi::c_long) as ::core::ffi::c_int
         }
     }
 }
@@ -339,13 +339,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
     #[inline(always)]
     pub extern "C" fn x264_clip3f(
@@ -353,13 +353,13 @@ pub mod base_h {
         mut f_min: ::core::ffi::c_double,
         mut f_max: ::core::ffi::c_double,
     ) -> ::core::ffi::c_double {
-        return if v < f_min {
+        if v < f_min {
             f_min
         } else if v > f_max {
             f_max
         } else {
             v
-        };
+        }
     }
 }
 pub mod macroblock_h {
@@ -535,31 +535,31 @@ pub mod osdep_h {
             if crate::stdlib::fstat(crate::stdlib::fileno(filehandle), &raw mut file_stat) != 0 {
                 return 1i32;
             }
-            return (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t
-                == 0o100000u32) as ::core::ffi::c_int;
+            (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t
+                == 0o100000u32) as ::core::ffi::c_int
         }
     }
     #[inline(always)]
     pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
-        return (x << 24i32)
+        (x << 24i32)
             .wrapping_add(x << 8i32 & 0xff0000u32)
             .wrapping_add(x >> 8i32 & 0xff00u32)
-            .wrapping_add(x >> 24i32);
+            .wrapping_add(x >> 24i32)
     }
     #[inline(always)]
     pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
-        return (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
+        (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
             .wrapping_add(
                 (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t) << 32i32,
-            );
+            )
     }
     #[inline(always)]
     pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
-        return if crate::osdep_h::WORD_SIZE == 8i32 {
+        if crate::osdep_h::WORD_SIZE == 8i32 {
             endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
         } else {
             endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
-        };
+        }
     }
 }
 use crate::src::common::base::ChromaFormat;
@@ -635,7 +635,7 @@ unsafe extern "C" fn calc_psnr(
         if mse <= 0.0000000001 {
             return 100f64;
         }
-        return -10.0f64 * crate::stdlib::log10(mse);
+        -10.0f64 * crate::stdlib::log10(mse)
     }
 }
 unsafe extern "C" fn calc_ssim_db(mut ssim: ::core::ffi::c_double) -> ::core::ffi::c_double {
@@ -644,7 +644,7 @@ unsafe extern "C" fn calc_ssim_db(mut ssim: ::core::ffi::c_double) -> ::core::ff
         if inv_ssim <= 0.0000000001 {
             return 100f64;
         }
-        return -10.0f64 * crate::stdlib::log10(inv_ssim);
+        -10.0f64 * crate::stdlib::log10(inv_ssim)
     }
 }
 unsafe extern "C" fn threadpool_wait_all(mut h: *mut x264_t) -> ::core::ffi::c_int {
@@ -664,7 +664,7 @@ unsafe extern "C" fn threadpool_wait_all(mut h: *mut x264_t) -> ::core::ffi::c_i
             }
             i += 1;
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn frame_dump(mut h: *mut x264_t) {
@@ -1132,19 +1132,19 @@ unsafe extern "C" fn bitstream_check_buffer_internal(
             (*h).out.p_bitstream = buf;
             (*h).out.i_bitstream = buf_size;
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn bitstream_check_buffer(mut h: *mut x264_t) -> ::core::ffi::c_int {
     unsafe {
         let mut max_row_size =
             ((2500i32) << (*h).sh.mbaff as ::core::ffi::c_int) * (*h).mb.i_mb_width;
-        return bitstream_check_buffer_internal(
+        bitstream_check_buffer_internal(
             h,
             max_row_size,
             (*h).param.cabac as ::core::ffi::c_int,
             (*h).out.i_nal,
-        );
+        )
     }
 }
 unsafe extern "C" fn bitstream_check_buffer_filler(
@@ -1153,7 +1153,7 @@ unsafe extern "C" fn bitstream_check_buffer_filler(
 ) -> ::core::ffi::c_int {
     unsafe {
         filler += 32i32;
-        return bitstream_check_buffer_internal(h, filler, 0i32, -(1i32));
+        bitstream_check_buffer_internal(h, filler, 0i32, -(1i32))
     }
 }
 unsafe extern "C" fn validate_parameters(
@@ -3088,7 +3088,7 @@ unsafe extern "C" fn validate_parameters(
         if (*h).param.i_nal_hrd == crate::x264_h::X264_NAL_HRD_CBR {
             (*h).param.rc.filler = true;
         }
-        return 0i32;
+        0i32
     }
 }
 pub const MAX_RESOLUTION: ::core::ffi::c_int = 16384i32;
@@ -3974,7 +3974,7 @@ pub unsafe extern "C" fn x264_8_encoder_open<'a>(
             subsampling[(*h).sps.i_chroma_format_idc as usize],
             crate::internal::BIT_DEPTH,
         );
-        return h;
+        h
     }
 }
 unsafe extern "C" fn encoder_try_reconfig(
@@ -4060,7 +4060,7 @@ unsafe extern "C" fn encoder_try_reconfig(
             as ::core::ffi::c_int;
         (*h).param.rc.f_rf_constant = (*param).rc.f_rf_constant;
         (*h).param.rc.f_rf_constant_max = (*param).rc.f_rf_constant_max;
-        return validate_parameters(h, 0i32);
+        validate_parameters(h, 0i32)
     }
 }
 pub unsafe extern "C" fn x264_8_encoder_reconfig_apply(
@@ -4080,7 +4080,7 @@ pub unsafe extern "C" fn x264_8_encoder_reconfig_apply(
         if ret == 0 && rc_reconfig != 0 {
             crate::src::encoder::ratecontrol::x264_8_ratecontrol_init_reconfigurable(h, 0i32);
         }
-        return ret;
+        ret
     }
 }
 pub unsafe extern "C" fn x264_8_encoder_reconfig(
@@ -4098,7 +4098,7 @@ pub unsafe extern "C" fn x264_8_encoder_reconfig(
         } else {
             (*(*h).reconfig_h).param = param_save;
         }
-        return ret;
+        ret
     }
 }
 pub unsafe extern "C" fn x264_8_encoder_parameters(
@@ -4158,7 +4158,7 @@ unsafe extern "C" fn nal_check_buffer(mut h: *mut x264_t) -> ::core::ffi::c_int 
             (*h).out.nal = new_out;
             (*h).out.i_nals_allocated *= 2i32;
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn nal_end(mut h: *mut x264_t) -> ::core::ffi::c_int {
@@ -4181,7 +4181,7 @@ unsafe extern "C" fn nal_end(mut h: *mut x264_t) -> ::core::ffi::c_int {
             );
         }
         (*h).out.i_nal += 1;
-        return nal_check_buffer(h);
+        nal_check_buffer(h)
     }
 }
 unsafe extern "C" fn check_encapsulated_buffer(
@@ -4220,7 +4220,7 @@ unsafe extern "C" fn check_encapsulated_buffer(
             (*h0).nal_buffer = buf;
             (*h0).nal_buffer_size = necessary_size as ::core::ffi::c_int;
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn encoder_encapsulate_nals(
@@ -4284,8 +4284,8 @@ unsafe extern "C" fn encoder_encapsulate_nals(
             nal_buffer = nal_buffer.offset((*(*h).out.nal.offset(i_3 as isize)).i_payload as isize);
             i_3 += 1;
         }
-        return nal_buffer.offset_from((*h0).nal_buffer.offset(previous_nal_size as isize))
-            as ::core::ffi::c_int;
+        nal_buffer.offset_from((*h0).nal_buffer.offset(previous_nal_size as isize))
+            as ::core::ffi::c_int
     }
 }
 pub unsafe extern "C" fn x264_8_encoder_headers(
@@ -4340,7 +4340,7 @@ pub unsafe extern "C" fn x264_8_encoder_headers(
         *pi_nal = (*h).out.i_nal;
         *pp_nal = (*h).out.nal.offset(0isize);
         (*h).out.i_nal = 0i32;
-        return frame_size;
+        frame_size
     }
 }
 #[inline]
@@ -4432,7 +4432,7 @@ unsafe extern "C" fn weighted_reference_duplicate(
                 .offset(j as isize),
             newframe,
         );
-        return j;
+        j
     }
 }
 unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
@@ -4661,13 +4661,13 @@ unsafe extern "C" fn reference_distance(
 ) -> ::core::ffi::c_int {
     unsafe {
         if (*h).param.i_frame_packing == 5i32 {
-            return crate::stdlib::abs(
+            crate::stdlib::abs(
                 ((*(*h).fenc).i_frame & !(1i32)) - ((*frame).i_frame & !(1i32)),
             ) + ((*(*h).fenc).i_frame & 1i32 != (*frame).i_frame & 1i32)
-                as ::core::ffi::c_int;
+                as ::core::ffi::c_int
         } else {
-            return crate::stdlib::abs((*(*h).fenc).i_frame - (*frame).i_frame);
-        };
+            crate::stdlib::abs((*(*h).fenc).i_frame - (*frame).i_frame)
+        }
     }
 }
 #[inline]
@@ -5128,7 +5128,7 @@ unsafe extern "C" fn reference_update(mut h: *mut x264_t) -> ::core::ffi::c_int 
         if (*h).fdec.is_null() {
             return -(1i32);
         }
-        return 0i32;
+        0i32
     }
 }
 #[inline]
@@ -5963,7 +5963,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> crate::stdlib::intptr_t 
                 (*(*h).fdec).mb_info_free = None;
             }
         }
-        return 0isize;
+        0isize
     }
 }
 pub const BS_BAK_SLICE_MAX_SIZE: ::core::ffi::c_int = 0i32;
@@ -6082,14 +6082,14 @@ unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut ::core::ffi::c_voi
             }
         }
         match c2rust_current_block {
-            5634871135123216486 => return ::core::ptr::null_mut::<::core::ffi::c_void>(),
+            5634871135123216486 => ::core::ptr::null_mut::<::core::ffi::c_void>(),
             _ => {
                 if (*h).param.sliced_threads {
                     crate::src::common::frame::x264_8_threadslice_cond_broadcast(h, 2i32);
                 }
-                return -(1i32) as *mut ::core::ffi::c_void;
+                -(1i32) as *mut ::core::ffi::c_void
             }
-        };
+        }
     }
 }
 unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> ::core::ffi::c_int {
@@ -6191,7 +6191,7 @@ unsafe extern "C" fn threaded_slices_write(mut h: *mut x264_t) -> ::core::ffi::c
             (*h).stat.frame.i_ssim_cnt += (*t_0).stat.frame.i_ssim_cnt;
             i_3 += 1;
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_encoder_intra_refresh(mut h: *mut x264_t) {
@@ -6228,7 +6228,7 @@ pub unsafe extern "C" fn x264_8_encoder_invalidate_reference(
                 (*(*h).fdec).corrupt = true;
             }
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_encoder_encode(
@@ -7022,7 +7022,7 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
         } else if slices_write(h) as crate::stdlib::intptr_t != 0 {
             return -(1i32);
         }
-        return encoder_frame_end(thread_oldest, thread_current, pp_nal, pi_nal, pic_out);
+        encoder_frame_end(thread_oldest, thread_current, pp_nal, pi_nal, pic_out)
     }
 }
 unsafe extern "C" fn encoder_frame_end<'a>(
@@ -7388,7 +7388,7 @@ unsafe extern "C" fn encoder_frame_end<'a>(
         if !(*h).param.psz_dump_yuv.is_null() {
             frame_dump(h);
         }
-        return frame_size;
+        frame_size
     }
 }
 unsafe extern "C" fn print_intra(
@@ -8327,13 +8327,13 @@ pub unsafe extern "C" fn x264_8_encoder_delayed_frames(mut h: *mut x264_t) -> ::
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).next.mutex);
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).ifbuf.mutex);
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).ofbuf.mutex);
-        return delayed_frames;
+        delayed_frames
     }
 }
 pub unsafe extern "C" fn x264_8_encoder_maximum_delayed_frames(
     mut h: *mut x264_t,
 ) -> ::core::ffi::c_int {
     unsafe {
-        return (*h).frames.i_delay;
+        (*h).frames.i_delay
     }
 }

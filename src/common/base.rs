@@ -223,13 +223,13 @@ pub mod base_h {
         mut i_min: ::core::ffi::c_int,
         mut i_max: ::core::ffi::c_int,
     ) -> ::core::ffi::c_int {
-        return if v < i_min {
+        if v < i_min {
             i_min
         } else if v > i_max {
             i_max
         } else {
             v
-        };
+        }
     }
 }
 use crate::src::common::base::base_h::x264_clip3;
@@ -387,7 +387,7 @@ pub unsafe extern "C" fn x264_malloc(
                 i_size,
             );
         }
-        return align_buf as *mut ::core::ffi::c_void;
+        align_buf as *mut ::core::ffi::c_void
     }
 }
 pub const HUGE_PAGE_SIZE: ::core::ffi::c_int = 2i32 * 1024i32 * 1024i32;
@@ -442,7 +442,7 @@ pub unsafe extern "C" fn x264_slurp_file(
             }
         }
         crate::stdlib::fclose(fh);
-        return ::core::ptr::null_mut::<::core::ffi::c_char>();
+        ::core::ptr::null_mut::<::core::ffi::c_char>()
     }
 }
 pub const BUFFER_DEFAULT_SIZE: ::core::ffi::c_int = 16i32;
@@ -515,7 +515,7 @@ pub unsafe extern "C" fn x264_param_strdup(
             crate::x264_h::X264_LOG_ERROR,
             b"x264_param_strdup failed\n\0".as_ptr() as *const ::core::ffi::c_char,
         );
-        return ::core::ptr::null_mut::<::core::ffi::c_char>();
+        ::core::ptr::null_mut::<::core::ffi::c_char>()
     }
 }
 pub unsafe extern "C" fn x264_param_cleanup(mut param: *mut crate::x264_h::x264_param_t) {
@@ -683,7 +683,7 @@ pub unsafe extern "C" fn x264_picture_alloc(
                 (*pic).img.plane[0usize].offset(plane_offset[i_0 as usize] as isize);
             i_0 += 1;
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_picture_clean(mut pic: *mut crate::x264_h::x264_picture_t) {
@@ -1019,7 +1019,7 @@ unsafe extern "C" fn param_apply_preset(
                 return -(1i32);
             }
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn param_apply_tune(
@@ -1231,7 +1231,7 @@ unsafe extern "C" fn param_apply_tune(
             }
             tune = tune.offset(len as isize);
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_param_default_preset(
@@ -1247,7 +1247,7 @@ pub unsafe extern "C" fn x264_param_default_preset(
         if !tune.is_null() && param_apply_tune(param, tune) < 0i32 {
             return -(1i32);
         }
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_param_apply_fastfirstpass(
@@ -1294,7 +1294,7 @@ unsafe extern "C" fn profile_string_to_int(
         {
             return crate::src::common::base::PROFILE_HIGH444_PREDICTIVE as ::core::ffi::c_int;
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 pub unsafe extern "C" fn x264_param_apply_profile(
@@ -1400,7 +1400,7 @@ pub unsafe extern "C" fn x264_param_apply_profile(
             (*param).i_cqm_preset = crate::x264_h::X264_CQM_FLAT;
             (*param).psz_cqm_file = ::core::ptr::null_mut::<::core::ffi::c_char>();
         }
-        return 0i32;
+        0i32
     }
 }
 unsafe extern "C" fn parse_enum(
@@ -1419,7 +1419,7 @@ unsafe extern "C" fn parse_enum(
             }
             i += 1;
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 unsafe extern "C" fn parse_cqm(
@@ -1458,7 +1458,7 @@ unsafe extern "C" fn parse_cqm(
                 break;
             }
         }
-        return if i == length { 0i32 } else { -(1i32) };
+        if i == length { 0i32 } else { -(1i32) }
     }
 }
 unsafe extern "C" fn atobool_internal(
@@ -1480,7 +1480,7 @@ unsafe extern "C" fn atobool_internal(
             return false;
         }
         *b_error = 1i32;
-        return false;
+        false
     }
 }
 unsafe extern "C" fn atoi_internal(
@@ -1493,7 +1493,7 @@ unsafe extern "C" fn atoi_internal(
         if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
             *b_error = 1i32;
         }
-        return v;
+        v
     }
 }
 unsafe extern "C" fn atof_internal(
@@ -1506,7 +1506,7 @@ unsafe extern "C" fn atof_internal(
         if end == str as *mut ::core::ffi::c_char || *end as ::core::ffi::c_int != '\0' as i32 {
             *b_error = 1i32;
         }
-        return v;
+        v
     }
 }
 pub unsafe extern "C" fn x264_param_parse(
@@ -2679,7 +2679,7 @@ pub unsafe extern "C" fn x264_param_parse(
             crate::stdlib::free(name_buf as *mut ::core::ffi::c_void);
         }
         b_error |= (value_was_null != 0 && name_was_bool == 0) as ::core::ffi::c_int;
-        return if b_error != 0 { errortype } else { 0i32 };
+        if b_error != 0 { errortype } else { 0i32 }
     }
 }
 pub unsafe extern "C" fn x264_param2string(
@@ -3133,6 +3133,6 @@ pub unsafe extern "C" fn x264_param2string(
                 ) as isize);
             }
         }
-        return buf;
+        buf
     }
 }

@@ -26,9 +26,9 @@ pub mod bitstream_h {
         mut s: *mut crate::src::common::bitstream::bs_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            return (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
+            (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
                 + (crate::osdep_h::WORD_SIZE * 8i32) as ::core::ffi::c_long
-                - (*s).i_left as ::core::ffi::c_long) as ::core::ffi::c_int;
+                - (*s).i_left as ::core::ffi::c_long) as ::core::ffi::c_int
         }
     }
     #[inline]
@@ -203,10 +203,10 @@ pub mod bitstream_h {
                 tmp = val * 2i32;
             }
             if tmp < 256i32 {
-                return x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int;
+                x264_ue_size_tab[tmp as usize] as ::core::ffi::c_int
             } else {
-                return x264_ue_size_tab[(tmp >> 8i32) as usize] as ::core::ffi::c_int + 16i32;
-            };
+                x264_ue_size_tab[(tmp >> 8i32) as usize] as ::core::ffi::c_int + 16i32
+            }
         }
     }
     use crate::src::encoder::set::osdep_h::endian_fix;
@@ -215,25 +215,25 @@ pub mod bitstream_h {
 pub mod osdep_h {
     #[inline(always)]
     pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
-        return (x << 24i32)
+        (x << 24i32)
             .wrapping_add(x << 8i32 & 0xff0000u32)
             .wrapping_add(x >> 8i32 & 0xff00u32)
-            .wrapping_add(x >> 24i32);
+            .wrapping_add(x >> 24i32)
     }
     #[inline(always)]
     pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
-        return (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
+        (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
             .wrapping_add(
                 (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t) << 32i32,
-            );
+            )
     }
     #[inline(always)]
     pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
-        return if crate::osdep_h::WORD_SIZE == 8i32 {
+        if crate::osdep_h::WORD_SIZE == 8i32 {
             endian_fix64(x as crate::stdlib::uint64_t) as crate::stdlib::uintptr_t
         } else {
             endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uintptr_t
-        };
+        }
     }
 }
 pub mod macroblock_h {
@@ -1417,7 +1417,7 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
         ) as *mut ::core::ffi::c_char;
         if payload.is_null() {
             crate::src::common::base::x264_free(opts as *mut ::core::ffi::c_void);
-            return -(1i32);
+            -(1i32)
         } else {
             let mut length = 0;
             crate::stdlib::memcpy(
@@ -1447,8 +1447,8 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
             );
             crate::src::common::base::x264_free(opts as *mut ::core::ffi::c_void);
             crate::src::common::base::x264_free(payload as *mut ::core::ffi::c_void);
-            return 0i32;
-        };
+            0i32
+        }
     }
 }
 pub unsafe extern "C" fn x264_8_sei_buffering_period_write(
@@ -1890,7 +1890,7 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
             len,
             crate::src::common::base::SEI_USER_DATA_UNREGISTERED as ::core::ffi::c_int,
         );
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
@@ -1930,7 +1930,7 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
             len,
             crate::src::common::base::SEI_USER_DATA_UNREGISTERED as ::core::ffi::c_int,
         );
-        return 0i32;
+        0i32
     }
 }
 pub unsafe extern "C" fn x264_8_validate_levels(
@@ -2056,6 +2056,6 @@ pub unsafe extern "C" fn x264_8_validate_levels(
                 ret = 1i32;
             }
         }
-        return ret;
+        ret
     }
 }

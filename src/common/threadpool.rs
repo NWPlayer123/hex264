@@ -43,7 +43,7 @@ unsafe extern "C" fn threadpool_thread(
                 job as *mut crate::src::common::frame::x264_frame,
             );
         }
-        return crate::__stddef_null_h::NULL;
+        crate::__stddef_null_h::NULL
     }
 }
 pub unsafe extern "C" fn x264_8_threadpool_init(
@@ -164,7 +164,7 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                 }
             }
         }
-        return -(1i32);
+        -(1i32)
     }
 }
 pub unsafe extern "C" fn x264_8_threadpool_run(
