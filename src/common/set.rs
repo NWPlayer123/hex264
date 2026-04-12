@@ -178,7 +178,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
         loop {
             let mut i = 0i32;
             let mut j = 0i32;
-            if !(i < 4i32) {
+            if i >= 4i32 {
                 c2rust_current_block = 5529461102203738653;
                 break;
             }
@@ -276,7 +276,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                 loop {
                     let mut i_0 = 0i32;
                     let mut j_0 = 0i32;
-                    if !(i_0 < num_8x8_lists) {
+                    if i_0 >= num_8x8_lists {
                         c2rust_current_block = 7419121793134201633;
                         break;
                     }

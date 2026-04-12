@@ -685,7 +685,7 @@ unsafe extern "C" fn macroblock_tree_rescale_init(
                             loop {
                                 let mut i = 0i32;
                                 let mut j = 0i32;
-                                if !(i < 2i32) {
+                                if i >= 2i32 {
                                     c2rust_current_block = 3160140712158701372;
                                     break;
                                 }
@@ -1992,7 +1992,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         p = p.offset(4isize);
                                         ref_0 = 0i32;
                                         loop {
-                                            if !(ref_0 < 16i32) {
+                                            if ref_0 >= 16i32 {
                                                 c2rust_current_block = 9728093949049737828;
                                                 break;
                                             }
@@ -2118,7 +2118,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                                         e = -(1i32);
                                                     }
                                                 }
-                                                if !(e < 14i32) {
+                                                if e >= 14i32 {
                                                     (*rce_0).qscale =
                                                         qp2qscale(qp_rc) as ::core::ffi::c_double;
                                                     total_qp_aq += qp_aq;
@@ -3425,16 +3425,16 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 c2rust_current_block = 12447577463904507897;
             } else {
                 let mut use_old_stats =
-     ((*h).param.rc.stat_read
+                    ((*h).param.rc.stat_read
                     && (*(*rc).rce).refs > 1i32)
                     as ::core::ffi::c_int;
                 loop {
-                    let mut i_0 =   0i32;if !(i_0
-                        < (if use_old_stats != 0 {
+                    let mut i_0 = 0i32;
+                    if i_0 >= (if use_old_stats != 0 {
                             (*(*rc).rce).refs
                         } else {
                             (*h).i_ref[0usize]
-                        }))
+                        })
                     {
                         c2rust_current_block = 8236137900636309791;
                         break;
@@ -4795,7 +4795,7 @@ pub unsafe extern "C" fn x264_8_threads_merge_ratecontrol(
                     bits as ::core::ffi::c_float,
                 );
             }
-            if !(i == 0) {
+            if i != 0 {
                 (*rc).qpa_rc += (*rct).qpa_rc;
                 (*rc).qpa_aq += (*rct).qpa_aq;
             }
@@ -5333,8 +5333,8 @@ unsafe extern "C" fn init_pass2(
                                         crate::stdlib::exp(-d * d / (qblur * qblur))
                                     };
                                     if !(idx < 0i32 || idx >= (*rcc).num_entries)
-                                        && !((*rce_1).pict_type
-                                            != (*(*rcc).entry.offset(idx as isize)).pict_type)
+                                        && ((*rce_1).pict_type
+                                            == (*(*rcc).entry.offset(idx as isize)).pict_type)
                                     {
                                         q_0 += *qscale.offset(idx as isize) * coeff;
                                         sum += coeff;

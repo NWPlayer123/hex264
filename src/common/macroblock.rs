@@ -354,7 +354,7 @@ pub mod rectangle_h {
                             .i = v8;
                         h -= 2i32;
                         d = d.offset((s * 2i32) as isize);
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }
@@ -370,7 +370,7 @@ pub mod rectangle_h {
                             v4;
                         d = d.offset(s as isize);
                         h -= 1;
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }
@@ -1297,7 +1297,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             loop {
                 let c2rust_fresh12 = prealloc_idx;
                 prealloc_idx -= 1;
-                if !(c2rust_fresh12 != 0) {
+                if c2rust_fresh12 == 0 {
                     break;
                 }
                 *preallocs[prealloc_idx as usize] = (*preallocs[prealloc_idx as usize]
@@ -1370,7 +1370,7 @@ pub unsafe extern "C" fn x264_8_macroblock_thread_allocate(
             's_5: loop {
                 let mut i = 0i32;
                 let mut j = 0i32;
-                if !(i < (if (*h).param.interlaced { 5i32 } else { 2i32 })) {
+                if i >= (if (*h).param.interlaced { 5i32 } else { 2i32 }) {
                     c2rust_current_block = 8515828400728868193;
                     break;
                 }
@@ -1402,7 +1402,7 @@ pub unsafe extern "C" fn x264_8_macroblock_thread_allocate(
                 2278402434551512179 => {}
                 _ => loop {
                     let mut i_0 = 0i32;
-                    if !(i_0 <= (*h).param.interlaced as ::core::ffi::c_int) {
+                    if i_0 > (*h).param.interlaced as ::core::ffi::c_int {
                         c2rust_current_block = 5783071609795492627;
                         break;
                     }

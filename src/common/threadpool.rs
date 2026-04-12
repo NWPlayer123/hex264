@@ -90,7 +90,7 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                 let mut c2rust_current_block: u64;
                 loop {
                     let mut i = 0i32;
-                    if !(i < (*pool).threads) {
+                    if i >= (*pool).threads {
                         c2rust_current_block = 11584701595673473500;
                         break;
                     }
@@ -114,7 +114,7 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                     _ => {
                         loop {
                             let mut i_0 = 0i32;
-                            if !(i_0 < (*pool).threads) {
+                            if i_0 >= (*pool).threads {
                                 c2rust_current_block = 5634871135123216486;
                                 break;
                             }

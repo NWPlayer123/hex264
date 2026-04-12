@@ -480,7 +480,7 @@ pub mod rectangle_h {
                             .i = v8;
                         h -= 2i32;
                         d = d.offset((s * 2i32) as isize);
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }
@@ -496,7 +496,7 @@ pub mod rectangle_h {
                             v4;
                         d = d.offset(s as isize);
                         h -= 1;
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }
@@ -803,7 +803,7 @@ unsafe extern "C" fn cabac_qp_delta(
                 crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 60i32 + ctx, 1i32);
                 ctx = 2i32 + (ctx >> 1i32);
                 val -= 1;
-                if !(val != 0) {
+                if val == 0 {
                     break;
                 }
             }
@@ -1793,7 +1793,7 @@ unsafe extern "C" fn cabac_block_residual_internal(
                     );
                 }
                 i += 1;
-                if !(i == count_m1) {
+                if i != count_m1 {
                     continue;
                 }
                 coeff_idx += 1;
@@ -1847,7 +1847,7 @@ unsafe extern "C" fn cabac_block_residual_internal(
                         );
                     }
                     i_0 += 1;
-                    if !(i_0 == count_m1_0) {
+                    if i_0 != count_m1_0 {
                         continue;
                     }
                     coeff_idx += 1;
@@ -1887,7 +1887,7 @@ unsafe extern "C" fn cabac_block_residual_internal(
                         );
                     }
                     i_1 += 1;
-                    if !(i_1 == count_m1_0) {
+                    if i_1 != count_m1_0 {
                         continue;
                     }
                     coeff_idx += 1;
@@ -1928,7 +1928,7 @@ unsafe extern "C" fn cabac_block_residual_internal(
             }
             crate::src::common::cabac::x264_8_cabac_encode_bypass_c(cb, coeff_sign);
             coeff_idx -= 1;
-            if !(coeff_idx >= 0i32) {
+            if coeff_idx < 0i32 {
                 break;
             }
         }

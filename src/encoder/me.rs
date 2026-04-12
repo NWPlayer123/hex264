@@ -404,7 +404,7 @@ pub mod rectangle_h {
                             .i = v8;
                         h -= 2i32;
                         d = d.offset((s * 2i32) as isize);
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }
@@ -420,7 +420,7 @@ pub mod rectangle_h {
                             v4;
                         d = d.offset(s as isize);
                         h -= 1;
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }
@@ -664,7 +664,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             bpred_cost = (cost << 4i32) + i;
                         }
                         i += 1;
-                        if !(i <= valid_mvcs) {
+                        if i > valid_mvcs {
                             break;
                         }
                     }
@@ -766,7 +766,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                             bcost = (cost_2 << 4i32) + i_0;
                         }
                         i_0 += 1;
-                        if !(i_0 <= valid_mvcs_0) {
+                        if i_0 > valid_mvcs_0 {
                             break;
                         }
                     }
@@ -2183,7 +2183,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                                     }
                                 }
                                 i_5 += 1;
-                                if !(i_5 <= i_me_range >> 2i32) {
+                                if i_5 > i_me_range >> 2i32 {
                                     break;
                                 }
                             }
@@ -2295,7 +2295,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     while my_2 <= max_y {
                         let mut ycost =
                             *p_cost_mvy.offset((my_2 * 4i32) as isize) as ::core::ffi::c_int;
-                        if !(bsad <= ycost) {
+                        if bsad > ycost {
                             let mut i_6 = 0;
                             bsad -= ycost;
                             xn = (*h).pixf.ads[i_pixel as usize]
@@ -2489,7 +2489,7 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     while my_3 <= max_y {
                         let mut ycost_0 =
                             *p_cost_mvy.offset((my_3 * 4i32) as isize) as ::core::ffi::c_int;
-                        if !(bcost <= ycost_0) {
+                        if bcost > ycost_0 {
                             let mut i_10 = 0;
                             bcost -= ycost_0;
                             xn = (*h).pixf.ads[i_pixel as usize]

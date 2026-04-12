@@ -1220,13 +1220,13 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                             }
                         }
                         if nz_dc != 0
-                            && !(mb_optimize_chroma_dc(
+                            && (mb_optimize_chroma_dc(
                                 h,
                                 &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
                                 dequant_mf,
                                 i_qp + 3i32 * chroma422,
                                 chroma422,
-                            ) == 0)
+                            ) != 0)
                         {
                             let mut i_0 = 0i32;
                             (*h).mb.cache.non_zero_count[x264_scan8
@@ -1573,7 +1573,7 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                             as *mut crate::src::common::base::x264_union16_t))
                             .i = 0u16;
                     }
-                    if !(nz_dc == 0) {
+                    if nz_dc != 0 {
                         if mb_optimize_chroma_dc(
                             h,
                             &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
@@ -3170,7 +3170,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                     p_src,
                     crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
                 );
-                if !(ssd < thresh) {
+                if ssd >= thresh {
                     let mut dct_dc = [0; 8];
                     let mut i_0 = 0i32;
                     if (*h).mb.noise_reduction {
@@ -3238,7 +3238,7 @@ unsafe extern "C" fn macroblock_probe_skip_internal(
                         }
                         i_0 += 1;
                     }
-                    if !(ssd < thresh * 4i32) {
+                    if ssd >= thresh * 4i32 {
                         let mut i8x8_0 = 0i32;
                         if !(*h).mb.noise_reduction {
                             let mut i_1 = 0i32;

@@ -51,7 +51,6 @@ pub(crate) enum ChromaFormat {
     Chroma422 = 2,
     Chroma444 = 3,
 }
-
 impl ChromaFormat {
     pub fn is_444(self) -> bool {
         self == ChromaFormat::Chroma444
@@ -66,7 +65,6 @@ impl ChromaFormat {
         self == ChromaFormat::Chroma400
     }
 }
-
 pub type slice_type_e = ::core::ffi::c_uint;
 pub const SLICE_TYPE_P: crate::src::common::base::slice_type_e = 0;
 pub const SLICE_TYPE_B: crate::src::common::base::slice_type_e = 1;
@@ -416,7 +414,7 @@ pub unsafe extern "C" fn x264_slurp_file(
         }
         b_error |=
             (crate::stdlib::fseeko(fh, 0i64, crate::stdlib::SEEK_SET) < 0i32) as ::core::ffi::c_int;
-        if !(b_error != 0) {
+        if b_error == 0 {
             let mut buf = ::core::ptr::null_mut::<::core::ffi::c_char>();
             buf = x264_malloc(i_size + 2i64) as *mut ::core::ffi::c_char;
             if !buf.is_null() {
@@ -953,10 +951,10 @@ unsafe extern "C" fn param_apply_preset(
             (*param).analyse.i_subpel_refine = 6i32;
             (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
             (*param).rc.i_lookahead = 30i32;
-        } else if !(crate::stdlib::strcasecmp(
+        } else if crate::stdlib::strcasecmp(
             preset,
             b"medium\0".as_ptr() as *const ::core::ffi::c_char,
-        ) == 0)
+        ) != 0
         {
             if crate::stdlib::strcasecmp(preset, b"slow\0".as_ptr() as *const ::core::ffi::c_char)
                 == 0
@@ -1037,7 +1035,7 @@ unsafe extern "C" fn param_apply_tune(
             ) as isize);
             len = crate::stdlib::strcspn(tune, b",./-+\0".as_ptr() as *const ::core::ffi::c_char)
                 as ::core::ffi::c_int;
-            if !(len != 0) {
+            if len == 0 {
                 break;
             }
             if len == 4i32

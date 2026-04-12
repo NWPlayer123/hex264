@@ -1,5 +1,4 @@
 use crate::src::common::frame::{x264_frame_shift, x264_sync_frame_list_t};
-
 unsafe extern "C" fn lookahead_shift(
     mut dst: &mut x264_sync_frame_list_t,
     mut src: &mut x264_sync_frame_list_t,
@@ -168,11 +167,11 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
                 }
                 look_h = (*h).thread[(*h).param.i_threads as usize];
                 *look_h = *h;
-                if !(crate::src::common::macroblock::x264_8_macroblock_cache_allocate(look_h) != 0)
-                    && !(crate::src::common::macroblock::x264_8_macroblock_thread_allocate(
+                if (crate::src::common::macroblock::x264_8_macroblock_cache_allocate(look_h) == 0)
+                    && (crate::src::common::macroblock::x264_8_macroblock_thread_allocate(
                         look_h, 1i32,
-                    ) < 0i32)
-                    && !(crate::stdlib::pthread_create(
+                    ) >= 0i32)
+                    && (crate::stdlib::pthread_create(
                         &raw mut (*look).thread_handle,
                         ::core::ptr::null::<crate::stdlib::pthread_attr_t>(),
                         ::core::mem::transmute::<
@@ -199,7 +198,7 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
                                     -> *mut ::core::ffi::c_void,
                         ))),
                         look_h as *mut ::core::ffi::c_void,
-                    ) != 0)
+                    ) == 0)
                 {
                     (*look).b_thread_active = 1u8;
                     return 0i32;
@@ -285,7 +284,7 @@ unsafe extern "C" fn lookahead_encoder_shift(mut h: *mut crate::src::common::com
         loop {
             let c2rust_fresh3 = i_frames;
             i_frames -= 1;
-            if !(c2rust_fresh3 != 0) {
+            if c2rust_fresh3 == 0 {
                 break;
             }
             crate::src::common::frame::x264_8_frame_push(

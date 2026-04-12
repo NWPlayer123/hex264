@@ -8309,7 +8309,7 @@ pub unsafe extern "C" fn x264_8_plane_copy_c(
         loop {
             let c2rust_fresh0 = h;
             h -= 1;
-            if !(c2rust_fresh0 != 0) {
+            if c2rust_fresh0 == 0 {
                 break;
             }
             crate::stdlib::memcpy(
@@ -8845,7 +8845,7 @@ unsafe extern "C" fn mbtree_propagate_list(
         while i < len {
             let mut lists_used = *lowres_costs.offset(i as isize) as ::core::ffi::c_int
                 >> crate::src::common::frame::LOWRES_COST_SHIFT;
-            if !(lists_used & (1i32) << list == 0) {
+            if lists_used & (1i32) << list != 0 {
                 let mut listamount = *propagate_amount.offset(i as isize) as ::core::ffi::c_int;
                 if lists_used == 3i32 {
                     listamount = (listamount * bipred_weight + 32i32) >> 6i32;

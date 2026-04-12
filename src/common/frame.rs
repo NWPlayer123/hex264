@@ -756,7 +756,7 @@ unsafe extern "C" fn frame_new(
                         loop {
                             let c2rust_fresh34 = prealloc_idx;
                             prealloc_idx -= 1;
-                            if !(c2rust_fresh34 != 0) {
+                            if c2rust_fresh34 == 0 {
                                 break;
                             }
                             *preallocs[prealloc_idx as usize] = (*preallocs[prealloc_idx as usize]
@@ -1046,14 +1046,14 @@ unsafe extern "C" fn frame_new(
                                 );
                             }
                         }
-                        if !(crate::stdlib::pthread_mutex_init(
+                        if (crate::stdlib::pthread_mutex_init(
                             &raw mut (*frame).mutex,
                             ::core::ptr::null::<crate::stdlib::pthread_mutexattr_t>(),
-                        ) != 0)
-                            && !(crate::stdlib::pthread_cond_init(
+                        ) == 0)
+                            && (crate::stdlib::pthread_cond_init(
                                 &raw mut (*frame).cv,
                                 ::core::ptr::null::<crate::stdlib::pthread_condattr_t>(),
-                            ) != 0)
+                            ) == 0)
                         {
                             return frame;
                         }
@@ -1977,7 +1977,7 @@ pub unsafe extern "C" fn x264_8_frame_unshift(
         loop {
             let c2rust_fresh4 = i;
             i -= 1;
-            if !(c2rust_fresh4 != 0) {
+            if c2rust_fresh4 == 0 {
                 break;
             }
             let ref mut c2rust_fresh5 = *list.offset((i + 1i32) as isize);

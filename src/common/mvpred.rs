@@ -254,7 +254,7 @@ pub mod rectangle_h {
                             .i = v8;
                         h -= 2i32;
                         d = d.offset((s * 2i32) as isize);
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }
@@ -270,7 +270,7 @@ pub mod rectangle_h {
                             v4;
                         d = d.offset(s as isize);
                         h -= 1;
-                        if !(h != 0) {
+                        if h == 0 {
                             break;
                         }
                     }

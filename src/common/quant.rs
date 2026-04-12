@@ -944,7 +944,7 @@ unsafe extern "C" fn coeff_level_run4(
                     break;
                 }
             }
-            if !(i_last >= 0i32) {
+            if i_last < 0i32 {
                 break;
             }
         }
@@ -972,7 +972,7 @@ unsafe extern "C" fn coeff_level_run8(
                     break;
                 }
             }
-            if !(i_last >= 0i32) {
+            if i_last < 0i32 {
                 break;
             }
         }
@@ -1000,7 +1000,7 @@ unsafe extern "C" fn coeff_level_run15(
                     break;
                 }
             }
-            if !(i_last >= 0i32) {
+            if i_last < 0i32 {
                 break;
             }
         }
@@ -1028,7 +1028,7 @@ unsafe extern "C" fn coeff_level_run16(
                     break;
                 }
             }
-            if !(i_last >= 0i32) {
+            if i_last < 0i32 {
                 break;
             }
         }

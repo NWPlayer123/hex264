@@ -234,7 +234,7 @@ pub unsafe extern "C" fn x264_8_cabac_encode_ue_bypass(
             (*cb).i_queue += i;
             cabac_putbyte(cb);
             i = 8i32;
-            if !(k > 0i32) {
+            if k <= 0i32 {
                 break;
             }
         }

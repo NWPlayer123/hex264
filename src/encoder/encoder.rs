@@ -3753,8 +3753,8 @@ pub unsafe extern "C" fn x264_8_encoder_open<'a>(
         (*h).thread[0usize] = h;
         loop {
             let mut i_0 = 1i32;
-            if !(i_0
-                < (*h).param.i_threads + ((*h).param.i_sync_lookahead != 0) as ::core::ffi::c_int)
+            if i_0
+                >= (*h).param.i_threads + ((*h).param.i_sync_lookahead != 0) as ::core::ffi::c_int
             {
                 break;
             }
@@ -3770,7 +3770,7 @@ pub unsafe extern "C" fn x264_8_encoder_open<'a>(
         if (*h).param.i_lookahead_threads > 1i32 {
             loop {
                 let mut i_1 = 0i32;
-                if !(i_1 < (*h).param.i_lookahead_threads) {
+                if i_1 >= (*h).param.i_lookahead_threads {
                     break;
                 }
                 (*h).lookahead_thread[i_1 as usize] = crate::src::common::base::x264_malloc(
@@ -3787,7 +3787,7 @@ pub unsafe extern "C" fn x264_8_encoder_open<'a>(
         *(*h).reconfig_h = *h;
         loop {
             let mut i_2 = 0i32;
-            if !(i_2 < (*h).param.i_threads) {
+            if i_2 >= (*h).param.i_threads {
                 break;
             }
             let mut init_nal_count = (*h).param.i_slice_count + 3i32;
@@ -3856,7 +3856,7 @@ pub unsafe extern "C" fn x264_8_encoder_open<'a>(
         }
         loop {
             let mut i_3 = 0i32;
-            if !(i_3 < (*h).param.i_threads) {
+            if i_3 >= (*h).param.i_threads {
                 break;
             }
             if crate::src::common::macroblock::x264_8_macroblock_thread_allocate(
@@ -4707,7 +4707,7 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: ::core:
                         i_0 += 1;
                     }
                 }
-                if !(b_ok == 0) {
+                if b_ok != 0 {
                     break;
                 }
             }
@@ -4754,7 +4754,7 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: ::core:
                         i_2 += 1;
                     }
                 }
-                if !(b_ok == 0) {
+                if b_ok != 0 {
                     break;
                 }
             }
@@ -5727,8 +5727,8 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> crate::stdlib::intptr_t 
                     || (*h).param.rc.stat_write)
                     && b_intra == 0
                     && b_skip == 0
-                    && !((*h).mb.i_type
-                        == crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int)
+                    && ((*h).mb.i_type
+                        != crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int)
                 {
                     if (*h).mb.i_partition
                         != crate::src::common::macroblock::D_8x8 as ::core::ffi::c_int
@@ -6012,8 +6012,8 @@ unsafe extern "C" fn slices_write(mut h: *mut x264_t) -> *mut ::core::ffi::c_voi
         (*h).mb.reencode_mb = false;
         loop {
             let mut i_slice_num = 0i32;
-            if !((*h).sh.i_first_mb + (*h).sh.mbaff as ::core::ffi::c_int * (*h).mb.i_mb_stride
-                <= last_thread_mb)
+            if (*h).sh.i_first_mb + (*h).sh.mbaff as ::core::ffi::c_int * (*h).mb.i_mb_stride
+                > last_thread_mb
             {
                 c2rust_current_block = 5634871135123216486;
                 break;
@@ -7553,7 +7553,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
         while i_type < 2i32 {
             let mut i_3 = 0i32;
             while i_3 < crate::src::common::macroblock::X264_PARTTYPE_MAX as ::core::ffi::c_int {
-                if !(i_3 == crate::src::common::macroblock::D_DIRECT_8x8 as ::core::ffi::c_int) {
+                if i_3 != crate::src::common::macroblock::D_DIRECT_8x8 as ::core::ffi::c_int {
                     i_mb_count_size[i_type as usize]
                         [x264_mb_partition_pixel_table[i_3 as usize] as usize] +=
                         (*h).stat.i_mb_partition[i_type as usize][i_3 as usize];
@@ -8076,7 +8076,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                         }
                         i_8 += 1;
                     }
-                    if !(i_max == 0i32) {
+                    if i_max != 0i32 {
                         let mut i_9 = 0i32;
                         while i_9 <= i_max {
                             p_0 = p_0.offset(crate::stdlib::sprintf(
