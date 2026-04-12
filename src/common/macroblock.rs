@@ -204,8 +204,7 @@ pub mod macroblock_h {
         mut c: crate::stdlib::uint32_t,
         mut d: crate::stdlib::uint32_t,
     ) -> crate::stdlib::uint32_t {
-        a
-            .wrapping_add(b << 8i32)
+        a.wrapping_add(b << 8i32)
             .wrapping_add(c << 16i32)
             .wrapping_add(d << 24i32)
     }

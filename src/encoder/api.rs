@@ -192,11 +192,7 @@ pub unsafe extern "C" fn x264_encoder_headers(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut api = h as *mut x264_api_t;
-        (*api).encoder_headers.expect("non-null function pointer")(
-            (*api).x264,
-            pp_nal,
-            pi_nal,
-        )
+        (*api).encoder_headers.expect("non-null function pointer")((*api).x264, pp_nal, pi_nal)
     }
 }
 pub unsafe extern "C" fn x264_encoder_encode(

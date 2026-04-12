@@ -189,8 +189,7 @@ pub mod bitstream_h {
             if val < 255u32 {
                 x264_ue_size_tab[val.wrapping_add(1u32) as usize] as ::core::ffi::c_int
             } else {
-                x264_ue_size_tab[(val.wrapping_add(1u32) >> 8i32) as usize]
-                    as ::core::ffi::c_int
+                x264_ue_size_tab[(val.wrapping_add(1u32) >> 8i32) as usize] as ::core::ffi::c_int
                     + 16i32
             }
         }
@@ -535,8 +534,8 @@ pub mod osdep_h {
             if crate::stdlib::fstat(crate::stdlib::fileno(filehandle), &raw mut file_stat) != 0 {
                 return 1i32;
             }
-            (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t
-                == 0o100000u32) as ::core::ffi::c_int
+            (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t == 0o100000u32)
+                as ::core::ffi::c_int
         }
     }
     #[inline(always)]
@@ -4660,10 +4659,8 @@ unsafe extern "C" fn reference_distance(
 ) -> ::core::ffi::c_int {
     unsafe {
         if (*h).param.i_frame_packing == 5i32 {
-            crate::stdlib::abs(
-                ((*(*h).fenc).i_frame & !(1i32)) - ((*frame).i_frame & !(1i32)),
-            ) + ((*(*h).fenc).i_frame & 1i32 != (*frame).i_frame & 1i32)
-                as ::core::ffi::c_int
+            crate::stdlib::abs(((*(*h).fenc).i_frame & !(1i32)) - ((*frame).i_frame & !(1i32)))
+                + ((*(*h).fenc).i_frame & 1i32 != (*frame).i_frame & 1i32) as ::core::ffi::c_int
         } else {
             crate::stdlib::abs((*(*h).fenc).i_frame - (*frame).i_frame)
         }
@@ -8330,7 +8327,5 @@ pub unsafe extern "C" fn x264_8_encoder_delayed_frames(mut h: *mut x264_t) -> ::
 pub unsafe extern "C" fn x264_8_encoder_maximum_delayed_frames(
     mut h: *mut x264_t,
 ) -> ::core::ffi::c_int {
-    unsafe {
-        (*h).frames.i_delay
-    }
+    unsafe { (*h).frames.i_delay }
 }

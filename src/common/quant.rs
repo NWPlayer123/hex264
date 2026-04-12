@@ -785,17 +785,13 @@ unsafe extern "C" fn optimize_chroma_2x2_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
-    unsafe {
-        optimize_chroma_dc_internal(dct, dequant_mf, 0i32)
-    }
+    unsafe { optimize_chroma_dc_internal(dct, dequant_mf, 0i32) }
 }
 unsafe extern "C" fn optimize_chroma_2x4_dc(
     mut dct: *mut crate::src::common::common::dctcoef,
     mut dequant_mf: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
-    unsafe {
-        optimize_chroma_dc_internal(dct, dequant_mf, 1i32)
-    }
+    unsafe { optimize_chroma_dc_internal(dct, dequant_mf, 1i32) }
 }
 unsafe extern "C" fn denoise_dct(
     mut dct: *mut crate::src::common::common::dctcoef,
@@ -861,23 +857,17 @@ unsafe extern "C" fn decimate_score_internal(
 unsafe extern "C" fn decimate_score15(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
-    unsafe {
-        decimate_score_internal(dct.offset(1isize), 15i32)
-    }
+    unsafe { decimate_score_internal(dct.offset(1isize), 15i32) }
 }
 unsafe extern "C" fn decimate_score16(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
-    unsafe {
-        decimate_score_internal(dct, 16i32)
-    }
+    unsafe { decimate_score_internal(dct, 16i32) }
 }
 unsafe extern "C" fn decimate_score64(
     mut dct: *mut crate::src::common::common::dctcoef,
 ) -> ::core::ffi::c_int {
-    unsafe {
-        decimate_score_internal(dct, 64i32)
-    }
+    unsafe { decimate_score_internal(dct, 64i32) }
 }
 unsafe extern "C" fn coeff_last4(
     mut l: *mut crate::src::common::common::dctcoef,

@@ -7,7 +7,7 @@ pub mod common_h {
             -x >> 31i32 & crate::src::common::common::PIXEL_MAX
         } else {
             x
-        }) as crate::src::common::common::pixel 
+        }) as crate::src::common::common::pixel
     }
 }
 pub mod base_h {

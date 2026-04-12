@@ -38,8 +38,7 @@ pub mod base_h {
             if i > 1023i32 {
                 return 0xffffi32;
             }
-            (crate::src::common::tables::x264_exp2_lut[(i & 63i32) as usize]
-                as ::core::ffi::c_int
+            (crate::src::common::tables::x264_exp2_lut[(i & 63i32) as usize] as ::core::ffi::c_int
                 + 256i32)
                 << (i >> 6i32)
                 >> 8i32
@@ -49,8 +48,7 @@ pub mod base_h {
     pub unsafe extern "C" fn x264_log2(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_float {
         unsafe {
             let mut lz = x.leading_zeros() as i32;
-            crate::src::common::tables::x264_log2_lut
-                [(x << lz >> 24i32 & 0x7fu32) as usize]
+            crate::src::common::tables::x264_log2_lut[(x << lz >> 24i32 & 0x7fu32) as usize]
                 + crate::src::common::tables::x264_log2_lz_lut[lz as usize]
         }
     }
@@ -90,8 +88,8 @@ pub mod osdep_h {
             if crate::stdlib::fstat(crate::stdlib::fileno(filehandle), &raw mut file_stat) != 0 {
                 return 1i32;
             }
-            (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t
-                == 0o100000u32) as ::core::ffi::c_int
+            (file_stat.st_mode & crate::stdlib::__S_IFMT as crate::stdlib::__mode_t == 0o100000u32)
+                as ::core::ffi::c_int
         }
     }
 }
@@ -3851,9 +3849,7 @@ unsafe extern "C" fn predict_size(
     mut q: ::core::ffi::c_float,
     mut var: ::core::ffi::c_float,
 ) -> ::core::ffi::c_float {
-    unsafe {
-        ((*p).coeff * var + (*p).offset) / (q * (*p).count)
-    }
+    unsafe { ((*p).coeff * var + (*p).offset) / (q * (*p).count) }
 }
 unsafe extern "C" fn update_predictor(
     mut p: *mut predictor_t,

@@ -10,7 +10,6 @@
 #![feature(register_tool)]
 #![feature(integer_extend_truncate)]
 #![register_tool(c2rust)]
-
 #![allow(clippy::erasing_op)]
 #![allow(clippy::eq_op)]
 #![allow(clippy::identity_op)]

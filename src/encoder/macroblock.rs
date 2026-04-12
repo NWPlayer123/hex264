@@ -1075,13 +1075,11 @@ unsafe extern "C" fn mb_optimize_chroma_dc(
             return 1i32;
         }
         if chroma422 != 0 {
-            (*h)
-                .quantf
+            (*h).quantf
                 .optimize_chroma_2x4_dc
                 .expect("non-null function pointer")(dct_dc, dmf)
         } else {
-            (*h)
-                .quantf
+            (*h).quantf
                 .optimize_chroma_2x2_dc
                 .expect("non-null function pointer")(dct_dc, dmf)
         }

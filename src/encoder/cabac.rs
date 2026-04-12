@@ -293,8 +293,7 @@ pub mod macroblock_h {
             if (*h).mb.i_type != crate::src::common::macroblock::P_8x8 as ::core::ffi::c_int {
                 return x264_transform_allowed[(*h).mb.i_type as usize] as ::core::ffi::c_int;
             }
-            ((*(&raw mut (*h).mb.i_sub_partition
-                as *mut crate::src::common::base::x264_union32_t))
+            ((*(&raw mut (*h).mb.i_sub_partition as *mut crate::src::common::base::x264_union32_t))
                 .i
                 == (crate::src::common::macroblock::D_L0_8x8 as ::core::ffi::c_int * 0x1010101i32)
                     as crate::stdlib::uint32_t) as ::core::ffi::c_int

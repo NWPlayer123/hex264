@@ -1213,16 +1213,12 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
 unsafe extern "C" fn mb_predict_mv_direct16x16_spatial_interlaced(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> bool {
-    unsafe {
-        mb_predict_mv_direct16x16_spatial(h, 1i32)
-    }
+    unsafe { mb_predict_mv_direct16x16_spatial(h, 1i32) }
 }
 unsafe extern "C" fn mb_predict_mv_direct16x16_spatial_progressive(
     mut h: *mut crate::src::common::common::x264_t,
 ) -> bool {
-    unsafe {
-        mb_predict_mv_direct16x16_spatial(h, 0i32)
-    }
+    unsafe { mb_predict_mv_direct16x16_spatial(h, 0i32) }
 }
 pub unsafe extern "C" fn x264_8_mb_predict_mv_direct16x16(
     mut h: *mut crate::src::common::common::x264_t,

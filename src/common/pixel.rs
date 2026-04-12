@@ -908,8 +908,7 @@ unsafe extern "C" fn pixel_var_16x16(
             pix = pix.offset(i_stride);
             y += 1;
         }
-        (sum as crate::stdlib::uint64_t)
-            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
+        (sum as crate::stdlib::uint64_t).wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
     }
 }
 unsafe extern "C" fn pixel_var_8x16(
@@ -934,8 +933,7 @@ unsafe extern "C" fn pixel_var_8x16(
             pix = pix.offset(i_stride);
             y += 1;
         }
-        (sum as crate::stdlib::uint64_t)
-            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
+        (sum as crate::stdlib::uint64_t).wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
     }
 }
 unsafe extern "C" fn pixel_var_8x8(
@@ -960,8 +958,7 @@ unsafe extern "C" fn pixel_var_8x8(
             pix = pix.offset(i_stride);
             y += 1;
         }
-        (sum as crate::stdlib::uint64_t)
-            .wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
+        (sum as crate::stdlib::uint64_t).wrapping_add((sqr as crate::stdlib::uint64_t) << 32i32)
     }
 }
 unsafe extern "C" fn pixel_var2_8x16(
@@ -1188,8 +1185,7 @@ unsafe extern "C" fn x264_pixel_satd_8x4(
             );
             i_0 += 1;
         }
-        ((sum as sum_t as sum2_t).wrapping_add(sum >> BITS_PER_SUM) >> 1i32)
-            as ::core::ffi::c_int
+        ((sum as sum_t as sum2_t).wrapping_add(sum >> BITS_PER_SUM) >> 1i32) as ::core::ffi::c_int
     }
 }
 unsafe extern "C" fn x264_pixel_satd_16x16(
@@ -1750,8 +1746,7 @@ unsafe extern "C" fn pixel_hadamard_ac(
         sum8 = (sum8 as sum_t as sum2_t)
             .wrapping_add(sum8 >> BITS_PER_SUM)
             .wrapping_sub(dc);
-        ((sum8 as crate::stdlib::uint64_t) << 32i32)
-            .wrapping_add(sum4 as crate::stdlib::uint64_t)
+        ((sum8 as crate::stdlib::uint64_t) << 32i32).wrapping_add(sum4 as crate::stdlib::uint64_t)
     }
 }
 unsafe extern "C" fn x264_pixel_hadamard_ac_16x16(
