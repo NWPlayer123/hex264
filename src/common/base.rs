@@ -434,7 +434,7 @@ pub unsafe extern "C" fn x264_slurp_file(
                 }
                 if *buf.offset((i_size - 1i64) as isize) as ::core::ffi::c_int != '\n' as i32 {
                     let c2rust_fresh11 = i_size;
-                    i_size = i_size + 1;
+                    i_size += 1;
                     *buf.offset(c2rust_fresh11 as isize) = '\n' as ::core::ffi::c_char;
                 }
                 *buf.offset(i_size as isize) = '\0' as ::core::ffi::c_char;
@@ -501,7 +501,7 @@ pub unsafe extern "C" fn x264_param_strdup(
                 res = crate::stdlib::strdup(src);
                 if !res.is_null() {
                     let c2rust_fresh0 = (*buf).count;
-                    (*buf).count = (*buf).count + 1;
+                    (*buf).count += 1;
                     let ref mut c2rust_fresh1 = *(&raw mut (*buf).ptr
                         as *mut *mut ::core::ffi::c_void)
                         .offset(c2rust_fresh0 as isize);
@@ -1048,7 +1048,7 @@ unsafe extern "C" fn param_apply_tune(
                 ) == 0
             {
                 let c2rust_fresh4 = psy_tuning_used;
-                psy_tuning_used = psy_tuning_used + 1;
+                psy_tuning_used += 1;
                 if c2rust_fresh4 != 0 {
                     c2rust_current_block = 11543922235941715107;
                 } else {
@@ -1065,7 +1065,7 @@ unsafe extern "C" fn param_apply_tune(
                 ) == 0
             {
                 let c2rust_fresh5 = psy_tuning_used;
-                psy_tuning_used = psy_tuning_used + 1;
+                psy_tuning_used += 1;
                 if c2rust_fresh5 != 0 {
                     c2rust_current_block = 11543922235941715107;
                 } else {
@@ -1089,7 +1089,7 @@ unsafe extern "C" fn param_apply_tune(
                 ) == 0
             {
                 let c2rust_fresh6 = psy_tuning_used;
-                psy_tuning_used = psy_tuning_used + 1;
+                psy_tuning_used += 1;
                 if c2rust_fresh6 != 0 {
                     c2rust_current_block = 11543922235941715107;
                 } else {
@@ -1113,7 +1113,7 @@ unsafe extern "C" fn param_apply_tune(
                 ) == 0
             {
                 let c2rust_fresh7 = psy_tuning_used;
-                psy_tuning_used = psy_tuning_used + 1;
+                psy_tuning_used += 1;
                 if c2rust_fresh7 != 0 {
                     c2rust_current_block = 11543922235941715107;
                 } else {
@@ -1132,7 +1132,7 @@ unsafe extern "C" fn param_apply_tune(
                 ) == 0
             {
                 let c2rust_fresh8 = psy_tuning_used;
-                psy_tuning_used = psy_tuning_used + 1;
+                psy_tuning_used += 1;
                 if c2rust_fresh8 != 0 {
                     c2rust_current_block = 11543922235941715107;
                 } else {
@@ -1148,7 +1148,7 @@ unsafe extern "C" fn param_apply_tune(
                 ) == 0
             {
                 let c2rust_fresh9 = psy_tuning_used;
-                psy_tuning_used = psy_tuning_used + 1;
+                psy_tuning_used += 1;
                 if c2rust_fresh9 != 0 {
                     c2rust_current_block = 11543922235941715107;
                 } else {
@@ -1190,7 +1190,7 @@ unsafe extern "C" fn param_apply_tune(
                 ) == 0
             {
                 let c2rust_fresh10 = psy_tuning_used;
-                psy_tuning_used = psy_tuning_used + 1;
+                psy_tuning_used += 1;
                 if c2rust_fresh10 != 0 {
                     c2rust_current_block = 11543922235941715107;
                 } else {
@@ -1442,7 +1442,7 @@ unsafe extern "C" fn parse_cqm(
                 return -(1i32);
             }
             let c2rust_fresh2 = i;
-            i = i + 1;
+            i += 1;
             *cqm.offset(c2rust_fresh2 as isize) = coef as crate::stdlib::uint8_t;
             if !(i < length
                 && {
@@ -1606,7 +1606,7 @@ pub unsafe extern "C" fn x264_param_parse(
                     if (*p).cpu & crate::x264_h::X264_CPU_SSSE3 != 0
                         && (*p).cpu & crate::x264_h::X264_CPU_SSE2_IS_SLOW == 0
                     {
-                        (*p).cpu = (*p).cpu | crate::x264_h::X264_CPU_SSE2_IS_FAST;
+                        (*p).cpu |= crate::x264_h::X264_CPU_SSE2_IS_FAST;
                     }
                 } else {
                     errortype = crate::x264_h::X264_PARAM_ALLOC_FAILED;

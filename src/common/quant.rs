@@ -838,7 +838,7 @@ unsafe extern "C" fn decimate_score_internal(
         while idx >= 0i32 {
             let mut i_run = 0i32;
             let c2rust_fresh4 = idx;
-            idx = idx - 1;
+            idx -= 1;
             if (*dct.offset(c2rust_fresh4 as isize) as ::core::ffi::c_int + 1i32)
                 as ::core::ffi::c_uint
                 > 2u32
@@ -935,7 +935,7 @@ unsafe extern "C" fn coeff_level_run4(
         let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh3 = i_total;
-            i_total = i_total + 1;
+            i_total += 1;
             (*runlevel).level[c2rust_fresh3 as usize] = *dct.offset(i_last as isize);
             mask |= (1i32) << i_last;
             loop {
@@ -963,7 +963,7 @@ unsafe extern "C" fn coeff_level_run8(
         let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh2 = i_total;
-            i_total = i_total + 1;
+            i_total += 1;
             (*runlevel).level[c2rust_fresh2 as usize] = *dct.offset(i_last as isize);
             mask |= (1i32) << i_last;
             loop {
@@ -991,7 +991,7 @@ unsafe extern "C" fn coeff_level_run15(
         let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh1 = i_total;
-            i_total = i_total + 1;
+            i_total += 1;
             (*runlevel).level[c2rust_fresh1 as usize] = *dct.offset(i_last as isize);
             mask |= (1i32) << i_last;
             loop {
@@ -1019,7 +1019,7 @@ unsafe extern "C" fn coeff_level_run16(
         let mut i_last = (*runlevel).last;
         loop {
             let c2rust_fresh0 = i_total;
-            i_total = i_total + 1;
+            i_total += 1;
             (*runlevel).level[c2rust_fresh0 as usize] = *dct.offset(i_last as isize);
             mask |= (1i32) << i_last;
             loop {

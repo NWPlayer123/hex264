@@ -284,7 +284,7 @@ unsafe extern "C" fn lookahead_encoder_shift(mut h: *mut crate::src::common::com
             (**(*(*h).lookahead).ofbuf.list.offset(0isize)).i_bframes as ::core::ffi::c_int + 1i32;
         loop {
             let c2rust_fresh3 = i_frames;
-            i_frames = i_frames - 1;
+            i_frames -= 1;
             if !(c2rust_fresh3 != 0) {
                 break;
             }

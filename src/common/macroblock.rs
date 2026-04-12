@@ -1097,7 +1097,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
         (*h).mb.interlaced = (*h).param.interlaced;
         (*h).mb.qp = prealloc_size as *mut crate::stdlib::int8_t;
         let c2rust_fresh0 = prealloc_idx;
-        prealloc_idx = prealloc_idx + 1;
+        prealloc_idx += 1;
         preallocs[c2rust_fresh0 as usize] = &raw mut (*h).mb.qp as *mut *mut crate::stdlib::uint8_t;
         prealloc_size += ((i_mb_count as usize)
             .wrapping_mul(::core::mem::size_of::<crate::stdlib::int8_t>())
@@ -1106,7 +1106,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             & !(64i32 - 1i32) as crate::stdlib::int64_t;
         (*h).mb.cbp = prealloc_size as *mut crate::stdlib::int16_t;
         let c2rust_fresh1 = prealloc_idx;
-        prealloc_idx = prealloc_idx + 1;
+        prealloc_idx += 1;
         preallocs[c2rust_fresh1 as usize] =
             &raw mut (*h).mb.cbp as *mut *mut crate::stdlib::uint8_t;
         prealloc_size += ((i_mb_count as usize)
@@ -1116,7 +1116,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             & !(64i32 - 1i32) as crate::stdlib::int64_t;
         (*h).mb.mb_transform_size = prealloc_size as *mut crate::stdlib::int8_t;
         let c2rust_fresh2 = prealloc_idx;
-        prealloc_idx = prealloc_idx + 1;
+        prealloc_idx += 1;
         preallocs[c2rust_fresh2 as usize] =
             &raw mut (*h).mb.mb_transform_size as *mut *mut crate::stdlib::uint8_t;
         prealloc_size += ((i_mb_count as usize)
@@ -1126,7 +1126,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             & !(64i32 - 1i32) as crate::stdlib::int64_t;
         (*h).mb.slice_table = prealloc_size as *mut crate::stdlib::int32_t;
         let c2rust_fresh3 = prealloc_idx;
-        prealloc_idx = prealloc_idx + 1;
+        prealloc_idx += 1;
         preallocs[c2rust_fresh3 as usize] =
             &raw mut (*h).mb.slice_table as *mut *mut crate::stdlib::uint8_t;
         prealloc_size += ((i_mb_count as usize)
@@ -1136,7 +1136,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             & !(64i32 - 1i32) as crate::stdlib::int64_t;
         (*h).mb.intra4x4_pred_mode = prealloc_size as *mut [crate::stdlib::int8_t; 8];
         let c2rust_fresh4 = prealloc_idx;
-        prealloc_idx = prealloc_idx + 1;
+        prealloc_idx += 1;
         preallocs[c2rust_fresh4 as usize] =
             &raw mut (*h).mb.intra4x4_pred_mode as *mut *mut crate::stdlib::uint8_t;
         prealloc_size += (((i_mb_count * 8i32) as usize)
@@ -1146,7 +1146,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             & !(64i32 - 1i32) as crate::stdlib::int64_t;
         (*h).mb.non_zero_count = prealloc_size as *mut [crate::stdlib::uint8_t; 48];
         let c2rust_fresh5 = prealloc_idx;
-        prealloc_idx = prealloc_idx + 1;
+        prealloc_idx += 1;
         preallocs[c2rust_fresh5 as usize] =
             &raw mut (*h).mb.non_zero_count as *mut *mut crate::stdlib::uint8_t;
         prealloc_size += (((i_mb_count * 48i32) as usize)
@@ -1157,7 +1157,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
         if (*h).param.cabac {
             (*h).mb.skipbp = prealloc_size as *mut crate::stdlib::int8_t;
             let c2rust_fresh6 = prealloc_idx;
-            prealloc_idx = prealloc_idx + 1;
+            prealloc_idx += 1;
             preallocs[c2rust_fresh6 as usize] =
                 &raw mut (*h).mb.skipbp as *mut *mut crate::stdlib::uint8_t;
             prealloc_size += ((i_mb_count as usize)
@@ -1167,7 +1167,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
             (*h).mb.chroma_pred_mode = prealloc_size as *mut crate::stdlib::int8_t;
             let c2rust_fresh7 = prealloc_idx;
-            prealloc_idx = prealloc_idx + 1;
+            prealloc_idx += 1;
             preallocs[c2rust_fresh7 as usize] =
                 &raw mut (*h).mb.chroma_pred_mode as *mut *mut crate::stdlib::uint8_t;
             prealloc_size += ((i_mb_count as usize)
@@ -1177,7 +1177,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
                 & !(64i32 - 1i32) as crate::stdlib::int64_t;
             (*h).mb.mvd[0usize] = prealloc_size as *mut [[crate::stdlib::uint8_t; 2]; 8];
             let c2rust_fresh8 = prealloc_idx;
-            prealloc_idx = prealloc_idx + 1;
+            prealloc_idx += 1;
             preallocs[c2rust_fresh8 as usize] =
                 (&raw mut (*h).mb.mvd as *mut *mut [[crate::stdlib::uint8_t; 2]; 8]).offset(0isize)
                     as *mut *mut crate::stdlib::uint8_t;
@@ -1189,7 +1189,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             if (*h).param.i_bframe != 0 {
                 (*h).mb.mvd[1usize] = prealloc_size as *mut [[crate::stdlib::uint8_t; 2]; 8];
                 let c2rust_fresh9 = prealloc_idx;
-                prealloc_idx = prealloc_idx + 1;
+                prealloc_idx += 1;
                 preallocs[c2rust_fresh9 as usize] =
                     (&raw mut (*h).mb.mvd as *mut *mut [[crate::stdlib::uint8_t; 2]; 8])
                         .offset(1isize) as *mut *mut crate::stdlib::uint8_t;
@@ -1227,7 +1227,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
                 (*h).mb.mvr[i as usize][j as usize] =
                     prealloc_size as *mut [crate::stdlib::int16_t; 2];
                 let c2rust_fresh10 = prealloc_idx;
-                prealloc_idx = prealloc_idx + 1;
+                prealloc_idx += 1;
                 preallocs[c2rust_fresh10 as usize] = (&raw mut *(&raw mut (*h).mb.mvr
                     as *mut [*mut [crate::stdlib::int16_t; 2]; 32])
                     .offset(i as isize)
@@ -1275,7 +1275,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
                 (*h).mb.p_weight_buf[i_0 as usize] =
                     prealloc_size as *mut crate::src::common::common::pixel;
                 let c2rust_fresh11 = prealloc_idx;
-                prealloc_idx = prealloc_idx + 1;
+                prealloc_idx += 1;
                 preallocs[c2rust_fresh11 as usize] = (&raw mut (*h).mb.p_weight_buf
                     as *mut *mut crate::src::common::common::pixel)
                     .offset(i_0 as isize);
@@ -1296,7 +1296,7 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_allocate(
             let mut i_1 = 0i32;
             loop {
                 let c2rust_fresh12 = prealloc_idx;
-                prealloc_idx = prealloc_idx - 1;
+                prealloc_idx -= 1;
                 if !(c2rust_fresh12 != 0) {
                     break;
                 }

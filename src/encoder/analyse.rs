@@ -4705,7 +4705,7 @@ pub mod slicetype_c {
                         let mut dstv = (*h).mb.p_weight_buf[0usize]
                             .offset(((*fenc).i_stride[1usize] * (*fenc).i_lines[1usize]) as isize);
                         let c2rust_fresh14 = chroma_initted;
-                        chroma_initted = chroma_initted + 1;
+                        chroma_initted += 1;
                         if c2rust_fresh14 == 0 {
                             weight_cost_init_chroma(h, fenc, ref_0, dstu, dstv);
                         }
@@ -5199,7 +5199,7 @@ pub mod slicetype_c {
                             let ref mut c2rust_fresh20 = (*(&raw mut dmv
                                 as *mut crate::src::common::base::x264_union64_t))
                                 .i;
-                            *c2rust_fresh20 = *c2rust_fresh20 & !(0x1000100010001u64);
+                            *c2rust_fresh20 &= !(0x1000100010001u64);
                         }
                     } else {
                         (*(&raw mut dmv as *mut crate::src::common::base::x264_union64_t)).i = 0u64;
@@ -6343,7 +6343,7 @@ pub mod slicetype_c {
             loop {
                 let mut cur_nonb = 1i32;
                 let c2rust_fresh23 = i;
-                i = i - 1;
+                i -= 1;
                 if !(c2rust_fresh23 > idx) {
                     break;
                 }
@@ -7960,7 +7960,7 @@ pub mod slicetype_c {
             while i < (*(*h).lookahead).next.i_size {
                 if (*h).param.vfr_input {
                     let c2rust_fresh5 = lookahead_size;
-                    lookahead_size = lookahead_size - 1;
+                    lookahead_size -= 1;
                     if c2rust_fresh5 > 1i32 {
                         (**(*(*h).lookahead).next.list.offset(i as isize)).i_duration = 2i64
                             * ((**(*(*h).lookahead).next.list.offset((i + 1i32) as isize)).i_pts
@@ -8635,7 +8635,7 @@ pub mod slicetype_c {
             }
             while i_2 <= bframes {
                 let c2rust_fresh7 = i_coded;
-                i_coded = i_coded + 1;
+                i_coded += 1;
                 (**(*(*h).lookahead).next.list.offset(i_2 as isize)).i_coded = c2rust_fresh7;
                 if i_2 != 0 {
                     calculate_durations(
@@ -15933,7 +15933,7 @@ unsafe extern "C" fn mb_analyse_intra(
                                 as usize])
                             as ::core::ffi::c_int;
                         if i_pred_mode < 3i32 {
-                            satd[i_pred_mode as usize] = satd[i_pred_mode as usize] - 3i32 * lambda;
+                            satd[i_pred_mode as usize] -= 3i32 * lambda;
                         }
                         while i >= 0i32 {
                             let mut cost = satd[i as usize];
@@ -16203,8 +16203,7 @@ unsafe extern "C" fn mb_analyse_intra(
                                 as usize])
                             as ::core::ffi::c_int;
                         if i_pred_mode_0 < 3i32 {
-                            satd_0[i_pred_mode_0 as usize] =
-                                satd_0[i_pred_mode_0 as usize] - 3i32 * lambda;
+                            satd_0[i_pred_mode_0 as usize] -= 3i32 * lambda;
                         }
                         i_best_0 = satd_0[crate::src::common::predict::I_PRED_4x4_DC
                             as ::core::ffi::c_int
@@ -16463,7 +16462,7 @@ unsafe extern "C" fn intra_rd_refine(
                         && i_mode_0 != (*a).i_predict8x8chroma
                     {
                         let c2rust_fresh4 = i_max;
-                        i_max = i_max + 1;
+                        i_max += 1;
                         predict_mode_sorted[c2rust_fresh4 as usize] =
                             i_mode_0 as crate::stdlib::int8_t;
                     }

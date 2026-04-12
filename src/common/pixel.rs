@@ -3342,7 +3342,7 @@ unsafe extern "C" fn x264_pixel_ads4(
             ) + *cost_mvx.offset(i as isize) as ::core::ffi::c_int;
             if ads < thresh {
                 let c2rust_fresh2 = nmv;
-                nmv = nmv + 1;
+                nmv += 1;
                 *mvs.offset(c2rust_fresh2 as isize) = i as crate::stdlib::int16_t;
             }
             i += 1;
@@ -3371,7 +3371,7 @@ unsafe extern "C" fn x264_pixel_ads2(
             ) + *cost_mvx.offset(i as isize) as ::core::ffi::c_int;
             if ads < thresh {
                 let c2rust_fresh1 = nmv;
-                nmv = nmv + 1;
+                nmv += 1;
                 *mvs.offset(c2rust_fresh1 as isize) = i as crate::stdlib::int16_t;
             }
             i += 1;
@@ -3398,7 +3398,7 @@ unsafe extern "C" fn x264_pixel_ads1(
             ) + *cost_mvx.offset(i as isize) as ::core::ffi::c_int;
             if ads < thresh {
                 let c2rust_fresh0 = nmv;
-                nmv = nmv + 1;
+                nmv += 1;
                 *mvs.offset(c2rust_fresh0 as isize) = i as crate::stdlib::int16_t;
             }
             i += 1;

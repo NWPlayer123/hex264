@@ -8308,7 +8308,7 @@ pub unsafe extern "C" fn x264_8_plane_copy_c(
     unsafe {
         loop {
             let c2rust_fresh0 = h;
-            h = h - 1;
+            h -= 1;
             if !(c2rust_fresh0 != 0) {
                 break;
             }

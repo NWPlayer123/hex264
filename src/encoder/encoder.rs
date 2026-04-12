@@ -4511,7 +4511,7 @@ unsafe extern "C" fn weighted_pred_init(mut h: *mut x264_t) {
                         if i_0 == 0 {
                             let mut buffer_next = 0i32;
                             let c2rust_fresh3 = buffer_next;
-                            buffer_next = buffer_next + 1;
+                            buffer_next += 1;
                             (*(*h).fenc).weighted[j as usize] = (*h).mb.p_weight_buf
                                 [c2rust_fresh3 as usize]
                                 .offset(((*(*h).fenc).i_stride[0usize] * i_padv) as isize)
@@ -4680,11 +4680,11 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: ::core:
             if !((*(*h).frames.reference[i as usize]).corrupt) {
                 if (*(*h).frames.reference[i as usize]).i_poc < i_poc {
                     let c2rust_fresh4 = (*h).i_ref[0usize];
-                    (*h).i_ref[0usize] = (*h).i_ref[0usize] + 1;
+                    (*h).i_ref[0usize] += 1;
                     (*h).fref[0usize][c2rust_fresh4 as usize] = (*h).frames.reference[i as usize];
                 } else if (*(*h).frames.reference[i as usize]).i_poc > i_poc {
                     let c2rust_fresh5 = (*h).i_ref[1usize];
-                    (*h).i_ref[1usize] = (*h).i_ref[1usize] + 1;
+                    (*h).i_ref[1usize] += 1;
                     (*h).fref[1usize][c2rust_fresh5 as usize] = (*h).frames.reference[i as usize];
                 }
             }
@@ -4717,7 +4717,7 @@ unsafe extern "C" fn reference_build_list(mut h: *mut x264_t, mut i_poc: ::core:
                 (*h).sh.mmco[(*h).sh.i_mmco_command_count as usize].i_poc =
                     (*(*h).fref[0usize][i_1 as usize]).i_poc;
                 let c2rust_fresh6 = (*h).sh.i_mmco_command_count;
-                (*h).sh.i_mmco_command_count = (*h).sh.i_mmco_command_count + 1;
+                (*h).sh.i_mmco_command_count += 1;
                 (*h).sh.mmco[c2rust_fresh6 as usize].i_difference_of_pic_nums = diff;
                 i_1 -= 1;
             }
@@ -5170,7 +5170,7 @@ unsafe extern "C" fn reference_hierarchy_reset(mut h: *mut x264_t) {
                     (*h).i_frame_num - (*(*h).frames.reference[ref_0 as usize]).i_frame_num;
                 (*h).sh.mmco[(*h).sh.i_mmco_command_count as usize].i_difference_of_pic_nums = diff;
                 let c2rust_fresh7 = (*h).sh.i_mmco_command_count;
-                (*h).sh.i_mmco_command_count = (*h).sh.i_mmco_command_count + 1;
+                (*h).sh.i_mmco_command_count += 1;
                 (*h).sh.mmco[c2rust_fresh7 as usize].i_poc =
                     (*(*h).frames.reference[ref_0 as usize]).i_poc;
                 crate::src::common::frame::x264_8_frame_push_unused(
@@ -5704,7 +5704,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> crate::stdlib::intptr_t 
                 );
                 (*h).mb.reencode_mb = true;
                 i_mb_x = 0i32;
-                i_mb_y = i_mb_y - (*h).sh.mbaff as ::core::ffi::c_int;
+                i_mb_y -= (*h).sh.mbaff as ::core::ffi::c_int;
                 (*h).mb.i_mb_prev_xy = i_mb_y * (*h).mb.i_mb_stride - 1i32;
                 (*h).sh.i_last_mb = orig_last_mb;
             } else {
@@ -6273,7 +6273,7 @@ pub unsafe extern "C" fn x264_8_encoder_encode(
                 crate::src::common::frame::x264_8_frame_expand_border_mod16(h, fenc);
             }
             let c2rust_fresh8 = (*h).frames.i_input;
-            (*h).frames.i_input = (*h).frames.i_input + 1;
+            (*h).frames.i_input += 1;
             (*fenc).i_frame = c2rust_fresh8;
             if (*fenc).i_frame == 0i32 {
                 (*h).frames.i_first_pts = (*fenc).i_pts;
