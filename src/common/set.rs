@@ -34,7 +34,7 @@ pub struct x264_sps_t {
     pub has_vui: bool,
     pub vui: crate::src::common::set::C2Rust_Unnamed_20,
     pub qpprime_y_zero_transform_bypass: bool,
-    pub i_chroma_format_idc: ::core::ffi::c_int,
+    pub(crate) i_chroma_format_idc: super::base::ChromaFormat,
     pub avcintra_hd: bool,
     pub avcintra_4k: bool,
     pub i_cqm_preset: ::core::ffi::c_int,
@@ -171,7 +171,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
         let mut num_8x8_lists = if (*(&raw mut (*h).sps
             as *mut crate::src::common::set::x264_sps_t))
             .i_chroma_format_idc
-            == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+            .is_444()
         {
             4i32
         } else if (*h).param.analyse.transform_8x8 {

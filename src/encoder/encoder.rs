@@ -1017,7 +1017,7 @@ unsafe extern "C" fn slice_header_write(
                 s,
                 (*sh).weight[0usize][0usize].i_denom as ::core::ffi::c_uint,
             );
-            if (*(*sh).sps).i_chroma_format_idc != 0 {
+            if !(*(*sh).sps).i_chroma_format_idc.is_400() {
                 bs_write_ue_big(
                     s,
                     (*sh).weight[0usize][1usize].i_denom as ::core::ffi::c_uint,
@@ -1031,7 +1031,7 @@ unsafe extern "C" fn slice_header_write(
                     bs_write_se(s, (*sh).weight[i_1 as usize][0usize].i_scale);
                     bs_write_se(s, (*sh).weight[i_1 as usize][0usize].i_offset);
                 }
-                if (*(*sh).sps).i_chroma_format_idc != 0 {
+                if !(*(*sh).sps).i_chroma_format_idc.is_400() {
                     let mut chroma_weight_l0_flag =
                         (!(*sh).weight[i_1 as usize][1usize].weightfn.is_null()
                             || !(*sh).weight[i_1 as usize][2usize].weightfn.is_null())

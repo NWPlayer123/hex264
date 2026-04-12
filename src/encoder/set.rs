@@ -262,6 +262,7 @@ pub mod macroblock_h {
         ],
     ];
 }
+use crate::src::common::base::ChromaFormat;
 use crate::src::encoder::set::bitstream_h::bs_align_10;
 use crate::src::encoder::set::bitstream_h::bs_flush;
 use crate::src::encoder::set::bitstream_h::bs_init;
@@ -441,34 +442,25 @@ pub unsafe extern "C" fn x264_8_sps_init(
         if !(*sps).frame_mbs_only {
             (*sps).i_mb_height = ((*sps).i_mb_height + 1i32) & !(1i32);
         }
-        (*sps).i_chroma_format_idc = if csp >= crate::x264_h::X264_CSP_I444 {
-            crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        } else if csp >= crate::x264_h::X264_CSP_I422 {
-            crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-        } else if csp >= crate::x264_h::X264_CSP_I420 {
-            crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-        } else {
-            crate::src::common::base::CHROMA_400 as ::core::ffi::c_int
+        (*sps).i_chroma_format_idc = match csp {
+            csp if csp >= crate::x264_h::X264_CSP_I444 => ChromaFormat::Chroma444,
+            csp if csp >= crate::x264_h::X264_CSP_I422 => ChromaFormat::Chroma422,
+            csp if csp >= crate::x264_h::X264_CSP_I420 => ChromaFormat::Chroma420,
+            _ => ChromaFormat::Chroma400,
         };
         (*sps).qpprime_y_zero_transform_bypass = (*param).rc.i_rc_method
             == crate::x264_h::X264_RC_CQP
             && (*param).rc.i_qp_constant == 0i32;
-        if (*sps).qpprime_y_zero_transform_bypass
-            || (*sps).i_chroma_format_idc
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
-        {
+        if (*sps).qpprime_y_zero_transform_bypass || (*sps).i_chroma_format_idc.is_444() {
             (*sps).i_profile_idc =
                 crate::src::common::base::PROFILE_HIGH444_PREDICTIVE as ::core::ffi::c_int;
-        } else if (*sps).i_chroma_format_idc
-            == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int
-        {
+        } else if (*sps).i_chroma_format_idc.is_422() {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH422 as ::core::ffi::c_int;
         } else if crate::internal::BIT_DEPTH > 8i32 {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH10 as ::core::ffi::c_int;
         } else if (*param).analyse.transform_8x8
             || (*param).i_cqm_preset != crate::x264_h::X264_CQM_FLAT
-            || (*sps).i_chroma_format_idc
-                == crate::src::common::base::CHROMA_400 as ::core::ffi::c_int
+            || (*sps).i_chroma_format_idc.is_400()
         {
             (*sps).i_profile_idc = crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int;
         } else if (*param).cabac
@@ -752,8 +744,7 @@ pub unsafe extern "C" fn x264_8_sps_init(
         }
         (*sps).vui.chroma_loc_info_present = (*param).vui.i_chroma_loc > 0i32
             && (*param).vui.i_chroma_loc <= 5i32
-            && (*sps).i_chroma_format_idc
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int;
+            && (*sps).i_chroma_format_idc.is_420();
         if (*sps).vui.chroma_loc_info_present {
             (*sps).vui.i_chroma_loc_top = (*param).vui.i_chroma_loc;
             (*sps).vui.i_chroma_loc_bottom = (*param).vui.i_chroma_loc;
@@ -929,8 +920,7 @@ pub unsafe extern "C" fn x264_8_sps_write(
         bs_write_ue_big(s, (*sps).i_id as ::core::ffi::c_uint);
         if (*sps).i_profile_idc >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int {
             bs_write_ue_big(s, (*sps).i_chroma_format_idc as ::core::ffi::c_uint);
-            if (*sps).i_chroma_format_idc
-                == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+            if (*sps).i_chroma_format_idc.is_444()
             {
                 bs_write1(s, 0u32);
             }
@@ -972,8 +962,7 @@ pub unsafe extern "C" fn x264_8_sps_write(
                     crate::src::common::set::CQM_8IY as ::core::ffi::c_int + 4i32,
                 );
                 bs_write1(s, 0u32);
-                if (*sps).i_chroma_format_idc
-                    == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                if (*sps).i_chroma_format_idc.is_444()
                 {
                     scaling_list_write(
                         s,
@@ -1016,13 +1005,10 @@ pub unsafe extern "C" fn x264_8_sps_write(
         bs_write1(s, (*sps).direct8x8_inference as crate::stdlib::uint32_t);
         bs_write1(s, (*sps).has_crop as crate::stdlib::uint32_t);
         if (*sps).has_crop {
-            let mut h_shift = ((*sps).i_chroma_format_idc
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int
-                || (*sps).i_chroma_format_idc
-                    == crate::src::common::base::CHROMA_422 as ::core::ffi::c_int)
+            let mut h_shift = ((*sps).i_chroma_format_idc.is_420()
+                || (*sps).i_chroma_format_idc.is_422())
                 as ::core::ffi::c_int;
-            let mut v_shift = ((*sps).i_chroma_format_idc
-                == crate::src::common::base::CHROMA_420 as ::core::ffi::c_int)
+            let mut v_shift = ((*sps).i_chroma_format_idc.is_420())
                 as ::core::ffi::c_int
                 + (!(*sps).frame_mbs_only) as ::core::ffi::c_int;
             bs_write_ue_big(s, ((*sps).crop.i_left >> h_shift) as ::core::ffi::c_uint);
@@ -1389,8 +1375,7 @@ pub unsafe extern "C" fn x264_8_pps_write(
                             crate::src::common::set::CQM_8PY as ::core::ffi::c_int + 4i32,
                         );
                     }
-                    if (*sps).i_chroma_format_idc
-                        == crate::src::common::base::CHROMA_444 as ::core::ffi::c_int
+                    if (*sps).i_chroma_format_idc.is_444()
                     {
                         scaling_list_write(
                             s,

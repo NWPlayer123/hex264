@@ -43,6 +43,22 @@ pub const PROFILE_HIGH: crate::src::common::base::profile_e = 100;
 pub const PROFILE_HIGH10: crate::src::common::base::profile_e = 110;
 pub const PROFILE_HIGH422: crate::src::common::base::profile_e = 122;
 pub const PROFILE_HIGH444_PREDICTIVE: crate::src::common::base::profile_e = 244;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(i32)]
+pub(crate) enum ChromaFormat {
+    Chroma400 = 0,
+    Chroma420 = 1,
+    Chroma422 = 2,
+    Chroma444 = 3,
+}
+
+impl ChromaFormat {
+    pub fn is_444(self) -> bool { self == ChromaFormat::Chroma444 }
+    pub fn is_422(self) -> bool { self == ChromaFormat::Chroma422 }
+    pub fn is_420(self) -> bool { self == ChromaFormat::Chroma420 }
+    pub fn is_400(self) -> bool { self == ChromaFormat::Chroma400 }
+}
+
 pub type chroma_format_e = ::core::ffi::c_uint;
 pub const CHROMA_400: crate::src::common::base::chroma_format_e = 0;
 pub const CHROMA_420: crate::src::common::base::chroma_format_e = 1;
