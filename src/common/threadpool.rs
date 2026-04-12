@@ -73,8 +73,8 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                     .wrapping_mul(::core::mem::size_of::<crate::stdlib::pthread_t>())
                     as crate::stdlib::int64_t,
             ) as *mut crate::stdlib::pthread_t;
-            if !(*pool).thread_handle.is_null() {
-                if !(crate::src::common::frame::x264_8_sync_frame_list_init(
+            if !(*pool).thread_handle.is_null()
+                && !(crate::src::common::frame::x264_8_sync_frame_list_init(
                     &raw mut (*pool).uninit,
                     (*pool).threads,
                 ) != 0
@@ -86,79 +86,77 @@ pub unsafe extern "C" fn x264_8_threadpool_init(
                         &raw mut (*pool).done,
                         (*pool).threads,
                     ) != 0)
-                {
-                    let mut c2rust_current_block: u64;
-                    loop {
-                        let mut i = 0i32;
-                        if !(i < (*pool).threads) {
-                            c2rust_current_block = 11584701595673473500;
-                            break;
-                        }
-                        let mut job = crate::src::common::base::x264_malloc(::core::mem::size_of::<
-                            x264_threadpool_job_t,
-                        >(
-                        )
-                            as crate::stdlib::int64_t)
-                            as *mut x264_threadpool_job_t;
-                        if job.is_null() {
-                            c2rust_current_block = 11983467789922532698;
-                            break;
-                        }
-                        crate::src::common::frame::x264_8_sync_frame_list_push(
-                            &raw mut (*pool).uninit,
-                            job as *mut crate::src::common::frame::x264_frame,
-                        );
-                        i += 1;
+            {
+                let mut c2rust_current_block: u64;
+                loop {
+                    let mut i = 0i32;
+                    if !(i < (*pool).threads) {
+                        c2rust_current_block = 11584701595673473500;
+                        break;
                     }
-                    match c2rust_current_block {
-                        11983467789922532698 => {}
-                        _ => {
-                            loop {
-                                let mut i_0 = 0i32;
-                                if !(i_0 < (*pool).threads) {
-                                    c2rust_current_block = 5634871135123216486;
-                                    break;
-                                }
-                                if crate::stdlib::pthread_create(
-                                    (*pool).thread_handle.offset(i_0 as isize),
-                                    ::core::ptr::null::<crate::stdlib::pthread_attr_t>(),
-                                    ::core::mem::transmute::<
-                                        *mut ::core::ffi::c_void,
-                                        Option<
-                                            unsafe extern "C" fn(
-                                                *mut ::core::ffi::c_void,
-                                            )
-                                                -> *mut ::core::ffi::c_void,
-                                        >,
-                                    >(::core::mem::transmute::<
-                                        Option<
-                                            unsafe extern "C" fn(
+                    let mut job = crate::src::common::base::x264_malloc(::core::mem::size_of::<
+                        x264_threadpool_job_t,
+                    >()
+                        as crate::stdlib::int64_t)
+                        as *mut x264_threadpool_job_t;
+                    if job.is_null() {
+                        c2rust_current_block = 11983467789922532698;
+                        break;
+                    }
+                    crate::src::common::frame::x264_8_sync_frame_list_push(
+                        &raw mut (*pool).uninit,
+                        job as *mut crate::src::common::frame::x264_frame,
+                    );
+                    i += 1;
+                }
+                match c2rust_current_block {
+                    11983467789922532698 => {}
+                    _ => {
+                        loop {
+                            let mut i_0 = 0i32;
+                            if !(i_0 < (*pool).threads) {
+                                c2rust_current_block = 5634871135123216486;
+                                break;
+                            }
+                            if crate::stdlib::pthread_create(
+                                (*pool).thread_handle.offset(i_0 as isize),
+                                ::core::ptr::null::<crate::stdlib::pthread_attr_t>(),
+                                ::core::mem::transmute::<
+                                    *mut ::core::ffi::c_void,
+                                    Option<
+                                        unsafe extern "C" fn(
+                                            *mut ::core::ffi::c_void,
+                                        )
+                                            -> *mut ::core::ffi::c_void,
+                                    >,
+                                >(::core::mem::transmute::<
+                                    Option<
+                                        unsafe extern "C" fn(
+                                            *mut x264_threadpool_t,
+                                        )
+                                            -> *mut ::core::ffi::c_void,
+                                    >,
+                                    *mut ::core::ffi::c_void,
+                                >(
+                                    Some(
+                                        threadpool_thread
+                                            as unsafe extern "C" fn(
                                                 *mut x264_threadpool_t,
                                             )
                                                 -> *mut ::core::ffi::c_void,
-                                        >,
-                                        *mut ::core::ffi::c_void,
-                                    >(
-                                        Some(
-                                            threadpool_thread
-                                                as unsafe extern "C" fn(
-                                                    *mut x264_threadpool_t,
-                                                )
-                                                    -> *mut ::core::ffi::c_void,
-                                        ),
-                                    )),
-                                    pool as *mut ::core::ffi::c_void,
-                                ) != 0
-                                {
-                                    c2rust_current_block = 11983467789922532698;
-                                    break;
-                                }
-                                i_0 += 1;
+                                    ),
+                                )),
+                                pool as *mut ::core::ffi::c_void,
+                            ) != 0
+                            {
+                                c2rust_current_block = 11983467789922532698;
+                                break;
                             }
-                            match c2rust_current_block {
-                                11983467789922532698 => {}
-                                _ => return 0i32,
-                            }
+                            i_0 += 1;
+                        }
+                        match c2rust_current_block {
+                            11983467789922532698 => {}
+                            _ => return 0i32,
                         }
                     }
                 }

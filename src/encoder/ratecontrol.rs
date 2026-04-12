@@ -2155,10 +2155,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 crate::src::common::base::x264_free(
                                     stats_buf as *mut ::core::ffi::c_void,
                                 );
-                                if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR {
-                                    if init_pass2(h) < 0i32 {
-                                        return -(1i32);
-                                    }
+                                if (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR
+                                    && init_pass2(h) < 0i32
+                                {
+                                    return -(1i32);
                                 }
                                 c2rust_current_block = 2756754640271984560;
                             }
@@ -2546,16 +2546,16 @@ pub unsafe extern "C" fn x264_8_ratecontrol_delete(mut h: *mut crate::src::commo
         if !(*rc).p_stat_file_out.is_null() {
             b_regular_file = x264_is_regular_file((*rc).p_stat_file_out);
             crate::stdlib::fclose((*rc).p_stat_file_out);
-            if (*h).i_frame >= (*rc).num_entries && b_regular_file != 0 {
-                if crate::stdlib::rename((*rc).psz_stat_file_tmpname, (*h).param.rc.psz_stat_out)
+            if (*h).i_frame >= (*rc).num_entries
+                && b_regular_file != 0
+                && crate::stdlib::rename((*rc).psz_stat_file_tmpname, (*h).param.rc.psz_stat_out)
                     != 0i32
-                {
-                    log::error!(
-                        "failed to rename \"{}\" to \"{}\"",
-                        std::ffi::CStr::from_ptr((*rc).psz_stat_file_tmpname).to_string_lossy(),
-                        std::ffi::CStr::from_ptr((*h).param.rc.psz_stat_out).to_string_lossy()
-                    );
-                }
+            {
+                log::error!(
+                    "failed to rename \"{}\" to \"{}\"",
+                    std::ffi::CStr::from_ptr((*rc).psz_stat_file_tmpname).to_string_lossy(),
+                    std::ffi::CStr::from_ptr((*h).param.rc.psz_stat_out).to_string_lossy()
+                );
             }
             crate::src::common::base::x264_free(
                 (*rc).psz_stat_file_tmpname as *mut ::core::ffi::c_void,
@@ -2564,19 +2564,18 @@ pub unsafe extern "C" fn x264_8_ratecontrol_delete(mut h: *mut crate::src::commo
         if !(*rc).p_mbtree_stat_file_out.is_null() {
             b_regular_file = x264_is_regular_file((*rc).p_mbtree_stat_file_out);
             crate::stdlib::fclose((*rc).p_mbtree_stat_file_out);
-            if (*h).i_frame >= (*rc).num_entries && b_regular_file != 0 {
-                if crate::stdlib::rename(
+            if (*h).i_frame >= (*rc).num_entries
+                && b_regular_file != 0
+                && crate::stdlib::rename(
                     (*rc).psz_mbtree_stat_file_tmpname,
                     (*rc).psz_mbtree_stat_file_name,
                 ) != 0i32
-                {
-                    log::error!(
-                        "failed to rename \"{}\" to \"{}\"",
-                        std::ffi::CStr::from_ptr((*rc).psz_mbtree_stat_file_tmpname)
-                            .to_string_lossy(),
-                        std::ffi::CStr::from_ptr((*rc).psz_mbtree_stat_file_name).to_string_lossy()
-                    );
-                }
+            {
+                log::error!(
+                    "failed to rename \"{}\" to \"{}\"",
+                    std::ffi::CStr::from_ptr((*rc).psz_mbtree_stat_file_tmpname).to_string_lossy(),
+                    std::ffi::CStr::from_ptr((*rc).psz_mbtree_stat_file_name).to_string_lossy()
+                );
             }
             crate::src::common::base::x264_free(
                 (*rc).psz_mbtree_stat_file_tmpname as *mut ::core::ffi::c_void,
@@ -3634,19 +3633,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                 qp2qscale((*(*rc).rce).new_qp) as ::core::ffi::c_double,
             );
         }
-        if (*h).mb.variable_qp {
-            if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int {
-                (*rc).bframe_bits += bits;
-                if (*(*h).fenc).b_last_minigop_bframe != 0 {
-                    update_predictor(
-                        (*rc).pred_b_from_p,
-                        qp2qscale((*rc).qpa_rc),
-                        (*(*h).fref[1usize][((*h).i_ref[1usize] - 1i32) as usize]).i_satd
-                            as ::core::ffi::c_float,
-                        ((*rc).bframe_bits / (*rc).bframes) as ::core::ffi::c_float,
-                    );
-                    (*rc).bframe_bits = 0i32;
-                }
+        if (*h).mb.variable_qp
+            && (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int
+        {
+            (*rc).bframe_bits += bits;
+            if (*(*h).fenc).b_last_minigop_bframe != 0 {
+                update_predictor(
+                    (*rc).pred_b_from_p,
+                    qp2qscale((*rc).qpa_rc),
+                    (*(*h).fref[1usize][((*h).i_ref[1usize] - 1i32) as usize]).i_satd
+                        as ::core::ffi::c_float,
+                    ((*rc).bframe_bits / (*rc).bframes) as ::core::ffi::c_float,
+                );
+                (*rc).bframe_bits = 0i32;
             }
         }
         *filler = update_vbv(h, bits);
@@ -5333,13 +5332,12 @@ unsafe extern "C" fn init_pass2(
                                     } else {
                                         crate::stdlib::exp(-d * d / (qblur * qblur))
                                     };
-                                    if !(idx < 0i32 || idx >= (*rcc).num_entries) {
-                                        if !((*rce_1).pict_type
+                                    if !(idx < 0i32 || idx >= (*rcc).num_entries)
+                                        && !((*rce_1).pict_type
                                             != (*(*rcc).entry.offset(idx as isize)).pict_type)
-                                        {
-                                            q_0 += *qscale.offset(idx as isize) * coeff;
-                                            sum += coeff;
-                                        }
+                                    {
+                                        q_0 += *qscale.offset(idx as isize) * coeff;
+                                        sum += coeff;
                                     }
                                     j_1 += 1;
                                 }
@@ -5382,10 +5380,9 @@ unsafe extern "C" fn init_pass2(
                             blurred_qscale as *mut ::core::ffi::c_void,
                         );
                     }
-                    if (*rcc).vbv {
-                        if vbv_pass2(h, all_available_bits as ::core::ffi::c_double) != 0 {
-                            return -(1i32);
-                        }
+                    if (*rcc).vbv && vbv_pass2(h, all_available_bits as ::core::ffi::c_double) != 0
+                    {
+                        return -(1i32);
                     }
                     expected_bits = count_expected_bits(h);
                     if crate::stdlib::fabs(

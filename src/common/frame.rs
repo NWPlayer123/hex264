@@ -1050,14 +1050,12 @@ unsafe extern "C" fn frame_new(
                             &raw mut (*frame).mutex,
                             ::core::ptr::null::<crate::stdlib::pthread_mutexattr_t>(),
                         ) != 0)
-                        {
-                            if !(crate::stdlib::pthread_cond_init(
+                            && !(crate::stdlib::pthread_cond_init(
                                 &raw mut (*frame).cv,
                                 ::core::ptr::null::<crate::stdlib::pthread_condattr_t>(),
                             ) != 0)
-                            {
-                                return frame;
-                            }
+                        {
+                            return frame;
                         }
                     }
                 }

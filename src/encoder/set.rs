@@ -2039,22 +2039,20 @@ pub unsafe extern "C" fn x264_8_validate_levels(
             }
             ret = 1i32;
         }
-        if (*h).param.i_fps_den > 0u32 {
-            if mbs as crate::stdlib::int64_t * (*h).param.i_fps_num as crate::stdlib::int64_t
+        if (*h).param.i_fps_den > 0u32
+            && mbs as crate::stdlib::int64_t * (*h).param.i_fps_num as crate::stdlib::int64_t
                 / (*h).param.i_fps_den as crate::stdlib::int64_t
                 > (*l).mbps as crate::stdlib::int64_t
-            {
-                if verbose != 0 {
-                    log::warn!(
-                        "MB rate ({}) > level limit ({})",
-                        mbs as crate::stdlib::int64_t
-                            * (*h).param.i_fps_num as crate::stdlib::int64_t
-                            / (*h).param.i_fps_den as crate::stdlib::int64_t,
-                        (*l).mbps
-                    );
-                }
-                ret = 1i32;
+        {
+            if verbose != 0 {
+                log::warn!(
+                    "MB rate ({}) > level limit ({})",
+                    mbs as crate::stdlib::int64_t * (*h).param.i_fps_num as crate::stdlib::int64_t
+                        / (*h).param.i_fps_den as crate::stdlib::int64_t,
+                    (*l).mbps
+                );
             }
+            ret = 1i32;
         }
         ret
     }

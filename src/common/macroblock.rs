@@ -1626,27 +1626,25 @@ pub unsafe extern "C" fn x264_8_macroblock_slice_init(
                 }
                 i_1 += 1;
             }
-        } else if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int {
-            if (*h).sh.i_disable_deblocking_filter_idc != 1i32
-                && (*h).param.analyse.i_weighted_pred == crate::x264_h::X264_WEIGHTP_SMART
-            {
-                let mut i_2 = 0i32;
-                (*h).mb.deblock_ref_table[(-(2i32) + 2i32) as usize] = -2i8;
-                (*h).mb.deblock_ref_table[(-(1i32) + 2i32) as usize] = -1i8;
-                while i_2 < (*h).i_ref[0usize] << (*h).sh.mbaff as ::core::ffi::c_int {
-                    if !(*h).mb.interlaced {
-                        (*h).mb.deblock_ref_table[(i_2 + 2i32) as usize] =
-                            ((*(*h).fref[0usize][i_2 as usize]).i_frame_num & 63i32)
-                                as crate::stdlib::int8_t;
-                    } else {
-                        (*h).mb.deblock_ref_table[(i_2 + 2i32) as usize] =
-                            ((((*(*h).fref[0usize][(i_2 >> 1i32) as usize]).i_frame_num & 63i32)
-                                << 1i32)
-                                + (i_2 & 1i32))
-                                as crate::stdlib::int8_t;
-                    }
-                    i_2 += 1;
+        } else if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_P as ::core::ffi::c_int
+            && (*h).sh.i_disable_deblocking_filter_idc != 1i32
+            && (*h).param.analyse.i_weighted_pred == crate::x264_h::X264_WEIGHTP_SMART
+        {
+            let mut i_2 = 0i32;
+            (*h).mb.deblock_ref_table[(-(2i32) + 2i32) as usize] = -2i8;
+            (*h).mb.deblock_ref_table[(-(1i32) + 2i32) as usize] = -1i8;
+            while i_2 < (*h).i_ref[0usize] << (*h).sh.mbaff as ::core::ffi::c_int {
+                if !(*h).mb.interlaced {
+                    (*h).mb.deblock_ref_table[(i_2 + 2i32) as usize] =
+                        ((*(*h).fref[0usize][i_2 as usize]).i_frame_num & 63i32)
+                            as crate::stdlib::int8_t;
+                } else {
+                    (*h).mb.deblock_ref_table[(i_2 + 2i32) as usize] =
+                        ((((*(*h).fref[0usize][(i_2 >> 1i32) as usize]).i_frame_num & 63i32)
+                            << 1i32)
+                            + (i_2 & 1i32)) as crate::stdlib::int8_t;
                 }
+                i_2 += 1;
             }
         }
         crate::stdlib::memset(
@@ -3274,53 +3272,45 @@ unsafe extern "C" fn macroblock_cache_load(
                 if (*h).mb.interlaced {
                     if (*h).mb.i_mb_topleft_xy >= 0i32
                         && *(*h).mb.field.offset((*h).mb.i_mb_topleft_xy as isize) == 0
-                    {
-                        if (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                        && (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                             as ::core::ffi::c_int
                             - 1i32
                             - 1i32 * 8i32)
                             as usize] as ::core::ffi::c_int
                             >= 0i32
-                        {
-                            (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                    {
+                        (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize] =
+                            (((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                                 as ::core::ffi::c_int
                                 - 1i32
                                 - 1i32 * 8i32)
-                                as usize] = (((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize]
-                                as ::core::ffi::c_int)
-                                << 1i32)
-                                as crate::stdlib::int8_t;
-                            (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8
-                                [0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize][1usize]
-                                as ::core::ffi::c_int
-                                / 2i32)
-                                as crate::stdlib::int16_t;
-                            (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = ((*h).mb.cache.mvd[l_0 as usize][(x264_scan8
-                                [0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize][1usize]
-                                as ::core::ffi::c_int
-                                >> 1i32)
-                                as crate::stdlib::uint8_t;
-                        }
+                                as usize] as ::core::ffi::c_int)
+                                << 1i32) as crate::stdlib::int8_t;
+                        (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
+                            as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize][1usize]
+                            as ::core::ffi::c_int
+                            / 2i32)
+                            as crate::stdlib::int16_t;
+                        (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] = ((*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
+                            as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize][1usize]
+                            as ::core::ffi::c_int
+                            >> 1i32)
+                            as crate::stdlib::uint8_t;
                     }
                     if top >= 0i32 && *(*h).mb.field.offset(top as isize) == 0 {
                         if (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
@@ -3510,53 +3500,45 @@ unsafe extern "C" fn macroblock_cache_load(
                     }
                     if (*h).mb.i_mb_topright_xy >= 0i32
                         && *(*h).mb.field.offset((*h).mb.i_mb_topright_xy as isize) == 0
-                    {
-                        if (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                        && (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                             as ::core::ffi::c_int
                             + 4i32
                             - 1i32 * 8i32)
                             as usize] as ::core::ffi::c_int
                             >= 0i32
-                        {
-                            (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                    {
+                        (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize] =
+                            (((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                                 as ::core::ffi::c_int
                                 + 4i32
                                 - 1i32 * 8i32)
-                                as usize] = (((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize]
-                                as ::core::ffi::c_int)
-                                << 1i32)
-                                as crate::stdlib::int8_t;
-                            (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8
-                                [0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize][1usize]
-                                as ::core::ffi::c_int
-                                / 2i32)
-                                as crate::stdlib::int16_t;
-                            (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = ((*h).mb.cache.mvd[l_0 as usize][(x264_scan8
-                                [0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize][1usize]
-                                as ::core::ffi::c_int
-                                >> 1i32)
-                                as crate::stdlib::uint8_t;
-                        }
+                                as usize] as ::core::ffi::c_int)
+                                << 1i32) as crate::stdlib::int8_t;
+                        (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
+                            as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize][1usize]
+                            as ::core::ffi::c_int
+                            / 2i32)
+                            as crate::stdlib::int16_t;
+                        (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] = ((*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
+                            as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize][1usize]
+                            as ::core::ffi::c_int
+                            >> 1i32)
+                            as crate::stdlib::uint8_t;
                     }
                     if *left.offset(0isize) >= 0i32
                         && *(*h).mb.field.offset(*left.offset(0isize) as isize) == 0
@@ -3808,53 +3790,45 @@ unsafe extern "C" fn macroblock_cache_load(
                         && *(*h).mb.field.offset((*h).mb.i_mb_topleft_xy as isize)
                             as ::core::ffi::c_int
                             != 0
-                    {
-                        if (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                        && (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                             as ::core::ffi::c_int
                             - 1i32
                             - 1i32 * 8i32)
                             as usize] as ::core::ffi::c_int
                             >= 0i32
-                        {
-                            (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                    {
+                        (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize] =
+                            ((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                                 as ::core::ffi::c_int
                                 - 1i32
                                 - 1i32 * 8i32)
-                                as usize] = ((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize]
-                                as ::core::ffi::c_int
-                                >> 1i32)
-                                as crate::stdlib::int8_t;
-                            (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8
-                                [0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize][1usize]
-                                as ::core::ffi::c_int
-                                * 2i32)
-                                as crate::stdlib::int16_t;
-                            (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                - 1i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = (((*h).mb.cache.mvd[l_0 as usize][(x264_scan8
-                                [0usize]
+                                as usize] as ::core::ffi::c_int
+                                >> 1i32) as crate::stdlib::int8_t;
+                        (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
+                            as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize][1usize]
+                            as ::core::ffi::c_int
+                            * 2i32)
+                            as crate::stdlib::int16_t;
+                        (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            - 1i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] =
+                            (((*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
                                 as ::core::ffi::c_int
                                 - 1i32
                                 - 1i32 * 8i32)
                                 as usize][1usize]
                                 as ::core::ffi::c_int)
-                                << 1i32)
-                                as crate::stdlib::uint8_t;
-                        }
+                                << 1i32) as crate::stdlib::uint8_t;
                     }
                     if top >= 0i32 && *(*h).mb.field.offset(top as isize) as ::core::ffi::c_int != 0
                     {
@@ -4047,53 +4021,45 @@ unsafe extern "C" fn macroblock_cache_load(
                         && *(*h).mb.field.offset((*h).mb.i_mb_topright_xy as isize)
                             as ::core::ffi::c_int
                             != 0
-                    {
-                        if (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                        && (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                             as ::core::ffi::c_int
                             + 4i32
                             - 1i32 * 8i32)
                             as usize] as ::core::ffi::c_int
                             >= 0i32
-                        {
-                            (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
+                    {
+                        (*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize] =
+                            ((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
                                 as ::core::ffi::c_int
                                 + 4i32
                                 - 1i32 * 8i32)
-                                as usize] = ((*h).mb.cache.ref_0[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize]
-                                as ::core::ffi::c_int
-                                >> 1i32)
-                                as crate::stdlib::int8_t;
-                            (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8
-                                [0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize][1usize]
-                                as ::core::ffi::c_int
-                                * 2i32)
-                                as crate::stdlib::int16_t;
-                            (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
-                                as ::core::ffi::c_int
-                                + 4i32
-                                - 1i32 * 8i32)
-                                as usize][1usize] = (((*h).mb.cache.mvd[l_0 as usize][(x264_scan8
-                                [0usize]
+                                as usize] as ::core::ffi::c_int
+                                >> 1i32) as crate::stdlib::int8_t;
+                        (*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] = ((*h).mb.cache.mv[l_0 as usize][(x264_scan8[0usize]
+                            as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize][1usize]
+                            as ::core::ffi::c_int
+                            * 2i32)
+                            as crate::stdlib::int16_t;
+                        (*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize] as ::core::ffi::c_int
+                            + 4i32
+                            - 1i32 * 8i32)
+                            as usize][1usize] =
+                            (((*h).mb.cache.mvd[l_0 as usize][(x264_scan8[0usize]
                                 as ::core::ffi::c_int
                                 + 4i32
                                 - 1i32 * 8i32)
                                 as usize][1usize]
                                 as ::core::ffi::c_int)
-                                << 1i32)
-                                as crate::stdlib::uint8_t;
-                        }
+                                << 1i32) as crate::stdlib::uint8_t;
                     }
                     if *left.offset(0isize) >= 0i32
                         && *(*h).mb.field.offset(*left.offset(0isize) as isize)
@@ -4355,24 +4321,23 @@ unsafe extern "C" fn macroblock_cache_load(
             }
         }
         (*h).mb.allow_skip = true;
-        if b_mbaff != 0 {
-            if (*h).mb.interlaced as ::core::ffi::c_int != (*h).mb.field_decoding_flag
-                && mb_y & 1i32 != 0
-                && (*(*h)
+        if b_mbaff != 0
+            && (*h).mb.interlaced as ::core::ffi::c_int != (*h).mb.field_decoding_flag
+            && mb_y & 1i32 != 0
+            && (*(*h)
+                .mb
+                .type_0
+                .offset(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride) as isize)
+                as ::core::ffi::c_int
+                == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
+                || *(*h)
                     .mb
                     .type_0
                     .offset(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride) as isize)
                     as ::core::ffi::c_int
-                    == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
-                    || *(*h)
-                        .mb
-                        .type_0
-                        .offset(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride) as isize)
-                        as ::core::ffi::c_int
-                        == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int)
-            {
-                (*h).mb.allow_skip = false;
-            }
+                    == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int)
+        {
+            (*h).mb.allow_skip = false;
         }
         if (*h).param.cabac {
             if b_mbaff != 0 {
@@ -5396,83 +5361,80 @@ unsafe extern "C" fn macroblock_backup_intra(
                     as crate::__stddef_size_t_h::size_t,
             );
         }
-        if b_mbaff != 0 {
-            if mb_y & 1i32 != 0 {
-                let mut backup_src_0 = (if (*h).mb.interlaced { 7i32 } else { 14i32 })
-                    * crate::src::common::common::FDEC_STRIDE;
-                backup_dst = if (*h).mb.interlaced { 2i32 } else { 0i32 };
+        if b_mbaff != 0 && mb_y & 1i32 != 0 {
+            let mut backup_src_0 = (if (*h).mb.interlaced { 7i32 } else { 14i32 })
+                * crate::src::common::common::FDEC_STRIDE;
+            backup_dst = if (*h).mb.interlaced { 2i32 } else { 0i32 };
+            crate::stdlib::memcpy(
+                (*(&raw mut *(&raw mut (*h).intra_border_backup
+                    as *mut [*mut crate::src::common::common::pixel; 3])
+                    .offset(backup_dst as isize)
+                    as *mut *mut crate::src::common::common::pixel)
+                    .offset(0isize))
+                .offset((mb_x * 16i32) as isize) as *mut ::core::ffi::c_void,
+                (*h).mb.pic.p_fdec[0usize].offset(backup_src_0 as isize)
+                    as *const ::core::ffi::c_void,
+                (16i32 * crate::src::common::common::SIZEOF_PIXEL)
+                    as crate::__stddef_size_t_h::size_t,
+            );
+            if (*h).sps.i_chroma_format_idc.is_444() {
                 crate::stdlib::memcpy(
                     (*(&raw mut *(&raw mut (*h).intra_border_backup
                         as *mut [*mut crate::src::common::common::pixel; 3])
                         .offset(backup_dst as isize)
                         as *mut *mut crate::src::common::common::pixel)
-                        .offset(0isize))
+                        .offset(1isize))
                     .offset((mb_x * 16i32) as isize)
                         as *mut ::core::ffi::c_void,
-                    (*h).mb.pic.p_fdec[0usize].offset(backup_src_0 as isize)
+                    (*h).mb.pic.p_fdec[1usize].offset(backup_src_0 as isize)
                         as *const ::core::ffi::c_void,
                     (16i32 * crate::src::common::common::SIZEOF_PIXEL)
                         as crate::__stddef_size_t_h::size_t,
                 );
-                if (*h).sps.i_chroma_format_idc.is_444() {
-                    crate::stdlib::memcpy(
-                        (*(&raw mut *(&raw mut (*h).intra_border_backup
-                            as *mut [*mut crate::src::common::common::pixel; 3])
-                            .offset(backup_dst as isize)
-                            as *mut *mut crate::src::common::common::pixel)
-                            .offset(1isize))
-                        .offset((mb_x * 16i32) as isize)
-                            as *mut ::core::ffi::c_void,
-                        (*h).mb.pic.p_fdec[1usize].offset(backup_src_0 as isize)
-                            as *const ::core::ffi::c_void,
-                        (16i32 * crate::src::common::common::SIZEOF_PIXEL)
-                            as crate::__stddef_size_t_h::size_t,
-                    );
-                    crate::stdlib::memcpy(
-                        (*(&raw mut *(&raw mut (*h).intra_border_backup
-                            as *mut [*mut crate::src::common::common::pixel; 3])
-                            .offset(backup_dst as isize)
-                            as *mut *mut crate::src::common::common::pixel)
-                            .offset(2isize))
-                        .offset((mb_x * 16i32) as isize)
-                            as *mut ::core::ffi::c_void,
-                        (*h).mb.pic.p_fdec[2usize].offset(backup_src_0 as isize)
-                            as *const ::core::ffi::c_void,
-                        (16i32 * crate::src::common::common::SIZEOF_PIXEL)
-                            as crate::__stddef_size_t_h::size_t,
-                    );
-                } else if !(*h).sps.i_chroma_format_idc.is_400() {
-                    if (*h).sps.i_chroma_format_idc.is_420() {
-                        backup_src_0 = (if (*h).mb.interlaced { 3i32 } else { 6i32 })
-                            * crate::src::common::common::FDEC_STRIDE;
-                    }
-                    crate::stdlib::memcpy(
-                        (*(&raw mut *(&raw mut (*h).intra_border_backup
-                            as *mut [*mut crate::src::common::common::pixel; 3])
-                            .offset(backup_dst as isize)
-                            as *mut *mut crate::src::common::common::pixel)
-                            .offset(1isize))
-                        .offset((mb_x * 16i32) as isize)
-                            as *mut ::core::ffi::c_void,
-                        (*h).mb.pic.p_fdec[1usize].offset(backup_src_0 as isize)
-                            as *const ::core::ffi::c_void,
-                        (8i32 * crate::src::common::common::SIZEOF_PIXEL)
-                            as crate::__stddef_size_t_h::size_t,
-                    );
-                    crate::stdlib::memcpy(
-                        (*(&raw mut *(&raw mut (*h).intra_border_backup
-                            as *mut [*mut crate::src::common::common::pixel; 3])
-                            .offset(backup_dst as isize)
-                            as *mut *mut crate::src::common::common::pixel)
-                            .offset(1isize))
-                        .offset((mb_x * 16i32 + 8i32) as isize)
-                            as *mut ::core::ffi::c_void,
-                        (*h).mb.pic.p_fdec[2usize].offset(backup_src_0 as isize)
-                            as *const ::core::ffi::c_void,
-                        (8i32 * crate::src::common::common::SIZEOF_PIXEL)
-                            as crate::__stddef_size_t_h::size_t,
-                    );
+                crate::stdlib::memcpy(
+                    (*(&raw mut *(&raw mut (*h).intra_border_backup
+                        as *mut [*mut crate::src::common::common::pixel; 3])
+                        .offset(backup_dst as isize)
+                        as *mut *mut crate::src::common::common::pixel)
+                        .offset(2isize))
+                    .offset((mb_x * 16i32) as isize)
+                        as *mut ::core::ffi::c_void,
+                    (*h).mb.pic.p_fdec[2usize].offset(backup_src_0 as isize)
+                        as *const ::core::ffi::c_void,
+                    (16i32 * crate::src::common::common::SIZEOF_PIXEL)
+                        as crate::__stddef_size_t_h::size_t,
+                );
+            } else if !(*h).sps.i_chroma_format_idc.is_400() {
+                if (*h).sps.i_chroma_format_idc.is_420() {
+                    backup_src_0 = (if (*h).mb.interlaced { 3i32 } else { 6i32 })
+                        * crate::src::common::common::FDEC_STRIDE;
                 }
+                crate::stdlib::memcpy(
+                    (*(&raw mut *(&raw mut (*h).intra_border_backup
+                        as *mut [*mut crate::src::common::common::pixel; 3])
+                        .offset(backup_dst as isize)
+                        as *mut *mut crate::src::common::common::pixel)
+                        .offset(1isize))
+                    .offset((mb_x * 16i32) as isize)
+                        as *mut ::core::ffi::c_void,
+                    (*h).mb.pic.p_fdec[1usize].offset(backup_src_0 as isize)
+                        as *const ::core::ffi::c_void,
+                    (8i32 * crate::src::common::common::SIZEOF_PIXEL)
+                        as crate::__stddef_size_t_h::size_t,
+                );
+                crate::stdlib::memcpy(
+                    (*(&raw mut *(&raw mut (*h).intra_border_backup
+                        as *mut [*mut crate::src::common::common::pixel; 3])
+                        .offset(backup_dst as isize)
+                        as *mut *mut crate::src::common::common::pixel)
+                        .offset(1isize))
+                    .offset((mb_x * 16i32 + 8i32) as isize)
+                        as *mut ::core::ffi::c_void,
+                    (*h).mb.pic.p_fdec[2usize].offset(backup_src_0 as isize)
+                        as *const ::core::ffi::c_void,
+                    (8i32 * crate::src::common::common::SIZEOF_PIXEL)
+                        as crate::__stddef_size_t_h::size_t,
+                );
             }
         }
     }

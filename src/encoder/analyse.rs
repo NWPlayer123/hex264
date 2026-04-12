@@ -7865,19 +7865,17 @@ pub mod slicetype_c {
                     let mut last_possible = 0i32;
                     let mut frm = frames[j_7 as usize];
                     let mut keyframe_dist = (*frm).i_frame - last_keyframe;
-                    if (*frm).i_forced_type == crate::x264_h::X264_TYPE_AUTO
+                    if ((*frm).i_forced_type == crate::x264_h::X264_TYPE_AUTO
                         || ((*frm).i_forced_type == crate::x264_h::X264_TYPE_I
                             || (*frm).i_forced_type == crate::x264_h::X264_TYPE_IDR
-                            || (*frm).i_forced_type == crate::x264_h::X264_TYPE_KEYFRAME)
-                    {
-                        if (*h).param.open_gop
+                            || (*frm).i_forced_type == crate::x264_h::X264_TYPE_KEYFRAME))
+                        && ((*h).param.open_gop
                             || !((*frames[(j_7 - 1i32) as usize]).i_forced_type
                                 == crate::x264_h::X264_TYPE_B
                                 || (*frames[(j_7 - 1i32) as usize]).i_forced_type
-                                    == crate::x264_h::X264_TYPE_BREF)
-                        {
-                            last_possible = j_7;
-                        }
+                                    == crate::x264_h::X264_TYPE_BREF))
+                    {
+                        last_possible = j_7;
                     }
                     if keyframe_dist >= (*h).param.i_keyint_max {
                         if last_possible != 0i32 && last_possible != j_7 {
@@ -14950,8 +14948,9 @@ unsafe extern "C" fn mb_analyse_init(
                     i_2 += 1;
                 }
             }
-            if (*a).early_terminate && (*h).mb.i_mb_xy - (*h).sh.i_first_mb > 4i32 {
-                if !((*h).mb.i_mb_type_left[0usize]
+            if (*a).early_terminate
+                && (*h).mb.i_mb_xy - (*h).sh.i_first_mb > 4i32
+                && !((*h).mb.i_mb_type_left[0usize]
                     == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
                     || (*h).mb.i_mb_type_left[0usize]
                         == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
@@ -15019,9 +15018,8 @@ unsafe extern "C" fn mb_analyse_init(
                                 + (*h).stat.frame.i_mb_count[crate::src::common::macroblock::I_PCM
                                     as ::core::ffi::c_int
                                     as usize]))
-                {
-                    (*a).fast_intra = true;
-                }
+            {
+                (*a).fast_intra = true;
             }
             (*h).mb.skip_mc = false;
             if (*h).param.intra_refresh
@@ -24497,32 +24495,30 @@ unsafe extern "C" fn mb_analyse_qp_rd(
             prevcost = origcost;
             let mut already_checked_qp = -(1i32);
             let mut already_checked_cost = crate::src::encoder::me::COST_MAX;
-            if direction == -(1i32) {
-                if origcbp == 0 {
-                    (*h).mb.i_qp = if (*h).mb.i_qp - threshold - 1i32
-                        > (if (*h).param.rc.i_qp_min < 51i32 + 6i32 * (8i32 - 8i32) {
-                            (*h).param.rc.i_qp_min
-                        } else {
-                            51i32 + 6i32 * (8i32 - 8i32)
-                        }) {
-                        (*h).mb.i_qp - threshold - 1i32
-                    } else if (*h).param.rc.i_qp_min < 51i32 + 6i32 * (8i32 - 8i32) {
+            if direction == -(1i32) && origcbp == 0 {
+                (*h).mb.i_qp = if (*h).mb.i_qp - threshold - 1i32
+                    > (if (*h).param.rc.i_qp_min < 51i32 + 6i32 * (8i32 - 8i32) {
                         (*h).param.rc.i_qp_min
                     } else {
                         51i32 + 6i32 * (8i32 - 8i32)
-                    };
-                    (*h).mb.i_chroma_qp =
-                        *(*h).chroma_qp_table.offset((*h).mb.i_qp as isize) as ::core::ffi::c_int;
-                    already_checked_cost = rd_cost_mb(h, (*a).i_lambda2);
-                    if *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) == 0 {
-                        if (*h).mb.i_last_qp > (*h).mb.i_qp {
-                            last_qp_tried = 1i32;
-                        }
-                        break;
-                    } else {
-                        already_checked_qp = (*h).mb.i_qp;
-                        (*h).mb.i_qp = orig_qp;
+                    }) {
+                    (*h).mb.i_qp - threshold - 1i32
+                } else if (*h).param.rc.i_qp_min < 51i32 + 6i32 * (8i32 - 8i32) {
+                    (*h).param.rc.i_qp_min
+                } else {
+                    51i32 + 6i32 * (8i32 - 8i32)
+                };
+                (*h).mb.i_chroma_qp =
+                    *(*h).chroma_qp_table.offset((*h).mb.i_qp as isize) as ::core::ffi::c_int;
+                already_checked_cost = rd_cost_mb(h, (*a).i_lambda2);
+                if *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) == 0 {
+                    if (*h).mb.i_last_qp > (*h).mb.i_qp {
+                        last_qp_tried = 1i32;
                     }
+                    break;
+                } else {
+                    already_checked_qp = (*h).mb.i_qp;
+                    (*h).mb.i_qp = orig_qp;
                 }
             }
             (*h).mb.i_qp += direction;
@@ -25012,25 +25008,22 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                             && skip_invalid == 0
                         {
                             skip = true;
-                        } else if (*h).param.analyse.fast_pskip {
-                            if !(skip_invalid != 0) {
-                                if (*h).param.analyse.i_subpel_refine >= 3i32 {
-                                    analysis.try_skip = true;
-                                } else if (*h).mb.i_mb_type_left[0usize]
+                        } else if (*h).param.analyse.fast_pskip && !(skip_invalid != 0) {
+                            if (*h).param.analyse.i_subpel_refine >= 3i32 {
+                                analysis.try_skip = true;
+                            } else if (*h).mb.i_mb_type_left[0usize]
+                                == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
+                                || (*h).mb.i_mb_type_top
                                     == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
-                                    || (*h).mb.i_mb_type_top
-                                        == crate::src::common::macroblock::P_SKIP
-                                            as ::core::ffi::c_int
-                                    || (*h).mb.i_mb_type_topleft
-                                        == crate::src::common::macroblock::P_SKIP
-                                            as ::core::ffi::c_int
-                                    || (*h).mb.i_mb_type_topright
-                                        == crate::src::common::macroblock::P_SKIP
-                                            as ::core::ffi::c_int
-                                {
-                                    skip =
-                                        crate::src::encoder::macroblock::x264_8_macroblock_probe_skip(h, 0i32);
-                                }
+                                || (*h).mb.i_mb_type_topleft
+                                    == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
+                                || (*h).mb.i_mb_type_topright
+                                    == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
+                            {
+                                skip =
+                                    crate::src::encoder::macroblock::x264_8_macroblock_probe_skip(
+                                        h, 0i32,
+                                    );
                             }
                         }
                         c2rust_current_block = 13460095289871124136;

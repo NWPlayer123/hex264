@@ -169,44 +169,40 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
                 look_h = (*h).thread[(*h).param.i_threads as usize];
                 *look_h = *h;
                 if !(crate::src::common::macroblock::x264_8_macroblock_cache_allocate(look_h) != 0)
-                {
-                    if !(crate::src::common::macroblock::x264_8_macroblock_thread_allocate(
+                    && !(crate::src::common::macroblock::x264_8_macroblock_thread_allocate(
                         look_h, 1i32,
                     ) < 0i32)
-                    {
-                        if !(crate::stdlib::pthread_create(
-                            &raw mut (*look).thread_handle,
-                            ::core::ptr::null::<crate::stdlib::pthread_attr_t>(),
-                            ::core::mem::transmute::<
-                                *mut ::core::ffi::c_void,
-                                Option<
-                                    unsafe extern "C" fn(
-                                        *mut ::core::ffi::c_void,
-                                    )
-                                        -> *mut ::core::ffi::c_void,
-                                >,
-                            >(::core::mem::transmute::<
-                                Option<
-                                    unsafe extern "C" fn(
-                                        *mut crate::src::common::common::x264_t,
-                                    )
-                                        -> *mut ::core::ffi::c_void,
-                                >,
-                                *mut ::core::ffi::c_void,
-                            >(Some(
-                                lookahead_thread
-                                    as unsafe extern "C" fn(
-                                        *mut crate::src::common::common::x264_t,
-                                    )
-                                        -> *mut ::core::ffi::c_void,
-                            ))),
-                            look_h as *mut ::core::ffi::c_void,
-                        ) != 0)
-                        {
-                            (*look).b_thread_active = 1u8;
-                            return 0i32;
-                        }
-                    }
+                    && !(crate::stdlib::pthread_create(
+                        &raw mut (*look).thread_handle,
+                        ::core::ptr::null::<crate::stdlib::pthread_attr_t>(),
+                        ::core::mem::transmute::<
+                            *mut ::core::ffi::c_void,
+                            Option<
+                                unsafe extern "C" fn(
+                                    *mut ::core::ffi::c_void,
+                                )
+                                    -> *mut ::core::ffi::c_void,
+                            >,
+                        >(::core::mem::transmute::<
+                            Option<
+                                unsafe extern "C" fn(
+                                    *mut crate::src::common::common::x264_t,
+                                )
+                                    -> *mut ::core::ffi::c_void,
+                            >,
+                            *mut ::core::ffi::c_void,
+                        >(Some(
+                            lookahead_thread
+                                as unsafe extern "C" fn(
+                                    *mut crate::src::common::common::x264_t,
+                                )
+                                    -> *mut ::core::ffi::c_void,
+                        ))),
+                        look_h as *mut ::core::ffi::c_void,
+                    ) != 0)
+                {
+                    (*look).b_thread_active = 1u8;
+                    return 0i32;
                 }
             }
         }

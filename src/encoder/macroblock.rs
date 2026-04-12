@@ -1219,62 +1219,60 @@ unsafe extern "C" fn mb_encode_chroma_internal(
                                 i += 1;
                             }
                         }
-                        if nz_dc != 0 {
-                            if !(mb_optimize_chroma_dc(
+                        if nz_dc != 0
+                            && !(mb_optimize_chroma_dc(
                                 h,
                                 &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
                                 dequant_mf,
                                 i_qp + 3i32 * chroma422,
                                 chroma422,
                             ) == 0)
-                            {
-                                let mut i_0 = 0i32;
-                                (*h).mb.cache.non_zero_count[x264_scan8
-                                    [(crate::src::common::base::CHROMA_DC + ch) as usize]
-                                    as usize] = 1u8;
-                                if chroma422 != 0 {
-                                    zigzag_scan_2x4_dc(
-                                        &raw mut *(&raw mut (*h).dct.chroma_dc
-                                            as *mut [crate::src::common::common::dctcoef; 8])
-                                            .offset(ch as isize)
-                                            as *mut crate::src::common::common::dctcoef,
-                                        &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
-                                    );
-                                    (*h).quantf
-                                        .idct_dequant_2x4_dconly
-                                        .expect("non-null function pointer")(
-                                        &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
-                                        dequant_mf,
-                                        i_qp + 3i32,
-                                    );
-                                } else {
-                                    zigzag_scan_2x2_dc(
-                                        &raw mut *(&raw mut (*h).dct.chroma_dc
-                                            as *mut [crate::src::common::common::dctcoef; 8])
-                                            .offset(ch as isize)
-                                            as *mut crate::src::common::common::dctcoef,
-                                        &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
-                                    );
-                                    idct_dequant_2x2_dconly(
-                                        &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
-                                        dequant_mf,
-                                        i_qp,
-                                    );
-                                }
-                                while i_0 <= chroma422 {
-                                    (*h).dctf.add8x8_idct_dc.expect("non-null function pointer")(
-                                        p_dst.offset(
-                                            (8i32 * i_0 * crate::src::common::common::FDEC_STRIDE)
-                                                as isize,
-                                        ),
-                                        (&raw mut dct_dc
-                                            as *mut crate::src::common::common::dctcoef)
-                                            .offset((4i32 * i_0) as isize),
-                                    );
-                                    i_0 += 1;
-                                }
-                                (*h).mb.i_cbp_chroma = 1i32;
+                        {
+                            let mut i_0 = 0i32;
+                            (*h).mb.cache.non_zero_count[x264_scan8
+                                [(crate::src::common::base::CHROMA_DC + ch) as usize]
+                                as usize] = 1u8;
+                            if chroma422 != 0 {
+                                zigzag_scan_2x4_dc(
+                                    &raw mut *(&raw mut (*h).dct.chroma_dc
+                                        as *mut [crate::src::common::common::dctcoef; 8])
+                                        .offset(ch as isize)
+                                        as *mut crate::src::common::common::dctcoef,
+                                    &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
+                                );
+                                (*h).quantf
+                                    .idct_dequant_2x4_dconly
+                                    .expect("non-null function pointer")(
+                                    &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
+                                    dequant_mf,
+                                    i_qp + 3i32,
+                                );
+                            } else {
+                                zigzag_scan_2x2_dc(
+                                    &raw mut *(&raw mut (*h).dct.chroma_dc
+                                        as *mut [crate::src::common::common::dctcoef; 8])
+                                        .offset(ch as isize)
+                                        as *mut crate::src::common::common::dctcoef,
+                                    &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
+                                );
+                                idct_dequant_2x2_dconly(
+                                    &raw mut dct_dc as *mut crate::src::common::common::dctcoef,
+                                    dequant_mf,
+                                    i_qp,
+                                );
                             }
+                            while i_0 <= chroma422 {
+                                (*h).dctf.add8x8_idct_dc.expect("non-null function pointer")(
+                                    p_dst.offset(
+                                        (8i32 * i_0 * crate::src::common::common::FDEC_STRIDE)
+                                            as isize,
+                                    ),
+                                    (&raw mut dct_dc as *mut crate::src::common::common::dctcoef)
+                                        .offset((4i32 * i_0) as isize),
+                                );
+                                i_0 += 1;
+                            }
+                            (*h).mb.i_cbp_chroma = 1i32;
                         }
                     }
                     ch += 1;
