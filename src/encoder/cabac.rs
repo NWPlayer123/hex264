@@ -290,8 +290,8 @@ pub mod macroblock_h {
             {
                 return 0i32;
             }
-            if (*h).mb.i_type != crate::src::common::macroblock::P_8x8 as ::core::ffi::c_int {
-                return x264_transform_allowed[(*h).mb.i_type as usize] as ::core::ffi::c_int;
+            if (*h).mb.ty != MacroblockType::P_8x8 {
+                return x264_transform_allowed[(*h).mb.ty as usize] as ::core::ffi::c_int;
             }
             ((*(&raw mut (*h).mb.i_sub_partition as *mut crate::src::common::base::x264_union32_t))
                 .i
@@ -299,6 +299,7 @@ pub mod macroblock_h {
                     as crate::stdlib::uint32_t) as ::core::ffi::c_int
         }
     }
+    use crate::src::common::macroblock::MacroblockType;
     use crate::src::encoder::cabac::base_h::x264_scan8;
     use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode4x4_fix;
 }
@@ -548,6 +549,7 @@ pub mod rectangle_h {
         }
     }
 }
+use crate::src::common::macroblock::MacroblockType;
 use crate::src::encoder::cabac::base_h::x264_cabac_mvd_sum;
 use crate::src::encoder::cabac::base_h::x264_scan8;
 use crate::src::encoder::cabac::bitstream_h::bs_flush;
@@ -571,7 +573,7 @@ use crate::src::encoder::cabac::rectangle_h::x264_macroblock_cache_mvd;
 unsafe extern "C" fn cabac_mb_type_intra(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
-    mut i_mb_type: ::core::ffi::c_int,
+    mut i_mb_type: MacroblockType,
     mut ctx0: ::core::ffi::c_int,
     mut ctx1: ::core::ffi::c_int,
     mut ctx2: ::core::ffi::c_int,
@@ -580,11 +582,9 @@ unsafe extern "C" fn cabac_mb_type_intra(
     mut ctx5: ::core::ffi::c_int,
 ) {
     unsafe {
-        if i_mb_type == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-            || i_mb_type == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-        {
+        if i_mb_type == MacroblockType::I_4x4 || i_mb_type == MacroblockType::I_8x8 {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, ctx0, 0i32);
-        } else if i_mb_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int {
+        } else if i_mb_type == MacroblockType::I_PCM {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, ctx0, 1i32);
             crate::src::common::cabac::x264_8_cabac_encode_flush(h, cb);
         } else {
@@ -774,7 +774,7 @@ unsafe extern "C" fn cabac_qp_delta(
 ) {
     unsafe {
         let mut i_dqp = (*h).mb.i_qp - (*h).mb.i_last_qp;
-        if (*h).mb.i_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
+        if (*h).mb.ty == MacroblockType::I_16x16
             && *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) == 0
             && (*h).mb.i_qp > (*h).mb.i_last_qp
         {
@@ -782,8 +782,11 @@ unsafe extern "C" fn cabac_qp_delta(
             i_dqp = 0i32;
         }
         let mut ctx = ((*h).mb.i_last_dqp != 0
-            && (*(*h).mb.type_0.offset((*h).mb.i_mb_prev_xy as isize) as ::core::ffi::c_int
-                == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
+            && (*(*h)
+                .mb
+                .types
+                .add(((*h).mb.i_mb_prev_xy - (*h).sh.i_first_mb) as usize)
+                == MacroblockType::I_16x16
                 || *(*h).mb.cbp.offset((*h).mb.i_mb_prev_xy as isize) as ::core::ffi::c_int
                     & 0x3fi32
                     != 0)) as ::core::ffi::c_int;
@@ -1178,7 +1181,7 @@ unsafe extern "C" fn cabac_8x8_mvd(
 unsafe extern "C" fn cabac_mb_header_i(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
-    mut i_mb_type: ::core::ffi::c_int,
+    mut i_mb_type: MacroblockType,
     mut slice_type: ::core::ffi::c_int,
     mut chroma: ::core::ffi::c_int,
 ) {
@@ -1186,14 +1189,12 @@ unsafe extern "C" fn cabac_mb_header_i(
         if slice_type == crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int {
             let mut ctx = 0i32;
             if (*h).mb.i_neighbour & crate::src::common::macroblock::MB_LEFT != 0
-                && (*h).mb.i_mb_type_left[0usize]
-                    != crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
+                && (*h).mb.i_mb_type_left[0usize] != Some(MacroblockType::I_4x4)
             {
                 ctx += 1;
             }
             if (*h).mb.i_neighbour & crate::src::common::macroblock::MB_TOP != 0
-                && (*h).mb.i_mb_type_top
-                    != crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
+                && (*h).mb.i_mb_type_top != Some(MacroblockType::I_4x4)
             {
                 ctx += 1;
             }
@@ -1239,10 +1240,10 @@ unsafe extern "C" fn cabac_mb_header_i(
                 32i32 + 3i32,
             );
         }
-        if i_mb_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int {
+        if i_mb_type == MacroblockType::I_PCM {
             return;
         }
-        if i_mb_type != crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int {
+        if i_mb_type != MacroblockType::I_16x16 {
             let mut i = 0i32;
             if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).transform_8x8_mode
             {
@@ -1268,11 +1269,11 @@ unsafe extern "C" fn cabac_mb_header_i(
 unsafe extern "C" fn cabac_mb_header_p(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
-    mut i_mb_type: ::core::ffi::c_int,
+    mut i_mb_type: MacroblockType,
     mut chroma: ::core::ffi::c_int,
 ) {
     unsafe {
-        if i_mb_type == crate::src::common::macroblock::P_L0 as ::core::ffi::c_int {
+        if i_mb_type == MacroblockType::P_L0 {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 14i32, 0i32);
             if (*h).mb.i_partition == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
             {
@@ -1348,7 +1349,7 @@ unsafe extern "C" fn cabac_mb_header_p(
                     mvd_3,
                 );
             }
-        } else if i_mb_type == crate::src::common::macroblock::P_8x8 as ::core::ffi::c_int {
+        } else if i_mb_type == MacroblockType::P_8x8 {
             let mut i = 0i32;
             let mut i_0 = 0i32;
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 14i32, 0i32);
@@ -1386,32 +1387,29 @@ unsafe extern "C" fn cabac_mb_header_p(
 unsafe extern "C" fn cabac_mb_header_b(
     mut h: *mut crate::src::common::common::x264_t,
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
-    mut i_mb_type: ::core::ffi::c_int,
+    mut i_mb_type: MacroblockType,
     mut chroma: ::core::ffi::c_int,
 ) {
     unsafe {
         let mut ctx = 0i32;
         if (*h).mb.i_neighbour & crate::src::common::macroblock::MB_LEFT != 0
-            && (*h).mb.i_mb_type_left[0usize]
-                != crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int
-            && (*h).mb.i_mb_type_left[0usize]
-                != crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int
+            && (*h).mb.i_mb_type_left[0usize] != Some(MacroblockType::B_SKIP)
+            && (*h).mb.i_mb_type_left[0usize] != Some(MacroblockType::B_DIRECT)
         {
             ctx += 1;
         }
         if (*h).mb.i_neighbour & crate::src::common::macroblock::MB_TOP != 0
-            && (*h).mb.i_mb_type_top != crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int
-            && (*h).mb.i_mb_type_top
-                != crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int
+            && (*h).mb.i_mb_type_top != Some(MacroblockType::B_SKIP)
+            && (*h).mb.i_mb_type_top != Some(MacroblockType::B_DIRECT)
         {
             ctx += 1;
         }
-        if i_mb_type == crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int {
+        if i_mb_type == MacroblockType::B_DIRECT {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 27i32 + ctx, 0i32);
             return;
         }
         crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 27i32 + ctx, 1i32);
-        if i_mb_type == crate::src::common::macroblock::B_8x8 as ::core::ffi::c_int {
+        if i_mb_type == MacroblockType::B_8x8 {
             let mut i = 0i32;
             let mut i_2 = 0i32;
             let mut i_3 = 0i32;
@@ -1487,17 +1485,14 @@ unsafe extern "C" fn cabac_mb_header_b(
                 }
                 i_3 += 1;
             }
-        } else if i_mb_type >= crate::src::common::macroblock::B_L0_L0 as ::core::ffi::c_int
-            && i_mb_type <= crate::src::common::macroblock::B_BI_BI as ::core::ffi::c_int
-        {
+        } else if i_mb_type >= MacroblockType::B_L0_L0 && i_mb_type <= MacroblockType::B_BI_BI {
             let mut i_list = 0i32;
             static mut i_mb_bits: [crate::stdlib::uint8_t; 27] = [
                 0x31u8, 0x29u8, 0x4u8, 0x35u8, 0x2du8, 0u8, 0x43u8, 0x63u8, 0u8, 0x3du8, 0x2fu8,
                 0u8, 0x39u8, 0x25u8, 0x6u8, 0x53u8, 0x73u8, 0u8, 0x4bu8, 0x6bu8, 0u8, 0x5bu8,
                 0x7bu8, 0u8, 0x47u8, 0x67u8, 0x21u8,
             ];
-            let idx = (i_mb_type - crate::src::common::macroblock::B_L0_L0 as ::core::ffi::c_int)
-                * 3i32
+            let idx = (i_mb_type as i32 - MacroblockType::B_L0_L0 as i32) * 3i32
                 + ((*h).mb.i_partition
                     - crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int);
             let mut bits = i_mb_bits[idx as usize] as ::core::ffi::c_int;
@@ -1979,22 +1974,17 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
     mut chroma: ::core::ffi::c_int,
 ) {
     unsafe {
-        let i_mb_type = (*h).mb.i_type;
+        let i_mb_type = (*h).mb.ty;
         let i_mb_pos_start = x264_cabac_pos(cb);
         if (*h).sh.mbaff
             && ((*h).mb.i_mb_y & 1i32 == 0
-                || (*(*h)
-                    .mb
-                    .type_0
-                    .offset(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride) as isize)
-                    as ::core::ffi::c_int
-                    == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
-                    || *(*h)
+                || matches!(
+                    *(*h)
                         .mb
-                        .type_0
-                        .offset(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride) as isize)
-                        as ::core::ffi::c_int
-                        == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int))
+                        .types
+                        .add(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride - (*h).sh.i_first_mb) as usize),
+                    MacroblockType::P_SKIP | MacroblockType::B_SKIP
+                ))
         {
             cabac_field_decoding_flag(h, cb);
         }
@@ -2013,7 +2003,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
         }
         let mut i_mb_pos_tex = x264_cabac_pos(cb);
         (*h).stat.frame.i_mv_bits += i_mb_pos_tex - i_mb_pos_start;
-        if i_mb_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int {
+        if i_mb_type == MacroblockType::I_PCM {
             let mut s = crate::src::common::bitstream::bs_s {
                 p_start: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
                 p: ::core::ptr::null_mut::<crate::stdlib::uint8_t>(),
@@ -2070,7 +2060,7 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
             (*h).stat.frame.i_tex_bits += x264_cabac_pos(cb) - i_mb_pos_tex;
             return;
         }
-        if i_mb_type != crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int {
+        if i_mb_type != MacroblockType::I_16x16 {
             cabac_cbp_luma(h, cb);
             if chroma != 0 {
                 cabac_cbp_chroma(h, cb);
@@ -2081,15 +2071,15 @@ unsafe extern "C" fn macroblock_write_cabac_internal(
         }
         if (*h).mb.i_cbp_luma != 0
             || chroma != 0 && (*h).mb.i_cbp_chroma != 0
-            || i_mb_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
+            || i_mb_type == MacroblockType::I_16x16
         {
-            let b_intra = (i_mb_type == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                || i_mb_type == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                || i_mb_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                || i_mb_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
+            let b_intra = (i_mb_type == MacroblockType::I_4x4
+                || i_mb_type == MacroblockType::I_8x8
+                || i_mb_type == MacroblockType::I_16x16
+                || i_mb_type == MacroblockType::I_PCM)
                 as ::core::ffi::c_int;
             cabac_qp_delta(h, cb);
-            if i_mb_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int {
+            if i_mb_type == MacroblockType::I_16x16 {
                 let mut p_0 = 0i32;
                 while p_0 < plane_count {
                     let mut ctxidxinc = cabac_cbf_ctxidxinc(

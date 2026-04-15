@@ -28,6 +28,7 @@ pub mod base_h {
 }
 use crate::src::common::deblock::base_h::x264_clip3;
 use crate::src::common::deblock::common_h::x264_clip_pixel;
+use crate::src::common::macroblock::MacroblockType;
 static mut i_alpha_table: [crate::stdlib::uint8_t; 88] = [
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
@@ -780,15 +781,13 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             let mut mb_xy = (*h).mb.i_mb_xy;
             let mut transform_8x8 =
                 *(*h).mb.mb_transform_size.offset(mb_xy as isize) as ::core::ffi::c_int;
-            let mut intra_cur = (*(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
-                == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
-                    == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
-                    == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                || *(*h).mb.type_0.offset(mb_xy as isize) as ::core::ffi::c_int
-                    == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
-                as ::core::ffi::c_int;
+            let mut intra_cur = matches!(
+                *(*h).mb.types.add((mb_xy - (*h).sh.i_first_mb) as usize),
+                MacroblockType::I_4x4
+                    | MacroblockType::I_8x8
+                    | MacroblockType::I_16x16
+                    | MacroblockType::I_PCM
+            ) as ::core::ffi::c_int;
             let mut bs = &raw mut *(*(&raw mut (*h).deblock_strength
                 as *mut *mut [[[crate::stdlib::uint8_t; 4]; 8]; 2])
                 .offset((mb_y & 1i32) as isize))
@@ -848,18 +847,16 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         + 1i32)
                         >> 1i32;
                     if intra_cur != 0
-                        || (*(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0usize] as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0usize] as isize)
-                                as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0usize] as isize)
-                                as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[0usize] as isize)
-                                as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
+                        || matches!(
+                            *(*h)
+                                .mb
+                                .types
+                                .add(((*h).mb.i_mb_left_xy[0usize] - (*h).sh.i_first_mb) as usize),
+                            MacroblockType::I_4x4
+                                | MacroblockType::I_8x8
+                                | MacroblockType::I_16x16
+                                | MacroblockType::I_PCM
+                        )
                     {
                         deblock_edge_intra(
                             h,
@@ -970,18 +967,16 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         + 1i32)
                         >> 1i32;
                     if intra_cur != 0
-                        || (*(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1usize] as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1usize] as isize)
-                                as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1usize] as isize)
-                                as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset((*h).mb.i_mb_left_xy[1usize] as isize)
-                                as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
+                        || matches!(
+                            *(*h)
+                                .mb
+                                .types
+                                .add(((*h).mb.i_mb_left_xy[1usize] - (*h).sh.i_first_mb) as usize),
+                            MacroblockType::I_4x4
+                                | MacroblockType::I_8x8
+                                | MacroblockType::I_16x16
+                                | MacroblockType::I_PCM
+                        )
                     {
                         deblock_edge_intra(
                             h,
@@ -1085,19 +1080,16 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         + *(*h).chroma_qp_table.offset(qpl as isize) as ::core::ffi::c_int
                         + 1i32)
                         >> 1i32;
-                    let mut intra_left = (*(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1i32) as isize)
-                        as ::core::ffi::c_int
-                        == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                        || *(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1i32) as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                        || *(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1i32) as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                        || *(*h).mb.type_0.offset(((*h).mb.i_mb_xy - 1i32) as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
-                        as ::core::ffi::c_int;
+                    let mut intra_left = matches!(
+                        *(*h)
+                            .mb
+                            .types
+                            .add(((*h).mb.i_mb_xy - 1i32 - (*h).sh.i_first_mb) as usize),
+                        MacroblockType::I_4x4
+                            | MacroblockType::I_8x8
+                            | MacroblockType::I_16x16
+                            | MacroblockType::I_PCM
+                    ) as ::core::ffi::c_int;
                     let mut intra_deblock =
                         (intra_cur != 0 || intra_left != 0) as ::core::ffi::c_int;
                     if !(*(*h).fdec).mb_info.is_null()
@@ -1586,16 +1578,13 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             + *(*h).chroma_qp_table.offset(qpt as isize) as ::core::ffi::c_int
                             + 1i32)
                             >> 1i32;
-                        let mut intra_top = (*(*h).mb.type_0.offset(mbn_xy as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset(mbn_xy as isize) as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset(mbn_xy as isize) as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                            || *(*h).mb.type_0.offset(mbn_xy as isize) as ::core::ffi::c_int
-                                == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
-                            as ::core::ffi::c_int;
+                        let mut intra_top = matches!(
+                            *(*h).mb.types.add((mbn_xy - (*h).sh.i_first_mb) as usize),
+                            MacroblockType::I_4x4
+                                | MacroblockType::I_8x8
+                                | MacroblockType::I_16x16
+                                | MacroblockType::I_PCM
+                        ) as ::core::ffi::c_int;
                         if intra_cur != 0 || intra_top != 0 {
                             (*(&raw mut *(&raw mut *bs.offset(1isize)
                                 as *mut [crate::stdlib::uint8_t; 4])
@@ -1673,19 +1662,16 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         + *(*h).chroma_qp_table.offset(qpt_0 as isize) as ::core::ffi::c_int
                         + 1i32)
                         >> 1i32;
-                    let mut intra_top_0 = (*(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
-                        as ::core::ffi::c_int
-                        == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                        || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                        || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                        || *(*h).mb.type_0.offset((*h).mb.i_mb_top_xy as isize)
-                            as ::core::ffi::c_int
-                            == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
-                        as ::core::ffi::c_int;
+                    let mut intra_top_0 = matches!(
+                        *(*h)
+                            .mb
+                            .types
+                            .add(((*h).mb.i_mb_top_xy - (*h).sh.i_first_mb) as usize),
+                        MacroblockType::I_4x4
+                            | MacroblockType::I_8x8
+                            | MacroblockType::I_16x16
+                            | MacroblockType::I_PCM
+                    ) as ::core::ffi::c_int;
                     let mut intra_deblock_0 =
                         (intra_cur != 0 || intra_top_0 != 0) as ::core::ffi::c_int;
                     if !(*(*h).fdec).mb_info.is_null()
@@ -2187,11 +2173,10 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                 (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
                     .i_chroma_qp_index_offset
             });
-        let mut intra_cur = ((*h).mb.i_type
-            == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-            || (*h).mb.i_type == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-            || (*h).mb.i_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-            || (*h).mb.i_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
+        let mut intra_cur = ((*h).mb.ty == MacroblockType::I_4x4
+            || (*h).mb.ty == MacroblockType::I_8x8
+            || (*h).mb.ty == MacroblockType::I_16x16
+            || (*h).mb.ty == MacroblockType::I_PCM)
             as ::core::ffi::c_int;
         let mut qp = (*h).mb.i_qp;
         let mut qpc = (*h).mb.i_chroma_qp;

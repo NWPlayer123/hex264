@@ -579,6 +579,7 @@ pub mod encoder_macroblock_h {
     use crate::src::encoder::macroblock::x264_8_predict_lossless_8x8;
 }
 use crate::src::common::base::ChromaFormat;
+use crate::src::common::macroblock::MacroblockType;
 use crate::src::encoder::macroblock::base_h::x264_clip3;
 use crate::src::encoder::macroblock::base_h::x264_scan8;
 use crate::src::encoder::macroblock::encoder_macroblock_h::x264_mb_encode_i4x4;
@@ -2025,7 +2026,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 [x264_scan8[(crate::src::common::base::LUMA_DC + p) as usize] as usize] = 0u8;
             p += 1;
         }
-        if (*h).mb.i_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int {
+        if (*h).mb.ty == MacroblockType::I_PCM {
             let mut p_0 = 0i32;
             while p_0 < plane_count {
                 (*h).mc.copy[crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int as usize]
@@ -2062,19 +2063,15 @@ unsafe extern "C" fn macroblock_encode_internal(
         }
         if !(*h).mb.allow_skip {
             b_force_no_skip = 1i32;
-            if (*h).mb.i_type == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int
-                || (*h).mb.i_type == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int
-            {
-                if (*h).mb.i_type == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int {
-                    (*h).mb.i_type = crate::src::common::macroblock::P_L0 as ::core::ffi::c_int;
-                } else if (*h).mb.i_type
-                    == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int
-                {
-                    (*h).mb.i_type = crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int;
+            if (*h).mb.ty == MacroblockType::P_SKIP || (*h).mb.ty == MacroblockType::B_SKIP {
+                if (*h).mb.ty == MacroblockType::P_SKIP {
+                    (*h).mb.ty = MacroblockType::P_L0;
+                } else if (*h).mb.ty == MacroblockType::B_SKIP {
+                    (*h).mb.ty = MacroblockType::B_DIRECT;
                 }
             }
         }
-        if (*h).mb.i_type == crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int {
+        if (*h).mb.ty == MacroblockType::P_SKIP {
             if !(*h).mb.skip_mc {
                 let mut p_1 = 0i32;
                 let mut mvx = x264_clip3(
@@ -2177,14 +2174,14 @@ unsafe extern "C" fn macroblock_encode_internal(
             macroblock_encode_skip(h);
             return;
         }
-        if (*h).mb.i_type == crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int {
+        if (*h).mb.ty == MacroblockType::B_SKIP {
             if !(*h).mb.skip_mc {
                 crate::src::common::macroblock::x264_8_mb_mc(h);
             }
             macroblock_encode_skip(h);
             return;
         }
-        if (*h).mb.i_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int {
+        if (*h).mb.ty == MacroblockType::I_16x16 {
             let mut p_2 = 0i32;
             (*h).mb.transform_8x8 = false;
             while p_2 < plane_count {
@@ -2192,7 +2189,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 p_2 += 1;
                 i_qp = (*h).mb.i_chroma_qp;
             }
-        } else if (*h).mb.i_type == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int {
+        } else if (*h).mb.ty == MacroblockType::I_8x8 {
             let mut p_3 = 0i32;
             (*h).mb.transform_8x8 = true;
             if (*h).mb.i_skip_intra != 0 {
@@ -2257,7 +2254,7 @@ unsafe extern "C" fn macroblock_encode_internal(
                 p_3 += 1;
                 i_qp = (*h).mb.i_chroma_qp;
             }
-        } else if (*h).mb.i_type == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int {
+        } else if (*h).mb.ty == MacroblockType::I_4x4 {
             let mut p_4 = 0i32;
             (*h).mb.transform_8x8 = false;
             if (*h).mb.i_skip_intra != 0 {
@@ -2882,10 +2879,10 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
         }
         if chroma != 0 {
-            if (*h).mb.i_type == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                || (*h).mb.i_type == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                || (*h).mb.i_type == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                || (*h).mb.i_type == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int
+            if (*h).mb.ty == MacroblockType::I_4x4
+                || (*h).mb.ty == MacroblockType::I_8x8
+                || (*h).mb.ty == MacroblockType::I_16x16
+                || (*h).mb.ty == MacroblockType::I_PCM
             {
                 let mut i_mode_1 = (*h).mb.i_chroma_pred_mode;
                 if (*h).mb.lossless {
@@ -2901,14 +2898,10 @@ unsafe extern "C" fn macroblock_encode_internal(
             }
             x264_8_mb_encode_chroma(
                 h,
-                !((*h).mb.i_type == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                    || (*h).mb.i_type
-                        == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                    || (*h).mb.i_type
-                        == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                    || (*h).mb.i_type
-                        == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
-                    as ::core::ffi::c_int,
+                !((*h).mb.ty == MacroblockType::I_4x4
+                    || (*h).mb.ty == MacroblockType::I_8x8
+                    || (*h).mb.ty == MacroblockType::I_16x16
+                    || (*h).mb.ty == MacroblockType::I_PCM) as ::core::ffi::c_int,
                 (*h).mb.i_chroma_qp,
             );
         } else {
@@ -2931,7 +2924,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         }
         *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) = cbp as crate::stdlib::int16_t;
         if b_force_no_skip == 0 {
-            if (*h).mb.i_type == crate::src::common::macroblock::P_L0 as ::core::ffi::c_int
+            if (*h).mb.ty == MacroblockType::P_L0
                 && (*h).mb.i_partition
                     == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
                 && (*h).mb.i_cbp_luma | (*h).mb.i_cbp_chroma == 0
@@ -2950,12 +2943,12 @@ unsafe extern "C" fn macroblock_encode_internal(
                 && (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int
                     == 0i32
             {
-                (*h).mb.i_type = crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int;
+                (*h).mb.ty = MacroblockType::P_SKIP;
             }
-            if (*h).mb.i_type == crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int
+            if (*h).mb.ty == MacroblockType::B_DIRECT
                 && (*h).mb.i_cbp_luma | (*h).mb.i_cbp_chroma == 0
             {
-                (*h).mb.i_type = crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int;
+                (*h).mb.ty = MacroblockType::B_SKIP;
             }
         }
     }

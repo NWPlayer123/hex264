@@ -161,12 +161,13 @@ pub unsafe extern "C" fn x264_8_lookahead_init(
                     (*h).frames.i_delay + 3i32,
                 ) != 0)
             {
-                let mut look_h = ::core::ptr::null_mut::<crate::src::common::common::x264_t>();
+                let mut look_h: *mut crate::src::common::common::x264_t<'_> =
+                    ::core::ptr::null_mut();
                 if (*h).param.i_sync_lookahead == 0 {
                     return 0i32;
                 }
                 look_h = (*h).thread[(*h).param.i_threads as usize];
-                *look_h = *h;
+                core::ptr::copy_nonoverlapping(h, look_h, 1);
                 if (crate::src::common::macroblock::x264_8_macroblock_cache_allocate(look_h) == 0)
                     && (crate::src::common::macroblock::x264_8_macroblock_thread_allocate(
                         look_h, 1i32,

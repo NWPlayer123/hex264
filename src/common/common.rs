@@ -1,5 +1,5 @@
 // =============== BEGIN common_h ================
-use crate::src::encoder::ratecontrol::x264_ratecontrol_t;
+use crate::src::{common::macroblock::MacroblockType, encoder::ratecontrol::x264_ratecontrol_t};
 pub const QP_BD_OFFSET: ::core::ffi::c_int = 6i32 * (crate::internal::BIT_DEPTH - 8i32);
 pub const QP_MAX_SPEC: ::core::ffi::c_int = 51i32 + crate::src::common::common::QP_BD_OFFSET;
 pub const QP_MAX: ::core::ffi::c_int = crate::src::common::common::QP_MAX_SPEC + 18i32;
@@ -107,7 +107,6 @@ pub struct x264_frame_stat_t {
     pub f_ssim: ::core::ffi::c_double,
     pub i_ssim_cnt: ::core::ffi::c_int,
 }
-#[derive(Copy, Clone)]
 #[repr(C)]
 pub struct x264_t<'a> {
     pub param: crate::x264_h::x264_param_t,
@@ -258,6 +257,7 @@ pub struct C2Rust_Unnamed_13 {
     pub luma8x8: [[crate::src::common::common::dctcoef; 64]; 12],
     pub luma4x4: [[crate::src::common::common::dctcoef; 16]; 48],
 }
+
 #[derive(Copy, Clone)]
 #[repr(C)]
 pub struct C2Rust_Unnamed_14 {
@@ -302,10 +302,10 @@ pub struct C2Rust_Unnamed_14 {
     pub i_neighbour4: [::core::ffi::c_uint; 16],
     pub i_neighbour_intra: ::core::ffi::c_uint,
     pub i_neighbour_frame: ::core::ffi::c_uint,
-    pub i_mb_type_top: ::core::ffi::c_int,
-    pub i_mb_type_left: [::core::ffi::c_int; 2],
-    pub i_mb_type_topleft: ::core::ffi::c_int,
-    pub i_mb_type_topright: ::core::ffi::c_int,
+    pub i_mb_type_top: Option<MacroblockType>,
+    pub i_mb_type_left: [Option<MacroblockType>; 2],
+    pub i_mb_type_topleft: Option<MacroblockType>,
+    pub i_mb_type_topright: Option<MacroblockType>,
     pub i_mb_prev_xy: ::core::ffi::c_int,
     pub i_mb_left_xy: [::core::ffi::c_int; 2],
     pub i_mb_top_xy: ::core::ffi::c_int,
@@ -320,7 +320,8 @@ pub struct C2Rust_Unnamed_14 {
     pub allow_skip: bool,
     pub field_decoding_flag: ::core::ffi::c_int,
     pub base: *mut crate::stdlib::uint8_t,
-    pub type_0: *mut crate::stdlib::int8_t,
+    /// Per-thread MacroblockType slice.
+    pub types: *mut MacroblockType,
     pub partition: *mut crate::stdlib::uint8_t,
     pub qp: *mut crate::stdlib::int8_t,
     pub cbp: *mut crate::stdlib::int16_t,
@@ -336,7 +337,8 @@ pub struct C2Rust_Unnamed_14 {
     pub slice_table: *mut crate::stdlib::int32_t,
     pub field: *mut crate::stdlib::uint8_t,
     pub p_weight_buf: [*mut crate::src::common::common::pixel; 16],
-    pub i_type: ::core::ffi::c_int,
+    /// The type of the current macroblock.
+    pub ty: MacroblockType,
     pub i_partition: ::core::ffi::c_int,
     pub i_sub_partition: [crate::stdlib::uint8_t; 4],
     pub transform_8x8: bool,

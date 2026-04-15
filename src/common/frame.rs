@@ -2,7 +2,7 @@
 pub const PADH: ::core::ffi::c_int = 32i32;
 pub const PADV: ::core::ffi::c_int = 32i32;
 pub type x264_frame_t = crate::src::common::frame::x264_frame;
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 #[repr(C)]
 pub struct x264_frame {
     pub base: *mut crate::stdlib::uint8_t,
@@ -55,7 +55,8 @@ pub struct x264_frame {
     pub weighted: [*mut crate::src::common::common::pixel; 16],
     pub duplicate: bool,
     pub orig: *mut crate::src::common::frame::x264_frame,
-    pub mb_type: *mut crate::stdlib::int8_t,
+    /// Array containing all `MacroblockType` for the current frame (may be sliced for threading).
+    pub mb_types: Box<[MacroblockType]>,
     pub mb_partition: *mut crate::stdlib::uint8_t,
     pub mv: [*mut [crate::stdlib::int16_t; 2]; 2],
     pub mv16x16: *mut [crate::stdlib::int16_t; 2],
@@ -179,7 +180,7 @@ pub mod osdep_h {
         unsafe { (*AtomicI32::from_ptr(val)).fetch_add(add, Ordering::SeqCst) }
     }
 }
-use crate::src::common::frame::osdep_h::x264_pthread_fetch_and_add;
+use crate::src::common::{frame::osdep_h::x264_pthread_fetch_and_add, macroblock::MacroblockType};
 unsafe extern "C" fn align_stride(
     mut x: ::core::ffi::c_int,
     mut align: ::core::ffi::c_int,
@@ -455,16 +456,10 @@ unsafe extern "C" fn frame_new(
                     }
                     (*frame).duplicate = false;
                     if b_fdec != 0 {
-                        (*frame).mb_type = prealloc_size as *mut crate::stdlib::int8_t;
-                        let c2rust_fresh13 = prealloc_idx;
-                        prealloc_idx += 1;
-                        preallocs[c2rust_fresh13 as usize] =
-                            &raw mut (*frame).mb_type as *mut *mut crate::stdlib::uint8_t;
-                        prealloc_size += ((i_mb_count as usize)
-                            .wrapping_mul(::core::mem::size_of::<crate::stdlib::int8_t>())
-                            as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t)
-                            & !(64i32 - 1i32) as crate::stdlib::int64_t;
+                        // NB: default type here doesn't matter, logic flow guarantees this will be
+                        // write-first, with a valid type.
+                        (*frame).mb_types =
+                            vec![MacroblockType::I_4x4; i_mb_count as usize].into_boxed_slice();
                         (*frame).mb_partition = prealloc_size as *mut crate::stdlib::uint8_t;
                         let c2rust_fresh14 = prealloc_idx;
                         prealloc_idx += 1;

@@ -347,6 +347,7 @@ pub mod rectangle_h {
         }
     }
 }
+use crate::src::common::macroblock::MacroblockType;
 use crate::src::common::mvpred::base_h::x264_median_mv;
 use crate::src::common::mvpred::base_h::x264_scan8;
 use crate::src::common::mvpred::macroblock_h::pack16to32_mask;
@@ -613,8 +614,8 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
         let mut mb_y = (*h).mb.i_mb_y;
         let mut mb_xy = (*h).mb.i_mb_xy;
         let mut type_col = [
-            *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize) as ::core::ffi::c_int,
-            *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize) as ::core::ffi::c_int,
+            (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize],
+            (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize],
         ];
         let mut partition_col = [
             *(*(*h).fref[1usize][0usize])
@@ -634,12 +635,9 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
             if (*h).mb.interlaced {
                 mb_y = (*h).mb.i_mb_y & !(1i32);
                 mb_xy = mb_x + (*h).mb.i_mb_stride * mb_y;
-                type_col[0usize] = *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize)
-                    as ::core::ffi::c_int;
-                type_col[1usize] = *(*(*h).fref[1usize][0usize])
-                    .mb_type
-                    .offset((mb_xy + (*h).mb.i_mb_stride) as isize)
-                    as ::core::ffi::c_int;
+                type_col[0usize] = (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize];
+                type_col[1usize] =
+                    (*(*h).fref[1usize][0usize]).mb_types[(mb_xy + (*h).mb.i_mb_stride) as usize];
                 partition_col[0usize] = *(*(*h).fref[1usize][0usize])
                     .mb_partition
                     .offset(mb_xy as isize)
@@ -650,23 +648,16 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
                     as ::core::ffi::c_int;
                 preshift = false;
                 yshift = 0i32;
-                if (type_col[0usize] == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int
+                if (type_col[0usize] == MacroblockType::I_4x4
+                    || type_col[0usize] == MacroblockType::I_8x8
+                    || type_col[0usize] == MacroblockType::I_16x16
+                    || type_col[0usize] == MacroblockType::I_PCM
                     || partition_col[0usize]
                         == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int)
-                    && (type_col[1usize]
-                        == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                        || type_col[1usize]
-                            == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                        || type_col[1usize]
-                            == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                        || type_col[1usize]
-                            == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int
+                    && (type_col[1usize] == MacroblockType::I_4x4
+                        || type_col[1usize] == MacroblockType::I_8x8
+                        || type_col[1usize] == MacroblockType::I_16x16
+                        || type_col[1usize] == MacroblockType::I_PCM
                         || partition_col[1usize]
                             == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int)
                     && partition_col[0usize]
@@ -694,8 +685,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
                 )) as ::core::ffi::c_int;
                 mb_y = ((*h).mb.i_mb_y & !(1i32)) + col_parity;
                 mb_xy = mb_x + (*h).mb.i_mb_stride * mb_y;
-                type_col[1usize] = *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize)
-                    as ::core::ffi::c_int;
+                type_col[1usize] = (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize];
                 type_col[0usize] = type_col[1usize];
                 partition_col[1usize] = *(*(*h).fref[1usize][0usize])
                     .mb_partition
@@ -741,13 +731,10 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_temporal(
             } else {
                 3i32 * y8
             };
-            if type_col[y8 as usize] == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                || type_col[y8 as usize]
-                    == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                || type_col[y8 as usize]
-                    == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                || type_col[y8 as usize]
-                    == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int
+            if type_col[y8 as usize] == MacroblockType::I_4x4
+                || type_col[y8 as usize] == MacroblockType::I_8x8
+                || type_col[y8 as usize] == MacroblockType::I_16x16
+                || type_col[y8 as usize] == MacroblockType::I_PCM
             {
                 x264_macroblock_cache_ref(h, 2i32 * x8, 2i32 * y8, width, height, 0i32, 0i8);
                 x264_macroblock_cache_mv(h, 2i32 * x8, 2i32 * y8, width, height, 0i32, 0u32);
@@ -953,8 +940,8 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
         let mut mb_y = (*h).mb.i_mb_y;
         let mut mb_xy = (*h).mb.i_mb_xy;
         let mut type_col = [
-            *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize) as ::core::ffi::c_int,
-            *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize) as ::core::ffi::c_int,
+            (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize],
+            (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize],
         ];
         let mut partition_col = [
             *(*(*h).fref[1usize][0usize])
@@ -972,12 +959,9 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
             if (*h).mb.interlaced {
                 mb_y = (*h).mb.i_mb_y & !(1i32);
                 mb_xy = mb_x + (*h).mb.i_mb_stride * mb_y;
-                type_col[0usize] = *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize)
-                    as ::core::ffi::c_int;
-                type_col[1usize] = *(*(*h).fref[1usize][0usize])
-                    .mb_type
-                    .offset((mb_xy + (*h).mb.i_mb_stride) as isize)
-                    as ::core::ffi::c_int;
+                type_col[0usize] = (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize];
+                type_col[1usize] =
+                    (*(*h).fref[1usize][0usize]).mb_types[(mb_xy + (*h).mb.i_mb_stride) as usize];
                 partition_col[0usize] = *(*(*h).fref[1usize][0usize])
                     .mb_partition
                     .offset(mb_xy as isize)
@@ -986,23 +970,16 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
                     .mb_partition
                     .offset((mb_xy + (*h).mb.i_mb_stride) as isize)
                     as ::core::ffi::c_int;
-                if (type_col[0usize] == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int
+                if (type_col[0usize] == MacroblockType::I_4x4
+                    || type_col[0usize] == MacroblockType::I_8x8
+                    || type_col[0usize] == MacroblockType::I_16x16
+                    || type_col[0usize] == MacroblockType::I_PCM
                     || partition_col[0usize]
                         == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int)
-                    && (type_col[1usize]
-                        == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                        || type_col[1usize]
-                            == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                        || type_col[1usize]
-                            == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                        || type_col[1usize]
-                            == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int
+                    && (type_col[1usize] == MacroblockType::I_4x4
+                        || type_col[1usize] == MacroblockType::I_8x8
+                        || type_col[1usize] == MacroblockType::I_16x16
+                        || type_col[1usize] == MacroblockType::I_PCM
                         || partition_col[1usize]
                             == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int)
                     && partition_col[0usize]
@@ -1030,8 +1007,7 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
                 )) as ::core::ffi::c_int;
                 mb_y = ((*h).mb.i_mb_y & !(1i32)) + col_parity;
                 mb_xy = mb_x + (*h).mb.i_mb_stride * mb_y;
-                type_col[1usize] = *(*(*h).fref[1usize][0usize]).mb_type.offset(mb_xy as isize)
-                    as ::core::ffi::c_int;
+                type_col[1usize] = (*(*h).fref[1usize][0usize]).mb_types[mb_xy as usize];
                 type_col[0usize] = type_col[1usize];
                 partition_col[1usize] = *(*(*h).fref[1usize][0usize])
                     .mb_partition
@@ -1102,13 +1078,10 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
         }
         if (*(&raw mut mv as *mut crate::src::common::base::x264_union64_t)).i == 0
             || b_interlaced == 0
-                && (type_col[0usize] == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                    || type_col[0usize]
-                        == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int)
+                && (type_col[0usize] == MacroblockType::I_4x4
+                    || type_col[0usize] == MacroblockType::I_8x8
+                    || type_col[0usize] == MacroblockType::I_16x16
+                    || type_col[0usize] == MacroblockType::I_PCM)
             || ref_0[0usize] as ::core::ffi::c_int != 0 && ref_0[1usize] as ::core::ffi::c_int != 0
         {
             return true;
@@ -1146,14 +1119,10 @@ unsafe extern "C" fn mb_predict_mv_direct16x16_spatial(
             let mut o8 = x8 + (ypart >> 1i32) * (*h).mb.i_b8_stride;
             let mut o4 = 3i32 * x8 + ypart * (*h).mb.i_b4_stride;
             if !(b_interlaced != 0
-                && (type_col[y8 as usize]
-                    == crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int
-                    || type_col[y8 as usize]
-                        == crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int
-                    || type_col[y8 as usize]
-                        == crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int
-                    || type_col[y8 as usize]
-                        == crate::src::common::macroblock::I_PCM as ::core::ffi::c_int))
+                && (type_col[y8 as usize] == MacroblockType::I_4x4
+                    || type_col[y8 as usize] == MacroblockType::I_8x8
+                    || type_col[y8 as usize] == MacroblockType::I_16x16
+                    || type_col[y8 as usize] == MacroblockType::I_PCM))
             {
                 let mut c2rust_current_block_59: u64;
                 let mut idx = 0;

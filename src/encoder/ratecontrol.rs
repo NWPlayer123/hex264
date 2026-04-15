@@ -93,6 +93,7 @@ pub mod osdep_h {
         }
     }
 }
+use crate::src::common::macroblock::MacroblockType;
 use crate::src::encoder::ratecontrol::base_h::slice_type_to_char;
 use crate::src::encoder::ratecontrol::base_h::x264_clip3;
 use crate::src::encoder::ratecontrol::base_h::x264_clip3f;
@@ -3344,20 +3345,17 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
     unsafe {
         let mut rc = (*h).rc;
         let mut mbs = &raw mut (*h).stat.frame.i_mb_count as *mut ::core::ffi::c_int;
-        (*h).stat.frame.i_mb_count_skip = *mbs
-            .offset(crate::src::common::macroblock::P_SKIP as ::core::ffi::c_int as isize)
-            + *mbs.offset(crate::src::common::macroblock::B_SKIP as ::core::ffi::c_int as isize);
-        (*h).stat.frame.i_mb_count_i = *mbs
-            .offset(crate::src::common::macroblock::I_16x16 as ::core::ffi::c_int as isize)
-            + *mbs.offset(crate::src::common::macroblock::I_8x8 as ::core::ffi::c_int as isize)
-            + *mbs.offset(crate::src::common::macroblock::I_4x4 as ::core::ffi::c_int as isize)
-            + *mbs.offset(crate::src::common::macroblock::I_PCM as ::core::ffi::c_int as isize);
-        (*h).stat.frame.i_mb_count_p = *mbs
-            .offset(crate::src::common::macroblock::P_L0 as ::core::ffi::c_int as isize)
-            + *mbs.offset(crate::src::common::macroblock::P_8x8 as ::core::ffi::c_int as isize);
-        let mut i = crate::src::common::macroblock::B_DIRECT as ::core::ffi::c_int;
-        while i <= crate::src::common::macroblock::B_8x8 as ::core::ffi::c_int {
-            (*h).stat.frame.i_mb_count_p += *mbs.offset(i as isize);
+        (*h).stat.frame.i_mb_count_skip = *mbs.offset(MacroblockType::P_SKIP as isize)
+            + *mbs.offset(MacroblockType::B_SKIP as isize);
+        (*h).stat.frame.i_mb_count_i = *mbs.offset(MacroblockType::I_16x16 as isize)
+            + *mbs.offset(MacroblockType::I_8x8 as isize)
+            + *mbs.offset(MacroblockType::I_4x4 as isize)
+            + *mbs.offset(MacroblockType::I_PCM as isize);
+        (*h).stat.frame.i_mb_count_p = *mbs.offset(MacroblockType::P_L0 as isize)
+            + *mbs.offset(MacroblockType::P_8x8 as isize);
+        let mut i = MacroblockType::B_DIRECT as isize;
+        while i <= MacroblockType::B_8x8 as isize {
+            (*h).stat.frame.i_mb_count_p += *mbs.offset(i);
             i += 1;
         }
         (*rc).qpa_rc /= (*h).mb.i_mb_count as ::core::ffi::c_float;
