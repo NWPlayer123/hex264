@@ -349,11 +349,11 @@ pub mod macroblock_h {
             }
             ((*(&raw mut (*h).mb.i_sub_partition as *mut crate::src::common::base::x264_union32_t))
                 .i
-                == (crate::src::common::macroblock::D_L0_8x8 as ::core::ffi::c_int * 0x1010101i32)
-                    as crate::stdlib::uint32_t) as ::core::ffi::c_int
+                == (Partition::D_L0_8x8 as i32 * 0x1010101i32) as crate::stdlib::uint32_t)
+                as ::core::ffi::c_int
         }
     }
-    use crate::src::common::macroblock::MacroblockType;
+    use crate::src::common::macroblock::{MacroblockType, Partition};
     use crate::src::encoder::cavlc::base_h::x264_scan8;
     use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode4x4_fix;
 }
@@ -390,7 +390,7 @@ pub mod osdep_h {
         }
     }
 }
-use crate::src::common::macroblock::MacroblockType;
+use crate::src::common::macroblock::{MacroblockType, Partition};
 use crate::src::encoder::cavlc::base_h::x264_scan8;
 use crate::src::encoder::cavlc::bitstream_h::bs_align_0;
 use crate::src::encoder::cavlc::bitstream_h::bs_init;
@@ -409,49 +409,58 @@ use crate::src::encoder::cavlc::osdep_h::x264_ctz_4bit;
 use crate::src::encoder::cavlc::predict_h::x264_mb_chroma_pred_mode_fix;
 use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode4x4_fix;
 use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode16x16_fix;
-static mut cbp_to_golomb: [[[crate::stdlib::uint8_t; 48]; 2]; 2] = [
+static mut cbp_to_golomb: [[[u8; 48]; 2]; 2] = [
     [
         [
-            0u8, 1u8, 2u8, 5u8, 3u8, 6u8, 14u8, 10u8, 4u8, 15u8, 7u8, 11u8, 8u8, 12u8, 13u8, 9u8,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0,
+            0, 1, 2, 5, 3, 6, 14, 10, 4, 15, 7, 11, 8, 12, 13, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
         [
-            1u8, 10u8, 11u8, 6u8, 12u8, 7u8, 14u8, 2u8, 13u8, 15u8, 8u8, 3u8, 9u8, 4u8, 5u8, 0u8,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0,
+            1, 10, 11, 6, 12, 7, 14, 2, 13, 15, 8, 3, 9, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
     ],
     [
         [
-            0u8, 2u8, 3u8, 7u8, 4u8, 8u8, 17u8, 13u8, 5u8, 18u8, 9u8, 14u8, 10u8, 15u8, 16u8, 11u8,
-            1u8, 32u8, 33u8, 36u8, 34u8, 37u8, 44u8, 40u8, 35u8, 45u8, 38u8, 41u8, 39u8, 42u8,
-            43u8, 19u8, 6u8, 24u8, 25u8, 20u8, 26u8, 21u8, 46u8, 28u8, 27u8, 47u8, 22u8, 29u8,
-            23u8, 30u8, 31u8, 12u8,
+            0, 2, 3, 7, 4, 8, 17, 13, 5, 18, 9, 14, 10, 15, 16, 11, 1, 32, 33, 36, 34, 37, 44, 40,
+            35, 45, 38, 41, 39, 42, 43, 19, 6, 24, 25, 20, 26, 21, 46, 28, 27, 47, 22, 29, 23, 30,
+            31, 12,
         ],
         [
-            3u8, 29u8, 30u8, 17u8, 31u8, 18u8, 37u8, 8u8, 32u8, 38u8, 19u8, 9u8, 20u8, 10u8, 11u8,
-            2u8, 16u8, 33u8, 34u8, 21u8, 35u8, 22u8, 39u8, 4u8, 36u8, 40u8, 23u8, 5u8, 24u8, 6u8,
-            7u8, 1u8, 41u8, 42u8, 43u8, 25u8, 44u8, 26u8, 46u8, 12u8, 45u8, 47u8, 27u8, 13u8, 28u8,
-            14u8, 15u8, 0u8,
+            3, 29, 30, 17, 31, 18, 37, 8, 32, 38, 19, 9, 20, 10, 11, 2, 16, 33, 34, 21, 35, 22, 39,
+            4, 36, 40, 23, 5, 24, 6, 7, 1, 41, 42, 43, 25, 44, 26, 46, 12, 45, 47, 27, 13, 28, 14,
+            15, 0,
         ],
     ],
 ];
-static mut mb_type_b_to_golomb: [[crate::stdlib::uint8_t; 9]; 3] = [
-    [4u8, 8u8, 12u8, 10u8, 6u8, 14u8, 16u8, 18u8, 20u8],
-    [5u8, 9u8, 13u8, 11u8, 7u8, 15u8, 17u8, 19u8, 21u8],
-    [
-        1u8,
-        -(1i32) as crate::stdlib::uint8_t,
-        -(1i32) as crate::stdlib::uint8_t,
-        -(1i32) as crate::stdlib::uint8_t,
-        2u8,
-        -(1i32) as crate::stdlib::uint8_t,
-        -(1i32) as crate::stdlib::uint8_t,
-        -(1i32) as crate::stdlib::uint8_t,
-        3u8,
-    ],
-];
+const fn mb_type_b_to_golomb(partition: Partition, mb_type: MacroblockType) -> u8 {
+    use crate::src::common::macroblock::Partition::*;
+    use MacroblockType::*;
+    match (partition, mb_type) {
+        (D_16x16, B_L0_L0) => 1,
+        (D_16x16, B_L1_L1) => 2,
+        (D_16x16, B_BI_BI) => 3,
+        (D_16x8, B_L0_L0) => 4,
+        (D_8x16, B_L0_L0) => 5,
+        (D_16x8, B_L1_L1) => 6,
+        (D_8x16, B_L1_L1) => 7,
+        (D_16x8, B_L0_L1) => 8,
+        (D_8x16, B_L0_L1) => 9,
+        (D_16x8, B_L1_L0) => 10,
+        (D_8x16, B_L1_L0) => 11,
+        (D_16x8, B_L0_BI) => 12,
+        (D_8x16, B_L0_BI) => 13,
+        (D_16x8, B_L1_BI) => 14,
+        (D_8x16, B_L1_BI) => 15,
+        (D_16x8, B_BI_L0) => 16,
+        (D_8x16, B_BI_L0) => 17,
+        (D_16x8, B_BI_L1) => 18,
+        (D_8x16, B_BI_L1) => 19,
+        (D_16x8, B_BI_BI) => 20,
+        (D_8x16, B_BI_BI) => 21,
+        _ => unreachable!(),
+    }
+}
 static mut subpartition_p_to_golomb: [crate::stdlib::uint8_t; 4] = [3u8, 1u8, 2u8, 0u8];
 static mut subpartition_b_to_golomb: [crate::stdlib::uint8_t; 13] = [
     10u8, 4u8, 5u8, 1u8, 11u8, 6u8, 7u8, 2u8, 12u8, 8u8, 9u8, 3u8, 0u8,
@@ -925,8 +934,7 @@ unsafe extern "C" fn cavlc_mb_header_p(
     unsafe {
         let mut s = &raw mut (*h).out.bs;
         if i_mb_type == MacroblockType::P_L0 {
-            if (*h).mb.i_partition == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-            {
+            if (*h).mb.i_partition == Partition::D_16x16 {
                 bs_write1(s, 1u32);
                 if (*h).mb.pic.i_fref[0usize] > 1i32 {
                     bs_write_te(
@@ -937,9 +945,7 @@ unsafe extern "C" fn cavlc_mb_header_p(
                     );
                 }
                 cavlc_mvd(h, 0i32, 0i32, 4i32);
-            } else if (*h).mb.i_partition
-                == crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int
-            {
+            } else if (*h).mb.i_partition == Partition::D_16x8 {
                 bs_write_ue(s, 1i32);
                 if (*h).mb.pic.i_fref[0usize] > 1i32 {
                     bs_write_te(
@@ -957,9 +963,7 @@ unsafe extern "C" fn cavlc_mb_header_p(
                 }
                 cavlc_mvd(h, 0i32, 0i32, 4i32);
                 cavlc_mvd(h, 0i32, 8i32, 4i32);
-            } else if (*h).mb.i_partition
-                == crate::src::common::macroblock::D_8x16 as ::core::ffi::c_int
-            {
+            } else if (*h).mb.i_partition == Partition::D_8x16 {
                 bs_write_ue(s, 2i32);
                 if (*h).mb.pic.i_fref[0usize] > 1i32 {
                     bs_write_te(
@@ -1119,13 +1123,9 @@ unsafe extern "C" fn cavlc_mb_header_b(
             let i_ref1_max = (*h).mb.pic.i_fref[1usize] - 1i32;
             bs_write_ue(
                 s,
-                mb_type_b_to_golomb[((*h).mb.i_partition
-                    - crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int)
-                    as usize][(i_mb_type as i32 - MacroblockType::B_L0_L0 as i32) as usize]
-                    as ::core::ffi::c_int,
+                mb_type_b_to_golomb((*h).mb.i_partition, i_mb_type) as ::core::ffi::c_int,
             );
-            if (*h).mb.i_partition == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-            {
+            if (*h).mb.i_partition == Partition::D_16x16 {
                 if i_ref0_max != 0 && (*b_list.offset(0isize))[0usize] as ::core::ffi::c_int != 0 {
                     bs_write_te(
                         s,
@@ -1181,9 +1181,7 @@ unsafe extern "C" fn cavlc_mb_header_b(
                             as ::core::ffi::c_int,
                     );
                 }
-                if (*h).mb.i_partition
-                    == crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int
-                {
+                if (*h).mb.i_partition == Partition::D_16x8 {
                     if (*b_list.offset(0isize))[0usize] != 0 {
                         cavlc_mvd(h, 0i32, 0i32, 4i32);
                     }

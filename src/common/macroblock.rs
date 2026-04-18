@@ -32,25 +32,38 @@ pub enum MacroblockType {
     B_8x8 = 17,
     B_SKIP = 18,
 }
-pub type mb_partition_e = ::core::ffi::c_uint;
-pub const D_L0_4x4: crate::src::common::macroblock::mb_partition_e = 0;
-pub const D_L0_8x4: crate::src::common::macroblock::mb_partition_e = 1;
-pub const D_L0_4x8: crate::src::common::macroblock::mb_partition_e = 2;
-pub const D_L0_8x8: crate::src::common::macroblock::mb_partition_e = 3;
-pub const D_L1_4x4: crate::src::common::macroblock::mb_partition_e = 4;
-pub const D_L1_8x4: crate::src::common::macroblock::mb_partition_e = 5;
-pub const D_L1_4x8: crate::src::common::macroblock::mb_partition_e = 6;
-pub const D_L1_8x8: crate::src::common::macroblock::mb_partition_e = 7;
-pub const D_BI_4x4: crate::src::common::macroblock::mb_partition_e = 8;
-pub const D_BI_8x4: crate::src::common::macroblock::mb_partition_e = 9;
-pub const D_BI_4x8: crate::src::common::macroblock::mb_partition_e = 10;
-pub const D_BI_8x8: crate::src::common::macroblock::mb_partition_e = 11;
-pub const D_DIRECT_8x8: crate::src::common::macroblock::mb_partition_e = 12;
-pub const D_8x8: crate::src::common::macroblock::mb_partition_e = 13;
-pub const D_16x8: crate::src::common::macroblock::mb_partition_e = 14;
-pub const D_8x16: crate::src::common::macroblock::mb_partition_e = 15;
-pub const D_16x16: crate::src::common::macroblock::mb_partition_e = 16;
-pub const X264_PARTTYPE_MAX: crate::src::common::macroblock::mb_partition_e = 17;
+#[derive(
+    Clone,
+    Copy,
+    Debug,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    strum::EnumCount,
+    strum::EnumIter,
+    strum::FromRepr,
+)]
+#[repr(u8)]
+pub enum Partition {
+    D_L0_4x4 = 0,
+    D_L0_8x4 = 1,
+    D_L0_4x8 = 2,
+    D_L0_8x8 = 3,
+    D_L1_4x4 = 4,
+    D_L1_8x4 = 5,
+    D_L1_4x8 = 6,
+    D_L1_8x8 = 7,
+    D_BI_4x4 = 8,
+    D_BI_8x4 = 9,
+    D_BI_4x8 = 10,
+    D_BI_8x8 = 11,
+    D_DIRECT_8x8 = 12,
+    D_8x8 = 13,
+    D_16x8 = 14,
+    D_8x16 = 15,
+    D_16x16 = 16,
+}
 pub type cabac_ctx_block_cat_e = ::core::ffi::c_uint;
 pub const DCT_LUMA_DC: crate::src::common::macroblock::cabac_ctx_block_cat_e = 0;
 pub const DCT_LUMA_AC: crate::src::common::macroblock::cabac_ctx_block_cat_e = 1;
@@ -993,7 +1006,7 @@ pub unsafe extern "C" fn x264_8_mb_mc_8x8(
 }
 pub unsafe extern "C" fn x264_8_mb_mc(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
-        if (*h).mb.i_partition == crate::src::common::macroblock::D_8x8 as ::core::ffi::c_int {
+        if (*h).mb.i_partition == Partition::D_8x8 {
             let mut i = 0i32;
             while i < 4i32 {
                 x264_8_mb_mc_8x8(h, i);
@@ -1008,8 +1021,7 @@ pub unsafe extern "C" fn x264_8_mb_mc(mut h: *mut crate::src::common::common::x2
                 (*h).mb.cache.ref_0[1usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int;
             let mut ref1b =
                 (*h).mb.cache.ref_0[1usize][x264_scan8[12usize] as usize] as ::core::ffi::c_int;
-            if (*h).mb.i_partition == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-            {
+            if (*h).mb.i_partition == Partition::D_16x16 {
                 if ref0a >= 0i32 {
                     if ref1a >= 0i32 {
                         mb_mc_01xywh(h, 0i32, 0i32, 4i32, 4i32);
@@ -1019,9 +1031,7 @@ pub unsafe extern "C" fn x264_8_mb_mc(mut h: *mut crate::src::common::common::x2
                 } else {
                     mb_mc_1xywh(h, 0i32, 0i32, 4i32, 4i32);
                 }
-            } else if (*h).mb.i_partition
-                == crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int
-            {
+            } else if (*h).mb.i_partition == Partition::D_16x8 {
                 if ref0a >= 0i32 {
                     if ref1a >= 0i32 {
                         mb_mc_01xywh(h, 0i32, 0i32, 4i32, 2i32);
@@ -1040,9 +1050,7 @@ pub unsafe extern "C" fn x264_8_mb_mc(mut h: *mut crate::src::common::common::x2
                 } else {
                     mb_mc_1xywh(h, 0i32, 2i32, 4i32, 2i32);
                 }
-            } else if (*h).mb.i_partition
-                == crate::src::common::macroblock::D_8x16 as ::core::ffi::c_int
-            {
+            } else if (*h).mb.i_partition == Partition::D_8x16 {
                 if ref0a >= 0i32 {
                     if ref1a >= 0i32 {
                         mb_mc_01xywh(h, 0i32, 0i32, 2i32, 4i32);
@@ -1578,7 +1586,10 @@ pub unsafe extern "C" fn slice_init(mut h: *mut crate::src::common::common::x264
             .mb_types
             .as_mut_ptr()
             .add((*h).sh.i_first_mb as usize);
-        (*h).mb.partition = (*(*h).fdec).mb_partition;
+        (*h).mb.partition = (*(*h).fdec)
+            .mb_partition
+            .as_mut_ptr()
+            .add((*h).sh.i_first_mb as usize);
         (*h).mb.field = (*(*h).fdec).field;
         (*(*h).fdec).i_ref[0usize] = (*h).i_ref[0usize];
         (*(*h).fdec).i_ref[1usize] = (*h).i_ref[1usize];
@@ -5477,15 +5488,18 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_save(
         x264_8_prefetch_fenc(h, (*h).fdec, (*h).mb.i_mb_x, (*h).mb.i_mb_y);
         *(*h).mb.types.add((i_mb_xy - (*h).sh.i_first_mb) as usize) = i_mb_type;
         *(*h).mb.slice_table.offset(i_mb_xy as isize) = (*h).sh.i_first_mb;
-        *(*h).mb.partition.offset(i_mb_xy as isize) = (if i_mb_type == MacroblockType::I_4x4
+        *(*h)
+            .mb
+            .partition
+            .add((i_mb_xy - (*h).sh.i_first_mb) as usize) = if i_mb_type == MacroblockType::I_4x4
             || i_mb_type == MacroblockType::I_8x8
             || i_mb_type == MacroblockType::I_16x16
             || i_mb_type == MacroblockType::I_PCM
         {
-            crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+            Partition::D_16x16
         } else {
             (*h).mb.i_partition
-        }) as crate::stdlib::uint8_t;
+        };
         (*h).mb.i_mb_prev_xy = i_mb_xy;
         if i_mb_type == MacroblockType::I_4x4 {
             (*(i4x4.offset(0isize)
@@ -5975,20 +5989,16 @@ pub unsafe extern "C" fn x264_8_macroblock_cache_save(
                 if i_mb_type == MacroblockType::B_SKIP || i_mb_type == MacroblockType::B_DIRECT {
                     *(*h).mb.skipbp.offset(i_mb_xy as isize) = 0xfi8;
                 } else if i_mb_type == MacroblockType::B_8x8 {
-                    let mut skipbp = (((*h).mb.i_sub_partition[0usize] as ::core::ffi::c_int
-                        == crate::src::common::macroblock::D_DIRECT_8x8 as ::core::ffi::c_int)
+                    let mut skipbp = (((*h).mb.i_sub_partition[0usize] == Partition::D_DIRECT_8x8)
                         as ::core::ffi::c_int)
                         << 0i32;
-                    skipbp |= (((*h).mb.i_sub_partition[1usize] as ::core::ffi::c_int
-                        == crate::src::common::macroblock::D_DIRECT_8x8 as ::core::ffi::c_int)
+                    skipbp |= (((*h).mb.i_sub_partition[1usize] == Partition::D_DIRECT_8x8)
                         as ::core::ffi::c_int)
                         << 1i32;
-                    skipbp |= (((*h).mb.i_sub_partition[2usize] as ::core::ffi::c_int
-                        == crate::src::common::macroblock::D_DIRECT_8x8 as ::core::ffi::c_int)
+                    skipbp |= (((*h).mb.i_sub_partition[2usize] == Partition::D_DIRECT_8x8)
                         as ::core::ffi::c_int)
                         << 2i32;
-                    skipbp |= (((*h).mb.i_sub_partition[3usize] as ::core::ffi::c_int
-                        == crate::src::common::macroblock::D_DIRECT_8x8 as ::core::ffi::c_int)
+                    skipbp |= (((*h).mb.i_sub_partition[3usize] == Partition::D_DIRECT_8x8)
                         as ::core::ffi::c_int)
                         << 3i32;
                     *(*h).mb.skipbp.offset(i_mb_xy as isize) = skipbp as crate::stdlib::int8_t;

@@ -561,13 +561,15 @@ pub mod osdep_h {
         }
     }
 }
+use strum::EnumCount as _;
+
 use crate::src::common::base::ChromaFormat;
 use crate::src::common::base::x264_free;
 use crate::src::common::base::x264_param_strdup;
 use crate::src::common::common::x264_t;
 use crate::src::common::cpu::X264_CPU_NAMES;
 use crate::src::common::macroblock;
-use crate::src::common::macroblock::MacroblockType;
+use crate::src::common::macroblock::{MacroblockType, Partition};
 use crate::src::encoder::encoder::base_h::slice_type_to_char;
 use crate::src::encoder::encoder::base_h::x264_clip3;
 use crate::src::encoder::encoder::base_h::x264_clip3f;
@@ -5711,7 +5713,7 @@ unsafe extern "C" fn slice_write(mut h: *mut x264_t) -> crate::stdlib::intptr_t 
                     && b_skip == 0
                     && ((*h).mb.ty != MacroblockType::B_DIRECT)
                 {
-                    if (*h).mb.i_partition != macroblock::D_8x8 as ::core::ffi::c_int {
+                    if (*h).mb.i_partition != Partition::D_8x8 {
                         (*h).stat.frame.i_mb_partition[(*h).mb.i_partition as usize] += 4i32;
                     } else {
                         let mut i = 0i32;
@@ -7153,7 +7155,7 @@ unsafe extern "C" fn encoder_frame_end<'a>(
         (*h).stat.i_frame_size[(*h).sh.i_type as usize] += frame_size as crate::stdlib::int64_t;
         (*h).stat.f_frame_qp[(*h).sh.i_type as usize] +=
             (*(*h).fdec).f_qp_avg_aq as ::core::ffi::c_double;
-        while i_0 < <MacroblockType as strum::EnumCount>::COUNT as ::core::ffi::c_int {
+        while i_0 < MacroblockType::COUNT as ::core::ffi::c_int {
             (*h).stat.i_mb_count[(*h).sh.i_type as usize][i_0 as usize] +=
                 (*h).stat.frame.i_mb_count[i_0 as usize] as crate::stdlib::int64_t;
             i_0 += 1;
@@ -7181,7 +7183,7 @@ unsafe extern "C" fn encoder_frame_end<'a>(
         if (*h).sh.i_type != crate::src::common::base::SLICE_TYPE_I as ::core::ffi::c_int {
             let mut i_4 = 0i32;
             let mut i_list = 0i32;
-            while i_4 < macroblock::X264_PARTTYPE_MAX as ::core::ffi::c_int {
+            while i_4 < Partition::COUNT as i32 {
                 (*h).stat.i_mb_partition[(*h).sh.i_type as usize][i_4 as usize] +=
                     (*h).stat.frame.i_mb_partition[i_4 as usize] as crate::stdlib::int64_t;
                 i_4 += 1;
@@ -7515,8 +7517,8 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
         }
         while i_type < 2i32 {
             let mut i_3 = 0i32;
-            while i_3 < macroblock::X264_PARTTYPE_MAX as ::core::ffi::c_int {
-                if i_3 != macroblock::D_DIRECT_8x8 as ::core::ffi::c_int {
+            while i_3 < Partition::COUNT as i32 {
+                if i_3 != Partition::D_DIRECT_8x8 as i32 {
                     i_mb_count_size[i_type as usize]
                         [x264_mb_partition_pixel_table[i_3 as usize] as usize] +=
                         (*h).stat.i_mb_partition[i_type as usize][i_3 as usize];
@@ -7630,7 +7632,7 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
                 b_print_pcm,
                 &raw mut buf as *mut ::core::ffi::c_char,
             );
-            while i_4 < macroblock::X264_PARTTYPE_MAX as ::core::ffi::c_int {
+            while i_4 < Partition::COUNT as i32 {
                 let mut j = 0i32;
                 while j < 2i32 {
                     let mut l0 = x264_mb_type_list_table[i_4 as usize][0usize][j as usize]
@@ -7649,16 +7651,16 @@ pub unsafe extern "C" fn x264_8_encoder_close(mut h: *mut x264_t) {
             }
             list_count[0usize] += (*h).stat.i_mb_partition
                 [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
-                [macroblock::D_L0_8x8 as ::core::ffi::c_int as usize];
+                [Partition::D_L0_8x8 as usize];
             list_count[1usize] += (*h).stat.i_mb_partition
                 [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
-                [macroblock::D_L1_8x8 as ::core::ffi::c_int as usize];
+                [Partition::D_L1_8x8 as usize];
             list_count[2usize] += (*h).stat.i_mb_partition
                 [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
-                [macroblock::D_BI_8x8 as ::core::ffi::c_int as usize];
+                [Partition::D_BI_8x8 as usize];
             *i_mb_count_1.offset(MacroblockType::B_DIRECT as isize) += ((*h).stat.i_mb_partition
                 [crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int as usize]
-                [macroblock::D_DIRECT_8x8 as ::core::ffi::c_int as usize]
+                [Partition::D_DIRECT_8x8 as usize]
                 + 2i64)
                 / 4i64;
             let mut i_mb_list_count = (list_count[0usize] + list_count[1usize] + list_count[2usize])

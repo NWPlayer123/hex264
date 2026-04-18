@@ -28,7 +28,7 @@ pub mod base_h {
 }
 use crate::src::common::deblock::base_h::x264_clip3;
 use crate::src::common::deblock::common_h::x264_clip_pixel;
-use crate::src::common::macroblock::MacroblockType;
+use crate::src::common::macroblock::{MacroblockType, Partition};
 static mut i_alpha_table: [crate::stdlib::uint8_t; 88] = [
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
     0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
@@ -818,12 +818,12 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             let mut stride2uv = strideuv << (*h).mb.interlaced as ::core::ffi::c_int;
             let mut qp = *(*h).mb.qp.offset(mb_xy as isize) as ::core::ffi::c_int;
             let mut qpc = *(*h).chroma_qp_table.offset(qp as isize) as ::core::ffi::c_int;
-            let mut first_edge_only = (*(*h).mb.partition.offset(mb_xy as isize)
-                as ::core::ffi::c_int
-                == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-                && *(*h).mb.cbp.offset(mb_xy as isize) == 0
-                && intra_cur == 0
-                || qp <= qp_thresh) as ::core::ffi::c_int;
+            let mut first_edge_only =
+                (*(*h).mb.partition.add((mb_xy - (*h).sh.i_first_mb) as usize)
+                    == Partition::D_16x16
+                    && *(*h).mb.cbp.offset(mb_xy as isize) == 0
+                    && intra_cur == 0
+                    || qp <= qp_thresh) as ::core::ffi::c_int;
             if (*h).mb.i_neighbour & crate::src::common::macroblock::MB_LEFT != 0 {
                 if interlaced
                     && *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0usize] as isize)
@@ -2180,9 +2180,7 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             as ::core::ffi::c_int;
         let mut qp = (*h).mb.i_qp;
         let mut qpc = (*h).mb.i_chroma_qp;
-        if (*h).mb.i_partition == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-            && (*h).mb.i_cbp_luma == 0
-            && intra_cur == 0
+        if (*h).mb.i_partition == Partition::D_16x16 && (*h).mb.i_cbp_luma == 0 && intra_cur == 0
             || qp <= qp_thresh
         {
             return;

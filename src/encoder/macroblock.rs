@@ -579,7 +579,7 @@ pub mod encoder_macroblock_h {
     use crate::src::encoder::macroblock::x264_8_predict_lossless_8x8;
 }
 use crate::src::common::base::ChromaFormat;
-use crate::src::common::macroblock::MacroblockType;
+use crate::src::common::macroblock::{MacroblockType, Partition};
 use crate::src::encoder::macroblock::base_h::x264_clip3;
 use crate::src::encoder::macroblock::base_h::x264_scan8;
 use crate::src::encoder::macroblock::encoder_macroblock_h::x264_mb_encode_i4x4;
@@ -2925,8 +2925,7 @@ unsafe extern "C" fn macroblock_encode_internal(
         *(*h).mb.cbp.offset((*h).mb.i_mb_xy as isize) = cbp as crate::stdlib::int16_t;
         if b_force_no_skip == 0 {
             if (*h).mb.ty == MacroblockType::P_L0
-                && (*h).mb.i_partition
-                    == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+                && (*h).mb.i_partition == Partition::D_16x16
                 && (*h).mb.i_cbp_luma | (*h).mb.i_cbp_chroma == 0
                 && (*(&raw mut *(&raw mut *(&raw mut (*h).mb.cache.mv
                     as *mut [[crate::stdlib::int16_t; 2]; 40])

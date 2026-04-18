@@ -57,7 +57,7 @@ pub struct x264_frame {
     pub orig: *mut crate::src::common::frame::x264_frame,
     /// Array containing all `MacroblockType` for the current frame (may be sliced for threading).
     pub mb_types: Box<[MacroblockType]>,
-    pub mb_partition: *mut crate::stdlib::uint8_t,
+    pub mb_partition: Box<[Partition]>,
     pub mv: [*mut [crate::stdlib::int16_t; 2]; 2],
     pub mv16x16: *mut [crate::stdlib::int16_t; 2],
     pub lowres_mvs: [[*mut [crate::stdlib::int16_t; 2]; 17]; 2],
@@ -180,7 +180,10 @@ pub mod osdep_h {
         unsafe { (*AtomicI32::from_ptr(val)).fetch_add(add, Ordering::SeqCst) }
     }
 }
-use crate::src::common::{frame::osdep_h::x264_pthread_fetch_and_add, macroblock::MacroblockType};
+use crate::src::common::{
+    frame::osdep_h::x264_pthread_fetch_and_add,
+    macroblock::{MacroblockType, Partition},
+};
 unsafe extern "C" fn align_stride(
     mut x: ::core::ffi::c_int,
     mut align: ::core::ffi::c_int,
@@ -460,15 +463,10 @@ unsafe extern "C" fn frame_new(
                         // write-first, with a valid type.
                         (*frame).mb_types =
                             vec![MacroblockType::I_4x4; i_mb_count as usize].into_boxed_slice();
-                        (*frame).mb_partition = prealloc_size as *mut crate::stdlib::uint8_t;
-                        let c2rust_fresh14 = prealloc_idx;
-                        prealloc_idx += 1;
-                        preallocs[c2rust_fresh14 as usize] = &raw mut (*frame).mb_partition;
-                        prealloc_size += ((i_mb_count as usize)
-                            .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>())
-                            as crate::stdlib::int64_t
-                            + (64i32 - 1i32) as crate::stdlib::int64_t)
-                            & !(64i32 - 1i32) as crate::stdlib::int64_t;
+                        // NB: default type here doesn't matter, logic flow guarantees this will be
+                        // write-first, with a valid type.
+                        (*frame).mb_partition =
+                            vec![Partition::D_16x16; i_mb_count as usize].into_boxed_slice();
                         (*frame).mv[0usize] = prealloc_size as *mut [crate::stdlib::int16_t; 2];
                         let c2rust_fresh15 = prealloc_idx;
                         prealloc_idx += 1;

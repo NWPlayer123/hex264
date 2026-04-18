@@ -1,5 +1,8 @@
 // =============== BEGIN common_h ================
-use crate::src::{common::macroblock::MacroblockType, encoder::ratecontrol::x264_ratecontrol_t};
+use crate::src::{
+    common::macroblock::{MacroblockType, Partition},
+    encoder::ratecontrol::x264_ratecontrol_t,
+};
 pub const QP_BD_OFFSET: ::core::ffi::c_int = 6i32 * (crate::internal::BIT_DEPTH - 8i32);
 pub const QP_MAX_SPEC: ::core::ffi::c_int = 51i32 + crate::src::common::common::QP_BD_OFFSET;
 pub const QP_MAX: ::core::ffi::c_int = crate::src::common::common::QP_MAX_SPEC + 18i32;
@@ -322,7 +325,7 @@ pub struct C2Rust_Unnamed_14 {
     pub base: *mut crate::stdlib::uint8_t,
     /// Per-thread MacroblockType slice.
     pub types: *mut MacroblockType,
-    pub partition: *mut crate::stdlib::uint8_t,
+    pub partition: *mut Partition,
     pub qp: *mut crate::stdlib::int8_t,
     pub cbp: *mut crate::stdlib::int16_t,
     pub intra4x4_pred_mode: *mut [crate::stdlib::int8_t; 8],
@@ -339,8 +342,8 @@ pub struct C2Rust_Unnamed_14 {
     pub p_weight_buf: [*mut crate::src::common::common::pixel; 16],
     /// The type of the current macroblock.
     pub ty: MacroblockType,
-    pub i_partition: ::core::ffi::c_int,
-    pub i_sub_partition: [crate::stdlib::uint8_t; 4],
+    pub i_partition: Partition,
+    pub i_sub_partition: [Partition; 4],
     pub transform_8x8: bool,
     pub i_cbp_luma: ::core::ffi::c_int,
     pub i_cbp_chroma: ::core::ffi::c_int,
@@ -412,7 +415,7 @@ pub struct C2Rust_Unnamed_16 {
     pub skip: [crate::stdlib::int8_t; 40],
     pub direct_mv: [[[crate::stdlib::int16_t; 2]; 4]; 2],
     pub direct_ref: [[crate::stdlib::int8_t; 4]; 2],
-    pub direct_partition: ::core::ffi::c_int,
+    pub direct_partition: Partition,
     pub pskip_mv: [crate::stdlib::int16_t; 2],
     pub i_neighbour_transform_size: ::core::ffi::c_int,
     pub i_neighbour_skip: ::core::ffi::c_int,

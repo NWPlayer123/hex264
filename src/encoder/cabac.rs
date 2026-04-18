@@ -295,11 +295,11 @@ pub mod macroblock_h {
             }
             ((*(&raw mut (*h).mb.i_sub_partition as *mut crate::src::common::base::x264_union32_t))
                 .i
-                == (crate::src::common::macroblock::D_L0_8x8 as ::core::ffi::c_int * 0x1010101i32)
-                    as crate::stdlib::uint32_t) as ::core::ffi::c_int
+                == (Partition::D_L0_8x8 as i32 * 0x1010101i32) as crate::stdlib::uint32_t)
+                as ::core::ffi::c_int
         }
     }
-    use crate::src::common::macroblock::MacroblockType;
+    use crate::src::common::macroblock::{MacroblockType, Partition};
     use crate::src::encoder::cabac::base_h::x264_scan8;
     use crate::src::encoder::cabac::predict_h::x264_mb_pred_mode4x4_fix;
 }
@@ -549,7 +549,7 @@ pub mod rectangle_h {
         }
     }
 }
-use crate::src::common::macroblock::MacroblockType;
+use crate::src::common::macroblock::{MacroblockType, Partition};
 use crate::src::encoder::cabac::base_h::x264_cabac_mvd_sum;
 use crate::src::encoder::cabac::base_h::x264_scan8;
 use crate::src::encoder::cabac::bitstream_h::bs_flush;
@@ -829,23 +829,22 @@ pub unsafe extern "C" fn x264_8_cabac_mb_skip(
 #[inline]
 unsafe extern "C" fn cabac_subpartition_p(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
-    mut i_sub: ::core::ffi::c_int,
+    mut i_sub: Partition,
 ) {
     unsafe {
-        if i_sub == crate::src::common::macroblock::D_L0_8x8 as ::core::ffi::c_int {
+        if i_sub == Partition::D_L0_8x8 {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 21i32, 1i32);
             return;
         }
         crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 21i32, 0i32);
-        if i_sub == crate::src::common::macroblock::D_L0_8x4 as ::core::ffi::c_int {
+        if i_sub == Partition::D_L0_8x4 {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 22i32, 0i32);
         } else {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 22i32, 1i32);
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(
                 cb,
                 23i32,
-                (i_sub == crate::src::common::macroblock::D_L0_4x8 as ::core::ffi::c_int)
-                    as ::core::ffi::c_int,
+                (i_sub == Partition::D_L0_4x8) as ::core::ffi::c_int,
             );
         };
     }
@@ -853,15 +852,15 @@ unsafe extern "C" fn cabac_subpartition_p(
 #[inline(always)]
 unsafe extern "C" fn cabac_subpartition_b(
     mut cb: *mut crate::src::common::cabac::x264_cabac_t,
-    mut i_sub: ::core::ffi::c_int,
+    mut i_sub: Partition,
 ) {
     unsafe {
-        if i_sub == crate::src::common::macroblock::D_DIRECT_8x8 as ::core::ffi::c_int {
+        if i_sub == Partition::D_DIRECT_8x8 {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 36i32, 0i32);
             return;
         }
         crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 36i32, 1i32);
-        if i_sub == crate::src::common::macroblock::D_BI_8x8 as ::core::ffi::c_int {
+        if i_sub == Partition::D_BI_8x8 {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 37i32, 1i32);
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 38i32, 0i32);
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 39i32, 0i32);
@@ -872,8 +871,7 @@ unsafe extern "C" fn cabac_subpartition_b(
         crate::src::common::cabac::x264_8_cabac_encode_decision_c(
             cb,
             39i32,
-            (i_sub == crate::src::common::macroblock::D_L1_8x8 as ::core::ffi::c_int)
-                as ::core::ffi::c_int,
+            (i_sub == Partition::D_L1_8x8) as ::core::ffi::c_int,
         );
     }
 }
@@ -1275,8 +1273,7 @@ unsafe extern "C" fn cabac_mb_header_p(
     unsafe {
         if i_mb_type == MacroblockType::P_L0 {
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 14i32, 0i32);
-            if (*h).mb.i_partition == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-            {
+            if (*h).mb.i_partition == Partition::D_16x16 {
                 crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 15i32, 0i32);
                 crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 16i32, 0i32);
                 if (*h).mb.pic.i_fref[0usize] > 1i32 {
@@ -1292,9 +1289,7 @@ unsafe extern "C" fn cabac_mb_header_p(
                     0i32,
                     mvd,
                 );
-            } else if (*h).mb.i_partition
-                == crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int
-            {
+            } else if (*h).mb.i_partition == Partition::D_16x8 {
                 crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 15i32, 1i32);
                 crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 17i32, 1i32);
                 if (*h).mb.pic.i_fref[0usize] > 1i32 {
@@ -1356,10 +1351,7 @@ unsafe extern "C" fn cabac_mb_header_p(
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 15i32, 0i32);
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 16i32, 1i32);
             while i < 4i32 {
-                cabac_subpartition_p(
-                    cb,
-                    (*h).mb.i_sub_partition[i as usize] as ::core::ffi::c_int,
-                );
+                cabac_subpartition_p(cb, (*h).mb.i_sub_partition[i as usize]);
                 i += 1;
             }
             if (*h).mb.pic.i_fref[0usize] > 1i32 {
@@ -1419,10 +1411,7 @@ unsafe extern "C" fn cabac_mb_header_b(
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 27i32 + 5i32, 1i32);
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(cb, 27i32 + 5i32, 1i32);
             while i < 4i32 {
-                cabac_subpartition_b(
-                    cb,
-                    (*h).mb.i_sub_partition[i as usize] as ::core::ffi::c_int,
-                );
+                cabac_subpartition_b(cb, (*h).mb.i_sub_partition[i as usize]);
                 i += 1;
             }
             if (*h).mb.pic.i_fref[0usize] > 1i32 {
@@ -1493,8 +1482,7 @@ unsafe extern "C" fn cabac_mb_header_b(
                 0x7bu8, 0u8, 0x47u8, 0x67u8, 0x21u8,
             ];
             let idx = (i_mb_type as i32 - MacroblockType::B_L0_L0 as i32) * 3i32
-                + ((*h).mb.i_partition
-                    - crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int);
+                + ((*h).mb.i_partition as i32 - Partition::D_16x8 as i32);
             let mut bits = i_mb_bits[idx as usize] as ::core::ffi::c_int;
             crate::src::common::cabac::x264_8_cabac_encode_decision_c(
                 cb,
@@ -1543,16 +1531,13 @@ unsafe extern "C" fn cabac_mb_header_b(
                     cabac_ref_b(h, cb, 0i32, 0i32);
                 }
                 if (*b_list.offset(0isize))[1usize] as ::core::ffi::c_int != 0
-                    && (*h).mb.i_partition
-                        != crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+                    && (*h).mb.i_partition != Partition::D_16x16
                 {
                     cabac_ref_b(
                         h,
                         cb,
                         0i32,
-                        8i32 >> ((*h).mb.i_partition
-                            == crate::src::common::macroblock::D_8x16 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int,
+                        8i32 >> ((*h).mb.i_partition == Partition::D_8x16) as ::core::ffi::c_int,
                     );
                 }
             }
@@ -1561,23 +1546,18 @@ unsafe extern "C" fn cabac_mb_header_b(
                     cabac_ref_b(h, cb, 1i32, 0i32);
                 }
                 if (*b_list.offset(1isize))[1usize] as ::core::ffi::c_int != 0
-                    && (*h).mb.i_partition
-                        != crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
+                    && (*h).mb.i_partition != Partition::D_16x16
                 {
                     cabac_ref_b(
                         h,
                         cb,
                         1i32,
-                        8i32 >> ((*h).mb.i_partition
-                            == crate::src::common::macroblock::D_8x16 as ::core::ffi::c_int)
-                            as ::core::ffi::c_int,
+                        8i32 >> ((*h).mb.i_partition == Partition::D_8x16) as ::core::ffi::c_int,
                     );
                 }
             }
             while i_list < 2i32 {
-                if (*h).mb.i_partition
-                    == crate::src::common::macroblock::D_16x16 as ::core::ffi::c_int
-                {
+                if (*h).mb.i_partition == Partition::D_16x16 {
                     if (*b_list.offset(i_list as isize))[0usize] != 0 {
                         let mut mvd_1 = cabac_mvd(h, cb, i_list, 0i32, 4i32);
                         x264_macroblock_cache_mvd(
@@ -1590,9 +1570,7 @@ unsafe extern "C" fn cabac_mb_header_b(
                             mvd_1,
                         );
                     }
-                } else if (*h).mb.i_partition
-                    == crate::src::common::macroblock::D_16x8 as ::core::ffi::c_int
-                {
+                } else if (*h).mb.i_partition == Partition::D_16x8 {
                     if (*b_list.offset(i_list as isize))[0usize] != 0 {
                         let mut mvd_2 = cabac_mvd(h, cb, i_list, 0i32, 4i32);
                         x264_macroblock_cache_mvd(
