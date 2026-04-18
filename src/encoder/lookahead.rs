@@ -101,6 +101,7 @@ unsafe extern "C" fn lookahead_thread(
         );
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).next.mutex);
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).ifbuf.mutex);
+        #[allow(clippy::while_immutable_condition, reason = "unsafe code/pointers causing false positive")]
         while (*(*h).lookahead).next.i_size != 0 {
             lookahead_slicetype_decide(h);
         }

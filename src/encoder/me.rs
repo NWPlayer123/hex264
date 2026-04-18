@@ -605,8 +605,6 @@ pub unsafe extern "C" fn x264_8_me_search_ref(
                     + *p_cost_mvy.offset((bmy * 4i32) as isize) as ::core::ffi::c_int);
                 if cost_0 < bcost {
                     bcost = cost_0;
-                    bmx = bmx;
-                    bmy = bmy;
                 }
             } else {
                 bcost = bpred_cost;
@@ -2798,8 +2796,6 @@ unsafe extern "C" fn refine_subpel(
                 }
                 if cost_0 < bcost {
                     bcost = cost_0;
-                    bmx = bmx;
-                    bmy = bmy;
                     bdir = -(1i32);
                 }
             }
@@ -4097,31 +4093,24 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
         let mut pmy = (*m).mvp[1usize] as ::core::ffi::c_int;
         let mut p_cost_mvx = (*m).p_cost_mv.offset(-(pmx as isize));
         let mut p_cost_mvy = (*m).p_cost_mv.offset(-(pmy as isize));
-        if 0i32 == 0 || !(bmx == pmx && bmy == pmy) {
-            (*h).mc.mc_luma.expect("non-null function pointer")(
-                pix,
-                crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut (*m).p_fref as *mut *mut crate::src::common::common::pixel,
-                (*m).i_stride[0usize] as crate::stdlib::intptr_t,
-                bmx,
-                bmy,
-                bw,
-                bh,
-                (*m).weight.offset(0isize),
-            );
-            bsatd = (*h).pixf.mbcmp[i_pixel as usize].expect("non-null function pointer")(
-                (*m).p_fenc[0usize],
-                crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
-                pix,
-                crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-            ) + *p_cost_mvx.offset(bmx as isize) as ::core::ffi::c_int
-                + *p_cost_mvy.offset(bmy as isize) as ::core::ffi::c_int;
-            if bsatd < bsatd {
-                bsatd = bsatd;
-            }
-        } else {
-            bsatd = crate::src::encoder::me::COST_MAX;
-        }
+        (*h).mc.mc_luma.expect("non-null function pointer")(
+            pix,
+            crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
+            &raw mut (*m).p_fref as *mut *mut crate::src::common::common::pixel,
+            (*m).i_stride[0usize] as crate::stdlib::intptr_t,
+            bmx,
+            bmy,
+            bw,
+            bh,
+            (*m).weight.offset(0isize),
+        );
+        bsatd = (*h).pixf.mbcmp[i_pixel as usize].expect("non-null function pointer")(
+            (*m).p_fenc[0usize],
+            crate::src::common::common::FENC_STRIDE as crate::stdlib::intptr_t,
+            pix,
+            crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
+        ) + *p_cost_mvx.offset(bmx as isize) as ::core::ffi::c_int
+            + *p_cost_mvy.offset(bmy as isize) as ::core::ffi::c_int;
         if (*m).i_pixel != crate::src::common::pixel::PIXEL_16x16 as ::core::ffi::c_int {
             if 0i32 <= bsatd + (bsatd >> 4i32) {
                 (*(cache_mv as *mut crate::src::common::base::x264_union32_t)).i = pack16to32_mask(bmx, bmy);
@@ -4189,9 +4178,6 @@ pub unsafe extern "C" fn x264_8_me_refine_qpel_rd(
                     crate::src::encoder::analyse::rdo_c::x264_8_rd_cost_part(h, i_lambda2, i4, (*m).i_pixel);
                 if cost < bcost {
                     bcost = cost;
-                    bmx = bmx;
-                    bmy = bmy;
-                    dir = if 0i32 != 0 { 0i32 } else { dir };
                 }
             }
         } else {
