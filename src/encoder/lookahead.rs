@@ -32,7 +32,7 @@ unsafe extern "C" fn lookahead_update_last_nonb(
 }
 unsafe extern "C" fn lookahead_slicetype_decide(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
-        crate::src::encoder::analyse::slicetype_c::x264_8_slicetype_decide(h);
+        crate::src::encoder::slicetype::x264_8_slicetype_decide(h);
         lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0isize));
         let mut shift_frames =
             (**(*(*h).lookahead).next.list.offset(0isize)).i_bframes as ::core::ffi::c_int + 1i32;
@@ -55,7 +55,7 @@ unsafe extern "C" fn lookahead_slicetype_decide(mut h: *mut crate::src::common::
                 || (*(*(*h).lookahead).last_nonb).i_type == crate::x264_h::X264_TYPE_IDR
                 || (*(*(*h).lookahead).last_nonb).i_type == crate::x264_h::X264_TYPE_KEYFRAME)
         {
-            crate::src::encoder::analyse::slicetype_c::x264_8_slicetype_analyse(h, shift_frames);
+            crate::src::encoder::slicetype::x264_8_slicetype_analyse(h, shift_frames);
         }
         crate::stdlib::pthread_mutex_unlock(&raw mut (*(*h).lookahead).ofbuf.mutex);
     }
@@ -319,7 +319,7 @@ pub unsafe extern "C" fn x264_8_lookahead_get_frames(
             {
                 return;
             }
-            crate::src::encoder::analyse::slicetype_c::x264_8_slicetype_decide(h);
+            crate::src::encoder::slicetype::x264_8_slicetype_decide(h);
             lookahead_update_last_nonb(h, *(*(*h).lookahead).next.list.offset(0isize));
             let mut shift_frames = (**(*(*h).lookahead).next.list.offset(0isize)).i_bframes
                 as ::core::ffi::c_int
@@ -334,10 +334,7 @@ pub unsafe extern "C" fn x264_8_lookahead_get_frames(
                     || (*(*(*h).lookahead).last_nonb).i_type == crate::x264_h::X264_TYPE_IDR
                     || (*(*(*h).lookahead).last_nonb).i_type == crate::x264_h::X264_TYPE_KEYFRAME)
             {
-                crate::src::encoder::analyse::slicetype_c::x264_8_slicetype_analyse(
-                    h,
-                    shift_frames,
-                );
+                crate::src::encoder::slicetype::x264_8_slicetype_analyse(h, shift_frames);
             }
             lookahead_encoder_shift(h);
         };

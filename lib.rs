@@ -1035,5 +1035,6 @@ pub mod src {
         pub mod me;
         pub mod ratecontrol;
         pub mod set;
+        pub mod slicetype;
     } // mod encoder
 } // mod src

@@ -4417,8 +4417,7 @@ unsafe extern "C" fn rate_estimate_qscale(
                 (*rcc).frame_size_planned as ::core::ffi::c_float,
             );
             if (*rcc).vbv {
-                (*rcc).last_satd =
-                    crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(h);
+                (*rcc).last_satd = crate::src::encoder::slicetype::x264_8_rc_analyse_slice(h);
             }
             q
         } else {
@@ -4501,14 +4500,12 @@ unsafe extern "C" fn rate_estimate_qscale(
                         expected_size = qscale2bits(&raw mut rce, q as ::core::ffi::c_double);
                         expected_vbv = (*rcc).buffer_fill + (*rcc).buffer_rate - expected_size;
                     }
-                    (*rcc).last_satd =
-                        crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(h);
+                    (*rcc).last_satd = crate::src::encoder::slicetype::x264_8_rc_analyse_slice(h);
                 }
                 q = x264_clip3f(q as ::core::ffi::c_double, lmin, lmax) as ::core::ffi::c_float;
             } else {
                 let mut overflow = 1f64;
-                (*rcc).last_satd =
-                    crate::src::encoder::analyse::slicetype_c::x264_8_rc_analyse_slice(h);
+                (*rcc).last_satd = crate::src::encoder::slicetype::x264_8_rc_analyse_slice(h);
                 (*rcc).short_term_cplxsum *= 0.5f64;
                 (*rcc).short_term_cplxcount *= 0.5f64;
                 (*rcc).short_term_cplxsum += (*rcc).last_satd as ::core::ffi::c_double
