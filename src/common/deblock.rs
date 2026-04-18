@@ -1,8 +1,6 @@
 pub mod common_h {
     #[inline(always)]
-    pub unsafe extern "C" fn x264_clip_pixel(
-        mut x: ::core::ffi::c_int,
-    ) -> crate::src::common::common::pixel {
+    pub unsafe extern "C" fn x264_clip_pixel(mut x: ::core::ffi::c_int) -> crate::src::common::common::pixel {
         (if x & !crate::src::common::common::PIXEL_MAX != 0 {
             -x >> 31i32 & crate::src::common::common::PIXEL_MAX
         } else {
@@ -26,23 +24,23 @@ pub mod base_h {
         }
     }
 }
-use crate::src::common::deblock::base_h::x264_clip3;
-use crate::src::common::deblock::common_h::x264_clip_pixel;
-use crate::src::common::macroblock::{MacroblockType, Partition};
+use crate::src::common::{
+    deblock::{base_h::x264_clip3, common_h::x264_clip_pixel},
+    macroblock::{MacroblockType, Partition},
+};
 static mut i_alpha_table: [crate::stdlib::uint8_t; 88] = [
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 4u8, 4u8, 5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 12u8, 13u8, 15u8, 17u8, 20u8, 22u8, 25u8,
-    28u8, 32u8, 36u8, 40u8, 45u8, 50u8, 56u8, 63u8, 71u8, 80u8, 90u8, 101u8, 113u8, 127u8, 144u8,
-    162u8, 182u8, 203u8, 226u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8,
-    255u8, 255u8, 255u8, 255u8, 255u8,
+    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 4u8, 4u8,
+    5u8, 6u8, 7u8, 8u8, 9u8, 10u8, 12u8, 13u8, 15u8, 17u8, 20u8, 22u8, 25u8, 28u8, 32u8, 36u8, 40u8, 45u8,
+    50u8, 56u8, 63u8, 71u8, 80u8, 90u8, 101u8, 113u8, 127u8, 144u8, 162u8, 182u8, 203u8, 226u8, 255u8, 255u8,
+    255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8, 255u8,
 ];
 static mut i_beta_table: [crate::stdlib::uint8_t; 88] = [
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 2u8, 2u8, 2u8, 3u8, 3u8, 3u8, 3u8, 4u8, 4u8, 4u8, 6u8, 6u8, 7u8, 7u8, 8u8, 8u8, 9u8,
-    9u8, 10u8, 10u8, 11u8, 11u8, 12u8, 12u8, 13u8, 13u8, 14u8, 14u8, 15u8, 15u8, 16u8, 16u8, 17u8,
-    17u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8,
+    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 2u8, 2u8,
+    2u8, 3u8, 3u8, 3u8, 3u8, 4u8, 4u8, 4u8, 6u8, 6u8, 7u8, 7u8, 8u8, 8u8, 9u8, 9u8, 10u8, 10u8, 11u8, 11u8,
+    12u8, 12u8, 13u8, 13u8, 14u8, 14u8, 15u8, 15u8, 16u8, 16u8, 17u8, 17u8, 18u8, 18u8, 18u8, 18u8, 18u8,
+    18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8, 18u8,
 ];
 static mut i_tc0_table: [[crate::stdlib::int8_t; 4]; 88] = [
     [-1i8, 0i8, 0i8, 0i8],
@@ -371,13 +369,12 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
             if crate::stdlib::abs(p0 - q0) < (alpha >> 2i32) + 2i32 {
                 if crate::stdlib::abs(p2 - p0) < beta {
                     let p3 = *pix.offset(-4isize * xstride) as ::core::ffi::c_int;
-                    *pix.offset(-1isize * xstride) =
-                        ((p2 + 2i32 * p1 + 2i32 * p0 + 2i32 * q0 + q1 + 4i32) >> 3i32)
-                            as crate::src::common::common::pixel;
+                    *pix.offset(-1isize * xstride) = ((p2 + 2i32 * p1 + 2i32 * p0 + 2i32 * q0 + q1 + 4i32)
+                        >> 3i32)
+                        as crate::src::common::common::pixel;
                     *pix.offset(-2isize * xstride) =
                         ((p2 + p1 + p0 + q0 + 2i32) >> 2i32) as crate::src::common::common::pixel;
-                    *pix.offset(-3isize * xstride) = ((2i32 * p3 + 3i32 * p2 + p1 + p0 + q0 + 4i32)
-                        >> 3i32)
+                    *pix.offset(-3isize * xstride) = ((2i32 * p3 + 3i32 * p2 + p1 + p0 + q0 + 4i32) >> 3i32)
                         as crate::src::common::common::pixel;
                 } else {
                     *pix.offset(-1isize * xstride) =
@@ -385,13 +382,12 @@ unsafe extern "C" fn deblock_edge_luma_intra_c(
                 }
                 if crate::stdlib::abs(q2 - q0) < beta {
                     let q3 = *pix.offset(3isize * xstride) as ::core::ffi::c_int;
-                    *pix.offset(0isize * xstride) =
-                        ((p1 + 2i32 * p0 + 2i32 * q0 + 2i32 * q1 + q2 + 4i32) >> 3i32)
-                            as crate::src::common::common::pixel;
+                    *pix.offset(0isize * xstride) = ((p1 + 2i32 * p0 + 2i32 * q0 + 2i32 * q1 + q2 + 4i32)
+                        >> 3i32)
+                        as crate::src::common::common::pixel;
                     *pix.offset(1isize * xstride) =
                         ((p0 + q0 + q1 + q2 + 2i32) >> 2i32) as crate::src::common::common::pixel;
-                    *pix.offset(2isize * xstride) = ((2i32 * q3 + 3i32 * q2 + q1 + q0 + p0 + 4i32)
-                        >> 3i32)
+                    *pix.offset(2isize * xstride) = ((2i32 * q3 + 3i32 * q2 + q1 + q0 + p0 + 4i32) >> 3i32)
                         as crate::src::common::common::pixel;
                 } else {
                     *pix.offset(0isize * xstride) =
@@ -582,16 +578,12 @@ unsafe extern "C" fn deblock_strength_c(
                             && ((*ref_0.offset(1isize))[loc as usize] as ::core::ffi::c_int
                                 != (*ref_0.offset(1isize))[locn as usize] as ::core::ffi::c_int
                                 || crate::stdlib::abs(
-                                    (*mv.offset(1isize))[loc as usize][0usize]
-                                        as ::core::ffi::c_int
-                                        - (*mv.offset(1isize))[locn as usize][0usize]
-                                            as ::core::ffi::c_int,
+                                    (*mv.offset(1isize))[loc as usize][0usize] as ::core::ffi::c_int
+                                        - (*mv.offset(1isize))[locn as usize][0usize] as ::core::ffi::c_int,
                                 ) >= 4i32
                                 || crate::stdlib::abs(
-                                    (*mv.offset(1isize))[loc as usize][1usize]
-                                        as ::core::ffi::c_int
-                                        - (*mv.offset(1isize))[locn as usize][1usize]
-                                            as ::core::ffi::c_int,
+                                    (*mv.offset(1isize))[loc as usize][1usize] as ::core::ffi::c_int
+                                        - (*mv.offset(1isize))[locn as usize][1usize] as ::core::ffi::c_int,
                                 ) >= mvy_limit)
                     {
                         (*bs.offset(dir as isize))[edge as usize][i as usize] = 1u8;
@@ -627,10 +619,7 @@ unsafe extern "C" fn deblock_edge(
             << (crate::internal::BIT_DEPTH - 8i32);
         let mut beta = (i_beta_table[(index_b + 24i32) as usize] as ::core::ffi::c_int)
             << (crate::internal::BIT_DEPTH - 8i32);
-        if (*(bS as *mut crate::src::common::base::x264_union32_t)).i == 0
-            || alpha == 0
-            || beta == 0
-        {
+        if (*(bS as *mut crate::src::common::base::x264_union32_t)).i == 0 || alpha == 0 || beta == 0 {
             return;
         }
         tc[0usize] = (i_tc0_table[(index_a + 24i32) as usize][*bS.offset(0isize) as usize]
@@ -703,8 +692,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
         if (*h).sh.mbaff {
             if mb_y & 1i32 != 0 {
                 if mb_x != 0
-                    && *(*h).mb.field.offset(((*h).mb.i_mb_xy - 1i32) as isize)
-                        as ::core::ffi::c_int
+                    && *(*h).mb.field.offset(((*h).mb.i_mb_xy - 1i32) as isize) as ::core::ffi::c_int
                         != (*h).mb.interlaced as ::core::ffi::c_int
                 {
                     (*h).mb.i_mb_left_xy[0usize] -= (*h).mb.i_mb_stride;
@@ -718,8 +706,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
                     (*h).mb.i_mb_top_y += 1;
                 }
                 if mb_x != 0
-                    && *(*h).mb.field.offset(((*h).mb.i_mb_xy - 1i32) as isize)
-                        as ::core::ffi::c_int
+                    && *(*h).mb.field.offset(((*h).mb.i_mb_xy - 1i32) as isize) as ::core::ffi::c_int
                         != (*h).mb.interlaced as ::core::ffi::c_int
                 {
                     (*h).mb.i_mb_left_xy[1usize] += (*h).mb.i_mb_stride;
@@ -728,10 +715,7 @@ unsafe extern "C" fn macroblock_cache_load_neighbours_deblock(
         }
         if mb_x > 0i32
             && (deblock_on_slice_edges != 0
-                || *(*h)
-                    .mb
-                    .slice_table
-                    .offset((*h).mb.i_mb_left_xy[0usize] as isize)
+                || *(*h).mb.slice_table.offset((*h).mb.i_mb_left_xy[0usize] as isize)
                     == *(*h).mb.slice_table.offset((*h).mb.i_mb_xy as isize))
         {
             (*h).mb.i_neighbour |= crate::src::common::macroblock::MB_LEFT;
@@ -757,13 +741,11 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
         let mut qp_thresh = 15i32
             - (if a < b { a } else { b })
             - (if 0i32
-                > (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                    .i_chroma_qp_index_offset
+                > (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).i_chroma_qp_index_offset
             {
                 0i32
             } else {
-                (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                    .i_chroma_qp_index_offset
+                (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).i_chroma_qp_index_offset
             });
         let mut stridey = (*(*h).fdec).i_stride[0usize];
         let mut strideuv = (*(*h).fdec).i_stride[1usize];
@@ -779,8 +761,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             crate::src::common::macroblock::x264_8_prefetch_fenc(h, (*h).fdec, mb_x, mb_y);
             macroblock_cache_load_neighbours_deblock(h, mb_x, mb_y);
             let mut mb_xy = (*h).mb.i_mb_xy;
-            let mut transform_8x8 =
-                *(*h).mb.mb_transform_size.offset(mb_xy as isize) as ::core::ffi::c_int;
+            let mut transform_8x8 = *(*h).mb.mb_transform_size.offset(mb_xy as isize) as ::core::ffi::c_int;
             let mut intra_cur = matches!(
                 *(*h).mb.types.add((mb_xy - (*h).sh.i_first_mb) as usize),
                 MacroblockType::I_4x4
@@ -791,13 +772,8 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             let mut bs = &raw mut *(*(&raw mut (*h).deblock_strength
                 as *mut *mut [[[crate::stdlib::uint8_t; 4]; 8]; 2])
                 .offset((mb_y & 1i32) as isize))
-            .offset(
-                (if (*h).param.sliced_threads {
-                    mb_xy
-                } else {
-                    mb_x
-                }) as isize,
-            ) as *mut [[crate::stdlib::uint8_t; 4]; 8];
+            .offset((if (*h).param.sliced_threads { mb_xy } else { mb_x }) as isize)
+                as *mut [[crate::stdlib::uint8_t; 4]; 8];
             let mut pixy = (*(*h).fdec).plane[0usize]
                 .offset((16i32 * mb_y * stridey) as isize)
                 .offset((16i32 * mb_x) as isize);
@@ -818,16 +794,14 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
             let mut stride2uv = strideuv << (*h).mb.interlaced as ::core::ffi::c_int;
             let mut qp = *(*h).mb.qp.offset(mb_xy as isize) as ::core::ffi::c_int;
             let mut qpc = *(*h).chroma_qp_table.offset(qp as isize) as ::core::ffi::c_int;
-            let mut first_edge_only =
-                (*(*h).mb.partition.add((mb_xy - (*h).sh.i_first_mb) as usize)
-                    == Partition::D_16x16
-                    && *(*h).mb.cbp.offset(mb_xy as isize) == 0
-                    && intra_cur == 0
-                    || qp <= qp_thresh) as ::core::ffi::c_int;
+            let mut first_edge_only = (*(*h).mb.partition.add((mb_xy - (*h).sh.i_first_mb) as usize)
+                == Partition::D_16x16
+                && *(*h).mb.cbp.offset(mb_xy as isize) == 0
+                && intra_cur == 0
+                || qp <= qp_thresh) as ::core::ffi::c_int;
             if (*h).mb.i_neighbour & crate::src::common::macroblock::MB_LEFT != 0 {
                 if interlaced
-                    && *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0usize] as isize)
-                        as ::core::ffi::c_int
+                    && *(*h).mb.field.offset((*h).mb.i_mb_left_xy[0usize] as isize) as ::core::ffi::c_int
                         != (*h).mb.interlaced as ::core::ffi::c_int
                 {
                     let mut luma_qp = [0; 2];
@@ -838,20 +812,16 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     let mut luma_intra_deblock = (*h).loopf.deblock_luma_intra_mbaff;
                     let mut chroma_intra_deblock = (*h).loopf.deblock_chroma_intra_mbaff;
                     let mut c = if chroma444 != 0 { 0i32 } else { 1i32 };
-                    left_qp[0usize] = *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[0usize] as isize)
-                        as ::core::ffi::c_int;
+                    left_qp[0usize] =
+                        *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[0usize] as isize) as ::core::ffi::c_int;
                     luma_qp[0usize] = (qp + left_qp[0usize] + 1i32) >> 1i32;
                     chroma_qp[0usize] = (qpc
-                        + *(*h).chroma_qp_table.offset(left_qp[0usize] as isize)
-                            as ::core::ffi::c_int
+                        + *(*h).chroma_qp_table.offset(left_qp[0usize] as isize) as ::core::ffi::c_int
                         + 1i32)
                         >> 1i32;
                     if intra_cur != 0
                         || matches!(
-                            *(*h)
-                                .mb
-                                .types
-                                .add(((*h).mb.i_mb_left_xy[0usize] - (*h).sh.i_first_mb) as usize),
+                            *(*h).mb.types.add(((*h).mb.i_mb_left_xy[0usize] - (*h).sh.i_first_mb) as usize),
                             MacroblockType::I_4x4
                                 | MacroblockType::I_8x8
                                 | MacroblockType::I_16x16
@@ -862,10 +832,8 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             h,
                             pixy,
                             (2i32 * stridey) as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(0isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(0isize) as *mut crate::stdlib::uint8_t,
                             luma_qp[0usize],
                             a,
                             b,
@@ -877,8 +845,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 h,
                                 pixuv,
                                 (2i32 * strideuv) as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 chroma_qp[0usize],
@@ -909,10 +876,8 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             h,
                             pixy,
                             (2i32 * stridey) as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(0isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(0isize) as *mut crate::stdlib::uint8_t,
                             luma_qp[0usize],
                             a,
                             b,
@@ -924,8 +889,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 h,
                                 pixuv,
                                 (2i32 * strideuv) as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 chroma_qp[0usize],
@@ -958,20 +922,16 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     } else {
                         0i32
                     };
-                    left_qp[1usize] = *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[1usize] as isize)
-                        as ::core::ffi::c_int;
+                    left_qp[1usize] =
+                        *(*h).mb.qp.offset((*h).mb.i_mb_left_xy[1usize] as isize) as ::core::ffi::c_int;
                     luma_qp[1usize] = (qp + left_qp[1usize] + 1i32) >> 1i32;
                     chroma_qp[1usize] = (qpc
-                        + *(*h).chroma_qp_table.offset(left_qp[1usize] as isize)
-                            as ::core::ffi::c_int
+                        + *(*h).chroma_qp_table.offset(left_qp[1usize] as isize) as ::core::ffi::c_int
                         + 1i32)
                         >> 1i32;
                     if intra_cur != 0
                         || matches!(
-                            *(*h)
-                                .mb
-                                .types
-                                .add(((*h).mb.i_mb_left_xy[1usize] - (*h).sh.i_first_mb) as usize),
+                            *(*h).mb.types.add(((*h).mb.i_mb_left_xy[1usize] - (*h).sh.i_first_mb) as usize),
                             MacroblockType::I_4x4
                                 | MacroblockType::I_8x8
                                 | MacroblockType::I_16x16
@@ -982,10 +942,8 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             h,
                             pixy.offset((stridey << offy) as isize),
                             (2i32 * stridey) as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(4isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(4isize) as *mut crate::stdlib::uint8_t,
                             luma_qp[1usize],
                             a,
                             b,
@@ -997,8 +955,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 h,
                                 pixuv.offset((strideuv << offuv) as isize),
                                 (2i32 * strideuv) as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(4isize)
                                     as *mut crate::stdlib::uint8_t,
                                 chroma_qp[1usize],
@@ -1029,10 +986,8 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             h,
                             pixy.offset((stridey << offy) as isize),
                             (2i32 * stridey) as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(4isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(4isize) as *mut crate::stdlib::uint8_t,
                             luma_qp[1usize],
                             a,
                             b,
@@ -1044,8 +999,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 h,
                                 pixuv.offset((strideuv << offuv) as isize),
                                 (2i32 * strideuv) as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(4isize)
                                     as *mut crate::stdlib::uint8_t,
                                 chroma_qp[1usize],
@@ -1073,50 +1027,38 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         }
                     }
                 } else {
-                    let mut qpl =
-                        *(*h).mb.qp.offset(((*h).mb.i_mb_xy - 1i32) as isize) as ::core::ffi::c_int;
+                    let mut qpl = *(*h).mb.qp.offset(((*h).mb.i_mb_xy - 1i32) as isize) as ::core::ffi::c_int;
                     let mut qp_left = (qp + qpl + 1i32) >> 1i32;
-                    let mut qpc_left = (qpc
-                        + *(*h).chroma_qp_table.offset(qpl as isize) as ::core::ffi::c_int
-                        + 1i32)
-                        >> 1i32;
+                    let mut qpc_left =
+                        (qpc + *(*h).chroma_qp_table.offset(qpl as isize) as ::core::ffi::c_int + 1i32)
+                            >> 1i32;
                     let mut intra_left = matches!(
-                        *(*h)
-                            .mb
-                            .types
-                            .add(((*h).mb.i_mb_xy - 1i32 - (*h).sh.i_first_mb) as usize),
+                        *(*h).mb.types.add(((*h).mb.i_mb_xy - 1i32 - (*h).sh.i_first_mb) as usize),
                         MacroblockType::I_4x4
                             | MacroblockType::I_8x8
                             | MacroblockType::I_16x16
                             | MacroblockType::I_PCM
                     ) as ::core::ffi::c_int;
-                    let mut intra_deblock =
-                        (intra_cur != 0 || intra_left != 0) as ::core::ffi::c_int;
+                    let mut intra_deblock = (intra_cur != 0 || intra_left != 0) as ::core::ffi::c_int;
                     if !(*(*h).fdec).mb_info.is_null()
-                        && (*(&raw mut *(&raw mut *bs.offset(0isize)
-                            as *mut [crate::stdlib::uint8_t; 4])
+                        && (*(&raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(0isize)
                             as *mut crate::src::common::base::x264_union32_t))
                             .i
                             != 0
                     {
-                        let ref mut c2rust_fresh0 =
-                            *(*(*h).fdec).effective_qp.offset(mb_xy as isize);
+                        let ref mut c2rust_fresh0 = *(*(*h).fdec).effective_qp.offset(mb_xy as isize);
                         *c2rust_fresh0 = (*c2rust_fresh0 as ::core::ffi::c_int
-                            | (0xffi32
-                                * (*(*(*h).fdec).mb_info.offset(mb_xy as isize)
-                                    as ::core::ffi::c_uint
+                            | (0xFFi32
+                                * (*(*(*h).fdec).mb_info.offset(mb_xy as isize) as ::core::ffi::c_uint
                                     & crate::x264_h::X264_MBINFO_CONSTANT
                                     != 0) as ::core::ffi::c_int))
                             as crate::stdlib::uint8_t;
-                        let ref mut c2rust_fresh1 = *(*(*h).fdec)
-                            .effective_qp
-                            .offset((*h).mb.i_mb_left_xy[0usize] as isize);
+                        let ref mut c2rust_fresh1 =
+                            *(*(*h).fdec).effective_qp.offset((*h).mb.i_mb_left_xy[0usize] as isize);
                         *c2rust_fresh1 = (*c2rust_fresh1 as ::core::ffi::c_int
-                            | (0xffi32
-                                * (*(*(*h).fdec)
-                                    .mb_info
-                                    .offset((*h).mb.i_mb_left_xy[0usize] as isize)
+                            | (0xFFi32
+                                * (*(*(*h).fdec).mb_info.offset((*h).mb.i_mb_left_xy[0usize] as isize)
                                     as ::core::ffi::c_uint
                                     & crate::x264_h::X264_MBINFO_CONSTANT
                                     != 0) as ::core::ffi::c_int))
@@ -1127,12 +1069,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             deblock_edge_intra(
                                 h,
                                 pixy.offset(
-                                    (4i32 * 0i32 * (if 0i32 != 0 { stride2y } else { 1i32 }))
-                                        as isize,
+                                    (4i32 * 0i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize,
                                 ),
                                 stride2y as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qp_left,
@@ -1145,8 +1085,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
-                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(0isize)
@@ -1162,8 +1101,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(uvdiff).offset(
-                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(0isize)
@@ -1180,8 +1118,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
-                                        (0i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 }))
-                                            as isize,
+                                        (0i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(0isize)
@@ -1200,12 +1137,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
-                                    (0i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 }))
-                                        as isize,
+                                    (0i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
                                 ),
                                 stride2uv as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qpc_left,
@@ -1220,12 +1155,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             deblock_edge(
                                 h,
                                 pixy.offset(
-                                    (4i32 * 0i32 * (if 0i32 != 0 { stride2y } else { 1i32 }))
-                                        as isize,
+                                    (4i32 * 0i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize,
                                 ),
                                 stride2y as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qp_left,
@@ -1238,8 +1171,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
-                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(0isize)
@@ -1255,8 +1187,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge(
                                     h,
                                     pixuv.offset(uvdiff).offset(
-                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(0isize)
@@ -1273,8 +1204,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
-                                        (0i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 }))
-                                            as isize,
+                                        (0i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(0isize)
@@ -1293,12 +1223,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             deblock_edge(
                                 h,
                                 pixuv.offset(
-                                    (0i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 }))
-                                        as isize,
+                                    (0i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
                                 ),
                                 stride2uv as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(0isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qpc_left,
@@ -1315,9 +1243,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if 1i32 & 1i32 == 0 || transform_8x8 == 0 {
                     deblock_edge(
                         h,
-                        pixy.offset(
-                            (4i32 * 1i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize,
-                        ),
+                        pixy.offset((4i32 * 1i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize),
                         stride2y as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(1isize) as *mut crate::stdlib::uint8_t,
@@ -1330,14 +1256,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     if chroma_format.is_444() {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (4i32 * 1i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv.offset((4i32 * 1i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(1isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(1isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1346,14 +1268,12 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                         deblock_edge(
                             h,
-                            pixuv.offset(uvdiff).offset(
-                                (4i32 * 1i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv
+                                .offset(uvdiff)
+                                .offset((4i32 * 1i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(1isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(1isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1363,14 +1283,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     } else if chroma_format.is_420() && 1i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (1i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
-                            ),
+                            pixuv.offset((1i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(1isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(1isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1382,9 +1298,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if chroma_format.is_422() && (0i32 != 0 || 1i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (1i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
-                        ),
+                        pixuv.offset((1i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize),
                         stride2uv as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(1isize) as *mut crate::stdlib::uint8_t,
@@ -1398,9 +1312,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if 2i32 & 1i32 == 0 || transform_8x8 == 0 {
                     deblock_edge(
                         h,
-                        pixy.offset(
-                            (4i32 * 2i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize,
-                        ),
+                        pixy.offset((4i32 * 2i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize),
                         stride2y as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(2isize) as *mut crate::stdlib::uint8_t,
@@ -1413,14 +1325,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     if chroma_format.is_444() {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (4i32 * 2i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv.offset((4i32 * 2i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(2isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(2isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1429,14 +1337,12 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                         deblock_edge(
                             h,
-                            pixuv.offset(uvdiff).offset(
-                                (4i32 * 2i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv
+                                .offset(uvdiff)
+                                .offset((4i32 * 2i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(2isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(2isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1446,14 +1352,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     } else if chroma_format.is_420() && 2i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (2i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
-                            ),
+                            pixuv.offset((2i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(2isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(2isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1465,9 +1367,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if chroma_format.is_422() && (0i32 != 0 || 2i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (2i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
-                        ),
+                        pixuv.offset((2i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize),
                         stride2uv as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(2isize) as *mut crate::stdlib::uint8_t,
@@ -1481,9 +1381,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if 3i32 & 1i32 == 0 || transform_8x8 == 0 {
                     deblock_edge(
                         h,
-                        pixy.offset(
-                            (4i32 * 3i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize,
-                        ),
+                        pixy.offset((4i32 * 3i32 * (if 0i32 != 0 { stride2y } else { 1i32 })) as isize),
                         stride2y as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(3isize) as *mut crate::stdlib::uint8_t,
@@ -1496,14 +1394,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     if chroma_format.is_444() {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (4i32 * 3i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv.offset((4i32 * 3i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(3isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(3isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1512,14 +1406,12 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                         deblock_edge(
                             h,
-                            pixuv.offset(uvdiff).offset(
-                                (4i32 * 3i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv
+                                .offset(uvdiff)
+                                .offset((4i32 * 3i32 * (if 0i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(3isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(3isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1529,14 +1421,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     } else if chroma_format.is_420() && 3i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (3i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
-                            ),
+                            pixuv.offset((3i32 * (if 0i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(0isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(3isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(3isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1548,9 +1436,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if chroma_format.is_422() && (0i32 != 0 || 3i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (3i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
-                        ),
+                        pixuv.offset((3i32 * (if 0i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize),
                         stride2uv as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(3isize) as *mut crate::stdlib::uint8_t,
@@ -1566,18 +1452,16 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if interlaced
                     && mb_y & 1i32 == 0
                     && !(*h).mb.interlaced
-                    && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int
-                        != 0
+                    && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int != 0
                 {
                     let mut j = 0i32;
                     let mut mbn_xy = mb_xy - 2i32 * (*h).mb.i_mb_stride;
                     while j < 2i32 {
                         let mut qpt = *(*h).mb.qp.offset(mbn_xy as isize) as ::core::ffi::c_int;
                         let mut qp_top = (qp + qpt + 1i32) >> 1i32;
-                        let mut qpc_top = (qpc
-                            + *(*h).chroma_qp_table.offset(qpt as isize) as ::core::ffi::c_int
-                            + 1i32)
-                            >> 1i32;
+                        let mut qpc_top =
+                            (qpc + *(*h).chroma_qp_table.offset(qpt as isize) as ::core::ffi::c_int + 1i32)
+                                >> 1i32;
                         let mut intra_top = matches!(
                             *(*h).mb.types.add((mbn_xy - (*h).sh.i_first_mb) as usize),
                             MacroblockType::I_4x4
@@ -1586,8 +1470,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 | MacroblockType::I_PCM
                         ) as ::core::ffi::c_int;
                         if intra_cur != 0 || intra_top != 0 {
-                            (*(&raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
+                            (*(&raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                 .offset((4i32 * j) as isize)
                                 as *mut crate::src::common::base::x264_union32_t))
                                 .i = 0x3030303u32;
@@ -1596,8 +1479,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             h,
                             pixy.offset((j * stridey) as isize),
                             (2i32 * stridey) as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                 .offset((4i32 * j) as isize)
                                 as *mut crate::stdlib::uint8_t,
                             qp_top,
@@ -1611,8 +1493,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 h,
                                 pixuv.offset((j * strideuv) as isize),
                                 (2i32 * strideuv) as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(1isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset((4i32 * j) as isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qpc_top,
@@ -1625,8 +1506,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 h,
                                 pixuv.offset(uvdiff).offset((j * strideuv) as isize),
                                 (2i32 * strideuv) as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(1isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset((4i32 * j) as isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qpc_top,
@@ -1640,8 +1520,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 h,
                                 pixuv.offset((j * strideuv) as isize),
                                 (2i32 * strideuv) as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(1isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset((4i32 * j) as isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qpc_top,
@@ -1655,47 +1534,37 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         mbn_xy += (*h).mb.i_mb_stride;
                     }
                 } else {
-                    let mut qpt_0 =
-                        *(*h).mb.qp.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int;
+                    let mut qpt_0 = *(*h).mb.qp.offset((*h).mb.i_mb_top_xy as isize) as ::core::ffi::c_int;
                     let mut qp_top_0 = (qp + qpt_0 + 1i32) >> 1i32;
-                    let mut qpc_top_0 = (qpc
-                        + *(*h).chroma_qp_table.offset(qpt_0 as isize) as ::core::ffi::c_int
-                        + 1i32)
-                        >> 1i32;
+                    let mut qpc_top_0 =
+                        (qpc + *(*h).chroma_qp_table.offset(qpt_0 as isize) as ::core::ffi::c_int + 1i32)
+                            >> 1i32;
                     let mut intra_top_0 = matches!(
-                        *(*h)
-                            .mb
-                            .types
-                            .add(((*h).mb.i_mb_top_xy - (*h).sh.i_first_mb) as usize),
+                        *(*h).mb.types.add(((*h).mb.i_mb_top_xy - (*h).sh.i_first_mb) as usize),
                         MacroblockType::I_4x4
                             | MacroblockType::I_8x8
                             | MacroblockType::I_16x16
                             | MacroblockType::I_PCM
                     ) as ::core::ffi::c_int;
-                    let mut intra_deblock_0 =
-                        (intra_cur != 0 || intra_top_0 != 0) as ::core::ffi::c_int;
+                    let mut intra_deblock_0 = (intra_cur != 0 || intra_top_0 != 0) as ::core::ffi::c_int;
                     if !(*(*h).fdec).mb_info.is_null()
-                        && (*(&raw mut *(&raw mut *bs.offset(1isize)
-                            as *mut [crate::stdlib::uint8_t; 4])
+                        && (*(&raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(0isize)
                             as *mut crate::src::common::base::x264_union32_t))
                             .i
                             != 0
                     {
-                        let ref mut c2rust_fresh2 =
-                            *(*(*h).fdec).effective_qp.offset(mb_xy as isize);
+                        let ref mut c2rust_fresh2 = *(*(*h).fdec).effective_qp.offset(mb_xy as isize);
                         *c2rust_fresh2 = (*c2rust_fresh2 as ::core::ffi::c_int
-                            | (0xffi32
-                                * (*(*(*h).fdec).mb_info.offset(mb_xy as isize)
-                                    as ::core::ffi::c_uint
+                            | (0xFFi32
+                                * (*(*(*h).fdec).mb_info.offset(mb_xy as isize) as ::core::ffi::c_uint
                                     & crate::x264_h::X264_MBINFO_CONSTANT
                                     != 0) as ::core::ffi::c_int))
                             as crate::stdlib::uint8_t;
-                        let ref mut c2rust_fresh3 = *(*(*h).fdec)
-                            .effective_qp
-                            .offset((*h).mb.i_mb_top_xy as isize);
+                        let ref mut c2rust_fresh3 =
+                            *(*(*h).fdec).effective_qp.offset((*h).mb.i_mb_top_xy as isize);
                         *c2rust_fresh3 = (*c2rust_fresh3 as ::core::ffi::c_int
-                            | (0xffi32
+                            | (0xFFi32
                                 * (*(*(*h).fdec).mb_info.offset((*h).mb.i_mb_top_xy as isize)
                                     as ::core::ffi::c_uint
                                     & crate::x264_h::X264_MBINFO_CONSTANT
@@ -1703,20 +1572,17 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             as crate::stdlib::uint8_t;
                     }
                     if (!interlaced
-                        || !(*h).mb.interlaced
-                            && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) == 0)
+                        || !(*h).mb.interlaced && *(*h).mb.field.offset((*h).mb.i_mb_top_xy as isize) == 0)
                         && intra_deblock_0 != 0
                     {
                         if 0i32 & 1i32 == 0 || transform_8x8 == 0 {
                             deblock_edge_intra(
                                 h,
                                 pixy.offset(
-                                    (4i32 * 0i32 * (if 1i32 != 0 { stride2y } else { 1i32 }))
-                                        as isize,
+                                    (4i32 * 0i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize,
                                 ),
                                 stride2y as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(1isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qp_top_0,
@@ -1729,8 +1595,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
-                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(1isize)
@@ -1746,8 +1611,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(uvdiff).offset(
-                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(1isize)
@@ -1764,8 +1628,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge_intra(
                                     h,
                                     pixuv.offset(
-                                        (0i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 }))
-                                            as isize,
+                                        (0i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(1isize)
@@ -1784,12 +1647,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             deblock_edge_intra(
                                 h,
                                 pixuv.offset(
-                                    (0i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 }))
-                                        as isize,
+                                    (0i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
                                 ),
                                 stride2uv as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(1isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qpc_top_0,
@@ -1801,8 +1662,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         }
                     } else {
                         if intra_deblock_0 != 0 {
-                            (*(&raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
+                            (*(&raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                 .offset(0isize)
                                 as *mut crate::src::common::base::x264_union32_t))
                                 .i = 0x3030303u32;
@@ -1811,12 +1671,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             deblock_edge(
                                 h,
                                 pixy.offset(
-                                    (4i32 * 0i32 * (if 1i32 != 0 { stride2y } else { 1i32 }))
-                                        as isize,
+                                    (4i32 * 0i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize,
                                 ),
                                 stride2y as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(1isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qp_top_0,
@@ -1829,8 +1687,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
-                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(1isize)
@@ -1846,8 +1703,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge(
                                     h,
                                     pixuv.offset(uvdiff).offset(
-                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 }))
-                                            as isize,
+                                        (4i32 * 0i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(1isize)
@@ -1864,8 +1720,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                                 deblock_edge(
                                     h,
                                     pixuv.offset(
-                                        (0i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 }))
-                                            as isize,
+                                        (0i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
                                     ),
                                     stride2uv as crate::stdlib::intptr_t,
                                     &raw mut *(&raw mut *bs.offset(1isize)
@@ -1884,12 +1739,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                             deblock_edge(
                                 h,
                                 pixuv.offset(
-                                    (0i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 }))
-                                        as isize,
+                                    (0i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
                                 ),
                                 stride2uv as crate::stdlib::intptr_t,
-                                &raw mut *(&raw mut *bs.offset(1isize)
-                                    as *mut [crate::stdlib::uint8_t; 4])
+                                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                                     .offset(0isize)
                                     as *mut crate::stdlib::uint8_t,
                                 qpc_top_0,
@@ -1906,9 +1759,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if 1i32 & 1i32 == 0 || transform_8x8 == 0 {
                     deblock_edge(
                         h,
-                        pixy.offset(
-                            (4i32 * 1i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize,
-                        ),
+                        pixy.offset((4i32 * 1i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize),
                         stride2y as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(1isize) as *mut crate::stdlib::uint8_t,
@@ -1921,14 +1772,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     if chroma_format.is_444() {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (4i32 * 1i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv.offset((4i32 * 1i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(1isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(1isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1937,14 +1784,12 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                         deblock_edge(
                             h,
-                            pixuv.offset(uvdiff).offset(
-                                (4i32 * 1i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv
+                                .offset(uvdiff)
+                                .offset((4i32 * 1i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(1isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(1isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1954,14 +1799,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     } else if chroma_format.is_420() && 1i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (1i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
-                            ),
+                            pixuv.offset((1i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(1isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(1isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -1973,9 +1814,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if chroma_format.is_422() && (1i32 != 0 || 1i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (1i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
-                        ),
+                        pixuv.offset((1i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize),
                         stride2uv as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(1isize) as *mut crate::stdlib::uint8_t,
@@ -1989,9 +1828,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if 2i32 & 1i32 == 0 || transform_8x8 == 0 {
                     deblock_edge(
                         h,
-                        pixy.offset(
-                            (4i32 * 2i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize,
-                        ),
+                        pixy.offset((4i32 * 2i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize),
                         stride2y as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(2isize) as *mut crate::stdlib::uint8_t,
@@ -2004,14 +1841,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     if chroma_format.is_444() {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (4i32 * 2i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv.offset((4i32 * 2i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(2isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(2isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -2020,14 +1853,12 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                         deblock_edge(
                             h,
-                            pixuv.offset(uvdiff).offset(
-                                (4i32 * 2i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv
+                                .offset(uvdiff)
+                                .offset((4i32 * 2i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(2isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(2isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -2037,14 +1868,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     } else if chroma_format.is_420() && 2i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (2i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
-                            ),
+                            pixuv.offset((2i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(2isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(2isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -2056,9 +1883,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if chroma_format.is_422() && (1i32 != 0 || 2i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (2i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
-                        ),
+                        pixuv.offset((2i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize),
                         stride2uv as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(2isize) as *mut crate::stdlib::uint8_t,
@@ -2072,9 +1897,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if 3i32 & 1i32 == 0 || transform_8x8 == 0 {
                     deblock_edge(
                         h,
-                        pixy.offset(
-                            (4i32 * 3i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize,
-                        ),
+                        pixy.offset((4i32 * 3i32 * (if 1i32 != 0 { stride2y } else { 1i32 })) as isize),
                         stride2y as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(3isize) as *mut crate::stdlib::uint8_t,
@@ -2087,14 +1910,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     if chroma_format.is_444() {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (4i32 * 3i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv.offset((4i32 * 3i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(3isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(3isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -2103,14 +1922,12 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                         );
                         deblock_edge(
                             h,
-                            pixuv.offset(uvdiff).offset(
-                                (4i32 * 3i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize,
-                            ),
+                            pixuv
+                                .offset(uvdiff)
+                                .offset((4i32 * 3i32 * (if 1i32 != 0 { stride2uv } else { 1i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(3isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(3isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -2120,14 +1937,10 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                     } else if chroma_format.is_420() && 3i32 & 1i32 == 0 {
                         deblock_edge(
                             h,
-                            pixuv.offset(
-                                (3i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize,
-                            ),
+                            pixuv.offset((3i32 * (if 1i32 != 0 { 2i32 * stride2uv } else { 4i32 })) as isize),
                             stride2uv as crate::stdlib::intptr_t,
-                            &raw mut *(&raw mut *bs.offset(1isize)
-                                as *mut [crate::stdlib::uint8_t; 4])
-                                .offset(3isize)
-                                as *mut crate::stdlib::uint8_t,
+                            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
+                                .offset(3isize) as *mut crate::stdlib::uint8_t,
                             qpc,
                             a,
                             b,
@@ -2139,9 +1952,7 @@ pub unsafe extern "C" fn x264_8_frame_deblock_row(
                 if chroma_format.is_422() && (1i32 != 0 || 3i32 & 1i32 == 0) {
                     deblock_edge(
                         h,
-                        pixuv.offset(
-                            (3i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize,
-                        ),
+                        pixuv.offset((3i32 * (if 1i32 != 0 { 4i32 * stride2uv } else { 4i32 })) as isize),
                         stride2uv as crate::stdlib::intptr_t,
                         &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
                             .offset(3isize) as *mut crate::stdlib::uint8_t,
@@ -2165,19 +1976,16 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
         let mut qp_thresh = 15i32
             - (if a < b { a } else { b })
             - (if 0i32
-                > (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                    .i_chroma_qp_index_offset
+                > (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).i_chroma_qp_index_offset
             {
                 0i32
             } else {
-                (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                    .i_chroma_qp_index_offset
+                (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).i_chroma_qp_index_offset
             });
         let mut intra_cur = ((*h).mb.ty == MacroblockType::I_4x4
             || (*h).mb.ty == MacroblockType::I_8x8
             || (*h).mb.ty == MacroblockType::I_16x16
-            || (*h).mb.ty == MacroblockType::I_PCM)
-            as ::core::ffi::c_int;
+            || (*h).mb.ty == MacroblockType::I_PCM) as ::core::ffi::c_int;
         let mut qp = (*h).mb.i_qp;
         let mut qpc = (*h).mb.i_chroma_qp;
         if (*h).mb.i_partition == Partition::D_16x16 && (*h).mb.i_cbp_luma == 0 && intra_cur == 0
@@ -2187,22 +1995,20 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
         }
         let mut bs = (*h).mb.cache.deblock_strength;
         if intra_cur != 0 {
-            (*(&raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                .offset(1isize) as *mut crate::src::common::base::x264_union32_t))
+            (*(&raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                as *mut crate::src::common::base::x264_union32_t))
                 .i = 0x3030303u32;
-            (*(&raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                .offset(2isize) as *mut crate::src::common::base::x264_union64_t))
+            (*(&raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                as *mut crate::src::common::base::x264_union64_t))
                 .i = 0x303030303030303u64;
-            (*(&raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                .offset(1isize) as *mut crate::src::common::base::x264_union32_t))
+            (*(&raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                as *mut crate::src::common::base::x264_union32_t))
                 .i = 0x3030303u32;
-            (*(&raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                .offset(2isize) as *mut crate::src::common::base::x264_union64_t))
+            (*(&raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                as *mut crate::src::common::base::x264_union64_t))
                 .i = 0x303030303030303u64;
         } else {
-            (*h).loopf
-                .deblock_strength
-                .expect("non-null function pointer")(
+            (*h).loopf.deblock_strength.expect("non-null function pointer")(
                 &raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t,
                 &raw mut (*h).mb.cache.ref_0 as *mut [crate::stdlib::int8_t; 40],
                 &raw mut (*h).mb.cache.mv as *mut [[crate::stdlib::int16_t; 2]; 40],
@@ -2217,17 +2023,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[0usize].offset(
-                    (4i32
-                        * 1i32
-                        * (if 0i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 1i32 * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(1isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                    as *mut crate::stdlib::uint8_t,
                 qp,
                 a,
                 b,
@@ -2240,15 +2041,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[1usize].offset(
                         (4i32
                             * 1i32
-                            * (if 0i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(1isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,
@@ -2260,15 +2058,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[2usize].offset(
                         (4i32
                             * 1i32
-                            * (if 0i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(1isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,
@@ -2280,17 +2075,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
         deblock_edge(
             h,
             (*h).mb.pic.p_fdec[0usize].offset(
-                (4i32
-                    * 2i32
-                    * (if 0i32 != 0 {
-                        crate::src::common::common::FDEC_STRIDE
-                    } else {
-                        1i32
-                    })) as isize,
+                (4i32 * 2i32 * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                    as isize,
             ),
             crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                .offset(2isize) as *mut crate::stdlib::uint8_t,
+            &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                as *mut crate::stdlib::uint8_t,
             qp,
             a,
             b,
@@ -2301,17 +2091,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[1usize].offset(
-                    (4i32
-                        * 2i32
-                        * (if 0i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 2i32 * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(2isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                    as *mut crate::stdlib::uint8_t,
                 qpc,
                 a,
                 b,
@@ -2321,17 +2106,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[2usize].offset(
-                    (4i32
-                        * 2i32
-                        * (if 0i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 2i32 * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(2isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                    as *mut crate::stdlib::uint8_t,
                 qpc,
                 a,
                 b,
@@ -2343,17 +2123,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[0usize].offset(
-                    (4i32
-                        * 3i32
-                        * (if 0i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 3i32 * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(3isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(3isize)
+                    as *mut crate::stdlib::uint8_t,
                 qp,
                 a,
                 b,
@@ -2366,15 +2141,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[1usize].offset(
                         (4i32
                             * 3i32
-                            * (if 0i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(3isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(3isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,
@@ -2386,15 +2158,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[2usize].offset(
                         (4i32
                             * 3i32
-                            * (if 0i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 0i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(3isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(0isize) as *mut [crate::stdlib::uint8_t; 4]).offset(3isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,
@@ -2407,17 +2176,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[0usize].offset(
-                    (4i32
-                        * 1i32
-                        * (if 1i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 1i32 * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(1isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                    as *mut crate::stdlib::uint8_t,
                 qp,
                 a,
                 b,
@@ -2430,15 +2194,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[1usize].offset(
                         (4i32
                             * 1i32
-                            * (if 1i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(1isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,
@@ -2450,15 +2211,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[2usize].offset(
                         (4i32
                             * 1i32
-                            * (if 1i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(1isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(1isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,
@@ -2470,17 +2228,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
         deblock_edge(
             h,
             (*h).mb.pic.p_fdec[0usize].offset(
-                (4i32
-                    * 2i32
-                    * (if 1i32 != 0 {
-                        crate::src::common::common::FDEC_STRIDE
-                    } else {
-                        1i32
-                    })) as isize,
+                (4i32 * 2i32 * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                    as isize,
             ),
             crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                .offset(2isize) as *mut crate::stdlib::uint8_t,
+            &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                as *mut crate::stdlib::uint8_t,
             qp,
             a,
             b,
@@ -2491,17 +2244,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[1usize].offset(
-                    (4i32
-                        * 2i32
-                        * (if 1i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 2i32 * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(2isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                    as *mut crate::stdlib::uint8_t,
                 qpc,
                 a,
                 b,
@@ -2511,17 +2259,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[2usize].offset(
-                    (4i32
-                        * 2i32
-                        * (if 1i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 2i32 * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(2isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(2isize)
+                    as *mut crate::stdlib::uint8_t,
                 qpc,
                 a,
                 b,
@@ -2533,17 +2276,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
             deblock_edge(
                 h,
                 (*h).mb.pic.p_fdec[0usize].offset(
-                    (4i32
-                        * 3i32
-                        * (if 1i32 != 0 {
-                            crate::src::common::common::FDEC_STRIDE
-                        } else {
-                            1i32
-                        })) as isize,
+                    (4i32 * 3i32 * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                        as isize,
                 ),
                 crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                    .offset(3isize) as *mut crate::stdlib::uint8_t,
+                &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(3isize)
+                    as *mut crate::stdlib::uint8_t,
                 qp,
                 a,
                 b,
@@ -2556,15 +2294,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[1usize].offset(
                         (4i32
                             * 3i32
-                            * (if 1i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(3isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(3isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,
@@ -2576,15 +2311,12 @@ pub unsafe extern "C" fn x264_8_macroblock_deblock(mut h: *mut crate::src::commo
                     (*h).mb.pic.p_fdec[2usize].offset(
                         (4i32
                             * 3i32
-                            * (if 1i32 != 0 {
-                                crate::src::common::common::FDEC_STRIDE
-                            } else {
-                                1i32
-                            })) as isize,
+                            * (if 1i32 != 0 { crate::src::common::common::FDEC_STRIDE } else { 1i32 }))
+                            as isize,
                     ),
                     crate::src::common::common::FDEC_STRIDE as crate::stdlib::intptr_t,
-                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4])
-                        .offset(3isize) as *mut crate::stdlib::uint8_t,
+                    &raw mut *(&raw mut *bs.offset(1isize) as *mut [crate::stdlib::uint8_t; 4]).offset(3isize)
+                        as *mut crate::stdlib::uint8_t,
                     qpc,
                     a,
                     b,

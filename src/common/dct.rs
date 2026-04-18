@@ -149,9 +149,7 @@ pub struct x264_zigzag_function_t {
 }
 pub mod common_h {
     #[inline(always)]
-    pub unsafe extern "C" fn x264_clip_pixel(
-        mut x: ::core::ffi::c_int,
-    ) -> crate::src::common::common::pixel {
+    pub unsafe extern "C" fn x264_clip_pixel(mut x: ::core::ffi::c_int) -> crate::src::common::common::pixel {
         (if x & !crate::src::common::common::PIXEL_MAX != 0 {
             -x >> 31i32 & crate::src::common::common::PIXEL_MAX
         } else {
@@ -230,14 +228,10 @@ unsafe extern "C" fn idct4x4dc(mut d: *mut crate::src::common::common::dctcoef) 
                 + tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
             let mut d23_0 = tmp[(i_0 * 4i32 + 2i32) as usize] as ::core::ffi::c_int
                 - tmp[(i_0 * 4i32 + 3i32) as usize] as ::core::ffi::c_int;
-            *d.offset((i_0 * 4i32 + 0i32) as isize) =
-                (s01_0 + s23_0) as crate::src::common::common::dctcoef;
-            *d.offset((i_0 * 4i32 + 1i32) as isize) =
-                (s01_0 - s23_0) as crate::src::common::common::dctcoef;
-            *d.offset((i_0 * 4i32 + 2i32) as isize) =
-                (d01_0 - d23_0) as crate::src::common::common::dctcoef;
-            *d.offset((i_0 * 4i32 + 3i32) as isize) =
-                (d01_0 + d23_0) as crate::src::common::common::dctcoef;
+            *d.offset((i_0 * 4i32 + 0i32) as isize) = (s01_0 + s23_0) as crate::src::common::common::dctcoef;
+            *d.offset((i_0 * 4i32 + 1i32) as isize) = (s01_0 - s23_0) as crate::src::common::common::dctcoef;
+            *d.offset((i_0 * 4i32 + 2i32) as isize) = (d01_0 - d23_0) as crate::src::common::common::dctcoef;
+            *d.offset((i_0 * 4i32 + 3i32) as isize) = (d01_0 + d23_0) as crate::src::common::common::dctcoef;
             i_0 += 1;
         }
     }
@@ -303,8 +297,7 @@ unsafe extern "C" fn pixel_sub_wxh(
         while y < i_size {
             let mut x = 0i32;
             while x < i_size {
-                *diff.offset((x + y * i_size) as isize) = (*pix1.offset(x as isize)
-                    as ::core::ffi::c_int
+                *diff.offset((x + y * i_size) as isize) = (*pix1.offset(x as isize) as ::core::ffi::c_int
                     - *pix2.offset(x as isize) as ::core::ffi::c_int)
                     as crate::src::common::common::dctcoef;
                 x += 1;
@@ -339,11 +332,9 @@ unsafe extern "C" fn sub4x4_dct(
             let mut d03 = d[(i * 4i32 + 0i32) as usize] - d[(i * 4i32 + 3i32) as usize];
             let mut d12 = d[(i * 4i32 + 1i32) as usize] - d[(i * 4i32 + 2i32) as usize];
             tmp[(0i32 * 4i32 + i) as usize] = (s03 + s12) as crate::src::common::common::dctcoef;
-            tmp[(1i32 * 4i32 + i) as usize] =
-                (2i32 * d03 + d12) as crate::src::common::common::dctcoef;
+            tmp[(1i32 * 4i32 + i) as usize] = (2i32 * d03 + d12) as crate::src::common::common::dctcoef;
             tmp[(2i32 * 4i32 + i) as usize] = (s03 - s12) as crate::src::common::common::dctcoef;
-            tmp[(3i32 * 4i32 + i) as usize] =
-                (d03 - 2i32 * d12) as crate::src::common::common::dctcoef;
+            tmp[(3i32 * 4i32 + i) as usize] = (d03 - 2i32 * d12) as crate::src::common::common::dctcoef;
             i += 1;
         }
         while i_0 < 4i32 {
@@ -444,10 +435,10 @@ unsafe extern "C" fn sub8x8_dct_dc(
     mut pix2: *mut crate::src::common::common::pixel,
 ) {
     unsafe {
-        *dct.offset(0isize) = sub4x4_dct_dc(pix1.offset(0isize), pix2.offset(0isize))
-            as crate::src::common::common::dctcoef;
-        *dct.offset(1isize) = sub4x4_dct_dc(pix1.offset(4isize), pix2.offset(4isize))
-            as crate::src::common::common::dctcoef;
+        *dct.offset(0isize) =
+            sub4x4_dct_dc(pix1.offset(0isize), pix2.offset(0isize)) as crate::src::common::common::dctcoef;
+        *dct.offset(1isize) =
+            sub4x4_dct_dc(pix1.offset(4isize), pix2.offset(4isize)) as crate::src::common::common::dctcoef;
         *dct.offset(2isize) = sub4x4_dct_dc(
             pix1.offset((4i32 * crate::src::common::common::FENC_STRIDE + 0i32) as isize),
             pix2.offset((4i32 * crate::src::common::common::FDEC_STRIDE + 0i32) as isize),
@@ -456,14 +447,10 @@ unsafe extern "C" fn sub8x8_dct_dc(
             pix1.offset((4i32 * crate::src::common::common::FENC_STRIDE + 4i32) as isize),
             pix2.offset((4i32 * crate::src::common::common::FDEC_STRIDE + 4i32) as isize),
         ) as crate::src::common::common::dctcoef;
-        let mut d0 =
-            *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut d1 =
-            *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut d2 =
-            *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut d3 =
-            *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut d0 = *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut d1 = *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut d2 = *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut d3 = *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
         *dct.offset(0isize) = (d0 + d1) as crate::src::common::common::dctcoef;
         *dct.offset(1isize) = (d0 - d1) as crate::src::common::common::dctcoef;
         *dct.offset(2isize) = (d2 + d3) as crate::src::common::common::dctcoef;
@@ -675,19 +662,13 @@ unsafe extern "C" fn sub8x8_dct8(
             let mut a6 = d07 + d34 - (d16 + (d16 >> 1i32));
             let mut a7 = d16 - d25 + (d34 + (d34 >> 1i32));
             tmp[(0i32 * 8i32 + i) as usize] = (a0 + a1) as crate::src::common::common::dctcoef;
-            tmp[(1i32 * 8i32 + i) as usize] =
-                (a4 + (a7 >> 2i32)) as crate::src::common::common::dctcoef;
-            tmp[(2i32 * 8i32 + i) as usize] =
-                (a2 + (a3 >> 1i32)) as crate::src::common::common::dctcoef;
-            tmp[(3i32 * 8i32 + i) as usize] =
-                (a5 + (a6 >> 2i32)) as crate::src::common::common::dctcoef;
+            tmp[(1i32 * 8i32 + i) as usize] = (a4 + (a7 >> 2i32)) as crate::src::common::common::dctcoef;
+            tmp[(2i32 * 8i32 + i) as usize] = (a2 + (a3 >> 1i32)) as crate::src::common::common::dctcoef;
+            tmp[(3i32 * 8i32 + i) as usize] = (a5 + (a6 >> 2i32)) as crate::src::common::common::dctcoef;
             tmp[(4i32 * 8i32 + i) as usize] = (a0 - a1) as crate::src::common::common::dctcoef;
-            tmp[(5i32 * 8i32 + i) as usize] =
-                (a6 - (a5 >> 2i32)) as crate::src::common::common::dctcoef;
-            tmp[(6i32 * 8i32 + i) as usize] =
-                ((a2 >> 1i32) - a3) as crate::src::common::common::dctcoef;
-            tmp[(7i32 * 8i32 + i) as usize] =
-                ((a4 >> 2i32) - a7) as crate::src::common::common::dctcoef;
+            tmp[(5i32 * 8i32 + i) as usize] = (a6 - (a5 >> 2i32)) as crate::src::common::common::dctcoef;
+            tmp[(6i32 * 8i32 + i) as usize] = ((a2 >> 1i32) - a3) as crate::src::common::common::dctcoef;
+            tmp[(7i32 * 8i32 + i) as usize] = ((a4 >> 2i32) - a7) as crate::src::common::common::dctcoef;
             i += 1;
         }
         while i_0 < 8i32 {
@@ -715,16 +696,14 @@ unsafe extern "C" fn sub8x8_dct8(
             let mut a5_0 = d07_0 - d34_0 - (d25_0 + (d25_0 >> 1i32));
             let mut a6_0 = d07_0 + d34_0 - (d16_0 + (d16_0 >> 1i32));
             let mut a7_0 = d16_0 - d25_0 + (d34_0 + (d34_0 >> 1i32));
-            *dct.offset((0i32 * 8i32 + i_0) as isize) =
-                (a0_0 + a1_0) as crate::src::common::common::dctcoef;
+            *dct.offset((0i32 * 8i32 + i_0) as isize) = (a0_0 + a1_0) as crate::src::common::common::dctcoef;
             *dct.offset((1i32 * 8i32 + i_0) as isize) =
                 (a4_0 + (a7_0 >> 2i32)) as crate::src::common::common::dctcoef;
             *dct.offset((2i32 * 8i32 + i_0) as isize) =
                 (a2_0 + (a3_0 >> 1i32)) as crate::src::common::common::dctcoef;
             *dct.offset((3i32 * 8i32 + i_0) as isize) =
                 (a5_0 + (a6_0 >> 2i32)) as crate::src::common::common::dctcoef;
-            *dct.offset((4i32 * 8i32 + i_0) as isize) =
-                (a0_0 - a1_0) as crate::src::common::common::dctcoef;
+            *dct.offset((4i32 * 8i32 + i_0) as isize) = (a0_0 - a1_0) as crate::src::common::common::dctcoef;
             *dct.offset((5i32 * 8i32 + i_0) as isize) =
                 (a6_0 - (a5_0 >> 2i32)) as crate::src::common::common::dctcoef;
             *dct.offset((6i32 * 8i32 + i_0) as isize) =
@@ -806,22 +785,14 @@ unsafe extern "C" fn add8x8_idct8(
             let mut b3 = a3 + (a5 >> 2i32);
             let mut b5 = (a3 >> 2i32) - a5;
             let mut b7 = a7 - (a1 >> 2i32);
-            *dct.offset((0i32 * 8i32 + i) as isize) =
-                (b0 + b7) as crate::src::common::common::dctcoef;
-            *dct.offset((1i32 * 8i32 + i) as isize) =
-                (b2 + b5) as crate::src::common::common::dctcoef;
-            *dct.offset((2i32 * 8i32 + i) as isize) =
-                (b4 + b3) as crate::src::common::common::dctcoef;
-            *dct.offset((3i32 * 8i32 + i) as isize) =
-                (b6 + b1) as crate::src::common::common::dctcoef;
-            *dct.offset((4i32 * 8i32 + i) as isize) =
-                (b6 - b1) as crate::src::common::common::dctcoef;
-            *dct.offset((5i32 * 8i32 + i) as isize) =
-                (b4 - b3) as crate::src::common::common::dctcoef;
-            *dct.offset((6i32 * 8i32 + i) as isize) =
-                (b2 - b5) as crate::src::common::common::dctcoef;
-            *dct.offset((7i32 * 8i32 + i) as isize) =
-                (b0 - b7) as crate::src::common::common::dctcoef;
+            *dct.offset((0i32 * 8i32 + i) as isize) = (b0 + b7) as crate::src::common::common::dctcoef;
+            *dct.offset((1i32 * 8i32 + i) as isize) = (b2 + b5) as crate::src::common::common::dctcoef;
+            *dct.offset((2i32 * 8i32 + i) as isize) = (b4 + b3) as crate::src::common::common::dctcoef;
+            *dct.offset((3i32 * 8i32 + i) as isize) = (b6 + b1) as crate::src::common::common::dctcoef;
+            *dct.offset((4i32 * 8i32 + i) as isize) = (b6 - b1) as crate::src::common::common::dctcoef;
+            *dct.offset((5i32 * 8i32 + i) as isize) = (b4 - b3) as crate::src::common::common::dctcoef;
+            *dct.offset((6i32 * 8i32 + i) as isize) = (b2 - b5) as crate::src::common::common::dctcoef;
+            *dct.offset((7i32 * 8i32 + i) as isize) = (b0 - b7) as crate::src::common::common::dctcoef;
             i += 1;
         }
         while i_0 < 8i32 {
@@ -829,11 +800,9 @@ unsafe extern "C" fn add8x8_idct8(
                 + *dct.offset((i_0 * 8i32 + 4i32) as isize) as ::core::ffi::c_int;
             let mut a2_0 = *dct.offset((i_0 * 8i32 + 0i32) as isize) as ::core::ffi::c_int
                 - *dct.offset((i_0 * 8i32 + 4i32) as isize) as ::core::ffi::c_int;
-            let mut a4_0 = (*dct.offset((i_0 * 8i32 + 2i32) as isize) as ::core::ffi::c_int
-                >> 1i32)
+            let mut a4_0 = (*dct.offset((i_0 * 8i32 + 2i32) as isize) as ::core::ffi::c_int >> 1i32)
                 - *dct.offset((i_0 * 8i32 + 6i32) as isize) as ::core::ffi::c_int;
-            let mut a6_0 = (*dct.offset((i_0 * 8i32 + 6i32) as isize) as ::core::ffi::c_int
-                >> 1i32)
+            let mut a6_0 = (*dct.offset((i_0 * 8i32 + 6i32) as isize) as ::core::ffi::c_int >> 1i32)
                 + *dct.offset((i_0 * 8i32 + 2i32) as isize) as ::core::ffi::c_int;
             let mut b0_0 = a0_0 + a6_0;
             let mut b2_0 = a2_0 + a4_0;
@@ -859,54 +828,46 @@ unsafe extern "C" fn add8x8_idct8(
             let mut b3_0 = a3_0 + (a5_0 >> 2i32);
             let mut b5_0 = (a3_0 >> 2i32) - a5_0;
             let mut b7_0 = a7_0 - (a1_0 >> 2i32);
-            *dst.offset((i_0 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b0_0 + b7_0) >> 6i32),
-                );
-            *dst.offset((i_0 + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b2_0 + b5_0) >> 6i32),
-                );
-            *dst.offset((i_0 + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b4_0 + b3_0) >> 6i32),
-                );
-            *dst.offset((i_0 + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b6_0 + b1_0) >> 6i32),
-                );
-            *dst.offset((i_0 + 4i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 4i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b6_0 - b1_0) >> 6i32),
-                );
-            *dst.offset((i_0 + 5i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 5i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b4_0 - b3_0) >> 6i32),
-                );
-            *dst.offset((i_0 + 6i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 6i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b2_0 - b5_0) >> 6i32),
-                );
-            *dst.offset((i_0 + 7i32 * crate::src::common::common::FDEC_STRIDE) as isize) =
-                x264_clip_pixel(
-                    *dst.offset((i_0 + 7i32 * crate::src::common::common::FDEC_STRIDE) as isize)
-                        as ::core::ffi::c_int
-                        + ((b0_0 - b7_0) >> 6i32),
-                );
+            *dst.offset((i_0 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 0i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b0_0 + b7_0) >> 6i32),
+            );
+            *dst.offset((i_0 + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 1i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b2_0 + b5_0) >> 6i32),
+            );
+            *dst.offset((i_0 + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 2i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b4_0 + b3_0) >> 6i32),
+            );
+            *dst.offset((i_0 + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 3i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b6_0 + b1_0) >> 6i32),
+            );
+            *dst.offset((i_0 + 4i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 4i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b6_0 - b1_0) >> 6i32),
+            );
+            *dst.offset((i_0 + 5i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 5i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b4_0 - b3_0) >> 6i32),
+            );
+            *dst.offset((i_0 + 6i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 6i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b2_0 - b5_0) >> 6i32),
+            );
+            *dst.offset((i_0 + 7i32 * crate::src::common::common::FDEC_STRIDE) as isize) = x264_clip_pixel(
+                *dst.offset((i_0 + 7i32 * crate::src::common::common::FDEC_STRIDE) as isize)
+                    as ::core::ffi::c_int
+                    + ((b0_0 - b7_0) >> 6i32),
+            );
             i_0 += 1;
         }
     }
@@ -943,18 +904,14 @@ unsafe extern "C" fn add4x4_idct_dc(
         let mut i = 0i32;
         dc = ((dc as ::core::ffi::c_int + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
         while i < 4i32 {
-            *p_dst.offset(0isize) = x264_clip_pixel(
-                *p_dst.offset(0isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int,
-            );
-            *p_dst.offset(1isize) = x264_clip_pixel(
-                *p_dst.offset(1isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int,
-            );
-            *p_dst.offset(2isize) = x264_clip_pixel(
-                *p_dst.offset(2isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int,
-            );
-            *p_dst.offset(3isize) = x264_clip_pixel(
-                *p_dst.offset(3isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int,
-            );
+            *p_dst.offset(0isize) =
+                x264_clip_pixel(*p_dst.offset(0isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int);
+            *p_dst.offset(1isize) =
+                x264_clip_pixel(*p_dst.offset(1isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int);
+            *p_dst.offset(2isize) =
+                x264_clip_pixel(*p_dst.offset(2isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int);
+            *p_dst.offset(3isize) =
+                x264_clip_pixel(*p_dst.offset(3isize) as ::core::ffi::c_int + dc as ::core::ffi::c_int);
             i += 1;
             p_dst = p_dst.offset(crate::src::common::common::FDEC_STRIDE as isize);
         }
@@ -1406,26 +1363,14 @@ unsafe extern "C" fn zigzag_sub_4x4_frame(
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(15isize) as ::core::ffi::c_int;
-        (*(p_dst.offset((0i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((0i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((1i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((1i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((2i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((2i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((3i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((3i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((0i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((0i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((1i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((1i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((2i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((2i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((3i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((3i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (nz != 0) as ::core::ffi::c_int
     }
 }
@@ -1532,26 +1477,14 @@ unsafe extern "C" fn zigzag_sub_4x4_field(
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(15isize) as ::core::ffi::c_int;
-        (*(p_dst.offset((0i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((0i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((1i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((1i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((2i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((2i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((3i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((3i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((0i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((0i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((1i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((1i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((2i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((2i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((3i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((3i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (nz != 0) as ::core::ffi::c_int
     }
 }
@@ -1659,26 +1592,14 @@ unsafe extern "C" fn zigzag_sub_4x4ac_frame(
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(15isize) as ::core::ffi::c_int;
-        (*(p_dst.offset((0i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((0i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((1i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((1i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((2i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((2i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((3i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((3i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((0i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((0i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((1i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((1i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((2i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((2i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((3i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((3i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (nz != 0) as ::core::ffi::c_int
     }
 }
@@ -1786,26 +1707,14 @@ unsafe extern "C" fn zigzag_sub_4x4ac_field(
             - *p_dst.offset(od_14 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(15isize) as ::core::ffi::c_int;
-        (*(p_dst.offset((0i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((0i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((1i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((1i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((2i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((2i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
-        (*(p_dst.offset((3i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((3i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((0i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((0i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((1i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((1i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((2i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((2i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
+        (*(p_dst.offset((3i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((3i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (nz != 0) as ::core::ffi::c_int
     }
 }
@@ -2200,81 +2109,57 @@ unsafe extern "C" fn zigzag_sub_8x8_frame(
             - *p_dst.offset(od_62 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(63isize) as ::core::ffi::c_int;
-        (*(p_dst.offset((0i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((0i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((0i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((0i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((0i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((0i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((1i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((1i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((1i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((1i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((1i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((1i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((2i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((2i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((2i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((2i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((2i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((2i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((3i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((3i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((3i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((3i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((3i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((3i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((4i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((4i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((4i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((4i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((4i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((4i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((5i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((5i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((5i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((5i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((5i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((5i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((6i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((6i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((6i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((6i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((6i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((6i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((7i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((7i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((7i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((7i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((7i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((7i32 * 16i32) as isize).offset(4isize)
@@ -2674,81 +2559,57 @@ unsafe extern "C" fn zigzag_sub_8x8_field(
             - *p_dst.offset(od_62 as isize) as ::core::ffi::c_int)
             as crate::src::common::common::dctcoef;
         nz |= *level.offset(63isize) as ::core::ffi::c_int;
-        (*(p_dst.offset((0i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((0i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((0i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((0i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((0i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((0i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((1i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((1i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((1i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((1i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((1i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((1i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((2i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((2i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((2i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((2i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((2i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((2i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((3i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((3i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((3i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((3i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((3i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((3i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((4i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((4i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((4i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((4i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((4i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((4i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((5i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((5i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((5i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((5i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((5i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((5i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((6i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((6i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((6i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((6i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((6i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((6i32 * 16i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i;
-        (*(p_dst.offset((7i32 * 32i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i = (*(p_src.offset((7i32 * 16i32) as isize)
-            as *mut crate::src::common::base::x264_union32_t))
-            .i;
+        (*(p_dst.offset((7i32 * 32i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i =
+            (*(p_src.offset((7i32 * 16i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i;
         (*(p_dst.offset((7i32 * 32i32) as isize).offset(4isize)
             as *mut crate::src::common::base::x264_union32_t))
             .i = (*(p_src.offset((7i32 * 16i32) as isize).offset(4isize)
@@ -2772,8 +2633,7 @@ unsafe extern "C" fn zigzag_interleave_8x8_cavlc(
                 *dst.offset((i * 16i32 + j) as isize) = *src.offset((i + j * 4i32) as isize);
                 j += 1;
             }
-            *nnz.offset(((i & 1i32) + (i >> 1i32) * 8i32) as isize) =
-                (nz != 0) as crate::stdlib::uint8_t;
+            *nnz.offset(((i & 1i32) + (i >> 1i32) * 8i32) as isize) = (nz != 0) as crate::stdlib::uint8_t;
             i += 1;
         }
     }

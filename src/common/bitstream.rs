@@ -133,8 +133,7 @@ pub unsafe extern "C" fn x264_8_nal_encode(
         let mut size = dst.offset_from(orig_dst) as ::core::ffi::c_int;
         if (*h).param.i_avcintra_class != 0 {
             let mut padding =
-                (*nal).i_payload + (*nal).i_padding + crate::src::common::common::NALU_OVERHEAD
-                    - size;
+                (*nal).i_payload + (*nal).i_padding + crate::src::common::common::NALU_OVERHEAD - size;
             if padding > 0i32 {
                 crate::stdlib::memset(
                     dst as *mut ::core::ffi::c_void,

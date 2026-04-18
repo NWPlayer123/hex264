@@ -37,14 +37,11 @@ pub struct x264_api_t<'a> {
             *mut crate::x264_h::x264_picture_t,
         ) -> ::core::ffi::c_int,
     >,
-    pub encoder_close:
-        Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t<'_>) -> ()>,
-    pub encoder_delayed_frames: Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::x264_t<'_>) -> ::core::ffi::c_int,
-    >,
-    pub encoder_maximum_delayed_frames: Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::x264_t<'_>) -> ::core::ffi::c_int,
-    >,
+    pub encoder_close: Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t<'_>) -> ()>,
+    pub encoder_delayed_frames:
+        Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t<'_>) -> ::core::ffi::c_int>,
+    pub encoder_maximum_delayed_frames:
+        Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t<'_>) -> ::core::ffi::c_int>,
     pub encoder_intra_refresh:
         Option<unsafe extern "C" fn(*mut crate::src::common::common::x264_t<'_>) -> ()>,
     pub encoder_invalidate_reference: Option<
@@ -59,8 +56,8 @@ pub unsafe extern "C" fn x264_encoder_open_165<'a>(
     mut param: *mut crate::x264_h::x264_param_t,
 ) -> *mut crate::src::common::common::x264_t<'a> {
     unsafe {
-        let mut api = crate::stdlib::calloc(1usize, ::core::mem::size_of::<x264_api_t<'_>>())
-            as *mut x264_api_t<'_>;
+        let mut api =
+            crate::stdlib::calloc(1usize, ::core::mem::size_of::<x264_api_t<'_>>()) as *mut x264_api_t<'_>;
         if api.is_null() {
             return ::core::ptr::null_mut::<crate::src::common::common::x264_t<'_>>();
         }
@@ -132,15 +129,12 @@ pub unsafe extern "C" fn x264_encoder_open_165<'a>(
                         crate::stdlib::int64_t,
                     ) -> ::core::ffi::c_int,
             );
-            (*api).x264 = crate::src::encoder::encoder::x264_8_encoder_open(
-                param,
-                api as *mut ::core::ffi::c_void,
-            );
+            (*api).x264 =
+                crate::src::encoder::encoder::x264_8_encoder_open(param, api as *mut ::core::ffi::c_void);
         } else {
             crate::src::common::base::x264_log_internal(
                 crate::x264_h::X264_LOG_ERROR_1,
-                b"not compiled with %d bit depth support\n\0".as_ptr()
-                    as *const ::core::ffi::c_char,
+                b"not compiled with %d bit depth support\n\0".as_ptr() as *const ::core::ffi::c_char,
                 (*param).i_bitdepth,
             );
         }
@@ -183,9 +177,7 @@ pub unsafe extern "C" fn x264_encoder_parameters(
 ) {
     unsafe {
         let mut api = h as *mut x264_api_t<'_>;
-        (*api)
-            .encoder_parameters
-            .expect("non-null function pointer")((*api).x264, param);
+        (*api).encoder_parameters.expect("non-null function pointer")((*api).x264, param);
     }
 }
 pub unsafe extern "C" fn x264_encoder_headers(
@@ -221,9 +213,7 @@ pub unsafe extern "C" fn x264_encoder_delayed_frames(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut api = h as *mut x264_api_t<'_>;
-        (*api)
-            .encoder_delayed_frames
-            .expect("non-null function pointer")((*api).x264)
+        (*api).encoder_delayed_frames.expect("non-null function pointer")((*api).x264)
     }
 }
 pub unsafe extern "C" fn x264_encoder_maximum_delayed_frames(
@@ -231,19 +221,13 @@ pub unsafe extern "C" fn x264_encoder_maximum_delayed_frames(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut api = h as *mut x264_api_t<'_>;
-        (*api)
-            .encoder_maximum_delayed_frames
-            .expect("non-null function pointer")((*api).x264)
+        (*api).encoder_maximum_delayed_frames.expect("non-null function pointer")((*api).x264)
     }
 }
-pub unsafe extern "C" fn x264_encoder_intra_refresh(
-    mut h: *mut crate::src::common::common::x264_t<'_>,
-) {
+pub unsafe extern "C" fn x264_encoder_intra_refresh(mut h: *mut crate::src::common::common::x264_t<'_>) {
     unsafe {
         let mut api = h as *mut x264_api_t<'_>;
-        (*api)
-            .encoder_intra_refresh
-            .expect("non-null function pointer")((*api).x264);
+        (*api).encoder_intra_refresh.expect("non-null function pointer")((*api).x264);
     }
 }
 pub unsafe extern "C" fn x264_encoder_invalidate_reference(
@@ -252,8 +236,6 @@ pub unsafe extern "C" fn x264_encoder_invalidate_reference(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut api = h as *mut x264_api_t<'_>;
-        (*api)
-            .encoder_invalidate_reference
-            .expect("non-null function pointer")((*api).x264, pts)
+        (*api).encoder_invalidate_reference.expect("non-null function pointer")((*api).x264, pts)
     }
 }

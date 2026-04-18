@@ -323,44 +323,42 @@ pub static mut x264_levels: [crate::x264_h::x264_level_t; 21] = [
     },
 ];
 pub static mut x264_exp2_lut: [crate::stdlib::uint8_t; 64] = [
-    0u8, 3u8, 6u8, 8u8, 11u8, 14u8, 17u8, 20u8, 23u8, 26u8, 29u8, 32u8, 36u8, 39u8, 42u8, 45u8,
-    48u8, 52u8, 55u8, 58u8, 62u8, 65u8, 69u8, 72u8, 76u8, 80u8, 83u8, 87u8, 91u8, 94u8, 98u8,
-    102u8, 106u8, 110u8, 114u8, 118u8, 122u8, 126u8, 130u8, 135u8, 139u8, 143u8, 147u8, 152u8,
-    156u8, 161u8, 165u8, 170u8, 175u8, 179u8, 184u8, 189u8, 194u8, 198u8, 203u8, 208u8, 214u8,
-    219u8, 224u8, 229u8, 234u8, 240u8, 245u8, 250u8,
+    0u8, 3u8, 6u8, 8u8, 11u8, 14u8, 17u8, 20u8, 23u8, 26u8, 29u8, 32u8, 36u8, 39u8, 42u8, 45u8, 48u8, 52u8,
+    55u8, 58u8, 62u8, 65u8, 69u8, 72u8, 76u8, 80u8, 83u8, 87u8, 91u8, 94u8, 98u8, 102u8, 106u8, 110u8, 114u8,
+    118u8, 122u8, 126u8, 130u8, 135u8, 139u8, 143u8, 147u8, 152u8, 156u8, 161u8, 165u8, 170u8, 175u8, 179u8,
+    184u8, 189u8, 194u8, 198u8, 203u8, 208u8, 214u8, 219u8, 224u8, 229u8, 234u8, 240u8, 245u8, 250u8,
 ];
 #[allow(clippy::approx_constant)]
 pub static mut x264_log2_lut: [::core::ffi::c_float; 128] = [
-    0f32, 0.01123f32, 0.02237f32, 0.03342f32, 0.04439f32, 0.05528f32, 0.06609f32, 0.07682f32,
-    0.08746f32, 0.09803f32, 0.10852f32, 0.11894f32, 0.12928f32, 0.13955f32, 0.14975f32, 0.15987f32,
-    0.16993f32, 0.17991f32, 0.18982f32, 0.19967f32, 0.20945f32, 0.21917f32, 0.22882f32, 0.2384f32,
-    0.24793f32, 0.25739f32, 0.26679f32, 0.27612f32, 0.2854f32, 0.29462f32, 0.30378f32, 0.31288f32,
-    0.32193f32, 0.33092f32, 0.33985f32, 0.34873f32, 0.35755f32, 0.36632f32, 0.37504f32, 0.3837f32,
-    0.39232f32, 0.40088f32, 0.40939f32, 0.41785f32, 0.42626f32, 0.43463f32, 0.44294f32, 0.45121f32,
-    0.45943f32, 0.46761f32, 0.47573f32, 0.48382f32, 0.49185f32, 0.49985f32, 0.50779f32, 0.5157f32,
-    0.52356f32, 0.53138f32, 0.53916f32, 0.54689f32, 0.55459f32, 0.56224f32, 0.56986f32, 0.57743f32,
-    0.58496f32, 0.59246f32, 0.59991f32, 0.60733f32, 0.61471f32, 0.62205f32, 0.62936f32, 0.63662f32,
-    0.64386f32, 0.65105f32, 0.65821f32, 0.66534f32, 0.67243f32, 0.67948f32, 0.6865f32, 0.69349f32,
-    0.70044f32, 0.70736f32, 0.71425f32, 0.7211f32, 0.72792f32, 0.73471f32, 0.74147f32, 0.74819f32,
-    0.75489f32, 0.76155f32, 0.76818f32, 0.77479f32, 0.78136f32, 0.7879f32, 0.79442f32, 0.8009f32,
-    0.80735f32, 0.81378f32, 0.82018f32, 0.82655f32, 0.83289f32, 0.8392f32, 0.84549f32, 0.85175f32,
-    0.85798f32, 0.86419f32, 0.87036f32, 0.87652f32, 0.88264f32, 0.88874f32, 0.89482f32, 0.90087f32,
-    0.90689f32, 0.91289f32, 0.91886f32, 0.92481f32, 0.93074f32, 0.93664f32, 0.94251f32, 0.94837f32,
-    0.9542f32, 0.96f32, 0.96578f32, 0.97154f32, 0.97728f32, 0.98299f32, 0.98868f32, 0.99435f32,
+    0f32, 0.01123f32, 0.02237f32, 0.03342f32, 0.04439f32, 0.05528f32, 0.06609f32, 0.07682f32, 0.08746f32,
+    0.09803f32, 0.10852f32, 0.11894f32, 0.12928f32, 0.13955f32, 0.14975f32, 0.15987f32, 0.16993f32,
+    0.17991f32, 0.18982f32, 0.19967f32, 0.20945f32, 0.21917f32, 0.22882f32, 0.2384f32, 0.24793f32,
+    0.25739f32, 0.26679f32, 0.27612f32, 0.2854f32, 0.29462f32, 0.30378f32, 0.31288f32, 0.32193f32,
+    0.33092f32, 0.33985f32, 0.34873f32, 0.35755f32, 0.36632f32, 0.37504f32, 0.3837f32, 0.39232f32,
+    0.40088f32, 0.40939f32, 0.41785f32, 0.42626f32, 0.43463f32, 0.44294f32, 0.45121f32, 0.45943f32,
+    0.46761f32, 0.47573f32, 0.48382f32, 0.49185f32, 0.49985f32, 0.50779f32, 0.5157f32, 0.52356f32,
+    0.53138f32, 0.53916f32, 0.54689f32, 0.55459f32, 0.56224f32, 0.56986f32, 0.57743f32, 0.58496f32,
+    0.59246f32, 0.59991f32, 0.60733f32, 0.61471f32, 0.62205f32, 0.62936f32, 0.63662f32, 0.64386f32,
+    0.65105f32, 0.65821f32, 0.66534f32, 0.67243f32, 0.67948f32, 0.6865f32, 0.69349f32, 0.70044f32,
+    0.70736f32, 0.71425f32, 0.7211f32, 0.72792f32, 0.73471f32, 0.74147f32, 0.74819f32, 0.75489f32,
+    0.76155f32, 0.76818f32, 0.77479f32, 0.78136f32, 0.7879f32, 0.79442f32, 0.8009f32, 0.80735f32, 0.81378f32,
+    0.82018f32, 0.82655f32, 0.83289f32, 0.8392f32, 0.84549f32, 0.85175f32, 0.85798f32, 0.86419f32,
+    0.87036f32, 0.87652f32, 0.88264f32, 0.88874f32, 0.89482f32, 0.90087f32, 0.90689f32, 0.91289f32,
+    0.91886f32, 0.92481f32, 0.93074f32, 0.93664f32, 0.94251f32, 0.94837f32, 0.9542f32, 0.96f32, 0.96578f32,
+    0.97154f32, 0.97728f32, 0.98299f32, 0.98868f32, 0.99435f32,
 ];
 pub static mut x264_log2_lz_lut: [::core::ffi::c_float; 32] = [
-    31f32, 30f32, 29f32, 28f32, 27f32, 26f32, 25f32, 24f32, 23f32, 22f32, 21f32, 20f32, 19f32,
-    18f32, 17f32, 16f32, 15f32, 14f32, 13f32, 12f32, 11f32, 10f32, 9f32, 8f32, 7f32, 6f32, 5f32,
-    4f32, 3f32, 2f32, 1f32, 0f32,
+    31f32, 30f32, 29f32, 28f32, 27f32, 26f32, 25f32, 24f32, 23f32, 22f32, 21f32, 20f32, 19f32, 18f32, 17f32,
+    16f32, 15f32, 14f32, 13f32, 12f32, 11f32, 10f32, 9f32, 8f32, 7f32, 6f32, 5f32, 4f32, 3f32, 2f32, 1f32,
+    0f32,
 ];
 pub static mut x264_lambda_tab: [crate::stdlib::uint16_t; 82] = [
-    1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16,
-    2u16, 2u16, 2u16, 2u16, 3u16, 3u16, 3u16, 4u16, 4u16, 4u16, 5u16, 6u16, 6u16, 7u16, 8u16, 9u16,
-    10u16, 11u16, 13u16, 14u16, 16u16, 18u16, 20u16, 23u16, 25u16, 29u16, 32u16, 36u16, 40u16,
-    45u16, 51u16, 57u16, 64u16, 72u16, 81u16, 91u16, 102u16, 114u16, 128u16, 144u16, 161u16,
-    181u16, 203u16, 228u16, 256u16, 287u16, 323u16, 362u16, 406u16, 456u16, 512u16, 575u16, 645u16,
-    724u16, 813u16, 912u16, 1024u16, 1149u16, 1290u16, 1448u16, 1625u16, 1825u16, 2048u16, 2299u16,
-    2580u16, 2896u16,
+    1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 1u16, 2u16,
+    2u16, 2u16, 2u16, 3u16, 3u16, 3u16, 4u16, 4u16, 4u16, 5u16, 6u16, 6u16, 7u16, 8u16, 9u16, 10u16, 11u16,
+    13u16, 14u16, 16u16, 18u16, 20u16, 23u16, 25u16, 29u16, 32u16, 36u16, 40u16, 45u16, 51u16, 57u16, 64u16,
+    72u16, 81u16, 91u16, 102u16, 114u16, 128u16, 144u16, 161u16, 181u16, 203u16, 228u16, 256u16, 287u16,
+    323u16, 362u16, 406u16, 456u16, 512u16, 575u16, 645u16, 724u16, 813u16, 912u16, 1024u16, 1149u16,
+    1290u16, 1448u16, 1625u16, 1825u16, 2048u16, 2299u16, 2580u16, 2896u16,
 ];
 pub static mut x264_lambda2_tab: [::core::ffi::c_int; 82] = [
     14i32,
@@ -617,40 +615,36 @@ pub static mut x264_trellis_lambda2_tab: [[::core::ffi::c_int; 82]; 2] = [
     ],
 ];
 pub static mut x264_chroma_lambda2_offset_tab: [crate::stdlib::uint16_t; 37] = [
-    16u16, 20u16, 25u16, 32u16, 40u16, 50u16, 64u16, 80u16, 101u16, 128u16, 161u16, 203u16, 256u16,
-    322u16, 406u16, 512u16, 645u16, 812u16, 1024u16, 1290u16, 1625u16, 2048u16, 2580u16, 3250u16,
-    4096u16, 5160u16, 6501u16, 8192u16, 10321u16, 13003u16, 16384u16, 20642u16, 26007u16, 32768u16,
-    41285u16, 52015u16, 65535u16,
+    16u16, 20u16, 25u16, 32u16, 40u16, 50u16, 64u16, 80u16, 101u16, 128u16, 161u16, 203u16, 256u16, 322u16,
+    406u16, 512u16, 645u16, 812u16, 1024u16, 1290u16, 1625u16, 2048u16, 2580u16, 3250u16, 4096u16, 5160u16,
+    6501u16, 8192u16, 10321u16, 13003u16, 16384u16, 20642u16, 26007u16, 32768u16, 41285u16, 52015u16,
+    65535u16,
 ];
-pub static mut x264_hpel_ref0: [crate::stdlib::uint8_t; 16] = [
-    0u8, 1u8, 1u8, 1u8, 0u8, 1u8, 1u8, 1u8, 2u8, 3u8, 3u8, 3u8, 0u8, 1u8, 1u8, 1u8,
-];
-pub static mut x264_hpel_ref1: [crate::stdlib::uint8_t; 16] = [
-    0u8, 0u8, 1u8, 0u8, 2u8, 2u8, 3u8, 2u8, 2u8, 2u8, 3u8, 2u8, 2u8, 2u8, 3u8, 2u8,
-];
-pub static mut x264_cqm_jvt4i: [crate::stdlib::uint8_t; 16] = [
-    6u8, 13u8, 20u8, 28u8, 13u8, 20u8, 28u8, 32u8, 20u8, 28u8, 32u8, 37u8, 28u8, 32u8, 37u8, 42u8,
-];
-pub static mut x264_cqm_jvt4p: [crate::stdlib::uint8_t; 16] = [
-    10u8, 14u8, 20u8, 24u8, 14u8, 20u8, 24u8, 27u8, 20u8, 24u8, 27u8, 30u8, 24u8, 27u8, 30u8, 34u8,
-];
+pub static mut x264_hpel_ref0: [crate::stdlib::uint8_t; 16] =
+    [0u8, 1u8, 1u8, 1u8, 0u8, 1u8, 1u8, 1u8, 2u8, 3u8, 3u8, 3u8, 0u8, 1u8, 1u8, 1u8];
+pub static mut x264_hpel_ref1: [crate::stdlib::uint8_t; 16] =
+    [0u8, 0u8, 1u8, 0u8, 2u8, 2u8, 3u8, 2u8, 2u8, 2u8, 3u8, 2u8, 2u8, 2u8, 3u8, 2u8];
+pub static mut x264_cqm_jvt4i: [crate::stdlib::uint8_t; 16] =
+    [6u8, 13u8, 20u8, 28u8, 13u8, 20u8, 28u8, 32u8, 20u8, 28u8, 32u8, 37u8, 28u8, 32u8, 37u8, 42u8];
+pub static mut x264_cqm_jvt4p: [crate::stdlib::uint8_t; 16] =
+    [10u8, 14u8, 20u8, 24u8, 14u8, 20u8, 24u8, 27u8, 20u8, 24u8, 27u8, 30u8, 24u8, 27u8, 30u8, 34u8];
 pub static mut x264_cqm_jvt8i: [crate::stdlib::uint8_t; 64] = [
-    6u8, 10u8, 13u8, 16u8, 18u8, 23u8, 25u8, 27u8, 10u8, 11u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8,
-    13u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8,
-    18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8,
-    25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8, 40u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8, 40u8, 42u8,
+    6u8, 10u8, 13u8, 16u8, 18u8, 23u8, 25u8, 27u8, 10u8, 11u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8, 13u8,
+    16u8, 18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 16u8, 18u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8, 18u8, 23u8,
+    25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 23u8, 25u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8, 25u8, 27u8, 29u8,
+    31u8, 33u8, 36u8, 38u8, 40u8, 27u8, 29u8, 31u8, 33u8, 36u8, 38u8, 40u8, 42u8,
 ];
 pub static mut x264_cqm_jvt8p: [crate::stdlib::uint8_t; 64] = [
-    9u8, 13u8, 15u8, 17u8, 19u8, 21u8, 22u8, 24u8, 13u8, 13u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8,
-    15u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8,
-    19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8,
-    22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8, 33u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8, 33u8, 35u8,
+    9u8, 13u8, 15u8, 17u8, 19u8, 21u8, 22u8, 24u8, 13u8, 13u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8, 15u8,
+    17u8, 19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 17u8, 19u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8, 19u8, 21u8,
+    22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 21u8, 22u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8, 22u8, 24u8, 25u8,
+    27u8, 28u8, 30u8, 32u8, 33u8, 24u8, 25u8, 27u8, 28u8, 30u8, 32u8, 33u8, 35u8,
 ];
 pub static mut x264_cqm_flat16: [crate::stdlib::uint8_t; 64] = [
-    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
-    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
-    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
-    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
+    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
+    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
+    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
+    16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8, 16u8,
 ];
 pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = [
     &raw const x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
@@ -662,66 +656,59 @@ pub static mut x264_cqm_jvt: [*const crate::stdlib::uint8_t; 8] = [
     &raw const x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
     &raw const x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
 ];
-pub static mut x264_cqm_avci50_4ic: [crate::stdlib::uint8_t; 16] = [
-    16u8, 22u8, 28u8, 40u8, 22u8, 28u8, 40u8, 44u8, 28u8, 40u8, 44u8, 48u8, 40u8, 44u8, 48u8, 60u8,
-];
+pub static mut x264_cqm_avci50_4ic: [crate::stdlib::uint8_t; 16] =
+    [16u8, 22u8, 28u8, 40u8, 22u8, 28u8, 40u8, 44u8, 28u8, 40u8, 44u8, 48u8, 40u8, 44u8, 48u8, 60u8];
 pub static mut x264_cqm_avci50_p_8iy: [crate::stdlib::uint8_t; 64] = [
-    16u8, 18u8, 19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 18u8, 19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8,
-    19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8,
-    24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8,
-    30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8, 93u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8, 93u8, 96u8,
+    16u8, 18u8, 19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 18u8, 19u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 19u8,
+    21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 24u8, 27u8,
+    30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8, 30u8, 33u8, 78u8,
+    81u8, 84u8, 87u8, 90u8, 93u8, 33u8, 78u8, 81u8, 84u8, 87u8, 90u8, 93u8, 96u8,
 ];
 pub static mut x264_cqm_avci50_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
-    16u8, 18u8, 19u8, 21u8, 27u8, 33u8, 81u8, 87u8, 18u8, 19u8, 21u8, 24u8, 30u8, 33u8, 81u8, 87u8,
-    19u8, 21u8, 24u8, 27u8, 30u8, 78u8, 84u8, 90u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 84u8, 90u8,
-    24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 90u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 93u8,
-    27u8, 30u8, 33u8, 78u8, 78u8, 81u8, 87u8, 93u8, 30u8, 33u8, 33u8, 78u8, 81u8, 84u8, 87u8, 96u8,
+    16u8, 18u8, 19u8, 21u8, 27u8, 33u8, 81u8, 87u8, 18u8, 19u8, 21u8, 24u8, 30u8, 33u8, 81u8, 87u8, 19u8,
+    21u8, 24u8, 27u8, 30u8, 78u8, 84u8, 90u8, 21u8, 24u8, 27u8, 30u8, 33u8, 78u8, 84u8, 90u8, 24u8, 27u8,
+    30u8, 33u8, 78u8, 81u8, 84u8, 90u8, 24u8, 27u8, 30u8, 33u8, 78u8, 81u8, 84u8, 93u8, 27u8, 30u8, 33u8,
+    78u8, 78u8, 81u8, 87u8, 93u8, 30u8, 33u8, 33u8, 78u8, 81u8, 84u8, 87u8, 96u8,
 ];
-pub static mut x264_cqm_avci100_720p_4ic: [crate::stdlib::uint8_t; 16] = [
-    16u8, 21u8, 27u8, 34u8, 21u8, 27u8, 34u8, 41u8, 27u8, 34u8, 41u8, 46u8, 34u8, 41u8, 46u8, 54u8,
-];
+pub static mut x264_cqm_avci100_720p_4ic: [crate::stdlib::uint8_t; 16] =
+    [16u8, 21u8, 27u8, 34u8, 21u8, 27u8, 34u8, 41u8, 27u8, 34u8, 41u8, 46u8, 34u8, 41u8, 46u8, 54u8];
 pub static mut x264_cqm_avci100_720p_8iy: [crate::stdlib::uint8_t; 64] = [
-    16u8, 18u8, 19u8, 21u8, 22u8, 24u8, 26u8, 32u8, 18u8, 19u8, 19u8, 21u8, 22u8, 24u8, 26u8, 32u8,
-    19u8, 19u8, 21u8, 22u8, 22u8, 24u8, 26u8, 32u8, 21u8, 21u8, 22u8, 22u8, 23u8, 24u8, 26u8, 34u8,
-    22u8, 22u8, 22u8, 23u8, 24u8, 25u8, 26u8, 34u8, 24u8, 24u8, 24u8, 24u8, 25u8, 26u8, 34u8, 36u8,
-    26u8, 26u8, 26u8, 26u8, 26u8, 34u8, 36u8, 38u8, 32u8, 32u8, 32u8, 34u8, 34u8, 36u8, 38u8, 42u8,
+    16u8, 18u8, 19u8, 21u8, 22u8, 24u8, 26u8, 32u8, 18u8, 19u8, 19u8, 21u8, 22u8, 24u8, 26u8, 32u8, 19u8,
+    19u8, 21u8, 22u8, 22u8, 24u8, 26u8, 32u8, 21u8, 21u8, 22u8, 22u8, 23u8, 24u8, 26u8, 34u8, 22u8, 22u8,
+    22u8, 23u8, 24u8, 25u8, 26u8, 34u8, 24u8, 24u8, 24u8, 24u8, 25u8, 26u8, 34u8, 36u8, 26u8, 26u8, 26u8,
+    26u8, 26u8, 34u8, 36u8, 38u8, 32u8, 32u8, 32u8, 34u8, 34u8, 36u8, 38u8, 42u8,
 ];
-pub static mut x264_cqm_avci100_1080_4ic: [crate::stdlib::uint8_t; 16] = [
-    16u8, 20u8, 26u8, 32u8, 20u8, 26u8, 32u8, 38u8, 26u8, 32u8, 38u8, 44u8, 32u8, 38u8, 44u8, 50u8,
-];
+pub static mut x264_cqm_avci100_1080_4ic: [crate::stdlib::uint8_t; 16] =
+    [16u8, 20u8, 26u8, 32u8, 20u8, 26u8, 32u8, 38u8, 26u8, 32u8, 38u8, 44u8, 32u8, 38u8, 44u8, 50u8];
 pub static mut x264_cqm_avci100_1080i_8iy: [crate::stdlib::uint8_t; 64] = [
-    16u8, 19u8, 20u8, 23u8, 24u8, 26u8, 32u8, 42u8, 18u8, 19u8, 22u8, 24u8, 26u8, 32u8, 36u8, 42u8,
-    18u8, 20u8, 23u8, 24u8, 26u8, 32u8, 36u8, 63u8, 19u8, 20u8, 23u8, 26u8, 32u8, 36u8, 42u8, 63u8,
-    20u8, 22u8, 24u8, 26u8, 32u8, 36u8, 59u8, 63u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 59u8, 68u8,
-    22u8, 23u8, 24u8, 26u8, 32u8, 42u8, 59u8, 68u8, 22u8, 23u8, 24u8, 26u8, 36u8, 42u8, 59u8, 72u8,
+    16u8, 19u8, 20u8, 23u8, 24u8, 26u8, 32u8, 42u8, 18u8, 19u8, 22u8, 24u8, 26u8, 32u8, 36u8, 42u8, 18u8,
+    20u8, 23u8, 24u8, 26u8, 32u8, 36u8, 63u8, 19u8, 20u8, 23u8, 26u8, 32u8, 36u8, 42u8, 63u8, 20u8, 22u8,
+    24u8, 26u8, 32u8, 36u8, 59u8, 63u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 59u8, 68u8, 22u8, 23u8, 24u8,
+    26u8, 32u8, 42u8, 59u8, 68u8, 22u8, 23u8, 24u8, 26u8, 36u8, 42u8, 59u8, 72u8,
 ];
 pub static mut x264_cqm_avci100_1080p_8iy: [crate::stdlib::uint8_t; 64] = [
-    16u8, 18u8, 19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 18u8, 19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8,
-    19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8,
-    22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8,
-    24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8, 68u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8, 68u8, 72u8,
+    16u8, 18u8, 19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 18u8, 19u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8, 19u8,
+    20u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 20u8, 22u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8, 22u8, 23u8,
+    24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 23u8, 24u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8, 24u8, 26u8, 32u8,
+    36u8, 42u8, 59u8, 63u8, 68u8, 26u8, 32u8, 36u8, 42u8, 59u8, 63u8, 68u8, 72u8,
 ];
-pub static mut x264_cqm_avci300_2160p_4iy: [crate::stdlib::uint8_t; 16] = [
-    12u8, 16u8, 19u8, 20u8, 16u8, 19u8, 20u8, 24u8, 19u8, 20u8, 24u8, 33u8, 20u8, 24u8, 33u8, 39u8,
-];
-pub static mut x264_cqm_avci300_2160p_4ic: [crate::stdlib::uint8_t; 16] = [
-    28u8, 39u8, 56u8, 67u8, 39u8, 56u8, 67u8, 77u8, 56u8, 67u8, 77u8, 104u8, 67u8, 77u8, 104u8,
-    133u8,
-];
+pub static mut x264_cqm_avci300_2160p_4iy: [crate::stdlib::uint8_t; 16] =
+    [12u8, 16u8, 19u8, 20u8, 16u8, 19u8, 20u8, 24u8, 19u8, 20u8, 24u8, 33u8, 20u8, 24u8, 33u8, 39u8];
+pub static mut x264_cqm_avci300_2160p_4ic: [crate::stdlib::uint8_t; 16] =
+    [28u8, 39u8, 56u8, 67u8, 39u8, 56u8, 67u8, 77u8, 56u8, 67u8, 77u8, 104u8, 67u8, 77u8, 104u8, 133u8];
 pub static mut x264_cqm_avci300_2160p_8iy: [crate::stdlib::uint8_t; 64] = [
-    12u8, 14u8, 16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 14u8, 16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8,
-    16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8,
-    19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8,
-    20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8, 80u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8, 80u8, 84u8,
+    12u8, 14u8, 16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 14u8, 16u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8, 16u8,
+    17u8, 19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 17u8, 19u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8, 19u8, 20u8,
+    20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 20u8, 20u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8, 20u8, 24u8, 30u8,
+    42u8, 56u8, 72u8, 76u8, 80u8, 24u8, 30u8, 42u8, 56u8, 72u8, 76u8, 80u8, 84u8,
 ];
-pub static mut x264_decimate_table4: [crate::stdlib::uint8_t; 16] = [
-    3u8, 2u8, 2u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-];
+pub static mut x264_decimate_table4: [crate::stdlib::uint8_t; 16] =
+    [3u8, 2u8, 2u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8];
 pub static mut x264_decimate_table8: [crate::stdlib::uint8_t; 64] = [
-    3u8, 3u8, 3u8, 3u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8,
-    1u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    3u8, 3u8, 3u8, 3u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8,
+    1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    0u8,
 ];
 pub static mut x264_dct8_weight_tab: [crate::stdlib::uint32_t; 64] = [0; 64];
 pub static mut x264_dct4_weight_tab: [crate::stdlib::uint32_t; 16] = [0; 16];
@@ -5030,10 +5017,10 @@ pub static mut x264_cabac_transition: [[crate::stdlib::uint8_t; 2]; 128] = [
     [126u8, 125u8],
 ];
 pub static mut x264_cabac_renorm_shift: [crate::stdlib::uint8_t; 64] = [
-    6u8, 5u8, 4u8, 4u8, 3u8, 3u8, 3u8, 3u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 1u8, 1u8, 1u8,
-    1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    6u8, 5u8, 4u8, 4u8, 3u8, 3u8, 3u8, 3u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 1u8, 1u8, 1u8, 1u8, 1u8,
+    1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8, 0u8,
+    0u8,
 ];
 pub static mut x264_cabac_entropy: [crate::stdlib::uint16_t; 128] = [
     (0.0273 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5) as crate::stdlib::uint16_t,
@@ -5167,23 +5154,22 @@ pub static mut x264_cabac_entropy: [crate::stdlib::uint16_t; 128] = [
 ];
 pub static mut x264_significant_coeff_flag_offset_8x8: [[crate::stdlib::uint8_t; 64]; 2] = [
     [
-        0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 5u8, 4u8, 4u8, 3u8, 3u8, 4u8, 4u8, 4u8, 5u8, 5u8, 4u8, 4u8,
-        4u8, 4u8, 3u8, 3u8, 6u8, 7u8, 7u8, 7u8, 8u8, 9u8, 10u8, 9u8, 8u8, 7u8, 7u8, 6u8, 11u8,
-        12u8, 13u8, 11u8, 6u8, 7u8, 8u8, 9u8, 14u8, 10u8, 9u8, 8u8, 6u8, 11u8, 12u8, 13u8, 11u8,
-        6u8, 9u8, 14u8, 10u8, 9u8, 11u8, 12u8, 13u8, 11u8, 14u8, 10u8, 12u8, 0,
+        0u8, 1u8, 2u8, 3u8, 4u8, 5u8, 5u8, 4u8, 4u8, 3u8, 3u8, 4u8, 4u8, 4u8, 5u8, 5u8, 4u8, 4u8, 4u8, 4u8,
+        3u8, 3u8, 6u8, 7u8, 7u8, 7u8, 8u8, 9u8, 10u8, 9u8, 8u8, 7u8, 7u8, 6u8, 11u8, 12u8, 13u8, 11u8, 6u8,
+        7u8, 8u8, 9u8, 14u8, 10u8, 9u8, 8u8, 6u8, 11u8, 12u8, 13u8, 11u8, 6u8, 9u8, 14u8, 10u8, 9u8, 11u8,
+        12u8, 13u8, 11u8, 14u8, 10u8, 12u8, 0,
     ],
     [
-        0u8, 1u8, 1u8, 2u8, 2u8, 3u8, 3u8, 4u8, 5u8, 6u8, 7u8, 7u8, 7u8, 8u8, 4u8, 5u8, 6u8, 9u8,
-        10u8, 10u8, 8u8, 11u8, 12u8, 11u8, 9u8, 9u8, 10u8, 10u8, 8u8, 11u8, 12u8, 11u8, 9u8, 9u8,
-        10u8, 10u8, 8u8, 11u8, 12u8, 11u8, 9u8, 9u8, 10u8, 10u8, 8u8, 13u8, 13u8, 9u8, 9u8, 10u8,
-        10u8, 8u8, 13u8, 13u8, 9u8, 9u8, 10u8, 10u8, 14u8, 14u8, 14u8, 14u8, 14u8, 0,
+        0u8, 1u8, 1u8, 2u8, 2u8, 3u8, 3u8, 4u8, 5u8, 6u8, 7u8, 7u8, 7u8, 8u8, 4u8, 5u8, 6u8, 9u8, 10u8, 10u8,
+        8u8, 11u8, 12u8, 11u8, 9u8, 9u8, 10u8, 10u8, 8u8, 11u8, 12u8, 11u8, 9u8, 9u8, 10u8, 10u8, 8u8, 11u8,
+        12u8, 11u8, 9u8, 9u8, 10u8, 10u8, 8u8, 13u8, 13u8, 9u8, 9u8, 10u8, 10u8, 8u8, 13u8, 13u8, 9u8, 9u8,
+        10u8, 10u8, 14u8, 14u8, 14u8, 14u8, 14u8, 0,
     ],
 ];
 pub static mut x264_last_coeff_flag_offset_8x8: [crate::stdlib::uint8_t; 63] = [
-    0u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 2u8, 2u8, 2u8,
-    2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8,
-    3u8, 3u8, 4u8, 4u8, 4u8, 4u8, 4u8, 4u8, 4u8, 4u8, 5u8, 5u8, 5u8, 5u8, 6u8, 6u8, 6u8, 6u8, 7u8,
-    7u8, 7u8, 7u8, 8u8, 8u8, 8u8,
+    0u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 2u8, 2u8, 2u8, 2u8, 2u8,
+    2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 2u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 4u8, 4u8,
+    4u8, 4u8, 4u8, 4u8, 4u8, 4u8, 5u8, 5u8, 5u8, 5u8, 6u8, 6u8, 6u8, 6u8, 7u8, 7u8, 7u8, 7u8, 8u8, 8u8, 8u8,
 ];
 pub static mut x264_coeff_flag_offset_chroma_422_dc: [crate::stdlib::uint8_t; 7] =
     [0u8, 0u8, 1u8, 1u8, 2u8, 2u8, 2u8];
@@ -5281,3283 +5267,1029 @@ pub static mut x264_coeff_abs_level_m1_offset: [crate::stdlib::uint16_t; 16] = [
     0,
     0,
 ];
-pub static mut x264_count_cat_m1: [crate::stdlib::uint8_t; 14] = [
-    15u8, 14u8, 15u8, 3u8, 14u8, 63u8, 15u8, 14u8, 15u8, 63u8, 15u8, 14u8, 15u8, 63u8,
-];
+pub static mut x264_count_cat_m1: [crate::stdlib::uint8_t; 14] =
+    [15u8, 14u8, 15u8, 3u8, 14u8, 63u8, 15u8, 14u8, 15u8, 63u8, 15u8, 14u8, 15u8, 63u8];
 pub static mut x264_coeff0_token: [crate::src::common::tables::vlc_t; 6] = [
-    crate::src::common::tables::vlc_t {
-        i_bits: 0x1u8,
-        i_size: 1u8,
-    },
-    crate::src::common::tables::vlc_t {
-        i_bits: 0x3u8,
-        i_size: 2u8,
-    },
-    crate::src::common::tables::vlc_t {
-        i_bits: 0xfu8,
-        i_size: 4u8,
-    },
-    crate::src::common::tables::vlc_t {
-        i_bits: 0x3u8,
-        i_size: 6u8,
-    },
-    crate::src::common::tables::vlc_t {
-        i_bits: 0x1u8,
-        i_size: 2u8,
-    },
-    crate::src::common::tables::vlc_t {
-        i_bits: 0x1u8,
-        i_size: 1u8,
-    },
+    crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+    crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+    crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 4u8 },
+    crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 6u8 },
+    crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+    crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
 ];
 pub static mut x264_coeff_token: [[[crate::src::common::tables::vlc_t; 4]; 16]; 6] = [
     [
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 2u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 3u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3u8,
-                i_size: 5u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 5u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 7u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 7u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 8u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 8u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 9u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 9u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 10u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 10u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 11u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 11u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 13u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 13u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 15u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 15u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 14u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 15u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 15u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 14u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 15u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 15u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 15u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 14u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 15u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 15u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 15u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 14u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 15u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 15u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 15u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 15u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 15u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 15u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 15u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 15u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 16u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 16u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 16u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 16u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 16u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 16u8 },
         ],
     ],
     [
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2u8,
-                i_size: 2u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3u8,
-                i_size: 3u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 4u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 4u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 4u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 4u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 5u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 5u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 7u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 7u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 9u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 9u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 11u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 11u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 11u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 11u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 12u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 12u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 13u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 13u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 13u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 13u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 13u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 13u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 14u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 14u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 14u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 14u8 },
         ],
     ],
     [
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 4u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 4u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 4u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 4u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 4u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 4u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 4u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 4u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 5u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 4u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 5u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 4u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 4u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 4u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 4u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 4u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 5u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 5u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 7u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 7u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 8u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 8u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 8u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 8u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 9u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 9u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 10u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 10u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 10u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 10u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2u8,
-                i_size: 10u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 10u8 },
         ],
     ],
     [
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x10u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x11u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x12u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x13u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x10u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x11u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x12u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x13u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x14u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x15u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x16u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x17u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x14u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x15u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x16u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x17u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x18u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x19u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1au8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1bu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x18u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x19u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1Au8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1Bu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1cu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1du8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1eu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1fu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x1Cu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1Du8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1Eu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1Fu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x20u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x21u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x22u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x23u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x20u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x21u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x22u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x23u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x24u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x25u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x26u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x27u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x24u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x25u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x26u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x27u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x28u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x29u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2au8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2bu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x28u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x29u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2Au8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2Bu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2cu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2du8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2eu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2fu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x2Cu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2Du8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2Eu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2Fu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x30u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x31u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x32u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x33u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x30u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x31u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x32u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x33u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x34u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x35u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x36u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x37u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x34u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x35u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x36u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x37u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x38u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x39u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3au8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3bu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x38u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x39u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3Au8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3Bu8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3cu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3du8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3eu8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3fu8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x3Cu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3Du8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3Eu8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3Fu8, i_size: 6u8 },
         ],
     ],
     [
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 1u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 3u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2u8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2u8,
-                i_size: 6u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x3u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x2u8,
-                i_size: 8u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0u8,
-                i_size: 7u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 6u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 8u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 7u8 },
         ],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
     ],
     [
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xfu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 2u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xFu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xeu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xdu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 3u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0,
-                i_size: 0,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0xEu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xDu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xcu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xbu8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 5u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xCu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xBu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0xau8,
-                i_size: 7u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x1u8,
-                i_size: 6u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0xAu8, i_size: 7u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 9u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x9u8,
-                i_size: 7u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 9u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x9u8, i_size: 7u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 10u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x8u8,
-                i_size: 7u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 10u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x8u8, i_size: 7u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x6u8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 11u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 10u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 11u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 10u8 },
         ],
         [
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x7u8,
-                i_size: 13u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x5u8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 12u8,
-            },
-            crate::src::common::tables::vlc_t {
-                i_bits: 0x4u8,
-                i_size: 11u8,
-            },
+            crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 13u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 12u8 },
+            crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 11u8 },
         ],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
-        [crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
+        [crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 }; 4],
     ],
 ];
 pub static mut x264_total_zeros: [[crate::src::common::tables::vlc_t; 16]; 15] = [
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 7u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 7u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 8u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 8u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 9u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 9u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 9u8,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 7u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 7u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 8u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 8u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 9u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 9u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 9u8 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
 ];
 pub static mut x264_total_zeros_2x2_dc: [[crate::src::common::tables::vlc_t; 4]; 3] = [
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 3u8,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 3u8 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
 ];
 pub static mut x264_total_zeros_2x4_dc: [[crate::src::common::tables::vlc_t; 8]; 7] = [
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 5u8,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 5u8 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
 ];
 pub static mut x264_run_before_init: [[crate::src::common::tables::vlc_t; 16]; 7] = [
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 1u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 1u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 2u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 2u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
     [
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x7u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x6u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x5u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x4u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x3u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x2u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 3u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 4u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 5u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 6u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 7u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 8u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 9u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 10u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0x1u8,
-            i_size: 11u8,
-        },
-        crate::src::common::tables::vlc_t {
-            i_bits: 0,
-            i_size: 0,
-        },
+        crate::src::common::tables::vlc_t { i_bits: 0x7u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x6u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x5u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x4u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x3u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x2u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 3u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 4u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 5u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 6u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 7u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 8u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 9u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 10u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0x1u8, i_size: 11u8 },
+        crate::src::common::tables::vlc_t { i_bits: 0, i_size: 0 },
     ],
 ];
 pub static mut x264_zero: [crate::stdlib::uint8_t; 1024] = [
-    0u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0,
+    0u8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
 #[allow(clippy::approx_constant)]
 unsafe extern "C" fn c2rust_run_static_initializers() {
@@ -9818,1346 +7550,962 @@ unsafe extern "C" fn c2rust_run_static_initializers() {
         ];
         x264_dct8_weight2_tab = [
             (if 0i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 0i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 2i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 2i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 0i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 0i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 0i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 2i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 4i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 4i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 2i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 2i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 3i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 3i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 5i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 5i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,
             (if 1i32 == 0i32 {
-                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.00000f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 1i32 {
-                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.78487f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 2i32 {
-                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (2.56132f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 3i32 {
-                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (0.88637f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 4i32 {
-                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.60040f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else if 1i32 == 5i32 {
-                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64)
-                    as ::core::ffi::c_int
+                (1.41850f64 * ((1i32) << 8i32) as ::core::ffi::c_double + 0.5f64) as ::core::ffi::c_int
             } else {
                 0i32
             }) as crate::stdlib::uint32_t,

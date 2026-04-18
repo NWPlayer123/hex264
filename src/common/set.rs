@@ -135,9 +135,8 @@ static mut quant4_scale: [[crate::stdlib::uint16_t; 3]; 6] = [
     [8192u16, 5243u16, 3355u16],
     [7282u16, 4559u16, 2893u16],
 ];
-static mut quant8_scan: [crate::stdlib::uint8_t; 16] = [
-    0u8, 3u8, 4u8, 3u8, 3u8, 1u8, 5u8, 1u8, 4u8, 5u8, 2u8, 5u8, 3u8, 1u8, 5u8, 1u8,
-];
+static mut quant8_scan: [crate::stdlib::uint8_t; 16] =
+    [0u8, 3u8, 4u8, 3u8, 3u8, 1u8, 5u8, 1u8, 4u8, 5u8, 2u8, 5u8, 3u8, 1u8, 5u8, 1u8];
 static mut dequant8_scale: [[crate::stdlib::uint8_t; 6]; 6] = [
     [20u8, 18u8, 32u8, 19u8, 25u8, 24u8],
     [22u8, 19u8, 35u8, 21u8, 28u8, 26u8],
@@ -202,9 +201,9 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                 (*h).unquant4_mf[i as usize] = (*h).unquant4_mf[j as usize];
             } else {
                 (*h).quant4_mf[i as usize] = crate::src::common::base::x264_malloc(
-                    (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size) as usize).wrapping_mul(
-                        ::core::mem::size_of::<crate::src::common::common::udctcoef>(),
-                    ) as crate::stdlib::int64_t,
+                    (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size) as usize)
+                        .wrapping_mul(::core::mem::size_of::<crate::src::common::common::udctcoef>())
+                        as crate::stdlib::int64_t,
                 )
                     as *mut [crate::src::common::common::udctcoef; 16];
                 if (*h).quant4_mf[i as usize].is_null() {
@@ -212,8 +211,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     break;
                 }
                 (*h).dequant4_mf[i as usize] = crate::src::common::base::x264_malloc(
-                    ((6i32 * size) as usize)
-                        .wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>())
+                    ((6i32 * size) as usize).wrapping_mul(::core::mem::size_of::<::core::ffi::c_int>())
                         as crate::stdlib::int64_t,
                 ) as *mut [::core::ffi::c_int; 16];
                 if (*h).dequant4_mf[i as usize].is_null() {
@@ -249,9 +247,9 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                 (*h).quant4_bias0[i as usize] = (*h).quant4_bias0[j as usize];
             } else {
                 (*h).quant4_bias[i as usize] = crate::src::common::base::x264_malloc(
-                    (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size) as usize).wrapping_mul(
-                        ::core::mem::size_of::<crate::src::common::common::udctcoef>(),
-                    ) as crate::stdlib::int64_t,
+                    (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size) as usize)
+                        .wrapping_mul(::core::mem::size_of::<crate::src::common::common::udctcoef>())
+                        as crate::stdlib::int64_t,
                 )
                     as *mut [crate::src::common::common::udctcoef; 16];
                 if (*h).quant4_bias[i as usize].is_null() {
@@ -259,9 +257,9 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     break;
                 }
                 (*h).quant4_bias0[i as usize] = crate::src::common::base::x264_malloc(
-                    (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size) as usize).wrapping_mul(
-                        ::core::mem::size_of::<crate::src::common::common::udctcoef>(),
-                    ) as crate::stdlib::int64_t,
+                    (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size) as usize)
+                        .wrapping_mul(::core::mem::size_of::<crate::src::common::common::udctcoef>())
+                        as crate::stdlib::int64_t,
                 )
                     as *mut [crate::src::common::common::udctcoef; 16];
                 if (*h).quant4_bias0[i as usize].is_null() {
@@ -284,10 +282,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     let mut start_0 = if 8i32 == 8i32 { 4i32 } else { 0i32 };
                     while j_0 < i_0 {
                         if crate::stdlib::memcmp(
-                            (*h).sps.scaling_list[(i_0 + start_0) as usize]
-                                as *const ::core::ffi::c_void,
-                            (*h).sps.scaling_list[(j_0 + start_0) as usize]
-                                as *const ::core::ffi::c_void,
+                            (*h).sps.scaling_list[(i_0 + start_0) as usize] as *const ::core::ffi::c_void,
+                            (*h).sps.scaling_list[(j_0 + start_0) as usize] as *const ::core::ffi::c_void,
                             (size_0 as crate::__stddef_size_t_h::size_t)
                                 .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>()),
                         ) == 0
@@ -303,9 +299,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     } else {
                         (*h).quant8_mf[i_0 as usize] = crate::src::common::base::x264_malloc(
                             (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size_0) as usize)
-                                .wrapping_mul(::core::mem::size_of::<
-                                    crate::src::common::common::udctcoef,
-                                >()) as crate::stdlib::int64_t,
+                                .wrapping_mul(::core::mem::size_of::<crate::src::common::common::udctcoef>())
+                                as crate::stdlib::int64_t,
                         )
                             as *mut [crate::src::common::common::udctcoef; 64];
                         if (*h).quant8_mf[i_0 as usize].is_null() {
@@ -337,10 +332,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     while j_0 < i_0 {
                         if deadzone[j_0 as usize] == deadzone[i_0 as usize]
                             && crate::stdlib::memcmp(
-                                (*h).sps.scaling_list[(i_0 + start_0) as usize]
-                                    as *const ::core::ffi::c_void,
-                                (*h).sps.scaling_list[(j_0 + start_0) as usize]
-                                    as *const ::core::ffi::c_void,
+                                (*h).sps.scaling_list[(i_0 + start_0) as usize] as *const ::core::ffi::c_void,
+                                (*h).sps.scaling_list[(j_0 + start_0) as usize] as *const ::core::ffi::c_void,
                                 (size_0 as crate::__stddef_size_t_h::size_t)
                                     .wrapping_mul(::core::mem::size_of::<crate::stdlib::uint8_t>()),
                             ) == 0
@@ -355,9 +348,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                     } else {
                         (*h).quant8_bias[i_0 as usize] = crate::src::common::base::x264_malloc(
                             (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size_0) as usize)
-                                .wrapping_mul(::core::mem::size_of::<
-                                    crate::src::common::common::udctcoef,
-                                >()) as crate::stdlib::int64_t,
+                                .wrapping_mul(::core::mem::size_of::<crate::src::common::common::udctcoef>())
+                                as crate::stdlib::int64_t,
                         )
                             as *mut [crate::src::common::common::udctcoef; 64];
                         if (*h).quant8_bias[i_0 as usize].is_null() {
@@ -366,9 +358,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                         }
                         (*h).quant8_bias0[i_0 as usize] = crate::src::common::base::x264_malloc(
                             (((51i32 + 6i32 * (8i32 - 8i32) + 1i32) * size_0) as usize)
-                                .wrapping_mul(::core::mem::size_of::<
-                                    crate::src::common::common::udctcoef,
-                                >()) as crate::stdlib::int64_t,
+                                .wrapping_mul(::core::mem::size_of::<crate::src::common::common::udctcoef>())
+                                as crate::stdlib::int64_t,
                         )
                             as *mut [crate::src::common::common::udctcoef; 64];
                         if (*h).quant8_bias0[i_0 as usize].is_null() {
@@ -402,8 +393,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 i_1 += 1;
                             }
                             while i_2 < 64i32 {
-                                let mut j_2 = quant8_scan
-                                    [(i_2 >> 1i32 & 12i32 | i_2 & 3i32) as usize]
+                                let mut j_2 = quant8_scan[(i_2 >> 1i32 & 12i32 | i_2 & 3i32) as usize]
                                     as ::core::ffi::c_int;
                                 def_dequant8[q as usize][i_2 as usize] =
                                     dequant8_scale[q as usize][j_2 as usize] as ::core::ffi::c_int;
@@ -419,19 +409,16 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                             while i_list < 4i32 {
                                 let mut i_3 = 0i32;
                                 while i_3 < 16i32 {
-                                    (*(*h).dequant4_mf[i_list as usize].offset(q_0 as isize))
-                                        [i_3 as usize] = def_dequant4[q_0 as usize][i_3 as usize]
-                                        * *(*h).sps.scaling_list[i_list as usize]
-                                            .offset(i_3 as isize)
-                                            as ::core::ffi::c_int;
+                                    (*(*h).dequant4_mf[i_list as usize].offset(q_0 as isize))[i_3 as usize] =
+                                        def_dequant4[q_0 as usize][i_3 as usize]
+                                            * *(*h).sps.scaling_list[i_list as usize].offset(i_3 as isize)
+                                                as ::core::ffi::c_int;
                                     quant4_mf[i_list as usize][q_0 as usize][i_3 as usize] =
                                         (def_quant4[q_0 as usize][i_3 as usize] * 16i32
-                                            + (*(*h).sps.scaling_list[i_list as usize]
-                                                .offset(i_3 as isize)
+                                            + (*(*h).sps.scaling_list[i_list as usize].offset(i_3 as isize)
                                                 as ::core::ffi::c_int
                                                 >> 1i32))
-                                            / *(*h).sps.scaling_list[i_list as usize]
-                                                .offset(i_3 as isize)
+                                            / *(*h).sps.scaling_list[i_list as usize].offset(i_3 as isize)
                                                 as ::core::ffi::c_int;
                                     i_3 += 1;
                                 }
@@ -467,77 +454,63 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 let mut i_5 = 0i32;
                                 while i_5 < 16i32 {
                                     (*(*h).unquant4_mf[i_list_1 as usize].offset(q_1 as isize))
-                                        [i_5 as usize] = ((1u64) << (q_1 / 6i32 + 15i32 + 8i32))
-                                        .wrapping_div(
-                                            quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize]
-                                                [i_5 as usize]
-                                                as ::core::ffi::c_ulonglong,
-                                        )
+                                        [i_5 as usize] = ((1u64) << (q_1 / 6i32 + 15i32 + 8i32)).wrapping_div(
+                                        quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize][i_5 as usize]
+                                            as ::core::ffi::c_ulonglong,
+                                    )
                                         as ::core::ffi::c_int;
                                     j_3 = if q_1 / 6i32 - 1i32 <= 0i32 {
-                                        quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize]
-                                            [i_5 as usize]
+                                        quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize][i_5 as usize]
                                             << -(q_1 / 6i32 - 1i32)
                                     } else {
-                                        (quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize]
-                                            [i_5 as usize]
+                                        (quant4_mf[i_list_1 as usize][(q_1 % 6i32) as usize][i_5 as usize]
                                             + ((1i32) << (q_1 / 6i32 - 1i32 - 1i32)))
                                             >> (q_1 / 6i32 - 1i32)
                                     };
-                                    (*(*h).quant4_mf[i_list_1 as usize].offset(q_1 as isize))
-                                        [i_5 as usize] =
+                                    (*(*h).quant4_mf[i_list_1 as usize].offset(q_1 as isize))[i_5 as usize] =
                                         j_3 as crate::src::common::common::udctcoef;
                                     if j_3 == 0 {
-                                        min_qp_err =
-                                            if min_qp_err < q_1 { min_qp_err } else { q_1 };
+                                        min_qp_err = if min_qp_err < q_1 { min_qp_err } else { q_1 };
                                     } else {
-                                        (*(*h).quant4_bias[i_list_1 as usize]
-                                            .offset(q_1 as isize))
-                                            [i_5 as usize] = (if ((deadzone[i_list_1 as usize]
-                                            << 10i32)
+                                        (*(*h).quant4_bias[i_list_1 as usize].offset(q_1 as isize))
+                                            [i_5 as usize] = (if ((deadzone[i_list_1 as usize] << 10i32)
                                             + (j_3 >> 1i32))
                                             / j_3
                                             < ((1i32) << 15i32) / j_3
                                         {
-                                            ((deadzone[i_list_1 as usize] << 10i32) + (j_3 >> 1i32))
-                                                / j_3
+                                            ((deadzone[i_list_1 as usize] << 10i32) + (j_3 >> 1i32)) / j_3
                                         } else {
                                             ((1i32) << 15i32) / j_3
                                         })
                                             as crate::src::common::common::udctcoef;
-                                        (*(*h).quant4_bias0[i_list_1 as usize]
-                                            .offset(q_1 as isize))
-                                            [i_5 as usize] = (((1i32) << 15i32) / j_3)
-                                            as crate::src::common::common::udctcoef;
+                                        (*(*h).quant4_bias0[i_list_1 as usize].offset(q_1 as isize))
+                                            [i_5 as usize] =
+                                            (((1i32) << 15i32) / j_3) as crate::src::common::common::udctcoef;
                                         if j_3
-                                            > (if (0xffffi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
-                                                0xffffi32
+                                            > (if (0xFFFFi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
+                                                0xFFFFi32
                                             } else {
                                                 ((1i32) << (25i32 - 8i32)) - 1i32
                                             })
                                             && q_1 > max_qp_err
                                             && (i_list_1
-                                                == crate::src::common::set::CQM_4IY
-                                                    as ::core::ffi::c_int
+                                                == crate::src::common::set::CQM_4IY as ::core::ffi::c_int
                                                 || i_list_1
-                                                    == crate::src::common::set::CQM_4PY
-                                                        as ::core::ffi::c_int)
+                                                    == crate::src::common::set::CQM_4PY as ::core::ffi::c_int)
                                         {
                                             max_qp_err = q_1;
                                         }
                                         if j_3
-                                            > (if (0xffffi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
-                                                0xffffi32
+                                            > (if (0xFFFFi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
+                                                0xFFFFi32
                                             } else {
                                                 ((1i32) << (25i32 - 8i32)) - 1i32
                                             })
                                             && q_1 > max_chroma_qp_err
                                             && (i_list_1
-                                                == crate::src::common::set::CQM_4IC
-                                                    as ::core::ffi::c_int
+                                                == crate::src::common::set::CQM_4IC as ::core::ffi::c_int
                                                 || i_list_1
-                                                    == crate::src::common::set::CQM_4PC
-                                                        as ::core::ffi::c_int)
+                                                    == crate::src::common::set::CQM_4PC as ::core::ffi::c_int)
                                         {
                                             max_chroma_qp_err = q_1;
                                         }
@@ -551,8 +524,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 while i_list_2 < num_8x8_lists {
                                     let mut i_6 = 0i32;
                                     while i_6 < 64i32 {
-                                        (*(*h).unquant8_mf[i_list_2 as usize]
-                                            .offset(q_1 as isize))
+                                        (*(*h).unquant8_mf[i_list_2 as usize].offset(q_1 as isize))
                                             [i_6 as usize] = ((1u64) << (q_1 / 6i32 + 16i32 + 8i32))
                                             .wrapping_div(
                                                 quant8_mf[i_list_2 as usize][(q_1 % 6i32) as usize]
@@ -561,8 +533,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             )
                                             as ::core::ffi::c_int;
                                         j_3 = if q_1 / 6i32 <= 0i32 {
-                                            quant8_mf[i_list_2 as usize][(q_1 % 6i32) as usize]
-                                                [i_6 as usize]
+                                            quant8_mf[i_list_2 as usize][(q_1 % 6i32) as usize][i_6 as usize]
                                                 << -(q_1 / 6i32)
                                         } else {
                                             (quant8_mf[i_list_2 as usize][(q_1 % 6i32) as usize]
@@ -571,43 +542,33 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                 >> (q_1 / 6i32)
                                         };
                                         (*(*h).quant8_mf[i_list_2 as usize].offset(q_1 as isize))
-                                            [i_6 as usize] =
-                                            j_3 as crate::src::common::common::udctcoef;
+                                            [i_6 as usize] = j_3 as crate::src::common::common::udctcoef;
                                         if j_3 == 0 {
-                                            min_qp_err =
-                                                if min_qp_err < q_1 { min_qp_err } else { q_1 };
+                                            min_qp_err = if min_qp_err < q_1 { min_qp_err } else { q_1 };
                                         } else {
-                                            (*(*h).quant8_bias[i_list_2 as usize]
-                                                .offset(q_1 as isize))
-                                                [i_6 as usize] = (if ((deadzone[i_list_2 as usize]
-                                                << 10i32)
+                                            (*(*h).quant8_bias[i_list_2 as usize].offset(q_1 as isize))
+                                                [i_6 as usize] = (if ((deadzone[i_list_2 as usize] << 10i32)
                                                 + (j_3 >> 1i32))
                                                 / j_3
                                                 < ((1i32) << 15i32) / j_3
                                             {
-                                                ((deadzone[i_list_2 as usize] << 10i32)
-                                                    + (j_3 >> 1i32))
-                                                    / j_3
+                                                ((deadzone[i_list_2 as usize] << 10i32) + (j_3 >> 1i32)) / j_3
                                             } else {
                                                 ((1i32) << 15i32) / j_3
                                             })
                                                 as crate::src::common::common::udctcoef;
-                                            (*(*h).quant8_bias0[i_list_2 as usize]
-                                                .offset(q_1 as isize))
+                                            (*(*h).quant8_bias0[i_list_2 as usize].offset(q_1 as isize))
                                                 [i_6 as usize] = (((1i32) << 15i32) / j_3)
                                                 as crate::src::common::common::udctcoef;
                                             if j_3
-                                                > (if (0xffffi32)
-                                                    < ((1i32) << (25i32 - 8i32)) - 1i32
-                                                {
-                                                    0xffffi32
+                                                > (if (0xFFFFi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
+                                                    0xFFFFi32
                                                 } else {
                                                     ((1i32) << (25i32 - 8i32)) - 1i32
                                                 })
                                                 && q_1 > max_qp_err
                                                 && (i_list_2
-                                                    == crate::src::common::set::CQM_8IY
-                                                        as ::core::ffi::c_int
+                                                    == crate::src::common::set::CQM_8IY as ::core::ffi::c_int
                                                     || i_list_2
                                                         == crate::src::common::set::CQM_8PY
                                                             as ::core::ffi::c_int)
@@ -615,17 +576,14 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                 max_qp_err = q_1;
                                             }
                                             if j_3
-                                                > (if (0xffffi32)
-                                                    < ((1i32) << (25i32 - 8i32)) - 1i32
-                                                {
-                                                    0xffffi32
+                                                > (if (0xFFFFi32) < ((1i32) << (25i32 - 8i32)) - 1i32 {
+                                                    0xFFFFi32
                                                 } else {
                                                     ((1i32) << (25i32 - 8i32)) - 1i32
                                                 })
                                                 && q_1 > max_chroma_qp_err
                                                 && (i_list_2
-                                                    == crate::src::common::set::CQM_8IC
-                                                        as ::core::ffi::c_int
+                                                    == crate::src::common::set::CQM_8IC as ::core::ffi::c_int
                                                     || i_list_2
                                                         == crate::src::common::set::CQM_8PC
                                                             as ::core::ffi::c_int)
@@ -640,29 +598,21 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                             }
                             q_1 += 1;
                         }
-                        (*h).nr_offset_emergency =
-                            crate::src::common::base::x264_malloc(
-                                (::core::mem::size_of::<
-                                    [[crate::src::common::common::udctcoef; 64]; 4],
-                                >())
+                        (*h).nr_offset_emergency = crate::src::common::base::x264_malloc(
+                            (::core::mem::size_of::<[[crate::src::common::common::udctcoef; 64]; 4]>())
                                 .wrapping_mul(
-                                    (51i32 + 6i32 * (8i32 - 8i32) + 18i32
-                                        - (51i32 + 6i32 * (8i32 - 8i32)))
+                                    (51i32 + 6i32 * (8i32 - 8i32) + 18i32 - (51i32 + 6i32 * (8i32 - 8i32)))
                                         as usize,
                                 ) as crate::stdlib::int64_t,
-                            )
-                                as *mut [[crate::src::common::common::udctcoef; 64]; 4];
+                        )
+                            as *mut [[crate::src::common::common::udctcoef; 64]; 4];
                         if !(*h).nr_offset_emergency.is_null() {
                             let mut q_2 = 0i32;
                             while q_2
-                                < crate::src::common::common::QP_MAX
-                                    - crate::src::common::common::QP_MAX_SPEC
+                                < crate::src::common::common::QP_MAX - crate::src::common::common::QP_MAX_SPEC
                             {
                                 let mut cat = 0i32;
-                                while cat
-                                    < 3i32
-                                        + (*h).sps.i_chroma_format_idc.is_444()
-                                            as ::core::ffi::c_int
+                                while cat < 3i32 + (*h).sps.i_chroma_format_idc.is_444() as ::core::ffi::c_int
                                 {
                                     let mut dct8x8 = cat & 1i32;
                                     if !(!(*h).param.analyse.transform_8x8 && dct8x8 != 0) {
@@ -683,9 +633,8 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                             * 2i32
                                             / 3i32;
                                         while i_7 < size_1 {
-                                            let mut max = ((1i32)
-                                                << (7i32 + crate::internal::BIT_DEPTH))
-                                                - 1i32;
+                                            let mut max =
+                                                ((1i32) << (7i32 + crate::internal::BIT_DEPTH)) - 1i32;
                                             if q_2
                                                 == crate::src::common::common::QP_MAX
                                                     - crate::src::common::common::QP_MAX_SPEC
@@ -705,44 +654,48 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                                 if q_2 < thresh {
                                                     *nr_offset.offset(i_7 as isize) = 0u16;
                                                 } else {
-                                                    let mut pos =
-                                                        (q_2 - thresh + 1i32)
-                                                            as ::core::ffi::c_double
-                                                            / (crate::src::common::common::QP_MAX - crate::src::common::common::QP_MAX_SPEC - thresh)
-                                                                as ::core::ffi::c_double;
+                                                    let mut pos = (q_2 - thresh + 1i32)
+                                                        as ::core::ffi::c_double
+                                                        / (crate::src::common::common::QP_MAX
+                                                            - crate::src::common::common::QP_MAX_SPEC
+                                                            - thresh)
+                                                            as ::core::ffi::c_double;
                                                     let mut start_1 = (if dct8x8 != 0 {
                                                         (*(*h).unquant8_mf[crate::src::common::set::CQM_8PY
-                                                                as ::core::ffi::c_int
-                                                                as usize]
-                                                                .offset(crate::src::common::common::QP_MAX_SPEC as isize))
-                                                                [i_7 as usize]
+                                                            as ::core::ffi::c_int
+                                                            as usize]
+                                                            .offset(
+                                                                crate::src::common::common::QP_MAX_SPEC
+                                                                    as isize,
+                                                            ))
+                                                            [i_7 as usize]
                                                     } else {
                                                         (*(*h).unquant4_mf[crate::src::common::set::CQM_4PY
-                                                                as ::core::ffi::c_int
-                                                                as usize]
-                                                                .offset(crate::src::common::common::QP_MAX_SPEC as isize))
-                                                                [i_7 as usize]
+                                                            as ::core::ffi::c_int
+                                                            as usize]
+                                                            .offset(
+                                                                crate::src::common::common::QP_MAX_SPEC
+                                                                    as isize,
+                                                            ))
+                                                            [i_7 as usize]
                                                     })
                                                         as ::core::ffi::c_double;
-                                                    let mut bias =
-     (crate::stdlib::pow(
+                                                    let mut bias = (crate::stdlib::pow(
                                                         2f64,
-                                                        pos * (crate::src::common::common::QP_MAX - crate::src::common::common::QP_MAX_SPEC)
+                                                        pos * (crate::src::common::common::QP_MAX
+                                                            - crate::src::common::common::QP_MAX_SPEC)
                                                             as ::core::ffi::c_double
                                                             / 10.0,
-                                                    )
-                                                        * 0.003
+                                                    ) * 0.003
                                                         - 0.003)
                                                         * start_1;
-                                                    *nr_offset.offset(i_7 as isize) = (if bias
-                                                        + 0.5f64
-                                                        < max as ::core::ffi::c_double
-                                                    {
-                                                        bias + 0.5f64
-                                                    } else {
-                                                        max as ::core::ffi::c_double
-                                                    })
-                                                        as crate::src::common::common::udctcoef;
+                                                    *nr_offset.offset(i_7 as isize) =
+                                                        (if bias + 0.5f64 < max as ::core::ffi::c_double {
+                                                            bias + 0.5f64
+                                                        } else {
+                                                            max as ::core::ffi::c_double
+                                                        })
+                                                            as crate::src::common::common::udctcoef;
                                                 }
                                             }
                                             i_7 += 1;
@@ -772,8 +725,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                 }
                                 if !(*h).param.cabac
                                     && (*h).sps.i_profile_idc
-                                        < crate::src::common::base::PROFILE_HIGH
-                                            as ::core::ffi::c_int
+                                        < crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
                                 {
                                     while *(*h).chroma_qp_table.offset(
                                         (if (*h).param.rc.i_qp_max < 51i32 + 6i32 * (8i32 - 8i32) {
@@ -781,8 +733,7 @@ pub unsafe extern "C" fn x264_8_cqm_init(
                                         } else {
                                             51i32 + 6i32 * (8i32 - 8i32)
                                         }) as isize,
-                                    )
-                                        as ::core::ffi::c_int
+                                    ) as ::core::ffi::c_int
                                         <= 12i32
                                         || (*h).param.rc.i_qp_max <= 12i32
                                     {
@@ -822,15 +773,9 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
                 j += 1;
             }
             if j == i {
-                crate::src::common::base::x264_free(
-                    (*h).quant4_mf[i as usize] as *mut ::core::ffi::c_void,
-                );
-                crate::src::common::base::x264_free(
-                    (*h).dequant4_mf[i as usize] as *mut ::core::ffi::c_void,
-                );
-                crate::src::common::base::x264_free(
-                    (*h).unquant4_mf[i as usize] as *mut ::core::ffi::c_void,
-                );
+                crate::src::common::base::x264_free((*h).quant4_mf[i as usize] as *mut ::core::ffi::c_void);
+                crate::src::common::base::x264_free((*h).dequant4_mf[i as usize] as *mut ::core::ffi::c_void);
+                crate::src::common::base::x264_free((*h).unquant4_mf[i as usize] as *mut ::core::ffi::c_void);
             }
             j = 0i32;
             while j < i {
@@ -840,22 +785,14 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
                 j += 1;
             }
             if j == i {
-                crate::src::common::base::x264_free(
-                    (*h).quant4_bias[i as usize] as *mut ::core::ffi::c_void,
-                );
+                crate::src::common::base::x264_free((*h).quant4_bias[i as usize] as *mut ::core::ffi::c_void);
                 crate::src::common::base::x264_free(
                     (*h).quant4_bias0[i as usize] as *mut ::core::ffi::c_void,
                 );
             }
             i += 1;
         }
-        while i_0
-            < (if (*h).sps.i_chroma_format_idc.is_444() {
-                4i32
-            } else {
-                2i32
-            })
-        {
+        while i_0 < (if (*h).sps.i_chroma_format_idc.is_444() { 4i32 } else { 2i32 }) {
             let mut j_0 = 0i32;
             while j_0 < i_0 {
                 if (*h).quant8_mf[i_0 as usize] == (*h).quant8_mf[j_0 as usize] {
@@ -864,9 +801,7 @@ pub unsafe extern "C" fn x264_8_cqm_delete(mut h: *mut crate::src::common::commo
                 j_0 += 1;
             }
             if j_0 == i_0 {
-                crate::src::common::base::x264_free(
-                    (*h).quant8_mf[i_0 as usize] as *mut ::core::ffi::c_void,
-                );
+                crate::src::common::base::x264_free((*h).quant8_mf[i_0 as usize] as *mut ::core::ffi::c_void);
                 crate::src::common::base::x264_free(
                     (*h).dequant8_mf[i_0 as usize] as *mut ::core::ffi::c_void,
                 );
@@ -924,19 +859,12 @@ unsafe extern "C" fn cqm_parse_jmlist(
                 !p.is_null()
             }
             && {
-                p = crate::stdlib::strpbrk(
-                    p,
-                    b"0123456789\0".as_ptr() as *const ::core::ffi::c_char,
-                );
+                p = crate::stdlib::strpbrk(p, b"0123456789\0".as_ptr() as *const ::core::ffi::c_char);
                 !p.is_null()
             }
         {
             let mut coef = -(1i32);
-            crate::stdlib::sscanf(
-                p,
-                b"%d\0".as_ptr() as *const ::core::ffi::c_char,
-                &raw mut coef,
-            );
+            crate::stdlib::sscanf(p, b"%d\0".as_ptr() as *const ::core::ffi::c_char, &raw mut coef);
             if i == 0i32 && coef == 0i32 {
                 crate::stdlib::memcpy(
                     cqm as *mut ::core::ffi::c_void,
@@ -946,10 +874,7 @@ unsafe extern "C" fn cqm_parse_jmlist(
                 return 0i32;
             }
             if coef < 1i32 || coef > 255i32 {
-                log::error!(
-                    "bad coefficient in list '{}'",
-                    std::ffi::CStr::from_ptr(name).to_string_lossy()
-                );
+                log::error!("bad coefficient in list '{}'", std::ffi::CStr::from_ptr(name).to_string_lossy());
                 return -(1i32);
             }
             *cqm.offset(i as isize) = coef as crate::stdlib::uint8_t;
@@ -974,10 +899,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
         (*h).param.i_cqm_preset = crate::x264_h::X264_CQM_CUSTOM;
         let mut buf = crate::src::common::base::x264_slurp_file(filename);
         if buf.is_null() {
-            log::error!(
-                "can't open file '{}'",
-                std::ffi::CStr::from_ptr(filename).to_string_lossy()
-            );
+            log::error!("can't open file '{}'", std::ffi::CStr::from_ptr(filename).to_string_lossy());
             return -(1i32);
         }
         loop {
@@ -1047,8 +969,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
                 buf,
                 b"INTRA8X8_CHROMA\0".as_ptr() as *const ::core::ffi::c_char,
                 &raw mut (*h).param.cqm_8ic as *mut crate::stdlib::uint8_t,
-                &raw const crate::src::common::tables::x264_cqm_jvt8i
-                    as *const crate::stdlib::uint8_t,
+                &raw const crate::src::common::tables::x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
                 64i32,
             );
             b_error |= cqm_parse_jmlist(
@@ -1056,8 +977,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
                 buf,
                 b"INTER8X8_CHROMA\0".as_ptr() as *const ::core::ffi::c_char,
                 &raw mut (*h).param.cqm_8pc as *mut crate::stdlib::uint8_t,
-                &raw const crate::src::common::tables::x264_cqm_jvt8p
-                    as *const crate::stdlib::uint8_t,
+                &raw const crate::src::common::tables::x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
                 64i32,
             );
         }

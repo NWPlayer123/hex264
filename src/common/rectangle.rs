@@ -9,11 +9,7 @@ pub mod rectangle_h {
     ) {
         unsafe {
             let mut d = dst as *mut crate::stdlib::uint8_t;
-            let mut v2 = (if s >= 2i32 {
-                v
-            } else {
-                v.wrapping_mul(0x101u32)
-            }) as crate::stdlib::uint16_t;
+            let mut v2 = (if s >= 2i32 { v } else { v.wrapping_mul(0x101u32) }) as crate::stdlib::uint16_t;
             let mut v4 = if s >= 4i32 {
                 v
             } else if s >= 2i32 {
@@ -21,67 +17,47 @@ pub mod rectangle_h {
             } else {
                 v.wrapping_mul(0x1010101u32)
             };
-            let mut v8 = (v4 as crate::stdlib::uint64_t)
-                .wrapping_add((v4 as crate::stdlib::uint64_t) << 32i32);
+            let mut v8 =
+                (v4 as crate::stdlib::uint64_t).wrapping_add((v4 as crate::stdlib::uint64_t) << 32i32);
             s *= 8i32;
             if w == 2i32 {
-                (*(d.offset((s * 0i32) as isize)
-                    as *mut crate::src::common::base::x264_union16_t))
-                    .i = v2;
+                (*(d.offset((s * 0i32) as isize) as *mut crate::src::common::base::x264_union16_t)).i = v2;
                 if h == 1i32 {
                     return;
                 }
-                (*(d.offset((s * 1i32) as isize)
-                    as *mut crate::src::common::base::x264_union16_t))
-                    .i = v2;
+                (*(d.offset((s * 1i32) as isize) as *mut crate::src::common::base::x264_union16_t)).i = v2;
                 if h == 2i32 {
                     return;
                 }
-                (*(d.offset((s * 2i32) as isize)
-                    as *mut crate::src::common::base::x264_union16_t))
-                    .i = v2;
-                (*(d.offset((s * 3i32) as isize)
-                    as *mut crate::src::common::base::x264_union16_t))
-                    .i = v2;
+                (*(d.offset((s * 2i32) as isize) as *mut crate::src::common::base::x264_union16_t)).i = v2;
+                (*(d.offset((s * 3i32) as isize) as *mut crate::src::common::base::x264_union16_t)).i = v2;
             } else if w == 4i32 {
-                (*(d.offset((s * 0i32) as isize)
-                    as *mut crate::src::common::base::x264_union32_t))
-                    .i = v4;
+                (*(d.offset((s * 0i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
                 if h == 1i32 {
                     return;
                 }
-                (*(d.offset((s * 1i32) as isize)
-                    as *mut crate::src::common::base::x264_union32_t))
-                    .i = v4;
+                (*(d.offset((s * 1i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
                 if h == 2i32 {
                     return;
                 }
-                (*(d.offset((s * 2i32) as isize)
-                    as *mut crate::src::common::base::x264_union32_t))
-                    .i = v4;
-                (*(d.offset((s * 3i32) as isize)
-                    as *mut crate::src::common::base::x264_union32_t))
-                    .i = v4;
+                (*(d.offset((s * 2i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
+                (*(d.offset((s * 3i32) as isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
             } else if w == 8i32 {
                 if crate::osdep_h::WORD_SIZE == 8i32 {
-                    (*(d.offset((s * 0i32) as isize)
-                        as *mut crate::src::common::base::x264_union64_t))
-                        .i = v8;
+                    (*(d.offset((s * 0i32) as isize) as *mut crate::src::common::base::x264_union64_t)).i =
+                        v8;
                     if h == 1i32 {
                         return;
                     }
-                    (*(d.offset((s * 1i32) as isize)
-                        as *mut crate::src::common::base::x264_union64_t))
-                        .i = v8;
+                    (*(d.offset((s * 1i32) as isize) as *mut crate::src::common::base::x264_union64_t)).i =
+                        v8;
                     if h == 2i32 {
                         return;
                     }
-                    (*(d.offset((s * 2i32) as isize)
-                        as *mut crate::src::common::base::x264_union64_t))
-                        .i = v8;
-                    (*(d.offset((s * 3i32) as isize)
-                        as *mut crate::src::common::base::x264_union64_t))
-                        .i = v8;
+                    (*(d.offset((s * 2i32) as isize) as *mut crate::src::common::base::x264_union64_t)).i =
+                        v8;
+                    (*(d.offset((s * 3i32) as isize) as *mut crate::src::common::base::x264_union64_t)).i =
+                        v8;
                 } else {
                     (*(d.offset((s * 0i32) as isize).offset(0isize)
                         as *mut crate::src::common::base::x264_union32_t))
@@ -148,14 +124,10 @@ pub mod rectangle_h {
                     }
                 } else {
                     loop {
-                        (*(d.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i =
-                            v4;
-                        (*(d.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i =
-                            v4;
-                        (*(d.offset(8isize) as *mut crate::src::common::base::x264_union32_t)).i =
-                            v4;
-                        (*(d.offset(12isize) as *mut crate::src::common::base::x264_union32_t)).i =
-                            v4;
+                        (*(d.offset(0isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
+                        (*(d.offset(4isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
+                        (*(d.offset(8isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
+                        (*(d.offset(12isize) as *mut crate::src::common::base::x264_union32_t)).i = v4;
                         d = d.offset(s as isize);
                         h -= 1;
                         if h == 0 {

@@ -93,24 +93,18 @@ pub struct x264_quant_function_t {
             ::core::ffi::c_int,
         ) -> (),
     >,
-    pub decimate_score15: Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
-    >,
-    pub decimate_score16: Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
-    >,
-    pub decimate_score64: Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
-    >,
-    pub coeff_last: [Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
-    >; 14],
-    pub coeff_last4: Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
-    >,
-    pub coeff_last8: Option<
-        unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
-    >,
+    pub decimate_score15:
+        Option<unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int>,
+    pub decimate_score16:
+        Option<unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int>,
+    pub decimate_score64:
+        Option<unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int>,
+    pub coeff_last:
+        [Option<unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int>; 14],
+    pub coeff_last4:
+        Option<unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int>,
+    pub coeff_last8:
+        Option<unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int>,
     pub coeff_level_run: [Option<
         unsafe extern "C" fn(
             *mut crate::src::common::common::dctcoef,
@@ -246,9 +240,7 @@ unsafe extern "C" fn quant_8x8(
                     as crate::src::common::common::dctcoef;
             } else {
                 *dct.offset(i as isize) = -(((*bias.offset(i as isize) as crate::stdlib::uint32_t)
-                    .wrapping_add(
-                        -(*dct.offset(i as isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
-                    )
+                    .wrapping_add(-(*dct.offset(i as isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                     .wrapping_mul(*mf.offset(i as isize) as crate::stdlib::uint32_t)
                     >> 16i32) as crate::stdlib::int32_t)
                     as crate::src::common::common::dctcoef;
@@ -276,9 +268,7 @@ unsafe extern "C" fn quant_4x4(
                     as crate::src::common::common::dctcoef;
             } else {
                 *dct.offset(i as isize) = -(((*bias.offset(i as isize) as crate::stdlib::uint32_t)
-                    .wrapping_add(
-                        -(*dct.offset(i as isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
-                    )
+                    .wrapping_add(-(*dct.offset(i as isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                     .wrapping_mul(*mf.offset(i as isize) as crate::stdlib::uint32_t)
                     >> 16i32) as crate::stdlib::int32_t)
                     as crate::src::common::common::dctcoef;
@@ -302,14 +292,11 @@ unsafe extern "C" fn quant_4x4x4(
             let mut i = 0i32;
             while i < 16i32 {
                 if (*dct.offset(j as isize))[i as usize] as ::core::ffi::c_int > 0i32 {
-                    (*dct.offset(j as isize))[i as usize] = ((*bias.offset(i as isize)
-                        as crate::stdlib::uint32_t)
-                        .wrapping_add(
-                            (*dct.offset(j as isize))[i as usize] as crate::stdlib::uint32_t,
-                        )
-                        .wrapping_mul(*mf.offset(i as isize) as crate::stdlib::uint32_t)
-                        >> 16i32)
-                        as crate::src::common::common::dctcoef;
+                    (*dct.offset(j as isize))[i as usize] =
+                        ((*bias.offset(i as isize) as crate::stdlib::uint32_t)
+                            .wrapping_add((*dct.offset(j as isize))[i as usize] as crate::stdlib::uint32_t)
+                            .wrapping_mul(*mf.offset(i as isize) as crate::stdlib::uint32_t)
+                            >> 16i32) as crate::src::common::common::dctcoef;
                 } else {
                     (*dct.offset(j as isize))[i as usize] =
                         -(((*bias.offset(i as isize) as crate::stdlib::uint32_t)
@@ -347,9 +334,7 @@ unsafe extern "C" fn quant_4x4_dc(
                     as crate::src::common::common::dctcoef;
             } else {
                 *dct.offset(i as isize) = -(((bias as crate::stdlib::uint32_t)
-                    .wrapping_add(
-                        -(*dct.offset(i as isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
-                    )
+                    .wrapping_add(-(*dct.offset(i as isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                     .wrapping_mul(mf as crate::stdlib::uint32_t)
                     >> 16i32) as crate::stdlib::int32_t)
                     as crate::src::common::common::dctcoef;
@@ -374,9 +359,7 @@ unsafe extern "C" fn quant_2x2_dc(
                 >> 16i32) as crate::src::common::common::dctcoef;
         } else {
             *dct.offset(0isize) = -(((bias as crate::stdlib::uint32_t)
-                .wrapping_add(
-                    -(*dct.offset(0isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
-                )
+                .wrapping_add(-(*dct.offset(0isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                 .wrapping_mul(mf as crate::stdlib::uint32_t)
                 >> 16i32) as crate::stdlib::int32_t)
                 as crate::src::common::common::dctcoef;
@@ -389,9 +372,7 @@ unsafe extern "C" fn quant_2x2_dc(
                 >> 16i32) as crate::src::common::common::dctcoef;
         } else {
             *dct.offset(1isize) = -(((bias as crate::stdlib::uint32_t)
-                .wrapping_add(
-                    -(*dct.offset(1isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
-                )
+                .wrapping_add(-(*dct.offset(1isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                 .wrapping_mul(mf as crate::stdlib::uint32_t)
                 >> 16i32) as crate::stdlib::int32_t)
                 as crate::src::common::common::dctcoef;
@@ -404,9 +385,7 @@ unsafe extern "C" fn quant_2x2_dc(
                 >> 16i32) as crate::src::common::common::dctcoef;
         } else {
             *dct.offset(2isize) = -(((bias as crate::stdlib::uint32_t)
-                .wrapping_add(
-                    -(*dct.offset(2isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
-                )
+                .wrapping_add(-(*dct.offset(2isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                 .wrapping_mul(mf as crate::stdlib::uint32_t)
                 >> 16i32) as crate::stdlib::int32_t)
                 as crate::src::common::common::dctcoef;
@@ -419,9 +398,7 @@ unsafe extern "C" fn quant_2x2_dc(
                 >> 16i32) as crate::src::common::common::dctcoef;
         } else {
             *dct.offset(3isize) = -(((bias as crate::stdlib::uint32_t)
-                .wrapping_add(
-                    -(*dct.offset(3isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
-                )
+                .wrapping_add(-(*dct.offset(3isize) as ::core::ffi::c_int) as crate::stdlib::uint32_t)
                 .wrapping_mul(mf as crate::stdlib::uint32_t)
                 >> 16i32) as crate::stdlib::int32_t)
                 as crate::src::common::common::dctcoef;
@@ -504,8 +481,8 @@ unsafe extern "C" fn dequant_4x4_dc(
             let i_dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << i_qbits;
             while i < 16i32 {
                 let ref mut c2rust_fresh6 = *dct.offset(i as isize);
-                *c2rust_fresh6 = (*c2rust_fresh6 as ::core::ffi::c_int * i_dmf)
-                    as crate::src::common::common::dctcoef;
+                *c2rust_fresh6 =
+                    (*c2rust_fresh6 as ::core::ffi::c_int * i_dmf) as crate::src::common::common::dctcoef;
                 i += 1;
             }
         } else {
@@ -513,9 +490,9 @@ unsafe extern "C" fn dequant_4x4_dc(
             let i_dmf_0 = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize];
             let f = (1i32) << (-i_qbits - 1i32);
             while i_0 < 16i32 {
-                *dct.offset(i_0 as isize) =
-                    ((*dct.offset(i_0 as isize) as ::core::ffi::c_int * i_dmf_0 + f) >> -i_qbits)
-                        as crate::src::common::common::dctcoef;
+                *dct.offset(i_0 as isize) = ((*dct.offset(i_0 as isize) as ::core::ffi::c_int * i_dmf_0 + f)
+                    >> -i_qbits)
+                    as crate::src::common::common::dctcoef;
                 i_0 += 1;
             }
         };
@@ -528,22 +505,14 @@ unsafe extern "C" fn idct_dequant_2x4_dc(
     mut i_qp: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut a0 =
-            *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut a1 =
-            *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut a2 =
-            *dct.offset(4isize) as ::core::ffi::c_int + *dct.offset(5isize) as ::core::ffi::c_int;
-        let mut a3 =
-            *dct.offset(6isize) as ::core::ffi::c_int + *dct.offset(7isize) as ::core::ffi::c_int;
-        let mut a4 =
-            *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut a5 =
-            *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut a6 =
-            *dct.offset(4isize) as ::core::ffi::c_int - *dct.offset(5isize) as ::core::ffi::c_int;
-        let mut a7 =
-            *dct.offset(6isize) as ::core::ffi::c_int - *dct.offset(7isize) as ::core::ffi::c_int;
+        let mut a0 = *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut a1 = *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut a2 = *dct.offset(4isize) as ::core::ffi::c_int + *dct.offset(5isize) as ::core::ffi::c_int;
+        let mut a3 = *dct.offset(6isize) as ::core::ffi::c_int + *dct.offset(7isize) as ::core::ffi::c_int;
+        let mut a4 = *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut a5 = *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut a6 = *dct.offset(4isize) as ::core::ffi::c_int - *dct.offset(5isize) as ::core::ffi::c_int;
+        let mut a7 = *dct.offset(6isize) as ::core::ffi::c_int - *dct.offset(7isize) as ::core::ffi::c_int;
         let mut b0 = a0 + a1;
         let mut b1 = a2 + a3;
         let mut b2 = a4 + a5;
@@ -577,22 +546,14 @@ unsafe extern "C" fn idct_dequant_2x4_dconly(
     mut i_qp: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut a0 =
-            *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut a1 =
-            *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut a2 =
-            *dct.offset(4isize) as ::core::ffi::c_int + *dct.offset(5isize) as ::core::ffi::c_int;
-        let mut a3 =
-            *dct.offset(6isize) as ::core::ffi::c_int + *dct.offset(7isize) as ::core::ffi::c_int;
-        let mut a4 =
-            *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut a5 =
-            *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut a6 =
-            *dct.offset(4isize) as ::core::ffi::c_int - *dct.offset(5isize) as ::core::ffi::c_int;
-        let mut a7 =
-            *dct.offset(6isize) as ::core::ffi::c_int - *dct.offset(7isize) as ::core::ffi::c_int;
+        let mut a0 = *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut a1 = *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut a2 = *dct.offset(4isize) as ::core::ffi::c_int + *dct.offset(5isize) as ::core::ffi::c_int;
+        let mut a3 = *dct.offset(6isize) as ::core::ffi::c_int + *dct.offset(7isize) as ::core::ffi::c_int;
+        let mut a4 = *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut a5 = *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut a6 = *dct.offset(4isize) as ::core::ffi::c_int - *dct.offset(5isize) as ::core::ffi::c_int;
+        let mut a7 = *dct.offset(6isize) as ::core::ffi::c_int - *dct.offset(7isize) as ::core::ffi::c_int;
         let mut b0 = a0 + a1;
         let mut b1 = a2 + a3;
         let mut b2 = a4 + a5;
@@ -602,22 +563,14 @@ unsafe extern "C" fn idct_dequant_2x4_dconly(
         let mut b6 = a4 - a5;
         let mut b7 = a6 - a7;
         let mut dmf = (*dequant_mf.offset((i_qp % 6i32) as isize))[0usize] << (i_qp / 6i32);
-        *dct.offset(0isize) =
-            (((b0 + b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *dct.offset(1isize) =
-            (((b2 + b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *dct.offset(2isize) =
-            (((b0 - b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *dct.offset(3isize) =
-            (((b2 - b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *dct.offset(4isize) =
-            (((b4 - b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *dct.offset(5isize) =
-            (((b6 - b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *dct.offset(6isize) =
-            (((b4 + b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *dct.offset(7isize) =
-            (((b6 + b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(0isize) = (((b0 + b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(1isize) = (((b2 + b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(2isize) = (((b0 - b1) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(3isize) = (((b2 - b3) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(4isize) = (((b4 - b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(5isize) = (((b6 - b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(6isize) = (((b4 + b5) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *dct.offset(7isize) = (((b6 + b7) * dmf + 32i32) >> 6i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline(always)]
@@ -627,22 +580,14 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x4(
     mut dmf: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut a0 =
-            *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut a1 =
-            *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut a2 =
-            *dct.offset(4isize) as ::core::ffi::c_int + *dct.offset(5isize) as ::core::ffi::c_int;
-        let mut a3 =
-            *dct.offset(6isize) as ::core::ffi::c_int + *dct.offset(7isize) as ::core::ffi::c_int;
-        let mut a4 =
-            *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut a5 =
-            *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut a6 =
-            *dct.offset(4isize) as ::core::ffi::c_int - *dct.offset(5isize) as ::core::ffi::c_int;
-        let mut a7 =
-            *dct.offset(6isize) as ::core::ffi::c_int - *dct.offset(7isize) as ::core::ffi::c_int;
+        let mut a0 = *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut a1 = *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut a2 = *dct.offset(4isize) as ::core::ffi::c_int + *dct.offset(5isize) as ::core::ffi::c_int;
+        let mut a3 = *dct.offset(6isize) as ::core::ffi::c_int + *dct.offset(7isize) as ::core::ffi::c_int;
+        let mut a4 = *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut a5 = *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut a6 = *dct.offset(4isize) as ::core::ffi::c_int - *dct.offset(5isize) as ::core::ffi::c_int;
+        let mut a7 = *dct.offset(6isize) as ::core::ffi::c_int - *dct.offset(7isize) as ::core::ffi::c_int;
         let mut b0 = a0 + a1;
         let mut b1 = a2 + a3;
         let mut b2 = a4 + a5;
@@ -651,22 +596,14 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x4(
         let mut b5 = a2 - a3;
         let mut b6 = a4 - a5;
         let mut b7 = a6 - a7;
-        *out.offset(0isize) =
-            (((b0 + b1) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *out.offset(1isize) =
-            (((b2 + b3) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *out.offset(2isize) =
-            (((b0 - b1) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *out.offset(3isize) =
-            (((b2 - b3) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *out.offset(4isize) =
-            (((b4 - b5) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *out.offset(5isize) =
-            (((b6 - b7) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *out.offset(6isize) =
-            (((b4 + b5) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
-        *out.offset(7isize) =
-            (((b6 + b7) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(0isize) = (((b0 + b1) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(1isize) = (((b2 + b3) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(2isize) = (((b0 - b1) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(3isize) = (((b2 - b3) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(4isize) = (((b4 - b5) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(5isize) = (((b6 - b7) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(6isize) = (((b4 + b5) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
+        *out.offset(7isize) = (((b6 + b7) * dmf + 2080i32) >> 6i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline(always)]
@@ -676,22 +613,14 @@ unsafe extern "C" fn optimize_chroma_idct_dequant_2x2(
     mut dmf: ::core::ffi::c_int,
 ) {
     unsafe {
-        let mut d0 =
-            *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut d1 =
-            *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
-        let mut d2 =
-            *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
-        let mut d3 =
-            *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
-        *out.offset(0isize) =
-            ((((d0 + d1) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
-        *out.offset(1isize) =
-            ((((d0 - d1) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
-        *out.offset(2isize) =
-            ((((d2 + d3) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
-        *out.offset(3isize) =
-            ((((d2 - d3) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+        let mut d0 = *dct.offset(0isize) as ::core::ffi::c_int + *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut d1 = *dct.offset(2isize) as ::core::ffi::c_int + *dct.offset(3isize) as ::core::ffi::c_int;
+        let mut d2 = *dct.offset(0isize) as ::core::ffi::c_int - *dct.offset(1isize) as ::core::ffi::c_int;
+        let mut d3 = *dct.offset(2isize) as ::core::ffi::c_int - *dct.offset(3isize) as ::core::ffi::c_int;
+        *out.offset(0isize) = ((((d0 + d1) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+        *out.offset(1isize) = ((((d0 - d1) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+        *out.offset(2isize) = ((((d2 + d3) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
+        *out.offset(3isize) = ((((d2 - d3) * dmf) >> 5i32) + 32i32) as crate::src::common::common::dctcoef;
     }
 }
 #[inline(always)]
@@ -808,11 +737,8 @@ unsafe extern "C" fn denoise_dct(
             let ref mut c2rust_fresh5 = *sum.offset(i as isize);
             *c2rust_fresh5 = (*c2rust_fresh5).wrapping_add(level as crate::stdlib::uint32_t);
             level -= *offset.offset(i as isize) as ::core::ffi::c_int;
-            *dct.offset(i as isize) = (if level < 0i32 {
-                0i32
-            } else {
-                (level ^ sign) - sign
-            }) as crate::src::common::common::dctcoef;
+            *dct.offset(i as isize) = (if level < 0i32 { 0i32 } else { (level ^ sign) - sign })
+                as crate::src::common::common::dctcoef;
             i += 1;
         }
     }
@@ -825,11 +751,9 @@ unsafe extern "C" fn decimate_score_internal(
     unsafe {
         let mut i_score = 0i32;
         let mut ds_table = if i_max == 64i32 {
-            &raw const crate::src::common::tables::x264_decimate_table8
-                as *const crate::stdlib::uint8_t
+            &raw const crate::src::common::tables::x264_decimate_table8 as *const crate::stdlib::uint8_t
         } else {
-            &raw const crate::src::common::tables::x264_decimate_table4
-                as *const crate::stdlib::uint8_t
+            &raw const crate::src::common::tables::x264_decimate_table4 as *const crate::stdlib::uint8_t
         };
         let mut idx = i_max - 1i32;
         while idx >= 0i32 && *dct.offset(idx as isize) as ::core::ffi::c_int == 0i32 {
@@ -839,8 +763,7 @@ unsafe extern "C" fn decimate_score_internal(
             let mut i_run = 0i32;
             let c2rust_fresh4 = idx;
             idx -= 1;
-            if (*dct.offset(c2rust_fresh4 as isize) as ::core::ffi::c_int + 1i32)
-                as ::core::ffi::c_uint
+            if (*dct.offset(c2rust_fresh4 as isize) as ::core::ffi::c_int + 1i32) as ::core::ffi::c_uint
                 > 2u32
             {
                 return 9i32;
@@ -869,9 +792,7 @@ unsafe extern "C" fn decimate_score64(
 ) -> ::core::ffi::c_int {
     unsafe { decimate_score_internal(dct, 64i32) }
 }
-unsafe extern "C" fn coeff_last4(
-    mut l: *mut crate::src::common::common::dctcoef,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn coeff_last4(mut l: *mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int {
     unsafe {
         let mut i_last = 4i32 - 1i32;
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
@@ -880,9 +801,7 @@ unsafe extern "C" fn coeff_last4(
         i_last
     }
 }
-unsafe extern "C" fn coeff_last8(
-    mut l: *mut crate::src::common::common::dctcoef,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn coeff_last8(mut l: *mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int {
     unsafe {
         let mut i_last = 8i32 - 1i32;
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
@@ -891,9 +810,7 @@ unsafe extern "C" fn coeff_last8(
         i_last
     }
 }
-unsafe extern "C" fn coeff_last15(
-    mut l: *mut crate::src::common::common::dctcoef,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn coeff_last15(mut l: *mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int {
     unsafe {
         let mut i_last = 15i32 - 1i32;
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
@@ -902,9 +819,7 @@ unsafe extern "C" fn coeff_last15(
         i_last
     }
 }
-unsafe extern "C" fn coeff_last16(
-    mut l: *mut crate::src::common::common::dctcoef,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn coeff_last16(mut l: *mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int {
     unsafe {
         let mut i_last = 16i32 - 1i32;
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
@@ -913,9 +828,7 @@ unsafe extern "C" fn coeff_last16(
         i_last
     }
 }
-unsafe extern "C" fn coeff_last64(
-    mut l: *mut crate::src::common::common::dctcoef,
-) -> ::core::ffi::c_int {
+unsafe extern "C" fn coeff_last64(mut l: *mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int {
     unsafe {
         let mut i_last = 64i32 - 1i32;
         while i_last >= 0i32 && *l.offset(i_last as isize) as ::core::ffi::c_int == 0i32 {
@@ -1148,54 +1061,35 @@ pub unsafe extern "C" fn x264_8_quant_init(
         );
         (*pf).decimate_score15 = Some(
             decimate_score15
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
         (*pf).decimate_score16 = Some(
             decimate_score16
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
         (*pf).decimate_score64 = Some(
             decimate_score64
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
         (*pf).coeff_last4 = Some(
             coeff_last4
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
         (*pf).coeff_last8 = Some(
             coeff_last8
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize] = Some(
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize] = Some(
             coeff_last15
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize] = Some(
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize] = Some(
             coeff_last16
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_LUMA_8x8 as ::core::ffi::c_int as usize] = Some(
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_LUMA_8x8 as ::core::ffi::c_int as usize] = Some(
             coeff_last64
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                ) -> ::core::ffi::c_int,
+                as unsafe extern "C" fn(*mut crate::src::common::common::dctcoef) -> ::core::ffi::c_int,
         );
         (*pf).coeff_level_run4 = Some(
             coeff_level_run4
@@ -1211,92 +1105,65 @@ pub unsafe extern "C" fn x264_8_quant_init(
                     *mut crate::src::common::bitstream::x264_run_level_t,
                 ) -> ::core::ffi::c_int,
         );
+        (*pf).coeff_level_run[crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize] =
+            Some(
+                coeff_level_run15
+                    as unsafe extern "C" fn(
+                        *mut crate::src::common::common::dctcoef,
+                        *mut crate::src::common::bitstream::x264_run_level_t,
+                    ) -> ::core::ffi::c_int,
+            );
+        (*pf).coeff_level_run[crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize] =
+            Some(
+                coeff_level_run16
+                    as unsafe extern "C" fn(
+                        *mut crate::src::common::common::dctcoef,
+                        *mut crate::src::common::bitstream::x264_run_level_t,
+                    ) -> ::core::ffi::c_int,
+            );
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_DC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAU_DC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAU_AC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMA_AC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_LUMA_8x8 as ::core::ffi::c_int as usize];
+        (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAU_8x8 as ::core::ffi::c_int as usize] =
+            (*pf).coeff_last[crate::src::common::macroblock::DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize];
         (*pf).coeff_level_run
-            [crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize] = Some(
-            coeff_level_run15
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                    *mut crate::src::common::bitstream::x264_run_level_t,
-                ) -> ::core::ffi::c_int,
-        );
+            [crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] = (*pf)
+            .coeff_level_run[crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
         (*pf).coeff_level_run
-            [crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize] = Some(
-            coeff_level_run16
-                as unsafe extern "C" fn(
-                    *mut crate::src::common::common::dctcoef,
-                    *mut crate::src::common::bitstream::x264_run_level_t,
-                ) -> ::core::ffi::c_int,
-        );
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] =
-            (*pf).coeff_last
-                [crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] =
-            (*pf).coeff_last
-                [crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAV_DC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAU_DC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_last[crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAU_AC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMA_AC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize] =
-            (*pf).coeff_last
-                [crate::src::common::macroblock::DCT_LUMA_8x8 as ::core::ffi::c_int as usize];
-        (*pf).coeff_last
-            [crate::src::common::macroblock::DCT_CHROMAU_8x8 as ::core::ffi::c_int as usize] =
-            (*pf).coeff_last
-                [crate::src::common::macroblock::DCT_CHROMAV_8x8 as ::core::ffi::c_int as usize];
-        (*pf).coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize] =
-            (*pf).coeff_level_run
-                [crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int as usize];
-        (*pf).coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] =
-            (*pf).coeff_level_run
-                [crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
+            [crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize] = (*pf)
+            .coeff_level_run[crate::src::common::macroblock::DCT_CHROMAV_4x4 as ::core::ffi::c_int as usize];
         (*pf).coeff_level_run
             [crate::src::common::macroblock::DCT_CHROMAV_DC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
+            .coeff_level_run[crate::src::common::macroblock::DCT_CHROMAU_4x4 as ::core::ffi::c_int as usize];
         (*pf).coeff_level_run
             [crate::src::common::macroblock::DCT_CHROMAU_DC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
+            .coeff_level_run[crate::src::common::macroblock::DCT_CHROMAV_DC as ::core::ffi::c_int as usize];
+        (*pf).coeff_level_run[crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_level_run
+                [crate::src::common::macroblock::DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
         (*pf).coeff_level_run
-            [crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAU_DC as ::core::ffi::c_int as usize];
-        (*pf).coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_level_run
-            [crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize];
+            [crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_level_run[crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int as usize];
         (*pf).coeff_level_run
             [crate::src::common::macroblock::DCT_CHROMAU_AC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
-        (*pf).coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMA_AC as ::core::ffi::c_int as usize] = (*pf)
-            .coeff_level_run
-            [crate::src::common::macroblock::DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
+            .coeff_level_run[crate::src::common::macroblock::DCT_CHROMAV_AC as ::core::ffi::c_int as usize];
+        (*pf).coeff_level_run[crate::src::common::macroblock::DCT_CHROMA_AC as ::core::ffi::c_int as usize] =
+            (*pf).coeff_level_run
+                [crate::src::common::macroblock::DCT_CHROMAU_AC as ::core::ffi::c_int as usize];
     }
 }

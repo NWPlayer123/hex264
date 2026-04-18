@@ -12,9 +12,8 @@ pub mod bitstream_h {
             (*s).p_end = (p_data as *mut crate::stdlib::uint8_t).offset(i_data as isize);
             (*s).i_left = (crate::osdep_h::WORD_SIZE - offset) * 8i32;
             if offset != 0 {
-                (*s).cur_bits =
-                    endian_fix32((*((*s).p as *mut crate::src::common::base::x264_union32_t)).i)
-                        as crate::stdlib::uintptr_t;
+                (*s).cur_bits = endian_fix32((*((*s).p as *mut crate::src::common::base::x264_union32_t)).i)
+                    as crate::stdlib::uintptr_t;
                 (*s).cur_bits >>= (4i32 - offset) * 8i32;
             } else {
                 (*s).cur_bits = 0usize;
@@ -22,9 +21,7 @@ pub mod bitstream_h {
         }
     }
     #[inline]
-    pub unsafe extern "C" fn bs_pos(
-        mut s: *mut crate::src::common::bitstream::bs_t,
-    ) -> ::core::ffi::c_int {
+    pub unsafe extern "C" fn bs_pos(mut s: *mut crate::src::common::bitstream::bs_t) -> ::core::ffi::c_int {
         unsafe {
             (8i64 * (*s).p.offset_from((*s).p_start) as ::core::ffi::c_long
                 + (crate::osdep_h::WORD_SIZE * 8i32) as ::core::ffi::c_long
@@ -36,9 +33,7 @@ pub mod bitstream_h {
         unsafe {
             (*((*s).p as *mut crate::src::common::base::x264_union32_t)).i =
                 endian_fix32(((*s).cur_bits << ((*s).i_left & 31i32)) as crate::stdlib::uint32_t);
-            (*s).p = (*s)
-                .p
-                .offset((crate::osdep_h::WORD_SIZE - ((*s).i_left >> 3i32)) as isize);
+            (*s).p = (*s).p.offset((crate::osdep_h::WORD_SIZE - ((*s).i_left >> 3i32)) as isize);
             (*s).i_left = crate::osdep_h::WORD_SIZE * 8i32;
         }
     }
@@ -98,23 +93,21 @@ pub mod bitstream_h {
         }
     }
     pub static mut x264_ue_size_tab: [crate::stdlib::uint8_t; 256] = [
-        1u8, 1u8, 3u8, 3u8, 5u8, 5u8, 5u8, 5u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 9u8, 9u8,
-        9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 11u8, 11u8, 11u8,
-        11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8,
-        11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 13u8,
-        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
-        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
-        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
-        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
-        13u8, 13u8, 13u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
-        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        1u8, 1u8, 3u8, 3u8, 5u8, 5u8, 5u8, 5u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 7u8, 9u8, 9u8, 9u8, 9u8,
+        9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 9u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8,
+        11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8,
+        11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 11u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8, 13u8,
+        13u8, 13u8, 13u8, 13u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
+        15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8, 15u8,
     ];
     #[inline]
     pub unsafe extern "C" fn bs_write_ue(
@@ -163,8 +156,7 @@ pub mod bitstream_h {
             };
         }
     }
-    use crate::src::encoder::cavlc::osdep_h::endian_fix;
-    use crate::src::encoder::cavlc::osdep_h::endian_fix32;
+    use crate::src::encoder::cavlc::osdep_h::{endian_fix, endian_fix32};
 }
 pub mod predict_h {
     pub static mut x264_mb_chroma_pred_mode_fix: [crate::stdlib::uint8_t; 7] = [
@@ -279,12 +271,8 @@ pub mod macroblock_h {
         [[0u8, 0u8], [0u8, 0u8]],
     ];
     pub static mut x264_mb_partition_listX_table: [[crate::stdlib::uint8_t; 17]; 2] = [
-        [
-            1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-        ],
-        [
-            0u8, 0u8, 0u8, 0u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8,
-        ],
+        [1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8],
+        [0u8, 0u8, 0u8, 0u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 0u8, 0u8, 0u8, 0u8, 0u8],
     ];
     #[inline(always)]
     pub unsafe extern "C" fn x264_mb_predict_intra4x4_mode(
@@ -327,50 +315,44 @@ pub mod macroblock_h {
             if i_ret < 0x80i32 {
                 i_ret = (i_ret + 1i32) >> 1i32;
             }
-            i_ret & 0x7fi32
+            i_ret & 0x7Fi32
         }
     }
-    pub static mut x264_transform_allowed: [crate::stdlib::uint8_t; 19] = [
-        0u8, 0u8, 0u8, 0u8, 1u8, 2u8, 0u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8,
-        0u8,
-    ];
+    pub static mut x264_transform_allowed: [crate::stdlib::uint8_t; 19] =
+        [0u8, 0u8, 0u8, 0u8, 1u8, 2u8, 0u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 1u8, 0u8];
     #[inline(always)]
     pub unsafe extern "C" fn x264_mb_transform_8x8_allowed(
         mut h: *mut crate::src::common::common::x264_t,
     ) -> ::core::ffi::c_int {
         unsafe {
-            if !(*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t))
-                .transform_8x8_mode
-            {
+            if !(*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).transform_8x8_mode {
                 return 0i32;
             }
             if (*h).mb.ty != MacroblockType::P_8x8 {
                 return x264_transform_allowed[(*h).mb.ty as usize] as ::core::ffi::c_int;
             }
-            ((*(&raw mut (*h).mb.i_sub_partition as *mut crate::src::common::base::x264_union32_t))
-                .i
+            ((*(&raw mut (*h).mb.i_sub_partition as *mut crate::src::common::base::x264_union32_t)).i
                 == (Partition::D_L0_8x8 as i32 * 0x1010101i32) as crate::stdlib::uint32_t)
                 as ::core::ffi::c_int
         }
     }
-    use crate::src::common::macroblock::{MacroblockType, Partition};
-    use crate::src::encoder::cavlc::base_h::x264_scan8;
-    use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode4x4_fix;
+    use crate::src::{
+        common::macroblock::{MacroblockType, Partition},
+        encoder::cavlc::{base_h::x264_scan8, predict_h::x264_mb_pred_mode4x4_fix},
+    };
 }
 pub mod osdep_h {
     #[inline(always)]
     pub extern "C" fn endian_fix32(mut x: crate::stdlib::uint32_t) -> crate::stdlib::uint32_t {
         (x << 24i32)
-            .wrapping_add(x << 8i32 & 0xff0000u32)
-            .wrapping_add(x >> 8i32 & 0xff00u32)
+            .wrapping_add(x << 8i32 & 0xFF0000u32)
+            .wrapping_add(x >> 8i32 & 0xFF00u32)
             .wrapping_add(x >> 24i32)
     }
     #[inline(always)]
     pub extern "C" fn endian_fix64(mut x: crate::stdlib::uint64_t) -> crate::stdlib::uint64_t {
         (endian_fix32((x >> 32i32) as crate::stdlib::uint32_t) as crate::stdlib::uint64_t)
-            .wrapping_add(
-                (endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t) << 32i32,
-            )
+            .wrapping_add((endian_fix32(x as crate::stdlib::uint32_t) as crate::stdlib::uint64_t) << 32i32)
     }
     #[inline(always)]
     pub extern "C" fn endian_fix(mut x: crate::stdlib::uintptr_t) -> crate::stdlib::uintptr_t {
@@ -383,59 +365,53 @@ pub mod osdep_h {
     #[inline(always)]
     pub unsafe extern "C" fn x264_ctz_4bit(mut x: crate::stdlib::uint32_t) -> ::core::ffi::c_int {
         unsafe {
-            pub static mut lut: [crate::stdlib::uint8_t; 16] = [
-                4u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8, 3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8,
-            ];
+            pub static mut lut: [crate::stdlib::uint8_t; 16] =
+                [4u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8, 3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8];
             lut[x as usize] as ::core::ffi::c_int
         }
     }
 }
-use crate::src::common::macroblock::{MacroblockType, Partition};
-use crate::src::encoder::cavlc::base_h::x264_scan8;
-use crate::src::encoder::cavlc::bitstream_h::bs_align_0;
-use crate::src::encoder::cavlc::bitstream_h::bs_init;
-use crate::src::encoder::cavlc::bitstream_h::bs_pos;
-use crate::src::encoder::cavlc::bitstream_h::bs_write;
-use crate::src::encoder::cavlc::bitstream_h::bs_write_se;
-use crate::src::encoder::cavlc::bitstream_h::bs_write_te;
-use crate::src::encoder::cavlc::bitstream_h::bs_write_ue;
-use crate::src::encoder::cavlc::bitstream_h::bs_write1;
-use crate::src::encoder::cavlc::macroblock_h::x264_mb_partition_listX_table;
-use crate::src::encoder::cavlc::macroblock_h::x264_mb_predict_intra4x4_mode;
-use crate::src::encoder::cavlc::macroblock_h::x264_mb_predict_non_zero_code;
-use crate::src::encoder::cavlc::macroblock_h::x264_mb_transform_8x8_allowed;
-use crate::src::encoder::cavlc::macroblock_h::x264_mb_type_list_table;
-use crate::src::encoder::cavlc::osdep_h::x264_ctz_4bit;
-use crate::src::encoder::cavlc::predict_h::x264_mb_chroma_pred_mode_fix;
-use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode4x4_fix;
-use crate::src::encoder::cavlc::predict_h::x264_mb_pred_mode16x16_fix;
+use crate::src::{
+    common::macroblock::{MacroblockType, Partition},
+    encoder::cavlc::{
+        base_h::x264_scan8,
+        bitstream_h::{
+            bs_align_0, bs_init, bs_pos, bs_write, bs_write_se, bs_write_te, bs_write_ue, bs_write1,
+        },
+        macroblock_h::{
+            x264_mb_partition_listX_table, x264_mb_predict_intra4x4_mode, x264_mb_predict_non_zero_code,
+            x264_mb_transform_8x8_allowed, x264_mb_type_list_table,
+        },
+        osdep_h::x264_ctz_4bit,
+        predict_h::{x264_mb_chroma_pred_mode_fix, x264_mb_pred_mode4x4_fix, x264_mb_pred_mode16x16_fix},
+    },
+};
 static mut cbp_to_golomb: [[[u8; 48]; 2]; 2] = [
     [
         [
-            0, 1, 2, 5, 3, 6, 14, 10, 4, 15, 7, 11, 8, 12, 13, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 1, 2, 5, 3, 6, 14, 10, 4, 15, 7, 11, 8, 12, 13, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
         [
-            1, 10, 11, 6, 12, 7, 14, 2, 13, 15, 8, 3, 9, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 10, 11, 6, 12, 7, 14, 2, 13, 15, 8, 3, 9, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         ],
     ],
     [
         [
-            0, 2, 3, 7, 4, 8, 17, 13, 5, 18, 9, 14, 10, 15, 16, 11, 1, 32, 33, 36, 34, 37, 44, 40,
-            35, 45, 38, 41, 39, 42, 43, 19, 6, 24, 25, 20, 26, 21, 46, 28, 27, 47, 22, 29, 23, 30,
-            31, 12,
+            0, 2, 3, 7, 4, 8, 17, 13, 5, 18, 9, 14, 10, 15, 16, 11, 1, 32, 33, 36, 34, 37, 44, 40, 35, 45,
+            38, 41, 39, 42, 43, 19, 6, 24, 25, 20, 26, 21, 46, 28, 27, 47, 22, 29, 23, 30, 31, 12,
         ],
         [
-            3, 29, 30, 17, 31, 18, 37, 8, 32, 38, 19, 9, 20, 10, 11, 2, 16, 33, 34, 21, 35, 22, 39,
-            4, 36, 40, 23, 5, 24, 6, 7, 1, 41, 42, 43, 25, 44, 26, 46, 12, 45, 47, 27, 13, 28, 14,
-            15, 0,
+            3, 29, 30, 17, 31, 18, 37, 8, 32, 38, 19, 9, 20, 10, 11, 2, 16, 33, 34, 21, 35, 22, 39, 4, 36,
+            40, 23, 5, 24, 6, 7, 1, 41, 42, 43, 25, 44, 26, 46, 12, 45, 47, 27, 13, 28, 14, 15, 0,
         ],
     ],
 ];
 const fn mb_type_b_to_golomb(partition: Partition, mb_type: MacroblockType) -> u8 {
-    use crate::src::common::macroblock::Partition::*;
     use MacroblockType::*;
+
+    use crate::src::common::macroblock::Partition::*;
     match (partition, mb_type) {
         (D_16x16, B_L0_L0) => 1,
         (D_16x16, B_L1_L1) => 2,
@@ -462,9 +438,8 @@ const fn mb_type_b_to_golomb(partition: Partition, mb_type: MacroblockType) -> u
     }
 }
 static mut subpartition_p_to_golomb: [crate::stdlib::uint8_t; 4] = [3u8, 1u8, 2u8, 0u8];
-static mut subpartition_b_to_golomb: [crate::stdlib::uint8_t; 13] = [
-    10u8, 4u8, 5u8, 1u8, 11u8, 6u8, 7u8, 2u8, 12u8, 8u8, 9u8, 3u8, 0u8,
-];
+static mut subpartition_b_to_golomb: [crate::stdlib::uint8_t; 13] =
+    [10u8, 4u8, 5u8, 1u8, 11u8, 6u8, 7u8, 2u8, 12u8, 8u8, 9u8, 3u8, 0u8];
 #[inline]
 unsafe extern "C" fn cavlc_block_residual_escape(
     mut h: *mut crate::src::common::common::x264_t,
@@ -474,7 +449,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
     unsafe {
         let mut s = &raw mut (*h).out.bs;
         static mut next_suffix: [crate::stdlib::uint16_t; 7] =
-            [0u16, 3u16, 6u16, 12u16, 24u16, 48u16, 0xffffu16];
+            [0u16, 3u16, 6u16, 12u16, 24u16, 48u16, 0xFFFFu16];
         let mut mask = level >> 31i32;
         let mut abs_level = (level ^ mask) - mask;
         let mut i_level_code = abs_level * 2i32 - mask - 2i32;
@@ -482,8 +457,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
             bs_write(
                 s,
                 (i_level_code >> i_suffix_length) + 1i32 + i_suffix_length,
-                (((1i32) << i_suffix_length)
-                    + (i_level_code & (((1i32) << i_suffix_length) - 1i32)))
+                (((1i32) << i_suffix_length) + (i_level_code & (((1i32) << i_suffix_length) - 1i32)))
                     as crate::stdlib::uint32_t,
             );
         } else {
@@ -493,9 +467,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
                 i_level_code -= 15i32;
             }
             if i_level_code >= (1i32) << 12i32 {
-                if (*h).sps.i_profile_idc
-                    >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int
-                {
+                if (*h).sps.i_profile_idc >= crate::src::common::base::PROFILE_HIGH as ::core::ffi::c_int {
                     while i_level_code >= (1i32) << (i_level_prefix - 3i32) {
                         i_level_code -= (1i32) << (i_level_prefix - 3i32);
                         i_level_prefix += 1;
@@ -508,8 +480,7 @@ unsafe extern "C" fn cavlc_block_residual_escape(
             bs_write(
                 s,
                 i_level_prefix - 3i32,
-                (i_level_code & (((1i32) << (i_level_prefix - 3i32)) - 1i32))
-                    as crate::stdlib::uint32_t,
+                (i_level_code & (((1i32) << (i_level_prefix - 3i32)) - 1i32)) as crate::stdlib::uint32_t,
             );
         }
         if i_suffix_length == 0i32 {
@@ -528,17 +499,12 @@ unsafe extern "C" fn cavlc_block_residual_internal(
     mut nC: ::core::ffi::c_int,
 ) -> ::core::ffi::c_int {
     unsafe {
-        let mut runlevel = crate::src::common::bitstream::x264_run_level_t {
-            last: 0,
-            mask: 0,
-            level: [0; 18],
-        };
+        let mut runlevel =
+            crate::src::common::bitstream::x264_run_level_t { last: 0, mask: 0, level: [0; 18] };
         let mut s = &raw mut (*h).out.bs;
-        static mut ctz_index: [crate::stdlib::uint8_t; 8] =
-            [3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8];
-        static mut count_cat: [crate::stdlib::uint8_t; 14] = [
-            16u8, 15u8, 16u8, 0u8, 15u8, 64u8, 16u8, 15u8, 16u8, 64u8, 16u8, 15u8, 16u8, 64u8,
-        ];
+        static mut ctz_index: [crate::stdlib::uint8_t; 8] = [3u8, 0u8, 1u8, 0u8, 2u8, 0u8, 1u8, 0u8];
+        static mut count_cat: [crate::stdlib::uint8_t; 14] =
+            [16u8, 15u8, 16u8, 0u8, 15u8, 64u8, 16u8, 15u8, 16u8, 64u8, 16u8, 15u8, 16u8, 64u8];
         let mut i_total = (*h).quantf.coeff_level_run[ctx_block_cat as usize]
             .expect("non-null function pointer")(l, &raw mut runlevel);
         let mut i_total_zero = runlevel.last + 1i32 - i_total;
@@ -584,15 +550,13 @@ unsafe extern "C" fn cavlc_block_residual_internal(
             {
                 bs_write(
                     s,
-                    crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize]
-                        [val as usize]
-                        .i_size as ::core::ffi::c_int,
-                    crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize]
-                        [val as usize]
-                        .i_bits as crate::stdlib::uint32_t,
+                    crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize][val as usize].i_size
+                        as ::core::ffi::c_int,
+                    crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize][val as usize].i_bits
+                        as crate::stdlib::uint32_t,
                 );
-                i_suffix_length = crate::src::common::vlc::x264_8_level_token
-                    [i_suffix_length as usize][val_original as usize]
+                i_suffix_length = crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize]
+                    [val_original as usize]
                     .i_next as ::core::ffi::c_int;
             } else {
                 i_suffix_length = cavlc_block_residual_escape(
@@ -610,15 +574,13 @@ unsafe extern "C" fn cavlc_block_residual_internal(
                 {
                     bs_write(
                         s,
-                        crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize]
-                            [val as usize]
+                        crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize][val as usize]
                             .i_size as ::core::ffi::c_int,
-                        crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize]
-                            [val as usize]
+                        crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize][val as usize]
                             .i_bits as crate::stdlib::uint32_t,
                     );
-                    i_suffix_length = crate::src::common::vlc::x264_8_level_token
-                        [i_suffix_length as usize][val as usize]
+                    i_suffix_length = crate::src::common::vlc::x264_8_level_token[i_suffix_length as usize]
+                        [val as usize]
                         .i_next as ::core::ffi::c_int;
                 } else {
                     i_suffix_length = cavlc_block_residual_escape(
@@ -650,35 +612,27 @@ unsafe extern "C" fn cavlc_block_residual_internal(
         {
             bs_write(
                 s,
-                crate::src::common::tables::x264_total_zeros[(i_total - 1i32) as usize]
-                    [i_total_zero as usize]
+                crate::src::common::tables::x264_total_zeros[(i_total - 1i32) as usize][i_total_zero as usize]
                     .i_size as ::core::ffi::c_int,
-                crate::src::common::tables::x264_total_zeros[(i_total - 1i32) as usize]
-                    [i_total_zero as usize]
+                crate::src::common::tables::x264_total_zeros[(i_total - 1i32) as usize][i_total_zero as usize]
                     .i_bits as crate::stdlib::uint32_t,
             );
         }
-        let mut zero_run_code = crate::src::common::vlc::x264_8_run_before[runlevel.mask as usize]
-            as ::core::ffi::c_int;
-        bs_write(
-            s,
-            zero_run_code & 0x1fi32,
-            (zero_run_code >> 5i32) as crate::stdlib::uint32_t,
-        );
+        let mut zero_run_code =
+            crate::src::common::vlc::x264_8_run_before[runlevel.mask as usize] as ::core::ffi::c_int;
+        bs_write(s, zero_run_code & 0x1Fi32, (zero_run_code >> 5i32) as crate::stdlib::uint32_t);
         i_total
     }
 }
-static mut ct_index: [crate::stdlib::uint8_t; 17] = [
-    0u8, 0u8, 1u8, 1u8, 2u8, 2u8, 2u8, 2u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8,
-];
+static mut ct_index: [crate::stdlib::uint8_t; 17] =
+    [0u8, 0u8, 1u8, 1u8, 2u8, 2u8, 2u8, 2u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8, 3u8];
 unsafe extern "C" fn cavlc_qp_delta(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut s = &raw mut (*h).out.bs;
         let mut i_dqp = (*h).mb.i_qp - (*h).mb.i_last_qp;
         if (*h).mb.ty == MacroblockType::I_16x16
             && (*h).mb.i_cbp_luma | (*h).mb.i_cbp_chroma == 0
-            && (*h).mb.cache.non_zero_count
-                [x264_scan8[crate::src::common::base::LUMA_DC as usize] as usize]
+            && (*h).mb.cache.non_zero_count[x264_scan8[crate::src::common::base::LUMA_DC as usize] as usize]
                 == 0
             && (*h).mb.cache.non_zero_count
                 [x264_scan8[(crate::src::common::base::CHROMA_DC + 0i32) as usize] as usize]
@@ -771,13 +725,10 @@ unsafe extern "C" fn cavlc_macroblock_luma_residual(
             while p < plane_count {
                 let mut i8 = 0i32;
                 while i8 < 4i32 {
-                    if (*h).mb.cache.non_zero_count
-                        [x264_scan8[(p * 16i32 + i8 * 4i32) as usize] as usize]
+                    if (*h).mb.cache.non_zero_count[x264_scan8[(p * 16i32 + i8 * 4i32) as usize] as usize]
                         != 0
                     {
-                        (*h).zigzagf
-                            .interleave_8x8_cavlc
-                            .expect("non-null function pointer")(
+                        (*h).zigzagf.interleave_8x8_cavlc.expect("non-null function pointer")(
                             &raw mut *(&raw mut (*h).dct.luma4x4
                                 as *mut [crate::src::common::common::dctcoef; 16])
                                 .offset((p * 16i32 + i8 * 4i32) as isize)
@@ -786,12 +737,11 @@ unsafe extern "C" fn cavlc_macroblock_luma_residual(
                                 as *mut [crate::src::common::common::dctcoef; 64])
                                 .offset((p * 4i32 + i8) as isize)
                                 as *mut crate::src::common::common::dctcoef,
-                            (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t)
-                                .offset(
-                                    *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
-                                        .offset((p * 16i32 + i8 * 4i32) as isize)
-                                        as isize,
-                                ),
+                            (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
+                                *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
+                                    .offset((p * 16i32 + i8 * 4i32) as isize)
+                                    as isize,
+                            ),
                         );
                     }
                     i8 += 1;
@@ -811,8 +761,7 @@ unsafe extern "C" fn cavlc_macroblock_luma_residual(
             } {
                 let mut i4 = 0i32;
                 while i4 < 4i32 {
-                    let mut nC = if crate::src::common::macroblock::DCT_LUMA_4x4
-                        as ::core::ffi::c_int
+                    let mut nC = if crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int
                         == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                     {
                         5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
@@ -822,15 +771,13 @@ unsafe extern "C" fn cavlc_macroblock_luma_residual(
                             if crate::src::common::macroblock::DCT_LUMA_4x4 as ::core::ffi::c_int
                                 == crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int
                             {
-                                (i4 + i8_0 * 4i32 + p_0 * 16i32 - crate::src::common::base::LUMA_DC)
-                                    * 16i32
+                                (i4 + i8_0 * 4i32 + p_0 * 16i32 - crate::src::common::base::LUMA_DC) * 16i32
                             } else {
                                 i4 + i8_0 * 4i32 + p_0 * 16i32
                             },
                         ) as usize] as ::core::ffi::c_int
                     };
-                    let mut nnz = (&raw mut (*h).mb.cache.non_zero_count
-                        as *mut crate::stdlib::uint8_t)
+                    let mut nnz = (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t)
                         .offset(
                             *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
                                 .offset((i4 + i8_0 * 4i32 + p_0 * 16i32) as isize)
@@ -879,22 +826,13 @@ unsafe extern "C" fn cavlc_mb_header_i(
                     + x264_mb_pred_mode16x16_fix[(*h).mb.i_intra16x16_pred_mode as usize]
                         as ::core::ffi::c_int
                     + (*h).mb.i_cbp_chroma * 4i32
-                    + (if (*h).mb.i_cbp_luma == 0i32 {
-                        0i32
-                    } else {
-                        12i32
-                    }),
+                    + (if (*h).mb.i_cbp_luma == 0i32 { 0i32 } else { 12i32 }),
             );
         } else {
             let mut i = 0i32;
-            let mut di = if i_mb_type == MacroblockType::I_8x8 {
-                4i32
-            } else {
-                1i32
-            };
+            let mut di = if i_mb_type == MacroblockType::I_8x8 { 4i32 } else { 1i32 };
             bs_write_ue(s, i_mb_i_offset + 0i32);
-            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).transform_8x8_mode
-            {
+            if (*(&raw mut (*h).pps as *mut crate::src::common::set::x264_pps_t)).transform_8x8_mode {
                 bs_write1(s, (*h).mb.transform_8x8 as crate::stdlib::uint32_t);
             }
             while i < 16i32 {
@@ -909,8 +847,7 @@ unsafe extern "C" fn cavlc_mb_header_i(
                     bs_write(
                         s,
                         4i32,
-                        (i_mode - (i_mode > i_pred) as ::core::ffi::c_int)
-                            as crate::stdlib::uint32_t,
+                        (i_mode - (i_mode > i_pred) as ::core::ffi::c_int) as crate::stdlib::uint32_t,
                     );
                 }
                 i += di;
@@ -919,8 +856,7 @@ unsafe extern "C" fn cavlc_mb_header_i(
         if chroma != 0 {
             bs_write_ue(
                 s,
-                x264_mb_chroma_pred_mode_fix[(*h).mb.i_chroma_pred_mode as usize]
-                    as ::core::ffi::c_int,
+                x264_mb_chroma_pred_mode_fix[(*h).mb.i_chroma_pred_mode as usize] as ::core::ffi::c_int,
             );
         }
     }
@@ -940,8 +876,7 @@ unsafe extern "C" fn cavlc_mb_header_p(
                     bs_write_te(
                         s,
                         (*h).mb.pic.i_fref[0usize] - 1i32,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 cavlc_mvd(h, 0i32, 0i32, 4i32);
@@ -951,14 +886,12 @@ unsafe extern "C" fn cavlc_mb_header_p(
                     bs_write_te(
                         s,
                         (*h).mb.pic.i_fref[0usize] - 1i32,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int,
                     );
                     bs_write_te(
                         s,
                         (*h).mb.pic.i_fref[0usize] - 1i32,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[8usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[8usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 cavlc_mvd(h, 0i32, 0i32, 4i32);
@@ -969,14 +902,12 @@ unsafe extern "C" fn cavlc_mb_header_p(
                     bs_write_te(
                         s,
                         (*h).mb.pic.i_fref[0usize] - 1i32,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int,
                     );
                     bs_write_te(
                         s,
                         (*h).mb.pic.i_fref[0usize] - 1i32,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[4usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[4usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 cavlc_mvd(h, 0i32, 0i32, 2i32);
@@ -1008,7 +939,7 @@ unsafe extern "C" fn cavlc_mb_header_p(
                     i += 1;
                 }
             } else {
-                bs_write(s, 4i32, 0xfu32);
+                bs_write(s, 4i32, 0xFu32);
             }
             if b_sub_ref != 0 {
                 bs_write_te(
@@ -1065,8 +996,7 @@ unsafe extern "C" fn cavlc_mb_header_b(
             if (*h).mb.pic.i_fref[0usize] > 1i32 {
                 let mut i_0 = 0i32;
                 while i_0 < 4i32 {
-                    if x264_mb_partition_listX_table[0usize]
-                        [(*h).mb.i_sub_partition[i_0 as usize] as usize]
+                    if x264_mb_partition_listX_table[0usize][(*h).mb.i_sub_partition[i_0 as usize] as usize]
                         != 0
                     {
                         bs_write_te(
@@ -1082,8 +1012,7 @@ unsafe extern "C" fn cavlc_mb_header_b(
             if (*h).mb.pic.i_fref[1usize] > 1i32 {
                 let mut i_1 = 0i32;
                 while i_1 < 4i32 {
-                    if x264_mb_partition_listX_table[1usize]
-                        [(*h).mb.i_sub_partition[i_1 as usize] as usize]
+                    if x264_mb_partition_listX_table[1usize][(*h).mb.i_sub_partition[i_1 as usize] as usize]
                         != 0
                     {
                         bs_write_te(
@@ -1097,49 +1026,39 @@ unsafe extern "C" fn cavlc_mb_header_b(
                 }
             }
             while i_2 < 4i32 {
-                if x264_mb_partition_listX_table[0usize]
-                    [(*h).mb.i_sub_partition[i_2 as usize] as usize]
-                    != 0
+                if x264_mb_partition_listX_table[0usize][(*h).mb.i_sub_partition[i_2 as usize] as usize] != 0
                 {
                     cavlc_mvd(h, 0i32, 4i32 * i_2, 2i32);
                 }
                 i_2 += 1;
             }
             while i_3 < 4i32 {
-                if x264_mb_partition_listX_table[1usize]
-                    [(*h).mb.i_sub_partition[i_3 as usize] as usize]
-                    != 0
+                if x264_mb_partition_listX_table[1usize][(*h).mb.i_sub_partition[i_3 as usize] as usize] != 0
                 {
                     cavlc_mvd(h, 1i32, 4i32 * i_3, 2i32);
                 }
                 i_3 += 1;
             }
         } else if i_mb_type >= MacroblockType::B_L0_L0 && i_mb_type <= MacroblockType::B_BI_BI {
-            let mut b_list = &raw const *(&raw const x264_mb_type_list_table
-                as *const [[crate::stdlib::uint8_t; 2]; 2])
-                .offset(i_mb_type as isize)
-                as *const [crate::stdlib::uint8_t; 2];
+            let mut b_list =
+                &raw const *(&raw const x264_mb_type_list_table as *const [[crate::stdlib::uint8_t; 2]; 2])
+                    .offset(i_mb_type as isize) as *const [crate::stdlib::uint8_t; 2];
             let i_ref0_max = (*h).mb.pic.i_fref[0usize] - 1i32;
             let i_ref1_max = (*h).mb.pic.i_fref[1usize] - 1i32;
-            bs_write_ue(
-                s,
-                mb_type_b_to_golomb((*h).mb.i_partition, i_mb_type) as ::core::ffi::c_int,
-            );
+            bs_write_ue(s, mb_type_b_to_golomb((*h).mb.i_partition, i_mb_type) as ::core::ffi::c_int);
             if (*h).mb.i_partition == Partition::D_16x16 {
                 if i_ref0_max != 0 && (*b_list.offset(0isize))[0usize] as ::core::ffi::c_int != 0 {
                     bs_write_te(
                         s,
                         i_ref0_max,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 if i_ref1_max != 0 && (*b_list.offset(1isize))[0usize] as ::core::ffi::c_int != 0 {
                     bs_write_te(
                         s,
                         i_ref1_max,
-                        (*h).mb.cache.ref_0[1usize][x264_scan8[0usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[1usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 if (*b_list.offset(0isize))[0usize] != 0 {
@@ -1153,32 +1072,28 @@ unsafe extern "C" fn cavlc_mb_header_b(
                     bs_write_te(
                         s,
                         i_ref0_max,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 if i_ref0_max != 0 && (*b_list.offset(0isize))[1usize] as ::core::ffi::c_int != 0 {
                     bs_write_te(
                         s,
                         i_ref0_max,
-                        (*h).mb.cache.ref_0[0usize][x264_scan8[12usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[0usize][x264_scan8[12usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 if i_ref1_max != 0 && (*b_list.offset(1isize))[0usize] as ::core::ffi::c_int != 0 {
                     bs_write_te(
                         s,
                         i_ref1_max,
-                        (*h).mb.cache.ref_0[1usize][x264_scan8[0usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[1usize][x264_scan8[0usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 if i_ref1_max != 0 && (*b_list.offset(1isize))[1usize] as ::core::ffi::c_int != 0 {
                     bs_write_te(
                         s,
                         i_ref1_max,
-                        (*h).mb.cache.ref_0[1usize][x264_scan8[12usize] as usize]
-                            as ::core::ffi::c_int,
+                        (*h).mb.cache.ref_0[1usize][x264_scan8[12usize] as usize] as ::core::ffi::c_int,
                     );
                 }
                 if (*h).mb.i_partition == Partition::D_16x8 {
@@ -1216,29 +1131,19 @@ unsafe extern "C" fn cavlc_mb_header_b(
         };
     }
 }
-pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
-    mut h: *mut crate::src::common::common::x264_t,
-) {
+pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(mut h: *mut crate::src::common::common::x264_t) {
     unsafe {
         let mut i_mb_pos_tex = 0;
         let mut s = &raw mut (*h).out.bs;
         let i_mb_type = (*h).mb.ty;
-        let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() {
-            3i32
-        } else {
-            1i32
-        };
-        let mut chroma = ((*h).sps.i_chroma_format_idc.is_420()
-            || (*h).sps.i_chroma_format_idc.is_422())
+        let mut plane_count = if (*h).sps.i_chroma_format_idc.is_444() { 3i32 } else { 1i32 };
+        let mut chroma = ((*h).sps.i_chroma_format_idc.is_420() || (*h).sps.i_chroma_format_idc.is_422())
             as ::core::ffi::c_int;
         let i_mb_pos_start = bs_pos(s);
         if (*h).sh.mbaff
             && ((*h).mb.i_mb_y & 1i32 == 0
                 || matches!(
-                    *(*h)
-                        .mb
-                        .types
-                        .add(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride - (*h).sh.i_first_mb) as usize),
+                    *(*h).mb.types.add(((*h).mb.i_mb_xy - (*h).mb.i_mb_stride - (*h).sh.i_first_mb) as usize),
                     MacroblockType::P_SKIP | MacroblockType::B_SKIP
                 ))
         {
@@ -1249,10 +1154,7 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
             let mut p = 0i32;
             static mut i_offsets: [crate::stdlib::uint8_t; 3] = [5u8, 23u8, 0u8];
             let mut p_start = (*s).p_start;
-            bs_write_ue(
-                s,
-                i_offsets[(*h).sh.i_type as usize] as ::core::ffi::c_int + 25i32,
-            );
+            bs_write_ue(s, i_offsets[(*h).sh.i_type as usize] as ::core::ffi::c_int + 25i32);
             i_mb_pos_tex = bs_pos(s);
             (*h).stat.frame.i_mv_bits += i_mb_pos_tex - i_mb_pos_start;
             bs_align_0(s);
@@ -1262,8 +1164,7 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                     bs_write(
                         s,
                         crate::internal::BIT_DEPTH,
-                        *(*h).mb.pic.p_fenc[p as usize].offset(i as isize)
-                            as crate::stdlib::uint32_t,
+                        *(*h).mb.pic.p_fenc[p as usize].offset(i as isize) as crate::stdlib::uint32_t,
                     );
                     i += 1;
                 }
@@ -1273,17 +1174,15 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                 let mut ch = 1i32;
                 while ch < 3i32 {
                     let mut i_0 = 0i32;
-                    while i_0
-                        < 16i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
-                    {
+                    while i_0 < 16i32 >> ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int {
                         let mut j = 0i32;
                         while j < 8i32 {
                             bs_write(
                                 s,
                                 crate::internal::BIT_DEPTH,
-                                *(*h).mb.pic.p_fenc[ch as usize].offset(
-                                    (i_0 * crate::src::common::common::FENC_STRIDE + j) as isize,
-                                ) as crate::stdlib::uint32_t,
+                                *(*h).mb.pic.p_fenc[ch as usize]
+                                    .offset((i_0 * crate::src::common::common::FENC_STRIDE + j) as isize)
+                                    as crate::stdlib::uint32_t,
                             );
                             j += 1;
                         }
@@ -1345,11 +1244,10 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                         },
                     ) as usize] as ::core::ffi::c_int
                 };
-                let mut nnz =
-                    (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
-                        *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
-                            .offset((48i32 + p_0) as isize) as isize,
-                    );
+                let mut nnz = (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
+                    *(&raw const x264_scan8 as *const crate::stdlib::uint8_t).offset((48i32 + p_0) as isize)
+                        as isize,
+                );
                 if *nnz == 0 {
                     bs_write(
                         &raw mut (*h).out.bs,
@@ -1372,8 +1270,7 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                 if (*h).mb.i_cbp_luma != 0 {
                     let mut i_1 = p_0 * 16i32;
                     while i_1 < p_0 * 16i32 + 16i32 {
-                        let mut nC_0 = if crate::src::common::macroblock::DCT_LUMA_AC
-                            as ::core::ffi::c_int
+                        let mut nC_0 = if crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
                             5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
@@ -1381,8 +1278,7 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
                                 if crate::src::common::macroblock::DCT_LUMA_AC as ::core::ffi::c_int
-                                    == crate::src::common::macroblock::DCT_LUMA_DC
-                                        as ::core::ffi::c_int
+                                    == crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int
                                 {
                                     (i_1 - crate::src::common::base::LUMA_DC) * 16i32
                                 } else {
@@ -1390,11 +1286,10 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                                 },
                             ) as usize] as ::core::ffi::c_int
                         };
-                        let mut nnz_0 = (&raw mut (*h).mb.cache.non_zero_count
-                            as *mut crate::stdlib::uint8_t)
-                            .offset(
-                                *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
-                                    .offset(i_1 as isize) as isize,
+                        let mut nnz_0 =
+                            (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
+                                *(&raw const x264_scan8 as *const crate::stdlib::uint8_t).offset(i_1 as isize)
+                                    as isize,
                             );
                         if *nnz_0 == 0 {
                             bs_write(
@@ -1442,16 +1337,14 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                     },
                 ) as usize] as ::core::ffi::c_int
             };
-            let mut nnz_1 = (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t)
-                .offset(
-                    *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
-                        .offset((49i32 + 0i32) as isize) as isize,
-                );
+            let mut nnz_1 = (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
+                *(&raw const x264_scan8 as *const crate::stdlib::uint8_t).offset((49i32 + 0i32) as isize)
+                    as isize,
+            );
             if *nnz_1 == 0 {
                 bs_write(
                     &raw mut (*h).out.bs,
-                    crate::src::common::tables::x264_coeff0_token[nC_1 as usize].i_size
-                        as ::core::ffi::c_int,
+                    crate::src::common::tables::x264_coeff0_token[nC_1 as usize].i_size as ::core::ffi::c_int,
                     crate::src::common::tables::x264_coeff0_token[nC_1 as usize].i_bits
                         as crate::stdlib::uint32_t,
                 );
@@ -1459,10 +1352,8 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                 *nnz_1 = cavlc_block_residual_internal(
                     h,
                     crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int,
-                    &raw mut *(&raw mut (*h).dct.chroma_dc
-                        as *mut [crate::src::common::common::dctcoef; 8])
-                        .offset(0isize)
-                        as *mut crate::src::common::common::dctcoef,
+                    &raw mut *(&raw mut (*h).dct.chroma_dc as *mut [crate::src::common::common::dctcoef; 8])
+                        .offset(0isize) as *mut crate::src::common::common::dctcoef,
                     nC_1,
                 ) as crate::stdlib::uint8_t;
             }
@@ -1482,16 +1373,14 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                     },
                 ) as usize] as ::core::ffi::c_int
             };
-            let mut nnz_2 = (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t)
-                .offset(
-                    *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
-                        .offset((49i32 + 1i32) as isize) as isize,
-                );
+            let mut nnz_2 = (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
+                *(&raw const x264_scan8 as *const crate::stdlib::uint8_t).offset((49i32 + 1i32) as isize)
+                    as isize,
+            );
             if *nnz_2 == 0 {
                 bs_write(
                     &raw mut (*h).out.bs,
-                    crate::src::common::tables::x264_coeff0_token[nC_2 as usize].i_size
-                        as ::core::ffi::c_int,
+                    crate::src::common::tables::x264_coeff0_token[nC_2 as usize].i_size as ::core::ffi::c_int,
                     crate::src::common::tables::x264_coeff0_token[nC_2 as usize].i_bits
                         as crate::stdlib::uint32_t,
                 );
@@ -1499,32 +1388,26 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                 *nnz_2 = cavlc_block_residual_internal(
                     h,
                     crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int,
-                    &raw mut *(&raw mut (*h).dct.chroma_dc
-                        as *mut [crate::src::common::common::dctcoef; 8])
-                        .offset(1isize)
-                        as *mut crate::src::common::common::dctcoef,
+                    &raw mut *(&raw mut (*h).dct.chroma_dc as *mut [crate::src::common::common::dctcoef; 8])
+                        .offset(1isize) as *mut crate::src::common::common::dctcoef,
                     nC_2,
                 ) as crate::stdlib::uint8_t;
             }
             if (*h).mb.i_cbp_chroma == 2i32 {
                 let mut i_2 = 16i32;
-                let mut step =
-                    (8i32) << ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
+                let mut step = (8i32) << ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int;
                 while i_2 < 3i32 * 16i32 {
                     let mut j_0 = i_2;
                     while j_0 < i_2 + 4i32 {
-                        let mut nC_3 = if crate::src::common::macroblock::DCT_CHROMA_AC
-                            as ::core::ffi::c_int
+                        let mut nC_3 = if crate::src::common::macroblock::DCT_CHROMA_AC as ::core::ffi::c_int
                             == crate::src::common::macroblock::DCT_CHROMA_DC as ::core::ffi::c_int
                         {
                             5i32 - ((*h).sps.i_chroma_format_idc.is_420()) as ::core::ffi::c_int
                         } else {
                             ct_index[x264_mb_predict_non_zero_code(
                                 h,
-                                if crate::src::common::macroblock::DCT_CHROMA_AC
-                                    as ::core::ffi::c_int
-                                    == crate::src::common::macroblock::DCT_LUMA_DC
-                                        as ::core::ffi::c_int
+                                if crate::src::common::macroblock::DCT_CHROMA_AC as ::core::ffi::c_int
+                                    == crate::src::common::macroblock::DCT_LUMA_DC as ::core::ffi::c_int
                                 {
                                     (j_0 - crate::src::common::base::LUMA_DC) * 16i32
                                 } else {
@@ -1532,11 +1415,10 @@ pub unsafe extern "C" fn x264_8_macroblock_write_cavlc(
                                 },
                             ) as usize] as ::core::ffi::c_int
                         };
-                        let mut nnz_3 = (&raw mut (*h).mb.cache.non_zero_count
-                            as *mut crate::stdlib::uint8_t)
-                            .offset(
-                                *(&raw const x264_scan8 as *const crate::stdlib::uint8_t)
-                                    .offset(j_0 as isize) as isize,
+                        let mut nnz_3 =
+                            (&raw mut (*h).mb.cache.non_zero_count as *mut crate::stdlib::uint8_t).offset(
+                                *(&raw const x264_scan8 as *const crate::stdlib::uint8_t).offset(j_0 as isize)
+                                    as isize,
                             );
                         if *nnz_3 == 0 {
                             bs_write(

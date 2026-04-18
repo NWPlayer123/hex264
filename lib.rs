@@ -51,8 +51,7 @@ pub mod slicetype_c {
     pub const MBTREE_PRECISION: ::core::ffi::c_float = 0.5;
 }
 pub mod rdo_c {
-    pub static mut x264_8_cabac_transition_unary: [[crate::stdlib::uint8_t; 128]; 15] =
-        [[0; 128]; 15];
+    pub static mut x264_8_cabac_transition_unary: [[crate::stdlib::uint8_t; 128]; 15] = [[0; 128]; 15];
     pub static mut x264_8_cabac_size_unary: [[crate::stdlib::uint16_t; 128]; 15] = [[0; 128]; 15];
     pub const TRELLIS_SCORE_MAX: ::core::ffi::c_ulonglong = !(0u64);
     pub const TRELLIS_SCORE_BIAS: ::core::ffi::c_ulonglong = (1u64) << 60i32;
@@ -82,9 +81,8 @@ pub mod osdep_h {
 }
 pub mod x264_config_h {
     pub const X264_CHROMA_FORMAT: ::core::ffi::c_int = crate::x264_h::X264_CSP_I444;
-    pub const X264_VERSION: [::core::ffi::c_char; 16] = unsafe {
-        ::core::mem::transmute::<[u8; 16], [::core::ffi::c_char; 16]>(*b" r3223M 0480cb0\0")
-    };
+    pub const X264_VERSION: [::core::ffi::c_char; 16] =
+        unsafe { ::core::mem::transmute::<[u8; 16], [::core::ffi::c_char; 16]>(*b" r3223M 0480cb0\0") };
 }
 pub mod limits_h {
     pub const INT_MAX: ::core::ffi::c_int = crate::internal::__INT_MAX__;
@@ -189,7 +187,7 @@ pub mod x264_h {
     pub const X264_KEYINT_MAX_INFINITE: ::core::ffi::c_int = (1i32) << 30i32;
     pub const X264_AVCINTRA_FLAVOR_PANASONIC: ::core::ffi::c_int = 0i32;
     pub const X264_AVCINTRA_FLAVOR_SONY: ::core::ffi::c_int = 1i32;
-    pub const X264_CSP_MASK: ::core::ffi::c_int = 0xffi32;
+    pub const X264_CSP_MASK: ::core::ffi::c_int = 0xFFi32;
     pub const X264_CSP_NONE: ::core::ffi::c_int = 0i32;
     pub const X264_CSP_I400: ::core::ffi::c_int = 0x1i32;
     pub const X264_CSP_I420: ::core::ffi::c_int = 0x2i32;
@@ -200,12 +198,12 @@ pub mod x264_h {
     pub const X264_CSP_YV16: ::core::ffi::c_int = 0x7i32;
     pub const X264_CSP_NV16: ::core::ffi::c_int = 0x8i32;
     pub const X264_CSP_YUYV: ::core::ffi::c_int = 0x9i32;
-    pub const X264_CSP_UYVY: ::core::ffi::c_int = 0xai32;
-    pub const X264_CSP_V210: ::core::ffi::c_int = 0xbi32;
-    pub const X264_CSP_I444: ::core::ffi::c_int = 0xci32;
-    pub const X264_CSP_YV24: ::core::ffi::c_int = 0xdi32;
-    pub const X264_CSP_BGR: ::core::ffi::c_int = 0xei32;
-    pub const X264_CSP_BGRA: ::core::ffi::c_int = 0xfi32;
+    pub const X264_CSP_UYVY: ::core::ffi::c_int = 0xAi32;
+    pub const X264_CSP_V210: ::core::ffi::c_int = 0xBi32;
+    pub const X264_CSP_I444: ::core::ffi::c_int = 0xCi32;
+    pub const X264_CSP_YV24: ::core::ffi::c_int = 0xDi32;
+    pub const X264_CSP_BGR: ::core::ffi::c_int = 0xEi32;
+    pub const X264_CSP_BGRA: ::core::ffi::c_int = 0xFi32;
     pub const X264_CSP_RGB: ::core::ffi::c_int = 0x10i32;
     pub const X264_CSP_MAX: ::core::ffi::c_int = 0x11i32;
     pub const X264_CSP_VFLIP: ::core::ffi::c_int = 0x1000i32;
@@ -577,8 +575,7 @@ pub mod stdlib {
         pub fn log10(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
         pub fn log2f(__x: ::core::ffi::c_float) -> ::core::ffi::c_float;
         pub fn log2(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
-        pub fn pow(__x: ::core::ffi::c_double, __y: ::core::ffi::c_double)
-        -> ::core::ffi::c_double;
+        pub fn pow(__x: ::core::ffi::c_double, __y: ::core::ffi::c_double) -> ::core::ffi::c_double;
         pub fn powf(__x: ::core::ffi::c_float, __y: ::core::ffi::c_float) -> ::core::ffi::c_float;
         pub fn sqrtf(__x: ::core::ffi::c_float) -> ::core::ffi::c_float;
         pub fn sqrt(__x: ::core::ffi::c_double) -> ::core::ffi::c_double;
@@ -607,25 +604,15 @@ pub mod stdlib {
             __mutex: *mut crate::stdlib::pthread_mutex_t,
             __mutexattr: *const crate::stdlib::pthread_mutexattr_t,
         ) -> ::core::ffi::c_int;
-        pub fn pthread_mutex_destroy(
-            __mutex: *mut crate::stdlib::pthread_mutex_t,
-        ) -> ::core::ffi::c_int;
-        pub fn pthread_mutex_lock(
-            __mutex: *mut crate::stdlib::pthread_mutex_t,
-        ) -> ::core::ffi::c_int;
-        pub fn pthread_mutex_unlock(
-            __mutex: *mut crate::stdlib::pthread_mutex_t,
-        ) -> ::core::ffi::c_int;
+        pub fn pthread_mutex_destroy(__mutex: *mut crate::stdlib::pthread_mutex_t) -> ::core::ffi::c_int;
+        pub fn pthread_mutex_lock(__mutex: *mut crate::stdlib::pthread_mutex_t) -> ::core::ffi::c_int;
+        pub fn pthread_mutex_unlock(__mutex: *mut crate::stdlib::pthread_mutex_t) -> ::core::ffi::c_int;
         pub fn pthread_cond_init(
             __cond: *mut crate::stdlib::pthread_cond_t,
             __cond_attr: *const crate::stdlib::pthread_condattr_t,
         ) -> ::core::ffi::c_int;
-        pub fn pthread_cond_destroy(
-            __cond: *mut crate::stdlib::pthread_cond_t,
-        ) -> ::core::ffi::c_int;
-        pub fn pthread_cond_broadcast(
-            __cond: *mut crate::stdlib::pthread_cond_t,
-        ) -> ::core::ffi::c_int;
+        pub fn pthread_cond_destroy(__cond: *mut crate::stdlib::pthread_cond_t) -> ::core::ffi::c_int;
+        pub fn pthread_cond_broadcast(__cond: *mut crate::stdlib::pthread_cond_t) -> ::core::ffi::c_int;
         pub fn pthread_cond_wait(
             __cond: *mut crate::stdlib::pthread_cond_t,
             __mutex: *mut crate::stdlib::pthread_mutex_t,
@@ -635,10 +622,7 @@ pub mod stdlib {
             __cpusetsize: crate::__stddef_size_t_h::size_t,
             __cpuset: *mut crate::stdlib::cpu_set_t,
         ) -> ::core::ffi::c_int;
-        pub fn fstat(
-            __fd: ::core::ffi::c_int,
-            __buf: *mut crate::stdlib::stat,
-        ) -> ::core::ffi::c_int;
+        pub fn fstat(__fd: ::core::ffi::c_int, __buf: *mut crate::stdlib::stat) -> ::core::ffi::c_int;
         pub static mut stderr: *mut crate::stdlib::FILE;
         pub fn rename(
             __old: *const ::core::ffi::c_char,
@@ -746,10 +730,7 @@ pub mod stdlib {
             __n: crate::__stddef_size_t_h::size_t,
         ) -> ::core::ffi::c_int;
         pub fn strdup(__s: *const ::core::ffi::c_char) -> *mut ::core::ffi::c_char;
-        pub fn strchr(
-            __s: *const ::core::ffi::c_char,
-            __c: ::core::ffi::c_int,
-        ) -> *mut ::core::ffi::c_char;
+        pub fn strchr(__s: *const ::core::ffi::c_char, __c: ::core::ffi::c_int) -> *mut ::core::ffi::c_char;
         pub fn strcspn(
             __s: *const ::core::ffi::c_char,
             __reject: *const ::core::ffi::c_char,
@@ -999,8 +980,7 @@ pub mod stdlib {
     pub type __blkcnt_t = ::core::ffi::c_long;
     pub type __syscall_slong_t = ::core::ffi::c_long;
 }
-#[macro_use]
-extern crate c2rust_bitfields;
+#[macro_use] extern crate c2rust_bitfields;
 pub mod src {
     pub mod common {
         pub mod base;
