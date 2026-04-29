@@ -412,18 +412,7 @@ pub mod rectangle_h {
                         .i = v4;
                 }
             } else if w == 16i32 {
-                '_c2rust_label: {
-                    if h != 1i32 {
-                    } else {
-                        crate::stdlib::__assert_fail(
-                            b"h != 1\0".as_ptr() as *const ::core::ffi::c_char,
-                            b"./common/rectangle.h\0".as_ptr() as *const ::core::ffi::c_char,
-                            82u32,
-                            b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
-                    }
-                };
+                assert!(h != 1);
                 if crate::osdep_h::WORD_SIZE == 8i32 {
                     loop {
                         (*(d.offset((s * 0i32) as isize).offset(0isize)
@@ -458,15 +447,7 @@ pub mod rectangle_h {
                     }
                 }
             } else {
-                '_c2rust_label_0: {
-                    crate::stdlib::__assert_fail(
-                        b"0\0".as_ptr() as *const ::core::ffi::c_char,
-                        b"./common/rectangle.h\0".as_ptr() as *const ::core::ffi::c_char,
-                        118u32,
-                        b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
-                };
+                assert!(false);
             };
         }
     }
@@ -1070,15 +1051,7 @@ unsafe extern "C" fn cabac_8x8_mvd(
                 );
             }
             _ => {
-                '_c2rust_label: {
-                    crate::stdlib::__assert_fail(
-                        b"0\0".as_ptr() as *const ::core::ffi::c_char,
-                        b"encoder/cabac.c\0".as_ptr() as *const ::core::ffi::c_char,
-                        377u32,
-                        b"void cabac_8x8_mvd(x264_t *, x264_cabac_t *, int)\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
-                };
+                assert!(false);
             }
         };
     }

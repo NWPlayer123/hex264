@@ -1350,18 +1350,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         let mut j_1 = 0;
                         let mut k = 0;
                         let mut l = 0;
-                        '_c2rust_label: {
-                            if !(*h).param.rc.psz_stat_in.is_null() {
-                            } else {
-                                crate::stdlib::__assert_fail(
-                                    b"h->param.rc.psz_stat_in\0".as_ptr() as *const ::core::ffi::c_char,
-                                    b"encoder/ratecontrol.c\0".as_ptr() as *const ::core::ffi::c_char,
-                                    874u32,
-                                    b"int x264_8_ratecontrol_new(x264_t *)\0".as_ptr()
-                                        as *const ::core::ffi::c_char,
-                                );
-                            }
-                        };
+                        assert!(!(*h).param.rc.psz_stat_in.is_null());
                         let mut stats_in =
                             crate::src::common::base::x264_slurp_file((*h).param.rc.psz_stat_in);
                         let mut stats_buf = stats_in;
@@ -1370,29 +1359,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             return -(1i32);
                         }
                         if (*h).param.rc.mb_tree {
-                            let mut mbtree_stats_in = strcat_filename(
-                                (*h).param.rc.psz_stat_in,
-                                b".mbtree\0".as_ptr() as *mut ::core::ffi::c_char,
-                            );
+                            let mut mbtree_stats_in = (*h).param.rc.psz_stat_in.push_str(".mbtree");
                             if mbtree_stats_in.is_null() {
                                 return -(1i32);
                             }
-                            (*rc).p_mbtree_stat_file_in = crate::stdlib::fopen(
-                                mbtree_stats_in,
-                                b"rb\0".as_ptr() as *const ::core::ffi::c_char,
-                            );
+                            (*rc).p_mbtree_stat_file_in =
+                                crate::stdlib::fopen(mbtree_stats_in, c"rb".as_ptr());
                             crate::src::common::base::x264_free(mbtree_stats_in as *mut ::core::ffi::c_void);
                             if (*rc).p_mbtree_stat_file_in.is_null() {
                                 log::error!("ratecontrol_init: can't open mbtree stats file");
                                 return -(1i32);
                             }
                         }
-                        if crate::stdlib::strncmp(
-                            stats_buf,
-                            b"#options:\0".as_ptr() as *const ::core::ffi::c_char,
-                            9usize,
-                        ) != 0
-                        {
+                        if crate::stdlib::strncmp(stats_buf, c"#options:".as_ptr(), 9usize) != 0 {
                             log::error!("options list in stats file not valid");
                             return -(1i32);
                         }
@@ -1405,7 +1384,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         stats_in = stats_in.offset(1);
                         if crate::stdlib::sscanf(
                             opts,
-                            b"#options: %dx%d\0".as_ptr() as *const ::core::ffi::c_char,
+                            c"#options: %dx%d".as_ptr(),
                             &raw mut i_0,
                             &raw mut j_1,
                         ) != 2i32
@@ -1420,17 +1399,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             * (*h).param.i_height as ::core::ffi::c_float
                             / (i_0 * j_1) as ::core::ffi::c_float;
                         let mut res_factor_bits = crate::stdlib::powf(res_factor, 0.7);
-                        let mut p = crate::stdlib::strstr(
-                            opts,
-                            b"timebase=\0".as_ptr() as *const ::core::ffi::c_char,
-                        );
+                        let mut p = crate::stdlib::strstr(opts, c"timebase=".as_ptr());
                         if p.is_null()
-                            || crate::stdlib::sscanf(
-                                p,
-                                b"timebase=%u/%u\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut k,
-                                &raw mut l,
-                            ) != 2i32
+                            || crate::stdlib::sscanf(p, c"timebase=%u/%u".as_ptr(), &raw mut k, &raw mut l)
+                                != 2i32
                         {
                             log::error!("timebase specified in stats file not valid");
                             return -(1i32);
@@ -1443,28 +1415,17 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(
-                            opts,
-                            b"bitdepth=\0".as_ptr() as *const ::core::ffi::c_char,
-                        );
+                        p = crate::stdlib::strstr(opts, c"bitdepth=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"bitdepth=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"bitdepth=%d".as_ptr(), &raw mut i_0) != 0
                             && 8i32 != i_0
                         {
                             log::error!("different bitdepth setting than first pass ({} vs {})", 8i32, i_0);
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(opts, b"weightp=\0".as_ptr() as *const ::core::ffi::c_char);
+                        p = crate::stdlib::strstr(opts, c"weightp=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"weightp=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"weightp=%d".as_ptr(), &raw mut i_0) != 0
                             && (if 0i32 > (*h).param.analyse.i_weighted_pred {
                                 0i32
                             } else {
@@ -1482,13 +1443,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(opts, b"bframes=\0".as_ptr() as *const ::core::ffi::c_char);
+                        p = crate::stdlib::strstr(opts, c"bframes=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"bframes=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"bframes=%d".as_ptr(), &raw mut i_0) != 0
                             && (*h).param.i_bframe != i_0
                         {
                             log::error!(
@@ -1498,16 +1455,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(
-                            opts,
-                            b"b_pyramid=\0".as_ptr() as *const ::core::ffi::c_char,
-                        );
+                        p = crate::stdlib::strstr(opts, c"b_pyramid=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"b_pyramid=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"b_pyramid=%d".as_ptr(), &raw mut i_0) != 0
                             && (*h).param.i_bframe_pyramid != i_0
                         {
                             log::error!(
@@ -1517,16 +1467,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(
-                            opts,
-                            b"intra_refresh=\0".as_ptr() as *const ::core::ffi::c_char,
-                        );
+                        p = crate::stdlib::strstr(opts, c"intra_refresh=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"intra_refresh=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"intra_refresh=%d".as_ptr(), &raw mut i_0) != 0
                             && (*h).param.intra_refresh != (i_0 != 0)
                         {
                             log::error!(
@@ -1536,16 +1479,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(
-                            opts,
-                            b"open_gop=\0".as_ptr() as *const ::core::ffi::c_char,
-                        );
+                        p = crate::stdlib::strstr(opts, c"open_gop=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"open_gop=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"open_gop=%d".as_ptr(), &raw mut i_0) != 0
                             && (*h).param.open_gop != (i_0 != 0)
                         {
                             log::error!(
@@ -1555,16 +1491,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(
-                            opts,
-                            b"bluray_compat=\0".as_ptr() as *const ::core::ffi::c_char,
-                        );
+                        p = crate::stdlib::strstr(opts, c"bluray_compat=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"bluray_compat=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"bluray_compat=%d".as_ptr(), &raw mut i_0) != 0
                             && (*h).param.bluray_compat != (i_0 != 0)
                         {
                             log::error!(
@@ -1574,13 +1503,9 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(opts, b"mbtree=\0".as_ptr() as *const ::core::ffi::c_char);
+                        p = crate::stdlib::strstr(opts, c"mbtree=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"mbtree=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"mbtree=%d".as_ptr(), &raw mut i_0) != 0
                             && (*h).param.rc.mb_tree != (i_0 != 0)
                         {
                             log::error!(
@@ -1590,26 +1515,19 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             );
                             return -(1i32);
                         }
-                        p = crate::stdlib::strstr(
-                            opts,
-                            b"interlaced=\0".as_ptr() as *const ::core::ffi::c_char,
-                        );
+                        p = crate::stdlib::strstr(opts, c"interlaced=".as_ptr());
                         if !p.is_null() {
                             let mut buf = [0; 5];
                             let mut current = (if (*h).param.interlaced {
-                                if (*h).param.tff {
-                                    b"tff\0".as_ptr() as *const ::core::ffi::c_char
-                                } else {
-                                    b"bff\0".as_ptr() as *const ::core::ffi::c_char
-                                }
+                                if (*h).param.tff { c"tff".as_ptr() } else { c"bff".as_ptr() }
                             } else if (*h).param.fake_interlaced {
-                                b"fake\0".as_ptr() as *const ::core::ffi::c_char
+                                c"fake".as_ptr()
                             } else {
-                                b"0\0".as_ptr() as *const ::core::ffi::c_char
+                                c"0".as_ptr()
                             }) as *mut ::core::ffi::c_char;
                             crate::stdlib::sscanf(
                                 p,
-                                b"interlaced=%4s\0".as_ptr() as *const ::core::ffi::c_char,
+                                c"interlaced=%4s".as_ptr(),
                                 &raw mut buf as *mut ::core::ffi::c_char,
                             );
                             if crate::stdlib::strcmp(current, &raw mut buf as *mut ::core::ffi::c_char) != 0 {
@@ -1622,7 +1540,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 return -(1i32);
                             }
                         }
-                        p = crate::stdlib::strstr(opts, b"keyint=\0".as_ptr() as *const ::core::ffi::c_char);
+                        p = crate::stdlib::strstr(opts, c"keyint=".as_ptr());
                         if !p.is_null() {
                             p = p.offset(7isize);
                             let mut buf_0 = ::core::mem::transmute::<[u8; 13], [::core::ffi::c_char; 13]>(
@@ -1631,7 +1549,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                             if (*h).param.i_keyint_max != crate::x264_h::X264_KEYINT_MAX_INFINITE {
                                 crate::stdlib::sprintf(
                                     &raw mut buf_0 as *mut ::core::ffi::c_char,
-                                    b"%d \0".as_ptr() as *const ::core::ffi::c_char,
+                                    c"%d ".as_ptr(),
                                     (*h).param.i_keyint_max,
                                 );
                             }
@@ -1644,9 +1562,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 let buf0_len =
                                     crate::stdlib::strlen(&raw mut buf_0 as *mut ::core::ffi::c_char)
                                         as usize;
-                                let p_len =
-                                    crate::stdlib::strcspn(p, b" \0".as_ptr() as *const ::core::ffi::c_char)
-                                        as usize;
+                                let p_len = crate::stdlib::strcspn(p, c" ".as_ptr()) as usize;
                                 let buf0_str =
                                     std::ffi::CStr::from_ptr(&raw const buf_0 as *const ::core::ffi::c_char)
                                         .to_string_lossy();
@@ -1659,26 +1575,20 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 return -(1i32);
                             }
                         }
-                        if !crate::stdlib::strstr(opts, b"qp=0\0".as_ptr() as *const ::core::ffi::c_char)
-                            .is_null()
+                        if !crate::stdlib::strstr(opts, c"qp=0".as_ptr()).is_null()
                             && (*h).param.rc.i_rc_method == crate::x264_h::X264_RC_ABR
                         {
                             log::warn!("1st pass was lossless, bitrate prediction will be inaccurate");
                         }
-                        if crate::stdlib::strstr(opts, b"direct=3\0".as_ptr() as *const ::core::ffi::c_char)
-                            .is_null()
+                        if crate::stdlib::strstr(opts, c"direct=3".as_ptr()).is_null()
                             && (*h).param.analyse.i_direct_mv_pred == crate::x264_h::X264_DIRECT_PRED_AUTO
                         {
                             log::warn!("direct=auto not used on the first pass");
                             (*h).mb.direct_auto_write = true;
                         }
-                        p = crate::stdlib::strstr(opts, b"b_adapt=\0".as_ptr() as *const ::core::ffi::c_char);
+                        p = crate::stdlib::strstr(opts, c"b_adapt=".as_ptr());
                         if !p.is_null()
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"b_adapt=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"b_adapt=%d".as_ptr(), &raw mut i_0) != 0
                             && i_0 >= crate::x264_h::X264_B_ADAPT_NONE
                             && i_0 <= crate::x264_h::X264_B_ADAPT_TRELLIS
                         {
@@ -1689,17 +1599,10 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         }
                         if ((*h).param.rc.mb_tree || (*h).param.rc.i_vbv_buffer_size != 0)
                             && {
-                                p = crate::stdlib::strstr(
-                                    opts,
-                                    b"rc_lookahead=\0".as_ptr() as *const ::core::ffi::c_char,
-                                );
+                                p = crate::stdlib::strstr(opts, c"rc_lookahead=".as_ptr());
                                 !p.is_null()
                             }
-                            && crate::stdlib::sscanf(
-                                p,
-                                b"rc_lookahead=%d\0".as_ptr() as *const ::core::ffi::c_char,
-                                &raw mut i_0,
-                            ) != 0
+                            && crate::stdlib::sscanf(p, c"rc_lookahead=%d".as_ptr(), &raw mut i_0) != 0
                         {
                             (*h).param.rc.i_lookahead = i_0;
                         }
@@ -1785,7 +1688,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                     }
                                     let mut e = crate::stdlib::sscanf(
                                         p,
-                                        b" in:%d out:%d \0".as_ptr() as *const ::core::ffi::c_char,
+                                        c" in:%d out:%d ".as_ptr(),
                                         &raw mut frame_number,
                                         &raw mut frame_out_number,
                                     );
@@ -1843,10 +1746,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                         as ::core::ffi::c_int;
                                     (*rce_0).s_count = ((*rce_0).s_count as ::core::ffi::c_float * res_factor)
                                         as ::core::ffi::c_int;
-                                    p = crate::stdlib::strstr(
-                                        p,
-                                        b"ref:\0".as_ptr() as *const ::core::ffi::c_char,
-                                    );
+                                    p = crate::stdlib::strstr(p, c"ref:".as_ptr());
                                     if !p.is_null() {
                                         let mut ref_0 = 0;
                                         p = p.offset(4isize);
@@ -1858,7 +1758,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                             }
                                             if crate::stdlib::sscanf(
                                                 p,
-                                                b" %d\0".as_ptr() as *const ::core::ffi::c_char,
+                                                c" %d".as_ptr(),
                                                 (&raw mut (*rce_0).refcount as *mut ::core::ffi::c_int)
                                                     .offset(ref_0 as isize),
                                             ) != 1i32
@@ -2015,17 +1915,13 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                         _ => {
                             let mut i_3 = 0i32;
                             if (*h).param.rc.stat_write {
-                                (*rc).psz_stat_file_tmpname = strcat_filename(
-                                    (*h).param.rc.psz_stat_out,
-                                    b".temp\0".as_ptr() as *mut ::core::ffi::c_char,
-                                );
+                                (*rc).psz_stat_file_tmpname =
+                                    strcat_filename((*h).param.rc.psz_stat_out, c".temp".as_ptr());
                                 if (*rc).psz_stat_file_tmpname.is_null() {
                                     return -(1i32);
                                 }
-                                (*rc).p_stat_file_out = crate::stdlib::fopen(
-                                    (*rc).psz_stat_file_tmpname,
-                                    b"wb\0".as_ptr() as *const ::core::ffi::c_char,
-                                );
+                                (*rc).p_stat_file_out =
+                                    crate::stdlib::fopen((*rc).psz_stat_file_tmpname, c"wb".as_ptr());
                                 if (*rc).p_stat_file_out.is_null() {
                                     log::error!("ratecontrol_init: can't open stats file");
                                     return -(1i32);
@@ -2035,20 +1931,16 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                 if !p_0.is_null() {
                                     crate::stdlib::fprintf(
                                         (*rc).p_stat_file_out,
-                                        b"#options: %s\n\0".as_ptr() as *const ::core::ffi::c_char,
+                                        c"#options: %s\n".as_ptr(),
                                         p_0,
                                     );
                                 }
                                 crate::src::common::base::x264_free(p_0 as *mut ::core::ffi::c_void);
                                 if (*h).param.rc.mb_tree && !(*h).param.rc.stat_read {
-                                    (*rc).psz_mbtree_stat_file_tmpname = strcat_filename(
-                                        (*h).param.rc.psz_stat_out,
-                                        b".mbtree.temp\0".as_ptr() as *mut ::core::ffi::c_char,
-                                    );
-                                    (*rc).psz_mbtree_stat_file_name = strcat_filename(
-                                        (*h).param.rc.psz_stat_out,
-                                        b".mbtree\0".as_ptr() as *mut ::core::ffi::c_char,
-                                    );
+                                    (*rc).psz_mbtree_stat_file_tmpname =
+                                        strcat_filename((*h).param.rc.psz_stat_out, c".mbtree.temp".as_ptr());
+                                    (*rc).psz_mbtree_stat_file_name =
+                                        strcat_filename((*h).param.rc.psz_stat_out, c".mbtree".as_ptr());
                                     if (*rc).psz_mbtree_stat_file_tmpname.is_null()
                                         || (*rc).psz_mbtree_stat_file_name.is_null()
                                     {
@@ -2056,7 +1948,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_new(
                                     }
                                     (*rc).p_mbtree_stat_file_out = crate::stdlib::fopen(
                                         (*rc).psz_mbtree_stat_file_tmpname,
-                                        b"wb\0".as_ptr() as *const ::core::ffi::c_char,
+                                        c"wb".as_ptr(),
                                     );
                                     if (*rc).p_mbtree_stat_file_out.is_null() {
                                         log::error!("ratecontrol_init: can't open mbtree stats file");
@@ -2105,7 +1997,7 @@ unsafe extern "C" fn parse_zone(
         if 3i32
             <= crate::stdlib::sscanf(
                 p,
-                b"%d,%d,q=%d%n\0".as_ptr() as *const ::core::ffi::c_char,
+                c"%d,%d,q=%d%n".as_ptr(),
                 &raw mut (*z).i_start,
                 &raw mut (*z).i_end,
                 &raw mut (*z).i_qp,
@@ -2116,7 +2008,7 @@ unsafe extern "C" fn parse_zone(
         } else if 3i32
             <= crate::stdlib::sscanf(
                 p,
-                b"%d,%d,b=%f%n\0".as_ptr() as *const ::core::ffi::c_char,
+                c"%d,%d,b=%f%n".as_ptr(),
                 &raw mut (*z).i_start,
                 &raw mut (*z).i_end,
                 &raw mut (*z).f_bitrate_factor,
@@ -2127,7 +2019,7 @@ unsafe extern "C" fn parse_zone(
         } else if 2i32
             <= crate::stdlib::sscanf(
                 p,
-                b"%d,%d%n\0".as_ptr() as *const ::core::ffi::c_char,
+                c"%d,%d%n".as_ptr(),
                 &raw mut (*z).i_start,
                 &raw mut (*z).i_end,
                 &raw mut len,
@@ -2160,11 +2052,7 @@ unsafe extern "C" fn parse_zone(
             loop {
                 let mut tok = ::core::ptr::null_mut::<::core::ffi::c_char>();
                 let mut saveptr = ::core::ptr::null_mut::<::core::ffi::c_char>();
-                tok = crate::stdlib::strtok_r(
-                    p,
-                    b",\0".as_ptr() as *const ::core::ffi::c_char,
-                    &raw mut saveptr,
-                );
+                tok = crate::stdlib::strtok_r(p, c",".as_ptr(), &raw mut saveptr);
                 if tok.is_null() {
                     break;
                 }
@@ -2217,9 +2105,7 @@ unsafe extern "C" fn parse_zones(mut h: *mut crate::src::common::common::x264_t)
                     let mut i = 0i32;
                     p = psz_zones;
                     while i < (*h).param.rc.i_zones {
-                        let mut i_tok =
-                            crate::stdlib::strcspn(p, b"/\0".as_ptr() as *const ::core::ffi::c_char)
-                                as ::core::ffi::c_int;
+                        let mut i_tok = crate::stdlib::strcspn(p, c"/".as_ptr()) as ::core::ffi::c_int;
                         *p.offset(i_tok as isize) = 0i8;
                         if parse_zone(h, (*h).param.rc.zones.offset(i as isize), p) != 0 {
                             crate::src::common::base::x264_free(psz_zones as *mut ::core::ffi::c_void);
@@ -2458,18 +2344,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_start(
         let mut zone = get_zone(h, (*(*h).fenc).i_frame);
         if (*h).param.rc.stat_read {
             let mut frame = (*(*h).fenc).i_frame;
-            '_c2rust_label: {
-                if frame >= 0i32 && frame < (*rc).num_entries {
-                } else {
-                    crate::stdlib::__assert_fail(
-                        b"frame >= 0 && frame < rc->num_entries\0".as_ptr() as *const ::core::ffi::c_char,
-                        b"encoder/ratecontrol.c\0".as_ptr() as *const ::core::ffi::c_char,
-                        1444u32,
-                        b"void x264_8_ratecontrol_start(x264_t *, int, int)\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
-                }
-            };
+            assert!(frame >= 0i32 && frame < (*rc).num_entries);
             (*rc).rce = (*rc).entry.offset(frame as isize);
             rce = (*rc).rce;
             if (*h).sh.i_type == crate::src::common::base::SLICE_TYPE_B as ::core::ffi::c_int
@@ -3153,7 +3028,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                     };
                     if crate::stdlib::fprintf(
                         (*rc).p_stat_file_out,
-                        b"%d \0".as_ptr() as *const ::core::ffi::c_char,
+                        c"%d ".as_ptr(),
                         refcount,
                     ) < 0i32
                     {
@@ -3174,7 +3049,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                         {
                             if crate::stdlib::fprintf(
                                 (*rc).p_stat_file_out,
-                                b"w:%d,%d,%d\0".as_ptr() as *const ::core::ffi::c_char,
+                                c"w:%d,%d,%d".as_ptr(),
                                 (*h)
                                     .sh
                                     .weight[0usize][0usize]
@@ -3233,7 +3108,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                                 }
                             } else if crate::stdlib::fprintf(
                                 (*rc).p_stat_file_out,
-                                b" \0".as_ptr() as *const ::core::ffi::c_char,
+                                c" ".as_ptr(),
                             ) < 0i32
                             {
                                 c2rust_current_block = 12447577463904507897;
@@ -3248,7 +3123,7 @@ pub unsafe extern "C" fn x264_8_ratecontrol_end(
                             _ => {
                                 if crate::stdlib::fprintf(
                                     (*rc).p_stat_file_out,
-                                    b";\n\0".as_ptr() as *const ::core::ffi::c_char,
+                                    c";\n".as_ptr(),
                                 ) < 0i32
                                 {
                                     c2rust_current_block = 12447577463904507897;
@@ -4845,32 +4720,12 @@ unsafe extern "C" fn init_pass2(mut h: *mut crate::src::common::common::x264_t) 
                                 *qscale.offset(i_4 as isize),
                                 i_4,
                             );
-                            '_c2rust_label: {
-                                if *qscale.offset(i_4 as isize) >= 0f64 {
-                                } else {
-                                    crate::stdlib::__assert_fail(
-                                        b"qscale[i] >= 0\0".as_ptr() as *const ::core::ffi::c_char,
-                                        b"encoder/ratecontrol.c\0".as_ptr() as *const ::core::ffi::c_char,
-                                        3050u32,
-                                        b"int init_pass2(x264_t *)\0".as_ptr() as *const ::core::ffi::c_char,
-                                    );
-                                }
-                            };
+                            assert!(*qscale.offset(i_4 as isize) >= 0f64);
                             i_4 -= 1;
                         }
                         if filter_size > 1i32 {
                             let mut i_5 = 0i32;
-                            '_c2rust_label_0: {
-                                if filter_size % 2i32 == 1i32 {
-                                } else {
-                                    crate::stdlib::__assert_fail(
-                                        b"filter_size%2 == 1\0".as_ptr() as *const ::core::ffi::c_char,
-                                        b"encoder/ratecontrol.c\0".as_ptr() as *const ::core::ffi::c_char,
-                                        3056u32,
-                                        b"int init_pass2(x264_t *)\0".as_ptr() as *const ::core::ffi::c_char,
-                                    );
-                                }
-                            };
+                            assert!(filter_size % 2i32 == 1i32);
                             while i_5 < (*rcc).num_entries {
                                 let mut q_0 = 0.0;
                                 let mut sum = 0.0;
@@ -4901,17 +4756,7 @@ unsafe extern "C" fn init_pass2(mut h: *mut crate::src::common::common::x264_t) 
                             let mut rce_2 = (*rcc).entry.offset(i_6 as isize);
                             (*rce_2).new_qscale =
                                 clip_qscale(h, (*rce_2).pict_type, *blurred_qscale.offset(i_6 as isize));
-                            '_c2rust_label_1: {
-                                if (*rce_2).new_qscale >= 0f64 {
-                                } else {
-                                    crate::stdlib::__assert_fail(
-                                        b"rce->new_qscale >= 0\0".as_ptr() as *const ::core::ffi::c_char,
-                                        b"encoder/ratecontrol.c\0".as_ptr() as *const ::core::ffi::c_char,
-                                        3083u32,
-                                        b"int init_pass2(x264_t *)\0".as_ptr() as *const ::core::ffi::c_char,
-                                    );
-                                }
-                            };
+                            assert!((*rce_2).new_qscale >= 0f64);
                             expected_bits += qscale2bits(rce_2, (*rce_2).new_qscale);
                             i_6 += 1;
                         }

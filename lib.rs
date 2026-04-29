@@ -286,14 +286,6 @@ pub mod x264_h {
         pub cqm_8py: [crate::stdlib::uint8_t; 64],
         pub cqm_8ic: [crate::stdlib::uint8_t; 64],
         pub cqm_8pc: [crate::stdlib::uint8_t; 64],
-        pub pf_log: Option<
-            unsafe extern "C" fn(
-                *mut ::core::ffi::c_void,
-                ::core::ffi::c_int,
-                *const ::core::ffi::c_char,
-                ::core::ffi::VaList,
-            ) -> (),
-        >,
         pub p_log_private: *mut ::core::ffi::c_void,
         pub i_log_level: ::core::ffi::c_int,
         pub full_recon: bool,
@@ -381,7 +373,7 @@ pub mod x264_h {
         pub psnr: bool,
         pub ssim: bool,
     }
-    #[derive(Copy, Clone)]
+    #[derive(Clone)]
     #[repr(C)]
     pub struct C2Rust_Unnamed_2 {
         pub i_rc_method: ::core::ffi::c_int,
@@ -404,9 +396,9 @@ pub mod x264_h {
         pub mb_tree: bool,
         pub i_lookahead: ::core::ffi::c_int,
         pub stat_write: bool,
-        pub psz_stat_out: *mut ::core::ffi::c_char,
+        pub psz_stat_out: String,
         pub stat_read: bool,
-        pub psz_stat_in: *mut ::core::ffi::c_char,
+        pub psz_stat_in: String,
         pub f_qcompress: ::core::ffi::c_float,
         pub f_qblur: ::core::ffi::c_float,
         pub f_complexity_blur: ::core::ffi::c_float,
@@ -548,12 +540,6 @@ pub mod internal {
 }
 pub mod stdlib {
     unsafe extern "C" {
-        pub fn __assert_fail(
-            __assertion: *const ::core::ffi::c_char,
-            __file: *const ::core::ffi::c_char,
-            __line: ::core::ffi::c_uint,
-            __function: *const ::core::ffi::c_char,
-        ) -> !;
         pub fn __assert_single_arg(_: bool) -> bool;
         pub fn __sched_cpucount(
             __setsize: crate::__stddef_size_t_h::size_t,

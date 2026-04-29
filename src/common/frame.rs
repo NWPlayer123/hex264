@@ -1762,18 +1762,7 @@ pub unsafe extern "C" fn x264_8_frame_pop(
 ) -> *mut crate::src::common::frame::x264_frame_t {
     unsafe {
         let mut i = 0i32;
-        '_c2rust_label: {
-            if !(*list.offset(0isize)).is_null() {
-            } else {
-                crate::stdlib::__assert_fail(
-                    b"list[0]\0".as_ptr() as *const ::core::ffi::c_char,
-                    b"common/frame.c\0".as_ptr() as *const ::core::ffi::c_char,
-                    746u32,
-                    b"x264_frame_t *x264_8_frame_pop(x264_frame_t **)\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-            }
-        };
+        assert!(!(*list.offset(0isize)).is_null());
         while !(*list.offset((i + 1i32) as isize)).is_null() {
             i += 1;
         }
@@ -1825,18 +1814,7 @@ pub unsafe extern "C" fn x264_8_frame_push_unused(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
 ) {
     unsafe {
-        '_c2rust_label: {
-            if (*frame).i_reference_count > 0i32 {
-            } else {
-                crate::stdlib::__assert_fail(
-                    b"frame->i_reference_count > 0\0".as_ptr() as *const ::core::ffi::c_char,
-                    b"common/frame.c\0".as_ptr() as *const ::core::ffi::c_char,
-                    774u32,
-                    b"void x264_8_frame_push_unused(x264_t *, x264_frame_t *)\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-            }
-        };
+        assert!((*frame).i_reference_count > 0i32);
         (*frame).i_reference_count -= 1;
         if (*frame).i_reference_count == 0i32 {
             x264_8_frame_push((*h).frames.unused[(*frame).b_fdec as usize], frame);
@@ -1882,18 +1860,7 @@ pub unsafe extern "C" fn x264_8_frame_push_blank_unused(
     mut frame: *mut crate::src::common::frame::x264_frame_t,
 ) {
     unsafe {
-        '_c2rust_label: {
-            if (*frame).i_reference_count > 0i32 {
-            } else {
-                crate::stdlib::__assert_fail(
-                    b"frame->i_reference_count > 0\0".as_ptr() as *const ::core::ffi::c_char,
-                    b"common/frame.c\0".as_ptr() as *const ::core::ffi::c_char,
-                    805u32,
-                    b"void x264_8_frame_push_blank_unused(x264_t *, x264_frame_t *)\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-            }
-        };
+        assert!((*frame).i_reference_count > 0i32);
         (*frame).i_reference_count -= 1;
         if (*frame).i_reference_count == 0i32 {
             x264_8_frame_push((*h).frames.blank_unused, frame);

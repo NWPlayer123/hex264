@@ -852,19 +852,19 @@ unsafe extern "C" fn cqm_parse_jmlist(
         if *p as ::core::ffi::c_int == 'U' as i32 || *p as ::core::ffi::c_int == 'V' as i32 {
             p = p.offset(1);
         }
-        let mut nextvar = crate::stdlib::strstr(p, b"INT\0".as_ptr() as *const ::core::ffi::c_char);
+        let mut nextvar = crate::stdlib::strstr(p, c"INT".as_ptr());
         while i < length
             && {
-                p = crate::stdlib::strpbrk(p, b" \t\n,\0".as_ptr() as *const ::core::ffi::c_char);
+                p = crate::stdlib::strpbrk(p, c" \t\n,".as_ptr());
                 !p.is_null()
             }
             && {
-                p = crate::stdlib::strpbrk(p, b"0123456789\0".as_ptr() as *const ::core::ffi::c_char);
+                p = crate::stdlib::strpbrk(p, c"0123456789".as_ptr());
                 !p.is_null()
             }
         {
             let mut coef = -(1i32);
-            crate::stdlib::sscanf(p, b"%d\0".as_ptr() as *const ::core::ffi::c_char, &raw mut coef);
+            crate::stdlib::sscanf(p, c"%d".as_ptr(), &raw mut coef);
             if i == 0i32 && coef == 0i32 {
                 crate::stdlib::memcpy(
                     cqm as *mut ::core::ffi::c_void,
@@ -911,14 +911,14 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
             crate::stdlib::memset(
                 p as *mut ::core::ffi::c_void,
                 ' ' as i32,
-                crate::stdlib::strcspn(p, b"\n\0".as_ptr() as *const ::core::ffi::c_char)
+                crate::stdlib::strcspn(p, c"\n".as_ptr())
                     as crate::__stddef_size_t_h::size_t,
             );
         }
         b_error |= cqm_parse_jmlist(
             h,
             buf,
-            b"INTRA4X4_LUMA\0".as_ptr() as *const ::core::ffi::c_char,
+            c"INTRA4X4_LUMA".as_ptr(),
             &raw mut (*h).param.cqm_4iy as *mut crate::stdlib::uint8_t,
             &raw const crate::src::common::tables::x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
             16i32,
@@ -926,7 +926,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
         b_error |= cqm_parse_jmlist(
             h,
             buf,
-            b"INTER4X4_LUMA\0".as_ptr() as *const ::core::ffi::c_char,
+            c"INTER4X4_LUMA".as_ptr(),
             &raw mut (*h).param.cqm_4py as *mut crate::stdlib::uint8_t,
             &raw const crate::src::common::tables::x264_cqm_jvt4p as *const crate::stdlib::uint8_t,
             16i32,
@@ -934,7 +934,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
         b_error |= cqm_parse_jmlist(
             h,
             buf,
-            b"INTRA4X4_CHROMA\0".as_ptr() as *const ::core::ffi::c_char,
+            c"INTRA4X4_CHROMA".as_ptr(),
             &raw mut (*h).param.cqm_4ic as *mut crate::stdlib::uint8_t,
             &raw const crate::src::common::tables::x264_cqm_jvt4i as *const crate::stdlib::uint8_t,
             16i32,
@@ -942,7 +942,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
         b_error |= cqm_parse_jmlist(
             h,
             buf,
-            b"INTER4X4_CHROMA\0".as_ptr() as *const ::core::ffi::c_char,
+            c"INTER4X4_CHROMA".as_ptr(),
             &raw mut (*h).param.cqm_4pc as *mut crate::stdlib::uint8_t,
             &raw const crate::src::common::tables::x264_cqm_jvt4p as *const crate::stdlib::uint8_t,
             16i32,
@@ -950,7 +950,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
         b_error |= cqm_parse_jmlist(
             h,
             buf,
-            b"INTRA8X8_LUMA\0".as_ptr() as *const ::core::ffi::c_char,
+            c"INTRA8X8_LUMA".as_ptr(),
             &raw mut (*h).param.cqm_8iy as *mut crate::stdlib::uint8_t,
             &raw const crate::src::common::tables::x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
             64i32,
@@ -958,7 +958,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
         b_error |= cqm_parse_jmlist(
             h,
             buf,
-            b"INTER8X8_LUMA\0".as_ptr() as *const ::core::ffi::c_char,
+            c"INTER8X8_LUMA".as_ptr(),
             &raw mut (*h).param.cqm_8py as *mut crate::stdlib::uint8_t,
             &raw const crate::src::common::tables::x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
             64i32,
@@ -967,7 +967,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
             b_error |= cqm_parse_jmlist(
                 h,
                 buf,
-                b"INTRA8X8_CHROMA\0".as_ptr() as *const ::core::ffi::c_char,
+                c"INTRA8X8_CHROMA".as_ptr(),
                 &raw mut (*h).param.cqm_8ic as *mut crate::stdlib::uint8_t,
                 &raw const crate::src::common::tables::x264_cqm_jvt8i as *const crate::stdlib::uint8_t,
                 64i32,
@@ -975,7 +975,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
             b_error |= cqm_parse_jmlist(
                 h,
                 buf,
-                b"INTER8X8_CHROMA\0".as_ptr() as *const ::core::ffi::c_char,
+                c"INTER8X8_CHROMA".as_ptr(),
                 &raw mut (*h).param.cqm_8pc as *mut crate::stdlib::uint8_t,
                 &raw const crate::src::common::tables::x264_cqm_jvt8p as *const crate::stdlib::uint8_t,
                 64i32,

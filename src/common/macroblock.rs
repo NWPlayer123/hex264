@@ -288,18 +288,7 @@ pub mod rectangle_h {
                         .i = v4;
                 }
             } else if w == 16i32 {
-                '_c2rust_label: {
-                    if h != 1i32 {
-                    } else {
-                        crate::stdlib::__assert_fail(
-                            b"h != 1\0".as_ptr() as *const ::core::ffi::c_char,
-                            b"common/rectangle.h\0".as_ptr() as *const ::core::ffi::c_char,
-                            82u32,
-                            b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
-                    }
-                };
+                assert!(h != 1);
                 if crate::osdep_h::WORD_SIZE == 8i32 {
                     loop {
                         (*(d.offset((s * 0i32) as isize).offset(0isize)
@@ -334,15 +323,7 @@ pub mod rectangle_h {
                     }
                 }
             } else {
-                '_c2rust_label_0: {
-                    crate::stdlib::__assert_fail(
-                        b"0\0".as_ptr() as *const ::core::ffi::c_char,
-                        b"common/rectangle.h\0".as_ptr() as *const ::core::ffi::c_char,
-                        118u32,
-                        b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
-                };
+                assert!(false);
             };
         }
     }
@@ -5053,19 +5034,7 @@ pub unsafe extern "C" fn x264_8_macroblock_bipred_init(mut h: *mut crate::src::c
                                 (*h).mb.bipred_weight_buf[mbfield as usize][field as usize]
                                     [i_ref0 as usize][i_ref1 as usize] =
                                     (64i32 - dist_scale_factor) as crate::stdlib::int8_t;
-                                '_c2rust_label: {
-                                    if dist_scale_factor >= -(63i32) && dist_scale_factor <= 127i32 {
-                                    } else {
-                                        crate::stdlib::__assert_fail(
-                                            b"dist_scale_factor >= -63 && dist_scale_factor <= 127\0".as_ptr()
-                                                as *const ::core::ffi::c_char,
-                                            b"common/macroblock.c\0".as_ptr() as *const ::core::ffi::c_char,
-                                            1918u32,
-                                            b"void x264_8_macroblock_bipred_init(x264_t *)\0".as_ptr()
-                                                as *const ::core::ffi::c_char,
-                                        );
-                                    }
-                                };
+                                assert!(dist_scale_factor >= -(63i32) && dist_scale_factor <= 127i32);
                             } else {
                                 (*h).mb.bipred_weight_buf[mbfield as usize][field as usize]
                                     [i_ref0 as usize][i_ref1 as usize] = 32i8;

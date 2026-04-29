@@ -2755,7 +2755,7 @@ pub unsafe extern "C" fn slicetype_path(
                     as *mut ::core::ffi::c_char)
                     .offset(len as isize)
                     .offset(path as isize),
-                b"P\0".as_ptr() as *const ::core::ffi::c_char,
+                c"P".as_ptr(),
             );
             while i <= length {
                 let mut i_type = (**frames.offset(i as isize)).i_type;
@@ -3512,17 +3512,7 @@ pub unsafe extern "C" fn x264_8_slicetype_analyse(
             };
         }
         let mut keyframe = (intra_minigop != 0) as ::core::ffi::c_int;
-        '_c2rust_label: {
-            if (*h).frames.have_lowres {
-            } else {
-                crate::stdlib::__assert_fail(
-                    b"h->frames.have_lowres\0".as_ptr() as *const ::core::ffi::c_char,
-                    b"encoder/slicetype.c\0".as_ptr() as *const ::core::ffi::c_char,
-                    1488u32,
-                    b"void x264_8_slicetype_analyse(x264_t *, int)\0".as_ptr() as *const ::core::ffi::c_char,
-                );
-            }
-        };
+        assert!((*h).frames.have_lowres);
         if (*(*h).lookahead).last_nonb.is_null() {
             return;
         }
@@ -3704,7 +3694,7 @@ pub unsafe extern "C" fn x264_8_slicetype_analyse(
                             );
                             crate::stdlib::strcpy(
                                 (&raw mut path as *mut ::core::ffi::c_char).offset(bframes as isize),
-                                b"PP\0".as_ptr() as *const ::core::ffi::c_char,
+                                c"PP".as_ptr(),
                             );
                             let mut cost_p = slicetype_path_cost(
                                 h,
@@ -3716,7 +3706,7 @@ pub unsafe extern "C" fn x264_8_slicetype_analyse(
                             );
                             crate::stdlib::strcpy(
                                 (&raw mut path as *mut ::core::ffi::c_char).offset(bframes as isize),
-                                b"BP\0".as_ptr() as *const ::core::ffi::c_char,
+                                c"BP".as_ptr(),
                             );
                             let mut cost_b = slicetype_path_cost(
                                 h,
@@ -4589,17 +4579,7 @@ pub unsafe extern "C" fn x264_8_rc_analyse_slice(
         }
         let mut frames = (&raw mut (*h).fenc).offset(-(b as isize));
         let mut cost = (**frames.offset(b as isize)).i_cost_est[(b - p0) as usize][(p1 - b) as usize];
-        '_c2rust_label: {
-            if cost >= 0i32 {
-            } else {
-                crate::stdlib::__assert_fail(
-                    b"cost >= 0\0".as_ptr() as *const ::core::ffi::c_char,
-                    b"encoder/slicetype.c\0".as_ptr() as *const ::core::ffi::c_char,
-                    1996u32,
-                    b"int x264_8_rc_analyse_slice(x264_t *)\0".as_ptr() as *const ::core::ffi::c_char,
-                );
-            }
-        };
+        assert!(cost >= 0i32);
         if (*h).param.rc.mb_tree && !(*h).param.rc.stat_read {
             cost = slicetype_frame_cost_recalculate(h, frames, p0, p1, b);
             if b != 0 && (*h).param.rc.i_vbv_buffer_size != 0 {

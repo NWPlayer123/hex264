@@ -1,5 +1,5 @@
 pub mod x264_h {
-    pub const x264_b_pyramid_names: [&'static str; 3] = ["none", "strict", "normal"];
+    pub const x264_b_pyramid_names: [&str; 3] = ["none", "strict", "normal"];
 }
 pub mod bitstream_h {
     pub static mut x264_ue_size_tab: [crate::stdlib::uint8_t; 256] = [
@@ -3380,18 +3380,7 @@ pub mod rectangle_h {
                         .i = v4;
                 }
             } else if w == 16i32 {
-                '_c2rust_label: {
-                    if h != 1i32 {
-                    } else {
-                        crate::stdlib::__assert_fail(
-                            b"h != 1\0".as_ptr() as *const ::core::ffi::c_char,
-                            b"./common/rectangle.h\0".as_ptr() as *const ::core::ffi::c_char,
-                            82u32,
-                            b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
-                    }
-                };
+                assert!(h != 1);
                 if crate::osdep_h::WORD_SIZE == 8i32 {
                     loop {
                         (*(d.offset((s * 0i32) as isize).offset(0isize)
@@ -3426,15 +3415,7 @@ pub mod rectangle_h {
                     }
                 }
             } else {
-                '_c2rust_label_0: {
-                    crate::stdlib::__assert_fail(
-                        b"0\0".as_ptr() as *const ::core::ffi::c_char,
-                        b"./common/rectangle.h\0".as_ptr() as *const ::core::ffi::c_char,
-                        118u32,
-                        b"void x264_macroblock_cache_rect(void *, int, int, int, uint32_t)\0".as_ptr()
-                            as *const ::core::ffi::c_char,
-                    );
-                };
+                assert!(false);
             };
         }
     }
@@ -4433,15 +4414,7 @@ pub mod cabac_c {
                     );
                 }
                 _ => {
-                    '_c2rust_label: {
-                        crate::stdlib::__assert_fail(
-                            b"0\0".as_ptr() as *const ::core::ffi::c_char,
-                            b"encoder/cabac.c\0".as_ptr() as *const ::core::ffi::c_char,
-                            377u32,
-                            b"void cabac_8x8_mvd(x264_t *, x264_cabac_t *, int)\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
-                    };
+                    assert!(false);
                 }
             };
         }
@@ -10768,21 +10741,10 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
             {
                 (*h).mb.ty = MacroblockType::P_SKIP;
                 analyse_update_cache(h, a);
-                '_c2rust_label: {
-                    if (*h).mb.cache.pskip_mv[1usize] as ::core::ffi::c_int <= (*h).mb.mv_max_spel[1usize]
+                assert!(
+                    (*h).mb.cache.pskip_mv[1usize] as ::core::ffi::c_int <= (*h).mb.mv_max_spel[1usize]
                         || (*h).i_thread_frames == 1i32
-                    {
-                    } else {
-                        crate::stdlib::__assert_fail(
-                            b"h->mb.cache.pskip_mv[1] <= h->mb.mv_max_spel[1] || h->i_thread_frames == 1\0"
-                                .as_ptr() as *const ::core::ffi::c_char,
-                            b"encoder/analyse.c\0".as_ptr() as *const ::core::ffi::c_char,
-                            1305u32,
-                            b"void mb_analyse_inter_p16x16(x264_t *, x264_mb_analysis_t *)\0".as_ptr()
-                                as *const ::core::ffi::c_char,
-                        );
-                    }
-                };
+                );
                 return;
             }
             m.cost += m.i_ref_cost;
@@ -10805,21 +10767,8 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
             0i32,
             (*a).l0.me16x16.i_ref as crate::stdlib::int8_t,
         );
-        '_c2rust_label_0: {
-            if (*a).l0.me16x16.mv[1usize] as ::core::ffi::c_int <= (*h).mb.mv_max_spel[1usize]
-                || (*h).i_thread_frames == 1i32
-            {
-            } else {
-                crate::stdlib::__assert_fail(
-                    b"a->l0.me16x16.mv[1] <= h->mb.mv_max_spel[1] || h->i_thread_frames == 1\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                    b"encoder/analyse.c\0".as_ptr() as *const ::core::ffi::c_char,
-                    1317u32,
-                    b"void mb_analyse_inter_p16x16(x264_t *, x264_mb_analysis_t *)\0".as_ptr()
-                        as *const ::core::ffi::c_char,
-                );
-            }
-        };
+        assert!((*a).l0.me16x16.mv[1usize] as ::core::ffi::c_int <= (*h).mb.mv_max_spel[1usize]
+                || (*h).i_thread_frames == 1i32);
         (*h).mb.ty = MacroblockType::P_L0;
         if (*a).i_mbrd != 0 {
             mb_init_fenc_cache(
@@ -17848,23 +17797,9 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                             if skip {
                                 (*h).mb.ty = MacroblockType::P_SKIP;
                                 (*h).mb.i_partition = Partition::D_16x16;
-                                '_c2rust_label: {
-                                    if (*h).mb.cache.pskip_mv[1usize] as ::core::ffi::c_int
+                                assert!((*h).mb.cache.pskip_mv[1usize] as ::core::ffi::c_int
                                         <= (*h).mb.mv_max_spel[1usize]
-                                        || (*h).i_thread_frames == 1i32
-                                    {
-                                    } else {
-                                        crate::stdlib::__assert_fail(
-                                            b"h->mb.cache.pskip_mv[1] <= h->mb.mv_max_spel[1] || h->i_thread_frames == 1\0"
-                                                .as_ptr() as *const ::core::ffi::c_char,
-                                            b"encoder/analyse.c\0".as_ptr()
-                                                as *const ::core::ffi::c_char,
-                                            3023u32,
-                                            b"void x264_8_macroblock_analyse(x264_t *)\0".as_ptr()
-                                                as *const ::core::ffi::c_char,
-                                        );
-                                    }
-                                };
+                                        || (*h).i_thread_frames == 1i32);
                                 c2rust_current_block = 13944309056571861783;
                             } else {
                                 let flags = (*h).param.analyse.inter;

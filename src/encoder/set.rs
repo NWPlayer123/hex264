@@ -1070,9 +1070,9 @@ pub unsafe extern "C" fn x264_8_sei_version_write(
                 crate::x264_h::X264_BUILD,
                 crate::x264_config_h::X264_VERSION.as_ptr(),
                 if crate::config_h::HAVE_GPL != 0 {
-                    b"left\0".as_ptr() as *const ::core::ffi::c_char
+                    c"left".as_ptr()
                 } else {
-                    b"right\0".as_ptr() as *const ::core::ffi::c_char
+                    c"right".as_ptr()
                 },
                 opts,
             );
@@ -1384,7 +1384,7 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_umid_write(
     unsafe {
         let mut data = [0; 512];
         let len = 497i32;
-        let mut msg = b"UMID\0".as_ptr() as *const ::core::ffi::c_char;
+        let mut msg = c"UMID".as_ptr();
         crate::stdlib::memset(
             &raw mut data as *mut ::core::ffi::c_void,
             0xFFi32,
@@ -1438,7 +1438,7 @@ pub unsafe extern "C" fn x264_8_sei_avcintra_vanc_write(
 ) -> ::core::ffi::c_int {
     unsafe {
         let mut data = [0; 6000];
-        let mut msg = b"VANC\0".as_ptr() as *const ::core::ffi::c_char;
+        let mut msg = c"VANC".as_ptr();
         if len < 0i32
             || len as ::core::ffi::c_uint as usize > ::core::mem::size_of::<[crate::stdlib::uint8_t; 6000]>()
         {
