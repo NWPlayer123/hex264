@@ -132,11 +132,7 @@ pub unsafe extern "C" fn x264_encoder_open_165<'a>(
             (*api).x264 =
                 crate::src::encoder::encoder::x264_8_encoder_open(param, api as *mut ::core::ffi::c_void);
         } else {
-            crate::src::common::base::x264_log_internal(
-                crate::x264_h::X264_LOG_ERROR_1,
-                c"not compiled with %d bit depth support\n".as_ptr(),
-                (*param).i_bitdepth,
-            );
+            log::error!("not compiled with {} bit depth support", (*param).i_bitdepth);
         }
         if (*api).x264.is_null() {
             crate::stdlib::free(api as *mut ::core::ffi::c_void);

@@ -8,7 +8,7 @@
 #![feature(c_variadic)]
 #![feature(extern_types)]
 #![feature(register_tool)]
-#![feature(integer_extend_truncate)]
+#![feature(integer_widen_truncate)]
 #![register_tool(c2rust)]
 #![allow(clippy::erasing_op)]
 #![allow(clippy::eq_op)]
@@ -88,6 +88,8 @@ pub mod limits_h {
     pub const INT_MAX: ::core::ffi::c_int = crate::internal::__INT_MAX__;
 }
 pub mod x264_h {
+    use std::str::FromStr;
+
     pub const X264_BUILD: ::core::ffi::c_int = 165i32;
     pub type nal_unit_type_e = ::core::ffi::c_uint;
     pub const NAL_UNKNOWN: crate::x264_h::nal_unit_type_e = 0;
@@ -174,9 +176,13 @@ pub mod x264_h {
     pub const X264_AQ_VARIANCE: ::core::ffi::c_int = 1i32;
     pub const X264_AQ_AUTOVARIANCE: ::core::ffi::c_int = 2i32;
     pub const X264_AQ_AUTOVARIANCE_BIASED: ::core::ffi::c_int = 3i32;
+
     pub const X264_B_ADAPT_NONE: ::core::ffi::c_int = 0i32;
     pub const X264_B_ADAPT_FAST: ::core::ffi::c_int = 1i32;
     pub const X264_B_ADAPT_TRELLIS: ::core::ffi::c_int = 2i32;
+
+    pub const X264_B_ADAPT_DEFAULT: ::core::ffi::c_int = X264_B_ADAPT_FAST;
+
     pub const X264_WEIGHTP_NONE: ::core::ffi::c_int = 0i32;
     pub const X264_WEIGHTP_SIMPLE: ::core::ffi::c_int = 1i32;
     pub const X264_WEIGHTP_SMART: ::core::ffi::c_int = 2i32;
@@ -237,7 +243,7 @@ pub mod x264_h {
         pub f_bitrate_factor: ::core::ffi::c_float,
         pub param: *mut crate::x264_h::x264_param_t,
     }
-    #[derive(Copy, Clone)]
+    #[derive(Clone)]
     #[repr(C)]
     pub struct x264_param_t {
         pub cpu: crate::stdlib::uint32_t,
@@ -294,7 +300,7 @@ pub mod x264_h {
         pub rc: crate::x264_h::C2Rust_Unnamed_2,
         pub crop_rect: crate::x264_h::C2Rust_Unnamed_3,
         pub i_frame_packing: ::core::ffi::c_int,
-        pub mastering_display: crate::x264_h::C2Rust_Unnamed_4,
+        pub mastering_display: Option<MasteringDisplay>,
         pub content_light_level: crate::x264_h::C2Rust_Unnamed_5,
         pub i_alternative_transfer: ::core::ffi::c_int,
         pub aud: bool,
@@ -330,6 +336,7 @@ pub mod x264_h {
         >,
         pub opaque: *mut ::core::ffi::c_void,
     }
+    pub const X264_SCENECUT_THRESHOLD_DEFAULT: ::core::ffi::c_int = 40;
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct C2Rust_Unnamed_0 {
@@ -416,8 +423,7 @@ pub mod x264_h {
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
-    pub struct C2Rust_Unnamed_4 {
-        pub mastering_display: bool,
+    pub struct MasteringDisplay {
         pub i_green_x: u16,
         pub i_green_y: u16,
         pub i_blue_x: u16,
@@ -426,8 +432,44 @@ pub mod x264_h {
         pub i_red_y: u16,
         pub i_white_x: u16,
         pub i_white_y: u16,
-        pub i_display_max: u32,
-        pub i_display_min: u32,
+        pub max_luminance: u32,
+        pub min_luminance: u32,
+    }
+
+    impl MasteringDisplay {
+        fn take_pair<'a, T: FromStr>(s: &'a str, prefix: &str) -> Result<(T, T, &'a str), i32> {
+            let rest = s.strip_prefix(prefix).ok_or(X264_PARAM_BAD_VALUE)?;
+            let (pair, rest) = rest.split_once(')').ok_or(X264_PARAM_BAD_VALUE)?;
+            let (a, b) = pair.split_once(',').ok_or(X264_PARAM_BAD_VALUE)?;
+            let a = a.parse().map_err(|_| X264_PARAM_BAD_VALUE)?;
+            let b = b.parse().map_err(|_| X264_PARAM_BAD_VALUE)?;
+            Ok((a, b, rest))
+        }
+
+        pub fn parse(s: &str) -> Result<Self, i32> {
+            let (i_green_x, i_green_y, s) = Self::take_pair(s, "G(")?;
+            let (i_blue_x, i_blue_y, s) = Self::take_pair(s, "B(")?;
+            let (i_red_x, i_red_y, s) = Self::take_pair(s, "R(")?;
+            let (i_white_x, i_white_y, s) = Self::take_pair(s, "WP(")?;
+            let (max_luminance, min_luminance, s) = Self::take_pair(s, "L(")?;
+            match s.is_empty() {
+                true => {
+                    Ok(Self {
+                        i_green_x,
+                        i_green_y,
+                        i_blue_x,
+                        i_blue_y,
+                        i_red_x,
+                        i_red_y,
+                        i_white_x,
+                        i_white_y,
+                        max_luminance,
+                        min_luminance,
+                    })
+                }
+                false => Err(X264_PARAM_BAD_VALUE),
+            }
+        }
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -540,7 +582,6 @@ pub mod internal {
 }
 pub mod stdlib {
     unsafe extern "C" {
-        pub fn __assert_single_arg(_: bool) -> bool;
         pub fn __sched_cpucount(
             __setsize: crate::__stddef_size_t_h::size_t,
             __setp: *const crate::stdlib::cpu_set_t,

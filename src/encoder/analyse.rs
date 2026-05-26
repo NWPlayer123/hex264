@@ -10767,8 +10767,10 @@ unsafe extern "C" fn mb_analyse_inter_p16x16(
             0i32,
             (*a).l0.me16x16.i_ref as crate::stdlib::int8_t,
         );
-        assert!((*a).l0.me16x16.mv[1usize] as ::core::ffi::c_int <= (*h).mb.mv_max_spel[1usize]
-                || (*h).i_thread_frames == 1i32);
+        assert!(
+            (*a).l0.me16x16.mv[1usize] as ::core::ffi::c_int <= (*h).mb.mv_max_spel[1usize]
+                || (*h).i_thread_frames == 1i32
+        );
         (*h).mb.ty = MacroblockType::P_L0;
         if (*a).i_mbrd != 0 {
             mb_init_fenc_cache(
@@ -17797,9 +17799,11 @@ pub unsafe extern "C" fn x264_8_macroblock_analyse(mut h: *mut crate::src::commo
                             if skip {
                                 (*h).mb.ty = MacroblockType::P_SKIP;
                                 (*h).mb.i_partition = Partition::D_16x16;
-                                assert!((*h).mb.cache.pskip_mv[1usize] as ::core::ffi::c_int
+                                assert!(
+                                    (*h).mb.cache.pskip_mv[1usize] as ::core::ffi::c_int
                                         <= (*h).mb.mv_max_spel[1usize]
-                                        || (*h).i_thread_frames == 1i32);
+                                        || (*h).i_thread_frames == 1i32
+                                );
                                 c2rust_current_block = 13944309056571861783;
                             } else {
                                 let flags = (*h).param.analyse.inter;

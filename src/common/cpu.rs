@@ -5,18 +5,18 @@ use crate::x264_h::{
     X264_CPU_SSE2, X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW, X264_CPU_SSE3, X264_CPU_SSE4,
     X264_CPU_SSE42, X264_CPU_SSSE3, X264_CPU_STACK_MOD4, X264_CPU_XOP,
 };
-pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
-    (c"MMX2", X264_CPU_MMX | X264_CPU_MMX2),
-    (c"MMXEXT", X264_CPU_MMX | X264_CPU_MMX2),
-    (c"SSE", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE),
-    (c"SSE2Slow", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE2_IS_SLOW),
-    (c"SSE2", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2),
-    (c"SSE2Fast", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE2_IS_FAST),
-    (c"LZCNT", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_LZCNT),
-    (c"SSE3", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE3),
-    (c"SSSE3", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE3 | X264_CPU_SSSE3),
+pub const X264_CPU_NAMES: &[(&str, u32)] = &[
+    ("MMX2", X264_CPU_MMX | X264_CPU_MMX2),
+    ("MMXEXT", X264_CPU_MMX | X264_CPU_MMX2),
+    ("SSE", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE),
+    ("SSE2Slow", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE2_IS_SLOW),
+    ("SSE2", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2),
+    ("SSE2Fast", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE2_IS_FAST),
+    ("LZCNT", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_LZCNT),
+    ("SSE3", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE3),
+    ("SSSE3", X264_CPU_MMX | X264_CPU_MMX2 | X264_CPU_SSE | X264_CPU_SSE2 | X264_CPU_SSE3 | X264_CPU_SSSE3),
     (
-        c"SSE4.1",
+        "SSE4.1",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -26,7 +26,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_SSE4,
     ),
     (
-        c"SSE4",
+        "SSE4",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -36,7 +36,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_SSE4,
     ),
     (
-        c"SSE4.2",
+        "SSE4.2",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -47,7 +47,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_SSE42,
     ),
     (
-        c"AVX",
+        "AVX",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -59,7 +59,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_AVX,
     ),
     (
-        c"XOP",
+        "XOP",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -72,7 +72,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_XOP,
     ),
     (
-        c"FMA4",
+        "FMA4",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -85,7 +85,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_FMA4,
     ),
     (
-        c"FMA3",
+        "FMA3",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -98,7 +98,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_FMA3,
     ),
     (
-        c"BMI1",
+        "BMI1",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -112,7 +112,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_BMI1,
     ),
     (
-        c"BMI2",
+        "BMI2",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -127,7 +127,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_BMI2,
     ),
     (
-        c"AVX2",
+        "AVX2",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -144,7 +144,7 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_AVX2,
     ),
     (
-        c"AVX512",
+        "AVX512",
         X264_CPU_MMX
             | X264_CPU_MMX2
             | X264_CPU_SSE
@@ -161,15 +161,15 @@ pub const X264_CPU_NAMES: &[(&core::ffi::CStr, u32)] = &[
             | X264_CPU_AVX2
             | X264_CPU_AVX512,
     ),
-    (c"Cache32", X264_CPU_CACHELINE_32),
-    (c"Cache64", X264_CPU_CACHELINE_64),
-    (c"SlowAtom", X264_CPU_SLOW_ATOM),
-    (c"SlowPshufb", X264_CPU_SLOW_PSHUFB),
-    (c"SlowPalignr", X264_CPU_SLOW_PALIGNR),
-    (c"SlowShuffle", X264_CPU_SLOW_SHUFFLE),
-    (c"UnalignedStack", X264_CPU_STACK_MOD4),
+    ("Cache32", X264_CPU_CACHELINE_32),
+    ("Cache64", X264_CPU_CACHELINE_64),
+    ("SlowAtom", X264_CPU_SLOW_ATOM),
+    ("SlowPshufb", X264_CPU_SLOW_PSHUFB),
+    ("SlowPalignr", X264_CPU_SLOW_PALIGNR),
+    ("SlowShuffle", X264_CPU_SLOW_SHUFFLE),
+    ("UnalignedStack", X264_CPU_STACK_MOD4),
 ];
-pub extern "C" fn x264_cpu_detect() -> crate::stdlib::uint32_t {
+pub fn x264_cpu_detect() -> u32 {
     0u32
 }
 pub unsafe extern "C" fn x264_cpu_num_processors() -> ::core::ffi::c_int {

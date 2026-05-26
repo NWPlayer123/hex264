@@ -1229,9 +1229,9 @@ unsafe extern "C" fn validate_parameters(
             );
             return -(1i32);
         }
-        if (*h).param.mastering_display.mastering_display
-            && (*h).param.mastering_display.i_display_min == 50000
-            && (*h).param.mastering_display.i_display_max == 50000
+        if let Some(display) = (*h).param.mastering_display
+            && display.min_luminance == 50000
+            && display.max_luminance == 50000
         {
             log::error!("mastering display min and max brightness cannot both be 50000");
             return -(1i32);

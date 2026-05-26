@@ -911,8 +911,7 @@ pub unsafe extern "C" fn x264_8_cqm_parse_file(
             crate::stdlib::memset(
                 p as *mut ::core::ffi::c_void,
                 ' ' as i32,
-                crate::stdlib::strcspn(p, c"\n".as_ptr())
-                    as crate::__stddef_size_t_h::size_t,
+                crate::stdlib::strcspn(p, c"\n".as_ptr()) as crate::__stddef_size_t_h::size_t,
             );
         }
         b_error |= cqm_parse_jmlist(
