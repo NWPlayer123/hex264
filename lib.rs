@@ -16,6 +16,7 @@
 #![allow(clippy::overly_complex_bool_expr)]
 #![allow(clippy::ifs_same_cond)]
 #![allow(clippy::missing_safety_doc)]
+
 pub mod __stdarg___gnuc_va_list_h {
     pub type __gnuc_va_list = crate::internal::__builtin_va_list;
 }
@@ -80,6 +81,8 @@ pub mod osdep_h {
     pub const WORD_SIZE: ::core::ffi::c_int = 8i32;
 }
 pub mod x264_config_h {
+    // TODO: default is I420, but we transpiled using I444, figure out a less dumb way to represent config
+    // here
     pub const X264_CHROMA_FORMAT: ::core::ffi::c_int = crate::x264_h::X264_CSP_I444;
     pub const X264_VERSION: [::core::ffi::c_char; 16] =
         unsafe { ::core::mem::transmute::<[u8; 16], [::core::ffi::c_char; 16]>(*b" r3223M 0480cb0\0") };
@@ -89,6 +92,8 @@ pub mod limits_h {
 }
 pub mod x264_h {
     use std::str::FromStr;
+
+    use crate::src::common::cpu::x264_cpu_detect;
 
     pub const X264_BUILD: ::core::ffi::c_int = 165i32;
     pub type nal_unit_type_e = ::core::ffi::c_uint;
@@ -337,6 +342,333 @@ pub mod x264_h {
         pub opaque: *mut ::core::ffi::c_void,
     }
     pub const X264_SCENECUT_THRESHOLD_DEFAULT: ::core::ffi::c_int = 40;
+    pub const X264_PRESET_NAMES: [&str; 10] = [
+        "ultrafast",
+        "superfast",
+        "veryfast",
+        "faster",
+        "fast",
+        "medium",
+        "slow",
+        "slower",
+        "veryslow",
+        "placebo",
+    ];
+    const PSY_TUNINGS: [&str; 7] = ["film", "animation", "grain", "stillimage", "psnr", "ssim", "touhou"];
+
+    // TODO: migrate x264_param_parse in this, and probably migrate this whole thing to a param.rs file since
+    // it's getting large
+    impl x264_param_t {
+        pub fn default_preset(preset: &str, tune: &str) -> Result<Self, i32> {
+            let mut param = Self::default();
+            if !preset.is_empty() {
+                param.apply_preset(preset)?;
+            }
+            if !tune.is_empty() {
+                param.apply_tune(tune)?;
+            }
+            Ok(param)
+        }
+
+        fn apply_preset(&mut self, preset: &str) -> Result<(), i32> {
+            let preset = preset
+                .parse::<usize>()
+                .ok()
+                .and_then(|n| X264_PRESET_NAMES.get(n).copied())
+                .unwrap_or(preset);
+
+            match preset {
+                "ultrafast" => {
+                    self.i_frame_reference = 1;
+                    self.i_scenecut_threshold = 0;
+                    self.deblocking_filter = false;
+                    self.cabac = false;
+                    self.i_bframe = 0;
+                    self.analyse.intra = 0;
+                    self.analyse.inter = 0;
+                    self.analyse.transform_8x8 = false;
+                    self.analyse.i_me_method = X264_ME_DIA;
+                    self.analyse.i_subpel_refine = 0;
+                    self.rc.i_aq_mode = 0;
+                    self.analyse.mixed_references = false;
+                    self.analyse.i_trellis = 0;
+                    self.i_bframe_adaptive = X264_B_ADAPT_NONE;
+                    self.rc.mb_tree = false;
+                    self.analyse.i_weighted_pred = X264_WEIGHTP_NONE;
+                    self.analyse.weighted_bipred = false;
+                    self.rc.i_lookahead = 0;
+                }
+                "superfast" => {
+                    self.analyse.inter = X264_ANALYSE_I8x8 | X264_ANALYSE_I4x4;
+                    self.analyse.i_me_method = X264_ME_DIA;
+                    self.analyse.i_subpel_refine = 1;
+                    self.i_frame_reference = 1;
+                    self.analyse.mixed_references = false;
+                    self.analyse.i_trellis = 0;
+                    self.rc.mb_tree = false;
+                    self.analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+                    self.rc.i_lookahead = 0;
+                }
+                "veryfast" => {
+                    self.analyse.i_subpel_refine = 2;
+                    self.i_frame_reference = 1;
+                    self.analyse.mixed_references = false;
+                    self.analyse.i_trellis = 0;
+                    self.analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+                    self.rc.i_lookahead = 10;
+                }
+                "faster" => {
+                    self.analyse.mixed_references = false;
+                    self.i_frame_reference = 2;
+                    self.analyse.i_subpel_refine = 4;
+                    self.analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+                    self.rc.i_lookahead = 20;
+                }
+                "fast" => {
+                    self.i_frame_reference = 2;
+                    self.analyse.i_subpel_refine = 6;
+                    self.analyse.i_weighted_pred = X264_WEIGHTP_SIMPLE;
+                    self.rc.i_lookahead = 30;
+                }
+                "medium" => {}
+                "slow" => {
+                    self.analyse.i_subpel_refine = 8;
+                    self.i_frame_reference = 5;
+                    self.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+                    self.analyse.i_trellis = 2;
+                    self.rc.i_lookahead = 50;
+                }
+                "slower" => {
+                    self.analyse.i_me_method = X264_ME_UMH;
+                    self.analyse.i_subpel_refine = 9;
+                    self.i_frame_reference = 8;
+                    self.i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+                    self.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+                    self.analyse.inter |= X264_ANALYSE_PSUB8x8;
+                    self.analyse.i_trellis = 2;
+                    self.rc.i_lookahead = 60;
+                }
+                "veryslow" => {
+                    self.analyse.i_me_method = X264_ME_UMH;
+                    self.analyse.i_subpel_refine = 10;
+                    self.analyse.i_me_range = 24;
+                    self.i_frame_reference = 16;
+                    self.i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+                    self.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+                    self.analyse.inter |= X264_ANALYSE_PSUB8x8;
+                    self.analyse.i_trellis = 2;
+                    self.i_bframe = 8;
+                    self.rc.i_lookahead = 60;
+                }
+                "placebo" => {
+                    self.analyse.i_me_method = X264_ME_TESA;
+                    self.analyse.i_subpel_refine = 11;
+                    self.analyse.i_me_range = 24;
+                    self.i_frame_reference = 16;
+                    self.i_bframe_adaptive = X264_B_ADAPT_TRELLIS;
+                    self.analyse.i_direct_mv_pred = X264_DIRECT_PRED_AUTO;
+                    self.analyse.inter |= X264_ANALYSE_PSUB8x8;
+                    self.analyse.fast_pskip = false;
+                    self.analyse.i_trellis = 2;
+                    self.i_bframe = 16;
+                    self.rc.i_lookahead = 60;
+                }
+                _ => {
+                    log::error!("invalid preset {preset:?}");
+                    return Err(-1);
+                }
+            }
+
+            Ok(())
+        }
+
+        fn apply_tune(&mut self, tune: &str) -> Result<(), i32> {
+            let mut psy_tuning_used = false;
+            let tune_lower = tune.to_ascii_lowercase();
+
+            for token in tune_lower.split([',', '.', '/', '-', '+']).filter(|s| !s.is_empty()) {
+                if PSY_TUNINGS.contains(&token) {
+                    if psy_tuning_used {
+                        log::warn!("only 1 psy tuning can be used: ignoring tune {tune}");
+                        continue;
+                    }
+                    psy_tuning_used = true;
+                }
+
+                match token {
+                    "film" => {
+                        self.i_deblocking_filter_alphac0 = -1;
+                        self.i_deblocking_filter_beta = -1;
+                        self.analyse.f_psy_trellis = 0.15;
+                    }
+                    "animation" => {
+                        // TODO: figure out if this is 0/1 or just 1 and invert
+                        self.i_frame_reference = match self.i_frame_reference {
+                            i if i > 1 => self.i_frame_reference * 2,
+                            _ => 1,
+                        };
+                        self.i_deblocking_filter_alphac0 = 1;
+                        self.i_deblocking_filter_beta = 1;
+                        self.analyse.f_psy_rd = 0.4;
+                        self.rc.f_aq_strength = 0.6;
+                        self.i_bframe += 2;
+                    }
+                    "grain" => {
+                        self.i_deblocking_filter_alphac0 = -2;
+                        self.i_deblocking_filter_beta = -2;
+                        self.analyse.f_psy_trellis = 0.25;
+                        self.analyse.dct_decimate = false;
+                        self.rc.f_pb_factor = 1.1;
+                        self.rc.f_ip_factor = 1.1;
+                        self.rc.f_aq_strength = 0.5;
+                        self.analyse.i_luma_deadzone = [6, 6];
+                        self.rc.f_qcompress = 0.8;
+                    }
+                    "stillimage" => {
+                        self.i_deblocking_filter_alphac0 = -3;
+                        self.i_deblocking_filter_beta = -3;
+                        self.analyse.f_psy_rd = 2.0;
+                        self.analyse.f_psy_trellis = 0.7;
+                        self.rc.f_aq_strength = 1.2;
+                    }
+                    "psnr" => {
+                        self.rc.i_aq_mode = X264_AQ_NONE;
+                        self.analyse.psy = false;
+                    }
+                    "ssim" => {
+                        self.rc.i_aq_mode = X264_AQ_AUTOVARIANCE;
+                        self.analyse.psy = false;
+                    }
+                    "fastdecode" => {
+                        self.deblocking_filter = false;
+                        self.cabac = false;
+                        self.analyse.weighted_bipred = false;
+                        self.analyse.i_weighted_pred = X264_WEIGHTP_NONE;
+                    }
+                    "zerolatency" => {
+                        self.rc.i_lookahead = 0;
+                        self.i_sync_lookahead = 0;
+                        self.i_bframe = 0;
+                        self.sliced_threads = true;
+                        self.vfr_input = false;
+                        self.rc.mb_tree = false;
+                    }
+                    "touhou" => {
+                        // TODO: figure out if this is 0/1 or just 1 and invert
+                        self.i_frame_reference = match self.i_frame_reference {
+                            i if i > 1 => self.i_frame_reference * 2,
+                            _ => 1,
+                        };
+                        self.i_deblocking_filter_alphac0 = -1;
+                        self.i_deblocking_filter_beta = -1;
+                        self.analyse.f_psy_trellis = 0.2;
+                        self.rc.f_aq_strength = 1.3;
+                        if self.analyse.inter & X264_ANALYSE_PSUB16x16 != 0 {
+                            self.analyse.inter |= X264_ANALYSE_PSUB8x8;
+                        }
+                    }
+                    _ => {
+                        log::error!("invalid tune {tune:?}");
+                        return Err(-1);
+                    }
+                }
+            }
+
+            Ok(())
+        }
+    }
+
+    impl Default for x264_param_t {
+        fn default() -> Self {
+            Self {
+                cpu: x264_cpu_detect(),
+                i_threads: X264_THREADS_AUTO,
+                i_lookahead_threads: X264_THREADS_AUTO,
+                sliced_threads: false,
+                deterministic: true,
+                cpu_independent: false,
+                i_sync_lookahead: X264_SYNC_LOOKAHEAD_AUTO,
+                i_width: 0,
+                i_height: 0,
+                i_csp: crate::x264_config_h::X264_CHROMA_FORMAT,
+                i_bitdepth: 8,
+                i_level_idc: -1,
+                i_frame_total: 0,
+                i_nal_hrd: X264_NAL_HRD_NONE,
+                vui: C2Rust_Unnamed_0::default(),
+                i_frame_reference: 3,
+                i_dpb_size: 0,
+                i_keyint_max: 250,
+                i_keyint_min: X264_KEYINT_MIN_AUTO,
+                i_scenecut_threshold: X264_SCENECUT_THRESHOLD_DEFAULT,
+                intra_refresh: false,
+                i_bframe: 3,
+                i_bframe_adaptive: X264_B_ADAPT_DEFAULT,
+                i_bframe_bias: 0,
+                i_bframe_pyramid: X264_B_PYRAMID_NORMAL,
+                open_gop: false,
+                bluray_compat: false,
+                i_avcintra_class: 0,
+                i_avcintra_flavor: X264_AVCINTRA_FLAVOR_PANASONIC,
+                deblocking_filter: true,
+                i_deblocking_filter_alphac0: 0,
+                i_deblocking_filter_beta: 0,
+                cabac: true,
+                i_cabac_init_idc: 0,
+                interlaced: false,
+                constrained_intra: false,
+                i_cqm_preset: X264_CQM_FLAT,
+                psz_cqm_file: core::ptr::null_mut(),
+                cqm_4iy: [16; 16],
+                cqm_4py: [16; 16],
+                cqm_4ic: [16; 16],
+                cqm_4pc: [16; 16],
+                cqm_8iy: [16; 64],
+                cqm_8py: [16; 64],
+                cqm_8ic: [16; 64],
+                cqm_8pc: [16; 64],
+                p_log_private: core::ptr::null_mut(),
+                // TODO: should probably get this hooked up to log
+                i_log_level: X264_LOG_INFO,
+                full_recon: false,
+                psz_dump_yuv: core::ptr::null_mut(),
+                analyse: C2Rust_Unnamed_1::default(),
+                rc: C2Rust_Unnamed_2::default(),
+                crop_rect: C2Rust_Unnamed_3::default(),
+                i_frame_packing: -1,
+                mastering_display: None,
+                content_light_level: C2Rust_Unnamed_5::default(),
+                i_alternative_transfer: 2,
+                aud: false,
+                repeat_headers: true,
+                annexb: true,
+                i_sps_id: 0,
+                vfr_input: true,
+                pulldown: false,
+                i_fps_num: 25,
+                i_fps_den: 1,
+                i_timebase_num: 0,
+                i_timebase_den: 0,
+                tff: true,
+                pic_struct: false,
+                fake_interlaced: false,
+                stitchable: false,
+                opencl: false,
+                i_opencl_device: 0,
+                opencl_device_id: core::ptr::null_mut(),
+                psz_clbin_file: core::ptr::null_mut(),
+                i_slice_max_size: 0,
+                i_slice_max_mbs: 0,
+                i_slice_min_mbs: 0,
+                i_slice_count: 0,
+                i_slice_count_max: 0,
+                param_free: None,
+                nalu_process: None,
+                opaque: core::ptr::null_mut(),
+            }
+        }
+    }
+
     #[derive(Copy, Clone)]
     #[repr(C)]
     pub struct C2Rust_Unnamed_0 {
@@ -349,6 +681,21 @@ pub mod x264_h {
         pub i_transfer: ::core::ffi::c_int,
         pub i_colmatrix: ::core::ffi::c_int,
         pub i_chroma_loc: ::core::ffi::c_int,
+    }
+    impl Default for C2Rust_Unnamed_0 {
+        fn default() -> Self {
+            Self {
+                i_sar_height: 0,
+                i_sar_width: 0,
+                i_overscan: 0,
+                i_vidformat: 5,
+                fullrange: None,
+                i_colorprim: 2,
+                i_transfer: 2,
+                i_colmatrix: -1,
+                i_chroma_loc: 0,
+            }
+        }
     }
     #[derive(Copy, Clone)]
     #[repr(C)]
@@ -380,6 +727,43 @@ pub mod x264_h {
         pub psnr: bool,
         pub ssim: bool,
     }
+
+    impl Default for C2Rust_Unnamed_1 {
+        fn default() -> Self {
+            Self {
+                intra: X264_ANALYSE_I4x4 | X264_ANALYSE_I8x8,
+                inter: X264_ANALYSE_I4x4
+                    | X264_ANALYSE_I8x8
+                    | X264_ANALYSE_PSUB16x16
+                    | X264_ANALYSE_BSUB16x16,
+                transform_8x8: true,
+                i_weighted_pred: X264_WEIGHTP_SMART,
+                weighted_bipred: true,
+                i_direct_mv_pred: X264_DIRECT_PRED_SPATIAL,
+                i_chroma_qp_offset: 0,
+                i_me_method: X264_ME_HEX,
+                i_me_range: 16,
+                i_mv_range: -1,
+                i_mv_range_thread: -1,
+                i_subpel_refine: 7,
+                chroma_me: true,
+                mixed_references: true,
+                i_trellis: 1,
+                fast_pskip: true,
+                dct_decimate: true,
+                i_noise_reduction: 0,
+                f_psy_rd: 1.0,
+                f_psy_trellis: 0.0,
+                psy: true,
+                mb_info: false,
+                mb_info_update: false,
+                i_luma_deadzone: [21, 11],
+                psnr: false,
+                ssim: false,
+            }
+        }
+    }
+
     #[derive(Clone)]
     #[repr(C)]
     pub struct C2Rust_Unnamed_2 {
@@ -413,7 +797,44 @@ pub mod x264_h {
         pub i_zones: ::core::ffi::c_int,
         pub psz_zones: *mut ::core::ffi::c_char,
     }
-    #[derive(Copy, Clone)]
+
+    impl Default for C2Rust_Unnamed_2 {
+        fn default() -> Self {
+            Self {
+                i_rc_method: X264_RC_CRF,
+                i_qp_constant: -1,
+                i_qp_min: 0,
+                i_qp_max: i32::MAX,
+                i_qp_step: 4,
+                i_bitrate: 0,
+                f_rf_constant: 23.0,
+                f_rf_constant_max: 0.0,
+                f_rate_tolerance: 1.0,
+                i_vbv_max_bitrate: 0,
+                i_vbv_buffer_size: 0,
+                f_vbv_buffer_init: 0.9,
+                f_ip_factor: 1.4,
+                f_pb_factor: 1.3,
+                filler: false,
+                i_aq_mode: X264_AQ_VARIANCE,
+                f_aq_strength: 1.0,
+                mb_tree: true,
+                i_lookahead: 40,
+                stat_write: false,
+                psz_stat_out: "x264_2pass.log".to_string(),
+                stat_read: false,
+                psz_stat_in: "x264_2pass.log".to_string(),
+                f_qcompress: 0.6,
+                f_qblur: 0.5,
+                f_complexity_blur: 20.0,
+                zones: core::ptr::null_mut(),
+                i_zones: 0,
+                psz_zones: core::ptr::null_mut(),
+            }
+        }
+    }
+
+    #[derive(Copy, Clone, Default)]
     #[repr(C)]
     pub struct C2Rust_Unnamed_3 {
         pub i_left: ::core::ffi::c_int,
@@ -471,7 +892,7 @@ pub mod x264_h {
             }
         }
     }
-    #[derive(Copy, Clone)]
+    #[derive(Copy, Clone, Default)]
     #[repr(C)]
     pub struct C2Rust_Unnamed_5 {
         pub cll: bool,

@@ -92,13 +92,13 @@ pub const X264_SCAN8_0: ::core::ffi::c_int = 4i32 + 1i32 * 8i32;
 pub const LUMA_DC: ::core::ffi::c_int = 48i32;
 pub const CHROMA_DC: ::core::ffi::c_int = 49i32;
 pub mod x264_h {
-    pub const X264_DIRECT_PRED_NAMES: &[&str; 4] = &["none", "spatial", "temporal", "auto"];
-    pub const X264_MOTION_EST_NAMES: &[&str; 5] = &["dia", "hex", "umh", "esa", "tesa"];
-    pub const X264_B_PYRAMID_NAMES: &[&str; 3] = &["none", "strict", "normal"];
-    pub const X264_OVERSCAN_NAMES: &[&str; 3] = &["undef", "show", "crop"];
-    pub const X264_VIDFORMAT_NAMES: &[&str; 6] = &["component", "pal", "ntsc", "secam", "mac", "undef"];
-    pub const X264_FULLRANGE_NAMES: &[&str; 2] = &["off", "on"];
-    pub const X264_COLORPRIM_NAMES: &[&str; 13] = &[
+    pub const X264_DIRECT_PRED_NAMES: [&str; 4] = ["none", "spatial", "temporal", "auto"];
+    pub const X264_MOTION_EST_NAMES: [&str; 5] = ["dia", "hex", "umh", "esa", "tesa"];
+    pub const X264_B_PYRAMID_NAMES: [&str; 3] = ["none", "strict", "normal"];
+    pub const X264_OVERSCAN_NAMES: [&str; 3] = ["undef", "show", "crop"];
+    pub const X264_VIDFORMAT_NAMES: [&str; 6] = ["component", "pal", "ntsc", "secam", "mac", "undef"];
+    pub const X264_FULLRANGE_NAMES: [&str; 2] = ["off", "on"];
+    pub const X264_COLORPRIM_NAMES: [&str; 13] = [
         "",
         "bt709",
         "undef",
@@ -113,7 +113,7 @@ pub mod x264_h {
         "smpte431",
         "smpte432",
     ];
-    pub const X264_TRANSFER_NAMES: &[&str; 19] = &[
+    pub const X264_TRANSFER_NAMES: [&str; 19] = [
         "",
         "bt709",
         "undef",
@@ -134,7 +134,7 @@ pub mod x264_h {
         "smpte428",
         "arib-std-b67",
     ];
-    pub const X264_COLMATRIX_NAMES: &[&str; 15] = &[
+    pub const X264_COLMATRIX_NAMES: [&str; 15] = [
         "GBR",
         "bt709",
         "undef",
@@ -151,20 +151,8 @@ pub mod x264_h {
         "chroma-derived-c",
         "ICtCp",
     ];
-    pub const X264_NAL_HRD_NAMES: &[&str; 3] = &["none", "vbr", "cbr"];
-    pub const X264_AVCINTRA_FLAVOR_NAMES: &[&str; 2] = &["panasonic", "sony"];
-    pub const X264_PRESET_NAMES: &[&str; 10] = &[
-        "ultrafast",
-        "superfast",
-        "veryfast",
-        "faster",
-        "fast",
-        "medium",
-        "slow",
-        "slower",
-        "veryslow",
-        "placebo",
-    ];
+    pub const X264_NAL_HRD_NAMES: [&str; 3] = ["none", "vbr", "cbr"];
+    pub const X264_AVCINTRA_FLAVOR_NAMES: [&str; 2] = ["panasonic", "sony"];
 }
 pub mod base_h {
     #[inline(always)]
@@ -189,17 +177,17 @@ use crate::{
         base::x264_h::{
             X264_AVCINTRA_FLAVOR_NAMES, X264_B_PYRAMID_NAMES, X264_COLMATRIX_NAMES, X264_COLORPRIM_NAMES,
             X264_DIRECT_PRED_NAMES, X264_FULLRANGE_NAMES, X264_MOTION_EST_NAMES, X264_NAL_HRD_NAMES,
-            X264_OVERSCAN_NAMES, X264_PRESET_NAMES, X264_TRANSFER_NAMES, X264_VIDFORMAT_NAMES,
+            X264_OVERSCAN_NAMES, X264_TRANSFER_NAMES, X264_VIDFORMAT_NAMES,
         },
         cpu::{X264_CPU_NAMES, x264_cpu_detect},
     },
     x264_h::{
         MasteringDisplay, X264_ANALYSE_BSUB16x16, X264_ANALYSE_I4x4, X264_ANALYSE_I8x8, X264_ANALYSE_PSUB8x8,
         X264_ANALYSE_PSUB16x16, X264_B_ADAPT_DEFAULT, X264_CPU_SSE2_IS_FAST, X264_CPU_SSE2_IS_SLOW,
-        X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_KEYINT_MAX_INFINITE,
+        X264_CPU_SSSE3, X264_CQM_CUSTOM, X264_CQM_FLAT, X264_CQM_JVT, X264_KEYINT_MAX_INFINITE, X264_ME_DIA,
         X264_PARAM_ALLOC_FAILED, X264_PARAM_BAD_NAME, X264_PARAM_BAD_VALUE, X264_RC_ABR, X264_RC_CQP,
         X264_RC_CRF, X264_SCENECUT_THRESHOLD_DEFAULT, X264_SYNC_LOOKAHEAD_AUTO, X264_THREADS_AUTO,
-        x264_param_t,
+        X264_WEIGHTP_NONE, x264_param_t,
     },
 };
 #[derive(Copy, Clone)]
@@ -580,453 +568,14 @@ pub unsafe extern "C" fn x264_picture_clean(mut pic: *mut crate::x264_h::x264_pi
         );
     }
 }
-pub unsafe extern "C" fn x264_param_default(mut param: *mut x264_param_t) {
-    unsafe {
-        crate::stdlib::memset(
-            param as *mut ::core::ffi::c_void,
-            0i32,
-            ::core::mem::size_of::<x264_param_t>(),
-        );
-        (*param).cpu = x264_cpu_detect();
-        (*param).i_threads = X264_THREADS_AUTO;
-        (*param).i_lookahead_threads = X264_THREADS_AUTO;
-        (*param).deterministic = true;
-        (*param).i_sync_lookahead = X264_SYNC_LOOKAHEAD_AUTO;
-        (*param).i_csp = if crate::x264_config_h::X264_CHROMA_FORMAT != 0 {
-            crate::x264_config_h::X264_CHROMA_FORMAT
-        } else {
-            crate::x264_h::X264_CSP_I420
-        };
-        (*param).i_width = 0i32;
-        (*param).i_height = 0i32;
-        (*param).vui.i_sar_width = 0i32;
-        (*param).vui.i_sar_height = 0i32;
-        (*param).vui.i_overscan = 0i32;
-        (*param).vui.i_vidformat = 5i32;
-        (*param).vui.fullrange = None;
-        (*param).vui.i_colorprim = 2i32;
-        (*param).vui.i_transfer = 2i32;
-        (*param).vui.i_colmatrix = -(1i32);
-        (*param).vui.i_chroma_loc = 0i32;
-        (*param).i_fps_num = 25u32;
-        (*param).i_fps_den = 1u32;
-        (*param).i_level_idc = -(1i32);
-        (*param).i_slice_max_size = 0i32;
-        (*param).i_slice_max_mbs = 0i32;
-        (*param).i_slice_count = 0i32;
-        (*param).i_bitdepth = 8i32;
-        (*param).i_frame_reference = 3i32;
-        (*param).i_keyint_max = 250i32;
-        (*param).i_keyint_min = crate::x264_h::X264_KEYINT_MIN_AUTO;
-        (*param).i_bframe = 3i32;
-        (*param).i_scenecut_threshold = X264_SCENECUT_THRESHOLD_DEFAULT;
-        (*param).i_bframe_adaptive = X264_B_ADAPT_DEFAULT;
-        (*param).i_bframe_bias = 0i32;
-        (*param).i_bframe_pyramid = crate::x264_h::X264_B_PYRAMID_NORMAL;
-        (*param).interlaced = false;
-        (*param).constrained_intra = false;
-        (*param).deblocking_filter = true;
-        (*param).i_deblocking_filter_alphac0 = 0i32;
-        (*param).i_deblocking_filter_beta = 0i32;
-        (*param).cabac = true;
-        (*param).i_cabac_init_idc = 0i32;
-        (*param).rc.i_rc_method = X264_RC_CRF;
-        (*param).rc.i_bitrate = 0i32;
-        (*param).rc.f_rate_tolerance = 1.0f32;
-        (*param).rc.i_vbv_max_bitrate = 0i32;
-        (*param).rc.i_vbv_buffer_size = 0i32;
-        (*param).rc.f_vbv_buffer_init = 0.9f32;
-        (*param).rc.i_qp_constant = -(1i32);
-        (*param).rc.f_rf_constant = 23f32;
-        (*param).rc.i_qp_min = 0i32;
-        (*param).rc.i_qp_max = crate::limits_h::INT_MAX;
-        (*param).rc.i_qp_step = 4i32;
-        (*param).rc.f_ip_factor = 1.4f32;
-        (*param).rc.f_pb_factor = 1.3f32;
-        (*param).rc.i_aq_mode = crate::x264_h::X264_AQ_VARIANCE;
-        (*param).rc.f_aq_strength = 1.0f32;
-        (*param).rc.i_lookahead = 40i32;
-        (*param).rc.stat_write = false;
-        (*param).rc.psz_stat_out = "x264_2pass.log".to_string();
-        (*param).rc.stat_read = false;
-        (*param).rc.psz_stat_in = "x264_2pass.log".to_string();
-        (*param).rc.f_qcompress = 0.6f32;
-        (*param).rc.f_qblur = 0.5f32;
-        (*param).rc.f_complexity_blur = 20f32;
-        (*param).rc.i_zones = 0i32;
-        (*param).rc.mb_tree = true;
-        (*param).p_log_private = crate::__stddef_null_h::NULL;
-        (*param).i_log_level = crate::x264_h::X264_LOG_INFO;
-        (*param).analyse.intra = X264_ANALYSE_I4x4 | X264_ANALYSE_I8x8;
-        (*param).analyse.inter =
-            X264_ANALYSE_I4x4 | X264_ANALYSE_I8x8 | X264_ANALYSE_PSUB16x16 | X264_ANALYSE_BSUB16x16;
-        (*param).analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_SPATIAL;
-        (*param).analyse.i_me_method = crate::x264_h::X264_ME_HEX;
-        (*param).analyse.f_psy_rd = 1.0f32;
-        (*param).analyse.psy = true;
-        (*param).analyse.f_psy_trellis = 0f32;
-        (*param).analyse.i_me_range = 16i32;
-        (*param).analyse.i_subpel_refine = 7i32;
-        (*param).analyse.mixed_references = true;
-        (*param).analyse.chroma_me = true;
-        (*param).analyse.i_mv_range_thread = -(1i32);
-        (*param).analyse.i_mv_range = -(1i32);
-        (*param).analyse.i_chroma_qp_offset = 0i32;
-        (*param).analyse.fast_pskip = true;
-        (*param).analyse.weighted_bipred = true;
-        (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SMART;
-        (*param).analyse.dct_decimate = true;
-        (*param).analyse.transform_8x8 = true;
-        (*param).analyse.i_trellis = 1i32;
-        (*param).analyse.i_luma_deadzone[0usize] = 21i32;
-        (*param).analyse.i_luma_deadzone[1usize] = 11i32;
-        (*param).analyse.psnr = false;
-        (*param).analyse.ssim = false;
-        (*param).i_cqm_preset = crate::x264_h::X264_CQM_FLAT;
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_4iy as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>(),
-        );
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_4py as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>(),
-        );
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_4ic as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>(),
-        );
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_4pc as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 16]>(),
-        );
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_8iy as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 64]>(),
-        );
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_8py as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 64]>(),
-        );
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_8ic as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 64]>(),
-        );
-        crate::stdlib::memset(
-            &raw mut (*param).cqm_8pc as *mut ::core::ffi::c_void,
-            16i32,
-            ::core::mem::size_of::<[crate::stdlib::uint8_t; 64]>(),
-        );
-        (*param).repeat_headers = true;
-        (*param).annexb = true;
-        (*param).aud = false;
-        (*param).vfr_input = true;
-        (*param).i_nal_hrd = crate::x264_h::X264_NAL_HRD_NONE;
-        (*param).tff = true;
-        (*param).pic_struct = false;
-        (*param).fake_interlaced = false;
-        (*param).i_frame_packing = -(1i32);
-        (*param).i_alternative_transfer = 2i32;
-        (*param).opencl = false;
-        (*param).i_opencl_device = 0i32;
-        (*param).opencl_device_id = crate::__stddef_null_h::NULL;
-        (*param).psz_clbin_file = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        (*param).i_avcintra_class = 0i32;
-        (*param).i_avcintra_flavor = crate::x264_h::X264_AVCINTRA_FLAVOR_PANASONIC;
-    }
-}
-unsafe extern "C" fn param_apply_preset(
-    mut param: *mut x264_param_t,
-    mut preset: *const ::core::ffi::c_char,
-) -> ::core::ffi::c_int {
-    unsafe {
-        let mut end = ::core::ptr::null_mut::<::core::ffi::c_char>();
-        let mut i = crate::stdlib::strtol(preset, &raw mut end, 10i32) as ::core::ffi::c_int;
-        if *end as ::core::ffi::c_int == 0i32
-            && i >= 0i32
-            && i < (::core::mem::size_of::<[*const ::core::ffi::c_char; 11]>())
-                .wrapping_div(::core::mem::size_of::<*const ::core::ffi::c_char>())
-                as ::core::ffi::c_int
-                - 1i32
-        {
-            preset = X264_PRESET_NAMES[i as usize];
-        }
-        if crate::stdlib::strcasecmp(preset, c"ultrafast".as_ptr()) == 0 {
-            (*param).i_frame_reference = 1i32;
-            (*param).i_scenecut_threshold = 0i32;
-            (*param).deblocking_filter = false;
-            (*param).cabac = false;
-            (*param).i_bframe = 0i32;
-            (*param).analyse.intra = 0u32;
-            (*param).analyse.inter = 0u32;
-            (*param).analyse.transform_8x8 = false;
-            (*param).analyse.i_me_method = crate::x264_h::X264_ME_DIA;
-            (*param).analyse.i_subpel_refine = 0i32;
-            (*param).rc.i_aq_mode = 0i32;
-            (*param).analyse.mixed_references = false;
-            (*param).analyse.i_trellis = 0i32;
-            (*param).i_bframe_adaptive = crate::x264_h::X264_B_ADAPT_NONE;
-            (*param).rc.mb_tree = false;
-            (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_NONE;
-            (*param).analyse.weighted_bipred = false;
-            (*param).rc.i_lookahead = 0i32;
-        } else if crate::stdlib::strcasecmp(preset, c"superfast".as_ptr()) == 0 {
-            (*param).analyse.inter = X264_ANALYSE_I8x8 | X264_ANALYSE_I4x4;
-            (*param).analyse.i_me_method = crate::x264_h::X264_ME_DIA;
-            (*param).analyse.i_subpel_refine = 1i32;
-            (*param).i_frame_reference = 1i32;
-            (*param).analyse.mixed_references = false;
-            (*param).analyse.i_trellis = 0i32;
-            (*param).rc.mb_tree = false;
-            (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
-            (*param).rc.i_lookahead = 0i32;
-        } else if crate::stdlib::strcasecmp(preset, c"veryfast".as_ptr()) == 0 {
-            (*param).analyse.i_subpel_refine = 2i32;
-            (*param).i_frame_reference = 1i32;
-            (*param).analyse.mixed_references = false;
-            (*param).analyse.i_trellis = 0i32;
-            (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
-            (*param).rc.i_lookahead = 10i32;
-        } else if crate::stdlib::strcasecmp(preset, c"faster".as_ptr()) == 0 {
-            (*param).analyse.mixed_references = false;
-            (*param).i_frame_reference = 2i32;
-            (*param).analyse.i_subpel_refine = 4i32;
-            (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
-            (*param).rc.i_lookahead = 20i32;
-        } else if crate::stdlib::strcasecmp(preset, c"fast".as_ptr()) == 0 {
-            (*param).i_frame_reference = 2i32;
-            (*param).analyse.i_subpel_refine = 6i32;
-            (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_SIMPLE;
-            (*param).rc.i_lookahead = 30i32;
-        } else if crate::stdlib::strcasecmp(preset, c"medium".as_ptr()) != 0 {
-            if crate::stdlib::strcasecmp(preset, c"slow".as_ptr()) == 0 {
-                (*param).analyse.i_subpel_refine = 8i32;
-                (*param).i_frame_reference = 5i32;
-                (*param).analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_AUTO;
-                (*param).analyse.i_trellis = 2i32;
-                (*param).rc.i_lookahead = 50i32;
-            } else if crate::stdlib::strcasecmp(preset, c"slower".as_ptr()) == 0 {
-                (*param).analyse.i_me_method = crate::x264_h::X264_ME_UMH;
-                (*param).analyse.i_subpel_refine = 9i32;
-                (*param).i_frame_reference = 8i32;
-                (*param).i_bframe_adaptive = crate::x264_h::X264_B_ADAPT_TRELLIS;
-                (*param).analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_AUTO;
-                (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
-                (*param).analyse.i_trellis = 2i32;
-                (*param).rc.i_lookahead = 60i32;
-            } else if crate::stdlib::strcasecmp(preset, c"veryslow".as_ptr()) == 0 {
-                (*param).analyse.i_me_method = crate::x264_h::X264_ME_UMH;
-                (*param).analyse.i_subpel_refine = 10i32;
-                (*param).analyse.i_me_range = 24i32;
-                (*param).i_frame_reference = 16i32;
-                (*param).i_bframe_adaptive = crate::x264_h::X264_B_ADAPT_TRELLIS;
-                (*param).analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_AUTO;
-                (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
-                (*param).analyse.i_trellis = 2i32;
-                (*param).i_bframe = 8i32;
-                (*param).rc.i_lookahead = 60i32;
-            } else if crate::stdlib::strcasecmp(preset, c"placebo".as_ptr()) == 0 {
-                (*param).analyse.i_me_method = crate::x264_h::X264_ME_TESA;
-                (*param).analyse.i_subpel_refine = 11i32;
-                (*param).analyse.i_me_range = 24i32;
-                (*param).i_frame_reference = 16i32;
-                (*param).i_bframe_adaptive = crate::x264_h::X264_B_ADAPT_TRELLIS;
-                (*param).analyse.i_direct_mv_pred = crate::x264_h::X264_DIRECT_PRED_AUTO;
-                (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
-                (*param).analyse.fast_pskip = false;
-                (*param).analyse.i_trellis = 2i32;
-                (*param).i_bframe = 16i32;
-                (*param).rc.i_lookahead = 60i32;
-            } else {
-                log::error!("invalid preset {:?}", std::ffi::CStr::from_ptr(preset).to_string_lossy());
-                return -(1i32);
-            }
-        }
-        0i32
-    }
-}
-unsafe extern "C" fn param_apply_tune(
-    mut param: *mut x264_param_t,
-    mut tune: *const ::core::ffi::c_char,
-) -> ::core::ffi::c_int {
-    unsafe {
-        loop {
-            let mut c2rust_current_block: u64;
-            let mut psy_tuning_used = 0i32;
-            let mut len = 0;
-            tune = tune.offset(crate::stdlib::strspn(tune, c",./-+".as_ptr()) as isize);
-            len = crate::stdlib::strcspn(tune, c",./-+".as_ptr()) as ::core::ffi::c_int;
-            if len == 0 {
-                break;
-            }
-            if len == 4i32 && crate::stdlib::strncasecmp(tune, c"film".as_ptr(), 4usize) == 0 {
-                let c2rust_fresh4 = psy_tuning_used;
-                psy_tuning_used += 1;
-                if c2rust_fresh4 != 0 {
-                    c2rust_current_block = 11543922235941715107;
-                } else {
-                    (*param).i_deblocking_filter_alphac0 = -(1i32);
-                    (*param).i_deblocking_filter_beta = -(1i32);
-                    (*param).analyse.f_psy_trellis = 0.15f32;
-                    c2rust_current_block = 11174649648027449784;
-                }
-            } else if len == 9i32 && crate::stdlib::strncasecmp(tune, c"animation".as_ptr(), 9usize) == 0 {
-                let c2rust_fresh5 = psy_tuning_used;
-                psy_tuning_used += 1;
-                if c2rust_fresh5 != 0 {
-                    c2rust_current_block = 11543922235941715107;
-                } else {
-                    (*param).i_frame_reference = if (*param).i_frame_reference > 1i32 {
-                        (*param).i_frame_reference * 2i32
-                    } else {
-                        1i32
-                    };
-                    (*param).i_deblocking_filter_alphac0 = 1i32;
-                    (*param).i_deblocking_filter_beta = 1i32;
-                    (*param).analyse.f_psy_rd = 0.4f32;
-                    (*param).rc.f_aq_strength = 0.6f32;
-                    (*param).i_bframe += 2i32;
-                    c2rust_current_block = 11174649648027449784;
-                }
-            } else if len == 5i32 && crate::stdlib::strncasecmp(tune, c"grain".as_ptr(), 5usize) == 0 {
-                let c2rust_fresh6 = psy_tuning_used;
-                psy_tuning_used += 1;
-                if c2rust_fresh6 != 0 {
-                    c2rust_current_block = 11543922235941715107;
-                } else {
-                    (*param).i_deblocking_filter_alphac0 = -(2i32);
-                    (*param).i_deblocking_filter_beta = -(2i32);
-                    (*param).analyse.f_psy_trellis = 0.25f32;
-                    (*param).analyse.dct_decimate = false;
-                    (*param).rc.f_pb_factor = 1.1f32;
-                    (*param).rc.f_ip_factor = 1.1f32;
-                    (*param).rc.f_aq_strength = 0.5f32;
-                    (*param).analyse.i_luma_deadzone[0usize] = 6i32;
-                    (*param).analyse.i_luma_deadzone[1usize] = 6i32;
-                    (*param).rc.f_qcompress = 0.8f32;
-                    c2rust_current_block = 11174649648027449784;
-                }
-            } else if len == 10i32 && crate::stdlib::strncasecmp(tune, c"stillimage".as_ptr(), 10usize) == 0 {
-                let c2rust_fresh7 = psy_tuning_used;
-                psy_tuning_used += 1;
-                if c2rust_fresh7 != 0 {
-                    c2rust_current_block = 11543922235941715107;
-                } else {
-                    (*param).i_deblocking_filter_alphac0 = -(3i32);
-                    (*param).i_deblocking_filter_beta = -(3i32);
-                    (*param).analyse.f_psy_rd = 2.0f32;
-                    (*param).analyse.f_psy_trellis = 0.7f32;
-                    (*param).rc.f_aq_strength = 1.2f32;
-                    c2rust_current_block = 11174649648027449784;
-                }
-            } else if len == 4i32 && crate::stdlib::strncasecmp(tune, c"psnr".as_ptr(), 4usize) == 0 {
-                let c2rust_fresh8 = psy_tuning_used;
-                psy_tuning_used += 1;
-                if c2rust_fresh8 != 0 {
-                    c2rust_current_block = 11543922235941715107;
-                } else {
-                    (*param).rc.i_aq_mode = crate::x264_h::X264_AQ_NONE;
-                    (*param).analyse.psy = false;
-                    c2rust_current_block = 11174649648027449784;
-                }
-            } else if len == 4i32 && crate::stdlib::strncasecmp(tune, c"ssim".as_ptr(), 4usize) == 0 {
-                let c2rust_fresh9 = psy_tuning_used;
-                psy_tuning_used += 1;
-                if c2rust_fresh9 != 0 {
-                    c2rust_current_block = 11543922235941715107;
-                } else {
-                    (*param).rc.i_aq_mode = crate::x264_h::X264_AQ_AUTOVARIANCE;
-                    (*param).analyse.psy = false;
-                    c2rust_current_block = 11174649648027449784;
-                }
-            } else if len == 10i32 && crate::stdlib::strncasecmp(tune, c"fastdecode".as_ptr(), 10usize) == 0 {
-                (*param).deblocking_filter = false;
-                (*param).cabac = false;
-                (*param).analyse.weighted_bipred = false;
-                (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_NONE;
-                c2rust_current_block = 11174649648027449784;
-            } else if len == 11i32 && crate::stdlib::strncasecmp(tune, c"zerolatency".as_ptr(), 11usize) == 0
-            {
-                (*param).rc.i_lookahead = 0i32;
-                (*param).i_sync_lookahead = 0i32;
-                (*param).i_bframe = 0i32;
-                (*param).sliced_threads = true;
-                (*param).vfr_input = false;
-                (*param).rc.mb_tree = false;
-                c2rust_current_block = 11174649648027449784;
-            } else if len == 6i32 && crate::stdlib::strncasecmp(tune, c"touhou".as_ptr(), 6usize) == 0 {
-                let c2rust_fresh10 = psy_tuning_used;
-                psy_tuning_used += 1;
-                if c2rust_fresh10 != 0 {
-                    c2rust_current_block = 11543922235941715107;
-                } else {
-                    (*param).i_frame_reference = if (*param).i_frame_reference > 1i32 {
-                        (*param).i_frame_reference * 2i32
-                    } else {
-                        1i32
-                    };
-                    (*param).i_deblocking_filter_alphac0 = -(1i32);
-                    (*param).i_deblocking_filter_beta = -(1i32);
-                    (*param).analyse.f_psy_trellis = 0.2f32;
-                    (*param).rc.f_aq_strength = 1.3f32;
-                    if (*param).analyse.inter & X264_ANALYSE_PSUB16x16 != 0 {
-                        (*param).analyse.inter |= X264_ANALYSE_PSUB8x8;
-                    }
-                    c2rust_current_block = 11174649648027449784;
-                }
-            } else {
-                let tune_str = unsafe {
-                    std::str::from_utf8_unchecked(std::slice::from_raw_parts(tune as *const u8, len as usize))
-                };
-                log::error!("invalid tune {tune_str}");
-                return -(1i32);
-            }
-            match c2rust_current_block {
-                11543922235941715107 => {
-                    let tune_str = unsafe {
-                        std::str::from_utf8_unchecked(std::slice::from_raw_parts(
-                            tune as *const u8,
-                            len as usize,
-                        ))
-                    };
-                    log::warn!("only 1 psy tuning can be used: ignoring tune {tune_str}");
-                }
-                _ => {}
-            }
-            tune = tune.offset(len as isize);
-        }
-        0i32
-    }
-}
-pub unsafe extern "C" fn x264_param_default_preset(
-    mut param: *mut x264_param_t,
-    mut preset: *const ::core::ffi::c_char,
-    mut tune: *const ::core::ffi::c_char,
-) -> ::core::ffi::c_int {
-    unsafe {
-        x264_param_default(param);
-        if !preset.is_null() && param_apply_preset(param, preset) < 0i32 {
-            return -(1i32);
-        }
-        if !tune.is_null() && param_apply_tune(param, tune) < 0i32 {
-            return -(1i32);
-        }
-        0i32
-    }
-}
+
 pub unsafe extern "C" fn x264_param_apply_fastfirstpass(mut param: *mut x264_param_t) {
     unsafe {
         if (*param).rc.stat_write && !(*param).rc.stat_read {
             (*param).i_frame_reference = 1i32;
             (*param).analyse.transform_8x8 = false;
             (*param).analyse.inter = 0u32;
-            (*param).analyse.i_me_method = crate::x264_h::X264_ME_DIA;
+            (*param).analyse.i_me_method = X264_ME_DIA;
             (*param).analyse.i_subpel_refine = if (2i32) < (*param).analyse.i_subpel_refine {
                 2i32
             } else {
@@ -1128,7 +677,7 @@ pub unsafe extern "C" fn x264_param_apply_profile(
             (*param).i_cqm_preset = crate::x264_h::X264_CQM_FLAT;
             (*param).psz_cqm_file = ::core::ptr::null_mut::<::core::ffi::c_char>();
             (*param).i_bframe = 0i32;
-            (*param).analyse.i_weighted_pred = crate::x264_h::X264_WEIGHTP_NONE;
+            (*param).analyse.i_weighted_pred = X264_WEIGHTP_NONE;
             if (*param).interlaced {
                 log::error!("baseline profile doesn't support interlacing");
                 return -(1i32);
@@ -1146,7 +695,8 @@ pub unsafe extern "C" fn x264_param_apply_profile(
     }
 }
 
-fn parse_enum(arg: Option<&str>, names: &[&str]) -> Result<i32, i32> {
+// TODO: is the monomorphization here worth not doing &[&str]?
+fn parse_enum<const N: usize>(arg: Option<&str>, names: [&str; N]) -> Result<i32, i32> {
     let Some(arg) = arg else { return Err(X264_PARAM_BAD_VALUE) };
     names
         .iter()
